@@ -1,11 +1,13 @@
 using System;
 using System.Windows.Forms;
 using Chummer;
+using ChummerHub.Client;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
+using ChummerHub.Client.Sinners;
 using Newtonsoft.Json;
 using NLog;
-using SINners.Models;
+
 
 namespace ChummerHub.Client.UI
 {
@@ -72,9 +74,9 @@ namespace ChummerHub.Client.UI
                         return;
                     }
                     //var body = client.GetUserByAuthorizationAsync().Result;
-                    using (var user = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(false))
+                    var body = await client.GetUserByAuthorizationAsync().ConfigureAwait(false);
                     {
-                        var body = user.Body;
+                     
                         if (body?.CallSuccess == true)
                         {
                             login = true;

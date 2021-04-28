@@ -7,11 +7,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 using Chummer;
-using Newtonsoft.Json;
 
-namespace SINners.Models
+using Newtonsoft.Json;
+using ChummerHub.Client.Backend;
+
+namespace ChummerHub.Client.Sinners
 {
-    [DebuggerDisplay("{" + nameof(Display) + "}")]
+    [DebuggerDisplay("{" + nameof(MyDisplay) + "}")]
     public partial class Tag
     {
         [IgnoreDataMember]
@@ -26,7 +28,7 @@ namespace SINners.Models
             MyRuntimeHubTag = hubTag;
         }
 
-        public Tag (bool isUserGenerated)
+        public Tag (bool isUserGenerated = false)
         {
             Id = Guid.NewGuid();
             IsUserGenerated = isUserGenerated;
@@ -42,7 +44,7 @@ namespace SINners.Models
         [IgnoreDataMember]
         [XmlIgnore]
         [JsonIgnore]
-        public string Display
+        public  string MyDisplay
         {
             get
             {
@@ -92,36 +94,36 @@ namespace SINners.Models
                     childtag.SetSinnerIdRecursive(id);
         }
 
-        internal void SetTagTypeEnumFromCLRType(Type typeValue)
+        internal void SetTagTypeEnumFromCLRType(System.Type typeValue)
         {
             if (typeof(int).IsAssignableFrom(typeValue))
             {
-                TagType = "int";
+                TagType = TagValueEnum.Int;
             }
             else if (typeof(double).IsAssignableFrom(typeValue))
             {
-                TagType = "double";
+                TagType = TagValueEnum.Double;
             }
             else if (typeof(bool).IsAssignableFrom(typeValue))
             {
-                TagType = "bool";
+                TagType = TagValueEnum.Bool;
             }
             else if (typeof(string).IsAssignableFrom(typeValue))
             {
-                TagType = "string";
+                TagType = TagValueEnum.String;
             }
             else if (typeof(Guid).IsAssignableFrom(typeValue))
             {
-                TagType = "Guid";
+                TagType = TagValueEnum.Guid;
             }
             else
             {
-                TagType = "other";
+                TagType = TagValueEnum.Other;
             }
 
             if (typeof(IEnumerable).IsAssignableFrom(typeValue) && !typeof(string).IsAssignableFrom(typeValue))
             {
-                TagType = "list";
+                TagType = TagValueEnum.List;
                 TagValue = string.Empty;
                 TagValueFloat = null;
             }
@@ -136,11 +138,11 @@ namespace SINners.Models
         {
             if (objItem == null || objAttribute == null)
                 return;
-            Type objItemType = objItem.GetType();
+            System.Type objItemType = objItem.GetType();
             StringBuilder sbdPropertyValues = new StringBuilder();
             foreach (string strProperty in objAttribute.ListCommentProperties)
             {
-                PropertyInfo objProperty = objItemType.GetProperties().FirstOrDefault(p => p.Name == strProperty);
+                System.Reflection.PropertyInfo objProperty = objItemType.GetProperties().FirstOrDefault(p => p.Name == strProperty);
                 if (objProperty == null)
                     throw new ArgumentOutOfRangeException("Could not find property " + strProperty + " on instance of type " + objItemType + ".");
 

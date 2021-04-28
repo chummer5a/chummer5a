@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace SINners.Models
+namespace ChummerHub.Client.Sinners
 {
     public partial class SINnerGroup
     {

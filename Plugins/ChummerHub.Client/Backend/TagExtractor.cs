@@ -5,7 +5,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Chummer;
-using SINners.Models;
+using ChummerHub.Client.Sinners;
+using PropertyInfo = System.Reflection.PropertyInfo;
+using Type = System.Type;
 
 namespace ChummerHub.Client.Backend
 {
@@ -68,7 +70,7 @@ namespace ChummerHub.Client.Backend
                         {
                             var tag = new Tag(item, classprop)
                             {
-                                TagType = "list",
+                                TagType = 0,// "list",
                                 //TagName = classprop.ListName
                             };
                             if (!string.IsNullOrEmpty(classprop.ListInstanceNameFromProperty))
@@ -108,7 +110,7 @@ namespace ChummerHub.Client.Backend
 
         private static IEnumerable<Tag> ExtractTagsFromExtraProperties(object objPropertyHaver, HubClassTagAttribute objPropertyFilterAttribute)
         {
-            PropertyInfo[] aPropertyInfos = objPropertyHaver.GetType().GetProperties();
+            System.Reflection.PropertyInfo[] aPropertyInfos = objPropertyHaver.GetType().GetProperties();
             foreach(string includeprop in objPropertyFilterAttribute.ListExtraProperties)
             {
                 var propfound = aPropertyInfos.FirstOrDefault(x => x.Name == includeprop);

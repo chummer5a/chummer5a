@@ -34,7 +34,7 @@ namespace ChummerHub.Client.Backend
             _renames[type][propertyName] = newJsonPropertyName;
         }
 
-        protected override JsonProperty CreateProperty(MemberInfo member, MemberSerialization memberSerialization)
+        protected override JsonProperty CreateProperty(System.Reflection.MemberInfo member, MemberSerialization memberSerialization)
         {
             var property = base.CreateProperty(member, memberSerialization);
 

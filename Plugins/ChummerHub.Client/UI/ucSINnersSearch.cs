@@ -9,10 +9,10 @@ using Chummer;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Uniques;
 using ChummerHub.Client.Backend;
-using ChummerHub.Client.Model;
+using ChummerHub.Client;
 using GroupControls;
 using NLog;
-using SINners.Models;
+using ChummerHub.Client.Sinners;
 
 namespace ChummerHub.Client.UI
 {
@@ -116,7 +116,7 @@ namespace ChummerHub.Client.UI
                         rdb.Items.Add(ifalse);
                         rdb.SelectedIndexChanged += (sender, e) =>
                         {
-                            PropertyInfo info = stag.MyPropertyInfo;
+                            System.Reflection.PropertyInfo info = stag.MyPropertyInfo;
                             info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, itrue.Checked);
                             MySetTags.Add(stag);
                             UpdateDialog();
@@ -192,7 +192,7 @@ namespace ChummerHub.Client.UI
             {
                 if (obj is IList)
                 {
-                    Type listtype = StaticUtils.GetListType(obj);
+                    System.Type listtype = StaticUtils.GetListType(obj);
                     if (listtype != null)
                         switchname = listtype.Name;
                 }
@@ -274,7 +274,7 @@ namespace ChummerHub.Client.UI
             TreeNode root = null;
             MySearchCharacter.PopulateTree(ref root, null, MySetTags);
             MyTagTreeView.Nodes.Add(root);
-            motherTag = new SearchTag
+            motherTag = new SearchTag (null,(HubTagAttribute)null)
             {
                 Tags = new List<Tag>(),
                 MyPropertyInfo = null,

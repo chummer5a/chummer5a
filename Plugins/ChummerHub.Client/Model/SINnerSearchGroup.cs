@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace SINners.Models
+namespace ChummerHub.Client.Sinners
 {
     public partial class SINnerSearchGroup
     {

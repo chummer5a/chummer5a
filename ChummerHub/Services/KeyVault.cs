@@ -27,8 +27,18 @@ namespace ChummerHub.Services
                     client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
                 KeyVaultSecret keySecret = client.GetSecret(secretName);
                 return keySecret.Value;
-                
+
             }
+#if DEBUG
+            catch (AuthenticationFailedException afe)
+            {
+                if (!afe.Message.Contains("(Azure Key Vault) is configured for use by Azure Active Directory users only."))
+                {
+                    throw;
+                }
+                return null;
+            }
+#endif
             catch (Exception e)
             {
                 _logger?.LogError(e, e.Message);

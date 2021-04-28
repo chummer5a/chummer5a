@@ -1,11 +1,12 @@
 using Chummer;
+using ChummerHub.Client.Sinners;
 using ChummerHub.Client.UI;
-using SINners.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Reflection;
+using PropertyInfo = System.Reflection.PropertyInfo;
 
 namespace ChummerHub.Client.Backend
 {
@@ -26,7 +27,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (obj is IEnumerable islist)
                 {
-                    Type listtype = StaticUtils.GetListType(islist);
+                    System.Type listtype = StaticUtils.GetListType(islist);
                     object generic;
                     try
                     {

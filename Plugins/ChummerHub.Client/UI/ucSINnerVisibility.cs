@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
+using ChummerHub.Client.Sinners;
 using NLog;
-using SINners.Models;
+
 
 namespace ChummerHub.Client.UI
 {
@@ -41,7 +42,7 @@ namespace ChummerHub.Client.UI
         {
             MyVisibility = vis;
             InitializeComponent();
-            cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible.HasValue != true || MyVisibility.IsGroupVisible.Value;
+            cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible == null ? false : MyVisibility.IsGroupVisible;
             clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
@@ -61,10 +62,10 @@ namespace ChummerHub.Client.UI
                     for (int i = 0; i < clbVisibilityToUsers.Items.Count; i++)
                     {
                         SINnerUserRight obj = (SINnerUserRight)clbVisibilityToUsers.Items[i];
-                        clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit != null && obj.CanEdit.Value);
+                        clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit);
                     }
                     clbVisibilityToUsers.Refresh();
-                    cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible.HasValue != true || MyVisibility.IsGroupVisible.Value;
+                    cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible==null?false:MyVisibility.IsGroupVisible;
                 }
                 catch (Exception e)
                 {

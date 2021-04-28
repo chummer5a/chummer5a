@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Chummer;
 
-namespace SINners.Models
+namespace ChummerHub.Client.Sinners
 {
     public partial class SINner
     {

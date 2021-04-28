@@ -7,8 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using Chummer;
-using SINners.Models;
-using ChummerHub.Client.Model;
+using ChummerHub.Client.Sinners;
 using Chummer.Plugins;
 using Point = System.Drawing.Point;
 using NLog;
@@ -132,16 +131,16 @@ namespace ChummerHub.Client.UI
                     return null;
                 }
                 var client = StaticUtils.GetClient();
-                using (var res = await client.PostGroupWithHttpMessagesAsync(
-                    mygroup,
-                    MyCE?.MySINnerFile?.Id).ConfigureAwait(true))
-                {
-                    ResultGroupPostGroup response = await Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) as ResultGroupPostGroup;
-                    if (response?.CallSuccess == true)
-                    {
-                        return response.MyGroup;
-                    }
-                }
+                await client.PostGroupAsync(
+                    mygroup.Id,
+                    mygroup).ConfigureAwait(true);
+                //{
+                //    ResultGroupPostGroup response = await Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) as ResultGroupPostGroup;
+                //    if (response?.CallSuccess == true)
+                //    {
+                //        return response.MyGroup;
+                //    }
+                //}
             }
             catch (Exception ex)
             {
@@ -196,9 +195,9 @@ namespace ChummerHub.Client.UI
             try
             {
                 var client = StaticUtils.GetClient();
-                using (var res = await client.GetSearchGroupsWithHttpMessagesAsync(groupname).ConfigureAwait(true))
+                var res = await client.GetSearchGroupsAsync(groupname, null, null, null).ConfigureAwait(true);
                 {
-                    if (!(await Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
+                    if (!(await Backend.Utils.HandleError(res).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                         return null;
                     if (result.CallSuccess == true)
                     {
@@ -315,9 +314,9 @@ namespace ChummerHub.Client.UI
             try
             {
                 var client = StaticUtils.GetClient();
-                using (var response = await client.DeleteLeaveGroupWithHttpMessagesAsync(myGroup.Id, mySINnerFile.Id).ConfigureAwait(true))
+                var response = await client.DeleteLeaveGroupAsync(myGroup.Id, mySINnerFile.Id).ConfigureAwait(true);
                 {
-                    if (response.Response.StatusCode == HttpStatusCode.OK)
+                    if (response)
                     {
                         try
                         {
@@ -333,16 +332,15 @@ namespace ChummerHub.Client.UI
                         finally
                         {
                             if (!noupdate)
-#pragma warning disable 4014
+
                                 MyParentForm?.MyParentForm?.CheckSINnerStatus();
-#pragma warning restore 4014
+
                         }
                     }
                     else
                     {
-                        var rescontent = await response.Response.Content.ReadAsStringAsync().ConfigureAwait(true);
-                        string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
-                        msg += rescontent;
+                        
+                        string msg = "StatusCode: " + false + " after DeleteLeaveGroupAsync!" + Environment.NewLine;
                         Log.Info(msg);
                         Program.MainForm.ShowMessageBox(msg);
                     }
@@ -382,47 +380,47 @@ namespace ChummerHub.Client.UI
                         using (new CursorWait(this, true))
                         {
                             var client = StaticUtils.GetClient();
-                            using (var response =
-                                await client.PutSINerInGroupWithHttpMessagesAsync(searchgroup.Id, myCE.MySINnerFile.Id,
-                                    groupEdit?.MySINnerGroupCreate?.MyGroup?.PasswordHash).ConfigureAwait(true))
+                            var response =
+                                await client.PutSINerInGroupAsync(searchgroup.Id, myCE.MySINnerFile.Id,
+                                    groupEdit?.MySINnerGroupCreate?.MyGroup?.PasswordHash).ConfigureAwait(true);
                             {
-                                if (response.Response.StatusCode != HttpStatusCode.OK)
+                                if (response == null)
                                 {
-                                    var rescontent = await response.Response.Content.ReadAsStringAsync().ConfigureAwait(true);
-                                    if (response.Response.StatusCode == HttpStatusCode.BadRequest)
-                                    {
-                                        if (rescontent.Contains("PW is wrong!"))
-                                        {
-                                            throw new ArgumentException("Wrong Password provided!");
-                                        }
+                                    throw new NotImplementedException();
+                                    //var rescontent = await response.Response.Content.ReadAsStringAsync().ConfigureAwait(true);
+                                    //if (response.Response.StatusCode == HttpStatusCode.BadRequest)
+                                    //{
+                                    //    if (rescontent.Contains("PW is wrong!"))
+                                    //    {
+                                    //        throw new ArgumentException("Wrong Password provided!");
+                                    //    }
 
-                                        string searchfor = "NoUserRightException\",\"Message\":\"";
-                                        if (rescontent.Contains(searchfor))
-                                        {
-                                            string msg =
-                                                rescontent.Substring(rescontent.IndexOf(searchfor, StringComparison.Ordinal) + searchfor.Length);
-                                            msg = msg.Substring(0, msg.IndexOf("\"", StringComparison.Ordinal));
-                                            throw new ArgumentException(msg);
-                                        }
+                                    //    string searchfor = "NoUserRightException\",\"Message\":\"";
+                                    //    if (rescontent.Contains(searchfor))
+                                    //    {
+                                    //        string msg =
+                                    //            rescontent.Substring(rescontent.IndexOf(searchfor, StringComparison.Ordinal) + searchfor.Length);
+                                    //        msg = msg.Substring(0, msg.IndexOf("\"", StringComparison.Ordinal));
+                                    //        throw new ArgumentException(msg);
+                                    //    }
 
-                                        throw new ArgumentException(rescontent);
-                                    }
-                                    else
-                                    {
-                                        string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
-                                        msg += rescontent;
-                                        throw new ArgumentException(msg);
-                                    }
+                                    //    throw new ArgumentException(rescontent);
+                                    //}
+                                    //else
+                                    //{
+                                    //    string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
+                                    //    msg += rescontent;
+                                    //    throw new ArgumentException(msg);
+                                    //}
                                 }
                             }
 
-                            using (var found = await client.GetGroupByIdWithHttpMessagesAsync(searchgroup.Id, null,
-                                CancellationToken.None).ConfigureAwait(true))
+                            var found = await client.GetGroupByIdAsync(searchgroup.Id).ConfigureAwait(true);
                             {
                                 var res = Backend.Utils.HandleError(found);
-                                if (found?.Response?.IsSuccessStatusCode == true)
+                                if (found?.CallSuccess == true)
                                 {
-                                    ssgr = new SINSearchGroupResult(found.Body.MyGroup);
+                                    ssgr = new SINSearchGroupResult(found.MyGroup);
                                 }
                             }
                         }
@@ -588,35 +586,19 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    using (var response = await client.DeleteGroupWithHttpMessagesAsync(item.Id).CancelAfter(1000 * 30).ConfigureAwait(true))
+                    var response = await client.DeleteGroupAsync(item.Id).CancelAfter(1000 * 30).ConfigureAwait(true);
                     {
-                        if (response.Response.StatusCode == HttpStatusCode.OK)
+                        if (response)
                         {
                             bSearch_Click(sender, e);
                             Program.MainForm.ShowMessageBox("Group deleted.");
                         }
-                        else if (response.Response.StatusCode == HttpStatusCode.NotFound)
+                        else 
                         {
-                            var rescontent = await response.Response.Content.ReadAsStringAsync().ConfigureAwait(true);
-                            string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
-                            msg += rescontent;
+                            
+                            string msg = "StatusCode: " + false + " DeleteGroupAsync" + Environment.NewLine;
+                          
                             throw new ArgumentNullException(item.Groupname, msg);
-                        }
-                        else
-                        {
-                            var rescontent = await response.Response.Content.ReadAsStringAsync().ConfigureAwait(true);
-                            Exception ex;
-                            try
-                            {
-                                ex = Newtonsoft.Json.JsonConvert.DeserializeObject<Exception>(rescontent);
-                            }
-                            catch (Exception)
-                            {
-                                throw new ArgumentException(rescontent);
-                            }
-
-                            if (ex != null)
-                                throw ex;
                         }
                     }
                 }
@@ -697,11 +679,11 @@ namespace ChummerHub.Client.UI
                     if (draggedGroup != null)
                     {
 
-                        using (var res = await client.PutGroupInGroupWithHttpMessagesAsync(draggedGroup.Id,
+                        var res = await client.PutGroupInGroupAsync(draggedGroup.Id,
                             draggedGroup.Groupname, targetGroup?.Id,
-                            draggedGroup.MyAdminIdentityRole, draggedGroup.IsPublic).ConfigureAwait(true))
+                            draggedGroup.MyAdminIdentityRole, draggedGroup.IsPublic).ConfigureAwait(true);
                         {
-                            if (res.Response.StatusCode == HttpStatusCode.OK)
+                            if (res != null)
                             {
                                 MoveNode(draggedNode, targetNode);
                             }
@@ -711,11 +693,11 @@ namespace ChummerHub.Client.UI
                     {
                         if (targetGroup.Groupname == "My SINners")
                         {
-                            using (var res = await client.DeleteLeaveGroupWithHttpMessagesAsync(
-                                draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id).ConfigureAwait(true))
+                            var res = await client.DeleteLeaveGroupAsync(
+                                draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id).ConfigureAwait(true);
                             {
-                                var response = Backend.Utils.HandleError(res, res.Body);
-                                if (res.Response.StatusCode == HttpStatusCode.OK)
+                                var response = Backend.Utils.HandleError(res);
+                                if (res)
                                 {
                                     bSearch_Click(sender, e);
                                 }
@@ -728,10 +710,10 @@ namespace ChummerHub.Client.UI
 
                         try
                         {
-                            using (var res = await client.PutSINerInGroupWithHttpMessagesAsync(targetGroup.Id, draggedSINner.MySINner.Id).ConfigureAwait(true))
+                            var res = await client.PutSINerInGroupAsync(targetGroup.Id, draggedSINner.MySINner.Id, null).ConfigureAwait(true);
                             {
-                                var response = Backend.Utils.HandleError(res, res.Body);
-                                if (res.Response.StatusCode == HttpStatusCode.OK)
+                                var response = Backend.Utils.HandleError(res);
+                                if (res != null)
                                 {
                                     bSearch_Click(sender, e);
                                 }
@@ -745,11 +727,11 @@ namespace ChummerHub.Client.UI
 
                     if (draggedSINner?.MySINner?.MyGroup?.Id != null && targetNode == null)
                     {
-                        using (var res = await client.DeleteLeaveGroupWithHttpMessagesAsync(
-                            draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id).ConfigureAwait(true))
+                        var res = await client.DeleteLeaveGroupAsync(
+                            draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id).ConfigureAwait(true);
                         {
-                            var response = Backend.Utils.HandleError(res, res.Body);
-                            if (res.Response.StatusCode == HttpStatusCode.OK)
+                            var response = Backend.Utils.HandleError(res);
+                            if (res != null)
                             {
                                 MoveNode(draggedNode, targetNode);
                             }
@@ -757,10 +739,10 @@ namespace ChummerHub.Client.UI
                     }
                     else if (draggedSINner?.MySINner != null && targetNode == null)
                     {
-                        using (var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, draggedSINner.MySINner.Id).ConfigureAwait(true))
+                        var res = await client.PutSINerInGroupAsync(null, draggedSINner.MySINner.Id, null).ConfigureAwait(true);
                         {
-                            var response = Backend.Utils.HandleError(res, res.Body);
-                            if (res.Response.StatusCode == HttpStatusCode.OK)
+                            var response = Backend.Utils.HandleError(res);
+                            if (res != null)
                             {
                                 MoveNode(draggedNode, targetNode);
                             }
@@ -768,10 +750,10 @@ namespace ChummerHub.Client.UI
                     }
                     else if (draggedSINner?.MySINner != null && targetGroup != null)
                     {
-                        using (var res = await client.PutSINerInGroupWithHttpMessagesAsync(targetGroup.Id, draggedSINner.MySINner.Id).ConfigureAwait(true))
+                        var res = await client.PutSINerInGroupAsync(targetGroup.Id, draggedSINner.MySINner.Id, null).ConfigureAwait(true);
                         {
-                            var response = Backend.Utils.HandleError(res, res.Body);
-                            if (res.Response.StatusCode == HttpStatusCode.OK)
+                            var response = Backend.Utils.HandleError(res);
+                            if (res != null)
                             {
                                 MoveNode(draggedNode, targetNode);
                             }
@@ -822,7 +804,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var group = new SINnerGroup
+                var group = new SINnerGroup (null)
                 {
                     Groupname = tbSearchGroupname.Text,
                     IsPublic = false
@@ -862,7 +844,7 @@ namespace ChummerHub.Client.UI
         {
             try
             {
-                var group = new SINnerGroup
+                var group = new SINnerGroup (null)
                 {
                     Groupname = tbSearchGroupname.Text,
                     IsPublic = false
