@@ -757,10 +757,6 @@
     <Content Include="NLog.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="NLog.xsd">
-      <SubType>Designer</SubType>
-    </None>
-    <None Include="packages.config" />
     <Compile Include="UI\Skills\KnowledgeSkillControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1022,6 +1018,10 @@
     <Compile Include="Selection Forms\frmSelectMartialArtTechnique.Designer.cs">
       <DependentUpon>frmSelectMartialArtTechnique.cs</DependentUpon>
     </Compile>
+    <None Include="NLog.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <Compile Include="Selection Forms\frmSelectMentorSpirit.cs">
       <SubType>Form</SubType>

@@ -305,7 +305,7 @@ namespace ChummerHub
                     options.SubstituteApiVersionInUrl = true;
                 })
                 .AddAuthorization();
-
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddApiVersioning(o =>
             {
                 o.ReportApiVersions = true;
@@ -332,33 +332,10 @@ namespace ChummerHub
                 //});
                 // resolve the IApiVersionDescriptionProvider service
                 // note: that we have to build a temporary service provider here because one has not been created yet
-                var provider = services.BuildServiceProvider()
-                .GetRequiredService<IApiVersionDescriptionProvider>();
 
-                // add a swagger document for each discovered API version
-                // note: you might choose to skip or document deprecated API versions differently
-
-                foreach (var description in provider.ApiVersionDescriptions)
-                {
-                    options.SwaggerDoc(description.GroupName, new OpenApiInfo()
-                    {
-                        Version = description.GroupName,
-                        Title = "ChummerHub",
-                        Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
-                        Contact = new OpenApiContact
-                        {
-                            Name = "Archon Megalon",
-                            Email = "archon.megalon@gmail.com",
-                        },
-                        License = new OpenApiLicense
-                        {
-                            Name = "License",
-                            Url = new Uri("https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt"),
-
-                        }
-
-                    });
-                }
+                AddSwaggerApiVersionDescriptions(services, options);
+                
+                
 
                 //options.OperationFilter<FileUploadOperation>();
 
@@ -405,6 +382,37 @@ namespace ChummerHub
 
         }
 
+        private void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
+        {
+            var provider = services.BuildServiceProvider()
+                .GetRequiredService<IApiVersionDescriptionProvider>();
+
+            // add a swagger document for each discovered API version
+            // note: you might choose to skip or document deprecated API versions differently
+
+            foreach (var description in provider.ApiVersionDescriptions)
+            {
+                options.SwaggerDoc(description.GroupName, new OpenApiInfo()
+                {
+                    Version = description.GroupName,
+                    Title = "ChummerHub",
+                    Description = "Description for API " + description.GroupName + " to store and search Chummer Xml files",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Archon Megalon",
+                        Email = "archon.megalon@gmail.com",
+                    },
+                    License = new OpenApiLicense
+                    {
+                        Name = "License",
+                        Url = new Uri("https://github.com/chummer5a/chummer5a/blob/master/LICENSE.txt"),
+
+                    }
+
+                });
+            }
+        }
+
 
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -416,7 +424,7 @@ namespace ChummerHub
             {
                 app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
-                //app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
 
             }
             else
