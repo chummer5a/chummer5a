@@ -28,6 +28,7 @@ using Microsoft.Extensions.Logging;
 
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
+using Newtonsoft.Json.Converters;
 
 namespace ChummerHub
 {
@@ -203,15 +204,13 @@ namespace ChummerHub
                 {
                     x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                     x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
+                    x.SerializerSettings.Converters.Add(new StringEnumConverter());
+            
                 });
-                //.AddJsonOptions(x =>
-                //{
-                //    x.JsonSerializerOptions.WriteIndented = true;
-                //    //ling = ReferenceLoopHandling.Ignore;
-                //    //
-                //    //x.SerializerSettings.PreserveReferencesHandling =
-                //    //    PreserveReferencesHandling.Objects;
-                //});
+            // order is vital, this *must* be called *after* AddNewtonsoftJson()
+            services.AddSwaggerGenNewtonsoftSupport();
+
+
 
 
             services.AddAuthentication(options =>
@@ -366,7 +365,7 @@ namespace ChummerHub
                 // add a custom operation filter which sets default values
                 //options.OperationFilter<SwaggerDefaultValues>();
 
-                options.DescribeAllEnumsAsStrings();
+                //options.DescribeAllEnumsAsStrings();
 
                 options.ExampleFilters();
 

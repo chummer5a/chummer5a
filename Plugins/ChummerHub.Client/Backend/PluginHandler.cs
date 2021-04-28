@@ -12,15 +12,14 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ChummerHub.Client.Sinners;
 using ChummerHub.Client.Backend;
-using ChummerHub.Client.Model;
 using ChummerHub.Client.Properties;
 using ChummerHub.Client.UI;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
-using SINners.Models;
 using Resources = Chummer.Properties.Resources;
 
 namespace Chummer.Plugins
@@ -181,19 +180,19 @@ namespace Chummer.Plugins
 
                     //is it a favorite sinner?
                     ToolStripMenuItem newFavorite;
-                    if (group.IsFavorite == true)
-                    {
-                        newFavorite = new ToolStripMenuItem("RemovePinned")
-                        {
-                            Name = "tsRemovePinnedGroup",
-                            Tag = "Menu_RemovePinnedGroup",
-                            Text = "remove from pinned",
-                            Size = new Size(177, 22),
-                            Image = Resources.user_delete
-                        };
-                        newFavorite.Click += RemovePinnedOnClick;
-                    }
-                    else
+                    //if (group.IsFavorite == true)
+                    //{
+                    //    newFavorite = new ToolStripMenuItem("RemovePinned")
+                    //    {
+                    //        Name = "tsRemovePinnedGroup",
+                    //        Tag = "Menu_RemovePinnedGroup",
+                    //        Text = "remove from pinned",
+                    //        Size = new Size(177, 22),
+                    //        Image = Resources.user_delete
+                    //    };
+                    //    newFavorite.Click += RemovePinnedOnClick;
+                    //}
+                    //else
                     {
                         newFavorite = new ToolStripMenuItem("AddPinned")
                         {
@@ -392,7 +391,7 @@ namespace Chummer.Plugins
                     ContractResolver = jsonResolver
                 };
                 //remove the reflection tag - no need to save it
-                Tag refTag = ce?.MySINnerFile?.SiNnerMetaData?.Tags?.FirstOrDefault(x => x?.TagName == "Reflection");
+                var refTag = ce?.MySINnerFile?.SiNnerMetaData?.Tags?.FirstOrDefault(x => x?.TagName == "Reflection");
                 if (refTag != null)
                 {
                     ce.MySINnerFile.SiNnerMetaData.Tags.Remove(refTag);
@@ -591,14 +590,14 @@ namespace Chummer.Plugins
 
         private async void mnuSINnersArchetypes_Click(object sender, EventArgs e)
         {
-            HttpOperationResponse<ResultGroupGetSearchGroups> res = null;
+            ResultGroupGetSearchGroups res = null;
             try
             {
                 using (new CursorWait(MainForm, true))
                 {
                     var client = StaticUtils.GetClient();
-                    res = await client.GetPublicGroupWithHttpMessagesAsync("Archetypes").ConfigureAwait(true);
-                    if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
+                    res = await client.GetPublicGroupAsync("Archetypes","").ConfigureAwait(true);
+                    if (!(await ChummerHub.Client.Backend.Utils.HandleError(res).ConfigureAwait(true) is ResultGroupGetSearchGroups result))
                         return;
                     if (result.CallSuccess == true)
                     {
@@ -635,14 +634,14 @@ namespace Chummer.Plugins
             {
                 throw;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, res?.Body).ConfigureAwait(true) is ResultGroupGetSearchGroups))
+                if (!(await ChummerHub.Client.Backend.Utils.HandleError(res, ex).ConfigureAwait(true) is ResultGroupGetSearchGroups))
                     return;
             }
             finally
             {
-                res?.Dispose();
+                //res?.Dispose();
             }
         }
 
@@ -695,7 +694,7 @@ namespace Chummer.Plugins
         }
 
 
-        public Assembly GetPluginAssembly()
+        public System.Reflection.Assembly GetPluginAssembly()
         {
             return typeof(ucSINnersUserControl).Assembly;
         }
@@ -704,8 +703,8 @@ namespace Chummer.Plugins
         {
             StaticUtils.MyUtils.IsUnitTest = isUnitTest;
             MyUploadClient.ChummerVersion = !StaticUtils.MyUtils.IsUnitTest
-                ? Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? string.Empty
-                : Assembly.GetCallingAssembly().GetName().Version.ToString();
+                ? System.Reflection.Assembly.GetEntryAssembly()?.GetName().Version.ToString() ?? string.Empty
+                : System.Reflection.Assembly.GetCallingAssembly().GetName().Version.ToString();
         }
 
         public UserControl GetOptionsControl()
@@ -724,18 +723,40 @@ namespace Chummer.Plugins
                     {
                         Log.Info("Loading CharacterRoster from SINners...");
 
-                        async Task<HttpOperationResponse<ResultAccountGetSinnersByAuthorization>> getSINnersFunction()
+                        async Task<ResultAccountGetSinnersByAuthorization> getSINnersFunction()
                         {
+                            MySinnersClient client = null;
                             try
                             {
-                                var client = StaticUtils.GetClient();
-                                var ret = await client.GetSINnersByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true);
+                                client = StaticUtils.GetClient();
+                                var ret = await client.GetSINnersByAuthorizationAsync().ConfigureAwait(true);
                                 return ret;
                             }
                             catch (Exception e)
                             {
-                                Log.Error(e);
+                                client.ReadResponseAsString = !client.ReadResponseAsString;
+                                try
+                                {
+                                    var ret = await client.GetSINnersByAuthorizationAsync().ConfigureAwait(true);
+                                    Log.Error(e);
+                                }
+                                catch(ApiException e1)
+                                {
+                                    if (e1.Response?.Contains("<li><a href=\"/Identity/Account/Login\">Login</a></li>") == true)
+                                    {
+                                        Log.Info(e1, "User is not logged in.");
+                                    }
+                                    else {
+                                        Log.Error(e1);
+                                        throw;
+                                    }
+                                }
+                                finally
+                                {
+                                    client.ReadResponseAsString = !client.ReadResponseAsString;
+                                }
                                 throw;
+
                             }
                         }
 
@@ -836,12 +857,12 @@ namespace Chummer.Plugins
 
                     if (Guid.TryParse(sinneridstring, out Guid sinnerid))
                     {
-                        HttpOperationResponse<object> res = null;
+                        SINner res = null;
                         try
                         {
-                            res = await client.PutSINerInGroupWithHttpMessagesAsync(Guid.Empty, sinnerid).ConfigureAwait(true);
-                            var response = ChummerHub.Client.Backend.Utils.HandleError(res, res.Body);
-                            if (res.Response.StatusCode == HttpStatusCode.OK)
+                            res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null).ConfigureAwait(true);
+                            var response = ChummerHub.Client.Backend.Utils.HandleError(res, null);
+                            if (res != null)
                                 MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         }
                         catch (Exception exception)
@@ -850,7 +871,7 @@ namespace Chummer.Plugins
                         }
                         finally
                         {
-                            res?.Dispose();
+                            //res?.Dispose();
                         }
                     }
                 }
@@ -862,13 +883,13 @@ namespace Chummer.Plugins
             }
             else if (t?.Tag is SINnerSearchGroup ssg)
             {
-                HttpOperationResponse<ResultGroupPutGroupInGroup> res = null;
+                ResultGroupPutGroupInGroup res = null;
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    res = await client.PutGroupInGroupWithHttpMessagesAsync(ssg.Id, null, Guid.Empty).ConfigureAwait(true);
-                    var response = ChummerHub.Client.Backend.Utils.HandleError(res, res.Body);
-                    if (res.Response.StatusCode == HttpStatusCode.OK)
+                    res = await client.PutGroupInGroupAsync(ssg.Id, null, Guid.Empty, null, null).ConfigureAwait(true);
+                    var response = ChummerHub.Client.Backend.Utils.HandleError(res, null);
+                    if (res != null)
                     {
                         MainForm.CharacterRoster.LoadCharacters(false, false, false);
                     }
@@ -879,7 +900,7 @@ namespace Chummer.Plugins
                 }
                 finally
                 {
-                    res?.Dispose();
+                    //res?.Dispose();
                 }
             }
         }
@@ -903,14 +924,14 @@ namespace Chummer.Plugins
                     {
                         try
                         {
-                            using (var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, sinnerid).ConfigureAwait(true))
+                            var res = await client.PutSINerInGroupAsync(null, sinnerid, null).ConfigureAwait(true);
+                            
+                            var response = ChummerHub.Client.Backend.Utils.HandleError(res, null);
+                            if (res != null)
                             {
-                                var response = ChummerHub.Client.Backend.Utils.HandleError(res, res.Body);
-                                if (res.Response.StatusCode == HttpStatusCode.OK)
-                                {
-                                    MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                                }
+                                MainForm.CharacterRoster.LoadCharacters(false, false, false);
                             }
+                            
                         }
                         catch (Exception exception)
                         {
@@ -931,10 +952,10 @@ namespace Chummer.Plugins
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    using (var res = await client.PutGroupInGroupWithHttpMessagesAsync(ssg.Id, null, null).ConfigureAwait(true))
+                    var res = await client.PutGroupInGroupAsync(ssg.Id, null, null, null, null).ConfigureAwait(true);
                     {
-                        var response = ChummerHub.Client.Backend.Utils.HandleError(res, res.Body);
-                        if (res.Response.StatusCode == HttpStatusCode.OK)
+                        var response = ChummerHub.Client.Backend.Utils.HandleError(res, null);
+                        if (res != null)
                         {
                             MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         }
@@ -1123,21 +1144,21 @@ namespace Chummer.Plugins
                         if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
                         {
 
-                            using (var found = await client.GetSINByIdWithHttpMessagesAsync(SINnerId).ConfigureAwait(true))
+                            var found = await client.GetSINByIdAsync(SINnerId).ConfigureAwait(true);
                             {
-                                await ChummerHub.Client.Backend.Utils.HandleError(found, found?.Body).ConfigureAwait(true);
-                                if (found?.Response.StatusCode == HttpStatusCode.OK)
+                                await ChummerHub.Client.Backend.Utils.HandleError(found).ConfigureAwait(true);
+                                if (found?.CallSuccess == true)
                                 {
                                     await StaticUtils.WebCall(callback, 40,
                                         "Character found online").ConfigureAwait(true);
-                                    fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.Body.MySINner, null).ConfigureAwait(true);
+                                    fileNameToLoad = await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.MySINner, null).ConfigureAwait(true);
                                     await StaticUtils.WebCall(callback, 70,
                                         "Character downloaded").ConfigureAwait(true);
                                     await MainFormLoadChar(fileNameToLoad).ConfigureAwait(true);
                                     await StaticUtils.WebCall(callback, 100,
                                         "Character opened").ConfigureAwait(true);
                                 }
-                                else if (found?.Response.StatusCode == HttpStatusCode.NotFound)
+                                else if (found == null || found.CallSuccess == false)
                                 {
                                     await StaticUtils.WebCall(callback, 0,
                                         "Character not found").ConfigureAwait(true);
@@ -1231,7 +1252,7 @@ namespace Chummer.Plugins
                         {
                             if (nodDestinationNode.Tag == MyPluginHandlerInstance)
                             {
-                                using (var res = await client.PutGroupInGroupWithHttpMessagesAsync(sinGroup.Id, sinGroup.Groupname, null).ConfigureAwait(true))
+                                var res = await client.PutGroupInGroupAsync(sinGroup.Id, sinGroup.Groupname, null, null, null).ConfigureAwait(true);
                                 {
                                     var handle = await ChummerHub.Client.Backend.Utils.HandleError(res).ConfigureAwait(true);
                                     return true;
@@ -1239,7 +1260,7 @@ namespace Chummer.Plugins
                             }
                             else if (nodDestinationNode.Tag is SINnerSearchGroup destGroup)
                             {
-                                using (var res = await client.PutGroupInGroupWithHttpMessagesAsync(sinGroup.Id, sinGroup.Groupname, destGroup.Id, sinGroup.MyAdminIdentityRole, sinGroup.IsPublic).ConfigureAwait(true))
+                                var res = await client.PutGroupInGroupAsync(sinGroup.Id, sinGroup.Groupname, destGroup.Id, sinGroup.MyAdminIdentityRole, sinGroup.IsPublic).ConfigureAwait(true);
                                 {
                                     var handle = await ChummerHub.Client.Backend.Utils.HandleError(res).ConfigureAwait(true);
                                     return true;
@@ -1268,7 +1289,7 @@ namespace Chummer.Plugins
                         {
                             if (nodDestinationNode.Tag == MyPluginHandlerInstance)
                             {
-                                using (var res = await client.PutSINerInGroupWithHttpMessagesAsync(null, mySiNnerId).ConfigureAwait(true))
+                                var res = await client.PutSINerInGroupAsync(null, mySiNnerId, null).ConfigureAwait(true);
                                 {
                                     var handle = await ChummerHub.Client.Backend.Utils.HandleError(res).ConfigureAwait(true);
                                     return true;
@@ -1287,7 +1308,7 @@ namespace Chummer.Plugins
                                     }
                                 }
 
-                                using (var res = await client.PutSINerInGroupWithHttpMessagesAsync(destGroup.Id, mySiNnerId, passwd).ConfigureAwait(true))
+                                var res = await client.PutSINerInGroupAsync(destGroup.Id, mySiNnerId, passwd).ConfigureAwait(true);
                                 {
                                     var handle = await ChummerHub.Client.Backend.Utils.HandleError(res).ConfigureAwait(true);
                                     return true;

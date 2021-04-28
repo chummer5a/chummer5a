@@ -1,6 +1,6 @@
-using SINners.Models;
 using System;
 using System.Windows.Forms;
+using ChummerHub.Client.Sinners;
 using NLog;
 
 namespace ChummerHub.Client.UI

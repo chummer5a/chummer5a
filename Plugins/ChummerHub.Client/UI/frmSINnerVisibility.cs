@@ -1,7 +1,8 @@
+using ChummerHub.Client.Sinners;
 using System;
 using System.Linq;
 using System.Windows.Forms;
-using SINners.Models;
+
 
 namespace ChummerHub.Client.UI
 {

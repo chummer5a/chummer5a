@@ -1,4 +1,4 @@
-namespace SINners.Models
+namespace ChummerHub.Client.Sinners
 {
     public partial class SINnerSearchGroupMember
     {

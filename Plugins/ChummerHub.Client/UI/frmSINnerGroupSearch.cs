@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
-using ChummerHub.Client.Model;
+using ChummerHub.Client.Sinners;
 using NLog;
 
 namespace ChummerHub.Client.UI

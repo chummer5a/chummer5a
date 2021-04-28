@@ -12,8 +12,8 @@ using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using Microsoft.Rest;
 using Newtonsoft.Json;
+using ChummerHub.Client.Sinners;
 using NLog;
-using SINners.Models;
 using Utils = ChummerHub.Client.Backend.Utils;
 
 //using Nemiro.OAuth;
@@ -138,7 +138,7 @@ namespace ChummerHub.Client.UI
             {
                 return;
             }
-            var sinnerurl = client.BaseUri.ToString();
+            var sinnerurl = client.BaseUrl.ToString();
             Settings.Default.SINnerUrls.Clear();
             Settings.Default.Save();
             Settings.Default.SINnerUrls.Add("https://chummer-stable.azurewebsites.net/");
@@ -279,8 +279,13 @@ namespace ChummerHub.Client.UI
                     if (client == null)
                         return null;
                     string strEmail;
-                    using (var result = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true))
-                        strEmail = result.Body?.MyApplicationUser.Email;
+                    var result = await client.GetUserByAuthorizationAsync().ConfigureAwait(true);
+                    if (result ==  null)
+                    {
+                        LoginStatus = false;
+                        return null;
+                    }
+                    strEmail = result.MyApplicationUser.Email;
                     if (!string.IsNullOrEmpty(strEmail))
                     {
                         Settings.Default.UserEmail = strEmail;
@@ -314,9 +319,9 @@ namespace ChummerHub.Client.UI
                           try
                           {
                               var client = StaticUtils.GetClient();
-                              using (var signout = await client.LogoutWithHttpMessagesAsync().ConfigureAwait(true))
+                              var signout = await client.LogoutAsync().ConfigureAwait(true);
                               {
-                                  if (signout.Response.StatusCode != HttpStatusCode.OK)
+                                  if (!signout)
                                   {
                                       var roles = GetRolesStatus(this).Result;
                                   }
@@ -391,7 +396,7 @@ namespace ChummerHub.Client.UI
 
         private async Task<IList<string>> GetRolesStatus(Control sender)
         {
-            HttpOperationResponse<ResultAccountGetRoles> myresult = null;
+            ResultAccountGetRoles myresult = null;
             try
             {
                 using (new CursorWait(sender, true))
@@ -399,9 +404,9 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     if (client == null)
                         return StaticUtils.UserRoles;
-                    myresult = await client.GetRolesWithHttpMessagesAsync().ConfigureAwait(true);
-                    await Utils.HandleError(myresult, myresult.Body).ConfigureAwait(true);
-                    var myresultbody = myresult.Body;
+                    myresult = await client.GetRolesAsync().ConfigureAwait(true);
+                    await Utils.HandleError(myresult).ConfigureAwait(true);
+                    var myresultbody = myresult;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
                         if (myresultbody?.CallSuccess == true)
@@ -442,7 +447,7 @@ namespace ChummerHub.Client.UI
             }
             finally
             {
-                myresult?.Dispose();
+                //myresult?.Dispose();
             }
             return null;
         }
@@ -529,8 +534,8 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    var getsinner = await client.AdminGetSINnersWithHttpMessagesAsync().ConfigureAwait(true);
-                    foreach (var sinner in getsinner.Body)
+                    var getsinner = await client.AdminGetSINnersAsync().ConfigureAwait(true);
+                    foreach (var sinner in getsinner)
                     {
                         try
                         {
@@ -552,7 +557,7 @@ namespace ChummerHub.Client.UI
                             Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
                         }
                     }
-                    getsinner.Dispose();
+                    //getsinner.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -590,7 +595,7 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)
                     {
-                        HttpOperationResponse<ResultSinnerPostSIN> posttask = null;
+                        ResultSinnerPostSIN posttask = null;
                         try
                         {
                             string sinjson = File.ReadAllText(file.FullName);
@@ -604,15 +609,15 @@ namespace ChummerHub.Client.UI
                                     sin
                                 }
                             };
-                            posttask = await client.PostSINWithHttpMessagesAsync(uploadInfoObject).ConfigureAwait(true);
-                            if (posttask.Response.IsSuccessStatusCode)
+                            posttask = await client.PostSINAsync(uploadInfoObject).ConfigureAwait(true);
+                            if (posttask.CallSuccess)
                             {
                                 Log.Info("SINner " + sin.Id + " posted!");
                             }
                             else
                             {
-                                string msg = posttask.Response.ReasonPhrase + ": " + Environment.NewLine;
-                                var content = posttask.Response.Content.ReadAsStringAsync().Result;
+                                string msg = posttask.ErrorText + ": " + Environment.NewLine;
+                                var content = posttask.MyException?.ToString();
                                 msg += content;
                                 Log.Warn("SINner " + sin.Id + " not posted: " + msg);
                             }
@@ -623,7 +628,7 @@ namespace ChummerHub.Client.UI
                         }
                         finally
                         {
-                            posttask?.Dispose();
+                            //posttask?.Dispose();
                         }
                     }
                 }

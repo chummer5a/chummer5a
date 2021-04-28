@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
-namespace SINners.Models
+namespace ChummerHub.Client.Sinners
 {
     public enum EnumSSearchOpterator
     {
