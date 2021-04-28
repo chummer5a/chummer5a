@@ -6851,17 +6851,6 @@
       <requireparent />
     </gear>
     <gear>
-      <id>863a5600-1e4f-4f33-9fca-b2715857dee4</id>
-      <name>Euro (€)</name>
-      <category>Currency</category>
-      <rating>0</rating>
-      <source>SR5G</source>
-      <page>442</page>
-      <avail>0</avail>
-      <cost>1</cost>
-      <capacity>[1]</capacity>
-    </gear>
-    <gear>
       <id>ee174974-ff69-4dee-9803-034d809a0344</id>
       <name>UCAS Dollar ($)</name>
       <category>Currency</category>

@@ -19,16 +19,70 @@
 -->
 <chummer>
   <books>
+    <!-- Region Specifically excluded (designated as Optional) -->
     <book>
       <name>Bullets &amp; Bandages</name>
       <hide />
     </book>
+    <!-- End Region -->
+    <!-- Region Specifically excluded (not intended for Missions play) -->
     <book>
-      <name>Data Trails (Dissonant Echoes)</name>
+      <name>Splintered State</name>
       <hide />
     </book>
     <book>
       <name>Bloody Business</name>
+      <hide />
+    </book>
+    <book>
+      <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
+      <hide />
+    </book>
+    <book>
+      <name>Dark Terrors</name>
+      <hide />
+    </book>
+<!--
+    Note: These books are excluded but have no rules/equipment that need to be supported in Chummer5a 
+
+          Serrated Edge, Denver Adventure 1
+          False Flag, Denver Adventure 1
+          Battle of Manhattan
+          Shadows In Focus: Sioux Nation: Starving the Masses
+-->
+    <!-- End Region -->
+    <!-- Region Equipment/rules specifically excluded by Missions FAQ -->
+    <book>
+      <name>Data Trails (Dissonant Echoes)</name>
+      <hide />
+    </book>
+    <!-- End Region -->
+    <!-- Region Not specifically included in Missions FAQ -->
+    <book>
+      <name>Hong Kong Sourcebook</name>
+      <hide />
+    </book>
+    <book>
+      <name>Shadowrun 2050 (5th Edition)</name>
+      <hide />
+    </book>
+    <book>
+      <name>No Future</name>
+      <!-- Note: this is for 6e -->
+      <hide />
+    </book>
+    <!-- End Region -->
+    <!-- Region German (not specifically included in Missions FAQ) -->
+    <book>
+      <name>Shadowrun 5th Edition (German-exclusive Content)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Street Grimoire (German-exclusive Content)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Run Faster (German-exclusive Content)</name>
       <hide />
     </book>
     <book>
@@ -40,24 +94,29 @@
       <hide />
     </book>
     <book>
-      <name>Battle Of Manhattan</name>
+      <name>Schattenhandbuch 3 (German Handbook)</name>
       <hide />
     </book>
     <book>
-      <name>Splintered State</name>
-      <hide />
-    </book>
-    <book>
-      <name>Hong Kong Sourcebook</name>
-      <hide />
-    </book>
-    <book>
-      <name>Shadowrun 2050 (5th Edition)</name>
+      <name>Rigger 5.0 (German-exclusive Content)</name>
       <hide />
     </book>
     <book>
       <name>State of the Art ADL (German Handbook)</name>
       <hide />
     </book>
+    <book>
+      <name>Hamburg (German-exclusive)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Datapuls SOTA 2080 (German-exclusive)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Datapuls Verschlusssache (German-exclusive)</name>
+      <hide />
+    </book>
+    <!-- End Region -->
   </books>
 </chummer>

@@ -143,7 +143,7 @@ namespace Chummer
                     {
                         int.TryParse(strKarma, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intBP);
 
-                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter) && !chkFree.Checked)
+                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter))
                         {
                             string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
                             switch (xmlQuality.SelectSingleNode("category")?.Value)
@@ -159,7 +159,7 @@ namespace Chummer
                         if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                         {
                             string strDoubleCostCareer = xmlQuality.SelectSingleNode("doublecareer")?.Value;
-                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer == bool.TrueString)
+                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
                             {
                                 intBP *= 2;
                             }
@@ -431,16 +431,13 @@ namespace Chummer
             foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + sbdFilter + "]"))
             {
                 string strLoopName = objXmlQuality.SelectSingleNode("name")?.Value;
-                if (!string.IsNullOrEmpty(strLoopName))
+                if (string.IsNullOrEmpty(strLoopName))
+                    continue;
+                if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
+                    continue;
+                if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
                 {
-                    if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
-                    {
-                        continue;
-                    }
-                    if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
-                    {
-                        lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
-                    }
+                    lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
                 }
             }
             lstQuality.Sort(CompareListItems.CompareNames);

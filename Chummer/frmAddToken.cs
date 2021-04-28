@@ -50,7 +50,7 @@ namespace Chummer
                 Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    await LoadCharacter(openFileDialog.FileName).ConfigureAwait(false);
+                    await LoadCharacter(openFileDialog.FileName);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace Chummer
                 };
                 using (new CursorWait(this))
                 {
-                    bool blnLoadSuccessful = await objCharacter.Load().ConfigureAwait(false);
+                    bool blnLoadSuccessful = await objCharacter.Load();
                     if (!blnLoadSuccessful)
                     {
                         // TODO edward setup error page

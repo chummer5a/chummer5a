@@ -28,127 +28,125 @@ namespace Chummer
     public class CursorWait : IDisposable
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static bool _blnTopMostWaitCursor;
-        private static readonly ConcurrentDictionary<Control, CursorWait> _dicWaitingControls = new ConcurrentDictionary<Control, CursorWait>();
-        private readonly bool _blnOldUseWaitCursor;
-        private readonly bool _blnControlIsForm;
+        private static readonly object _intApplicationWaitCursorsLock = new object();
+        private static int _intApplicationWaitCursors;
+        private static readonly ConcurrentDictionary<Control, ConcurrentStack<CursorWait>> _dicWaitingControls = new ConcurrentDictionary<Control, ConcurrentStack<CursorWait>>();
         private readonly Control _objControl;
-        private readonly Cursor _objOldCursor;
         private readonly Form _objControlTopParent;
-        private readonly Cursor _objOldCursorTopParent;
-        private readonly Stopwatch start = new Stopwatch();
+        private readonly Stopwatch objTimer = new Stopwatch();
         private readonly Guid instance = Guid.NewGuid();
 
         public CursorWait(Control objControl = null, bool blnAppStarting = false)
         {
-            if (objControl != null && _dicWaitingControls.ContainsKey(objControl))
+            if (objControl.IsNullOrDisposed())
             {
-                _blnDisposed = true;
+                _objControl = null;
+                lock (_intApplicationWaitCursorsLock)
+                {
+                    _intApplicationWaitCursors += 1;
+                    if (_intApplicationWaitCursors > 0)
+                        Application.UseWaitCursor = true;
+                }
                 return;
             }
-            try
+            objTimer.Start();
+            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance.ToString() + "\".");
+            _objControl = objControl;
+            Form frmControl = objControl as Form;
+            CursorToUse = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
+            if (frmControl?.IsMdiChild != false)
             {
-                start.Start();
-                Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance.ToString() + "\".");
-                if (objControl != null)
-                    _dicWaitingControls.TryAdd(objControl, this);
-                _objControl = objControl;
-                if (_objControl?.Disposing != false || _objControl.IsDisposed)
+                if (frmControl != null)
                 {
-                    if (!_blnTopMostWaitCursor)
-                    {
-                        _blnTopMostWaitCursor = true;
-                        _blnOldUseWaitCursor = Application.UseWaitCursor;
-                        Application.UseWaitCursor = true;
-                    }
+                    _objControlTopParent = frmControl.MdiParent;
+                }
+                else if (_objControl is UserControl objUserControl)
+                {
+                    _objControlTopParent = objUserControl.ParentForm;
                 }
                 else
                 {
-                    if (objControl is Form frmControl)
-                        _blnControlIsForm = true;
-                    else
-                        frmControl = null;
-                    Cursor objNewCursor = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
-                    if (objNewCursor != Cursors.AppStarting && (!_blnControlIsForm || frmControl?.IsMdiChild == true))
+                    for (Control objLoop = _objControl.Parent; objLoop != null; objLoop = objLoop.Parent)
                     {
-                        if (_objControl is UserControl objUserControl)
+                        if (objLoop is Form objLoopForm)
                         {
-                            _objControlTopParent = objUserControl.ParentForm;
+                            _objControlTopParent = objLoopForm;
+                            break;
                         }
-                        else
-                        {
-                            for (Control objLoop = _objControl.Parent; objLoop != null; objLoop = objLoop.Parent)
-                            {
-                                if (objLoop is Form objLoopForm)
-                                {
-                                    _objControlTopParent = objLoopForm;
-                                    break;
-                                }
-                            }
-                        }
-
-                        _objOldCursorTopParent = _objControlTopParent?.Cursor ?? Cursors.Default;
                     }
-
-                    _objOldCursor = _objControl.Cursor;
-                    _objControl.DoThreadSafe(() => _objControl.Cursor = objNewCursor);
-                    _objControlTopParent.DoThreadSafe(() =>
-                    {
-                        _objControlTopParent.Cursor = objNewCursor;
-                        if (_blnControlIsForm)
-                            _objControl.SuspendLayout();
-                    });
-                    
                 }
             }
-            catch(Exception e)
+            ConcurrentStack<CursorWait> stkNew = new ConcurrentStack<CursorWait>();
+            while (!_dicWaitingControls.TryAdd(objControl, stkNew))
             {
-                Log.Warn(e, "Exception while creating CursorWait-Object for \"" + objControl + "\":"
-                    + Environment.NewLine + e);
+                if (!_dicWaitingControls.TryGetValue(objControl, out ConcurrentStack<CursorWait> stkExisting))
+                    continue;
+                CursorWait objLastCursorWait = stkExisting.Peek();
+                stkExisting.Push(this);
+                if (blnAppStarting)
+                {
+                    if (objLastCursorWait == null)
+                        SetControlCursor(CursorToUse);
+                    else if (objLastCursorWait.CursorToUse == Cursors.WaitCursor)
+                        CursorToUse = Cursors.WaitCursor;
+                }
+                else if (objLastCursorWait == null || objLastCursorWait.CursorToUse == Cursors.AppStarting)
+                    SetControlCursor(CursorToUse);
+                return;
+            }
+            stkNew.Push(this);
+            SetControlCursor(CursorToUse);
+        }
+
+        private void SetControlCursor(Cursor objCursor)
+        {
+            if (objCursor != null)
+            {
+                _objControl.DoThreadSafe(() => _objControl.Cursor = objCursor);
+                _objControlTopParent?.DoThreadSafe(() => _objControlTopParent.Cursor = objCursor);
+            }
+            else
+            {
+                _objControl.DoThreadSafe(() => _objControl.ResetCursor());
+                _objControlTopParent?.DoThreadSafe(() => _objControlTopParent.ResetCursor());
             }
         }
+
+        public Cursor CursorToUse { get; }
 
         private bool _blnDisposed;
 
         public void Dispose()
         {
-            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + instance.ToString() + "\" after " + start.ElapsedMilliseconds + "ms.");
             if (_blnDisposed)
                 return;
-
-            if (_objControlTopParent?.Disposing == false && !_objControlTopParent.IsDisposed)
-            {
-                _objControlTopParent.DoThreadSafe(() =>
-                {
-                    _objControlTopParent.Cursor = _objOldCursorTopParent;
-                    
-                });
-            }
-
-            if (_objControl?.Disposing == false && !_objControl.IsDisposed)
-            {
-                _objControl.DoThreadSafe(() =>
-                {
-                    if (_blnTopMostWaitCursor)
-                    {
-                        _blnTopMostWaitCursor = false;
-                        Application.UseWaitCursor = _blnOldUseWaitCursor;
-                    }
-                });
-            }
-            else
-            {
-                _objControl.DoThreadSafe(() =>
-                {
-                    _objControl.Cursor = _objOldCursor;
-                    if (_blnControlIsForm)
-                        _objControl.ResumeLayout();
-                });
-            }
-
-            if (_objControl != null)
-                _dicWaitingControls.TryRemove(_objControl, out CursorWait _);
             _blnDisposed = true;
+            if (_objControl == null)
+            {
+                lock (_intApplicationWaitCursorsLock)
+                {
+                    _intApplicationWaitCursors -= 1;
+                    if (_intApplicationWaitCursors <= 0)
+                        Application.UseWaitCursor = false;
+                }
+                return;
+            }
+            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + instance.ToString() + "\" after " + objTimer.ElapsedMilliseconds + "ms.");
+            objTimer.Stop();
+            if (!_dicWaitingControls.TryGetValue(_objControl, out ConcurrentStack<CursorWait> stkCursorWaits) || stkCursorWaits == null || stkCursorWaits.Count <= 0)
+            {
+                Utils.BreakIfDebug();
+                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance.ToString() + "\" somehow does not have a CursorWait stack defined for it");
+                throw new ArgumentNullException(nameof(stkCursorWaits));
+            }
+            CursorWait objPoppedCursorWait = stkCursorWaits.Pop();
+            if (objPoppedCursorWait != this)
+            {
+                Utils.BreakIfDebug();
+                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance.ToString() + "\" somehow does not have a CursorWait stack defined for it");
+                throw new ArgumentNullException(nameof(objPoppedCursorWait));
+            }
+            SetControlCursor(stkCursorWaits.Peek()?.CursorToUse);
         }
     }
 }

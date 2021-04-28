@@ -59,7 +59,7 @@ namespace Chummer
 
         private void ContactControl_Load(object sender, EventArgs e)
         {
-            if (Disposing)
+            if (this.IsNullOrDisposed())
                 return;
             LoadContactList();
 
@@ -220,7 +220,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(false);
+                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }

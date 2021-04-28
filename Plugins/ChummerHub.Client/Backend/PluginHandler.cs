@@ -362,7 +362,7 @@ namespace Chummer.Plugins
             var ce = uc.SetCharacterFrom(input);
             if (ce.Status == TaskStatus.Faulted)
             {
-                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception).RunSynchronously();
+                ChummerHub.Client.Backend.Utils.HandleError(ce.Exception);
                 yield break;
             }
             TabPage page = new TabPage("SINners")
@@ -867,7 +867,7 @@ namespace Chummer.Plugins
                         }
                         catch (Exception exception)
                         {
-                            await ChummerHub.Client.Backend.Utils.HandleError(exception).ConfigureAwait(true);
+                            ChummerHub.Client.Backend.Utils.HandleError(exception);
                         }
                         finally
                         {
@@ -896,7 +896,7 @@ namespace Chummer.Plugins
                 }
                 catch (Exception exception)
                 {
-                    await ChummerHub.Client.Backend.Utils.HandleError(exception).ConfigureAwait(true);
+                    ChummerHub.Client.Backend.Utils.HandleError(exception);
                 }
                 finally
                 {
@@ -935,7 +935,7 @@ namespace Chummer.Plugins
                         }
                         catch (Exception exception)
                         {
-                            await ChummerHub.Client.Backend.Utils.HandleError(exception).ConfigureAwait(true);
+                            ChummerHub.Client.Backend.Utils.HandleError(exception);
                         }
                     }
 
@@ -963,7 +963,7 @@ namespace Chummer.Plugins
                 }
                 catch (Exception exception)
                 {
-                    await ChummerHub.Client.Backend.Utils.HandleError(exception).ConfigureAwait(true);
+                    ChummerHub.Client.Backend.Utils.HandleError(exception);
                 }
             }
         }

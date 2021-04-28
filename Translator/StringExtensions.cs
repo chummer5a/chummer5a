@@ -31,21 +31,15 @@ namespace Translator
         {
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
-            {
                 return '\"' + strSearch + '\"';
-            }
-
-            StringBuilder objReturn = new StringBuilder("concat(\"");
+            StringBuilder sbdReturn = new StringBuilder("concat(\"");
             for (; intQuotePos != -1; intQuotePos = strSearch.IndexOf('"'))
             {
-                string strSubstring = strSearch.Substring(0, intQuotePos);
-                objReturn.Append(strSubstring);
-                objReturn.Append("\", '\"', \"");
+                sbdReturn.Append(strSearch.Substring(0, intQuotePos) + "\", '\"', \"");
                 strSearch = strSearch.Substring(intQuotePos + 1);
             }
-            objReturn.Append(strSearch);
-            objReturn.Append("\")");
-            return objReturn.ToString();
+            sbdReturn.Append(strSearch + "\")");
+            return sbdReturn.ToString();
         }
     }
 }

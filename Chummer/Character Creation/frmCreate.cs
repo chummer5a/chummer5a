@@ -10600,7 +10600,7 @@ namespace Chummer
                 if (CharacterObject.MetatypeCategory == "Shapeshifter")
                 {
                     List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = CharacterObject.LoadData("metatypes.xml");
+                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml");
                     string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
                                                  + CharacterObject.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
                                                  + "]/metavariants/metavariant[id = "
@@ -10634,7 +10634,7 @@ namespace Chummer
                 if (!CharacterObject.Save())
                     return;
                 IsDirty = false;
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(CharacterObject.FileName).ConfigureAwait(false);
+                Character objOpenCharacter = await Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
             }
@@ -11288,6 +11288,8 @@ namespace Chummer
                     sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                 }
 
+
+
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
                 lblLifestyleQualities.Text = sbdQualities.ToString();
                 lblLifestyleQualitiesLabel.Visible = true;
@@ -11298,6 +11300,43 @@ namespace Chummer
                 lblBaseLifestyle.Text = LanguageManager.GetString("String_Error");
                 lblLifestyleQualitiesLabel.Visible = false;
                 lblLifestyleQualities.Visible = false;
+            }
+
+            //Controls Visibility and content of the City, District and Borough Labels
+            if (!string.IsNullOrEmpty(objLifestyle.City))
+            {
+                lblLifestyleCity.Text = objLifestyle.City;
+                lblLifestyleCity.Visible = true;
+                lblLifestyleCityLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleCity.Visible = false;
+                lblLifestyleCityLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.District))
+            {
+                lblLifestyleDistrict.Text = objLifestyle.District;
+                lblLifestyleDistrict.Visible = true;
+                lblLifestyleDistrictLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleDistrict.Visible = false;
+                lblLifestyleDistrictLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.Borough))
+            {
+                lblLifestyleBorough.Text = objLifestyle.Borough;
+                lblLifestyleBorough.Visible = true;
+                lblLifestyleBoroughLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleBorough.Visible = false;
+                lblLifestyleBoroughLabel.Visible = false;
             }
 
             IsRefreshing = false;
@@ -14431,7 +14470,7 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (Disposing || IsDisposed || picMugshot.Disposing || picMugshot.IsDisposed)
+            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
                 return;
             try
             {

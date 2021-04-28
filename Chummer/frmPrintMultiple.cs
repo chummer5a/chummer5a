@@ -132,7 +132,7 @@ namespace Chummer
                             objState.Stop();
                         return;
                     }
-                    bool blnLoadSuccessful = await objCharacter.Load().ConfigureAwait(false);
+                    bool blnLoadSuccessful = await objCharacter.Load();
                     if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
                     {
                         if (!objState.IsStopped)

@@ -721,7 +721,7 @@ namespace ChummerHub.Client.UI
                         }
                         catch (Exception exception)
                         {
-                            await Backend.Utils.HandleError(exception).ConfigureAwait(true);
+                            Backend.Utils.HandleError(exception);
                         }
                     }
 

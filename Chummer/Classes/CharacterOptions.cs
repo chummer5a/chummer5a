@@ -95,10 +95,6 @@ namespace Chummer
         private bool _blnMultiplyForbiddenCost;
         private bool _blnMultiplyRestrictedCost;
         private bool _blnNoSingleArmorEncumbrance;
-        private bool _blnPrintExpenses;
-        private bool _blnPrintFreeExpenses = true;
-        private bool _blnPrintNotes;
-        private bool _blnPrintSkillsWithZeroRating = true;
         private bool _blnRestrictRecoil = true;
         private bool _blnSpecialKarmaCostBasedOnShownValue;
         private bool _blnSpiritForceBasedOnTotalMAG;
@@ -448,16 +444,10 @@ namespace Chummer
 
                     // <licenserestricted />
                     objWriter.WriteElementString("licenserestricted", _blnLicenseRestrictedItems.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <printzeroratingskills />
-                    objWriter.WriteElementString("printzeroratingskills", _blnPrintSkillsWithZeroRating.ToString(GlobalOptions.InvariantCultureInfo));
                     // <morelethalgameplay />
                     objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString(GlobalOptions.InvariantCultureInfo));
                     // <spiritforcebasedontotalmag />
                     objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <printexpenses />
-                    objWriter.WriteElementString("printexpenses", _blnPrintExpenses.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <printfreeexpenses />
-                    objWriter.WriteElementString("printfreeexpenses", _blnPrintFreeExpenses.ToString(GlobalOptions.InvariantCultureInfo));
                     // <nuyenperbp />
                     objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
                     // <UnarmedImprovementsApplyToWeapons />
@@ -562,8 +552,6 @@ namespace Chummer
                     objWriter.WriteElementString("alternatemetatypeattributekarma", _blnAlternateMetatypeAttributeKarma.ToString(GlobalOptions.InvariantCultureInfo));
                     // <reversekarmapriorityorder />
                     objWriter.WriteElementString("reverseattributepriorityorder", ReverseAttributePriorityOrder.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <printnotes />
-                    objWriter.WriteElementString("printnotes", _blnPrintNotes.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowobsolescentupgrade />
                     objWriter.WriteElementString("allowobsolescentupgrade", _blnAllowObsolescentUpgrade.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowbiowaresuites />
@@ -815,16 +803,10 @@ namespace Chummer
             objXmlNode.TryGetStringFieldQuickly("name", ref _strName);
             // License Restricted items.
             objXmlNode.TryGetBoolFieldQuickly("licenserestricted", ref _blnLicenseRestrictedItems);
-            // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-            objXmlNode.TryGetBoolFieldQuickly("printzeroratingskills", ref _blnPrintSkillsWithZeroRating);
             // More Lethal Gameplay.
             objXmlNode.TryGetBoolFieldQuickly("morelethalgameplay", ref _blnMoreLethalGameplay);
             // Spirit Force Based on Total MAG.
             objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
-            // Print Expenses.
-            objXmlNode.TryGetBoolFieldQuickly("printexpenses", ref _blnPrintExpenses);
-            // Print Free Expenses.
-            objXmlNode.TryGetBoolFieldQuickly("printfreeexpenses", ref _blnPrintFreeExpenses);
             // Nuyen per Build Point
             objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
             // Knucks use Unarmed
@@ -975,8 +957,6 @@ namespace Chummer
             objXmlNode.TryGetBoolFieldQuickly("dontusecyberlimbcalculation", ref _blnDontUseCyberlimbCalculation);
             // House rule: Treat the Metatype Attribute Minimum as 1 for the purpose of calculating Karma costs.
             objXmlNode.TryGetBoolFieldQuickly("alternatemetatypeattributekarma", ref _blnAlternateMetatypeAttributeKarma);
-            // Whether or not Notes should be printed.
-            objXmlNode.TryGetBoolFieldQuickly("printnotes", ref _blnPrintNotes);
             // Whether or not Obsolescent can be removed/upgrade in the same manner as Obsolete.
             objXmlNode.TryGetBoolFieldQuickly("allowobsolescentupgrade", ref _blnAllowObsolescentUpgrade);
             // Whether or not Bioware Suites can be created and added.
@@ -1501,8 +1481,6 @@ namespace Chummer
         {
             if (GlobalOptions.ChummerRegistryKey == null)
                 return;
-            // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
-            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintSkillsWithZeroRating, "printzeroratingskills", string.Empty, true);
 
             // More Lethal Gameplay.
             GlobalOptions.LoadBoolFromRegistry(ref _blnMoreLethalGameplay, "morelethalgameplay", string.Empty, true);
@@ -1513,12 +1491,6 @@ namespace Chummer
             // Skill Defaulting Includes modifiers.
             bool blnTemp = false;
             GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
-
-            // Print Expenses.
-            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintExpenses, "printexpenses", string.Empty, true);
-
-            // Print Free Expenses.
-            GlobalOptions.LoadBoolFromRegistry(ref _blnPrintFreeExpenses, "printfreeexpenses", string.Empty, true);
 
             // Nuyen per Build Point
             GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp", string.Empty, true);
@@ -1695,22 +1667,6 @@ namespace Chummer
         public bool BuiltInOption => _guiSourceId != Guid.Empty;
 
         /// <summary>
-        /// Whether or not all Active Skills with a total score higher than 0 should be printed.
-        /// </summary>
-        public bool PrintSkillsWithZeroRating
-        {
-            get => _blnPrintSkillsWithZeroRating;
-            set
-            {
-                if (_blnPrintSkillsWithZeroRating != value)
-                {
-                    _blnPrintSkillsWithZeroRating = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
         /// Whether or not the More Lethal Gameplay optional rule is enabled.
         /// </summary>
         public bool MoreLethalGameplay
@@ -1753,40 +1709,6 @@ namespace Chummer
                 if (_blnSpiritForceBasedOnTotalMAG != value)
                 {
                     _blnSpiritForceBasedOnTotalMAG = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
-        /// </summary>
-        public bool PrintExpenses
-        {
-            get => _blnPrintExpenses;
-            set
-            {
-                if (_blnPrintExpenses != value)
-                {
-                    _blnPrintExpenses = value;
-                    OnPropertyChanged();
-                    if (!value)
-                        PrintFreeExpenses = true;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
-        /// </summary>
-        public bool PrintFreeExpenses
-        {
-            get => _blnPrintFreeExpenses;
-            set
-            {
-                if (_blnPrintFreeExpenses != value)
-                {
-                    _blnPrintFreeExpenses = value;
                     OnPropertyChanged();
                 }
             }
@@ -2788,22 +2710,6 @@ namespace Chummer
                 if (_blnCompensateSkillGroupKarmaDifference != value)
                 {
                     _blnCompensateSkillGroupKarmaDifference = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whether or not Notes should be printed.
-        /// </summary>
-        public bool PrintNotes
-        {
-            get => _blnPrintNotes;
-            set
-            {
-                if (_blnPrintNotes != value)
-                {
-                    _blnPrintNotes = value;
                     OnPropertyChanged();
                 }
             }

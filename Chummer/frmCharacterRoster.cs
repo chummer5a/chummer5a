@@ -149,8 +149,8 @@ namespace Chummer
                     if (!(objCharacterNode.Tag is CharacterCache objCache))
                         continue;
                     objCharacterNode.Text = objCache.CalculatedName();
-                    string strTooltip = "";
-                    if(!String.IsNullOrEmpty(objCache.FilePath))
+                    string strTooltip = string.Empty;
+                    if (!string.IsNullOrEmpty(objCache.FilePath))
                         strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
                     if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
@@ -321,16 +321,12 @@ namespace Chummer
                 {
                     foreach(IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                     {
-                        List<TreeNode> lstNodes = await Task.Run(() =>
+                        List<TreeNode> lstNodes = await Task.Run(async () =>
                         {
                             Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin);
-                            var task = plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
-                            if (task.Result != null)
-                            {
-                                return task.Result.OrderBy(a => a.Text).ToList();
-                            }
-                            return new List<TreeNode>();
-                        }).ConfigureAwait(false);
+                            ICollection<TreeNode> lstTreeNodes = await plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
+                            return lstTreeNodes?.OrderBy(a => a.Text).ToList() ?? new List<TreeNode>();
+                        });
                         await Task.Run(() =>
                         {
                             foreach(TreeNode node in lstNodes)
@@ -348,7 +344,7 @@ namespace Chummer
                                         if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
                                             || node.Tag != null)
                                         {
-                                            if (treCharacterList.Disposing || treCharacterList.IsDisposed)
+                                            if (treCharacterList.IsNullOrDisposed())
                                                 return;
                                             if (treCharacterList.Nodes.ContainsKey(node.Name))
                                                 treCharacterList.Nodes.RemoveByKey(node.Name);
@@ -376,7 +372,7 @@ namespace Chummer
                                 });
                             }
                             Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
-                        }).ConfigureAwait(false);
+                        });
                     }
                 });
             Log.Info("Populating CharacterRosterTreeNode (MainThread).");
@@ -480,7 +476,7 @@ namespace Chummer
         /// <param name="objCache"></param>
         public void UpdateCharacter(CharacterCache objCache)
         {
-            if (Disposing || IsDisposed) // Safety check for external calls
+            if (this.IsNullOrDisposed()) // Safety check for external calls
                 return;
             tlpCharacterRoster.SuspendLayout();
             if(objCache != null)
@@ -597,13 +593,19 @@ namespace Chummer
         private void treCharacterList_DoubleClick(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treCharacterList.SelectedNode;
-            if(objSelectedNode != null && objSelectedNode.Level > 0)
+            if (objSelectedNode == null || objSelectedNode.Level <= 0)
+                return;
+            switch (objSelectedNode.Tag)
             {
-                if (objSelectedNode.Tag == null) return;
-                if (objSelectedNode.Tag is CharacterCache objCache)
+                case null:
+                    return;
+                case CharacterCache objCache:
                 {
                     using (new CursorWait(this))
+                    {
                         objCache.OnMyDoubleClick(sender, e);
+                    }
+                    break;
                 }
             }
         }
@@ -700,7 +702,7 @@ namespace Chummer
 
         private void ProcessMugshotSizeMode()
         {
-            if (Disposing || IsDisposed || picMugshot.Disposing || picMugshot.IsDisposed)
+            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
                 return;
             try
             {

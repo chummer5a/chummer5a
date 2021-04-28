@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using Chummer.Annotations;
 using NLog;
 
 namespace Chummer
@@ -38,15 +39,18 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoThreadSafe(this Control objControl, Action funcToRun)
         {
-            if (objControl == null || funcToRun == null)
-                return;
-            if (objControl.Disposing || objControl.IsDisposed)
+            if (objControl.IsNullOrDisposed() || funcToRun == null)
                 return;
             try
             {
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                 if (myControlCopy.InvokeRequired)
-                    myControlCopy.Invoke(funcToRun);
+                {
+                    IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                    // Next to commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                    objResult.AsyncWaitHandle.WaitOne();
+                    objResult.AsyncWaitHandle.Close();
+                }
                 else
                     funcToRun.Invoke();
             }
@@ -146,6 +150,17 @@ namespace Chummer
                 IntPtr _ = objControl.Handle; // accessing Handle forces its creation
             }
             objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for what is effectively a null check for disposable WinForms controls.
+        /// </summary>
+        /// <param name="objControl"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNullOrDisposed([CanBeNull]this Control objControl)
+        {
+            return objControl == null || objControl.Disposing || objControl.IsDisposed;
         }
         #endregion
 

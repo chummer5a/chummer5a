@@ -949,9 +949,7 @@ namespace Chummer
         {
             if (cboLanguage == null)
                 throw new ArgumentNullException(nameof(cboLanguage));
-            string strDefaultSheetLanguage = GlobalOptions.Language;
-            if (defaultCulture != null)
-                strDefaultSheetLanguage = defaultCulture.Name.ToLowerInvariant();
+            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.Language;
             int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
             if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
             {
@@ -966,12 +964,7 @@ namespace Chummer
             cboLanguage.DataSource = GetSheetLanguageList(lstCharacters);
             cboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (cboLanguage.SelectedIndex == -1)
-            {
-                if (defaultCulture != null)
-                    cboLanguage.SelectedValue = defaultCulture.Name.ToLowerInvariant();
-                else
-                    cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
-            }
+                cboLanguage.SelectedValue = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.DefaultLanguage;
             cboLanguage.EndUpdate();
         }
 

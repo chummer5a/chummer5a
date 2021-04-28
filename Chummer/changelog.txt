@@ -18,15 +18,20 @@ Application Changes:
 - Special attributes are no longer exported unless the character in question has them enabled. Fixes #4366.
 - When using Chummer in a non-English language, the way custom text is recorded and translated is now slightly smarter about which translation to use when one English word has multiple different translations. Fixes #4378.
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
+- The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
+- Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
+- Added the ability to specify a city, district, and borough for a lifestyle.
 
 Data Changes:
-- Consolidated all German Data Changes custom data into a single German Data Changes entry.
+- Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
 - Individualized Alchemy, Disenchanting, Power, and Spellcasting focuses now properly apply their bonuses. Existing characters with these focuses will need to re-add them or reapply improvements to see any changes. Fixes #4340.
 - Whisper of Bones now properly requires Necromancy.
 - Injection Darts no longer display a weapon category selection screen and then crash Chummer. Fixes #4352.
 - Smartlink from the Shadowrun 2050 ruleset now properly gives a +2 dicepool bonus when using smartguns.
 - When creating spirit critters with forces not divisible by 3, the number of optional powers they get is now properly based on rounding the result of the division down instead of up. Fixes #4356.
 - All spirits now properly have a starting and maximum Essence equal to their Force instead of to 6. Fixes #4358.
+- Extraplanar Travelers is now a full category of selectable critters. Fixes #4394.
+- Changed Imbue Item spell from SG to properly require being an adept, mystic adept or having the Advanced Ritual Casting art.
 
 Changed/New Strings:
 - String_ContactPoints
@@ -105,6 +110,9 @@ Changed/New Strings:
 - Message_MergeIdentical
 - MessageTitle_MergeIdentical
 - Message_Load_Error_Warning
+- Label_SelectLifestyle_Borough
+- Label_SelectLifestyle_District
+- Label_SelectLifestyle_City
 
 Build 214
 Application Fixes:

@@ -373,7 +373,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            if (Amount != 0 || _objCharacter.Options.PrintFreeExpenses)
+            if (Amount != 0 || GlobalOptions.PrintFreeExpenses)
             {
                 objWriter.WriteStartElement("expense");
                 objWriter.WriteElementString("guid", InternalId);

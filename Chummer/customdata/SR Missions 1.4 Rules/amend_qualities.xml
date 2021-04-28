@@ -18,24 +18,8 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <!--Region Shadowrun Core Positive Qualities -->
   <qualities>
-    <quality>
-      <name>Deus Vult!</name>
-      <hide />
-    </quality>
-    <quality>
-      <name>My Country, Right or Wrong</name>
-      <hide />
-    </quality>
-    <quality>
-      <name>Brand Loyalty (Manufacturer)</name>
-      <hide />
-    </quality>
-    <quality>
-      <name>Brand Loyalty (Product)</name>
-      <hide />
-    </quality>
+    <!-- Region Shadowrun Core Positive Qualities -->
     <quality>
       <name>Bad Rep</name>
       <hide />
@@ -65,17 +49,41 @@
       <hide />
     </quality>
     <quality>
-      <name>Earther</name>
-      <hide />
-    </quality>
-    <quality>
       <name>Unsteady Hands</name>
       <hide />
     </quality>
-    <!--Region Sail Away, Sweet Sister Positive Qualities -->
+    <!-- End Region-->
+    <!-- Region Assassin's Positive Qualities -->
+    <quality>
+      <name>Deus Vult!</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>My Country, Right or Wrong</name>
+      <hide />
+    </quality>
+    <!-- End Region-->
+    <!-- Region Run & Gun Positive Qualities -->
+     <quality>
+      <name>Brand Loyalty (Manufacturer)</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Brand Loyalty (Product)</name>
+      <hide />
+    </quality>
+    <!-- End Region-->
+    <!-- Region Run & Gun Negative Qualities -->
+    <quality>
+      <name>Earther</name>
+      <hide />
+    </quality>
+    <!-- End Region-->
+    <!-- Region Sail Away, Sweet Sister Positive Qualities -->
+    <!-- (excluded because of newer versions in Run Faster) -->
     <quality>
       <id>4e2ddf3d-802f-4206-85ce-81f1defa528f</id>
-      <!--College Education -->
+      <!-- College Education -->
       <hide />
     </quality>
     <quality>
@@ -83,8 +91,7 @@
       <hide />
     </quality>
     <!-- End Region-->
-    <!--Region Run Faster -->
-    <!--Region Run Faster Positive Qualities -->
+    <!-- Region Run Faster Positive Qualities -->
     <quality>
       <name>Changeling (Class I SURGE)</name>
       <hide />
@@ -134,7 +141,7 @@
       <hide />
     </quality>
     <!-- End Region-->
-    <!--Region Run Faster Negative Qualities -->
+    <!-- Region Run Faster Negative Qualities -->
     <quality>
       <name>Amnesia (Surface Loss)</name>
       <hide />
@@ -350,9 +357,7 @@
       <hide />
     </quality>
     <!-- End Region -->
-    <!-- End Region -->
-    <!-- Region Data Trails-->
-    <!--Region Data Trails Positive Qualities -->
+    <!-- Region Data Trails Positive Qualities -->
     <quality>
       <name>Online Fame</name>
       <hide />
@@ -366,7 +371,7 @@
       </required>
     </quality>
     <!-- End Region -->
-    <!--Region Data Trails Negative Qualities -->
+    <!-- Region Data Trails Negative Qualities -->
     <quality>
       <name>Curiosity Killed the Cat</name>
       <hide />
@@ -388,10 +393,8 @@
       <hide />
     </quality>
     <!-- End Region -->
-    <!-- End Region -->
-    <!-- Region Chrome Flesh -->
-    <!--Region Chrome Flesh Positive Qualities -->
-	<quality>
+    <!-- Region Chrome Flesh Positive Qualities -->
+    <quality>
       <name>Better to be Feared Than Loved</name>
       <hide />
     </quality>
@@ -400,7 +403,7 @@
       <karma>20</karma>
     </quality>
     <!-- End Region -->
-    <!--Region Chrome Flesh Negative Qualities -->
+    <!-- Region Chrome Flesh Negative Qualities -->
     <quality>
       <name>Blank Slate</name>
       <hide />
@@ -418,22 +421,17 @@
       <hide />
     </quality>
     <!-- End Region -->
-    <!-- End Region -->
-    <!-- Region Hard Targets -->
     <!-- Region Hard Targets Negative Qualities-->
     <quality>
       <name>Code of Honor: Avenging Angel</name>
       <hide />
     </quality>
     <!-- End Region -->
-    <!-- End Region -->
-    <!-- Region Rigger 5.0-->
-    <!-- Region Negative Qualities -->
+    <!-- Region Rigger 5.0 Negative Qualities -->
     <quality>
       <name>Too Much Data</name>
       <hide />
     </quality>
-    <!-- End Region -->
     <!-- End Region -->
     <!-- Region Howling Shadows -->
     <quality>
@@ -457,16 +455,13 @@
       <hide />
     </quality>
     <!-- End Region -->
-    <!-- Region Cutting Aces -->
-    <!-- Region Negative Qualities -->
+    <!-- Region Cutting Aces Negative Qualities -->
     <quality>
       <name>Alpha Junkie</name>
       <hide />
     </quality>
     <!-- End Region -->
-    <!-- End Region -->
-    <!-- Region Forbidden Arcana -->
-    <!-- Region Mastery Qualities -->
+    <!-- Region Forbidden Arcana Mastery Qualities -->
     <quality>
       <name>Barehanded Adept</name>
       <hide />
@@ -599,7 +594,6 @@
       <name>Crystalline Vision</name>
       <hide />
     </quality>
-    <!-- End Region -->
     <!-- End Region -->
   </qualities>
 </chummer>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,22 +17,20 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!--
-  Hide the German skilljack because it's stupid
-  Set skilljack to flat 0.1 ess and R*1000 cost
-  Set skillwires to R*0.1 ess
--->
 <chummer>
-  <cyberwares>
-    <cyberware> <!-- Skilljack -->
-      <id>d31497dd-2be9-4b8a-808f-3ced36287c0c</id>
-      <ess>0.1</ess>
-      <avail>Rating * 2</avail>
-      <cost>Rating * 1000</cost>
-    </cyberware>
-    <cyberware> <!-- Skillwires -->
-      <id>60485c4e-042f-44f6-ad89-324003223f73</id>
-      <ess>Rating * 0.1</ess>
-    </cyberware>
-  </cyberwares>
+  <spells>
+    <spell>
+      <id>4b214e1a-4800-4787-b5fe-55672b359dec</id>
+      <name>Convince</name>
+      <page>132</page>
+      <source>SG</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor />
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS</range>
+      <type>P</type>
+    </spell>
+  </spells>
 </chummer>

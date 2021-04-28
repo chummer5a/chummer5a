@@ -418,7 +418,7 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (Disposing || IsDisposed || picMugshot.Disposing || picMugshot.IsDisposed)
+            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
                 return;
             try
             {
@@ -460,7 +460,7 @@ namespace Chummer
                 Character objCharacter = new Character();
                 Program.MainForm.OpenCharacters.Add(objCharacter);
                 //Timekeeper.Start("load_file");
-                bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId).ConfigureAwait(false);
+                bool blnLoaded = await objCharacter.LoadFromHeroLabFile(strFile, strCharacterId);
                 //Timekeeper.Finish("load_file");
                 if (!blnLoaded)
                 {

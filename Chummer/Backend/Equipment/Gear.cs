@@ -1284,7 +1284,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("flechetteweaponbonusdamage_english", FlechetteWeaponBonusDamage(GlobalOptions.DefaultLanguage));
                 objWriter.WriteElementString("flechetteweaponbonusap", FlechetteWeaponBonusAP);
             }
-            if (_objCharacter.Options.PrintNotes)
+            if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
 
             objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));

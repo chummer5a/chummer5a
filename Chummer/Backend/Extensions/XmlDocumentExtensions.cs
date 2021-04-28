@@ -16,10 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -27,122 +26,38 @@ namespace Chummer
 {
     public static class XmlDocumentExtensions
     {
-        private static XmlReaderSettings AsyncReaderSettings { get; } = new XmlReaderSettings
-        {
-            DtdProcessing = DtdProcessing.Ignore,
-            XmlResolver = null,
-            CloseInput = false,
-            Async = true
-        };
-
-        private static XmlReaderSettings UnsafeAsyncReaderSettings { get; } = new XmlReaderSettings
-        {
-            DtdProcessing = DtdProcessing.Ignore,
-            XmlResolver = null,
-            CloseInput = false,
-            Async = true,
-            CheckCharacters = false
-        };
-
         /// <summary>
-        /// Load an XmlDocument asynchronously from a file.
+        /// Syntactic sugar for loading an XmlDocument from a file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
-        /// <param name="strFileName">The file to use</param>
+        /// <param name="strFileName">The file to use.</param>
         /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
-        /// <returns></returns>
-        public static async Task LoadAsync(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LoadStandard(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
         {
-            if (xmlDocument == null)
-                throw new ArgumentNullException(nameof(xmlDocument));
-            if (string.IsNullOrEmpty(strFileName))
-                throw new ArgumentNullException(nameof(strFileName));
             using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                using (XmlReader objReader = XmlReader.Create(objStreamReader, blnSafe ? AsyncReaderSettings : UnsafeAsyncReaderSettings))
-                    await xmlDocument.LoadAsync(objReader).ConfigureAwait(false);
+            using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                blnSafe ? GlobalOptions.SafeXmlReaderSettings : GlobalOptions.UnSafeXmlReaderSettings))
+                xmlDocument.Load(objReader);
         }
 
         /// <summary>
-        /// Load an XmlDocument asynchronously from a stream.
+        /// Get an XPathNavigator for an XPathDocument copy of an XmlDocument.
+        /// Method is slow, but the nagivator it creates is faster than that of an XmlDocument. Use accordingly.
         /// </summary>
-        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
-        /// <param name="objStream">The stream from which to load.</param>
-        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
-        /// <returns></returns>
-        public static async Task LoadAsync(this XmlDocument xmlDocument, Stream objStream, bool blnSafe = true)
+        /// <param name="xmlDocument">The document from which a navigator should be spawned.</param>
+        /// <returns>An XPathNavigator of an XPathDocument copy of <paramref name="xmlDocument"/>.</returns>
+        public static XPathNavigator GetFastNavigator(this XmlDocument xmlDocument)
         {
             if (xmlDocument == null)
-                throw new ArgumentNullException(nameof(xmlDocument));
-            if (objStream == null)
-                throw new ArgumentNullException(nameof(objStream));
-            using (XmlReader objReader = XmlReader.Create(objStream, blnSafe ? AsyncReaderSettings : UnsafeAsyncReaderSettings))
-                await xmlDocument.LoadAsync(objReader).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Load an XmlDocument asynchronously from an XmlReader.
-        /// Adapted from https://stackoverflow.com/a/65827589, which was made for XDocument instead of XmlDocument.
-        /// </summary>
-        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
-        /// <param name="objReader">The XmlReader from which to load.</param>
-        /// <returns></returns>
-        public static async Task LoadAsync(this XmlDocument xmlDocument, XmlReader objReader)
-        {
-            if (xmlDocument == null)
-                throw new ArgumentNullException(nameof(xmlDocument));
-            if (objReader == null)
-                throw new ArgumentNullException(nameof(objReader));
-            XPathNavigator xmlDocumentNavigator = xmlDocument.CreateNavigator();
-            if (xmlDocumentNavigator == null)
-                return;
-            using (XmlWriter objWriter = xmlDocumentNavigator.AppendChild())
+                return null;
+            using (MemoryStream memStream = new MemoryStream())
             {
-                do
-                {
-                    switch (objReader.NodeType)
-                    {
-                        case XmlNodeType.Element:
-                            await objWriter.WriteStartElementAsync(objReader.Prefix, objReader.LocalName, objReader.NamespaceURI).ConfigureAwait(false);
-                            await objWriter.WriteAttributesAsync(objReader, true).ConfigureAwait(false);
-                            if (objReader.IsEmptyElement)
-                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                            break;
-                        case XmlNodeType.Text:
-                            {
-                                string strValue = await objReader.GetValueAsync().ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strValue))
-                                    await objWriter.WriteStringAsync(strValue).ConfigureAwait(false);
-                                break;
-                            }
-                        case XmlNodeType.CDATA:
-                            await objWriter.WriteCDataAsync(objReader.Value).ConfigureAwait(false);
-                            break;
-                        case XmlNodeType.EntityReference:
-                            await objWriter.WriteEntityRefAsync(objReader.Name).ConfigureAwait(false);
-                            break;
-                        case XmlNodeType.ProcessingInstruction:
-                        case XmlNodeType.XmlDeclaration:
-                            await objWriter.WriteProcessingInstructionAsync(objReader.Name, objReader.Value).ConfigureAwait(false);
-                            break;
-                        case XmlNodeType.Comment:
-                            await objWriter.WriteCommentAsync(objReader.Value).ConfigureAwait(false);
-                            break;
-                        case XmlNodeType.DocumentType:
-                            await objWriter.WriteDocTypeAsync(objReader.Name, objReader.GetAttribute("PUBLIC"), objReader.GetAttribute("SYSTEM"), objReader.Value).ConfigureAwait(false);
-                            break;
-                        case XmlNodeType.Whitespace:
-                        case XmlNodeType.SignificantWhitespace:
-                            {
-                                string strValue = await objReader.GetValueAsync().ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strValue))
-                                    await objWriter.WriteWhitespaceAsync(strValue).ConfigureAwait(false);
-                                break;
-                            }
-                        case XmlNodeType.EndElement:
-                            await objWriter.WriteFullEndElementAsync().ConfigureAwait(false);
-                            break;
-                    }
-                } while (await objReader.ReadAsync().ConfigureAwait(false));
+                xmlDocument.Save(memStream);
+                memStream.Position = 0;
+                //TODO: Should probably be using GlobalOptions.SafeXmlReaderSettings here but it has some issues.
+                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.UnSafeXmlReaderSettings))
+                    return new XPathDocument(objXmlReader).CreateNavigator();
             }
         }
     }

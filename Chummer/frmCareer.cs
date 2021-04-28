@@ -2233,7 +2233,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 Character[] lstClones = new Character[intClones];
-                Parallel.For(0, intClones, i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true).Result);
+                Parallel.For(0, intClones, async i => lstClones[i] = await Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true));
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }
@@ -2863,7 +2863,8 @@ namespace Chummer
 
                             if (!blnHasImmunity)
                             {
-                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml").ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml")
+                                    .ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
@@ -2970,7 +2971,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(false);
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
@@ -2983,8 +2984,9 @@ namespace Chummer
                 return;
 
             // Prompt the user to select an inanimate Vessel.
+            XPathNavigator xmlVesselsNagivator = await CharacterObject.LoadDataXPathAsync("vessels.xml");
             List<ListItem> lstMetatype = new List<ListItem>(10);
-            foreach (XPathNavigator xmlMetatype in CharacterObject.LoadDataXPath("vessels.xml").Select("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatype in xmlVesselsNagivator.Select("/chummer/metatypes/metatype"))
             {
                 string strName = xmlMetatype.SelectSingleNode("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
@@ -3007,7 +3009,8 @@ namespace Chummer
             }
 
             // Get the Node for the selected Vessel.
-            XmlNode objSelected = CharacterObject.LoadData("vessels.xml").SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + "]");
+            XmlDocument xmlVessels = await CharacterObject.LoadDataAsync("vessels.xml");
+            XmlNode objSelected = xmlVessels.SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + "]");
             if (objSelected == null)
                 return;
 
@@ -3021,7 +3024,7 @@ namespace Chummer
                     {
                         frmLoadingForm.Reset(36);
                         frmLoadingForm.Show();
-                        await objMerge.Load().ConfigureAwait(false);
+                        await objMerge.Load();
                         frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
@@ -3043,7 +3046,7 @@ namespace Chummer
                             CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
                         ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.CHA.MetatypeMinimum,
                             CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
-                        XmlDocument xmlPowerDoc = CharacterObject.LoadData("critterpowers.xml");
+                        XmlDocument xmlPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
 
                         // Update the Movement if the Vessel has one.
                         string strMovement = objSelected["movement"]?.InnerText;
@@ -3120,7 +3123,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile).ConfigureAwait(false);
+                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
@@ -12991,7 +12994,7 @@ namespace Chummer
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();
-                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(false);
+                    await CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
                     IsCharacterUpdateRequested = true;
@@ -15009,6 +15012,44 @@ namespace Chummer
                 lblLifestyleQualitiesLabel.Visible = false;
                 lblLifestyleQualities.Visible = false;
             }
+
+            //Controls Visibility and content of the City, District and Borough Labels
+            if (!string.IsNullOrEmpty(objLifestyle.City))
+            {
+                lblLifestyleCity.Text = objLifestyle.City;
+                lblLifestyleCity.Visible = true;
+                lblLifestyleCityLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleCity.Visible = false;
+                lblLifestyleCityLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.District))
+            {
+                lblLifestyleDistrict.Text = objLifestyle.District;
+                lblLifestyleDistrict.Visible = true;
+                lblLifestyleDistrictLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleDistrict.Visible = false;
+                lblLifestyleDistrictLabel.Visible = false;
+            }
+
+            if (!string.IsNullOrEmpty(objLifestyle.Borough))
+            {
+                lblLifestyleBorough.Text = objLifestyle.Borough;
+                lblLifestyleBorough.Visible = true;
+                lblLifestyleBoroughLabel.Visible = true;
+            }
+            else
+            {
+                lblLifestyleBorough.Visible = false;
+                lblLifestyleBoroughLabel.Visible = false;
+            }
+
             IsRefreshing = false;
             flpLifestyleDetails.ResumeLayout();
         }
@@ -16911,7 +16952,7 @@ namespace Chummer
 
         private void picMugshot_SizeChanged(object sender, EventArgs e)
         {
-            if (Disposing || IsDisposed || picMugshot.Disposing || picMugshot.IsDisposed)
+            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
                 return;
             try
             {

@@ -342,7 +342,7 @@ namespace ChummerHub.Client.Sinners
                 catch (Exception e)
                 {
                     op_uploadChummer?.tc?.TrackException(e);
-                    await Utils.HandleError(e).ConfigureAwait(true);
+                    Utils.HandleError(e);
                     throw;
                 }
             }
@@ -645,7 +645,7 @@ namespace ChummerHub.Client.Sinners
         {
             try
             {
-                using (new CursorWait(null, true))
+                using (new CursorWait(PluginHandler.MainForm, true))
                 {
                     if (myState != null)
                     {
@@ -663,6 +663,7 @@ namespace ChummerHub.Client.Sinners
 
                     ResultSinnerPostSIN response = await Utils.PostSINner(this).ConfigureAwait(true);
                     if (response?.CallSuccess == true)
+
                     {
                         try
                         {
@@ -683,7 +684,7 @@ namespace ChummerHub.Client.Sinners
                                 myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                             }
 
-                            var uploadresult = Utils.UploadChummer(this);
+                            var uploadresult = await Utils.UploadChummer(this);
 
                             if (uploadresult.CallSuccess != true)
                             {

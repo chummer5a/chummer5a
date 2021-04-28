@@ -71,7 +71,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (_userRoles == null)
                 {
-                    using (new CursorWait())
+                    using (new CursorWait(PluginHandler.MainForm))
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...
@@ -102,7 +102,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (_possibleRoles == null)
                 {
-                    using (new CursorWait())
+                    using (new CursorWait(PluginHandler.MainForm))
                     {
                         int counter = 0;
                         //just wait until the task from the startup finishes...
@@ -549,7 +549,7 @@ namespace ChummerHub.Client.Backend
             return await HandleError(resultBase, null).ConfigureAwait(true);
         }
 
-        public static async Task<object> HandleError(Exception e)
+        public static ResultBase HandleError(Exception e)
         {
             ResultBase rb = new ResultBase
             {
@@ -1007,7 +1007,7 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        private static async void SwitchToCharacter(CharacterCache objCache)
+        private static void SwitchToCharacter(CharacterCache objCache)
         {
             using (new CursorWait(PluginHandler.MainForm, true))
             {
@@ -1079,6 +1079,7 @@ namespace ChummerHub.Client.Backend
         }
 
         public static async Task<ResultSinnerPostSIN> PostSINner(CharacterExtended ce)
+
         {
             if (ce == null)
                 throw new ArgumentNullException(nameof(ce));
@@ -1104,10 +1105,11 @@ namespace ChummerHub.Client.Backend
                 });
 
                 // this can be called anywhere
-                var task = new Task(() =>
+                var task = new Task(async () =>
                 {
                     var client = StaticUtils.GetClient();
                     res = client.PostSINAsync(uploadInfo).Result;
+
                 });
 
                 // also can be called anywhere. Task  will be scheduled for execution.
@@ -1158,6 +1160,7 @@ namespace ChummerHub.Client.Backend
                             string msg = "Upload ended with statuscode: ";
                             msg += res?.CallSuccess + Environment.NewLine;
                             msg += res?.ErrorText;
+
                             Log.Info(msg);
                             //HttpStatusCode myStatus = res?.Response?.StatusCode ?? HttpStatusCode.NotFound;
                             if(!StaticUtils.IsUnitTest)
@@ -1196,7 +1199,7 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static ResultSINnerPut UploadChummer(CharacterExtended ce)
+        public static async Task<ResultSINnerPut> UploadChummer(CharacterExtended ce)
         {
             if (ce == null)
                 throw new ArgumentNullException(nameof(ce));
@@ -1205,7 +1208,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (string.IsNullOrEmpty(ce.ZipFilePath))
                 {
-                    ce.ZipFilePath = ce.PrepareModel().Result;
+                    ce.ZipFilePath = await ce.PrepareModel();
                 }
 
                 using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
@@ -1217,6 +1220,7 @@ namespace ChummerHub.Client.Backend
                         {
                             FileParameter fp = new FileParameter(fs);
                             res = client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp).Result;
+
                             string msg = "Upload ended with statuscode: ";
                             if (res != null)
                             {
@@ -1242,6 +1246,7 @@ namespace ChummerHub.Client.Backend
                         {
                             FileParameter fp = new FileParameter(fs);
                             client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp);
+
                         }
                     }
                     catch (Exception e)
@@ -1402,9 +1407,9 @@ namespace ChummerHub.Client.Backend
                 if (objCache?.DownLoadRunning != null && objCache.DownLoadRunning.Status == TaskStatus.Running)
                     return objCache.DownLoadRunning;
                 Log.Info("Downloading SINner: " + sinner?.Id);
-                Task<string> returntask = Task.Run(() =>
+                Task<string> returntask = Task.Run(async () =>
                 {
-                    string filepath = DownloadFile(sinner, objCache).Result;
+                    string filepath = await DownloadFile(sinner, objCache);
                     if (objCache != null)
                         objCache.FilePath = filepath;
                     return filepath;
