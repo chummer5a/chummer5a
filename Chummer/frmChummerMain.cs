@@ -48,6 +48,7 @@ namespace Chummer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private frmDiceRoller _frmRoller;
+        private frmLoading _frmProgressBar;
         private frmUpdate _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
@@ -213,11 +214,11 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
-                        using (frmLoading frmProgressBar = new frmLoading {CharacterFile = Text})
+                        using (_frmProgressBar = new frmLoading {CharacterFile = Text})
                         {
-                            frmProgressBar.Reset(
+                            _frmProgressBar.Reset(
                                 (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length);
-                            frmProgressBar.Show();
+                            _frmProgressBar.Show();
 
 #if DEBUG
                             if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning &&
@@ -248,13 +249,13 @@ namespace Chummer
                                             if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
                                                 await XmlManager.LoadAsync(x, null, GlobalOptions.DefaultLanguage);
                                             await XmlManager.LoadAsync(x);
-                                            frmProgressBar.PerformStep(Application.ProductName);
+                                            _frmProgressBar.PerformStep(Application.ProductName);
                                         }))
                                     .ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                                 //Timekeeper.Finish("cache_load");
                             }
 
-                            frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
+                            _frmProgressBar.PerformStep(LanguageManager.GetString("String_UI"));
 
                             _lstCharacters.CollectionChanged += LstCharactersOnCollectionChanged;
                             _lstOpenCharacterForms.CollectionChanged += LstOpenCharacterFormsOnCollectionChanged;
@@ -328,7 +329,7 @@ namespace Chummer
                                 }
                             }
 
-                            frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
+                            _frmProgressBar.PerformStep(LanguageManager.GetString("Title_MasterIndex"));
 
                             if (MasterIndex != null)
                             {
@@ -337,7 +338,7 @@ namespace Chummer
                                 MasterIndex.Show();
                             }
 
-                            frmProgressBar.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
+                            _frmProgressBar.PerformStep(LanguageManager.GetString("String_CharacterRoster"));
 
                             if (CharacterRoster != null)
                             {
@@ -348,7 +349,7 @@ namespace Chummer
 
                             if (GlobalOptions.AllowEasterEggs)
                             {
-                                frmProgressBar.PerformStep(LanguageManager.GetString("String_Chummy"));
+                                _frmProgressBar.PerformStep(LanguageManager.GetString("String_Chummy"));
                                 _mascotChummy = new Chummy(null);
                                 _mascotChummy.Show(this);
                             }
@@ -1250,7 +1251,7 @@ namespace Chummer
             }
 
             if (owner == null)
-                owner = this;
+                owner = _frmProgressBar?.IsDisposed == false ? _frmProgressBar : this as Control;
 
             if (owner.InvokeRequired)
             {
@@ -1287,7 +1288,7 @@ namespace Chummer
                 }
             }
 
-            return CenterableMessageBox.Show(this, message, caption, buttons, icon, defaultButton);
+            return CenterableMessageBox.Show(_frmProgressBar?.IsDisposed == false ? _frmProgressBar : this as IWin32Window, message, caption, buttons, icon, defaultButton);
         }
 
         public delegate DialogResult PassStringStringReturnDialogResultDelegate(
@@ -1402,13 +1403,13 @@ namespace Chummer
                     Character[] lstCharacters = null;
                     if (lstFilesToOpen.Count > 0)
                     {
-                        using (frmLoading frmProgressBar = new frmLoading
+                        using (_frmProgressBar = new frmLoading
                         {
                             CharacterFile = string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen)
                         })
                         {
-                            frmProgressBar.Reset(lstFilesToOpen.Count * 35);
-                            frmProgressBar.Show();
+                            _frmProgressBar.Reset(lstFilesToOpen.Count * 35);
+                            _frmProgressBar.Show();
                             lstCharacters = new Character[lstFilesToOpen.Count];
                             Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(lstFilesToOpen.Count);
                             for (int i = 0; i < lstFilesToOpen.Count; ++i)
@@ -1417,8 +1418,7 @@ namespace Chummer
                             }
                             // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
                             await Task.Run(() => Parallel.ForEach(dicIndexedStrings,
-                                async x => lstCharacters[x.Key] = await LoadCharacter(x.Value, string.Empty, false,
-                                    true, true, frmProgressBar))).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                                async x => lstCharacters[x.Key] = await LoadCharacter(x.Value))).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                         }
                     }
                     Program.MainForm.OpenCharacterList(lstCharacters);
@@ -1486,8 +1486,7 @@ namespace Chummer
         /// <param name="blnClearFileName">Whether or not the name of the save file should be cleared.</param>
         /// <param name="blnShowErrors">Show error messages if the character failed to load.</param>
         /// <param name="blnShowProgressBar">Show loading bar for the character.</param>
-        /// <param name="frmProgressBar">Loading bar to use if <paramref name="blnShowProgressBar"/> is True (create a new one if null).</param>
-        public async Task<Character> LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true, frmLoading frmProgressBar = null)
+        public async Task<Character> LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, bool blnShowProgressBar = true)
         {
             if (string.IsNullOrEmpty(strFileName))
                 return null;
@@ -1548,15 +1547,15 @@ namespace Chummer
                         objCharacter.FileName = strFileName;
                     }
                 }
-                if (blnShowProgressBar && frmProgressBar == null)
+                if (blnShowProgressBar && _frmProgressBar?.IsDisposed != false)
                 {
-                    using (frmProgressBar = new frmLoading { CharacterFile = objCharacter.FileName })
+                    using (_frmProgressBar = new frmLoading { CharacterFile = objCharacter.FileName })
                     {
-                        frmProgressBar.Reset(35);
-                        frmProgressBar.Show();
+                        _frmProgressBar.Reset(35);
+                        _frmProgressBar.Show();
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
-                        bool blnLoaded = await objCharacter.Load(frmProgressBar, blnShowErrors).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                        bool blnLoaded = await objCharacter.Load(_frmProgressBar, blnShowErrors).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
                         //Timekeeper.Finish("load_file");
                         if (!blnLoaded)
                         {
@@ -1567,11 +1566,9 @@ namespace Chummer
                 }
                 else
                 {
-                    if (!blnShowProgressBar)
-                        frmProgressBar = null;
                     OpenCharacters.Add(objCharacter);
                     //Timekeeper.Start("load_file");
-                    bool blnLoaded = await objCharacter.Load(frmProgressBar, blnShowErrors);
+                    bool blnLoaded = await objCharacter.Load(blnShowProgressBar ? _frmProgressBar : null, blnShowErrors);
                     //Timekeeper.Finish("load_file");
                     if (!blnLoaded)
                     {
