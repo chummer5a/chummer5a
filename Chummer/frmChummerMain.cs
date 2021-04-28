@@ -807,7 +807,7 @@ namespace Chummer
 
 		private void mnuFilePrintMultiple_Click(object sender, EventArgs e)
         {
-            if(PrintMultipleCharactersForm?.Disposing != false || PrintMultipleCharactersForm.IsDisposed)
+            if(PrintMultipleCharactersForm.IsNullOrDisposed())
                 PrintMultipleCharactersForm = new frmPrintMultiple();
             else
                 PrintMultipleCharactersForm.Activate();
@@ -1251,7 +1251,7 @@ namespace Chummer
             }
 
             if (owner == null)
-                owner = _frmProgressBar?.IsDisposed == false ? _frmProgressBar : this as Control;
+                owner = _frmProgressBar.IsNullOrDisposed() ? this as Control : _frmProgressBar;
 
             if (owner.InvokeRequired)
             {
@@ -1288,7 +1288,7 @@ namespace Chummer
                 }
             }
 
-            return CenterableMessageBox.Show(_frmProgressBar?.IsDisposed == false ? _frmProgressBar : this as IWin32Window, message, caption, buttons, icon, defaultButton);
+            return CenterableMessageBox.Show(_frmProgressBar.IsNullOrDisposed() ? this : _frmProgressBar as IWin32Window, message, caption, buttons, icon, defaultButton);
         }
 
         public delegate DialogResult PassStringStringReturnDialogResultDelegate(
@@ -1547,7 +1547,7 @@ namespace Chummer
                         objCharacter.FileName = strFileName;
                     }
                 }
-                if (blnShowProgressBar && _frmProgressBar?.IsDisposed != false)
+                if (blnShowProgressBar && _frmProgressBar.IsNullOrDisposed())
                 {
                     using (_frmProgressBar = new frmLoading { CharacterFile = objCharacter.FileName })
                     {

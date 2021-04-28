@@ -344,7 +344,7 @@ namespace Chummer
                                         if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
                                             || node.Tag != null)
                                         {
-                                            if (treCharacterList.Disposing || treCharacterList.IsDisposed)
+                                            if (treCharacterList.IsNullOrDisposed())
                                                 return;
                                             if (treCharacterList.Nodes.ContainsKey(node.Name))
                                                 treCharacterList.Nodes.RemoveByKey(node.Name);
@@ -476,7 +476,7 @@ namespace Chummer
         /// <param name="objCache"></param>
         public void UpdateCharacter(CharacterCache objCache)
         {
-            if (Disposing || IsDisposed) // Safety check for external calls
+            if (this.IsNullOrDisposed()) // Safety check for external calls
                 return;
             tlpCharacterRoster.SuspendLayout();
             if(objCache != null)
@@ -702,7 +702,7 @@ namespace Chummer
 
         private void ProcessMugshotSizeMode()
         {
-            if (Disposing || IsDisposed || picMugshot.Disposing || picMugshot.IsDisposed)
+            if (this.IsNullOrDisposed() || picMugshot.IsNullOrDisposed())
                 return;
             try
             {
