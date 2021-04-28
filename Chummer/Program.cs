@@ -112,7 +112,7 @@ namespace Chummer
 
                 sw.TaskEnd("fixcwd");
 
-                AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatmap.OnException;
+                AppDomain.CurrentDomain.FirstChanceException += ExceptionHeatMap.OnException;
 
                 sw.TaskEnd("appdomain 2");
 
@@ -304,7 +304,7 @@ namespace Chummer
                 //arguments come in the form of
                 //              /plugin:Name:Parameter:Argument
                 //              /plugin:SINners:RegisterUriScheme:0
-                bool showMainForm = true;
+                bool showMainForm = !Utils.IsUnitTest;
                 // Make sure the default language has been loaded before attempting to open the Main Form.
                 LanguageManager.LoadLanguage(GlobalOptions.Language);
                 MainForm = new frmChummerMain();
@@ -324,37 +324,36 @@ namespace Chummer
                         // Process plugin args synchronously because plugin load order can end up mattering
                         foreach (string strArg in strArgs)
                         {
-                            if (strArg.Contains("/plugin"))
+                            if (!strArg.Contains("/plugin"))
+                                continue;
+                            if (!GlobalOptions.PluginsEnabled)
                             {
-                                if (!GlobalOptions.PluginsEnabled)
+                                string strMessage = "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                Log.Warn(strMessage);
+                                MainForm.ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            }
+                            else
+                            {
+                                string strWhatPlugin = strArg.Substring(strArg.IndexOf("/plugin", StringComparison.Ordinal) + 8);
+                                //some external apps choose to add a '/' before a ':' even in the middle of an url...
+                                strWhatPlugin = strWhatPlugin.TrimStart(':');
+                                int intEndPlugin = strWhatPlugin.IndexOf(':');
+                                string strParameter = strWhatPlugin.Substring(intEndPlugin + 1);
+                                strWhatPlugin = strWhatPlugin.Substring(0, intEndPlugin);
+                                IPlugin objActivePlugin = PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == strWhatPlugin);
+                                if (objActivePlugin == null)
                                 {
-                                    string strMessage = "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
-                                    Log.Warn(strMessage);
-                                    MainForm.ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    if (PluginLoader.MyPlugins.All(a => a.ToString() != strWhatPlugin))
+                                    {
+                                        string strMessage = "Plugin " + strWhatPlugin + " is not enabled in the options!" + Environment.NewLine
+                                                            + "If you want to use command-line arguments, please enable this plugin and restart the program.";
+                                        Log.Warn(strMessage);
+                                        MainForm.ShowMessageBox(strMessage, strWhatPlugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    }
                                 }
                                 else
                                 {
-                                    string strWhatPlugin = strArg.Substring(strArg.IndexOf("/plugin", StringComparison.Ordinal) + 8);
-                                    //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                    strWhatPlugin = strWhatPlugin.TrimStart(':');
-                                    int intEndPlugin = strWhatPlugin.IndexOf(':');
-                                    string strParameter = strWhatPlugin.Substring(intEndPlugin + 1);
-                                    strWhatPlugin = strWhatPlugin.Substring(0, intEndPlugin);
-                                    IPlugin objActivePlugin = PluginLoader.MyActivePlugins.FirstOrDefault(a => a.ToString() == strWhatPlugin);
-                                    if (objActivePlugin == null)
-                                    {
-                                        if (PluginLoader.MyPlugins.All(a => a.ToString() != strWhatPlugin))
-                                        {
-                                            string strMessage = "Plugin " + strWhatPlugin + " is not enabled in the options!" + Environment.NewLine
-                                                                + "If you want to use command-line arguments, please enable this plugin and restart the program.";
-                                            Log.Warn(strMessage);
-                                            MainForm.ShowMessageBox(strMessage, strWhatPlugin + " not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        showMainForm &= objActivePlugin.ProcessCommandLine(strParameter);
-                                    }
+                                    showMainForm &= objActivePlugin.ProcessCommandLine(strParameter);
                                 }
                             }
                         }
@@ -375,7 +374,7 @@ namespace Chummer
                     Application.Run(MainForm);
                 }
                 PluginLoader?.Dispose();
-                Log.Info(ExceptionHeatmap.GenerateInfo());
+                Log.Info(ExceptionHeatMap.GenerateInfo());
                 if (GlobalOptions.UseLoggingApplicationInsights > UseAILogging.OnlyLocal
                     && ChummerTelemetryClient != null)
                 {
@@ -391,7 +390,7 @@ namespace Chummer
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool DeleteFile(string name);
 
-        public static bool UnblockPath(string strPath)
+        private static bool UnblockPath(string strPath)
         {
             bool blnAllUnblocked = true;
 
@@ -427,7 +426,7 @@ namespace Chummer
             return blnAllUnblocked;
         }
 
-        public static bool UnblockFile(string strFileName)
+        private static bool UnblockFile(string strFileName)
         {
             return DeleteFile(strFileName + ":Zone.Identifier");
         }
@@ -451,9 +450,9 @@ namespace Chummer
             private set;
         }
 
-        private static ExceptionHeatMap ExceptionHeatmap { get; } = new ExceptionHeatMap();
+        private static ExceptionHeatMap ExceptionHeatMap { get; } = new ExceptionHeatMap();
 
-        static void FixCwd()
+        private static void FixCwd()
         {
             //If launched by file assiocation, the cwd is file location.
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstraper uses this)
