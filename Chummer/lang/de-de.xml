@@ -2502,6 +2502,46 @@
             <key>Skill_SortCategory</key>
             <text>Kategorie</text>
         </string>
+        <string>
+            <key>Label_CharacterOptions_OptionsOfficialRules</key>
+            <text>Optionen für offizielle Regeln</text>
+        </string>
+        <string>
+          <key>Label_CharacterOptions_CharacterCreationSettings</key>
+          <text>Charactererschaffungseinstellungen</text>
+        </string>
+      <string>
+        <key>Label_CharacterOptions_DecimalsAndRounding</key>
+        <text>Dezimalstellen und Rundung</text>
+      </string>
+      <string>
+        <key>String_KnowledgePoints</key>
+        <text>Wissenspunkte</text>
+      </string>
+      <string>
+        <key>String_Skull</key>
+        <text>Schäder</text>
+      </string>
+      <string>
+        <key>String_Torso</key>
+        <text>Torso</text>
+      </string>
+      <string>
+        <key>String_Arms</key>
+        <text>Arme</text>
+      </string>
+      <string>
+        <key>String_Legs</key>
+        <text>Beine</text>
+      </string>
+      <string>
+        <key>String_ContactPoints</key>
+        <text>Contact Punkte</text>
+      </string>
+      <string>
+        <key>Tab_Options_CustomDataDirectories</key>
+        <text>Dateipfad der Custom Data Files</text>
+      </string>
         <!-- End Region -->
         <!-- Region  Martial Arts Tab -->
         <string>

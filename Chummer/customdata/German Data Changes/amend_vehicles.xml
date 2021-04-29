@@ -26,6 +26,11 @@
       <cost>8000</cost>
       <speed>2</speed>
     </vehicle>
+    <vehicle> <!-- Doberman stealth errata in German Rigger 5.0 -->
+      <id>9186a0a7-635f-4242-a0e8-238f48b17ca2</id>
+      <armor>9</armor>
+      <cost>8000</cost>
+     </vehicle>
     <vehicle> <!-- Changes the Yamaha Kaburaya's Acceleration from 3 to 4 and cost from 17000 to 8500 (see German R5 49 and German R5 189). -->
       <id>006ea45a-cc35-496c-8d01-94eb64d8febb</id>
       <accel>4</accel>
