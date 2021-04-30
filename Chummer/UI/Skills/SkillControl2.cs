@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -84,8 +85,8 @@ namespace Chummer.UI.Skills
 
             btnAttribute.DoOneWayDataBinding("Text", objSkill, nameof(Skill.DisplayAttribute));
 
-            lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-            lblModifiedRating.ToolTipText = objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+            var threadRefreshing = new Thread(SkillControl2_RefreshPoolTooltipAndDisplay) {IsBackground = true};
+            threadRefreshing.Start();
 
             // Creating controls outside of the designer saves on handles if the controls would be invisible anyway
             if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
@@ -337,8 +338,8 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-                    lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+                    var threadRefreshing = new Thread(SkillControl2_RefreshPoolTooltipAndDisplay) { IsBackground = true };
+                    threadRefreshing.Start();
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
                     break;
@@ -380,8 +381,10 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-                    lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+
+                    var threadRefreshing = new Thread(SkillControl2_RefreshPoolTooltipAndDisplay) { IsBackground = true };
+                    threadRefreshing.Start();
+
                     break;
             }
         }
@@ -586,6 +589,12 @@ namespace Chummer.UI.Skills
                     lblCareerRating.MinimumSize = new Size((int) (25 * g.DpiX / 96.0f), 0);
                 lblModifiedRating.MinimumSize = new Size((int) (50 * g.DpiX / 96.0f), 0);
             }
+        }
+
+        private void SkillControl2_RefreshPoolTooltipAndDisplay()
+        {
+            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev));
+            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev));
         }
     }
 }

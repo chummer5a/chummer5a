@@ -1327,6 +1327,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayOtherAttribute(string strAttribute)
         {
+
             int intPool = PoolOtherAttribute(strAttribute);
             if ((IsExoticSkill || string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x =>
                      x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&

@@ -46,7 +46,7 @@ namespace Chummer
             // Raise the UnsustainSpell Event when the user has confirmed their desire to Unsustain a Spell
             // The entire SustainedSpellControll is passed as an argument so the handling event can evaluate its contents.
             if (!_blnLoading)
-            UnsustainSpell?.Invoke(this, e);
+                UnsustainSpell?.Invoke(this, e);
         }
 
         private void nudForce_ValueChanged(object sender, EventArgs e)

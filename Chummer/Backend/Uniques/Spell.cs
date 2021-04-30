@@ -244,7 +244,7 @@ namespace Chummer
             objWriter.WriteElementString("source", objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
 
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
 
                 objWriter.WriteElementString("notes", Notes);

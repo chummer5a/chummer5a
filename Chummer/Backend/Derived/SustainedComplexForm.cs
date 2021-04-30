@@ -54,7 +54,7 @@ namespace Chummer
         /// <summary>
         /// Creates an SustainedComplexForm from an provided ComplexForm 
         /// </summary>
-        /// <param name="formRef">A Complex form the sustainde Form is based upon</param>
+        /// <param name="formRef">A Complex form the sustained Form is based upon</param>
         public void Create(ComplexForm formRef)
         {
             guiSourceID = formRef.SourceID;
@@ -150,7 +150,7 @@ namespace Chummer
                 if (_blnSelfSustained != value)
                 {
                     _blnSelfSustained = value;
-                    objCharacter.OnPropertyChanged("SustainingPenalty");
+                    objCharacter.OnPropertyChanged();
                 }
 
             }
