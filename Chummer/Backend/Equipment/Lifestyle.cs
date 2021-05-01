@@ -203,7 +203,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     FreeGrids.Clear();
-                    XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
+                    XmlDocument xmlLifestyleDocument = await _objCharacter.LoadDataAsync("lifestyles.xml");
                     foreach (XmlNode xmlNode in lstGridNodes)
                     {
                         XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode("/chummer/qualities/quality[name = " + xmlNode.InnerText.CleanXPath() + "]");

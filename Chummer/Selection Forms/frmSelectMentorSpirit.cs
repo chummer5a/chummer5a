@@ -218,7 +218,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Mentor list.
         /// </summary>
-        private void RefreshMentorsList()
+        private async void RefreshMentorsList()
         {
             string strForceId = string.Empty;
 
@@ -228,8 +228,8 @@ namespace Chummer
             List<ListItem> lstMentors = new List<ListItem>();
             foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select("mentors/mentor[" + strFilter + "]"))
             {
-                if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
-
+                if (!(await objXmlMentor.RequirementsMet(_objCharacter)))
+                    continue;
                 string strName = objXmlMentor.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strId = objXmlMentor.SelectSingleNode("id")?.Value ?? string.Empty;
                 if (strName == _strForceMentor)

@@ -285,7 +285,7 @@ namespace Chummer
             }
             if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
             {
-                XmlNode objXmlPower = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
+                XmlNode objXmlPower = (await CharacterObject.LoadDataAsync("powers.xml")).SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
                 if (objXmlPower != null)
                 {
                     if (int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
@@ -920,7 +920,7 @@ namespace Chummer
                 }
                 if (!blnReturn && _nodAdeptWayRequirements?.HasChildren == true)
                 {
-                    blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject);
+                    blnReturn = _nodAdeptWayRequirements.RequirementsMet(CharacterObject).Result;
                 }
 
                 return blnReturn;

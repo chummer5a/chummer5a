@@ -929,53 +929,55 @@ namespace Chummer.Backend.Equipment
                     bool blnAllowRight = true;
                     // Fairly expensive check that can (and therefore should) be parallelized
                     Parallel.Invoke(
-                        () =>
+                        async () =>
                         {
-                            blnAllowLeft = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                               string.Empty, "Left")
+                            blnAllowLeft = (await xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty,
+                                               string.Empty,
+                                               string.Empty, "Left"))
                                            && (string.IsNullOrEmpty(BlocksMounts)
                                                || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                && x.Location == "Left"
-                                                                                && BlocksMounts
-                                                                                    .SplitNoAlloc(',',
-                                                                                        StringSplitOptions.RemoveEmptyEntries)
-                                                                                    .Contains(x.HasModularMount)
-                                                                                && (string.IsNullOrEmpty(
-                                                                                        MountToLimbType(x.HasModularMount))
-                                                                                    || _objCharacter.LimbCount(
-                                                                                        MountToLimbType(x.HasModularMount)) /
-                                                                                    2 <= (dicNumLeftMountBlockers.ContainsKey(
-                                                                                        x.HasModularMount)
-                                                                                        ? dicNumLeftMountBlockers[
-                                                                                              x.HasModularMount] + LimbSlotCount
-                                                                                        : LimbSlotCount))))
+                                                   && x.Location == "Left"
+                                                   && BlocksMounts
+                                                       .SplitNoAlloc(',',
+                                                           StringSplitOptions.RemoveEmptyEntries)
+                                                       .Contains(x.HasModularMount)
+                                                   && (string.IsNullOrEmpty(
+                                                           MountToLimbType(x.HasModularMount))
+                                                       || _objCharacter.LimbCount(
+                                                           MountToLimbType(x.HasModularMount)) /
+                                                       2 <= (dicNumLeftMountBlockers.ContainsKey(
+                                                           x.HasModularMount)
+                                                           ? dicNumLeftMountBlockers[
+                                                               x.HasModularMount] + LimbSlotCount
+                                                           : LimbSlotCount))))
                                            && (string.IsNullOrEmpty(HasModularMount)
                                                || !dicNumLeftMountBlockers.ContainsKey(HasModularMount)
                                                || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))
                                                     || _objCharacter.LimbCount(MountToLimbType(HasModularMount)) / 2 <=
                                                     dicNumLeftMountBlockers[HasModularMount]));
                         },
-                        () =>
+                        async () =>
                         {
-                            blnAllowRight = xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty, string.Empty,
-                                                string.Empty, "Right")
+                            blnAllowRight = (await xpnCyberware.RequirementsMet(_objCharacter, Parent, string.Empty,
+                                                string.Empty,
+                                                string.Empty, "Right"))
                                             && (string.IsNullOrEmpty(BlocksMounts)
                                                 || !lstCyberwareToCheck.Any(x => !string.IsNullOrEmpty(x.HasModularMount)
-                                                                                 && x.Location == "Right"
-                                                                                 && BlocksMounts
-                                                                                     .SplitNoAlloc(',',
-                                                                                         StringSplitOptions.RemoveEmptyEntries)
-                                                                                     .Contains(x.HasModularMount)
-                                                                                 && (string.IsNullOrEmpty(
-                                                                                         MountToLimbType(x.HasModularMount))
-                                                                                     || _objCharacter.LimbCount(
-                                                                                         MountToLimbType(x.HasModularMount)) /
-                                                                                     2 <= (dicNumRightMountBlockers.ContainsKey(
-                                                                                         x.HasModularMount)
-                                                                                         ? dicNumRightMountBlockers[
-                                                                                               x.HasModularMount] +
-                                                                                           LimbSlotCount
-                                                                                         : LimbSlotCount))))
+                                                    && x.Location == "Right"
+                                                    && BlocksMounts
+                                                        .SplitNoAlloc(',',
+                                                            StringSplitOptions.RemoveEmptyEntries)
+                                                        .Contains(x.HasModularMount)
+                                                    && (string.IsNullOrEmpty(
+                                                            MountToLimbType(x.HasModularMount))
+                                                        || _objCharacter.LimbCount(
+                                                            MountToLimbType(x.HasModularMount)) /
+                                                        2 <= (dicNumRightMountBlockers.ContainsKey(
+                                                            x.HasModularMount)
+                                                            ? dicNumRightMountBlockers[
+                                                                  x.HasModularMount] +
+                                                              LimbSlotCount
+                                                            : LimbSlotCount))))
                                             && (string.IsNullOrEmpty(HasModularMount)
                                                 || !dicNumRightMountBlockers.ContainsKey(HasModularMount)
                                                 || !(string.IsNullOrEmpty(MountToLimbType(HasModularMount))

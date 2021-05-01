@@ -759,7 +759,7 @@ namespace Chummer.Backend.Equipment
             // Legacy shim
             if (Name.Contains("Osmium Mace (STR"))
             {
-                XmlNode objNewOsmiumMaceNode = _objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
+                XmlNode objNewOsmiumMaceNode = (await _objCharacter.LoadDataAsync("weapons.xml")).SelectSingleNode("/chummer/weapons/weapon[name = \"Osmium Mace\"]");
                 if (objNewOsmiumMaceNode != null)
                 {
                     objNewOsmiumMaceNode.TryGetStringFieldQuickly("name", ref _strName);
@@ -6040,7 +6040,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public bool CheckAccessoryRequirements(XPathNavigator objXmlAccessory)
         {
-            if (objXmlAccessory == null) return false;
+            if (objXmlAccessory == null)
+                return false;
             string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
             XPathNavigator xmlMountNode = objXmlAccessory.SelectSingleNode("mount");
             if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
@@ -6055,7 +6056,8 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty)) return false;
+            if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty).Result)
+                return false;
 
             XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
             if (xmlTestNode != null)

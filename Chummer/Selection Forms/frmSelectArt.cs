@@ -158,7 +158,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
-        private void BuildList()
+        private async void BuildList()
         {
             if (_blnLoading)
                 return;
@@ -172,7 +172,7 @@ namespace Chummer
                 string strId = objXmlMetamagic.SelectSingleNode("id")?.Value;
                 if (!string.IsNullOrEmpty(strId))
                 {
-                    if (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter))
+                    if (!chkLimitList.Checked || await objXmlMetamagic.RequirementsMet(_objCharacter))
                     {
                         lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNode("id")?.Value, objXmlMetamagic.SelectSingleNode("translate")?.Value ?? objXmlMetamagic.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                     }
@@ -196,7 +196,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async void AcceptForm()
         {
             string strSelectedItem = lstArt.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedItem))
@@ -206,7 +206,7 @@ namespace Chummer
 
                 if (objXmlMetamagic != null)
                 {
-                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, null, _strLocalName))
+                    if (!(await objXmlMetamagic.RequirementsMet(_objCharacter, null, _strLocalName)))
                         return;
 
                     _strSelectedItem = strSelectedItem;

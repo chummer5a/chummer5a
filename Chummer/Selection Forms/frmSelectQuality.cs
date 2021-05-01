@@ -101,7 +101,7 @@ namespace Chummer
             BuildQualityList();
         }
 
-        private void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstQualities_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -143,7 +143,7 @@ namespace Chummer
                     {
                         int.TryParse(strKarma, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intBP);
 
-                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter))
+                        if (await xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter))
                         {
                             string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
                             switch (xmlQuality.SelectSingleNode("category")?.Value)
@@ -350,7 +350,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
-        private void BuildQualityList()
+        private async void BuildQualityList()
         {
             if (_blnLoading)
                 return;
@@ -435,7 +435,7 @@ namespace Chummer
                     continue;
                 if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
                     continue;
-                if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
+                if (!chkLimitList.Checked || await objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
                 {
                     lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
                 }
@@ -459,7 +459,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async void AcceptForm()
         {
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedQuality))
@@ -467,7 +467,7 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
 
-            if (objNode == null || !objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality))
+            if (objNode == null || !(await objNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Quality"), IgnoreQuality)))
                 return;
 
             _strSelectedQuality = strSelectedQuality;

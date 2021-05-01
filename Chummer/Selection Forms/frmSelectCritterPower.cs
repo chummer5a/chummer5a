@@ -234,7 +234,7 @@ namespace Chummer
             lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
         }
 
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             trePowers.Nodes.Clear();
 
@@ -339,8 +339,10 @@ namespace Chummer
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power[" + sbdFilter + "]"))
             {
                 string strPowerName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0) continue;
-                if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
+                if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
+                    continue;
+                if (!(await objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)))
+                    continue;
                 TreeNode objNode = new TreeNode
                 {
                     Tag = objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty,

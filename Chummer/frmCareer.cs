@@ -5016,9 +5016,9 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private void cmdAddQuality_Click(object sender, EventArgs e)
+        private async void cmdAddQuality_Click(object sender, EventArgs e)
         {
-            XmlDocument objXmlDocument = CharacterObject.LoadData("qualities.xml");
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("qualities.xml");
             bool blnAddAgain;
             do
             {
@@ -5057,7 +5057,7 @@ namespace Chummer
                 {
                     objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
                     XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
-                    if (xmlDiscountNode != null && xmlDiscountNode.CreateNavigator().RequirementsMet(CharacterObject))
+                    if (xmlDiscountNode != null && await xmlDiscountNode.CreateNavigator().RequirementsMet(CharacterObject))
                     {
                         int intTemp = 0;
                         xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
@@ -5437,7 +5437,7 @@ namespace Chummer
                 {
                     XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
                     XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
-                    if (!xpnSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
+                    if (!(await xpnSelectedQuality.RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality"))))
                     {
                         UpdateQualityLevelValue(objSelectedQuality);
                         break;
@@ -5452,7 +5452,7 @@ namespace Chummer
                     {
                         objXmlSelectedQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
                         XPathNavigator xpnDiscountNode = xpnSelectedQuality.SelectSingleNode("costdiscount");
-                        if (xpnDiscountNode != null && xpnDiscountNode.RequirementsMet(CharacterObject))
+                        if (xpnDiscountNode != null && await xpnDiscountNode.RequirementsMet(CharacterObject))
                         {
                             int intTemp = 0;
                             xpnDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);

@@ -259,7 +259,7 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private void BuildSpellList()
+        private async void BuildSpellList()
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strCategory = cboCategory.SelectedValue?.ToString();
@@ -294,7 +294,8 @@ namespace Chummer
                 string strRange = objXmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
                 if (!_blnIgnoreRequirements)
                 {
-                    if (!objXmlSpell.RequirementsMet(_objCharacter)) continue;
+                    if (!(await objXmlSpell.RequirementsMet(_objCharacter)))
+                        continue;
                     HashSet<string> limitDescriptors = new HashSet<string>();
                     foreach (Improvement improvement in _objCharacter.Improvements.Where(x =>
                         x.ImproveType == Improvement.ImprovementType.LimitSpellDescriptor && x.Enabled))
@@ -302,7 +303,8 @@ namespace Chummer
                         limitDescriptors.Add(improvement.ImprovedName);
                     }
 
-                    if (limitDescriptors.Count != 0 && !limitDescriptors.Any(l => strDescriptor.Contains(l))) continue;
+                    if (limitDescriptors.Count != 0 && !limitDescriptors.Any(l => strDescriptor.Contains(l)))
+                        continue;
                     HashSet<string> blockDescriptors = new HashSet<string>();
                     foreach (Improvement improvement in _objCharacter.Improvements.Where(x =>
                         x.ImproveType == Improvement.ImprovementType.BlockSpellDescriptor && x.Enabled))
@@ -390,7 +392,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async void AcceptForm()
         {
             string strSelectedItem = lstSpells.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedItem))
@@ -441,7 +443,7 @@ namespace Chummer
                         return;
                     }
                 }
-                if (!objXmlSpell.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_DescSpell")))
+                if (!(await objXmlSpell.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_DescSpell"))))
                 {
                     return;
                 }

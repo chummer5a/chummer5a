@@ -600,7 +600,7 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        void MetatypeSelected()
+        private async void MetatypeSelected()
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -698,10 +698,10 @@ namespace Chummer
                         _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText,
                             strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
                             _xmlCritterPowerDocumentPowersNode,
-                            _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
+                            (await _objCharacter.LoadDataAsync("skills.xml")).SelectSingleNode("/chummer/knowledgeskills"));
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
-                            if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
+                            if ((await objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter)) == false)
                                 _objCharacter.Qualities.Remove(objQuality);
                         }
                     }

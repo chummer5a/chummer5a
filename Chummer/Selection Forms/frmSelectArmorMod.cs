@@ -410,7 +410,7 @@ namespace Chummer
         /// <summary>
         /// 
         /// </summary>
-        private void RefreshList()
+        private async void RefreshList()
         {
             List<ListItem> lstMods = new List<ListItem>();
 
@@ -464,7 +464,7 @@ namespace Chummer
                         decCostMultiplier *= 0.9m;
                     if (!chkHideOverAvailLimit.Checked || objXmlMod.CheckAvailRestriction(_objCharacter) &&
                         (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked ||
-                         objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)) && objXmlMod.RequirementsMet(_objCharacter, _objArmor))
+                         objXmlMod.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier)) && await objXmlMod.RequirementsMet(_objCharacter, _objArmor))
                     {
                         lstMods.Add(new ListItem(strId, objXmlMod.SelectSingleNode("translate")?.Value ?? objXmlMod.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                     }

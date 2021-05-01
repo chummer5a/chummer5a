@@ -880,7 +880,7 @@ namespace Chummer.Backend.Equipment
         /// TODO: Refactor drug effects to just use XML nodes, which can then be passed to Improvement Manager?
         /// TODO: Refactor Improvement Manager to automatically collapse improvements of the same type into a single improvement?
         /// </summary>
-        public void GenerateImprovement()
+        public async void GenerateImprovement()
         {
             if (_objCharacter.Improvements.Any(ig => ig.SourceName == InternalId)) return;
             _objCharacter.ImprovementGroups.Add(Name);
@@ -954,7 +954,7 @@ namespace Chummer.Backend.Equipment
 
             if (Qualities.Count > 0)
             {
-                XmlDocument objXmlDocument = _objCharacter.LoadData("qualities.xml");
+                XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("qualities.xml");
                 foreach (XmlNode objXmlAddQuality in Qualities)
                 {
                     XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
@@ -971,7 +971,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // Makes sure we aren't over our limits for this particular quality from this overall source
                         if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                            xpnSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
+                            await xpnSelectedQuality.RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, Name))
                         {
                             List<Weapon> lstWeapons = new List<Weapon>();
                             Quality objAddQuality = new Quality(_objCharacter);

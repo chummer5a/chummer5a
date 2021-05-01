@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
@@ -71,7 +72,7 @@ namespace Chummer
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode);
         }
 
-        private void frmSelectDrug_Load(object sender, EventArgs e)
+        private async void frmSelectDrug_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -111,10 +112,10 @@ namespace Chummer
                 cboGrade.SelectedIndex = 0;
 
             _blnLoading = false;
-            RefreshList();
+            await RefreshList();
         }
 
-        private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -135,7 +136,7 @@ namespace Chummer
                 _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value, GlobalOptions.InvariantCultureInfo);
 
                 _blnLoading = false;
-                RefreshList();
+                await RefreshList();
             }
             else
             {
@@ -327,18 +328,18 @@ namespace Chummer
             UpdateDrugInfo();
         }
 
-        private void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
+        private async void chkHideOverAvailLimit_CheckedChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
             UpdateDrugInfo();
         }
@@ -374,18 +375,18 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            await RefreshList();
         }
 
-        private void chkFree_CheckedChanged(object sender, EventArgs e)
+        private async void chkFree_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             if (chkShowOnlyAffordItems.Checked)
             {
-                RefreshList();
+                await RefreshList();
             }
             UpdateDrugInfo();
         }
@@ -652,7 +653,7 @@ namespace Chummer
         }
 
         private bool _blnSkipListRefresh;
-        private List<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private async Task<List<ListItem>> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return null;
@@ -668,10 +669,10 @@ namespace Chummer
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            return BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
+            return await BuildDrugList(_xmlBaseDrugDataNode.Select(_strNodeXPath + '[' + sbdFilter + ']'), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private async Task<List<ListItem>> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return null;
@@ -724,7 +725,7 @@ namespace Chummer
                     }
                 }
 
-                if (ParentVehicle == null && !xmlDrug.RequirementsMet(_objCharacter))
+                if (ParentVehicle == null && !(await xmlDrug.RequirementsMet(_objCharacter)))
                     continue;
                 lstDrugs.Add(new ListItem(xmlDrug.SelectSingleNode("id")?.Value, xmlDrug.SelectSingleNode("translate")?.Value ?? xmlDrug.SelectSingleNode("name")?.Value));
                 if (blnTerminateAfterFirst)
@@ -741,19 +742,22 @@ namespace Chummer
                     string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
                         intOverLimit)));
             }
-            string strOldSelected = lstDrug.SelectedValue?.ToString();
-            _blnLoading = true;
-            lstDrug.BeginUpdate();
-            lstDrug.ValueMember = nameof(ListItem.Value);
-            lstDrug.DisplayMember = nameof(ListItem.Name);
-            lstDrug.DataSource = lstDrug;
-            _blnLoading = false;
-            if (!string.IsNullOrEmpty(strOldSelected))
-                lstDrug.SelectedValue = strOldSelected;
-            else
-                lstDrug.SelectedIndex = -1;
 
-            lstDrug.EndUpdate();
+            this.DoThreadSafe(() =>
+            {
+                string strOldSelected = lstDrug.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstDrug.BeginUpdate();
+                lstDrug.ValueMember = nameof(ListItem.Value);
+                lstDrug.DisplayMember = nameof(ListItem.Name);
+                lstDrug.DataSource = lstDrug;
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstDrug.SelectedValue = strOldSelected;
+                else
+                    lstDrug.SelectedIndex = -1;
+                lstDrug.EndUpdate();
+            });
 
             return lstDrugs;
         }
@@ -770,7 +774,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async void AcceptForm()
         {
             string strSelectedId = lstDrug.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
@@ -787,7 +791,7 @@ namespace Chummer
             if (objDrugNode == null)
                 return;
 
-            if (!objDrugNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_SelectPACKSKit_Drug")))
+            if (!(await objDrugNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_SelectPACKSKit_Drug"))))
                 return;
 
             string strForceGrade = objDrugNode.SelectSingleNode("forcegrade")?.Value;

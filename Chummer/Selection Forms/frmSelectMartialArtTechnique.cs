@@ -176,7 +176,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts Techniques list.
         /// </summary>
-        private void RefreshTechniquesList()
+        private async void RefreshTechniquesList()
         {
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (!string.IsNullOrEmpty(txtSearch.Text))
@@ -194,7 +194,7 @@ namespace Chummer
                     if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
                         continue;
 
-                    if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
+                    if (await xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
                     {
                         lstTechniqueItems.Add(new ListItem(strId, xmlTechnique.SelectSingleNode("translate")?.Value ?? strTechniqueName));
                     }

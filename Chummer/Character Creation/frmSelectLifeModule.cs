@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -65,22 +66,21 @@ namespace Chummer
             }
         }
 
-        private void BuildTree(string stageString)
+        private async void BuildTree(string stageString)
         {
             XmlNodeList matches = _xmlDocument.SelectNodes("chummer/modules/module" + stageString);
             treModules.Nodes.Clear();
-            treModules.Nodes.AddRange(
-                BuildList(matches));
+            treModules.Nodes.AddRange(await BuildList(matches));
         }
 
-        private TreeNode[] BuildList(XmlNodeList xmlNodes)
+        private async Task<TreeNode[]> BuildList(XmlNodeList xmlNodes)
         {
             List<TreeNode> lstTreeNodes = new List<TreeNode>(xmlNodes.Count);
             for (int i = 0; i < xmlNodes.Count; i++)
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!chkLimitList.Checked || xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
+                if (!chkLimitList.Checked || await xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
                 {
 
                     TreeNode treNode = new TreeNode
@@ -89,8 +89,8 @@ namespace Chummer
                     };
                     if (xmlNode["versions"] != null)
                     {
-                        treNode.Nodes.AddRange(
-                            BuildList(xmlNode.SelectNodes("versions/version[" + _objCharacter.Options.BookXPath() + "or not(source)]")));
+                        treNode.Nodes.AddRange(await BuildList(xmlNode.SelectNodes("versions/version[" +
+                            _objCharacter.Options.BookXPath() + "or not(source)]")));
                     }
 
                     treNode.Tag = xmlNode["id"]?.InnerText;

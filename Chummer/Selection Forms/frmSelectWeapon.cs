@@ -24,6 +24,7 @@ using System.Xml;
 using Chummer.Backend.Equipment;
 using System.Text;
 using System.Linq;
+using System.Threading.Tasks;
 
 // ReSharper disable LocalizableElement
 
@@ -64,7 +65,7 @@ namespace Chummer
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer"));
         }
 
-        private void frmSelectWeapon_Load(object sender, EventArgs e)
+        private async void frmSelectWeapon_Load(object sender, EventArgs e)
         {
             DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
             {
@@ -96,7 +97,7 @@ namespace Chummer
                     {
                         string strInnerText = objXmlCategory.InnerText;
                         if ((_hashLimitToCategories.Count == 0 || _hashLimitToCategories.Contains(strInnerText))
-                            && BuildWeaponList(_objXmlDocument.SelectNodes(strFilterPrefix + strInnerText.CleanXPath() + "]"), true))
+                            && await BuildWeaponList(_objXmlDocument.SelectNodes(strFilterPrefix + strInnerText.CleanXPath() + "]"), true))
                             _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
                     }
                 }
@@ -266,7 +267,7 @@ namespace Chummer
             _blnSkipUpdate = false;
         }
 
-        private bool BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false)
+        private async Task<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false)
         {
             SuspendLayout();
             if (tabControl.SelectedIndex == 1 && !blnForCategories)
@@ -296,7 +297,7 @@ namespace Chummer
                 XmlNode xmlParentWeaponDataNode = ParentWeapon != null ? _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + ParentWeapon.SourceIDString.CleanXPath() + "]") : null;
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
+                    if (!(await objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon)))
                         continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
@@ -372,24 +373,28 @@ namespace Chummer
 
                 DataSet set = new DataSet("weapons");
                 set.Tables.Add(tabWeapons);
-                if (blnAnyRanged)
+                this.DoThreadSafe(() =>
                 {
-                    dgvWeapons.Columns[6].Visible = true;
-                    dgvWeapons.Columns[7].Visible = true;
-                    dgvWeapons.Columns[8].Visible = true;
-                }
-                else
-                {
-                    dgvWeapons.Columns[6].Visible = false;
-                    dgvWeapons.Columns[7].Visible = false;
-                    dgvWeapons.Columns[8].Visible = false;
-                }
-                dgvWeapons.Columns[9].Visible = blnAnyMelee;
-                dgvWeapons.Columns[0].Visible = false;
-                dgvWeapons.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
-                dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-                dgvWeapons.DataSource = set;
-                dgvWeapons.DataMember = "weapons";
+                    if (blnAnyRanged)
+                    {
+                        dgvWeapons.Columns[6].Visible = true;
+                        dgvWeapons.Columns[7].Visible = true;
+                        dgvWeapons.Columns[8].Visible = true;
+                    }
+                    else
+                    {
+                        dgvWeapons.Columns[6].Visible = false;
+                        dgvWeapons.Columns[7].Visible = false;
+                        dgvWeapons.Columns[8].Visible = false;
+                    }
+
+                    dgvWeapons.Columns[9].Visible = blnAnyMelee;
+                    dgvWeapons.Columns[0].Visible = false;
+                    dgvWeapons.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
+                    dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+                    dgvWeapons.DataSource = set;
+                    dgvWeapons.DataMember = "weapons";
+                });
             }
             else
             {
@@ -398,7 +403,7 @@ namespace Chummer
                 XmlNode xmlParentWeaponDataNode = ParentWeapon != null ? _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + ParentWeapon.SourceIDString.CleanXPath() + "]") : null;
                 foreach (XmlNode objXmlWeapon in objNodeList)
                 {
-                    if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
+                    if (!(await objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon)))
                         continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
@@ -476,18 +481,22 @@ namespace Chummer
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
                             intOverLimit)));
                 }
-                string strOldSelected = lstWeapon.SelectedValue?.ToString();
-                _blnLoading = true;
-                lstWeapon.BeginUpdate();
-                lstWeapon.ValueMember = nameof(ListItem.Value);
-                lstWeapon.DisplayMember = nameof(ListItem.Name);
-                lstWeapon.DataSource = lstWeapons;
-                _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstWeapon.SelectedValue = strOldSelected;
-                else
-                    lstWeapon.SelectedIndex = -1;
-                lstWeapon.EndUpdate();
+
+                this.DoThreadSafe(() =>
+                {
+                    string strOldSelected = lstWeapon.SelectedValue?.ToString();
+                    _blnLoading = true;
+                    lstWeapon.BeginUpdate();
+                    lstWeapon.ValueMember = nameof(ListItem.Value);
+                    lstWeapon.DisplayMember = nameof(ListItem.Name);
+                    lstWeapon.DataSource = lstWeapons;
+                    _blnLoading = false;
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        lstWeapon.SelectedValue = strOldSelected;
+                    else
+                        lstWeapon.SelectedIndex = -1;
+                    lstWeapon.EndUpdate();
+                });
             }
             ResumeLayout();
             return true;
@@ -627,7 +636,7 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private void RefreshList()
+        private async void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
@@ -658,7 +667,7 @@ namespace Chummer
                 sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon[" + sbdFilter + ']');
-            BuildWeaponList(objXmlWeaponList);
+            await BuildWeaponList(objXmlWeaponList);
         }
 
         /// <summary>

@@ -38,7 +38,7 @@ namespace Chummer
 
         public CursorWait(Control objControl = null, bool blnAppStarting = false)
         {
-            if (objControl.IsNullOrDisposed())
+            if (objControl?.IsNullOrDisposed() != false)
             {
                 _objControl = null;
                 lock (_intApplicationWaitCursorsLock)

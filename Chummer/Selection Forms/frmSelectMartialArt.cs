@@ -209,7 +209,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Martial Arts list.
         /// </summary>
-        private void RefreshArtList()
+        private async void RefreshArtList()
         {
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             if (ShowQualities)
@@ -225,7 +225,7 @@ namespace Chummer
             foreach (XPathNavigator objXmlArt in objArtList)
             {
                 string strId = objXmlArt.SelectSingleNode("id")?.Value;
-                if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
+                if (!string.IsNullOrEmpty(strId) && await objXmlArt.RequirementsMet(_objCharacter))
                 {
                     lstMartialArt.Add(new ListItem(strId, objXmlArt.SelectSingleNode("translate")?.Value ?? objXmlArt.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
                 }
