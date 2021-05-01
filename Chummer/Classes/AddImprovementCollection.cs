@@ -471,7 +471,7 @@ namespace Chummer.Classes
                 Improvement.ImprovementType.Restricted, _strUnique);
         }
 
-        public void selecttradition(XmlNode bonusNode)
+        public async void selecttradition(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
@@ -484,7 +484,7 @@ namespace Chummer.Classes
             {
                 // Populate the Magician Traditions list.
                 XPathNavigator xmlTraditionsBaseChummerNode =
-                    _objCharacter.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
+                    (await _objCharacter.LoadDataXPathAsync("traditions.xml")).SelectSingleNode("/chummer");
                 List<ListItem> lstTraditions = new List<ListItem>(30);
                 if (xmlTraditionsBaseChummerNode != null)
                 {
@@ -5514,13 +5514,13 @@ namespace Chummer.Classes
         }
 
         // Check for Black Market Discount.
-        public void blackmarketdiscount(XmlNode bonusNode)
+        public async void blackmarketdiscount(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("blackmarketdiscount");
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
-            XPathNodeIterator nodeList = _objCharacter.LoadDataXPath("options.xml").Select("/chummer/blackmarketpipelinecategories/category");
+            XPathNodeIterator nodeList = (await _objCharacter.LoadDataXPathAsync("options.xml")).Select("/chummer/blackmarketpipelinecategories/category");
             SelectedValue = string.Empty;
             if (nodeList.Count > 0)
             {
@@ -5562,7 +5562,7 @@ namespace Chummer.Classes
         }
 
         // Select Armor (Mostly used for Custom Fit (Stack)).
-        public void selectarmor(XmlNode bonusNode)
+        public async void selectarmor(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
@@ -5572,7 +5572,7 @@ namespace Chummer.Classes
                 LimitSelection = ForcedValue;
 
             // Display the Select Item window and record the value that was entered.
-            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("armor.xml");
+            XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("armor.xml");
             XPathNodeIterator objXmlNodeList;
             if (!string.IsNullOrEmpty(bonusNode.InnerText))
             {
@@ -5634,7 +5634,7 @@ namespace Chummer.Classes
         }
 
         // Select a specific piece of Cyberware.
-        public void selectcyberware(XmlNode bonusNode)
+        public async void selectcyberware(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
@@ -5645,7 +5645,7 @@ namespace Chummer.Classes
 
             // Display the Select Item window and record the value that was entered.
             string strCategory = bonusNode["category"]?.InnerText;
-            XPathNodeIterator objXmlNodeList = _objCharacter.LoadDataXPath("cyberware.xml").Select(!string.IsNullOrEmpty(strCategory)
+            XPathNodeIterator objXmlNodeList = (await _objCharacter.LoadDataXPathAsync("cyberware.xml")).Select(!string.IsNullOrEmpty(strCategory)
                 ? string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/cyberwares/cyberware[(category = '{0}') and ({1})]",
                     strCategory, _objCharacter.Options.BookXPath())
                 : "/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ")]");
@@ -6466,7 +6466,7 @@ namespace Chummer.Classes
             AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.LimitSpiritCategory, addToSelected);
         }
 
-        private void AddSpiritOrSprite(string strXmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "")
+        private async void AddSpiritOrSprite(string strXmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "")
         {
             if (xmlAllowedSpirits == null)
                 throw new ArgumentNullException(nameof(xmlAllowedSpirits));
@@ -6478,7 +6478,7 @@ namespace Chummer.Classes
             }
 
             List<ListItem> lstSpirits = new List<ListItem>();
-            foreach (XPathNavigator xmlSpirit in _objCharacter.LoadDataXPath(strXmlDoc).Select("/chummer/spirits/spirit"))
+            foreach (XPathNavigator xmlSpirit in (await _objCharacter.LoadDataXPathAsync(strXmlDoc)).Select("/chummer/spirits/spirit"))
             {
                 string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
                 if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
@@ -6488,7 +6488,7 @@ namespace Chummer.Classes
 
             if (!string.IsNullOrEmpty(strCritterCategory))
             {
-                foreach (XPathNavigator xmlSpirit in _objCharacter.LoadDataXPath("critters.xml").Select("/chummer/critters/critter[category = " + strCritterCategory.CleanXPath() + "]"))
+                foreach (XPathNavigator xmlSpirit in (await _objCharacter.LoadDataXPathAsync("critters.xml")).Select("/chummer/critters/critter[category = " + strCritterCategory.CleanXPath() + "]"))
                 {
                     string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
                     if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)

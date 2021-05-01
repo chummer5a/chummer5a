@@ -702,13 +702,11 @@ namespace Chummer
             return true;
         }
 
-        private void PopulateXsltList()
+        private async void PopulateXsltList()
         {
-            List<ListItem> lstFiles = XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage, _lstCharacters);
-
             cboXSLT.BeginUpdate();
             cboXSLT.DataSource = null;
-            cboXSLT.DataSource = lstFiles;
+            cboXSLT.DataSource = await XmlManager.GetXslFilesFromLocalDirectory(cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.DefaultLanguage, _lstCharacters);
             cboXSLT.ValueMember = nameof(ListItem.Value);
             cboXSLT.DisplayMember = nameof(ListItem.Name);
             cboXSLT.EndUpdate();

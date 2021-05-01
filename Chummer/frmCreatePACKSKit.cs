@@ -39,7 +39,7 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
@@ -64,7 +64,7 @@ namespace Chummer
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if (XmlManager.LoadXPath("packs.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+            if ((await XmlManager.LoadXPathAsync("packs.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths))
                 .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
                 Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),

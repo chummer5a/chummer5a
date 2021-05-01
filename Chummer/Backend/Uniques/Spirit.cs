@@ -157,7 +157,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public async void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -206,10 +206,10 @@ namespace Chummer
                 {
                     //Dump skills, (optional)powers if present to output
 
-                    XPathNavigator xmlSpiritPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
-                    XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
-
-
+                    XPathNavigator xmlSpiritPowersBaseChummerNode =
+                        (await _objLinkedCharacter.LoadDataXPathAsync("spiritpowers.xml", strLanguageToPrint)).SelectSingleNode("/chummer");
+                    XPathNavigator xmlCritterPowersBaseChummerNode =
+                        (await _objLinkedCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguageToPrint)).SelectSingleNode("/chummer");
 
                     XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                     if (xmlPowersNode != null)
@@ -236,7 +236,7 @@ namespace Chummer
                     xmlPowersNode = objXmlCritterNode["skills"];
                     if (xmlPowersNode != null)
                     {
-                        XPathNavigator xmlSkillsDocument = CharacterObject.LoadDataXPath("skills.xml", strLanguageToPrint);
+                        XPathNavigator xmlSkillsDocument = await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguageToPrint);
                         objWriter.WriteStartElement("skills");
                         foreach (XmlNode xmlSkillNode in xmlPowersNode.ChildNodes)
                         {
@@ -274,7 +274,7 @@ namespace Chummer
                 string strPage = string.Empty;
 
                 if (objXmlCritterNode.TryGetStringFieldQuickly("source", ref strSource))
-                    objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
+                    objWriter.WriteElementString("source", await CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
                 if (objXmlCritterNode.TryGetStringFieldQuickly("altpage", ref strPage) || objXmlCritterNode.TryGetStringFieldQuickly("page", ref strPage))
                     objWriter.WriteElementString("page", strPage);
             }
@@ -288,7 +288,7 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        private void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
+        private async void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
         {
             StringBuilder sbdExtra = new StringBuilder();
             string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
@@ -401,7 +401,7 @@ namespace Chummer
             objWriter.WriteElementString("action", strDisplayAction);
             objWriter.WriteElementString("range", strDisplayRange);
             objWriter.WriteElementString("duration", strDisplayDuration);
-            objWriter.WriteElementString("source", CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
+            objWriter.WriteElementString("source", await CharacterObject.LanguageBookShort(strSource, strLanguageToPrint));
             objWriter.WriteElementString("page", strPage);
             objWriter.WriteEndElement();
         }

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
@@ -58,18 +59,18 @@ namespace Chummer.Backend.Skills
             {
                 if (GlobalOptions.LiveCustomData || _lstDefaultKnowledgeSkills == null)
                 {
-                    return _lstDefaultKnowledgeSkills = DefaultKnowledgeSkills(CharacterObject);
+                    return _lstDefaultKnowledgeSkills = DefaultKnowledgeSkills(CharacterObject).Result;
                 }
                 return _lstDefaultKnowledgeSkills;
             }
         }
 
-        public static IReadOnlyList<ListItem> DefaultKnowledgeSkills(Character objCharacter = null, string strLanguage = "")
+        public static async Task<IReadOnlyList<ListItem>> DefaultKnowledgeSkills(Character objCharacter = null, string strLanguage = "")
         {
             List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
-            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
+            XPathNavigator xmlSkillsDocument = await XmlManager.LoadXPathAsync("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
             foreach (XPathNavigator xmlSkill in xmlSkillsDocument.Select("/chummer/knowledgeskills/skill"))
             {
                 string strName = xmlSkill.SelectSingleNode("name")?.Value ?? string.Empty;
@@ -87,7 +88,7 @@ namespace Chummer.Backend.Skills
             {
                 if (GlobalOptions.LiveCustomData || _lstKnowledgeTypes == null)
                 {
-                    return _lstKnowledgeTypes = KnowledgeTypes(CharacterObject);
+                    return _lstKnowledgeTypes = KnowledgeTypes(CharacterObject).Result;
                 }
                 return _lstKnowledgeTypes;
             }
@@ -99,12 +100,12 @@ namespace Chummer.Backend.Skills
         /// <param name="objCharacter"></param>
         /// <param name="strLanguage"></param>
         /// <returns></returns>
-        public static IReadOnlyList<ListItem> KnowledgeTypes(Character objCharacter = null, string strLanguage = "")
+        public static async Task<IReadOnlyList<ListItem>> KnowledgeTypes(Character objCharacter = null, string strLanguage = "")
         {
             List<ListItem> lstReturn = new List<ListItem>();
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
-            XPathNavigator xmlSkillsDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
+            XPathNavigator xmlSkillsDocument = await XmlManager.LoadXPathAsync("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths, strLanguage);
             foreach (XPathNavigator objXmlCategory in xmlSkillsDocument.Select("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 string strInnerText = objXmlCategory.Value;
@@ -179,10 +180,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private void LoadSkillFromData(string strInputSkillName)
+        private async void LoadSkillFromData(string strInputSkillName)
         {
-            string strSkillName = GetSkillNameFromData(strInputSkillName);
-            XPathNavigator xmlSkillNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath() + "]");
+            string strSkillName = await GetSkillNameFromData(strInputSkillName);
+            XPathNavigator xmlSkillNode = (await CharacterObject.LoadDataXPathAsync("skills.xml"))
+                .SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath() + "]");
 
             if (xmlSkillNode == null)
             {
@@ -209,14 +211,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private string GetSkillNameFromData(string strInputSkillName)
+        private async Task<string> GetSkillNameFromData(string strInputSkillName)
         {
             if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
             {
                 return strInputSkillName;
             }
 
-            XPathNavigator xmlSkillTranslationNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() + "]");
+            XPathNavigator xmlSkillTranslationNode = (await CharacterObject.LoadDataXPathAsync("skills.xml"))
+                .SelectSingleNode("/chummer/knowledgeskills/skill[translate = " + strInputSkillName.CleanXPath() + "]");
 
             if (xmlSkillTranslationNode == null)
             {
@@ -541,7 +544,7 @@ namespace Chummer.Backend.Skills
 
         }
 
-        public void Load(XmlNode xmlNode)
+        public async void Load(XmlNode xmlNode)
         {
             if (xmlNode == null)
                 return;
@@ -556,7 +559,7 @@ namespace Chummer.Backend.Skills
             // Legacy shim
             if (SkillId.Equals(Guid.Empty))
             {
-                XPathNavigator objDataNode = CharacterObject.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/knowledgeskills/skill[name = " + Name.CleanXPath() + "]");
+                XPathNavigator objDataNode = (await CharacterObject.LoadDataXPathAsync("skills.xml")).SelectSingleNode("/chummer/knowledgeskills/skill[name = " + Name.CleanXPath() + "]");
                 if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                     SkillId = guidTemp;
             }

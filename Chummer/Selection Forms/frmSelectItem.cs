@@ -45,7 +45,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmSelectItem_Load(object sender, EventArgs e)
+        private async void frmSelectItem_Load(object sender, EventArgs e)
         {
             List<ListItem> lstItems = new List<ListItem>();
 
@@ -95,7 +95,7 @@ namespace Chummer
                 cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
                 if (!_objCharacter.Options.LicenseRestricted)
                 {
-                    foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml").Select("/chummer/licenses/license"))
+                    foreach (XPathNavigator objNode in (await _objCharacter.LoadDataXPathAsync("licenses.xml")).Select("/chummer/licenses/license"))
                     {
                         string strInnerText = objNode.Value;
                         if (!string.IsNullOrEmpty(strInnerText))

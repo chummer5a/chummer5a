@@ -104,12 +104,12 @@ namespace Chummer
 
         #endregion
 
-        private void BuildList()
+        private async void BuildList()
         {
             string strSelectedCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
-            XPathNodeIterator xmlWeaponList = _objCharacter.LoadDataXPath("weapons.xml")
+            XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml"))
                 .Select(string.Format(GlobalOptions.InvariantCultureInfo,
                     "/chummer/weapons/weapon[(category = {0} or useskill = {1}) and ({2})]",
                     (strSelectedCategory + 's').CleanXPath(), strSelectedCategory.CleanXPath(),
@@ -127,7 +127,7 @@ namespace Chummer
                 }
             }
 
-            foreach (XPathNavigator xmlSpec in _objCharacter.LoadDataXPath("skills.xml")
+            foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml"))
                 .Select("/chummer/skills/skill[name = " + strSelectedCategory.CleanXPath() + " and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
             {
                 string strName = xmlSpec.Value;

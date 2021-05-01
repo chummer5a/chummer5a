@@ -29,6 +29,7 @@ using System.Net;
 #endif
 using Application = System.Windows.Forms.Application;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml.XPath;
 using NLog;
 
@@ -687,12 +688,12 @@ namespace Chummer
             PopulateColorModes();
         }
 
-        private void RefreshGlobalSourcebookInfosListView()
+        private async void RefreshGlobalSourcebookInfosListView()
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
             List<ListItem> lstSourcebookInfos = new List<ListItem>();
-            foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", null, _strSelectedLanguage).Select("/chummer/books/book"))
+            foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync("books.xml", null, _strSelectedLanguage)).Select("/chummer/books/book"))
             {
                 string strCode = objXmlBook.SelectSingleNode("code")?.Value;
                 if (!string.IsNullOrEmpty(strCode))
@@ -964,13 +965,13 @@ namespace Chummer
             nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
         }
 
-        private void PopulatePDFParameters()
+        private async void PopulatePDFParameters()
         {
             List<ListItem> lstPdfParameters = new List<ListItem>();
 
             int intIndex = 0;
 
-            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", null, _strSelectedLanguage).Select("/chummer/pdfarguments/pdfargument"))
+            foreach (XPathNavigator objXmlNode in (await XmlManager.LoadXPathAsync("options.xml", null, _strSelectedLanguage)).Select("/chummer/pdfarguments/pdfargument"))
             {
                 string strValue = objXmlNode.SelectSingleNode("value")?.Value;
                 lstPdfParameters.Add(new ListItem(strValue, objXmlNode.SelectSingleNode("translate")?.Value ?? objXmlNode.SelectSingleNode("name")?.Value ?? string.Empty));
@@ -1101,12 +1102,12 @@ namespace Chummer
             cboSheetLanguage.EndUpdate();
         }
 
-        public static List<ListItem> GetSheetLanguageList()
+        public static async Task<List<ListItem>> GetSheetLanguageList()
         {
             HashSet<string> setLanguagesWithSheets = new HashSet<string>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            foreach (XPathNavigator xmlSheetLanguage in XmlManager.LoadXPath("sheets.xml").Select("/chummer/sheets/@lang"))
+            foreach (XPathNavigator xmlSheetLanguage in (await XmlManager.LoadXPathAsync("sheets.xml")).Select("/chummer/sheets/@lang"))
             {
                 setLanguagesWithSheets.Add(xmlSheetLanguage.Value);
             }
@@ -1148,12 +1149,12 @@ namespace Chummer
             return lstSheetLanguages;
         }
 
-        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
+        private async Task<List<ListItem>> GetXslFilesFromLocalDirectory(string strLanguage)
         {
             List<ListItem> lstSheets = new List<ListItem>();
 
             // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
-            foreach (XPathNavigator xmlSheet in XmlManager.LoadXPath("sheets.xml", null, strLanguage).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
+            foreach (XPathNavigator xmlSheet in (await XmlManager.LoadXPathAsync("sheets.xml", null, strLanguage)).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
                 string strFile = xmlSheet.SelectSingleNode("filename")?.Value ?? string.Empty;
                 lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, strFile) : strFile, xmlSheet.SelectSingleNode("name")?.Value ?? string.Empty));
@@ -1162,12 +1163,12 @@ namespace Chummer
             return lstSheets;
         }
 
-        private void PopulateXsltList()
+        private async void PopulateXsltList()
         {
             string strSelectedSheetLanguage = cboSheetLanguage.SelectedValue?.ToString();
             imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(strSelectedSheetLanguage?.Substring(3, 2));
 
-            List<ListItem> lstFiles = GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
+            List<ListItem> lstFiles = await GetXslFilesFromLocalDirectory(strSelectedSheetLanguage);
 
             string strOldSelected = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
             // Strip away the language prefix

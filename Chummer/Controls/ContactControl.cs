@@ -743,7 +743,7 @@ namespace Chummer
             }
         }
 
-        private void LoadStatBlockLists()
+        private async void LoadStatBlockLists()
         {
             // Read the list of Categories from the XML file.
             List<ListItem> lstMetatypes = new List<ListItem>(10)
@@ -775,7 +775,7 @@ namespace Chummer
                 ListItem.Blank
             };
 
-            XPathNavigator xmlContactsBaseNode = _objContact.CharacterObject.LoadDataXPath("contacts.xml").SelectSingleNode("/chummer");
+            XPathNavigator xmlContactsBaseNode = (await _objContact.CharacterObject.LoadDataXPathAsync("contacts.xml")).SelectSingleNode("/chummer");
             if (xmlContactsBaseNode != null)
             {
                 foreach (XPathNavigator xmlNode in xmlContactsBaseNode.Select("genders/gender"))
@@ -816,7 +816,7 @@ namespace Chummer
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
-            foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("metatypes.xml").Select("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatypeNode in (await _objContact.CharacterObject.LoadDataXPathAsync("metatypes.xml")).Select("/chummer/metatypes/metatype"))
             {
                 string strName = xmlMetatypeNode.SelectSingleNode("name")?.Value;
                 string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNode("translate")?.Value ?? strName;

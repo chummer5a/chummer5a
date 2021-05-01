@@ -6030,9 +6030,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
+        public async Task<string> LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "")
         {
-            return CommonFunctions.LanguageBookCodeFromAltCode(strAltCode, strLanguage, this);
+            return await CommonFunctions.LanguageBookCodeFromAltCode(strAltCode, strLanguage, this);
         }
 
         /// <summary>
@@ -6040,9 +6040,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public string LanguageBookShort(string strCode, string strLanguage = "")
+        public async Task<string> LanguageBookShort(string strCode, string strLanguage = "")
         {
-            return CommonFunctions.LanguageBookShort(strCode, strLanguage, this);
+            return await CommonFunctions.LanguageBookShort(strCode, strLanguage, this);
         }
 
         /// <summary>
@@ -6050,9 +6050,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public string LanguageBookLong(string strCode, string strLanguage = "")
+        public async Task<string> LanguageBookLong(string strCode, string strLanguage = "")
         {
-            return CommonFunctions.LanguageBookLong(strCode, strLanguage, this);
+            return await CommonFunctions.LanguageBookLong(strCode, strLanguage, this);
         }
 
         /// <summary>
@@ -16535,7 +16535,7 @@ namespace Chummer
                         {
                             if (strRaceString == "Metasapient")
                                 strRaceString = "A.I.";
-                            foreach (XPathNavigator xmlMetatype in LoadDataXPath("metatypes.xml").Select("/chummer/metatypes/metatype"))
+                            foreach (XPathNavigator xmlMetatype in (await LoadDataXPathAsync("metatypes.xml")).Select("/chummer/metatypes/metatype"))
                             {
                                 string strMetatypeName = xmlMetatype.SelectSingleNode("name").Value;
                                 if (strMetatypeName == strRaceString)

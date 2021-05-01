@@ -192,7 +192,7 @@ namespace Chummer
             }
         }
 
-        private void frmCareer_Load(object sender, EventArgs e)
+        private async void frmCareer_Load(object sender, EventArgs e)
         {
             using (var op_load_frm_career = Timekeeper.StartSyncron("load_frm_career", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
@@ -354,7 +354,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
+                            (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNode("/chummer");
                         List<ListItem> lstTraditions = new List<ListItem>(30);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -516,7 +516,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
+                            (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNode("/chummer");
                         List<ListItem> lstStreams = new List<ListItem>(5);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -553,7 +553,7 @@ namespace Chummer
                         cboAttributeCategory.Visible = CharacterObject.MetatypeCategory == "Shapeshifter";
                         if (CharacterObject.MetatypeCategory == "Shapeshifter")
                         {
-                            XPathNavigator objDoc = CharacterObject.LoadDataXPath("metatypes.xml");
+                            XPathNavigator objDoc = await CharacterObject.LoadDataXPathAsync("metatypes.xml");
                             XPathNavigator node =
                                 objDoc.SelectSingleNode(
                                     "/chummer/metatypes/metatype[name = " + CharacterObject.Metatype.CleanXPath() + "]");
@@ -1846,7 +1846,7 @@ namespace Chummer
             }
         }
 
-        private void OnCharacterObjectOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterObjectOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             IsCharacterUpdateRequested = true;
             switch (e.PropertyName)
@@ -1919,7 +1919,7 @@ namespace Chummer
                     treCritterPowers.SortCustomOrder();
 
                     XPathNavigator xmlTraditionsBaseChummerNode =
-                        CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
+                        (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNode("/chummer");
                     List<ListItem> lstTraditions = new List<ListItem>(30);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -2033,7 +2033,7 @@ namespace Chummer
 
                     // Populate the Technomancer Streams list.
                     xmlTraditionsBaseChummerNode =
-                        CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
+                        (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNode("/chummer");
                     List<ListItem> lstStreams = new List<ListItem>(5);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -5150,7 +5150,7 @@ namespace Chummer
             while (blnAddAgain);
         }
 
-        private void cmdDeleteQuality_Click(object sender, EventArgs e)
+        private async void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
             if (!(treQualities.SelectedNode?.Tag is Quality objSelectedQuality))
@@ -5159,7 +5159,7 @@ namespace Chummer
             // Can't do a foreach because we're removing items, this is the next best thing
             Quality objQualityToRemove =
                 CharacterObject.Qualities.LastOrDefault(x => x.InternalId == strInternalIDToRemove);
-            if (!RemoveQuality(objQualityToRemove))
+            if (!(await RemoveQuality(objQualityToRemove)))
                 return;
 
             IsCharacterUpdateRequested = true;
@@ -5213,7 +5213,7 @@ namespace Chummer
             }
         }
 
-        private bool RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
+        private async Task<bool> RemoveQuality(Quality objSelectedQuality, bool blnConfirmDelete = true, bool blnCompleteDelete = true)
         {
             XmlNode objXmlDeleteQuality = objSelectedQuality.GetNode();
             bool blnMetatypeQuality = false;
@@ -5320,7 +5320,7 @@ namespace Chummer
             // Remove any Critter Powers that are gained through the Quality (Infected).
             if (objXmlDeleteQuality.SelectNodes("powers/power")?.Count > 0)
             {
-                foreach (XPathNavigator objXmlPower in CharacterObject.LoadDataXPath("critterpowers.xml").Select("optionalpowers/optionalpower"))
+                foreach (XPathNavigator objXmlPower in (await CharacterObject.LoadDataXPathAsync("critterpowers.xml")).Select("optionalpowers/optionalpower"))
                 {
                     string strExtra = objXmlPower.SelectSingleNode("@select")?.Value;
 
@@ -5425,7 +5425,7 @@ namespace Chummer
             }
         }
 
-        private void nudQualityLevel_ValueChanged(object sender, EventArgs e)
+        private async void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
             // Locate the selected Quality.
             if (treQualities.SelectedNode?.Tag is Quality objSelectedQuality)
@@ -5557,13 +5557,13 @@ namespace Chummer
                 for (; nudQualityLevel.Value < intCurrentLevels; --intCurrentLevels)
                 {
                     Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(x => x.SourceIDString == objSelectedQuality.SourceIDString && x.Extra == objSelectedQuality.Extra && x.SourceName == objSelectedQuality.SourceName && x.InternalId != objSelectedQuality.InternalId);
-                    if (objInvisibleQuality != null && RemoveQuality(objInvisibleQuality, false, false))
+                    if (objInvisibleQuality != null && await RemoveQuality(objInvisibleQuality, false, false))
                     {
                         IsCharacterUpdateRequested = true;
 
                         IsDirty = true;
                     }
-                    else if (RemoveQuality(objSelectedQuality, false, false))
+                    else if (await RemoveQuality(objSelectedQuality, false, false))
                     {
                         IsCharacterUpdateRequested = true;
 

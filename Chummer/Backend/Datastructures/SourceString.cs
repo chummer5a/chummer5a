@@ -42,7 +42,7 @@ namespace Chummer
                     int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
             }
 
-            Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
+            Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter).Result;
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
                 _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
@@ -58,7 +58,7 @@ namespace Chummer
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter).Result;
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
                 _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
@@ -74,7 +74,7 @@ namespace Chummer
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             _intPage = intPage;
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
+            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter).Result;
             _intHashCode = new { Language, CultureInfo, Code, Page }.GetHashCode();
             if (!_dicCachedStrings.ContainsKey(Language))
                 _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(

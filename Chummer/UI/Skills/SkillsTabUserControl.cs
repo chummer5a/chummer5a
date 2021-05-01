@@ -24,6 +24,7 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -83,7 +84,7 @@ namespace Chummer.UI.Skills
                 RealLoad();
         }
 
-        public void RealLoad()
+        public async void RealLoad()
         {
             if (ParentForm is CharacterShared frmParent)
                 _objCharacter = frmParent.CharacterObject;
@@ -93,8 +94,8 @@ namespace Chummer.UI.Skills
                 Utils.BreakIfDebug();
             }
 
-            _lstDropDownActiveSkills = GenerateDropdownFilter(_objCharacter);
-            _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter(_objCharacter);
+            _lstDropDownActiveSkills = await GenerateDropdownFilter(_objCharacter);
+            _lstDropDownKnowledgeSkills = await GenerateKnowledgeDropdownFilter(_objCharacter);
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
@@ -238,7 +239,7 @@ namespace Chummer.UI.Skills
                 lblKnowledgeSkillPointsTitle.Visible = false;
             }
 
-            btnExotic.Visible = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
+            btnExotic.Visible = (await _objCharacter.LoadDataXPathAsync("skills.xml")).SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
 
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
@@ -488,7 +489,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static List<Tuple<string, Predicate<Skill>>> GenerateDropdownFilter(Character objCharacter)
+        private static async Task<List<Tuple<string, Predicate<Skill>>>> GenerateDropdownFilter(Character objCharacter)
         {
             List<Tuple<string, Predicate<Skill>>> ret = new List<Tuple<string, Predicate<Skill>>>(7)
             {
@@ -513,8 +514,8 @@ namespace Chummer.UI.Skills
             string strColon = LanguageManager.GetString("String_Colon");
 
             string strCategory = LanguageManager.GetString("Label_Category");
-            foreach (XPathNavigator xmlCategoryNode in XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
-                .Select("/chummer/categories/category[@type = \"active\"]"))
+            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
+            foreach (XPathNavigator xmlCategoryNode in xmlDocument.Select("/chummer/categories/category[@type = \"active\"]"))
             {
                 string strName = xmlCategoryNode.Value;
                 if (!string.IsNullOrEmpty(strName))
@@ -533,8 +534,7 @@ namespace Chummer.UI.Skills
             }
 
             string strSkillGroupLabel = LanguageManager.GetString("String_ExpenseSkillGroup");
-            foreach (XPathNavigator xmlSkillGroupNode in XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
-                .Select("/chummer/skillgroups/name"))
+            foreach (XPathNavigator xmlSkillGroupNode in xmlDocument.Select("/chummer/skillgroups/name"))
             {
                 string strName = xmlSkillGroupNode.Value;
                 if (!string.IsNullOrEmpty(strName))
@@ -609,7 +609,7 @@ namespace Chummer.UI.Skills
             return ret;
         }
 
-        private static List<Tuple<string, Predicate<KnowledgeSkill>>> GenerateKnowledgeDropdownFilter(Character objCharacter)
+        private static async Task<List<Tuple<string, Predicate<KnowledgeSkill>>>> GenerateKnowledgeDropdownFilter(Character objCharacter)
         {
             List<Tuple<string, Predicate<KnowledgeSkill>>> ret = new List<Tuple<string, Predicate<KnowledgeSkill>>>(5)
             {
@@ -631,7 +631,7 @@ namespace Chummer.UI.Skills
             string strColon = LanguageManager.GetString("String_Colon");
 
             string strCategory = LanguageManager.GetString("Label_Category");
-            foreach (XPathNavigator xmlCategoryNode in XmlManager.LoadXPath("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths)
+            foreach (XPathNavigator xmlCategoryNode in (await XmlManager.LoadXPathAsync("skills.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths))
                 .Select("/chummer/categories/category[@type = \"knowledge\"]"))
             {
                 string strName = xmlCategoryNode.Value;
@@ -751,7 +751,7 @@ namespace Chummer.UI.Skills
                 _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
 
-        private void btnKnowledge_Click(object sender, EventArgs e)
+        private async void btnKnowledge_Click(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -760,7 +760,7 @@ namespace Chummer.UI.Skills
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
                 })
                 {
-                    form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter));
+                    form.SetDropdownItemsMode(await KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter));
 
                     if (form.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;

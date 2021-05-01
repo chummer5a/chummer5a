@@ -62,7 +62,7 @@ namespace Chummer.UI.Skills
             cmdDelete.DoDatabinding("Visible", _skill, nameof(Skill.AllowDelete));
 
             cboType.BeginUpdate();
-            cboType.DataSource = KnowledgeSkill.KnowledgeTypes(_skill.CharacterObject);
+            cboType.DataSource = KnowledgeSkill.KnowledgeTypes(_skill.CharacterObject).Result;
             cboType.DisplayMember = nameof(ListItem.Name);
             cboType.ValueMember = nameof(ListItem.Value);
             cboType.DoDatabinding("SelectedValue", _skill, nameof(KnowledgeSkill.Type));
@@ -75,7 +75,7 @@ namespace Chummer.UI.Skills
 
             cboName.BeginUpdate();
             cboName.DoDatabinding("Visible", _skill, nameof(Skill.AllowNameChange));
-            cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills(_skill.CharacterObject);
+            cboName.DataSource = KnowledgeSkill.DefaultKnowledgeSkills(_skill.CharacterObject).Result;
             cboName.DisplayMember = nameof(ListItem.Name);
             cboName.ValueMember = nameof(ListItem.Value);
             cboName.SelectedIndex = -1;

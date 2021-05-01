@@ -754,17 +754,16 @@ namespace Chummer
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
                         CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
                         CancellationToken objCancellationToken = objCancellationTokenSource.Token;
-                        object strReturnLock = new object();
                         if (!string.IsNullOrEmpty(strPreferFile))
                         {
                             foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
                                 in s_LstAXPathsToSearch)
                             {
-                                Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
+                                Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), async (objXPathPair, objState) =>
                                 {
-                                    foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
-                                        .Select(objXPathPair.Item2))
+                                    XPathNavigator xmlBase = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                        objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
+                                    foreach (XPathNavigator objNode in xmlBase.Select(objXPathPair.Item2))
                                     {
                                         if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                             return;
@@ -775,8 +774,8 @@ namespace Chummer
                                             continue;
                                         objState.Break();
                                         objCancellationTokenSource.Cancel();
-                                        lock (strReturnLock)
-                                            strReturn = strTranslate;
+                                        // ReSharper disable once AccessToModifiedClosure
+                                        Interlocked.Exchange(ref strReturn, strTranslate);
                                         break;
                                     }
                                 });
@@ -787,11 +786,11 @@ namespace Chummer
                             foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
                                 in s_LstAXPathsToSearch)
                             {
-                                Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                                Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
                                 {
-                                    foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
-                                        .Select(objXPathPair.Item2))
+                                    XPathNavigator xmlBase = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                        objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
+                                    foreach (XPathNavigator objNode in xmlBase.Select(objXPathPair.Item2))
                                     {
                                         if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                             return;
@@ -802,8 +801,8 @@ namespace Chummer
                                             continue;
                                         objState.Break();
                                         objCancellationTokenSource.Cancel();
-                                        lock (strReturnLock)
-                                            strReturn = strTranslate;
+                                        // ReSharper disable once AccessToModifiedClosure
+                                        Interlocked.Exchange(ref strReturn, strTranslate);
                                         break;
                                     }
                                 });
@@ -887,17 +886,16 @@ namespace Chummer
             string strExtraNoQuotes = strReturn.FastEscape('\"');
             CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objCancellationToken = objCancellationTokenSource.Token;
-            object strReturnLock = new object();
             if (!string.IsNullOrEmpty(strPreferFile))
             {
                 foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
                     in s_LstAXPathsToSearch)
                 {
-                    Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
+                    Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), async (objXPathPair, objState) =>
                     {
-                        foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
-                            .Select(objXPathPair.Item2))
+                        XPathNavigator xmlBase = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                        foreach (XPathNavigator objNode in xmlBase.Select(objXPathPair.Item2))
                         {
                             if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                 return;
@@ -908,8 +906,7 @@ namespace Chummer
                                 continue;
                             objState.Break();
                             objCancellationTokenSource.Cancel();
-                            lock (strReturnLock)
-                                strReturn = strOriginal;
+                            Interlocked.Exchange(ref strReturn, strOriginal);
                             break;
                         }
                     });
@@ -920,11 +917,11 @@ namespace Chummer
                 foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
                     in s_LstAXPathsToSearch)
                 {
-                    Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                    Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
                     {
-                        foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
-                            .Select(objXPathPair.Item2))
+                        XPathNavigator xmlBase = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                        foreach (XPathNavigator objNode in xmlBase.Select(objXPathPair.Item2))
                         {
                             if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                 return;
@@ -935,8 +932,7 @@ namespace Chummer
                                 continue;
                             objState.Break();
                             objCancellationTokenSource.Cancel();
-                            lock (strReturnLock)
-                                strReturn = strOriginal;
+                            Interlocked.Exchange(ref strReturn, strOriginal);
                             break;
                         }
                     });
@@ -945,7 +941,7 @@ namespace Chummer
             return strReturn;
         }
 
-        public static void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null, CultureInfo defaultCulture = null)
+        public static async void PopulateSheetLanguageList(ElasticComboBox cboLanguage, string strSelectedSheet, IEnumerable<Character> lstCharacters = null, CultureInfo defaultCulture = null)
         {
             if (cboLanguage == null)
                 throw new ArgumentNullException(nameof(cboLanguage));
@@ -961,14 +957,14 @@ namespace Chummer
             cboLanguage.BeginUpdate();
             cboLanguage.ValueMember = "Value";
             cboLanguage.DisplayMember = "Name";
-            cboLanguage.DataSource = GetSheetLanguageList(lstCharacters);
+            cboLanguage.DataSource = await GetSheetLanguageList(lstCharacters);
             cboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (cboLanguage.SelectedIndex == -1)
                 cboLanguage.SelectedValue = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.DefaultLanguage;
             cboLanguage.EndUpdate();
         }
 
-        public static IList<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
+        public static async Task<List<ListItem>> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
         {
             List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
@@ -998,7 +994,7 @@ namespace Chummer
                     continue;
 
                 string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (XmlManager.GetXslFilesFromLocalDirectory(strLanguageCode, lstCharacterToUse, true).Count > 0)
+                if ((await XmlManager.GetXslFilesFromLocalDirectory(strLanguageCode, lstCharacterToUse, true)).Count > 0)
                 {
                     lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
                 }
