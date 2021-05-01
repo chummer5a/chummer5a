@@ -6283,6 +6283,7 @@ namespace Chummer
             }
 
             treVehicles.SelectedNode.Text = objLocation.DisplayName();
+
             IsDirty = true;
         }
 

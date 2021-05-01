@@ -1025,7 +1025,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
             objWriter.WriteElementString("vehiclename", CustomName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
-            objWriter.WriteElementString("location", Location?.DisplayName());
+            objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
@@ -3200,13 +3200,7 @@ namespace Chummer.Backend.Equipment
             // Populate the list of Vehicle Locations.
             foreach (Location objLocation in Locations)
             {
-                TreeNode objLocationNode = new TreeNode
-                {
-                    Tag = objLocation,
-                    Text = objLocation.DisplayName(),
-                    ContextMenuStrip = cmsVehicleLocation
-                };
-                lstChildNodes.Add(objLocationNode);
+                lstChildNodes.Add(objLocation.CreateTreeNode(cmsVehicleLocation));
             }
 
             // VehicleMods.

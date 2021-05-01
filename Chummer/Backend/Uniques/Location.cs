@@ -30,7 +30,7 @@ namespace Chummer
     /// <summary>
     /// A Location.
     /// </summary>
-    [DebuggerDisplay("{DisplayName()}")]
+    [DebuggerDisplay("{nameof(Name)}")]
     public class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort
     {
         private Guid _guiID;
@@ -92,14 +92,15 @@ namespace Chummer
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Print(XmlTextWriter objWriter)
+        /// <param name="strLanguageToPrint">Language in which to print</param>
+        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("location");
             objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", DisplayNameShort());
-            objWriter.WriteElementString("fullname", DisplayName());
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -125,19 +126,25 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort()
+        public string DisplayNameShort(string strLanguage = "")
         {
-            return Name;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
+            return strLanguage != GlobalOptions.Language
+                ? LanguageManager.TranslateExtra(GlobalOptions.Language != GlobalOptions.DefaultLanguage
+                    ? LanguageManager.ReverseTranslateExtra(Name, GlobalOptions.Language, _objCharacter)
+                    : Name, strLanguage, _objCharacter)
+                : Name;
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public string DisplayName()
+        public string DisplayName(string strLanguage = "")
         {
-            string strReturn = DisplayNameShort();
-
-            return strReturn;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
+            return DisplayNameShort(strLanguage);
         }
 
         /// <summary>
@@ -166,7 +173,7 @@ namespace Chummer
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
-            string strText = DisplayName();
+            string strText = DisplayName(GlobalOptions.Language);
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
