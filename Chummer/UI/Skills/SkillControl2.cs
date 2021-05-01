@@ -591,13 +591,23 @@ namespace Chummer.UI.Skills
             }
         }
 
+
+        /// <summary>
+        /// Refreshes the Tooltip and Displayed Dice Pool. Can be used in another Thread
+        /// </summary>
         private void SkillControl2_RefreshPoolTooltipAndDisplay()
         {
-            string backgroundCalc = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.Text = backgroundCalc);
+            if (_blnLoading || lblModifiedRating.Text != 0.ToString(GlobalOptions.CultureInfo))
+            {
+                string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
+                lblModifiedRating.DoThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
+            }
 
-            backgroundCalc = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
-            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalc);
+            if (_blnLoading || (!_objSkill.Default && !_objSkill.Leveled))
+            {
+                string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+                lblModifiedRating.DoThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
+            }
         }
     }
 }
