@@ -7138,8 +7138,8 @@
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>6(c)</ammo>
-      <avail>0</avail>
-      <cost>0</cost>
+      <avail>10F</avail>
+      <cost>3500</cost>
       <source>SR5</source>
       <page>428</page>
       <accessorymounts>
@@ -7218,8 +7218,8 @@
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(ml)</ammo>
-      <avail>0</avail>
-      <cost>0</cost>
+      <avail>8R</avail>
+      <cost>600</cost>
       <source>SR5</source>
       <page>449</page>
       <range>Light Crossbows</range>
