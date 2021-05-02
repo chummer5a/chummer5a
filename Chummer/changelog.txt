@@ -20,6 +20,7 @@ Application Changes:
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 - Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
+- Added the ability to track sustained spells and complex forms in the Career mode. They are found in their respective tabs. Psyche is also supported.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -107,6 +108,15 @@ Changed/New Strings:
 - Message_MergeIdentical
 - MessageTitle_MergeIdentical
 - Message_Load_Error_Warning
+- String_DeleteShort
+- Message_DeleteSustainedSpell
+- Button_Sustain
+- Label_PsycheActive
+- Label_SustainedSelf
+- Label_SustainedForce
+- Label_NetHits
+- Label_Options_DicePenaltySustaining
+- Tip_Skill_Sustain
 
 Build 214
 Application Fixes:
