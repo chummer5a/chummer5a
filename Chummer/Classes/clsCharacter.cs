@@ -2801,7 +2801,8 @@ namespace Chummer
 
                         objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
                         bool blnHasOldQualities = false;
-                        xmlRootQualitiesNode = (await LoadDataAsync("qualities.xml")).SelectSingleNode("/chummer/qualities");
+                        xmlRootQualitiesNode =
+                            LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
                         foreach (XmlNode objXmlQuality in objXmlNodeList)
                         {
                             if (objXmlQuality["name"] != null)
@@ -3032,7 +3033,8 @@ namespace Chummer
                             !string.IsNullOrEmpty(strTemp) && RESEnabled)
                         {
                             // Legacy load a Technomancer tradition
-                            XmlNode xmlTraditionListDataNode = (await LoadDataAsync("streams.xml")).SelectSingleNode("/chummer/traditions");
+                            XmlNode xmlTraditionListDataNode =
+                                LoadData("streams.xml").SelectSingleNode("/chummer/traditions");
                             if (xmlTraditionListDataNode != null)
                             {
                                 XmlNode xmlTraditionDataNode =
@@ -3078,7 +3080,8 @@ namespace Chummer
                             // Not null but doesn't have children -> legacy load a magical tradition
                             else if (xpathTraditionNavigator != null && MAGEnabled)
                             {
-                                XmlNode xmlTraditionListDataNode = (await LoadDataAsync("traditions.xml")).SelectSingleNode("/chummer/traditions");
+                                XmlNode xmlTraditionListDataNode =
+                                    LoadData("traditions.xml").SelectSingleNode("/chummer/traditions");
                                 if (xmlTraditionListDataNode != null)
                                 {
                                     xmlCharacterNavigator.TryGetStringFieldQuickly("tradition", ref strTemp);
@@ -3892,7 +3895,7 @@ namespace Chummer
                         if (!blnFoundUnarmed)
                         {
                             // Add the Unarmed Attack Weapon to the character.
-                            XmlDocument objXmlWeaponDoc = await LoadDataAsync("weapons.xml");
+                            XmlDocument objXmlWeaponDoc = LoadData("weapons.xml");
                             XmlNode objXmlWeapon =
                                 objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                             if (objXmlWeapon != null)
@@ -16896,7 +16899,7 @@ namespace Chummer
                             " (15)"
                         };
                         // Qualities
-                        XmlDocument xmlQualitiesDocument = await LoadDataAsync("qualities.xml");
+                        XmlDocument xmlQualitiesDocument = LoadData("qualities.xml");
                         foreach (XPathNavigator xmlQualityToImport in xmlStatBlockBaseNode.Select(
                             "qualities/positive/quality[traitcost/@bp != \"0\"]"))
                         {
@@ -17255,8 +17258,8 @@ namespace Chummer
                     using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
                     {
                         // Armor.
-                        xmlGearDocument = await LoadDataAsync("gear.xml");
-                        XmlDocument xmlArmorDocument = await LoadDataAsync("armor.xml");
+                        xmlGearDocument = LoadData("gear.xml");
+                        XmlDocument xmlArmorDocument = LoadData("armor.xml");
                         foreach (XPathNavigator xmlArmorToImport in xmlStatBlockBaseNode.Select(
                             "gear/armor/item[@useradded != \"no\"]"))
                         {
@@ -17522,7 +17525,7 @@ namespace Chummer
                     {
                         // Spells.
                         xmlNodeList = xmlStatBlockBaseNode.Select("magic/spells/spell");
-                        XmlDocument xmlSpellDocument = await LoadDataAsync("spells.xml");
+                        XmlDocument xmlSpellDocument = LoadData("spells.xml");
                         foreach (XPathNavigator xmlHeroLabSpell in xmlNodeList)
                         {
                             string strSpellName = xmlHeroLabSpell.SelectSingleNode("@name")?.Value;
@@ -17780,7 +17783,7 @@ namespace Chummer
                     {
                         // Powers.
                         xmlNodeList = xmlStatBlockBaseNode.Select("magic/adeptpowers/adeptpower");
-                        XmlDocument xmlPowersDocument = await LoadDataAsync("powers.xml");
+                        XmlDocument xmlPowersDocument = LoadData("powers.xml");
                         foreach (XPathNavigator xmlHeroLabPower in xmlNodeList)
                         {
                             string strPowerName = xmlHeroLabPower.SelectSingleNode("@name")?.Value;
@@ -17870,7 +17873,7 @@ namespace Chummer
                             lstTextStatBlockLines?.FirstOrDefault(x => x.StartsWith("Complex Forms:", StringComparison.Ordinal));
                         if (!string.IsNullOrEmpty(strComplexFormsLine))
                         {
-                            XmlDocument xmlComplexFormsDocument = await LoadDataAsync("complexforms.xml");
+                            XmlDocument xmlComplexFormsDocument = LoadData("complexforms.xml");
 
                             string[] astrComplexForms =
                                 strComplexFormsLine.TrimStartOnce("Complex Forms:").Trim().Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -18024,7 +18027,7 @@ namespace Chummer
                                 string strLifestyleType = xmlHeroLabLifestyleNode.SelectSingleNode("@name")?.Value
                                     .TrimEndOnce(" Lifestyle");
 
-                                XmlNode xmlLifestyleDataNode = (await LoadDataAsync("lifestyles.xml"))
+                                XmlNode xmlLifestyleDataNode = LoadData("lifestyles.xml")
                                     .SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + strLifestyleType.CleanXPath() + "]");
 
                                 if (xmlLifestyleDataNode != null)
@@ -18203,7 +18206,7 @@ namespace Chummer
                         if (!blnFoundUnarmed)
                         {
                             // Add the Unarmed Attack Weapon to the character.
-                            XmlDocument objXmlWeaponDoc = await LoadDataAsync("weapons.xml");
+                            XmlDocument objXmlWeaponDoc = LoadData("weapons.xml");
                             XmlNode objXmlWeapon =
                                 objXmlWeaponDoc.SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
                             if (objXmlWeapon != null)

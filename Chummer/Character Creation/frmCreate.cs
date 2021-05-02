@@ -6511,7 +6511,7 @@ namespace Chummer
         }
 
         private bool _blnSkipQualityLevelChanged;
-        private async void nudQualityLevel_ValueChanged(object sender, EventArgs e)
+        private void nudQualityLevel_ValueChanged(object sender, EventArgs e)
         {
             if (_blnSkipQualityLevelChanged)
                 return;
@@ -6525,7 +6525,7 @@ namespace Chummer
             for (; nudQualityLevel.Value > intCurrentLevels; ++intCurrentLevels)
             {
                 XmlNode objXmlSelectedQuality = objSelectedQuality.GetNode();
-                if (!(await objXmlSelectedQuality.CreateNavigator().RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality"))))
+                if (!objXmlSelectedQuality.CreateNavigator().RequirementsMet(CharacterObject, LanguageManager.GetString("String_Quality")))
                 {
                     UpdateQualityLevelValue(objSelectedQuality);
                     break;

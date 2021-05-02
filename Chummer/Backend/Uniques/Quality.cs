@@ -736,7 +736,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strValue))
                     return _intBP;
                 int intReturn = _intBP;
-                if (_nodDiscounts.RequirementsMet(_objCharacter).Result)
+                if (_nodDiscounts.RequirementsMet(_objCharacter))
                 {
                     if (Type == QualityType.Positive)
                     {

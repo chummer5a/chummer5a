@@ -198,7 +198,7 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private async void BuildPowerList()
+        private void BuildPowerList()
         {
             if (_blnLoading)
                 return;
@@ -236,7 +236,7 @@ namespace Chummer
                     continue;
                 }
 
-                if (!(await objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits)))
+                if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty, string.Empty, IgnoreLimits))
                     continue;
 
                 lstPower.Add(new ListItem(objXmlPower.SelectSingleNode("id")?.Value ?? string.Empty, objXmlPower.SelectSingleNode("translate")?.Value ?? strName));
@@ -259,7 +259,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async void AcceptForm()
+        private void AcceptForm()
         {
             string strSelectedId = lstPowers.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -267,7 +267,7 @@ namespace Chummer
                 // Check to see if the user needs to select anything for the Power.
                 XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + "]");
 
-                if (await objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
                     DialogResult = DialogResult.OK;

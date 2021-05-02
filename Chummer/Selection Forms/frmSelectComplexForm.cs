@@ -235,7 +235,7 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private async void BuildComplexFormList()
+        private void BuildComplexFormList()
         {
             if (_blnLoading)
                 return;
@@ -251,7 +251,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strId))
                     continue;
 
-                if (!(await xmlComplexForm.RequirementsMet(_objCharacter)))
+                if (!xmlComplexForm.RequirementsMet(_objCharacter))
                     continue;
 
                 string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");

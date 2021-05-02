@@ -17,13 +17,11 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Linq;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Xml.XPath;
 using NLog;
 
@@ -39,7 +37,7 @@ namespace Chummer
         private readonly Point _mouthCenter;
         private readonly Pen _thickPen;
         private readonly XPathNavigator _objXmlDocument;
-        private readonly ConcurrentBag<string> _usedTips = new ConcurrentBag<string>();
+        private readonly List<string> _usedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
 
@@ -191,7 +189,7 @@ namespace Chummer
         #endregion
         #region Chat Bubble
 
-        private async Task<string> HelpfulAdvice()
+        private string HelpfulAdvice()
         {
             if (_usedTips.Count == _objXmlDocument.Select("tip").Count)
             {
@@ -200,18 +198,16 @@ namespace Chummer
             foreach (XPathNavigator objXmlTip in _objXmlDocument.Select("tip"))
             {
                 var strId = objXmlTip.SelectSingleNode("id")?.Value;
-                if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId))
-                    continue;
-                if (!(await objXmlTip.RequirementsMet(CharacterObject)))
-                    continue;
+                if (string.IsNullOrEmpty(strId) || _usedTips.Contains(strId)) continue;
+                if (!objXmlTip.RequirementsMet(CharacterObject)) continue;
                 _usedTips.Add(strId);
                 return objXmlTip.SelectSingleNode("translate")?.Value ?? objXmlTip.SelectSingleNode("text")?.Value ?? string.Empty;
             }
             return string.Empty;
         }
-        private async void ShowBalloonTip()
+        private void ShowBalloonTip()
         {
-            _myToolTip.Show((await HelpfulAdvice()).WordWrap(), this, _mouthCenter);
+            _myToolTip.Show(HelpfulAdvice().WordWrap(), this, _mouthCenter);
         }
 
         private void HideBalloonTip()

@@ -24,7 +24,6 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 using System.Text;
-using System.Threading.Tasks;
 using NLog;
 
 namespace Chummer
@@ -101,7 +100,7 @@ namespace Chummer
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseCyberwareDataNode);
         }
 
-        private async void frmSelectCyberware_Load(object sender, EventArgs e)
+        private void frmSelectCyberware_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -170,10 +169,10 @@ namespace Chummer
             nudESSDiscount.Visible = _objCharacter.Options.AllowCyberwareESSDiscounts;
 
             _blnLoading = false;
-            await RefreshList(_strSelectedCategory);
+            RefreshList(_strSelectedCategory);
         }
 
-        private async void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboGrade_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -196,7 +195,7 @@ namespace Chummer
 
                 PopulateCategories();
                 _blnLoading = false;
-                await RefreshList(_strSelectedCategory);
+                RefreshList(_strSelectedCategory);
                 lstCyberware_SelectedIndexChanged(sender, EventArgs.Empty);
             }
             else
@@ -219,7 +218,7 @@ namespace Chummer
             }
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -234,7 +233,7 @@ namespace Chummer
             Grade objForcedGrade = _objForcedGrade ?? (string.IsNullOrEmpty(strForceGrade) ? null : _lstGrades.FirstOrDefault(x => x.SourceIDString == strForceGrade));
             PopulateGrades(!string.IsNullOrEmpty(_strSelectedCategory) && !cboGrade.Enabled && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
             _blnLoading = false;
-            await RefreshList(_strSelectedCategory);
+            RefreshList(_strSelectedCategory);
         }
 
         private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
@@ -416,18 +415,18 @@ namespace Chummer
             UpdateCyberwareInfo();
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
-            await RefreshList(_strSelectedCategory);
+            RefreshList(_strSelectedCategory);
         }
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             if (chkShowOnlyAffordItems.Checked && !chkFree.Checked)
             {
-                await RefreshList(_strSelectedCategory);
+                RefreshList(_strSelectedCategory);
             }
             UpdateCyberwareInfo();
         }
@@ -463,18 +462,18 @@ namespace Chummer
             AcceptForm();
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            await RefreshList(_strSelectedCategory);
+            RefreshList(_strSelectedCategory);
         }
 
-        private async void chkFree_CheckedChanged(object sender, EventArgs e)
+        private void chkFree_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
             if (chkShowOnlyAffordItems.Checked)
             {
-                await RefreshList(_strSelectedCategory);
+                RefreshList(_strSelectedCategory);
             }
             UpdateCyberwareInfo();
         }
@@ -923,7 +922,7 @@ namespace Chummer
         }
 
         private bool _blnSkipListRefresh;
-        private async Task<List<ListItem>> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return null;
@@ -984,10 +983,10 @@ namespace Chummer
             {
                 Log.Warn(e);
             }
-            return await BuildCyberwareList(node, blnDoUIUpdate, blnTerminateAfterFirst);
+            return BuildCyberwareList(node, blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private async Task<List<ListItem>> BuildCyberwareList(XPathNodeIterator objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> BuildCyberwareList(XPathNodeIterator objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
                 return null;
@@ -1159,7 +1158,7 @@ namespace Chummer
                         }
                     }
 
-                    if (!Upgrading && ParentVehicle == null && !(await xmlCyberware.RequirementsMet(_objCharacter)))
+                    if (!Upgrading && ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
                         continue;
 
                     lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
@@ -1179,22 +1178,20 @@ namespace Chummer
                         string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
                             intOverLimit)));
                 }
-                this.DoThreadSafe(() =>
-                {
-                    string strOldSelected = lstCyberware.SelectedValue?.ToString();
-                    _blnLoading = true;
-                    lstCyberware.BeginUpdate();
-                    lstCyberware.DataSource = null;
-                    lstCyberware.DataSource = lstCyberwares;
-                    lstCyberware.ValueMember = nameof(ListItem.Value);
-                    lstCyberware.DisplayMember = nameof(ListItem.Name);
-                    _blnLoading = false;
-                    if (!string.IsNullOrEmpty(strOldSelected))
-                        lstCyberware.SelectedValue = strOldSelected;
-                    else
-                        lstCyberware.SelectedIndex = -1;
-                    lstCyberware.EndUpdate();
-                });
+                string strOldSelected = lstCyberware.SelectedValue?.ToString();
+                _blnLoading = true;
+                lstCyberware.BeginUpdate();
+                lstCyberware.DataSource = null;
+                lstCyberware.DataSource = lstCyberwares;
+                lstCyberware.ValueMember = nameof(ListItem.Value);
+                lstCyberware.DisplayMember = nameof(ListItem.Name);
+                _blnLoading = false;
+                if (!string.IsNullOrEmpty(strOldSelected))
+                    lstCyberware.SelectedValue = strOldSelected;
+                else
+                    lstCyberware.SelectedIndex = -1;
+
+                lstCyberware.EndUpdate();
             }
 
             return lstCyberwares;
@@ -1216,7 +1213,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async void AcceptForm()
+        private void AcceptForm()
         {
             string strSelectedId = lstCyberware.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedId))
@@ -1269,11 +1266,7 @@ namespace Chummer
                     }
                 }
             }
-
-            if (!Upgrading && ParentVehicle == null && !(await objCyberwareNode.RequirementsMet(_objCharacter, null,
-                LanguageManager.GetString(_objMode == Mode.Cyberware
-                    ? "String_SelectPACKSKit_Cyberware"
-                    : "String_SelectPACKSKit_Bioware"))))
+            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, LanguageManager.GetString(_objMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware")))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNode("forcegrade")?.Value;
@@ -1385,7 +1378,7 @@ namespace Chummer
         }
 
         private bool _blnPopulatingCategories;
-        private async void PopulateCategories()
+        private void PopulateCategories()
         {
             if (_blnPopulatingCategories)
                 return;
@@ -1405,7 +1398,7 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 // Make sure the category contains items that we can actually display
-                if ((await RefreshList(objXmlCategory.Value, false, true))?.Count > 0)
+                if (RefreshList(objXmlCategory.Value, false, true)?.Count > 0)
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));

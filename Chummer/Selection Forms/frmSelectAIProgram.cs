@@ -358,7 +358,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async void AcceptForm()
+        private void AcceptForm()
         {
             string strSelectedId = lstAIPrograms.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -368,7 +368,7 @@ namespace Chummer
                     return;
 
                 // Check to make sure requirement is met
-                if (!(await xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program"))))
+                if (!xmlProgram.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Program")))
                 {
                     return;
                 }

@@ -25,7 +25,6 @@ using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 using System.Text;
 using System.Globalization;
- using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -96,7 +95,7 @@ namespace Chummer
             }
         }
 
-        private async void frmSelectGear_Load(object sender, EventArgs e)
+        private void frmSelectGear_Load(object sender, EventArgs e)
         {
             if (_objCharacter.Created)
             {
@@ -136,7 +135,7 @@ namespace Chummer
                 {
                     continue;
                 }
-                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && (await RefreshList(strCategory, false, true))?.Count > 0)
+                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && RefreshList(strCategory, false, true).Count > 0)
                 {
                     string strInnerText = strCategory;
                     _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
@@ -171,13 +170,13 @@ namespace Chummer
             if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
                 cboCategory.SelectedIndex = 0;
             else
-                await RefreshList();
+                RefreshList();
 
             if (!string.IsNullOrEmpty(_strSelectedGear))
                 lstGear.SelectedValue = _strSelectedGear;
         }
 
-        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
@@ -191,7 +190,7 @@ namespace Chummer
                 chkDoItYourself.Checked = false;
             }
 
-            await RefreshList();
+            RefreshList();
         }
 
         private void lstGear_SelectedIndexChanged(object sender, EventArgs e)
@@ -304,9 +303,9 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private async void txtSearch_TextChanged(object sender, EventArgs e)
+        private void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            await RefreshList();
+            RefreshList();
         }
 
         private void lstGear_DoubleClick(object sender, EventArgs e)
@@ -326,36 +325,36 @@ namespace Chummer
             UpdateGearInfo();
         }
 
-        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked)
             {
-                await RefreshList();
+                RefreshList();
             }
             UpdateGearInfo();
         }
 
-        private async void chkDoItYourself_CheckedChanged(object sender, EventArgs e)
+        private void chkDoItYourself_CheckedChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                await RefreshList();
+                RefreshList();
             }
             UpdateGearInfo();
         }
 
-        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
             if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
             {
-                await RefreshList();
+                RefreshList();
             }
             UpdateGearInfo();
         }
 
-        private async void RefreshCurrentList(object sender, EventArgs e)
+        private void RefreshCurrentList(object sender, EventArgs e)
         {
-            await RefreshList();
+            RefreshList();
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -949,7 +948,7 @@ namespace Chummer
             }
         }
 
-        private async Task<List<ListItem>> RefreshList(string strCategory = "", bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> RefreshList(string strCategory = "", bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = cboCategory.SelectedValue?.ToString();
@@ -998,10 +997,10 @@ namespace Chummer
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
-            return await BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
+            return BuildGearList(_xmlBaseGearDataNode.Select("gears/gear[" + sbdFilter + "]"), blnDoUIUpdate, blnTerminateAfterFirst);
         }
 
-        private async Task<List<ListItem>> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
+        private List<ListItem> BuildGearList(XPathNodeIterator objXmlGearList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             string strSpace = LanguageManager.GetString("String_Space");
             int intOverLimit = 0;
@@ -1045,7 +1044,7 @@ namespace Chummer
                     }
                 }
 
-                if (!(await objXmlGear.RequirementsMet(_objCharacter)))
+                if (!objXmlGear.RequirementsMet(_objCharacter))
                     continue;
 
                 if (!blnDoUIUpdate && blnTerminateAfterFirst)

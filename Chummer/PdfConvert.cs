@@ -1,7 +1,8 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
+using System.Web;
 using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
@@ -58,13 +59,20 @@ namespace Codaxy.WkHtmlToPdf
     {
         static PdfConvertEnvironment _e;
 
-        public static PdfConvertEnvironment Environment =>
-            _e ?? (_e = new PdfConvertEnvironment
+        public static PdfConvertEnvironment Environment
+        {
+            get
             {
-                TempFolderPath = Path.GetTempPath(),
-                WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
-                Timeout = 60000
-            });
+                if (_e == null)
+                    _e = new PdfConvertEnvironment
+                    {
+                        TempFolderPath = Path.GetTempPath(),
+                        WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
+                        Timeout = 60000
+                    };
+                return _e;
+            }
+        }
 
         private static string GetWkhtmlToPdfExeLocation()
         {
@@ -78,13 +86,13 @@ namespace Codaxy.WkHtmlToPdf
                     return filePath;
             }
 
-            string programFilesPath = System.Environment.GetEnvironmentVariable("ProgramFiles") ?? string.Empty;
+            string programFilesPath = System.Environment.GetEnvironmentVariable("ProgramFiles");
             filePath = Path.Combine(programFilesPath, @"wkhtmltopdf\wkhtmltopdf.exe");
 
             if (File.Exists(filePath))
                 return filePath;
 
-            string programFilesx86Path = System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") ?? string.Empty;
+            string programFilesx86Path = System.Environment.GetEnvironmentVariable("ProgramFiles(x86)");
             filePath = Path.Combine(programFilesx86Path, @"wkhtmltopdf\wkhtmltopdf.exe");
 
             if (File.Exists(filePath))
@@ -119,13 +127,12 @@ namespace Codaxy.WkHtmlToPdf
             }
             else
             {
-                outputPdfFilePath = Path.Combine(environment.TempFolderPath, $"{Guid.NewGuid()}.pdf");
+                outputPdfFilePath = Path.Combine(environment.TempFolderPath, String.Format("{0}.pdf", Guid.NewGuid()));
                 delete = true;
             }
 
             if (!File.Exists(environment.WkHtmlToPdfPath))
-                throw new PdfConvertException(
-                    $"File '{environment.WkHtmlToPdfPath}' not found. Check if wkhtmltopdf application is installed.");
+                throw new PdfConvertException(String.Format("File '{0}' not found. Check if wkhtmltopdf application is installed.", environment.WkHtmlToPdfPath));
 
             StringBuilder paramsBuilder = new StringBuilder();
             paramsBuilder.Append("--page-size A4 ");
@@ -200,7 +207,7 @@ namespace Codaxy.WkHtmlToPdf
                     using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
                     using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
                     {
-                        void OutputHandler(object sender, DataReceivedEventArgs e)
+                        DataReceivedEventHandler outputHandler = (sender, e) =>
                         {
                             if (e.Data == null)
                             {
@@ -210,9 +217,9 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 output.AppendLine(e.Data);
                             }
-                        }
+                        };
 
-                        void ErrorHandler(object sender, DataReceivedEventArgs e)
+                        DataReceivedEventHandler errorHandler = (sender, e) =>
                         {
                             if (e.Data == null)
                             {
@@ -222,10 +229,10 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 error.AppendLine(e.Data);
                             }
-                        }
+                        };
 
-                        process.OutputDataReceived += OutputHandler;
-                        process.ErrorDataReceived += ErrorHandler;
+                        process.OutputDataReceived += outputHandler;
+                        process.ErrorDataReceived += errorHandler;
 
                         try
                         {
@@ -248,8 +255,7 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
                                 {
-                                    throw new PdfConvertException(
-                                        $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                    throw new PdfConvertException(String.Format("Html to PDF conversion of '{0}' failed. Wkhtmltopdf output: \r\n{1}", document.Url, error));
                                 }
                             }
                             else
@@ -262,8 +268,8 @@ namespace Codaxy.WkHtmlToPdf
                         }
                         finally
                         {
-                            process.OutputDataReceived -= OutputHandler;
-                            process.ErrorDataReceived -= ErrorHandler;
+                            process.OutputDataReceived -= outputHandler;
+                            process.ErrorDataReceived -= errorHandler;
                         }
                     }
                 }

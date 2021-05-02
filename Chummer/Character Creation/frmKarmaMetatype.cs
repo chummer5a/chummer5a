@@ -183,7 +183,7 @@ namespace Chummer
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        private async void MetatypeSelected()
+        private void MetatypeSelected()
         {
             using (new CursorWait(this))
             {
@@ -247,7 +247,7 @@ namespace Chummer
                             _xmlSkillsDocumentKnowledgeSkillsNode);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
-                            if ((await objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter)) == false)
+                            if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
                                 _objCharacter.Qualities.Remove(objQuality);
                         }
                     }

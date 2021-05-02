@@ -163,7 +163,7 @@ namespace Chummer
         /// <summary>
         /// Build the list of Metamagics.
         /// </summary>
-        private async void BuildMetamagicList()
+        private void BuildMetamagicList()
         {
             string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
             // If the character has MAG enabled, filter the list based on Adept/Magician availability.
@@ -191,7 +191,7 @@ namespace Chummer
                     {
                         continue;
                     }
-                    if (!chkLimitList.Checked || await objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
+                    if (!chkLimitList.Checked || objXmlMetamagic.CreateNavigator().RequirementsMet(_objCharacter))
                     {
                         lstMetamagics.Add(new ListItem(strId,
                             objXmlMetamagic.SelectSingleNode("translate")?.Value ?? objXmlMetamagic.SelectSingleNode("name")?.Value ??
@@ -217,7 +217,7 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private async void AcceptForm()
+        private void AcceptForm()
         {
             string strSelectedId = lstMetamagic.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -225,7 +225,7 @@ namespace Chummer
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + "]");
 
-                if (objXmlMetamagic == null || !(await objXmlMetamagic.RequirementsMet(_objCharacter, _strType)))
+                if (objXmlMetamagic?.RequirementsMet(_objCharacter, _strType) != true)
                     return;
 
                 _strSelectedMetamagic = strSelectedId;
