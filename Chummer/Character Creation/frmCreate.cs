@@ -9335,7 +9335,7 @@ namespace Chummer
             lblSkillGroupsBP.Text = strTemp;
         }
 
-        private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
+        private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
             if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
@@ -9356,7 +9356,7 @@ namespace Chummer
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();
-                    await CharacterObject.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                    CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
                     // Select the Magician's Tradition.
@@ -10581,7 +10581,7 @@ namespace Chummer
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public override async void SaveCharacterAsCreated()
+        public override void SaveCharacterAsCreated()
         {
             using (new CursorWait(this))
             {
@@ -10601,7 +10601,7 @@ namespace Chummer
                 if (CharacterObject.MetatypeCategory == "Shapeshifter")
                 {
                     List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
-                    XmlDocument xmlDoc = await CharacterObject.LoadDataAsync("metatypes.xml");
+                    XmlDocument xmlDoc = CharacterObject.LoadData("metatypes.xml");
                     string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
                                                  + CharacterObject.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
                                                  + "]/metavariants/metavariant[id = "
@@ -10635,7 +10635,7 @@ namespace Chummer
                 if (!CharacterObject.Save())
                     return;
                 IsDirty = false;
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(CharacterObject.FileName);
+                Character objOpenCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
             }

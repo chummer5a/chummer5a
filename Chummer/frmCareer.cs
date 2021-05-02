@@ -2233,7 +2233,7 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 Character[] lstClones = new Character[intClones];
-                Parallel.For(0, intClones, async i => lstClones[i] = await Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true));
+                Parallel.For(0, intClones, i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true));
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }
@@ -2788,7 +2788,7 @@ namespace Chummer
             IsDirty = true;
         }
 
-        private async void mnuSpecialPossess_Click(object sender, EventArgs e)
+        private void mnuSpecialPossess_Click(object sender, EventArgs e)
         {
             // Make sure the Spirit has been saved first.
             if (IsDirty && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_PossessionSave"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
@@ -2817,7 +2817,7 @@ namespace Chummer
                         {
                             frmLoadingForm.Reset(77);
                             frmLoadingForm.Show();
-                            bool blnSuccess = await objVessel.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                            bool blnSuccess = objVessel.Load(frmLoadingForm);
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
@@ -2838,7 +2838,7 @@ namespace Chummer
 
                             // Load the Spirit's save file into a new Merge character.
                             frmLoadingForm.CharacterFile = objMerge.FileName;
-                            blnSuccess = await objMerge.Load(frmLoadingForm).ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                            blnSuccess = objMerge.Load(frmLoadingForm);
                             if (!blnSuccess)
                             {
                                 Program.MainForm.ShowMessageBox(this,
@@ -2863,8 +2863,7 @@ namespace Chummer
 
                             if (!blnHasImmunity)
                             {
-                                XmlDocument objPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml")
-                                    .ConfigureAwait(true); // Makes sure frmLoading that wraps this gets disposed on the same thread that created it
+                                XmlDocument objPowerDoc = CharacterObject.LoadData("critterpowers.xml");
                                 XmlNode objPower = objPowerDoc.SelectSingleNode("/chummer/powers/power[name = \"Immunity\"]");
 
                                 CritterPower objCritterPower = new CritterPower(objMerge);
@@ -2971,22 +2970,22 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
+                    Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
         }
 
-        private async void mnuSpecialPossessInanimate_Click(object sender, EventArgs e)
+        private void mnuSpecialPossessInanimate_Click(object sender, EventArgs e)
         {
             // Make sure the Spirit has been saved first.
             if (IsDirty && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_PossessionSave"), LanguageManager.GetString("MessageTitle_Possession"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
             // Prompt the user to select an inanimate Vessel.
-            XPathNavigator xmlVesselsNagivator = await CharacterObject.LoadDataXPathAsync("vessels.xml");
+            XPathNavigator xmlVesselsNavigator = CharacterObject.LoadDataXPath("vessels.xml");
             List<ListItem> lstMetatype = new List<ListItem>(10);
-            foreach (XPathNavigator xmlMetatype in xmlVesselsNagivator.Select("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatype in xmlVesselsNavigator.Select("/chummer/metatypes/metatype"))
             {
                 string strName = xmlMetatype.SelectSingleNode("name")?.Value;
                 if (!string.IsNullOrEmpty(strName))
@@ -3009,7 +3008,7 @@ namespace Chummer
             }
 
             // Get the Node for the selected Vessel.
-            XmlDocument xmlVessels = await CharacterObject.LoadDataAsync("vessels.xml");
+            XmlDocument xmlVessels = CharacterObject.LoadData("vessels.xml");
             XmlNode objSelected = xmlVessels.SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath() + "]");
             if (objSelected == null)
                 return;
@@ -3024,7 +3023,7 @@ namespace Chummer
                     {
                         frmLoadingForm.Reset(36);
                         frmLoadingForm.Show();
-                        await objMerge.Load();
+                        objMerge.Load();
                         frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
                         objMerge.Possessed = true;
                         objMerge.Alias = strSelectedVessel + LanguageManager.GetString("String_Space") + '(' + LanguageManager.GetString("String_Possessed") + ')';
@@ -3046,7 +3045,7 @@ namespace Chummer
                             CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
                         ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.CHA.MetatypeMinimum,
                             CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
-                        XmlDocument xmlPowerDoc = await CharacterObject.LoadDataAsync("critterpowers.xml");
+                        XmlDocument xmlPowerDoc = CharacterObject.LoadData("critterpowers.xml");
 
                         // Update the Movement if the Vessel has one.
                         string strMovement = objSelected["movement"]?.InnerText;
@@ -3123,7 +3122,7 @@ namespace Chummer
             {
                 using (new CursorWait(this))
                 {
-                    Character objOpenCharacter = await Program.MainForm.LoadCharacter(strOpenFile);
+                    Character objOpenCharacter = Program.MainForm.LoadCharacter(strOpenFile);
                     Program.MainForm.OpenCharacter(objOpenCharacter);
                 }
             }
@@ -12973,7 +12972,7 @@ namespace Chummer
             flpDrugs.ResumeLayout();
         }
 
-        private async void LiveUpdateFromCharacterFile(object sender, EventArgs e)
+        private void LiveUpdateFromCharacterFile(object sender, EventArgs e)
         {
             if (IsDirty || !GlobalOptions.LiveUpdateCleanCharacterFiles || IsLoading || _blnSkipUpdate || IsCharacterUpdateRequested)
                 return;
@@ -12994,7 +12993,7 @@ namespace Chummer
                 {
                     frmLoadingForm.Reset(36);
                     frmLoadingForm.Show();
-                    await CharacterObject.Load(frmLoadingForm);
+                    CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
 
                     IsCharacterUpdateRequested = true;

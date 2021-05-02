@@ -28,7 +28,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             _mySINner = mySINner ?? throw new ArgumentNullException(nameof(mySINner));
             MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
-            MyCE.ZipFilePath = await MyCE.PrepareModel().ConfigureAwait(true);
+            MyCE.ZipFilePath = await MyCE.PrepareModel();
 
             TabSINnersBasic = new ucSINnersBasic(this)
             {
@@ -66,7 +66,7 @@ namespace ChummerHub.Client.UI
             {
                 var client = StaticUtils.GetClient();
                 if (MyCE.MySINnerFile.Id != null)
-                    await client.DeleteAsync(MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
+                    await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
             }
             catch (Exception ex)
             {

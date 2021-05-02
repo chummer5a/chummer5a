@@ -2132,11 +2132,34 @@ namespace Chummer
         public Queue<Func<bool>> PostLoadMethods => new Queue<Func<bool>>();
 
         /// <summary>
-        /// Load the Character from an XML file.
+        /// Load the Character from an XML file synchronously.
         /// </summary>
         /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
-        public async Task<bool> Load(frmLoading frmLoadingForm = null, bool showWarnings = true)
+        public bool Load(frmLoading frmLoadingForm = null, bool showWarnings = true)
+        {
+            return LoadCoreAysnc(true, frmLoadingForm, showWarnings).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Load the Character from an XML file asynchronously.
+        /// </summary>
+        /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
+        /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
+        public Task<bool> LoadAsync(frmLoading frmLoadingForm = null, bool showWarnings = true)
+        {
+            return LoadCoreAysnc(false, frmLoadingForm, showWarnings);
+        }
+
+        /// <summary>
+        /// Load the Character from an XML file.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
+        /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
+        private async Task<bool> LoadCoreAysnc(bool blnSync, frmLoading frmLoadingForm = null, bool showWarnings = true)
         {
             if(!File.Exists(_strFileName))
                 return false;
@@ -2161,7 +2184,10 @@ namespace Chummer
 
                         if (!File.Exists(_strFileName))
                             return false;
-                        bool blnKeepLoading = await Task.Run(() =>
+                        bool blnKeepLoading = blnSync
+                            ? LoadSaveFileDocument()
+                            : await Task.Run(() => LoadSaveFileDocument());
+                        bool LoadSaveFileDocument()
                         {
                             bool blnErrorCaught = false;
                             do
@@ -2211,7 +2237,7 @@ namespace Chummer
                             xmlCharacterNavigator =
                                 objXmlDocument.GetFastNavigator().SelectSingleNode("/character");
                             return true;
-                        }).ConfigureAwait(true);
+                        }
                         if (!blnKeepLoading || objXmlCharacter == null || xmlCharacterNavigator == null)
                         {
                             IsLoading = false;
@@ -16303,7 +16329,23 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public async Task<bool> LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName = "")
+        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsName = "")
+        {
+            return LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsName).GetAwaiter().GetResult();
+        }
+
+        /// <summary>
+        /// Load the Character from an XML file.
+        /// </summary>
+        public Task<bool> LoadFromHeroLabFileAsync(string strPorFile, string strCharacterId, string strSettingsName = "")
+        {
+            return LoadFromHeroLabFileCoreAsync(false, strPorFile, strCharacterId, strSettingsName);
+        }
+
+        /// <summary>
+        /// Load the Character from an XML file.
+        /// </summary>
+        public async Task<bool> LoadFromHeroLabFileCoreAsync(bool blnSync, string strPorFile, string strCharacterId, string strSettingsName = "")
         {
             if(!File.Exists(strPorFile))
                 return false;
@@ -16374,7 +16416,10 @@ namespace Chummer
                                         using (StreamReader objReader = File.OpenText(strEntryFullName))
                                         {
                                             string strLine;
-                                            while ((strLine = await objReader.ReadLineAsync()) != null)
+                                            while ((strLine = blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? objReader.ReadLine()
+                                                : await objReader.ReadLineAsync()) != null)
                                             {
                                                 // Trim away the newlines and empty spaces at the beginning and end of lines
                                                 strLine = strLine.Trim('\n', '\r', ' ').Trim();
@@ -18777,6 +18822,15 @@ namespace Chummer
             SetDefaultEventHandlers();
         }
 
+        /// <summary>
+        /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
+        /// </summary>
+        /// <param name="strFile"></param>
+        public CharacterCache(string strFile) : this()
+        {
+            LoadFromFile(strFile);
+        }
+
         private void SetDefaultEventHandlers()
         {
             OnMyDoubleClick += OnDefaultDoubleClick;
@@ -18805,13 +18859,13 @@ namespace Chummer
         [IgnoreDataMember]
         public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown;
 
-        public async void OnDefaultDoubleClick(object sender, EventArgs e)
+        public void OnDefaultDoubleClick(object sender, EventArgs e)
         {
             Character objOpenCharacter = Program.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == FileName);
 
             if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
             {
-                objOpenCharacter = await Program.MainForm.LoadCharacter(FilePath);
+                objOpenCharacter = Program.MainForm.LoadCharacter(FilePath);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
@@ -18833,10 +18887,19 @@ namespace Chummer
             }
         }
 
-        public CharacterCache(string strFile)
+        public bool LoadFromFile(string strFile)
+        {
+            return LoadFromFileCoreAsync(true, strFile).GetAwaiter().GetResult();
+        }
+
+        public Task<bool> LoadFromFileAsync(string strFile)
+        {
+            return LoadFromFileCoreAsync(false, strFile);
+        }
+
+        private async Task<bool> LoadFromFileCoreAsync(bool blnSync, string strFile)
         {
             DownLoadRunning = null;
-            SetDefaultEventHandlers();
             string strErrorText = string.Empty;
             XPathNavigator xmlSourceNode;
             if (!File.Exists(strFile))
@@ -18849,13 +18912,16 @@ namespace Chummer
                 // If we run into any problems loading the character cache, fail out early.
                 try
                 {
-                    XPathDocument xmlDoc;
-                    using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
+                    XPathDocument xmlDoc = blnSync ? LoadXPathDocument() : await Task.Run(() => LoadXPathDocument());
+                    XPathDocument LoadXPathDocument()
                     {
-                        using (XmlReader objXmlReader =
-                            XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        using (StreamReader objStreamReader = new StreamReader(strFile, Encoding.UTF8, true))
                         {
-                            xmlDoc = new XPathDocument(objXmlReader);
+                            using (XmlReader objXmlReader =
+                                XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            {
+                                return new XPathDocument(objXmlReader);
+                            }
                         }
                     }
                     xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNode("/character");
@@ -18927,6 +18993,8 @@ namespace Chummer
                 if (strFile.Length > last)
                     FileName = strFile.Substring(last);
             }
+
+            return string.IsNullOrEmpty(strErrorText);
         }
 
         /// <summary>

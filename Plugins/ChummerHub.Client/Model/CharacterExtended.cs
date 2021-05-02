@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
-using ChummerHub.Client;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using ChummerHub.Client.UI;
@@ -83,19 +81,16 @@ namespace ChummerHub.Client.Sinners
 
         public CharacterExtended(Character character, string fileElement = null, SINner mySINnerLoading = null, CharacterCache myCharacterCache = null) : this(character, fileElement, myCharacterCache)
         {
-            if (mySINnerLoading != null)
-            {
-                var backup = MySINnerFile;
-                MySINnerFile = mySINnerLoading;
-                if (MySINnerFile?.SiNnerMetaData != null)
-                {
-                    if (MySINnerFile.SiNnerMetaData.Id == null || MySINnerFile.SiNnerMetaData.Id == Guid.Empty)
-                        MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
-
-                    if (MySINnerFile.SiNnerMetaData.Tags?.Count < backup?.SiNnerMetaData?.Tags?.Count)
-                        MySINnerFile.SiNnerMetaData.Tags = new List<Tag>(backup.SiNnerMetaData.Tags);
-                }
-            }
+            if (mySINnerLoading == null)
+                return;
+            var backup = MySINnerFile;
+            MySINnerFile = mySINnerLoading;
+            if (MySINnerFile?.SiNnerMetaData == null)
+                return;
+            if (MySINnerFile.SiNnerMetaData.Id == Guid.Empty)
+                MySINnerFile.SiNnerMetaData.Id = backup.SiNnerMetaData.Id;
+            if (MySINnerFile.SiNnerMetaData.Tags?.Count < backup?.SiNnerMetaData?.Tags?.Count)
+                MySINnerFile.SiNnerMetaData.Tags = new List<Tag>(backup.SiNnerMetaData.Tags);
         }
 
         public CharacterCache  MyCharacterCache { get; }
@@ -176,9 +171,9 @@ namespace ChummerHub.Client.Sinners
                 {
                     using (new CursorWait(PluginHandler.MainForm, true))
                     {
-                        ResultSinnerGetSINById found = null;
                         try
                         {
+                            ResultSinnerGetSINById found;
                             using (_ = Timekeeper.StartSyncron(
                                 "Checking if already online Chummer", op_uploadChummer,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
@@ -204,8 +199,8 @@ namespace ChummerHub.Client.Sinners
                                 }
 
                                 var client = StaticUtils.GetClient();
-                                found = await client.GetSINByIdAsync(MySINnerFile.Id.GetValueOrDefault()).ConfigureAwait(true);
-                                await Utils.HandleError(found).ConfigureAwait(true);
+                                found = await client.GetSINByIdAsync(MySINnerFile.Id.GetValueOrDefault());
+                                await Utils.HandleError(found);
                             }
 
                             if (myState != null)
@@ -259,7 +254,7 @@ namespace ChummerHub.Client.Sinners
                             "Preparing Model", op_uploadChummer,
                             CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                         {
-                            await PrepareModel().ConfigureAwait(true);
+                            await PrepareModel();
                         }
 
                         if (myState != null)
@@ -270,15 +265,15 @@ namespace ChummerHub.Client.Sinners
                             myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                         }
 
-                        ResultSinnerPostSIN res = null;
+                        ResultSinnerPostSIN res;
                         try
                         {
                             using (_ = Timekeeper.StartSyncron(
                                 "Posting SINner", op_uploadChummer,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                             {
-                                res = await Utils.PostSINnerAsync(this).ConfigureAwait(true);
-                                await Utils.HandleError(res).ConfigureAwait(true);
+                                res = await Utils.PostSINnerAsync(this);
+                                await Utils.HandleError(res);
                             }
 
                             if (myState != null)
@@ -295,9 +290,9 @@ namespace ChummerHub.Client.Sinners
                                     "Uploading File", op_uploadChummer,
                                     CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                                 {
-                                    var uploadres = await Utils.UploadChummerFileAsync(this).ConfigureAwait(true);
+                                    var uploadres = await Utils.UploadChummerFileAsync(this);
                                     {
-                                        if (uploadres.CallSuccess == true)
+                                        if (uploadres.CallSuccess)
                                         {
                                             if (myState != null)
                                             {
@@ -332,7 +327,7 @@ namespace ChummerHub.Client.Sinners
                         {
 //5 Step
                             myState.CurrentProgress += myState.ProgressSteps;
-                            myState.StatusText = "Chummer upload of Metadata failed: " + res.ErrorText;
+                            myState.StatusText = "Chummer upload of Metadata failed: " + res?.ErrorText;
                             myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                         }
 
@@ -434,12 +429,12 @@ namespace ChummerHub.Client.Sinners
                             MySINnerFile.Alias = MyCharacter.Name;
                     }
                     var client = StaticUtils.GetClient();
-                    ResultSinnerGetOwnedSINByAlias res = null;
                     try
                     {
+                        ResultSinnerGetOwnedSINByAlias res;
                         try
                         {
-                            res = await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias).ConfigureAwait(true);
+                            res = await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
                         }
                         catch (SerializationException e)
                         {
@@ -461,7 +456,7 @@ namespace ChummerHub.Client.Sinners
                         {
                             MySINnerFile.Id = Guid.NewGuid();
                         }
-                        else if (res.CallSuccess == true)
+                        else if (res.CallSuccess)
                         {
                             string message = MySINnerFile.Alias +
                                              " is already available online, but the current client uses a local version of that file." +
@@ -570,9 +565,9 @@ namespace ChummerHub.Client.Sinners
                 }
 
                 var summary = new CharacterCache(MyCharacter.FileName);
-                if (string.IsNullOrEmpty(summary.FileName))
+                if (string.IsNullOrEmpty(MyCharacter.FileName))
                     return null;
-                var tempfile = Path.Combine(tempDir, summary.FileName);
+                var tempfile = Path.Combine(tempDir, MyCharacter.FileName);
                 if (File.Exists(tempfile))
                     File.Delete(tempfile);
 
@@ -653,7 +648,7 @@ namespace ChummerHub.Client.Sinners
                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                     }
                     PopulateTags();
-                    await PrepareModel().ConfigureAwait(true);
+                    await PrepareModel();
                     if (myState != null)
                     {
                         myState.CurrentProgress += myState.ProgressSteps;
@@ -661,9 +656,8 @@ namespace ChummerHub.Client.Sinners
                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                     }
 
-                    ResultSinnerPostSIN response = await Utils.PostSINner(this).ConfigureAwait(true);
+                    ResultSinnerPostSIN response = await Utils.PostSINnerAsync(this);
                     if (response?.CallSuccess == true)
-
                     {
                         try
                         {

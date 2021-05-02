@@ -19,6 +19,8 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -33,41 +35,42 @@ namespace Chummer
             get
             {
                 if (!s_blnDicLoadedCharacterOptionsLoaded)
-                {
                     LoadCharacterOptions();
-                    s_blnDicLoadedCharacterOptionsLoaded = true;
-                }
-
                 return s_dicLoadedCharacterOptions;
             }
         }
 
         private static void LoadCharacterOptions()
         {
+            s_blnDicLoadedCharacterOptionsLoaded = false;
             s_dicLoadedCharacterOptions.Clear();
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
                 s_dicLoadedCharacterOptions.TryAdd(GlobalOptions.DefaultCharacterOption, new CharacterOptions());
                 return;
             }
-            foreach (XPathNavigator xmlBuiltInSetting in XmlManager.LoadXPath("settings.xml").Select("/chummer/settings/setting"))
-            {
-                CharacterOptions objNewCharacterOptions = new CharacterOptions();
-                if (objNewCharacterOptions.Load(xmlBuiltInSetting) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                    s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.SourceId, objNewCharacterOptions);
-            }
+            Parallel.ForEach(
+                XmlManager.LoadXPath("settings.xml").Select("/chummer/settings/setting").Cast<XPathNavigator>(),
+                xmlBuiltInSetting =>
+                {
+                    CharacterOptions objNewCharacterOptions = new CharacterOptions();
+                    if (objNewCharacterOptions.Load(xmlBuiltInSetting) &&
+                        (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
+                        s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.SourceId, objNewCharacterOptions);
+                });
             string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
             if (Directory.Exists(strSettingsPath))
             {
-                foreach (string strSettingsFilePath in Directory.EnumerateFiles(strSettingsPath, "*.xml"))
+                Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
                 {
                     string strSettingName = Path.GetFileName(strSettingsFilePath);
                     CharacterOptions objNewCharacterOptions = new CharacterOptions();
                     if (objNewCharacterOptions.Load(strSettingName, false) &&
                         (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
                         s_dicLoadedCharacterOptions.TryAdd(strSettingName, objNewCharacterOptions);
-                }
+                });
             }
+            s_blnDicLoadedCharacterOptionsLoaded = true;
         }
     }
 }

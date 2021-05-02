@@ -160,7 +160,7 @@ namespace ChummerHub.Client.UI
                 _ = StartSTATask(
                     async () =>
                     {
-                        var roles = await GetRolesStatus(this).ConfigureAwait(true);
+                        var roles = await GetRolesStatus(this);
                         UpdateDisplay();
                         if (roles.Count == 0)
                             ShowWebBrowser();
@@ -228,7 +228,7 @@ namespace ChummerHub.Client.UI
         public async void UpdateDisplay()
         {
             tlpOptions.Enabled = Settings.Default.UserModeRegistered;
-            var mail = await GetUserEmail().ConfigureAwait(true);
+            var mail = await GetUserEmail();
             this.DoThreadSafe(() =>
             {
                 try
@@ -279,7 +279,7 @@ namespace ChummerHub.Client.UI
                     if (client == null)
                         return null;
                     string strEmail;
-                    var result = await client.GetUserByAuthorizationAsync().ConfigureAwait(true);
+                    var result = await client.GetUserByAuthorizationAsync();
                     if (result ==  null)
                     {
                         LoginStatus = false;
@@ -319,7 +319,7 @@ namespace ChummerHub.Client.UI
                           try
                           {
                               var client = StaticUtils.GetClient();
-                              var signout = await client.LogoutAsync().ConfigureAwait(true);
+                              var signout = await client.LogoutAsync();
                               {
                                   if (!signout)
                                   {
@@ -369,7 +369,7 @@ namespace ChummerHub.Client.UI
                         _ = StartSTATask(
                         async () =>
                         {
-                            var roles = await GetRolesStatus(this).ConfigureAwait(true);
+                            var roles = await GetRolesStatus(this);
                             UpdateDisplay();
                         });
                     })
@@ -381,7 +381,7 @@ namespace ChummerHub.Client.UI
                     _ = StartSTATask(
                            async () =>
                            {
-                               var roles = await GetRolesStatus(this).ConfigureAwait(true);
+                               var roles = await GetRolesStatus(this);
                                UpdateDisplay();
                            });
                 }
@@ -404,8 +404,8 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     if (client == null)
                         return StaticUtils.UserRoles;
-                    myresult = await client.GetRolesAsync().ConfigureAwait(true);
-                    await Utils.HandleError(myresult).ConfigureAwait(true);
+                    myresult = await client.GetRolesAsync();
+                    await Utils.HandleError(myresult);
                     var myresultbody = myresult;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
@@ -494,7 +494,7 @@ namespace ChummerHub.Client.UI
                 {
                     foreach (var file in thisDialog.FileNames)
                     {
-                        using (_ = await Utils.UploadCharacterFromFile(file).ConfigureAwait(true))
+                        using (_ = await Utils.UploadCharacterFromFile(file))
                         {
                         }
                     }
@@ -534,7 +534,7 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    var getsinner = await client.AdminGetSINnersAsync().ConfigureAwait(true);
+                    var getsinner = await client.AdminGetSINnersAsync();
                     foreach (var sinner in getsinner)
                     {
                         try
@@ -609,7 +609,7 @@ namespace ChummerHub.Client.UI
                                     sin
                                 }
                             };
-                            posttask = await client.PostSINAsync(uploadInfoObject).ConfigureAwait(true);
+                            posttask = await client.PostSINAsync(uploadInfoObject);
                             if (posttask.CallSuccess)
                             {
                                 Log.Info("SINner " + sin.Id + " posted!");
