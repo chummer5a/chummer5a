@@ -603,11 +603,8 @@ namespace Chummer.UI.Skills
                 lblModifiedRating.DoThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
             }
 
-            if (_blnLoading || (!_objSkill.Default && !_objSkill.Leveled))
-            {
-                string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
-                lblModifiedRating.DoThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
-            }
+            string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
         }
     }
 }
