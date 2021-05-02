@@ -282,7 +282,7 @@ namespace Chummer
                         RefreshQualities(treQualities, cmsQuality);
                         RefreshSpirits(panSpirits, panSprites);
                         RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                        RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms);
+                        RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers);
                         RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                         RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                         RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -1039,7 +1039,7 @@ namespace Chummer
 
         private void SustainedSpellCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, notifyCollectionChangedEventArgs);
+            RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers, notifyCollectionChangedEventArgs);
         }
 
         private void AttributeCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -1906,7 +1906,7 @@ namespace Chummer
                     RefreshQualities(treQualities, cmsQuality);
                     RefreshSpirits(panSpirits, panSprites);
                     RefreshSpells(treSpells, treMetamagic, cmsSpell, cmsInitiationNotes);
-                    RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms);
+                    RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers);
                     RefreshComplexForms(treComplexForms, treMetamagic, cmsComplexForm, cmsInitiationNotes);
                     RefreshPowerCollectionListChanged(treMetamagic, cmsMetamagic, cmsInitiationNotes);
                     RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
@@ -6172,6 +6172,11 @@ namespace Chummer
         private void cmdAddSustainedForm_Click(object sender, EventArgs e)
         {
             AddSustainedComplexForm();
+        }
+
+        private void cmdAddSustainedCritterPower_Click(object sender, EventArgs e)
+        {
+            AddSustainedCritterPower();
         }
         #endregion
 
@@ -11738,17 +11743,7 @@ namespace Chummer
 
         private void DeleteSustainedSpell(object sender, EventArgs e)
         {
-            if (sender is SustainedSpellControl objSender)
-            {
-                ISustainable objSustained = objSender.SustainedObject;
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSustainedSpell")))
-                    return;
 
-                CharacterObject.SustainedCollection.Remove(objSustained);
-
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
-            }
         }
 
         private void SustainedPropertyChanged(object sender, EventArgs e)
@@ -16400,9 +16395,9 @@ namespace Chummer
         /// </summary>
         /// <param name="panSustainedSpells"></param>
         /// <param name="notifyCollectionChangedEventArgs"></param>
-        private void RefreshSustainedSpells(Panel flpSustainedSpells, Panel flpSustainedComplexForms, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
+        private void RefreshSustainedSpells(Panel flpSustainedSpells, Panel flpSustainedComplexForms, Panel flpSustainedCritterPowers, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
         {
-            if (flpSustainedSpells == null && flpSustainedComplexForms == null)
+            if (flpSustainedSpells == null && flpSustainedComplexForms == null && flpSustainedCritterPowers == null)
                 return;
 
             if (CharacterObject.SustainedCollection.Count != 0 && !chkPsycheActive.Visible)
@@ -16418,6 +16413,7 @@ namespace Chummer
                 flpSustainedSpells.Controls.Clear();
                 int intSustainedSpells = -1;
 
+
                 foreach (ISustainable objSustained in CharacterObject.SustainedCollection)
                 {
                     SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustained);
@@ -16428,11 +16424,15 @@ namespace Chummer
                     intSustainedSpells += 1;
                     objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
 
+
                     if (objSustained is SustainedSpell)
                         flpSustainedSpells.Controls.Add(objSustainedSpellControl);
 
                     if (objSustained is SustainedComplexForm)
                         flpSustainedComplexForms.Controls.Add(objSustainedSpellControl);
+
+                    if (objSustained is SustainedCritterPower)
+                        flpSustainedCritterPowers.Controls.Add(objSustainedSpellControl);
 
                 }
                 CharacterObject.OnPropertyChanged(nameof(CharacterObject.SustainedCollection));
@@ -16447,6 +16447,8 @@ namespace Chummer
 
                             int intSustainedSpells = flpSustainedSpells?.Controls.Count ?? 0;
                             int intSustainedComplexForms = flpSustainedComplexForms?.Controls.Count ?? 0;
+                            int intSustainedCritterPowers = flpSustainedCritterPowers?.Controls.Count ?? 0;
+
 
                             foreach (ISustainable objSustained in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -16461,14 +16463,17 @@ namespace Chummer
                                     objSustainedSpellControl.Top = intSustainedSpells * objSustainedSpellControl.Height;
                                     flpSustainedSpells.Controls.Add(objSustainedSpellControl);
                                 }
-                                    
-
+                                
                                 if (objSustained is SustainedComplexForm)
                                 {
-
                                     objSustainedSpellControl.Top = intSustainedComplexForms * objSustainedSpellControl.Height;
                                     flpSustainedComplexForms.Controls.Add(objSustainedSpellControl);
-                                    
+                                }
+
+                                if (objSustained is SustainedCritterPower)
+                                {
+                                    objSustainedSpellControl.Top = intSustainedCritterPowers * objSustainedSpellControl.Height;
+                                    flpSustainedCritterPowers.Controls.Add(objSustainedSpellControl);
                                 }
 
                                 intSustainedComplexForms += 1;
@@ -16490,7 +16495,8 @@ namespace Chummer
                                 if (objSustained is SustainedComplexForm)
                                     refreshingPanel = flpSustainedComplexForms;
 
-
+                                if (objSustained is SustainedCritterPower)
+                                    refreshingPanel = flpSustainedCritterPowers;
 
                                 int intMoveUpAmount = 0;
 
@@ -16525,29 +16531,36 @@ namespace Chummer
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
-                        {
+                    {
+                        int intSustainedObjects;
 
-                            int intSustainedSpells = flpSustainedSpells?.Controls.Count ?? 0;
-                            int intSustainedComplexForms = flpSustainedComplexForms?.Controls.Count ?? 0;
-
-                            //Can be done like this, because noone can hace SusSpells and SusForms at the same time. Cuts done on code and ifs later on
-                            int intSustainedObjects = intSustainedSpells + intSustainedComplexForms;
-
-
-                            foreach (ISustainable objSustainedSpell in notifyCollectionChangedEventArgs.OldItems)
+                            foreach (ISustainable objSustained in notifyCollectionChangedEventArgs.OldItems)
                             {
+                                Panel refreshingPanel = null;
+
+                                if (objSustained is SustainedSpell)
+                                    refreshingPanel = flpSustainedSpells;
+
+                                if (objSustained is SustainedComplexForm)
+                                    refreshingPanel = flpSustainedComplexForms;
+
+                                if (objSustained is SustainedCritterPower)
+                                    refreshingPanel = flpSustainedCritterPowers;
+
                                 int intMoveUpAmount = 0;
 
-                                if (flpSustainedSpells == null && flpSustainedComplexForms == null)
+                                if (refreshingPanel == null)
                                     continue;
+
+                                intSustainedObjects = refreshingPanel?.Controls.Count ?? 0;
 
                                 for (int i = 0; i < intSustainedObjects; ++i)
                                 {
-                                    Control objLoopControl = flpSustainedSpells.Controls[i];
-                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl && objSustainedSpellControl.SustainedObject == objSustainedSpell)
+                                    Control objLoopControl = refreshingPanel.Controls[i];
+                                    if (objLoopControl is SustainedSpellControl objSustainedSpellControl && objSustainedSpellControl.SustainedObject == objSustained)
                                     {
                                         intMoveUpAmount = objSustainedSpellControl.Height;
-                                        flpSustainedSpells.Controls.RemoveAt(i);
+                                        refreshingPanel.Controls.RemoveAt(i);
                                         objSustainedSpellControl.SpellDetailChanged -= MakeDirtyWithCharacterUpdate;
                                         objSustainedSpellControl.UnsustainSpell -= DeleteSustainedSpell;
                                         objSustainedSpellControl.Dispose();
@@ -16560,9 +16573,26 @@ namespace Chummer
                                     }
                                 }
                             }
-                            foreach (ISustainable objSustainedSpell in notifyCollectionChangedEventArgs.NewItems)
+                            foreach (ISustainable objSustained in notifyCollectionChangedEventArgs.NewItems)
                             {
-                                SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustainedSpell);
+                                Panel refreshingPanel = null;
+
+                                if (objSustained is SustainedSpell)
+                                    refreshingPanel = flpSustainedSpells;
+
+                                if (objSustained is SustainedComplexForm)
+                                    refreshingPanel = flpSustainedComplexForms;
+
+                                if (objSustained is SustainedCritterPower)
+                                    refreshingPanel = flpSustainedCritterPowers;
+
+                                if (refreshingPanel == null)
+                                    continue;
+
+                                intSustainedObjects = refreshingPanel?.Controls.Count ?? 0;
+
+
+                                SustainedSpellControl objSustainedSpellControl = new SustainedSpellControl(objSustained);
 
                                 objSustainedSpellControl.SpellDetailChanged += MakeDirtyWithCharacterUpdate;
                                 objSustainedSpellControl.UnsustainSpell += DeleteSustainedSpell;
@@ -16570,11 +16600,9 @@ namespace Chummer
 
                                 objSustainedSpellControl.Top = intSustainedObjects * objSustainedSpellControl.Height;
 
-                                if (objSustainedSpell is SustainedSpell)
-                                    flpSustainedSpells.Controls.Add(objSustainedSpellControl);
 
-                                if (objSustainedSpell is SustainedComplexForm)
-                                    flpSustainedComplexForms.Controls.Add(objSustainedSpellControl);
+                                refreshingPanel.Controls.Add(objSustainedSpellControl);
+
                                 
                             }
                             CharacterObject.OnPropertyChanged(nameof(CharacterObject.SustainedCollection));
@@ -16582,7 +16610,7 @@ namespace Chummer
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         {
-                            RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms);
+                            RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers);
                         }
                         break;
                 }
@@ -16624,6 +16652,24 @@ namespace Chummer
                 SustainedComplexForm objSustained = new SustainedComplexForm(CharacterObject);
 
                 objSustained.Create(objComplexForm);
+
+                CharacterObject.SustainedCollection.Add(objSustained);
+
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Add a sustained critter power
+        /// </summary>
+        private void AddSustainedCritterPower()
+        {
+            if (treCritterPowers.SelectedNode != null && treCritterPowers.SelectedNode.Level > 0 && treCritterPowers.SelectedNode.Tag is CritterPower objCritterPower)
+            {
+                SustainedCritterPower objSustained = new SustainedCritterPower(CharacterObject);
+
+                objSustained.Create(objCritterPower);
 
                 CharacterObject.SustainedCollection.Add(objSustained);
 

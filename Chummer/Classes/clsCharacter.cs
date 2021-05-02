@@ -3514,22 +3514,26 @@ namespace Chummer
                             {
                                 objXmlSustained.TryGetField<String>("type", out string _strType);
 
+                                ISustainable objSustained;
                                 //TODO find a way to make the cases smaller
                                 switch (_strType)
                                 {
                                     case nameof(SustainedSpell):
-                                        ISustainable objSustainedSpell = new SustainedSpell(this);
-                                        objSustainedSpell.Load(objXmlSustained);
-                                        _lstSustained.Add(objSustainedSpell);
+                                        objSustained = new SustainedSpell(this);
+                                        objSustained.Load(objXmlSustained);
+                                        _lstSustained.Add(objSustained);
                                         break;
 
                                     case nameof(SustainedComplexForm):
-                                        ISustainable objSustainedForm = new SustainedComplexForm(this);
-                                        objSustainedForm.Load(objXmlSustained);
-                                        _lstSustained.Add(objSustainedForm);
+                                        objSustained = new SustainedComplexForm(this);
+                                        objSustained.Load(objXmlSustained);
+                                        _lstSustained.Add(objSustained);
                                         break;
 
-                                    default:
+                                    case nameof(SustainedCritterPower):
+                                        objSustained = new SustainedCritterPower(this);
+                                        objSustained.Load(objXmlSustained);
+                                        _lstSustained.Add(objSustained);
                                         break;
                                 }
                             }
@@ -15433,14 +15437,16 @@ namespace Chummer
             if (IsLoading)
                 return;
 
+                
             
                 int intPenaltyWithPsyche = -1;
                 int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
-                int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained);
+
+                //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
+                int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained && !(objSustainedSpell is SustainedCritterPower));
                 int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell;
                                                                                                                
                 _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
-            
         }
 
         private int _intSustainingPenalty;

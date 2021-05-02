@@ -30,7 +30,6 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblSelfSustained = new System.Windows.Forms.Label();
             this.lblSustainedSpell = new System.Windows.Forms.Label();
             this.lblNetHits = new System.Windows.Forms.Label();
             this.nudNetHits = new Chummer.NumericUpDownEx();
@@ -38,6 +37,7 @@ namespace Chummer
             this.nudForce = new Chummer.NumericUpDownEx();
             this.chkSelfSustained = new Chummer.ColorableCheckBox(this.components);
             this.cmdDelete = new System.Windows.Forms.Button();
+            this.lblSelfSustained = new System.Windows.Forms.Label();
             this.bufferedTableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNetHits)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
@@ -71,19 +71,6 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(265, 35);
             this.bufferedTableLayoutPanel1.TabIndex = 1;
-            // 
-            // lblSelfSustained
-            // 
-            this.lblSelfSustained.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSelfSustained.AutoSize = true;
-            this.lblSelfSustained.Location = new System.Drawing.Point(163, 9);
-            this.lblSelfSustained.Name = "lblSelfSustained";
-            this.bufferedTableLayoutPanel1.SetRowSpan(this.lblSelfSustained, 2);
-            this.lblSelfSustained.Size = new System.Drawing.Size(52, 26);
-            this.lblSelfSustained.TabIndex = 14;
-            this.lblSelfSustained.Tag = "Label_SustainedSelf";
-            this.lblSelfSustained.Text = "Self \r\nsustained";
-            this.lblSelfSustained.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblSustainedSpell
             // 
@@ -193,6 +180,19 @@ namespace Chummer
             this.cmdDelete.UseVisualStyleBackColor = true;
             this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
+            // lblSelfSustained
+            // 
+            this.lblSelfSustained.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSelfSustained.AutoSize = true;
+            this.lblSelfSustained.Location = new System.Drawing.Point(163, 9);
+            this.lblSelfSustained.Name = "lblSelfSustained";
+            this.bufferedTableLayoutPanel1.SetRowSpan(this.lblSelfSustained, 2);
+            this.lblSelfSustained.Size = new System.Drawing.Size(52, 26);
+            this.lblSelfSustained.TabIndex = 14;
+            this.lblSelfSustained.Tag = "Label_SustainedSelf";
+            this.lblSelfSustained.Text = "Self \r\nsustained";
+            this.lblSelfSustained.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // SustainedSpellControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -203,7 +203,7 @@ namespace Chummer
             this.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.Controls.Add(this.bufferedTableLayoutPanel1);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.MaximumSize = new System.Drawing.Size(285, 45);
+            this.MaximumSize = new System.Drawing.Size(1000, 45);
             this.MinimumSize = new System.Drawing.Size(241, 2);
             this.Name = "SustainedSpellControl";
             this.Size = new System.Drawing.Size(268, 38);

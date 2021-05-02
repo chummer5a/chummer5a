@@ -256,6 +256,7 @@
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
+    <Compile Include="Backend\Derived\SustainedCritterPower.cs" />
     <Compile Include="Backend\Derived\SustainedComplexForm.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />

@@ -540,6 +540,7 @@ namespace Chummer
             this.cmdDeleteAIProgram = new System.Windows.Forms.Button();
             this.tabCritter = new System.Windows.Forms.TabPage();
             this.tlpCritter = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpSustainedCritterPowers = new System.Windows.Forms.FlowLayoutPanel();
             this.treCritterPowers = new System.Windows.Forms.TreeView();
             this.lblCritterPowerPointCost = new System.Windows.Forms.Label();
             this.chkCritterPowerCount = new Chummer.ColorableCheckBox(this.components);
@@ -956,6 +957,7 @@ namespace Chummer
             this.flpLifestyleDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbLifestyleCommon = new System.Windows.Forms.GroupBox();
             this.tlpLifestyleCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.lblLifestyleBoroughLabel = new System.Windows.Forms.Label();
             this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
             this.lblLifestyleQualities = new System.Windows.Forms.Label();
             this.lblLifestyleCost = new System.Windows.Forms.Label();
@@ -969,6 +971,11 @@ namespace Chummer
             this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
             this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
             this.lblLifestyleSource = new System.Windows.Forms.Label();
+            this.lblLifestyleCityLabel = new System.Windows.Forms.Label();
+            this.lblLifestyleDistrictLabel = new System.Windows.Forms.Label();
+            this.lblLifestyleCity = new System.Windows.Forms.Label();
+            this.lblLifestyleDistrict = new System.Windows.Forms.Label();
+            this.lblLifestyleBorough = new System.Windows.Forms.Label();
             this.tlpLifestyleButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddLifestyle = new SplitButton();
             this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
@@ -1317,12 +1324,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new System.Windows.Forms.ToolStripMenuItem();
             this.tsWeaponMountLocation = new System.Windows.Forms.ToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new System.Windows.Forms.ToolStripMenuItem();
-            this.lblLifestyleCityLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleDistrictLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleBoroughLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleCity = new System.Windows.Forms.Label();
-            this.lblLifestyleDistrict = new System.Windows.Forms.Label();
-            this.lblLifestyleBorough = new System.Windows.Forms.Label();
+            this.btnSustaindCritterPower = new Chummer.ButtonWithToolTip();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -5990,7 +5992,7 @@ namespace Chummer
             this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
             this.tabSkillsUc.Name = "tabSkillsUc";
             this.tabSkillsUc.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.tabSkillsUc.Size = new System.Drawing.Size(977, 631);
+            this.tabSkillsUc.Size = new System.Drawing.Size(192, 74);
             this.tabSkillsUc.TabIndex = 0;
             // 
             // tabLimits
@@ -6351,7 +6353,7 @@ namespace Chummer
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 61.32315F));
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 38.67685F));
-            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 110F));
+            this.tlpMagicianSpell.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 112F));
             this.tlpMagicianSpell.Controls.Add(this.cmdSustainSpell, 4, 4);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptors, 1, 0);
             this.tlpMagicianSpell.Controls.Add(this.lblSpellDescriptorsLabel, 0, 0);
@@ -6388,7 +6390,7 @@ namespace Chummer
             // 
             this.cmdSustainSpell.AutoSize = true;
             this.cmdSustainSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdSustainSpell.Location = new System.Drawing.Point(501, 103);
+            this.cmdSustainSpell.Location = new System.Drawing.Point(499, 103);
             this.cmdSustainSpell.Name = "cmdSustainSpell";
             this.cmdSustainSpell.Size = new System.Drawing.Size(78, 23);
             this.cmdSustainSpell.TabIndex = 0;
@@ -6427,7 +6429,7 @@ namespace Chummer
             this.cmdQuickenSpell.AutoSize = true;
             this.cmdQuickenSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMagicianSpell.SetColumnSpan(this.cmdQuickenSpell, 2);
-            this.cmdQuickenSpell.Location = new System.Drawing.Point(301, 103);
+            this.cmdQuickenSpell.Location = new System.Drawing.Point(300, 103);
             this.cmdQuickenSpell.Name = "cmdQuickenSpell";
             this.cmdQuickenSpell.Size = new System.Drawing.Size(83, 23);
             this.cmdQuickenSpell.TabIndex = 108;
@@ -6476,7 +6478,7 @@ namespace Chummer
             // 
             this.lblSpellTypeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellTypeLabel.AutoSize = true;
-            this.lblSpellTypeLabel.Location = new System.Drawing.Point(317, 6);
+            this.lblSpellTypeLabel.Location = new System.Drawing.Point(316, 6);
             this.lblSpellTypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellTypeLabel.Name = "lblSpellTypeLabel";
             this.lblSpellTypeLabel.Size = new System.Drawing.Size(34, 13);
@@ -6489,7 +6491,7 @@ namespace Chummer
             this.lblSpellType.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellType.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellType, 2);
-            this.lblSpellType.Location = new System.Drawing.Point(357, 6);
+            this.lblSpellType.Location = new System.Drawing.Point(356, 6);
             this.lblSpellType.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellType.Name = "lblSpellType";
             this.lblSpellType.Size = new System.Drawing.Size(37, 13);
@@ -6500,7 +6502,7 @@ namespace Chummer
             // 
             this.lblSpellDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDamageLabel.AutoSize = true;
-            this.lblSpellDamageLabel.Location = new System.Drawing.Point(301, 31);
+            this.lblSpellDamageLabel.Location = new System.Drawing.Point(300, 31);
             this.lblSpellDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDamageLabel.Name = "lblSpellDamageLabel";
             this.lblSpellDamageLabel.Size = new System.Drawing.Size(50, 13);
@@ -6513,7 +6515,7 @@ namespace Chummer
             this.lblSpellDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDamage.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDamage, 2);
-            this.lblSpellDamage.Location = new System.Drawing.Point(357, 31);
+            this.lblSpellDamage.Location = new System.Drawing.Point(356, 31);
             this.lblSpellDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDamage.Name = "lblSpellDamage";
             this.lblSpellDamage.Size = new System.Drawing.Size(53, 13);
@@ -6560,7 +6562,7 @@ namespace Chummer
             // 
             this.lblSpellDVLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDVLabel.AutoSize = true;
-            this.lblSpellDVLabel.Location = new System.Drawing.Point(326, 56);
+            this.lblSpellDVLabel.Location = new System.Drawing.Point(325, 56);
             this.lblSpellDVLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDVLabel.Name = "lblSpellDVLabel";
             this.lblSpellDVLabel.Size = new System.Drawing.Size(25, 13);
@@ -6573,7 +6575,7 @@ namespace Chummer
             this.lblSpellDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDuration.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDuration, 2);
-            this.lblSpellDuration.Location = new System.Drawing.Point(357, 81);
+            this.lblSpellDuration.Location = new System.Drawing.Point(356, 81);
             this.lblSpellDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDuration.Name = "lblSpellDuration";
             this.lblSpellDuration.Size = new System.Drawing.Size(53, 13);
@@ -6584,7 +6586,7 @@ namespace Chummer
             // 
             this.lblSpellDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSpellDurationLabel.AutoSize = true;
-            this.lblSpellDurationLabel.Location = new System.Drawing.Point(301, 81);
+            this.lblSpellDurationLabel.Location = new System.Drawing.Point(300, 81);
             this.lblSpellDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDurationLabel.Name = "lblSpellDurationLabel";
             this.lblSpellDurationLabel.Size = new System.Drawing.Size(50, 13);
@@ -6609,7 +6611,7 @@ namespace Chummer
             this.lblSpellDV.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSpellDV.AutoSize = true;
             this.tlpMagicianSpell.SetColumnSpan(this.lblSpellDV, 2);
-            this.lblSpellDV.Location = new System.Drawing.Point(357, 56);
+            this.lblSpellDV.Location = new System.Drawing.Point(356, 56);
             this.lblSpellDV.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSpellDV.Name = "lblSpellDV";
             this.lblSpellDV.Size = new System.Drawing.Size(28, 13);
@@ -7872,6 +7874,7 @@ namespace Chummer
             this.tlpCritter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCritter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpCritter.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpCritter.Controls.Add(this.flpSustainedCritterPowers, 0, 12);
             this.tlpCritter.Controls.Add(this.treCritterPowers, 0, 1);
             this.tlpCritter.Controls.Add(this.lblCritterPowerPointCost, 2, 9);
             this.tlpCritter.Controls.Add(this.chkCritterPowerCount, 1, 10);
@@ -7893,11 +7896,13 @@ namespace Chummer
             this.tlpCritter.Controls.Add(this.lblCritterPowerName, 2, 2);
             this.tlpCritter.Controls.Add(this.lblCritterPowerPoints, 2, 1);
             this.tlpCritter.Controls.Add(this.tlpCritterButtons, 0, 0);
+            this.tlpCritter.Controls.Add(this.btnSustaindCritterPower, 1, 11);
             this.tlpCritter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpCritter.Location = new System.Drawing.Point(3, 3);
             this.tlpCritter.MinimumSize = new System.Drawing.Size(823, 613);
             this.tlpCritter.Name = "tlpCritter";
-            this.tlpCritter.RowCount = 12;
+            this.tlpCritter.RowCount = 13;
+            this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -7912,6 +7917,24 @@ namespace Chummer
             this.tlpCritter.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpCritter.Size = new System.Drawing.Size(971, 625);
             this.tlpCritter.TabIndex = 37;
+            // 
+            // flpSustainedCritterPowers
+            // 
+            this.flpSustainedCritterPowers.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.flpSustainedCritterPowers.AutoScroll = true;
+            this.flpSustainedCritterPowers.AutoSize = true;
+            this.flpSustainedCritterPowers.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpSustainedCritterPowers.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.flpSustainedCritterPowers.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.tlpCritter.SetColumnSpan(this.flpSustainedCritterPowers, 2);
+            this.flpSustainedCritterPowers.Location = new System.Drawing.Point(303, 488);
+            this.flpSustainedCritterPowers.Margin = new System.Windows.Forms.Padding(2);
+            this.flpSustainedCritterPowers.MaximumSize = new System.Drawing.Size(1000, 135);
+            this.flpSustainedCritterPowers.MinimumSize = new System.Drawing.Size(241, 135);
+            this.flpSustainedCritterPowers.Name = "flpSustainedCritterPowers";
+            this.flpSustainedCritterPowers.Size = new System.Drawing.Size(666, 135);
+            this.flpSustainedCritterPowers.TabIndex = 188;
             // 
             // treCritterPowers
             // 
@@ -7928,7 +7951,7 @@ namespace Chummer
             this.treCritterPowers.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode14,
             treeNode15});
-            this.tlpCritter.SetRowSpan(this.treCritterPowers, 11);
+            this.tlpCritter.SetRowSpan(this.treCritterPowers, 12);
             this.treCritterPowers.ShowNodeToolTips = true;
             this.treCritterPowers.ShowPlusMinus = false;
             this.treCritterPowers.ShowRootLines = false;
@@ -13947,6 +13970,18 @@ namespace Chummer
             this.tlpLifestyleCommon.Size = new System.Drawing.Size(241, 205);
             this.tlpLifestyleCommon.TabIndex = 0;
             // 
+            // lblLifestyleBoroughLabel
+            // 
+            this.lblLifestyleBoroughLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLifestyleBoroughLabel.AutoSize = true;
+            this.lblLifestyleBoroughLabel.Location = new System.Drawing.Point(19, 186);
+            this.lblLifestyleBoroughLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLifestyleBoroughLabel.Name = "lblLifestyleBoroughLabel";
+            this.lblLifestyleBoroughLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblLifestyleBoroughLabel.TabIndex = 120;
+            this.lblLifestyleBoroughLabel.Tag = "Label_LifestyleBorough";
+            this.lblLifestyleBoroughLabel.Text = "Borough:";
+            // 
             // lblLifestyleCostLabel
             // 
             this.lblLifestyleCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -14107,6 +14142,63 @@ namespace Chummer
             this.lblLifestyleSource.TabIndex = 88;
             this.lblLifestyleSource.Text = "[Source]";
             this.lblLifestyleSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
+            // 
+            // lblLifestyleCityLabel
+            // 
+            this.lblLifestyleCityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLifestyleCityLabel.AutoSize = true;
+            this.lblLifestyleCityLabel.Location = new System.Drawing.Point(42, 136);
+            this.lblLifestyleCityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLifestyleCityLabel.Name = "lblLifestyleCityLabel";
+            this.lblLifestyleCityLabel.Size = new System.Drawing.Size(27, 13);
+            this.lblLifestyleCityLabel.TabIndex = 118;
+            this.lblLifestyleCityLabel.Tag = "Label_LifestyleCity";
+            this.lblLifestyleCityLabel.Text = "City:";
+            // 
+            // lblLifestyleDistrictLabel
+            // 
+            this.lblLifestyleDistrictLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLifestyleDistrictLabel.AutoSize = true;
+            this.lblLifestyleDistrictLabel.Location = new System.Drawing.Point(27, 161);
+            this.lblLifestyleDistrictLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLifestyleDistrictLabel.Name = "lblLifestyleDistrictLabel";
+            this.lblLifestyleDistrictLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblLifestyleDistrictLabel.TabIndex = 119;
+            this.lblLifestyleDistrictLabel.Tag = "Label_LifestyleDistrict";
+            this.lblLifestyleDistrictLabel.Text = "District:";
+            // 
+            // lblLifestyleCity
+            // 
+            this.lblLifestyleCity.AutoSize = true;
+            this.lblLifestyleCity.Location = new System.Drawing.Point(75, 136);
+            this.lblLifestyleCity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLifestyleCity.MaximumSize = new System.Drawing.Size(442, 0);
+            this.lblLifestyleCity.Name = "lblLifestyleCity";
+            this.lblLifestyleCity.Size = new System.Drawing.Size(19, 13);
+            this.lblLifestyleCity.TabIndex = 121;
+            this.lblLifestyleCity.Text = "[0]";
+            // 
+            // lblLifestyleDistrict
+            // 
+            this.lblLifestyleDistrict.AutoSize = true;
+            this.lblLifestyleDistrict.Location = new System.Drawing.Point(75, 161);
+            this.lblLifestyleDistrict.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLifestyleDistrict.MaximumSize = new System.Drawing.Size(442, 0);
+            this.lblLifestyleDistrict.Name = "lblLifestyleDistrict";
+            this.lblLifestyleDistrict.Size = new System.Drawing.Size(19, 13);
+            this.lblLifestyleDistrict.TabIndex = 122;
+            this.lblLifestyleDistrict.Text = "[0]";
+            // 
+            // lblLifestyleBorough
+            // 
+            this.lblLifestyleBorough.AutoSize = true;
+            this.lblLifestyleBorough.Location = new System.Drawing.Point(75, 186);
+            this.lblLifestyleBorough.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblLifestyleBorough.MaximumSize = new System.Drawing.Size(442, 0);
+            this.lblLifestyleBorough.Name = "lblLifestyleBorough";
+            this.lblLifestyleBorough.Size = new System.Drawing.Size(19, 13);
+            this.lblLifestyleBorough.TabIndex = 123;
+            this.lblLifestyleBorough.Text = "[0]";
             // 
             // tlpLifestyleButtons
             // 
@@ -18848,74 +18940,19 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
-            // lblLifestyleCityLabel
+            // btnSustaindCritterPower
             // 
-            this.lblLifestyleCityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblLifestyleCityLabel.AutoSize = true;
-            this.lblLifestyleCityLabel.Location = new System.Drawing.Point(42, 136);
-            this.lblLifestyleCityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLifestyleCityLabel.Name = "lblLifestyleCityLabel";
-            this.lblLifestyleCityLabel.Size = new System.Drawing.Size(27, 13);
-            this.lblLifestyleCityLabel.TabIndex = 118;
-            this.lblLifestyleCityLabel.Tag = "Label_LifestyleCity";
-            this.lblLifestyleCityLabel.Text = "City:";
-            // 
-            // lblLifestyleDistrictLabel
-            // 
-            this.lblLifestyleDistrictLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblLifestyleDistrictLabel.AutoSize = true;
-            this.lblLifestyleDistrictLabel.Location = new System.Drawing.Point(27, 161);
-            this.lblLifestyleDistrictLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLifestyleDistrictLabel.Name = "lblLifestyleDistrictLabel";
-            this.lblLifestyleDistrictLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblLifestyleDistrictLabel.TabIndex = 119;
-            this.lblLifestyleDistrictLabel.Tag = "Label_LifestyleDistrict";
-            this.lblLifestyleDistrictLabel.Text = "District:";
-            // 
-            // lblLifestyleBoroughLabel
-            // 
-            this.lblLifestyleBoroughLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblLifestyleBoroughLabel.AutoSize = true;
-            this.lblLifestyleBoroughLabel.Location = new System.Drawing.Point(19, 186);
-            this.lblLifestyleBoroughLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLifestyleBoroughLabel.Name = "lblLifestyleBoroughLabel";
-            this.lblLifestyleBoroughLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblLifestyleBoroughLabel.TabIndex = 120;
-            this.lblLifestyleBoroughLabel.Tag = "Label_LifestyleBorough";
-            this.lblLifestyleBoroughLabel.Text = "Borough:";
-            // 
-            // lblLifestyleCity
-            // 
-            this.lblLifestyleCity.AutoSize = true;
-            this.lblLifestyleCity.Location = new System.Drawing.Point(75, 136);
-            this.lblLifestyleCity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLifestyleCity.MaximumSize = new System.Drawing.Size(442, 0);
-            this.lblLifestyleCity.Name = "lblLifestyleCity";
-            this.lblLifestyleCity.Size = new System.Drawing.Size(19, 13);
-            this.lblLifestyleCity.TabIndex = 121;
-            this.lblLifestyleCity.Text = "[0]";
-            // 
-            // lblLifestyleDistrict
-            // 
-            this.lblLifestyleDistrict.AutoSize = true;
-            this.lblLifestyleDistrict.Location = new System.Drawing.Point(75, 161);
-            this.lblLifestyleDistrict.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLifestyleDistrict.MaximumSize = new System.Drawing.Size(442, 0);
-            this.lblLifestyleDistrict.Name = "lblLifestyleDistrict";
-            this.lblLifestyleDistrict.Size = new System.Drawing.Size(19, 13);
-            this.lblLifestyleDistrict.TabIndex = 122;
-            this.lblLifestyleDistrict.Text = "[0]";
-            // 
-            // lblLifestyleBorough
-            // 
-            this.lblLifestyleBorough.AutoSize = true;
-            this.lblLifestyleBorough.Location = new System.Drawing.Point(75, 186);
-            this.lblLifestyleBorough.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblLifestyleBorough.MaximumSize = new System.Drawing.Size(442, 0);
-            this.lblLifestyleBorough.Name = "lblLifestyleBorough";
-            this.lblLifestyleBorough.Size = new System.Drawing.Size(19, 13);
-            this.lblLifestyleBorough.TabIndex = 123;
-            this.lblLifestyleBorough.Text = "[0]";
+            this.btnSustaindCritterPower.AutoSize = true;
+            this.btnSustaindCritterPower.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnSustaindCritterPower.Location = new System.Drawing.Point(304, 280);
+            this.btnSustaindCritterPower.Name = "btnSustaindCritterPower";
+            this.btnSustaindCritterPower.Size = new System.Drawing.Size(52, 23);
+            this.btnSustaindCritterPower.TabIndex = 189;
+            this.btnSustaindCritterPower.Tag = "Button_Sustain";
+            this.btnSustaindCritterPower.Text = "Sustain";
+            this.btnSustaindCritterPower.ToolTipText = "";
+            this.btnSustaindCritterPower.UseVisualStyleBackColor = true;
+            this.btnSustaindCritterPower.Click += new System.EventHandler(this.cmdAddSustainedCritterPower_Click);
             // 
             // frmCareer
             // 
@@ -20661,5 +20698,7 @@ namespace Chummer
         private Label lblLifestyleCity;
         private Label lblLifestyleDistrict;
         private Label lblLifestyleBorough;
+        private FlowLayoutPanel flpSustainedCritterPowers;
+        private ButtonWithToolTip btnSustaindCritterPower;
     }
 }

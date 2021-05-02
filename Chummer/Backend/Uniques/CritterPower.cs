@@ -34,9 +34,9 @@ namespace Chummer
     public class CritterPower : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, ICanSort
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private Guid _guiID;
-        private Guid _guiSourceID;
-        private string _strName = string.Empty;
+        protected Guid guiID;
+        protected Guid guiSourceID;
+        protected string strName = string.Empty;
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
         private string _strAction = string.Empty;
@@ -49,7 +49,7 @@ namespace Chummer
         private decimal _decPowerPoints;
         private XmlNode _nodBonus;
         private string _strNotes = string.Empty;
-        private readonly Character _objCharacter;
+        protected readonly Character objCharacter;
         private bool _blnCountTowardsLimit = true;
         private int _intRating;
         private int _intGrade;
@@ -59,8 +59,8 @@ namespace Chummer
         public CritterPower(Character objCharacter)
         {
             // Create the GUID for the new Power.
-            _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            guiID = Guid.NewGuid();
+            this.objCharacter = objCharacter;
         }
 
         /// Create a Critter Power from an XmlNode.
@@ -69,12 +69,12 @@ namespace Chummer
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
         public void Create(XmlNode objXmlPowerNode, int intRating = 0, string strForcedValue = "")
         {
-            if (!objXmlPowerNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            if (!objXmlPowerNode.TryGetField("id", Guid.TryParse, out guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for power xmlnode", objXmlPowerNode });
                 Utils.BreakIfDebug();
             }
-            if (objXmlPowerNode.TryGetStringFieldQuickly("name", ref _strName))
+            if (objXmlPowerNode.TryGetStringFieldQuickly("name", ref strName))
                 _objCachedMyXmlNode = null;
             _intRating = intRating;
             _nodBonus = objXmlPowerNode.SelectSingleNode("bonus");
@@ -84,9 +84,9 @@ namespace Chummer
             if (_nodBonus != null)
             {
                 ImprovementManager.ForcedValue = strForcedValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), _nodBonus, intRating, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, guiID.ToString("D", GlobalOptions.InvariantCultureInfo), _nodBonus, intRating, DisplayNameShort(GlobalOptions.Language)))
                 {
-                    _guiID = Guid.Empty;
+                    guiID = Guid.Empty;
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -112,7 +112,7 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
                     _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
@@ -122,20 +122,20 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public virtual void Save(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("critterpower");
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("category", _strCategory);
@@ -158,27 +158,27 @@ namespace Chummer
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
-                _objCharacter.SourceProcess(_strSource);
+                objCharacter.SourceProcess(_strSource);
         }
 
         /// <summary>
         /// Load the Critter Power from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public virtual void Load(XmlNode objNode)
         {
             if (objNode == null)
                 return;
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out guiID))
             {
-                _guiID = Guid.NewGuid();
+                guiID = Guid.NewGuid();
             }
-            if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+            if (objNode.TryGetStringFieldQuickly("name", ref strName))
                 _objCachedMyXmlNode = null;
-            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -211,14 +211,14 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(_strExtra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", objCharacter.TranslateExtra(_strExtra, strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("type", DisplayType(strLanguageToPrint));
             objWriter.WriteElementString("action", DisplayAction(strLanguageToPrint));
             objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -232,17 +232,17 @@ namespace Chummer
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
-        public Guid SourceID => _guiSourceID;
+        public Guid SourceID => guiSourceID;
 
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string SourceIDString => guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Internal identifier which will be used to identify this Critter Power in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Paid levels of the power.
@@ -267,7 +267,7 @@ namespace Chummer
         {
             get
             {
-                return Rating + _objCharacter.Improvements.Where(objImprovement => objImprovement.ImprovedName == Name && objImprovement.ImproveType == Improvement.ImprovementType.CritterPowerLevel && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
+                return Rating + objCharacter.Improvements.Where(objImprovement => objImprovement.ImprovedName == Name && objImprovement.ImproveType == Improvement.ImprovementType.CritterPowerLevel && objImprovement.Enabled).Sum(objImprovement => objImprovement.Rating);
             }
         }
 
@@ -276,12 +276,12 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get => strName;
             set
             {
-                if (_strName != value)
+                if (strName != value)
                     _objCachedMyXmlNode = null;
-                _strName = value;
+                strName = value;
             }
         }
 
@@ -306,7 +306,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             }
 
             return strReturn;
@@ -323,7 +323,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
+            set => _strExtra = objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -386,7 +386,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return _objCharacter.LoadDataXPath("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return objCharacter.LoadDataXPath("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -590,7 +590,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = _objCharacter.LoadData("critterpowers.xml", strLanguage)
+                _objCachedMyXmlNode = objCharacter.LoadData("critterpowers.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/powers/power[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -605,7 +605,7 @@ namespace Chummer
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsCritterPower)
         {
-            if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
+            if (Grade != 0 && !string.IsNullOrEmpty(Source) && !objCharacter.Options.BookEnabled(Source))
                 return null;
 
             TreeNode objNode = new TreeNode
@@ -645,9 +645,9 @@ namespace Chummer
                     return false;
             }
 
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, InternalId);
+            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.CritterPower, InternalId);
 
-            return _objCharacter.CritterPowers.Remove(this);
+            return objCharacter.CritterPowers.Remove(this);
         }
 
         public void SetSourceDetail(Control sourceControl)

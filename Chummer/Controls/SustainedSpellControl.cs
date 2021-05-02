@@ -34,9 +34,20 @@ namespace Chummer
         private void SustainedSpellControl_Load(object sender, EventArgs e)
         {
             lblSustainedSpell.Text = _objSustainedSpell.DisplayName(GlobalOptions.Language);
-            chkSelfSustained.DoDatabinding("Checked", _objSustainedSpell, nameof(_objSustainedSpell.SelfSustained));
             nudForce.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.Force));
             nudNetHits.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.NetHits));
+
+            //Prevents the user from setting  SelfSustained of an SustainedCritterPower to true, because sustained critterpowers don't cause any dice loss
+            if (_objSustainedSpell is SustainedCritterPower)
+            {
+                chkSelfSustained.Visible = false;
+                lblSelfSustained.Visible = false;
+            }
+            else
+            {
+                //Only do the databinding if necessary.
+                chkSelfSustained.DoDatabinding("Checked", _objSustainedSpell, nameof(_objSustainedSpell.SelfSustained));
+            }
 
             _blnLoading = false;
         }
