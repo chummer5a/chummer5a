@@ -188,16 +188,10 @@ namespace Chummer
                 || (GlobalOptions.LiveCustomData && strFileName != "improvements.xml")
                 || !s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
             {
-                xmlReferenceOfReturn = null;
                 // The file was not found in the reference list, so it must be loaded.
-                Task<XmlDocument> tskLoadDocument = LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
-                // Explicitly specify ContinueWith to make sure we are loaded before continuing
-                bool blnDocumentLoaded = await tskLoadDocument.ContinueWith(x =>
-                {
-                    xmlDocumentOfReturn = x.Result;
-                    return s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
-                });
-                if (!blnDocumentLoaded)
+                // ReSharper disable once MethodHasAsyncOverload
+                xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile); // Synchronous to make sure we are loaded before continuing
+                if (!s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn))
                 {
                     Utils.BreakIfDebug();
                     return null;
@@ -1297,7 +1291,7 @@ namespace Chummer
                     StripAmendAttributesRecursively(xmlChildNode);
         }
 
-        public static async Task<List<ListItem>> GetXslFilesFromLocalDirectory(string strLanguage, IEnumerable<Character> lstCharacters = null, bool blnTerminateAfterFirstMatch = false)
+        public static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage, IEnumerable<Character> lstCharacters = null, bool blnTerminateAfterFirstMatch = false)
         {
             List<ListItem> lstSheets = new List<ListItem>();
 
@@ -1306,7 +1300,7 @@ namespace Chummer
                 // Populate the XSL list with all of the manifested XSL files found in the sheets\[language] directory.
                 foreach (Character objCharacter in lstCharacters)
                 {
-                    foreach (XPathNavigator xmlSheet in (await objCharacter.LoadDataXPathAsync("sheets.xml", strLanguage)).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
+                    foreach (XPathNavigator xmlSheet in objCharacter.LoadDataXPath("sheets.xml", strLanguage).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
                     {
                         string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                         if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
@@ -1323,7 +1317,7 @@ namespace Chummer
             }
             else
             {
-                foreach (XPathNavigator xmlSheet in (await LoadXPathAsync("sheets.xml", null, strLanguage)).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
+                foreach (XPathNavigator xmlSheet in LoadXPath("sheets.xml", null, strLanguage).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
                 {
                     string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                     if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
@@ -1346,7 +1340,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="lstBooks">List of books.</param>
-        public static async void Verify(string strLanguage, ICollection<string> lstBooks)
+        public static void Verify(string strLanguage, ICollection<string> lstBooks)
         {
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return;
@@ -1400,7 +1394,7 @@ namespace Chummer
                         || strFile.EndsWith("sheets.xml", StringComparison.OrdinalIgnoreCase))
                         continue;
                     // Load the current English file.
-                    XPathNavigator objEnglishDoc = await LoadXPathAsync(strFileName);
+                    XPathNavigator objEnglishDoc = LoadXPath(strFileName);
                     XPathNavigator objEnglishRoot = objEnglishDoc.SelectSingleNode("/chummer");
 
                     // First pass: make sure the document exists.

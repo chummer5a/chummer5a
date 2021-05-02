@@ -337,7 +337,7 @@ namespace Chummer.Backend.Uniques
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -360,7 +360,7 @@ namespace Chummer.Backend.Uniques
             }
             objWriter.WriteElementString("drainattributes", DisplayDrainExpressionMethod(strLanguageToPrint));
             objWriter.WriteElementString("drainvalue", DrainValue.ToString(objCulture));
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteEndElement();
         }

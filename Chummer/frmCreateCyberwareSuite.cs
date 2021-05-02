@@ -51,7 +51,7 @@ namespace Chummer
             txtFileName.Text = "custom_" + _strType + ".xml";
         }
 
-        private async void cmdOK_Click(object sender, EventArgs e)
+        private void cmdOK_Click(object sender, EventArgs e)
         {
             // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
@@ -77,7 +77,7 @@ namespace Chummer
             // See if a Suite with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             string strName = txtName.Text;
-            if ((await _objCharacter.LoadDataXPathAsync(_strType + ".xml")).SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + "]") != null)
+            if (_objCharacter.LoadDataXPath(_strType + ".xml").SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + "]") != null)
             {
                 Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);

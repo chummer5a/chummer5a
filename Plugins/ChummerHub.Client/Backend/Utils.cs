@@ -1108,7 +1108,8 @@ namespace ChummerHub.Client.Backend
                 var task = new Task(async () =>
                 {
                     var client = StaticUtils.GetClient();
-                    res = await client.PostSINAsync(uploadInfo);
+                    res = client.PostSINAsync(uploadInfo).Result;
+
                 });
 
                 // also can be called anywhere. Task  will be scheduled for execution.
@@ -1218,7 +1219,7 @@ namespace ChummerHub.Client.Backend
                         if (!StaticUtils.IsUnitTest)
                         {
                             FileParameter fp = new FileParameter(fs);
-                            res = await client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp);
+                            res = client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp).Result;
 
                             string msg = "Upload ended with statuscode: ";
                             if (res != null)

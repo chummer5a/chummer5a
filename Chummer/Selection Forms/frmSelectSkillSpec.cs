@@ -42,7 +42,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
-        private async void frmSelectSpec_Load(object sender, EventArgs e)
+        private void frmSelectSpec_Load(object sender, EventArgs e)
         {
             List<ListItem> lstItems = new List<ListItem>
             {
@@ -72,7 +72,7 @@ namespace Chummer
                     if (_objSkill.SkillCategory != "Combat Active")
                         continue;
                     // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                    XPathNavigator objXmlWeaponDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml");
+                    XPathNavigator objXmlWeaponDocument = _objCharacter.LoadDataXPath("weapons.xml");
                     //Might need to include skill name or might miss some values?
                     foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select("/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = " + strInnerText.CleanXPath() + ") and (" + _objCharacter.Options.BookXPath() + ")]"))
                     {

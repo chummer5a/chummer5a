@@ -334,12 +334,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         ///     Performs actions based on the character's last loaded AppVersion attribute.
         /// </summary>
-        private async void LegacyShim()
+        private void LegacyShim()
         {
             //Unstored Cost and LP values prior to 5.190.2 nightlies.
             if (_objCharacter.LastSavedVersion > new Version(5, 190, 0))
                 return;
-            XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("lifestyles.xml");
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             XPathNavigator objLifestyleQualityNode = GetNode()?.CreateNavigator()
                                                      ?? objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + Name.CleanXPath() + "]");
             if (objLifestyleQualityNode == null)
@@ -396,7 +396,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (!AllowPrint || objWriter == null)
                 return;
@@ -412,7 +412,7 @@ namespace Chummer.Backend.Equipment
             var strLifestyleQualityType = Type.ToString();
             if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
             {
-                XPathNavigator objNode = (await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint))
+                XPathNavigator objNode = _objCharacter.LoadDataXPath("lifestyles.xml", strLanguageToPrint)
                     .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath() + "]");
                 strLifestyleQualityType = objNode?.SelectSingleNode("@translate")?.Value ?? strLifestyleQualityType;
             }
@@ -420,7 +420,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("lifestylequalitytype", strLifestyleQualityType);
             objWriter.WriteElementString("lifestylequalitytype_english", Type.ToString());
             objWriter.WriteElementString("lifestylequalitysource", OriginSource.ToString());
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);

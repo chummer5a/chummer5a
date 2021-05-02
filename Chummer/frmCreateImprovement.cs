@@ -181,13 +181,13 @@ namespace Chummer
             chkIgnoreLimits.Visible = _strSelect == "SelectAdeptPower";
         }
 
-        private async void cmdChangeSelection_Click(object sender, EventArgs e)
+        private void cmdChangeSelection_Click(object sender, EventArgs e)
         {
             switch (_strSelect)
             {
                 case "SelectActionDicePool":
                     List<ListItem> lstActions = new List<ListItem>();
-                    foreach (XPathNavigator xmlAction in (await _objCharacter.LoadDataXPathAsync("actions.xml")).Select("/chummer/actions/action"))
+                    foreach (XPathNavigator xmlAction in _objCharacter.LoadDataXPath("actions.xml").Select("/chummer/actions/action"))
                     {
                         string strName = xmlAction.SelectSingleNode("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
@@ -358,7 +358,7 @@ namespace Chummer
                         }
 
                         string strFilter = objFilter.Length > 0 ? '[' + objFilter.ToString() + ']' : string.Empty;
-                        foreach (XPathNavigator xmlSkill in (await _objCharacter.LoadDataXPathAsync("skills.xml")).Select("/chummer/knowledgeskills/skill" + strFilter))
+                        foreach (XPathNavigator xmlSkill in _objCharacter.LoadDataXPath("skills.xml").Select("/chummer/knowledgeskills/skill" + strFilter))
                         {
                             string strName = xmlSkill.SelectSingleNode("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
@@ -411,7 +411,7 @@ namespace Chummer
                     break;
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
-                    foreach (XPathNavigator xmlSpell in (await _objCharacter.LoadDataXPathAsync("spells.xml")).Select("/chummer/spells/spell"))
+                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("spells.xml").Select("/chummer/spells/spell"))
                     {
                         string strName = xmlSpell.SelectSingleNode("name")?.Value;
                         if (!string.IsNullOrEmpty(strName))
@@ -467,7 +467,7 @@ namespace Chummer
 
                         if (frmPickPower.DialogResult == DialogResult.OK)
                         {
-                            txtSelect.Text = (await _objCharacter.LoadDataXPathAsync("powers.xml")).SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]/name")?.Value;
+                            txtSelect.Text = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + "]/name")?.Value;
                             txtTranslateSelection.Text = TranslateField(_strSelect, frmPickPower.SelectedPower);
                         }
                     }

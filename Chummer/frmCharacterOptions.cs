@@ -697,7 +697,7 @@ namespace Chummer
 
         #region Methods
 
-        private async void PopulateSourcebookTreeView()
+        private void PopulateSourcebookTreeView()
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
@@ -705,8 +705,7 @@ namespace Chummer
             treSourcebook.BeginUpdate();
             treSourcebook.Nodes.Clear();
             _setPermanentSourcebooks.Clear();
-            foreach (XPathNavigator objXmlBook in (await XmlManager.LoadXPathAsync("books.xml",
-                _objCharacterOptions.EnabledCustomDataDirectoryPaths)).Select("/chummer/books/book"))
+            foreach (XPathNavigator objXmlBook in XmlManager.LoadXPath("books.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths).Select("/chummer/books/book"))
             {
                 if (objXmlBook.SelectSingleNode("hide") != null)
                     continue;
@@ -812,11 +811,11 @@ namespace Chummer
             }
         }
 
-        private async void PopulatePriorityTableList()
+        private void PopulatePriorityTableList()
         {
             List<ListItem> lstPriorityTables = new List<ListItem>();
 
-            foreach (XPathNavigator objXmlNode in (await XmlManager.LoadXPathAsync("priorities.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("priorities.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
                 .Select("/chummer/prioritytables/prioritytable"))
             {
                 string strName = objXmlNode.Value;
@@ -846,11 +845,11 @@ namespace Chummer
                 _objCharacterOptions.PriorityTable = strSelectedTable;
         }
 
-        private async void PopulateLimbCountList()
+        private void PopulateLimbCountList()
         {
             List<ListItem> lstLimbCount = new List<ListItem>();
 
-            foreach (XPathNavigator objXmlNode in (await XmlManager.LoadXPathAsync("options.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("options.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
                 .Select("/chummer/limbcounts/limb"))
             {
                 string strExclude = objXmlNode.SelectSingleNode("exclude")?.Value ?? string.Empty;
@@ -878,11 +877,11 @@ namespace Chummer
             _blnSkipLimbCountUpdate = false;
         }
 
-        private async void PopulateAllowedGrades()
+        private void PopulateAllowedGrades()
         {
             List<ListItem> lstGrades = new List<ListItem>();
 
-            foreach (XPathNavigator objXmlNode in (await XmlManager.LoadXPathAsync("bioware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("bioware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
                 .Select("/chummer/grades/grade[not(hide)]"))
             {
                 string strName = objXmlNode.SelectSingleNode("name")?.Value;
@@ -899,7 +898,7 @@ namespace Chummer
                     lstGrades.Add(new ListItem(strName, objXmlNode.SelectSingleNode("translate")?.Value ?? strName));
                 }
             }
-            foreach (XPathNavigator objXmlNode in (await XmlManager.LoadXPathAsync("cyberware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths))
+            foreach (XPathNavigator objXmlNode in XmlManager.LoadXPath("cyberware.xml", _objCharacterOptions.EnabledCustomDataDirectoryPaths)
                 .Select("/chummer/grades/grade[not(hide)]"))
             {
                 string strName = objXmlNode.SelectSingleNode("name")?.Value;

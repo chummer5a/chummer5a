@@ -47,21 +47,22 @@ namespace Chummer
             {
                 lock (s_LogWriterLock)
                 {
-                    if (s_blnIsLoggerEnabled == value)
-                        return;
-                    // Sets up logging information
-                    if (value)
+                    if (s_blnIsLoggerEnabled != value)
                     {
-                        s_LogWriter = new StreamWriter(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
-                    }
-                    // This will disabled logging and free any resources used by it
-                    else if (s_LogWriter != null)
-                    {
-                        s_LogWriter.Flush();
-                        s_LogWriter.Close();
-                    }
+                        // Sets up logging information
+                        if (value)
+                        {
+                            s_LogWriter = new StreamWriter(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+                        }
+                        // This will disabled logging and free any resources used by it
+                        else if (s_LogWriter != null)
+                        {
+                            s_LogWriter.Flush();
+                            s_LogWriter.Close();
+                        }
 
-                    s_blnIsLoggerEnabled = value;
+                        s_blnIsLoggerEnabled = value;
+                    }
                 }
             }
         }
@@ -378,10 +379,11 @@ namespace Chummer
 
         public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
         {
-            if (!IsLoggerEnabled)
-                return;
-            lock (s_LogWriterLock)
-                s_LogWriter?.WriteLine("First chance exception: " + e?.Exception);
+            if (IsLoggerEnabled)
+            {
+                lock (s_LogWriterLock)
+                    s_LogWriter?.WriteLine("First chance exception: " + e?.Exception);
+            }
         }
     }
 }

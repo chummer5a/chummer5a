@@ -650,7 +650,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether or not we are copying an existing vehicle.</param>
-        public async void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (objNode == null)
                 return;
@@ -816,7 +816,7 @@ namespace Chummer.Backend.Equipment
                                 xmlDataNodesForMissingKrakeStuff = xmlVehicleDataNode["weapons"];
                                 if (xmlDataNodesForMissingKrakeStuff != null)
                                 {
-                                    XmlDocument objXmlWeaponDocument = await XmlManager.LoadAsync("weapons.xml");
+                                    XmlDocument objXmlWeaponDocument = XmlManager.Load("weapons.xml");
 
                                     foreach (XmlNode objXmlWeapon in xmlDataNodesForMissingKrakeStuff.SelectNodes("weapon"))
                                     {
@@ -997,7 +997,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -1018,7 +1018,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
             objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));

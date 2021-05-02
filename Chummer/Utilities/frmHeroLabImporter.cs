@@ -23,7 +23,6 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -43,7 +42,7 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private async void cmdSelectFile_Click(object sender, EventArgs e)
+        private void cmdSelectFile_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to possess.
             using (OpenFileDialog openFileDialog = new OpenFileDialog
@@ -57,7 +56,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     string strSelectedFile = openFileDialog.FileName;
-                    TreeNode objNode = await CacheCharacters(strSelectedFile);
+                    TreeNode objNode = CacheCharacters(strSelectedFile);
                     if (objNode != null)
                     {
                         treCharacterList.Nodes.Clear();
@@ -72,7 +71,7 @@ namespace Chummer
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
         /// <param name="strFile"></param>
-        private async Task<TreeNode> CacheCharacters(string strFile)
+        private TreeNode CacheCharacters(string strFile)
         {
             if (!File.Exists(strFile))
             {
@@ -152,7 +151,7 @@ namespace Chummer
                 ToolTipText = strFileText
             };
 
-            XPathNavigator xmlMetatypesDocument = await XmlManager.LoadXPathAsync("metatypes.xml");
+            XPathNavigator xmlMetatypesDocument = XmlManager.LoadXPath("metatypes.xml");
             foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
             {
                 XPathNavigator xmlBaseCharacterNode = xmlCharacterDocument.SelectSingleNode("/document/public/character");
@@ -301,7 +300,7 @@ namespace Chummer
         /// Update the labels and images based on the selected treenode.
         /// </summary>
         /// <param name="objCache"></param>
-        private async void UpdateCharacter(HeroLabCharacterCache objCache)
+        private void UpdateCharacter(HeroLabCharacterCache objCache)
         {
             if (objCache != null)
             {
@@ -343,11 +342,11 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
+                XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
                 XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
                 if (objMetatypeNode == null)
                 {
-                    objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
+                    objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
                     objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + "]");
                 }
 

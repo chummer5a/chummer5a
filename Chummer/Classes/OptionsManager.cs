@@ -42,7 +42,7 @@ namespace Chummer
             }
         }
 
-        private static async void LoadCharacterOptions()
+        private static void LoadCharacterOptions()
         {
             s_dicLoadedCharacterOptions.Clear();
             if (Utils.IsDesignerMode)
@@ -50,10 +50,10 @@ namespace Chummer
                 s_dicLoadedCharacterOptions.TryAdd(GlobalOptions.DefaultCharacterOption, new CharacterOptions());
                 return;
             }
-            foreach (XPathNavigator xmlBuiltInSetting in (await XmlManager.LoadXPathAsync("settings.xml")).Select("/chummer/settings/setting"))
+            foreach (XPathNavigator xmlBuiltInSetting in XmlManager.LoadXPath("settings.xml").Select("/chummer/settings/setting"))
             {
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
-                if (await objNewCharacterOptions.Load(xmlBuiltInSetting) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
+                if (objNewCharacterOptions.Load(xmlBuiltInSetting) && (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
                     s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.SourceId, objNewCharacterOptions);
             }
             string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -63,7 +63,7 @@ namespace Chummer
                 {
                     string strSettingName = Path.GetFileName(strSettingsFilePath);
                     CharacterOptions objNewCharacterOptions = new CharacterOptions();
-                    if (await objNewCharacterOptions.Load(strSettingName, false) &&
+                    if (objNewCharacterOptions.Load(strSettingName, false) &&
                         (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
                         s_dicLoadedCharacterOptions.TryAdd(strSettingName, objNewCharacterOptions);
                 }

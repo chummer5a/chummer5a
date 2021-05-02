@@ -74,12 +74,12 @@ namespace Chummer
             _lstFileNamesWithItems = new List<ListItem>(_lstFileNames.Count);
         }
 
-        private async void frmMasterIndex_Load(object sender, EventArgs e)
+        private void frmMasterIndex_Load(object sender, EventArgs e)
         {
             using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
             {
                 HashSet<string> setValidCodes = new HashSet<string>();
-                foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync("books.xml")).Select("/chummer/books/book/code"))
+                foreach (XPathNavigator xmlBookNode in XmlManager.LoadXPath("books.xml").Select("/chummer/books/book/code"))
                 {
                     setValidCodes.Add(xmlBookNode.Value);
                 }
@@ -280,7 +280,7 @@ namespace Chummer
             }
         }
 
-        private async void lstItems_SelectedIndexChanged(object sender, EventArgs e)
+        private void lstItems_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -295,7 +295,7 @@ namespace Chummer
                     lblSource.ToolTipText = objEntry.DisplaySource.LanguageBookTooltip;
                     if (!_dicCachedNotes.TryGetValue(objEntry, out string strNotes))
                     {
-                        strNotes = await CommonFunctions.GetTextFromPdfAsync(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
+                        strNotes = CommonFunctions.GetTextFromPdf(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
 
                         if (string.IsNullOrEmpty(strNotes)
                             && GlobalOptions.Language != GlobalOptions.DefaultLanguage
@@ -303,7 +303,7 @@ namespace Chummer
                                 || objEntry.Source.Page != objEntry.DisplaySource.Page))
                         {
                             // don't check again it is not translated
-                            strNotes = await CommonFunctions.GetTextFromPdfAsync(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
+                            strNotes = CommonFunctions.GetTextFromPdf(objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage);
                         }
 
                         _dicCachedNotes.TryAdd(objEntry, strNotes);

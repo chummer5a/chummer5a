@@ -311,13 +311,13 @@ namespace Chummer
         }
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public async void RebuildSpiritList(Tradition objTradition)
+        public void RebuildSpiritList(Tradition objTradition)
         {
             if (objTradition == null)
                 return;
             string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
 
-            XPathNavigator objXmlDocument = await _objSpirit.CharacterObject.LoadDataXPathAsync(_objSpirit.EntityType == SpiritType.Spirit
+            XPathNavigator objXmlDocument = _objSpirit.CharacterObject.LoadDataXPath(_objSpirit.EntityType == SpiritType.Spirit
                     ? "traditions.xml"
                     : "streams.xml");
 

@@ -1083,51 +1083,52 @@ namespace Chummer
             get
             {
                 // We need to generate _dicSourcebookInfos outside of the constructor to avoid initialization cycles
-                if (_dicSourcebookInfos != null)
-                    return _dicSourcebookInfos;
-                _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>();
-                // Retrieve the SourcebookInfo objects.
-                foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml").Select("/chummer/books/book"))
+                if (_dicSourcebookInfos == null)
                 {
-                    string strCode = xmlBook.SelectSingleNode("code")?.Value;
-                    if (string.IsNullOrEmpty(strCode))
-                        continue;
-                    SourcebookInfo objSource = new SourcebookInfo
+                    _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>();
+                    // Retrieve the SourcebookInfo objects.
+                    foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml").Select("/chummer/books/book"))
                     {
-                        Code = strCode
-                    };
-
-                    try
-                    {
-                        string strTemp = string.Empty;
-                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
+                        string strCode = xmlBook.SelectSingleNode("code")?.Value;
+                        if (string.IsNullOrEmpty(strCode))
+                            continue;
+                        SourcebookInfo objSource = new SourcebookInfo
                         {
-                            string[] strParts = strTemp.Split('|');
-                            objSource.Path = strParts[0];
-                            if (string.IsNullOrEmpty(objSource.Path))
+                            Code = strCode
+                        };
+
+                        try
+                        {
+                            string strTemp = string.Empty;
+                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook") && !string.IsNullOrEmpty(strTemp))
                             {
-                                objSource.Path = string.Empty;
-                                objSource.Offset = 0;
-                            }
-                            else
-                            {
-                                if (!File.Exists(objSource.Path))
+                                string[] strParts = strTemp.Split('|');
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
                                     objSource.Path = string.Empty;
-                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                    objSource.Offset = intTmp;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
                             }
                         }
-                    }
-                    catch (System.Security.SecurityException)
-                    {
+                        catch (System.Security.SecurityException)
+                        {
 
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
 
-                    }
+                        }
 
-                    _dicSourcebookInfos.Add(strCode, objSource);
+                        _dicSourcebookInfos.Add(strCode, objSource);
+                    }
                 }
                 return _dicSourcebookInfos;
             }

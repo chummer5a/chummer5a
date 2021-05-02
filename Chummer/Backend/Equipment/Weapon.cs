@@ -689,7 +689,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Are we loading a copy of an existing weapon?</param>
-        public async void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
@@ -823,7 +823,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
             if (!objNode.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
                 _strWeaponType = GetNode()?["weapontype"]?.InnerText
-                                 ?? (await XmlManager.LoadXPathAsync("weapons.xml")).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@type")?.Value
+                                 ?? XmlManager.LoadXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@type")?.Value
                                  ?? Category.ToLowerInvariant();
 
             _nodWirelessBonus = objNode["wirelessbonus"];
@@ -987,7 +987,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             // Find the piece of Gear that created this item if applicable
             List<Gear> lstGearToSearch = new List<Gear>(_objCharacter.Gear);
@@ -1069,7 +1069,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
                 objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Options.NuyenFormat, objCulture));
             }
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", CustomName);
             objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
@@ -3800,7 +3800,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
-            int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode("chummer/modifiers/" + strRange.ToLowerInvariant())?.ValueAsInt ?? 0;
+            int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode($"chummer/modifiers/{strRange.ToLowerInvariant()}")?.ValueAsInt ?? 0;
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
             i = Math.Min(0, i);
             return string.Format(GlobalOptions.InvariantCultureInfo, LanguageManager.GetString("Label_Range" + strRange), i);

@@ -179,7 +179,7 @@ namespace Chummer
             }
         }
 
-        private async void frmCreate_Load(object sender, EventArgs e)
+        private void frmCreate_Load(object sender, EventArgs e)
         {
             using (var op_load_frm_create = Timekeeper.StartSyncron("load_frm_create", null, CustomActivity.OperationType.RequestOperation, CharacterObject?.FileName))
             {
@@ -367,7 +367,7 @@ namespace Chummer
                     {
                         // Populate the Magician Traditions list.
                         XPathNavigator xmlTraditionsBaseChummerNode =
-                            (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
                         List<ListItem> lstTraditions = new List<ListItem>(20);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -539,7 +539,7 @@ namespace Chummer
 
                         // Populate the Technomancer Streams list.
                         xmlTraditionsBaseChummerNode =
-                            (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNode("/chummer");
+                            CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
                         List<ListItem> lstStreams = new List<ListItem>(3);
                         if (xmlTraditionsBaseChummerNode != null)
                         {
@@ -1520,7 +1520,7 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnCharacterOptionsPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             IsCharacterUpdateRequested = true;
             switch (e.PropertyName)
@@ -1588,7 +1588,7 @@ namespace Chummer
                     treCritterPowers.SortCustomOrder();
 
                     XPathNavigator xmlTraditionsBaseChummerNode =
-                        (await CharacterObject.LoadDataXPathAsync("traditions.xml")).SelectSingleNode("/chummer");
+                        CharacterObject.LoadDataXPath("traditions.xml").SelectSingleNode("/chummer");
                     List<ListItem> lstTraditions = new List<ListItem>(30);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -1706,7 +1706,7 @@ namespace Chummer
 
                     // Populate the Technomancer Streams list.
                     xmlTraditionsBaseChummerNode =
-                        (await CharacterObject.LoadDataXPathAsync("streams.xml")).SelectSingleNode("/chummer");
+                        CharacterObject.LoadDataXPath("streams.xml").SelectSingleNode("/chummer");
                     List<ListItem> lstStreams = new List<ListItem>(5);
                     if (xmlTraditionsBaseChummerNode != null)
                     {
@@ -14310,7 +14310,7 @@ namespace Chummer
             WriteNotes(objNotes, treMartialArts.SelectedNode);
         }
 
-        private async void btnCreateBackstory_Click(object sender, EventArgs e)
+        private void btnCreateBackstory_Click(object sender, EventArgs e)
         {
             if (_objStoryBuilder == null)
             {
@@ -14318,7 +14318,7 @@ namespace Chummer
                 btnCreateBackstory.Enabled = false;
             }
 
-            CharacterObject.Background = await _objStoryBuilder.GetStory(GlobalOptions.Language);
+            CharacterObject.Background = _objStoryBuilder.GetStory(GlobalOptions.Language);
         }
 
         private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)

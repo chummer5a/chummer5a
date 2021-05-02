@@ -25,7 +25,6 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -747,7 +746,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Settings file to load from.</param>
         /// <param name="blnShowDialogs">Whether or not to show message boxes on failures to load.</param>
-        public async Task<bool> Load(string strFileName, bool blnShowDialogs = true)
+        public bool Load(string strFileName, bool blnShowDialogs = true)
         {
             _strFileName = strFileName;
             string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
@@ -784,14 +783,14 @@ namespace Chummer
                 return false;
             }
 
-            return await Load(objXmlDocument.CreateNavigator().SelectSingleNode("//settings"));
+            return Load(objXmlDocument.CreateNavigator().SelectSingleNode("//settings"));
         }
 
         /// <summary>
         /// Load the settings from a settings node.
         /// </summary>
         /// <param name="objXmlNode">Settings node to load from.</param>
-        public async Task<bool> Load(XPathNavigator objXmlNode)
+        public bool Load(XPathNavigator objXmlNode)
         {
             if (objXmlNode == null)
                 return false;
@@ -1196,7 +1195,7 @@ namespace Chummer
 
             RecalculateEnabledCustomDataDirectories();
 
-            foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", EnabledCustomDataDirectoryPaths)).Select("/chummer/books/book[permanent]/code"))
+            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths).Select("/chummer/books/book[permanent]/code"))
                 if (!string.IsNullOrEmpty(xmlBook.Value))
                     _lstBooks.Add(xmlBook.Value);
 
@@ -1478,7 +1477,7 @@ namespace Chummer
         /// <summary>
         /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
-        public async void LoadFromRegistry()
+        public void LoadFromRegistry()
         {
             if (GlobalOptions.ChummerRegistryKey == null)
                 return;
@@ -1545,7 +1544,7 @@ namespace Chummer
             }
             string[] strBooks = strBookList.Split(',');
 
-            XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("books.xml", EnabledCustomDataDirectoryPaths);
+            XPathNavigator objXmlDocument = XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths);
 
             foreach (string strBookName in strBooks)
             {

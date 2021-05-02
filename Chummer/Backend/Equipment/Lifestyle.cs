@@ -147,7 +147,7 @@ namespace Chummer.Backend.Equipment
 
         /// Create a Lifestyle from an XmlNode and return the TreeNodes for it.
         /// <param name="objXmlLifestyle">XmlNode to create the object from.</param>
-        public async void Create(XmlNode objXmlLifestyle)
+        public void Create(XmlNode objXmlLifestyle)
         {
             if (!objXmlLifestyle.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -173,7 +173,7 @@ namespace Chummer.Backend.Equipment
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
-            XPathNavigator xmlLifestyleXPathDocument = await _objCharacter.LoadDataXPathAsync("lifestyles.xml");
+            XPathNavigator xmlLifestyleXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             XPathNavigator xmlLifestyleNode =
                 xmlLifestyleXPathDocument.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
             xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
@@ -297,7 +297,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy"></param>
-        public async void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false)
         {
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
@@ -341,7 +341,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
             objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-            XPathNavigator xmlLifestyles = await _objCharacter.LoadDataXPathAsync("lifestyles.xml");
+            XPathNavigator xmlLifestyles = _objCharacter.LoadDataXPath("lifestyles.xml");
             if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]") == null
                 && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + "]") != null)
             {
@@ -494,12 +494,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Converts old lifestyle structures to new standards.
         /// </summary>
-        private async void LegacyShim(XmlNode xmlLifestyleNode)
+        private void LegacyShim(XmlNode xmlLifestyleNode)
         {
             //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
             if (_objCharacter.LastSavedVersion > new Version(5, 197, 0) ||
                 xmlLifestyleNode["costforarea"] != null) return;
-            XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("lifestyles.xml");
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             XPathNavigator objLifestyleQualityNode = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath() + "]");
             if (objLifestyleQualityNode != null)
             {
@@ -563,7 +563,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -596,7 +596,7 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteElementString("baselifestyle", strBaseLifestyle);
             objWriter.WriteElementString("trustfund", TrustFund.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("source", await _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteStartElement("qualities");
 

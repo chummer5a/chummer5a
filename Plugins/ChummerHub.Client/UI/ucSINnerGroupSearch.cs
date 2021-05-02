@@ -28,7 +28,7 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    this.DoThreadSafe(async () =>
+                    this.DoThreadSafe(() =>
                     {
                         _mySINSearchGroupResult = value;
                         tvGroupSearchResult.Nodes.Clear();
@@ -39,7 +39,7 @@ namespace ChummerHub.Client.UI
                         else if (_mySINSearchGroupResult.SinGroups != null)
                         {
                             bJoinGroup.Enabled = _mySINSearchGroupResult.SinGroups.Count > 0;
-                            TreeNode[] nodes = (await CreateTreeViewNodes(_mySINSearchGroupResult.SinGroups)).ToArray();
+                            TreeNode[] nodes = CreateTreeViewNodes(_mySINSearchGroupResult.SinGroups).ToArray();
                             tvGroupSearchResult.DoThreadSafe(() => tvGroupSearchResult.Nodes.AddRange(nodes));
                         }
                     });
@@ -52,13 +52,13 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private async Task<List<TreeNode>> CreateTreeViewNodes(IEnumerable<SINnerSearchGroup> sinGroups)
+        private List<TreeNode> CreateTreeViewNodes(IEnumerable<SINnerSearchGroup> sinGroups)
         {
             var res = new List<TreeNode>();
             if (sinGroups == null)
                 return res;
 
-            List<ListItem> lstLanguages = await LanguageManager.GetSheetLanguageList();
+            List<ListItem> lstLanguages = new List<ListItem>(LanguageManager.GetSheetLanguageList());
             foreach (var ssg in sinGroups)
             {
                 TreeNode tn = new TreeNode(ssg.GroupDisplayname);
@@ -94,7 +94,7 @@ namespace ChummerHub.Client.UI
                         tn.Nodes.Add(tnm);
                     }
                 }
-                var nodes = await CreateTreeViewNodes(ssg.MySINSearchGroups);
+                var nodes = CreateTreeViewNodes(ssg.MySINSearchGroups);
                 tn.Nodes.AddRange(nodes.ToArray());
                 res.Add(tn);
             }
@@ -108,7 +108,7 @@ namespace ChummerHub.Client.UI
         {
             InitializeComponent();
             ImageList myCountryImageList = new ImageList();
-            foreach (var lang in LanguageManager.GetSheetLanguageList().Result)
+            foreach (var lang in LanguageManager.GetSheetLanguageList())
             {
                 var img = FlagImageGetter.GetFlagFromCountryCode(lang.Value.ToString().Substring(3, 2));
                 myCountryImageList.Images.Add(img);

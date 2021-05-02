@@ -80,10 +80,10 @@ namespace Chummer
             cmdTest.Enabled = true;
         }
 
-        private async void TestVehicles()
+        private void TestVehicles()
         {
             _objCharacter.ResetCharacter();
-            XmlDocument objXmlDocument = await XmlManager.LoadAsync("vehicles.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("vehicles.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             XmlNodeList xmlVehicleList = objXmlDocument.SelectNodes("/chummer/vehicles/vehicle");
@@ -188,10 +188,10 @@ namespace Chummer
             }
         }
 
-        private async void TestWeapons()
+        private void TestWeapons()
         {
             _objCharacter.ResetCharacter();
-            XmlDocument objXmlDocument = await XmlManager.LoadAsync("weapons.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("weapons.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             XmlNodeList xmlWeaponList = objXmlDocument.SelectNodes("/chummer/weapons/weapon");
@@ -284,10 +284,10 @@ namespace Chummer
             }
         }
 
-        private async void TestArmor()
+        private void TestArmor()
         {
             _objCharacter.ResetCharacter();
-            XmlDocument objXmlDocument = await XmlManager.LoadAsync("armor.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("armor.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             XmlNodeList xmlArmorList = objXmlDocument.SelectNodes("/chummer/armors/armor");
@@ -382,10 +382,10 @@ namespace Chummer
             }
         }
 
-        private async void TestGear()
+        private void TestGear()
         {
             _objCharacter.ResetCharacter();
-            XmlDocument objXmlDocument = await XmlManager.LoadAsync("gear.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("gear.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
             using (XmlNodeList xmlGearList = objXmlDocument.SelectNodes("/chummer/gears/gear"))
@@ -437,7 +437,7 @@ namespace Chummer
             }
         }
 
-        private async void TestCyberware(string strFile)
+        private void TestCyberware(string strFile)
         {
             string strPrefix = "cyberware";
             Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Cyberware;
@@ -448,7 +448,7 @@ namespace Chummer
             }
 
             _objCharacter.ResetCharacter();
-            XmlDocument objXmlDocument = await XmlManager.LoadAsync(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile);
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
 
@@ -503,10 +503,10 @@ namespace Chummer
             }
         }
 
-        private async void TestQuality()
+        private void TestQuality()
         {
             _objCharacter.ResetCharacter();
-            XmlDocument objXmlDocument = await XmlManager.LoadAsync("qualities.xml");
+            XmlDocument objXmlDocument = XmlManager.Load("qualities.xml");
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
 
@@ -559,9 +559,9 @@ namespace Chummer
             }
         }
 
-        private async void TestMetatype(string strFile)
+        void TestMetatype(string strFile)
         {
-            XmlDocument objXmlDocument = await XmlManager.LoadAsync(strFile);
+            XmlDocument objXmlDocument = XmlManager.Load(strFile);
 
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
@@ -579,7 +579,7 @@ namespace Chummer
                             continue;
                         Application.DoEvents();
 
-                        objXmlDocument = await XmlManager.LoadAsync(strFile);
+                        objXmlDocument = XmlManager.Load(strFile);
                         _objCharacter.ResetCharacter();
                         try
                         {
@@ -798,7 +798,7 @@ namespace Chummer
                             // Add any Critter Powers the Metatype/Critter should have.
                             XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + _objCharacter.Metatype.CleanXPath() + "]");
 
-                            objXmlDocument = await XmlManager.LoadAsync("critterpowers.xml");
+                            objXmlDocument = XmlManager.Load("critterpowers.xml");
                             foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                             {
                                 XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
@@ -908,7 +908,7 @@ namespace Chummer
                             }
 
                             // Add any Complex Forms the Critter comes with (typically Sprites)
-                            XmlDocument objXmlProgramDocument = await XmlManager.LoadAsync("complexforms.xml");
+                            XmlDocument objXmlProgramDocument = XmlManager.Load("complexforms.xml");
                             foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                             {
                                 string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -919,7 +919,7 @@ namespace Chummer
                             }
 
                             // Add any Gear the Critter comes with (typically Programs for A.I.s)
-                            XmlDocument objXmlGearDocument = await XmlManager.LoadAsync("gear.xml");
+                            XmlDocument objXmlGearDocument = XmlManager.Load("gear.xml");
                             foreach (XmlNode objXmlGear in objXmlCritter.SelectNodes("gears/gear"))
                             {
                                 int intRating = 0;

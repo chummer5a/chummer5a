@@ -474,7 +474,7 @@ namespace Chummer
         /// Update the labels and images based on the selected treenode.
         /// </summary>
         /// <param name="objCache"></param>
-        public async void UpdateCharacter(CharacterCache objCache)
+        public void UpdateCharacter(CharacterCache objCache)
         {
             if (this.IsNullOrDisposed()) // Safety check for external calls
                 return;
@@ -514,13 +514,13 @@ namespace Chummer
                 picMugshot.Image = objCache.Mugshot;
 
                 // Populate character information fields.
-                XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml");
+                XPathNavigator objMetatypeDoc = XmlManager.LoadXPath("metatypes.xml");
                 if (objCache.Metatype != null)
                 {
                     XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     if (objMetatypeNode == null)
                     {
-                        objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml");
+                        objMetatypeDoc = XmlManager.LoadXPath("critters.xml");
                         objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype?.CleanXPath() + "]");
                     }
 

@@ -206,14 +206,14 @@ namespace Chummer
         #endregion
 
         #region Methods
-        private async void LoadContactList()
+        private void LoadContactList()
         {
             List<ListItem> lstMetatypes = new List<ListItem> (30)
             {
                 ListItem.Blank
             };
             string strSpace = LanguageManager.GetString("String_Space");
-            foreach (XPathNavigator xmlMetatypeNode in (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml")).Select("/chummer/metatypes/metatype"))
+            foreach (XPathNavigator xmlMetatypeNode in _objContact.CharacterObject.LoadDataXPath("critters.xml").Select("/chummer/metatypes/metatype"))
             {
                 string strName = xmlMetatypeNode.SelectSingleNode("name")?.Value;
                 string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNode("translate")?.Value ?? strName;

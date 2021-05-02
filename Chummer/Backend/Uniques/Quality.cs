@@ -491,7 +491,7 @@ namespace Chummer
         /// <param name="intRating">Pre-calculated rating of the quality for printing.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public async void Print(XmlTextWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, int intRating, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (AllowPrint && objWriter != null)
             {
@@ -513,14 +513,14 @@ namespace Chummer
                 if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
                 {
                     strQualityType =
-                        (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint))
+                        _objCharacter.LoadDataXPath("qualities.xml", strLanguageToPrint)
                             .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath() + "]/@translate")
                             ?.Value ?? strQualityType;
                 }
                 objWriter.WriteElementString("qualitytype", strQualityType);
                 objWriter.WriteElementString("qualitytype_english", Type.ToString());
                 objWriter.WriteElementString("qualitysource", OriginSource.ToString());
-                objWriter.WriteElementString("source", await _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+                objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
                 objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
                 if (GlobalOptions.PrintNotes)
                     objWriter.WriteElementString("notes", Notes);
