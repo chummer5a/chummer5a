@@ -142,25 +142,22 @@ namespace Chummer
 
         public void RefreshNodes()
         {
-            foreach(TreeNode objTypeNode in treCharacterList.Nodes)
+            foreach(TreeNode objCharacterNode in treCharacterList.Nodes.Cast<TreeNode>().GetAllDescendants(x => x.Nodes.Cast<TreeNode>()))
             {
-                foreach(TreeNode objCharacterNode in objTypeNode.Nodes)
+                if (!(objCharacterNode.Tag is CharacterCache objCache))
+                    continue;
+                treCharacterList.DoThreadSafe(() => objCharacterNode.Text = objCache.CalculatedName(), false);
+                string strTooltip = string.Empty;
+                if (!string.IsNullOrEmpty(objCache.FilePath))
+                    strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
+                if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
-                    if (!(objCharacterNode.Tag is CharacterCache objCache))
-                        continue;
-                    objCharacterNode.Text = objCache.CalculatedName();
-                    string strTooltip = string.Empty;
-                    if (!string.IsNullOrEmpty(objCache.FilePath))
-                        strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
-                    if (!string.IsNullOrEmpty(objCache.ErrorText))
-                    {
-                        objCharacterNode.ForeColor = ColorManager.ErrorColor;
-                        strTooltip += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error") + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
-                    }
-                    else
-                        objCharacterNode.ForeColor = ColorManager.WindowText;
-                    objCharacterNode.ToolTipText = strTooltip;
+                    treCharacterList.DoThreadSafe(() => objCharacterNode.ForeColor = ColorManager.ErrorColor, false);
+                    strTooltip += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error") + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
                 }
+                else
+                    treCharacterList.DoThreadSafe(() => objCharacterNode.ForeColor = ColorManager.WindowText, false);
+                treCharacterList.DoThreadSafe(() => objCharacterNode.ToolTipText = strTooltip, false);
             }
         }
 

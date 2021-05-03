@@ -875,15 +875,16 @@ namespace Chummer
             }
         }
 
-        private void mnuMRU_Click(object sender, EventArgs e)
+        private async void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Text;
             strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-            using (new CursorWait(this))
+            // Await makes sure we don't lock up
+            await Task.Run(() =>
             {
-                Character objOpenCharacter = LoadCharacter(strFileName);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
-            }
+                using (new CursorWait(this))
+                    Program.MainForm.OpenCharacter(LoadCharacter(strFileName));
+            });
         }
 
         private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
@@ -896,16 +897,17 @@ namespace Chummer
             }
         }
 
-        private void mnuStickyMRU_Click(object sender, EventArgs e)
+        private async void mnuStickyMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            using (new CursorWait(this))
+            // Await makes sure we don't lock up
+            await Task.Run(() =>
             {
-                Character objOpenCharacter = LoadCharacter(strFileName);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
-            }
+                using (new CursorWait(this))
+                    Program.MainForm.OpenCharacter(LoadCharacter(strFileName));
+            });
         }
 
         private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
@@ -1023,7 +1025,7 @@ namespace Chummer
                 {
                     if(objTabPage.Tag is CharacterShared objCharacterForm && objCharacterForm.CharacterObject == objCharacter)
                     {
-                        objTabPage.Text = objCharacter.CharacterName.Trim();
+                        objTabPage.DoThreadSafe(() => objTabPage.Text = objCharacter.CharacterName.Trim());
                         return;
                     }
                 }
@@ -1096,23 +1098,27 @@ namespace Chummer
 
         private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
-            using (new CursorWait(this))
+            // Await makes sure we don't lock up
+            await Task.Run(() =>
             {
-                // Open each file that has been dropped into the window.
-                string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
-                if (s.Length == 0)
-                    return;
-                Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(s.Length);
-                for (int i = 0; i < s.Length; ++i)
+                using (new CursorWait(this))
                 {
-                    dicIndexedStrings.Add(i, s[i]);
+                    // Open each file that has been dropped into the window.
+                    string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
+                    if (s.Length == 0)
+                        return;
+                    Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(s.Length);
+                    for (int i = 0; i < s.Length; ++i)
+                    {
+                        dicIndexedStrings.Add(i, s[i]);
+                    }
+
+                    // Array with locker instead of concurrent bag because we want to preserve order
+                    Character[] lstCharacters = new Character[s.Length];
+                    Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
+                    Program.MainForm.OpenCharacterList(lstCharacters);
                 }
-                // Array with locker instead of concurrent bag because we want to preserve order
-                Character[] lstCharacters = new Character[s.Length];
-                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
-                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value)));
-                Program.MainForm.OpenCharacterList(lstCharacters);
-            }
+            });
         }
 
         private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
@@ -1394,51 +1400,59 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            // Await makes sure we don't lock up
+            await Task.Run(() =>
             {
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                using (new CursorWait(this))
                 {
-                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
-                             LanguageManager.GetString("DialogFilter_All"),
-                    Multiselect = true
-                })
-                {
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    //Timekeeper.Start("load_sum");
-                    List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
-                    foreach (string strFile in openFileDialog.FileNames)
+                    using (OpenFileDialog openFileDialog = new OpenFileDialog
                     {
-                        Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                        if (objLoopCharacter != null)
-                            SwitchToOpenCharacter(objLoopCharacter, true);
-                        else
-                            lstFilesToOpen.Add(strFile);
-                    }
-
-                    // Array instead of concurrent bag because we want to preserve order
-                    Character[] lstCharacters = null;
-                    if (lstFilesToOpen.Count > 0)
+                        Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
+                                 LanguageManager.GetString("DialogFilter_All"),
+                        Multiselect = true
+                    })
                     {
-                        using (_frmProgressBar = CreateAndShowProgressBar(string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen), lstFilesToOpen.Count * 35))
+                        if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                            return;
+                        //Timekeeper.Start("load_sum");
+                        List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
+                        foreach (string strFile in openFileDialog.FileNames)
                         {
-                            lstCharacters = new Character[lstFilesToOpen.Count];
-                            Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(lstFilesToOpen.Count);
-                            for (int i = 0; i < lstFilesToOpen.Count; ++i)
-                            {
-                                dicIndexedStrings.Add(i, lstFilesToOpen[i]);
-                            }
-                            // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
-                            await Task.Run(() => Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value)));
+                            Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                            if (objLoopCharacter != null)
+                                SwitchToOpenCharacter(objLoopCharacter, true);
+                            else
+                                lstFilesToOpen.Add(strFile);
                         }
-                    }
-                    Program.MainForm.OpenCharacterList(lstCharacters);
-                }
-            }
 
-            Application.DoEvents();
-            //Timekeeper.Finish("load_sum");
-            //Timekeeper.Log();
+                        // Array instead of concurrent bag because we want to preserve order
+                        Character[] lstCharacters = null;
+                        if (lstFilesToOpen.Count > 0)
+                        {
+                            using (_frmProgressBar = CreateAndShowProgressBar(
+                                string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen),
+                                lstFilesToOpen.Count * 35))
+                            {
+                                lstCharacters = new Character[lstFilesToOpen.Count];
+                                Dictionary<int, string> dicIndexedStrings =
+                                    new Dictionary<int, string>(lstFilesToOpen.Count);
+                                for (int i = 0; i < lstFilesToOpen.Count; ++i)
+                                {
+                                    dicIndexedStrings.Add(i, lstFilesToOpen[i]);
+                                }
+
+                                Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
+                            }
+                        }
+
+                        Program.MainForm.OpenCharacterList(lstCharacters);
+                    }
+                }
+
+                Application.DoEvents();
+                //Timekeeper.Finish("load_sum");
+                //Timekeeper.Log();
+            });
         }
 
         /// <summary>
@@ -1470,13 +1484,15 @@ namespace Chummer
                     continue;
                 //Timekeeper.Start("load_event_time");
                 // Show the character forms.
-                CharacterShared frmNewCharacter = objCharacter.Created
-                    ? (CharacterShared)new frmCareer(objCharacter)
-                    : new frmCreate(objCharacter);
-                frmNewCharacter.MdiParent = this;
-                frmNewCharacter.Show();
-                lstNewFormsToProcess.Add(frmNewCharacter);
-
+                this.DoThreadSafe(() =>
+                {
+                    CharacterShared frmNewCharacter = objCharacter.Created
+                        ? (CharacterShared) new frmCareer(objCharacter)
+                        : new frmCreate(objCharacter);
+                    frmNewCharacter.MdiParent = this;
+                    frmNewCharacter.Show();
+                    lstNewFormsToProcess.Add(frmNewCharacter);
+                });
                 if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
                     GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
@@ -1486,7 +1502,7 @@ namespace Chummer
             }
             // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
             foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
-                frmNewCharacter.WindowState = wsPreference;
+                frmNewCharacter.DoThreadSafe(() => frmNewCharacter.WindowState = wsPreference, false);
         }
 
         /// <summary>
