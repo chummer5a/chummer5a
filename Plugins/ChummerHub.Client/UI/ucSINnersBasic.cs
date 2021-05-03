@@ -93,7 +93,7 @@ namespace ChummerHub.Client.UI
                 using (new CursorWait(this, true))
                 {
                     var client = StaticUtils.GetClient();
-                    var response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
+                    var response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value);
                     
                     SINnerGroup objMySiNnerGroup = response.MySINnerGroup;
                     
@@ -292,12 +292,12 @@ namespace ChummerHub.Client.UI
                     if (bUpload.Text.Contains("Upload"))
                     {
                         lUploadStatus.Text = "Uploading";
-                        await myUC.MyCE.Upload().ConfigureAwait(true);
+                        await myUC.MyCE.Upload();
                     }
                     else
                     {
                         lUploadStatus.Text = "Removing";
-                        await myUC.RemoveSINnerAsync().ConfigureAwait(true);
+                        await myUC.RemoveSINnerAsync();
                     }
 
                 }
@@ -306,7 +306,7 @@ namespace ChummerHub.Client.UI
                     Program.MainForm.ShowMessageBox(exception.Message);
                 }
             }
-            await CheckSINnerStatus().ConfigureAwait(true);
+            await CheckSINnerStatus();
         }
 
         private void bGroupSearch_Click(object sender, EventArgs e)
@@ -337,8 +337,8 @@ namespace ChummerHub.Client.UI
                         {
                             ResultSinnerGetSINnerVisibilityById res =
                                 await client.GetSINnerVisibilityByIdAsync(
-                                    myUC.MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
-                            await Backend.Utils.HandleError(res).ConfigureAwait(true);
+                                    myUC.MyCE.MySINnerFile.Id.Value);
+                            await Backend.Utils.HandleError(res);
                             if (res.CallSuccess == true)
                             {
                                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.UserRights;

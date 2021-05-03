@@ -157,7 +157,7 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, e);
         }
 
-        private async void tsContactOpen_Click(object sender, EventArgs e)
+        private void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objSpirit.LinkedCharacter != null)
             {
@@ -166,7 +166,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
+                        objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -440,10 +440,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private async void CreateCritter(string strCritterName, int intForce)
+        private void CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml");
+            XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + "]");
 
@@ -617,7 +617,7 @@ namespace Chummer
                     if (objXmlMetatype["movement"] != null)
                         objCharacter.Movement = objXmlMetatype["movement"].InnerText;
                     // Load the Qualities file.
-                    XmlDocument objXmlQualityDocument = await _objSpirit.CharacterObject.LoadDataAsync("qualities.xml");
+                    XmlDocument objXmlQualityDocument = _objSpirit.CharacterObject.LoadData("qualities.xml");
 
                     // Determine if the Metatype has any bonuses.
                     if (objXmlMetatype.InnerXml.Contains("bonus"))
@@ -642,7 +642,7 @@ namespace Chummer
                     // Add any Critter Powers the Metatype/Critter should have.
                     XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCharacter.Metatype.CleanXPath() + "]");
 
-                    objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critterpowers.xml");
+                    objXmlDocument = _objSpirit.CharacterObject.LoadData("critterpowers.xml");
                     foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
                     {
                         XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
@@ -671,7 +671,7 @@ namespace Chummer
                     }
 
                     // Add any Complex Forms the Critter comes with (typically Sprites)
-                    XmlDocument objXmlProgramDocument = await _objSpirit.CharacterObject.LoadDataAsync("complexforms.xml");
+                    XmlDocument objXmlProgramDocument = _objSpirit.CharacterObject.LoadData("complexforms.xml");
                     foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
                     {
                         string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -691,8 +691,7 @@ namespace Chummer
                 imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
                 ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName);
-
+                Character objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }

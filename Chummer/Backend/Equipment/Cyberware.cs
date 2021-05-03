@@ -1265,9 +1265,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnCopy)
-            {
                 _guiID = Guid.NewGuid();
-            }
             else
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
 

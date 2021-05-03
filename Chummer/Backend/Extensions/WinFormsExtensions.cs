@@ -36,8 +36,9 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DoThreadSafe(this Control objControl, Action funcToRun)
+        public static void DoThreadSafe(this Control objControl, Action funcToRun, bool blnSync = true)
         {
             if (objControl.IsNullOrDisposed() || funcToRun == null)
                 return;
@@ -47,9 +48,12 @@ namespace Chummer
                 if (myControlCopy.InvokeRequired)
                 {
                     IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
-                    // Next to commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
-                    objResult.AsyncWaitHandle.WaitOne();
-                    objResult.AsyncWaitHandle.Close();
+                    if (blnSync)
+                    {
+                        // Next to commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                        objResult.AsyncWaitHandle.WaitOne();
+                        objResult.AsyncWaitHandle.Close();
+                    }
                 }
                 else
                     funcToRun.Invoke();

@@ -124,24 +124,26 @@ namespace Chummer
 
             // Parallelized load because this is one major bottleneck.
 
-            Parallel.ForEach(lstCharacters, async (objCharacter, objState) =>
+            Parallel.ForEach(lstCharacters, (objCharacter, objState) =>
+            {
+                if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
                 {
-                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
-                    {
-                        if (!objState.IsStopped)
-                            objState.Stop();
-                        return;
-                    }
-                    bool blnLoadSuccessful = await objCharacter.Load();
-                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
-                    {
-                        if (!objState.IsStopped)
-                            objState.Stop();
-                        return;
-                    }
-                    if (blnLoadSuccessful)
-                        prgProgress.Invoke((Action)FuncIncreaseProgress);
-                });
+                    if (!objState.IsStopped)
+                        objState.Stop();
+                    return;
+                }
+
+                bool blnLoadSuccessful = objCharacter.Load();
+                if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
+                {
+                    if (!objState.IsStopped)
+                        objState.Stop();
+                    return;
+                }
+
+                if (blnLoadSuccessful)
+                    prgProgress.Invoke((Action) FuncIncreaseProgress);
+            });
             if (_workerPrinter.CancellationPending)
                 e.Cancel = true;
             else

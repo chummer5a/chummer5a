@@ -55,7 +55,7 @@ namespace ChummerHub.Client.UI
 
         private async void cmdPostSINnerMetaData_Click(object sender, EventArgs e)
         {
-            await Utils.PostSINnerAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
+            await Utils.PostSINnerAsync(MySINnersUsercontrol.MyCE);
         }
 
         private void MyTagTreeView_VisibleChanged(object sender, EventArgs e)
@@ -70,7 +70,7 @@ namespace ChummerHub.Client.UI
 
         private async void cmdUploadChummerFile_Click(object sender, EventArgs e)
         {
-            var res = await Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE).ConfigureAwait(true);
+            var res = await Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE);
             if (res.CallSuccess == false) 
             {
                 throw new NotImplementedException(res.ErrorText);

@@ -55,12 +55,12 @@ namespace ChummerHub.Client.UI
         {
             if (MySINnerSearchGroup != null)
             {
-                return await ShareChummerGroup().ConfigureAwait(true);
+                return await ShareChummerGroup();
             }
 
             if (MyCharacterCache != null)
             {
-                return await ShareSingleChummer().ConfigureAwait(true);
+                return await ShareSingleChummer();
             }
 
             throw new ArgumentException("Either MySINnerSearchGroup or MyCharacterCache must be set!");
@@ -175,7 +175,7 @@ namespace ChummerHub.Client.UI
                                         myState.StatusText = "Loading chummer file...";
                                         myState.CurrentProgress += 10;
                                         ReportProgress(myState.CurrentProgress, myState);
-                                        blnSuccess = await c.Load(frmLoadingForm, false).ConfigureAwait(true);
+                                        blnSuccess = await c.LoadAsync(frmLoadingForm, false);
                                     }
                                 }
 
@@ -197,7 +197,7 @@ namespace ChummerHub.Client.UI
                         }
                         else
                         {
-                            ce = await GetCharacterExtended(op_shareChummer).ConfigureAwait(true);
+                            ce = await GetCharacterExtended(op_shareChummer);
                             sinnerid = ce.MySINnerFile.Id.ToString();
                             hash = ce?.MySINnerFile?.MyHash ?? string.Empty;
                         }
@@ -216,44 +216,40 @@ namespace ChummerHub.Client.UI
                         }
 
 
-                        ResultSinnerGetSINById checkresult = null;
                         try
                         {
                             //check if char is already online and updated
+                            ResultSinnerGetSINById checkresult;
                             using (_ = Timekeeper.StartSyncron(
                                 "check if online", op_shareChummer,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                             {
-                                checkresult = await client.GetSINByIdAsync(SINid).ConfigureAwait(true);
+                                checkresult = await client.GetSINByIdAsync(SINid);
                                 if (checkresult == null)
                                     throw new ArgumentException("Could not parse result from SINners Webservice!");
-                                if (checkresult != null)
+                                if (checkresult.CallSuccess != true)
                                 {
-                                    if (checkresult.CallSuccess != true)
-                                    {
-                                        if (checkresult.MyException != null)
-                                            throw new ArgumentException(
-                                                "Error from SINners Webservice: " + checkresult.ErrorText,
-                                                checkresult.MyException.ToString());
-                                        throw new ArgumentException("Error from SINners Webservice: " +
-                                                                    checkresult.ErrorText);
-                                    }
-
-                                    hash = checkresult.MySINner.MyHash;
+                                    if (checkresult.MyException != null)
+                                        throw new ArgumentException(
+                                            "Error from SINners Webservice: " + checkresult.ErrorText,
+                                            checkresult.MyException.ToString());
+                                    throw new ArgumentException("Error from SINners Webservice: " +
+                                                                checkresult.ErrorText);
                                 }
+
+                                hash = checkresult.MySINner.MyHash;
                             }
 
 
                             var lastWriteTimeUtc = MyCharacterCache != null ? File.GetLastWriteTimeUtc(MyCharacterCache.FilePath) : DateTime.MinValue;
-                            if (checkresult == null
-                                || checkresult.MySINner.LastChange < lastWriteTimeUtc)
+                            if (checkresult.MySINner.LastChange < lastWriteTimeUtc)
                             {
                                 if (ce == null)
                                 {
                                     myState.StatusText = "The Chummer is newer and has to be uploaded again.";
                                     myState.CurrentProgress = 30;
                                     ReportProgress(myState.CurrentProgress, myState);
-                                    ce = await GetCharacterExtended(op_shareChummer).ConfigureAwait(true);
+                                    ce = await GetCharacterExtended(op_shareChummer);
                                 }
 
                                 if (ce != null)
@@ -266,10 +262,10 @@ namespace ChummerHub.Client.UI
                                         myState.CurrentProgress = 35;
                                         ReportProgress(myState.CurrentProgress, myState);
                                         myState.ProgressSteps = 10;
-                                        await ce.Upload(myState, op_uploadChummer).ConfigureAwait(true);
+                                        await ce.Upload(myState, op_uploadChummer);
                                         if (ce.MySINnerFile.Id != null)
                                             SINid = ce.MySINnerFile.Id.Value;
-                                        var result = await client.GetSINByIdAsync(SINid).ConfigureAwait(true);
+                                        var result = await client.GetSINByIdAsync(SINid);
                                         {
                                             if (result == null)
                                                 throw new ArgumentException("Could not parse result from SINners Webservice!");

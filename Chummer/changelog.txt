@@ -21,6 +21,7 @@ Application Changes:
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 - Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
 - Added the ability to specify a city, district, and borough for a lifestyle.
+- If a character sheet is printed/exported in a language other than the one with which Chummer is being used, Chummer now attemtps to translate the names of gear, vehicle, and weapon locations.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

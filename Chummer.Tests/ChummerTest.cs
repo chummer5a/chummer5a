@@ -21,7 +21,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -63,18 +63,36 @@ namespace Chummer.Tests
         private FileInfo[] TestFiles { get; }
 
 
-        // "B" will load before all other unit tests, this one tests basic startup (just starting Chummer without any characters
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public async Task BasicStartup()
+        public void Test00_BasicStartup()
         {
-            Debug.WriteLine("Unit test initialized for: BasicStartup()");
+            Debug.WriteLine("Unit test initialized for: Test00_BasicStartup()");
             frmChummerMain frmOldMainForm = Program.MainForm;
-            // ShowInTaskbar = false lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used)
-            using (frmChummerMain frmTestForm = new frmChummerMain(true) { ShowInTaskbar = false })
+            frmChummerMain frmTestForm = null;
+            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
+            try
             {
+                frmTestForm = new frmChummerMain(true)
+                {
+                    WindowState = FormWindowState.Minimized,
+                    ShowInTaskbar =
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
-                await Task.Delay(20); // Need this here to prevent the Main Form display method from being optimized away by the Close() triggered on disposal
+                while (
+                    !frmTestForm
+                        .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                {
+                    Thread.Sleep(100);
+                    Application.DoEvents();
+                }
+                frmTestForm.Close();
+            }
+            finally
+            {
+                frmTestForm?.Dispose();
             }
             Program.MainForm = frmOldMainForm;
         }
@@ -82,15 +100,15 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public async Task Load1ThenSave()
+        public void Test01_LoadThenSave()
         {
-            Debug.WriteLine("Unit test initialized for: Load1ThenSave()");
+            Debug.WriteLine("Unit test initialized for: Test01_LoadThenSave()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
-                using (Character objCharacter = await LoadCharacter(objFileInfo))
+                using (Character objCharacter = LoadCharacter(objFileInfo))
                     SaveCharacter(objCharacter, strDestination);
-                using (Character _ = await LoadCharacter(new FileInfo(strDestination)))
+                using (Character _ = LoadCharacter(new FileInfo(strDestination)))
                 { // Assert on failed load will already happen inside LoadCharacter
                 }
             }
@@ -98,18 +116,18 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public async Task Load2ThenSaveIsDeterministic()
+        public void Test02_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Load2ThenSaveIsDeterministic()");
+            Debug.WriteLine("Unit test initialized for: Test02_LoadThenSaveIsDeterministic()");
             foreach (FileInfo objBaseFileInfo in TestFiles)
             {
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + objBaseFileInfo.Name);
-                using (Character objCharacter = await LoadCharacter(objBaseFileInfo))
+                using (Character objCharacter = LoadCharacter(objBaseFileInfo))
                     SaveCharacter(objCharacter, strDestinationControl);
                 // Second Load-Save cycle
                 string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
-                using (Character objCharacter = await LoadCharacter(new FileInfo(strDestinationControl)))
+                using (Character objCharacter = LoadCharacter(new FileInfo(strDestinationControl)))
                     SaveCharacter(objCharacter, strDestinationTest);
                 // Check to see that character after first load cycle is consistent with character after second
                 using (FileStream controlFileStream = File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
@@ -148,22 +166,21 @@ namespace Chummer.Tests
         }
 
         [TestMethod]
-        public async Task Load3ThenPrint()
+        public void Test03_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Load3ThenExport()");
-            string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            foreach(string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
-            { 
-                string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                if (strExportLanguage.Contains("data"))
-                    continue;
-                CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
-                Debug.WriteLine("Unit test initialized for: Load3ThenExport() - Exporting for Culture " + objExportCultureInfo.Name);
-                foreach (FileInfo objFileInfo in TestFiles)
+            Debug.WriteLine("Unit test initialized for: Test03_LoadThenPrint()");
+            foreach (FileInfo objFileInfo in TestFiles)
+            {
+                using (Character objCharacter = LoadCharacter(objFileInfo))
                 {
-                    string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
-                    using (Character objCharacter = await LoadCharacter(objFileInfo))
+                    string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
+                    foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
                     {
+                        string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                        if (strExportLanguage.Contains("data"))
+                            continue;
+                        CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
+                        string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
                         XmlDocument xmlCharacter = new XmlDocument { XmlResolver = null };
                         // Write the Character information to a MemoryStream so we don't need to create any files.
                         MemoryStream objStream = new MemoryStream();
@@ -200,25 +217,34 @@ namespace Chummer.Tests
             }
         }
 
-        
+
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public async Task Load4CharacterForms()
+        public void Test04_LoadCharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Load4CharacterForms()");
+            Debug.WriteLine("Unit test initialized for: Test04_LoadCharacterForms()");
             frmChummerMain frmOldMainForm = Program.MainForm;
-            using (frmChummerMain frmTestForm = new frmChummerMain(true)
+            frmChummerMain frmTestForm = null;
+            // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
+            try
             {
-                WindowState = FormWindowState.Minimized,
-                ShowInTaskbar = false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used)
-            })
-            {
+                frmTestForm = new frmChummerMain(true)
+                {
+                    WindowState = FormWindowState.Minimized,
+                    ShowInTaskbar =
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                {
+                    Thread.Sleep(100);
+                    Application.DoEvents();
+                }
                 foreach (FileInfo objFileInfo in TestFiles)
                 {
-                    using (Character objCharacter = await LoadCharacter(objFileInfo))
+                    using (Character objCharacter = LoadCharacter(objFileInfo))
                     {
                         try
                         {
@@ -241,6 +267,11 @@ namespace Chummer.Tests
                         }
                     }
                 }
+                frmTestForm.Close();
+            }
+            finally
+            {
+                frmTestForm?.Dispose();
             }
             Program.MainForm = frmOldMainForm;
         }
@@ -248,7 +279,7 @@ namespace Chummer.Tests
         /// <summary>
         /// Validate that a given list of Characters can be successfully loaded.
         /// </summary>
-        private static async Task<Character> LoadCharacter(FileSystemInfo objFileInfo)
+        private static Character LoadCharacter(FileSystemInfo objFileInfo)
         {
             Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             Character objCharacter = null;
@@ -259,7 +290,7 @@ namespace Chummer.Tests
                 {
                     FileName = objFileInfo.FullName
                 };
-                bool blnSuccess = await objCharacter.Load();
+                bool blnSuccess = objCharacter.Load();
                 Assert.IsTrue(blnSuccess);
                 Debug.WriteLine("Character loaded: " + objCharacter.Name);
             }

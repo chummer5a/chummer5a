@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
@@ -207,7 +207,7 @@ namespace Codaxy.WkHtmlToPdf
                     using (AutoResetEvent outputWaitHandle = new AutoResetEvent(false))
                     using (AutoResetEvent errorWaitHandle = new AutoResetEvent(false))
                     {
-                        DataReceivedEventHandler outputHandler = (sender, e) =>
+                        void OutputHandler(object sender, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {
@@ -217,9 +217,9 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 output.AppendLine(e.Data);
                             }
-                        };
+                        }
 
-                        DataReceivedEventHandler errorHandler = (sender, e) =>
+                        void ErrorHandler(object sender, DataReceivedEventArgs e)
                         {
                             if (e.Data == null)
                             {
@@ -229,10 +229,10 @@ namespace Codaxy.WkHtmlToPdf
                             {
                                 error.AppendLine(e.Data);
                             }
-                        };
+                        }
 
-                        process.OutputDataReceived += outputHandler;
-                        process.ErrorDataReceived += errorHandler;
+                        process.OutputDataReceived += OutputHandler;
+                        process.ErrorDataReceived += ErrorHandler;
 
                         try
                         {
@@ -268,8 +268,8 @@ namespace Codaxy.WkHtmlToPdf
                         }
                         finally
                         {
-                            process.OutputDataReceived -= outputHandler;
-                            process.ErrorDataReceived -= errorHandler;
+                            process.OutputDataReceived -= OutputHandler;
+                            process.ErrorDataReceived -= ErrorHandler;
                         }
                     }
                 }
