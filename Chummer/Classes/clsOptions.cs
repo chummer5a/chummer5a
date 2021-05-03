@@ -201,6 +201,7 @@ namespace Chummer
         private static Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
         private static bool _blnUseLogging;
         private static UseAILogging _enumUseLoggingApplicationInsights;
+        private static int _intResetLogging;
         private static string _strCharacterRosterPath;
         private static string _strImageFolder = string.Empty;
 
@@ -376,6 +377,17 @@ namespace Chummer
             {
                 Log.Warn(e);
                 _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+            }
+
+            if(LoadInt32FromRegistry(ref _intResetLogging, "resetLoggingCounter"))
+            {
+                if (_intResetLogging != 0)
+                {
+                    _intResetLogging--;
+                    SaveOptionsToRegistry(sdf)
+                }
+                
+                
             }
 
             string strColorMode = string.Empty;
@@ -605,6 +617,7 @@ namespace Chummer
                         LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
+                    objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
                     objRegistry.SetValue("colormode", ColorModeSetting.ToString());
                     objRegistry.SetValue("language", Language);
                     objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
@@ -841,18 +854,59 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Should actually the set LoggingLevel be used or only a more conservative one
+        /// </summary>
+        public static int UseLoggingResetCounter
+        {
+            get => _intResetLogging;
+            set
+            {
+                _intResetLogging = value;
+            }
+        }
 
         /// <summary>
-        /// Whether or not the app should use logging.
+        /// What Logging Level are we "allowed" to use by the user. The actual used Level is the UseLoggingApplicationInsights and depends on
+        /// nightly/stable and ResetLoggingCounter
         /// </summary>
-        public static UseAILogging UseLoggingApplicationInsights
+        public static UseAILogging UseLoggingApplicationInsightsPreference
         {
             get => _enumUseLoggingApplicationInsights;
             set
             {
                 _enumUseLoggingApplicationInsights = value;
                 // Sets up logging if the option is changed during runtime
-                TelemetryConfiguration.Active.DisableTelemetry = _enumUseLoggingApplicationInsights > UseAILogging.OnlyLocal;
+                TelemetryConfiguration.Active.DisableTelemetry = _enumUseLoggingApplicationInsights == UseAILogging.OnlyLocal;
+            }
+        }
+
+        /// <summary>
+        /// Whether or not the app should use logging.
+        /// </summary>
+        public static UseAILogging UseLoggingApplicationInsights
+        {
+            get
+            {
+                if (UseLoggingApplicationInsightsPreference == UseAILogging.OnlyLocal)
+                    return UseAILogging.OnlyLocal;
+                
+                if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build == 0)
+                {
+                    //stable builds should not log more than metrics
+                    if (UseLoggingApplicationInsightsPreference > UseAILogging.OnlyMetric)
+                        return UseAILogging.OnlyMetric;
+                    else
+                        return UseLoggingApplicationInsightsPreference;
+                }
+                if (UseLoggingResetCounter > 0)
+                    return UseLoggingApplicationInsightsPreference;
+                else
+                    return UseAILogging.Crashes;
+            }
+            set
+            {
+                UseLoggingApplicationInsightsPreference = value;
             }
         }
 

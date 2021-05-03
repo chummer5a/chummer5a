@@ -163,9 +163,15 @@
     </Reference-->
   
     <Compile Remove="Areas\Identity\Services\**" />
+  
+    <Compile Remove="Properties\PublishProfiles\**" />
     <Content Remove="Areas\Identity\Services\**" />
+    <Content Remove="Properties\PublishProfiles\**" />
     <EmbeddedResource Remove="Areas\Identity\Services\**" />
+    <EmbeddedResource Remove="Properties\PublishProfiles\**" />
     <None Remove="Areas\Identity\Services\**" />
+    <None Remove="Properties\PublishProfiles\**" />
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\**" />
   </ItemGroup>
 
   <ItemGroup>
