@@ -86,6 +86,8 @@ before_build:
         {
           Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number"
         }
+        Write-Host "Setting Docker target OS to Linux."
+        & 'C:\Program Files\Docker\Docker\DockerCli.exe' -SwitchDaemon -SwitchLinuxEngine
     }
 build:
   project: Chummer.sln
