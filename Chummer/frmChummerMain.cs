@@ -39,7 +39,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Text;
-using System.Threading;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
 

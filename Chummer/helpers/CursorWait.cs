@@ -66,7 +66,7 @@ namespace Chummer
                 }
                 else
                 {
-                    for (Control objLoop = _objControl.Parent; objLoop != null; objLoop = objLoop.Parent)
+                    for (Control objLoop = _objControl?.Parent; objLoop != null; objLoop = objLoop.Parent)
                     {
                         if (objLoop is Form objLoopForm)
                         {
