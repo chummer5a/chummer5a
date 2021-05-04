@@ -34,6 +34,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 using NLog;
 using Xoshiro.PRNG64;
 
+
 namespace Chummer
 {
     public enum ClipboardContentType
@@ -379,15 +380,33 @@ namespace Chummer
                 _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
             }
 
-            if(LoadInt32FromRegistry(ref _intResetLogging, "resetLoggingCounter"))
+            if (LoadInt32FromRegistry(ref _intResetLogging, "useloggingApplicationInsightsResetCounter"))
             {
                 if (_intResetLogging != 0)
                 {
                     _intResetLogging--;
-                    SaveOptionsToRegistry(sdf)
+                    try
+                    {
+                        using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
+                        {
+                            if (objRegistry == null)
+                                return;
+                            objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
+                        }
+
+                    }
+                    catch (System.Security.SecurityException)
+                    {
+                        Program.MainForm.ShowMessageBox(
+                            LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        Program.MainForm.ShowMessageBox(
+                            LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    }
+
                 }
-                
-                
             }
 
             string strColorMode = string.Empty;
@@ -890,19 +909,18 @@ namespace Chummer
             {
                 if (UseLoggingApplicationInsightsPreference == UseAILogging.OnlyLocal)
                     return UseAILogging.OnlyLocal;
-                
+
+                if (UseLoggingResetCounter > 0)
+                    return UseLoggingApplicationInsightsPreference;
+
                 if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build == 0)
                 {
                     //stable builds should not log more than metrics
                     if (UseLoggingApplicationInsightsPreference > UseAILogging.OnlyMetric)
                         return UseAILogging.OnlyMetric;
-                    else
-                        return UseLoggingApplicationInsightsPreference;
                 }
-                if (UseLoggingResetCounter > 0)
-                    return UseLoggingApplicationInsightsPreference;
-                else
-                    return UseAILogging.Crashes;
+
+                return UseLoggingApplicationInsightsPreference;
             }
             set
             {

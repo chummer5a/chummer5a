@@ -31,6 +31,7 @@ using Application = System.Windows.Forms.Application;
 using System.Text;
 using System.Xml.XPath;
 using NLog;
+using System.Reflection;
 
 namespace Chummer
 {
@@ -278,6 +279,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging)((ListItem)cboUseLoggingApplicationInsights.SelectedItem).Value;
+            GlobalOptions.UseLoggingResetCounter = 10;
             if (useAI > UseAILogging.Info
                 && GlobalOptions.UseLoggingApplicationInsightsPreference <= UseAILogging.Info
                 && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
@@ -1006,6 +1008,12 @@ namespace Chummer
             List<ListItem> lstUseAIOptions = new List<ListItem>(6);
             foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
             {
+                //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
+                if(Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !System.Diagnostics.Debugger.IsAttached)
+                {
+                    if (eOption > UseAILogging.NotSet)
+                        continue;
+                }
                 lstUseAIOptions.Add(new ListItem(eOption, LanguageManager.GetString("String_ApplicationInsights_" + eOption, _strSelectedLanguage)));
             }
 
