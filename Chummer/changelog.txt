@@ -33,6 +33,7 @@ Data Changes:
 - All spirits now properly have a starting and maximum Essence equal to their Force instead of to 6. Fixes #4358.
 - Extraplanar Travelers is now a full category of selectable critters. Fixes #4394.
 - Changed Imbue Item spell from SG to properly require being an adept, mystic adept or having the Advanced Ritual Casting art.
+- Off-Road Tires properly cost 400 Nuyen per tire and have an availability of 6.
 
 Changed/New Strings:
 - String_ContactPoints
