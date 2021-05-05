@@ -1411,7 +1411,9 @@ namespace Chummer
                         Multiselect = true
                     })
                     {
-                        if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        DialogResult eResult = default;
+                        this.DoThreadSafe(() => eResult = openFileDialog.ShowDialog(this));
+                        if (eResult != DialogResult.OK)
                             return;
                         //Timekeeper.Start("load_sum");
                         List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
