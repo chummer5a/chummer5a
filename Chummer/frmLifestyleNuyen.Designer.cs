@@ -36,6 +36,7 @@ namespace Chummer
             this.lblResult = new System.Windows.Forms.Label();
             this.nudDiceResult = new Chummer.NumericUpDownEx();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cboSelectLifestyle = new Chummer.ElasticComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudDiceResult)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -59,7 +60,7 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(162, 67);
+            this.cmdOK.Location = new System.Drawing.Point(162, 94);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(41, 23);
             this.cmdOK.TabIndex = 4;
@@ -72,7 +73,7 @@ namespace Chummer
             // 
             this.lblDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDice.AutoSize = true;
-            this.lblDice.Location = new System.Drawing.Point(75, 44);
+            this.lblDice.Location = new System.Drawing.Point(75, 71);
             this.lblDice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDice.Name = "lblDice";
             this.lblDice.Size = new System.Drawing.Size(81, 13);
@@ -85,7 +86,7 @@ namespace Chummer
             // 
             this.lblResult.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblResult.AutoSize = true;
-            this.lblResult.Location = new System.Drawing.Point(209, 44);
+            this.lblResult.Location = new System.Drawing.Point(209, 71);
             this.lblResult.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblResult.Name = "lblResult";
             this.lblResult.Size = new System.Drawing.Size(37, 13);
@@ -97,7 +98,17 @@ namespace Chummer
             // 
             this.nudDiceResult.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudDiceResult.AutoSize = true;
-            this.nudDiceResult.Location = new System.Drawing.Point(162, 41);
+            this.nudDiceResult.Location = new System.Drawing.Point(162, 68);
+            this.nudDiceResult.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudDiceResult.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudDiceResult.Name = "nudDiceResult";
             this.nudDiceResult.Size = new System.Drawing.Size(41, 20);
             this.nudDiceResult.TabIndex = 2;
@@ -111,21 +122,35 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMain.Controls.Add(this.lblResult, 2, 1);
-            this.tlpMain.Controls.Add(this.nudDiceResult, 1, 1);
+            this.tlpMain.Controls.Add(this.lblResult, 2, 2);
+            this.tlpMain.Controls.Add(this.nudDiceResult, 1, 2);
             this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
-            this.tlpMain.Controls.Add(this.lblDice, 0, 1);
-            this.tlpMain.Controls.Add(this.cmdOK, 1, 2);
+            this.tlpMain.Controls.Add(this.lblDice, 0, 2);
+            this.tlpMain.Controls.Add(this.cmdOK, 1, 3);
+            this.tlpMain.Controls.Add(this.cboSelectLifestyle, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowCount = 4;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Size = new System.Drawing.Size(366, 93);
+            this.tlpMain.Size = new System.Drawing.Size(366, 120);
             this.tlpMain.TabIndex = 5;
+            // 
+            // cboSelectLifestyle
+            // 
+            this.cboSelectLifestyle.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.tlpMain.SetColumnSpan(this.cboSelectLifestyle, 3);
+            this.cboSelectLifestyle.FormattingEnabled = true;
+            this.cboSelectLifestyle.Location = new System.Drawing.Point(100, 41);
+            this.cboSelectLifestyle.Name = "cboSelectLifestyle";
+            this.cboSelectLifestyle.Size = new System.Drawing.Size(165, 21);
+            this.cboSelectLifestyle.TabIndex = 5;
+            this.cboSelectLifestyle.TooltipText = "";
+            this.cboSelectLifestyle.SelectedIndexChanged += new System.EventHandler(this.cboSelectLifestyle_SelectionChanged);
             // 
             // frmLifestyleNuyen
             // 
@@ -133,7 +158,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(384, 111);
+            this.ClientSize = new System.Drawing.Size(384, 138);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -163,5 +188,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblResult;
         private Chummer.NumericUpDownEx nudDiceResult;
         private Chummer.BufferedTableLayoutPanel tlpMain;
+        private ElasticComboBox cboSelectLifestyle;
     }
 }

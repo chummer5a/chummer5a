@@ -23,6 +23,7 @@ Application Changes:
 - Added the ability to specify a city, district, and borough for a lifestyle.
 - If a character sheet is printed/exported in a language other than the one with which Chummer is being used, Chummer now attemtps to translate the names of gear, vehicle, and weapon locations.
 - Generating character sheets in languages where commas are used as decimal separators and/or periods are used as number group separators no longer sometimes causes the generator to stall out and silently crash. Fixes #4415.
+- You can now select which lifestly to use for starting nuyen calculation.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
