@@ -6817,6 +6817,10 @@
       <key>Label_LifestyleNuyen_ResultOf</key>
       <text>Result of {0}D6: (</text>
     </string>
+    <string>
+      <key>Label_LifestyleNuyen_SelectLifestyle</key>
+      <text>Lifestyle to Use:</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Metatype Window -->
     <string>
