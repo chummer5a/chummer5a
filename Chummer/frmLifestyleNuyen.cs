@@ -68,14 +68,11 @@ namespace Chummer
             _objLifestyle = (Lifestyle) cboSelectLifestyle.SelectedItem;
             RefreshCalculation(sender, e);
             lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle.Dice.ToString(GlobalOptions.CultureInfo));
-
         }
 
         private void RefreshCboSelectLifestyle()
         {
             List<Lifestyle> lstLifestyles = _objCharacter.Lifestyles.ToList();
-
-
 
             lstLifestyles.Sort((y,x) => x.ExpectedValue.CompareTo(y.ExpectedValue));
 
@@ -86,11 +83,9 @@ namespace Chummer
 
         private void RefreshCalculation(object sender, EventArgs e)
         {
-
             nudDiceResult.Maximum = SelectedLifestyle.Dice * 6;
             nudDiceResult.Minimum = SelectedLifestyle.Dice;
             nudDiceResult_ValueChanged(sender, e);
-
         }
         #endregion
 
@@ -115,6 +110,9 @@ namespace Chummer
         /// </summary>
         public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle.Multiplier);
 
+        /// <summary>
+        /// The currently selected lifestyl
+        /// </summary>
         public Lifestyle SelectedLifestyle => _objLifestyle;
 
         #endregion
