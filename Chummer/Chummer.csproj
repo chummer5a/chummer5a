@@ -238,8 +238,8 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="XoshiroPRNG.Net, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\XoshiroPRNG.Net.1.4.0\lib\net452\XoshiroPRNG.Net.dll</HintPath>
+    <Reference Include="XoshiroPRNG.Net, Version=1.5.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\XoshiroPRNG.Net.1.5.0\lib\net452\XoshiroPRNG.Net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
