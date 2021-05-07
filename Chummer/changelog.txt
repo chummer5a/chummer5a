@@ -35,6 +35,7 @@ Data Changes:
 - Extraplanar Travelers is now a full category of selectable critters. Fixes #4394.
 - Changed Imbue Item spell from SG to properly require being an adept, mystic adept or having the Advanced Ritual Casting art.
 - Off-Road Tires properly cost 400 Nuyen per tire and have an availability of 6.
+- Added the Grimmes Erwachen German splatbook and the Storyteller tradition statted in it.
 
 Changed/New Strings:
 - String_ContactPoints
