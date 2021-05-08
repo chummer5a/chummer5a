@@ -52,14 +52,13 @@ namespace Chummer
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
             RefreshSelectLifestyle();
-            RefreshCalculation(sender, e);
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
             lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
-                             + strSpace + SelectedLifestyle.Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                             + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
                              + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
         }
 
@@ -70,7 +69,7 @@ namespace Chummer
             if (cboSelectLifestyle.SelectedIndex < 0)
                 return;
             _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
-            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle.Dice);
+            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle?.Dice ?? 0);
             RefreshCalculation(sender, e);
         }
 
@@ -108,23 +107,40 @@ namespace Chummer
                 cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
                 if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
                     cboSelectLifestyle.SelectedIndex = 0;
+                cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
                 cboSelectLifestyle.EndUpdate();
             }
             finally
             {
                 _blnIsSelectLifestyleRefreshing = false;
                 cboSelectLifestyle_SelectionChanged(this, EventArgs.Empty);
+                cmdRoll.Enabled = SelectedLifestyle != null && SelectedLifestyle.Dice > 0;
             }
         }
 
         private void RefreshCalculation(object sender, EventArgs e)
         {
             nudDiceResult.SuspendLayout();
-            nudDiceResult.Minimum = decimal.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-            nudDiceResult.Maximum = SelectedLifestyle.Dice * 6;
-            nudDiceResult.Minimum = SelectedLifestyle.Dice;
+            nudDiceResult.MinimumAsInt = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+            nudDiceResult.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
+            nudDiceResult.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
             nudDiceResult.ResumeLayout();
             nudDiceResult_ValueChanged(sender, e);
+        }
+
+        private void cmdRoll_Click(object sender, EventArgs e)
+        {
+            if (SelectedLifestyle == null)
+                return;
+            using (new CursorWait(this))
+            {
+                int intResult = 0;
+                for (int i = 0; i < SelectedLifestyle.Dice; ++i)
+                {
+                    intResult += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                }
+                nudDiceResult.ValueAsInt = intResult;
+            }
         }
         #endregion
 
@@ -147,7 +163,7 @@ namespace Chummer
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.
         /// </summary>
-        public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle.Multiplier);
+        public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle?.Multiplier) ?? 0;
 
         /// <summary>
         /// The currently selected lifestyl
