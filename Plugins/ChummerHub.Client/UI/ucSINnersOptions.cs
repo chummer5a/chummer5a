@@ -42,27 +42,7 @@ namespace ChummerHub.Client.UI
                     CanEdit = true,
                     Id = Guid.NewGuid()
                 };
-                if (string.IsNullOrEmpty(Settings.Default.SINnerVisibility))
-                {
-                    return _SINnerVisibility = new SINnerVisibility
-                    {
-                        Id = Guid.NewGuid(),
-                        IsPublic = Settings.Default.VisibilityIsPublic,
-                        UserRights = new List<SINnerUserRight>
-                        {
-                            ur
-                        }
-                    };
-                }
-                try
-                {
-                    return _SINnerVisibility = JsonConvert.DeserializeObject<SINnerVisibility>(Settings.Default.SINnerVisibility);
-                }
-                catch (Exception e)
-                {
-                    Log.Warn(e);
-                }
-                return _SINnerVisibility = new SINnerVisibility
+                return _SINnerVisibility = Utils.DefaultSINnerVisibility ?? new SINnerVisibility
                 {
                     Id = Guid.NewGuid(),
                     IsPublic = Settings.Default.VisibilityIsPublic,
@@ -76,7 +56,7 @@ namespace ChummerHub.Client.UI
             {
                 _SINnerVisibility = value;
                 if (value == null)
-                    Settings.Default.SINnerVisibility = null;
+                    Utils.DefaultSINnerVisibility = null;
             }
         }
 
@@ -266,7 +246,7 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Warn(ex);
                 }
-            });
+            }, false);
         }
 
         public async Task<string> GetUserEmail()
@@ -278,14 +258,13 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     if (client == null)
                         return null;
-                    string strEmail;
                     var result = await client.GetUserByAuthorizationAsync();
                     if (result ==  null)
                     {
                         LoginStatus = false;
                         return null;
                     }
-                    strEmail = result.MyApplicationUser.Email;
+                    string strEmail = result.MyApplicationUser.Email;
                     if (!string.IsNullOrEmpty(strEmail))
                     {
                         Settings.Default.UserEmail = strEmail;
@@ -319,17 +298,15 @@ namespace ChummerHub.Client.UI
                           try
                           {
                               var client = StaticUtils.GetClient();
-                              var signout = await client.LogoutAsync();
+                              if (await client.LogoutAsync())
                               {
-                                  if (!signout)
-                                  {
-                                      var roles = await GetRolesStatus(this);
-                                  }
-                                  else
-                                  {
-                                      StaticUtils.UserRoles.Clear();
-                                  }
+                                  StaticUtils.UserRoles.Clear();
                               }
+                              else
+                              {
+                                  await GetRolesStatus(this);
+                              }
+
                               UpdateDisplay();
                           }
                           catch(Exception ex)
@@ -369,7 +346,7 @@ namespace ChummerHub.Client.UI
                         _ = StartSTATask(
                         async () =>
                         {
-                            var roles = await GetRolesStatus(this);
+                            await GetRolesStatus(this);
                             UpdateDisplay();
                         });
                     })
@@ -381,7 +358,7 @@ namespace ChummerHub.Client.UI
                     _ = StartSTATask(
                            async () =>
                            {
-                               var roles = await GetRolesStatus(this);
+                               await GetRolesStatus(this);
                                UpdateDisplay();
                            });
                 }
@@ -405,7 +382,7 @@ namespace ChummerHub.Client.UI
                     if (client == null)
                         return StaticUtils.UserRoles;
                     myresult = await client.GetRolesAsync();
-                    await Utils.HandleError(myresult);
+                    await Utils.ShowErrorResponseFormAsync(myresult);
                     var myresultbody = myresult;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
@@ -645,14 +622,11 @@ namespace ChummerHub.Client.UI
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    tbTempDownloadPath.Text = fbd.SelectedPath;
-                    OptionsUpdate();
-                    Settings.Default.Save();
-                }
+                if (fbd.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    return;
+                tbTempDownloadPath.Text = fbd.SelectedPath;
+                OptionsUpdate();
+                Settings.Default.Save();
             }
         }
 
@@ -663,13 +637,10 @@ namespace ChummerHub.Client.UI
                 MyVisibility = SINnerVisibility
             })
             {
-                var result = visfrm.ShowDialog(this);
-                if (result == DialogResult.OK)
-                {
-                    SINnerVisibility = visfrm.MyVisibility;
-                    Settings.Default.SINnerVisibility = JsonConvert.SerializeObject(SINnerVisibility);
-                    Settings.Default.Save();
-                }
+                if (visfrm.ShowDialog(this) != DialogResult.OK)
+                    return;
+                SINnerVisibility = visfrm.MyVisibility;
+                Utils.DefaultSINnerVisibility = visfrm.MyVisibility;
             }
         }
 

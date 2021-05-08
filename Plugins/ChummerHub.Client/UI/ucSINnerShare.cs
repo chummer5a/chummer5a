@@ -183,7 +183,7 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentNullException("Could not load Character file " +
                                                                     MyCharacterCache.FilePath +
                                                                     ".");
-                                ce = new CharacterExtended(c, null, null, MyCharacterCache);
+                                ce = new CharacterExtended(c, null, MyCharacterCache);
                                 if (ce?.MySINnerFile?.Id != null)
                                     sinnerid = ce.MySINnerFile.Id.ToString();
                                 hash = ce?.MySINnerFile?.MyHash;

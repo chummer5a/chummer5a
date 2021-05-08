@@ -82,20 +82,12 @@ namespace ChummerHub.Client.UI
                             login = true;
                             Program.MainForm.Invoke(new Action(() =>
                             {
-                                SINnerVisibility tempvis;
-                                if (!string.IsNullOrEmpty(Settings.Default.SINnerVisibility))
+                                SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
+                                                           ?? new SINnerVisibility
                                 {
-                                    tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Settings.Default.SINnerVisibility);
-                                }
-                                else
-                                {
-                                    tempvis = new SINnerVisibility
-                                    {
-                                        IsGroupVisible = true,
-                                        IsPublic = true
-                                    };
-                                }
-
+                                    IsGroupVisible = true,
+                                    IsPublic = true
+                                };
                                 tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
                                 Close();
                             }));

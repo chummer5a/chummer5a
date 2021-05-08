@@ -28,7 +28,7 @@ namespace ChummerHub.Client.UI
 
         public ucSINnersSearch()
         {
-            MySearchCharacter = new CharacterExtended(new Character(), null, null, new CharacterCache());
+            MySearchCharacter = new CharacterExtended(new Character(), null, new CharacterCache(), false);
             InitializeComponent();
         }
 

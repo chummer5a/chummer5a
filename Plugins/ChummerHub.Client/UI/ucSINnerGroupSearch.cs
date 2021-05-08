@@ -196,13 +196,11 @@ namespace ChummerHub.Client.UI
             {
                 var client = StaticUtils.GetClient();
                 var res = await client.GetSearchGroupsAsync(groupname, null, null, null);
+                if (!(await Backend.Utils.ShowErrorResponseFormAsync(res) is ResultGroupGetSearchGroups result))
+                    return null;
+                if (result.CallSuccess)
                 {
-                    if (!(await Backend.Utils.HandleError(res) is ResultGroupGetSearchGroups result))
-                        return null;
-                    if (result.CallSuccess == true)
-                    {
-                        return result.MySearchGroupResult;
-                    }
+                    return result.MySearchGroupResult;
                 }
             }
             catch (ArgumentNullException)
@@ -363,7 +361,7 @@ namespace ChummerHub.Client.UI
             {
                 DialogResult result = DialogResult.Cancel;
                 frmSINnerGroupEdit groupEdit = null;
-                if (searchgroup.HasPassword == true)
+                if (searchgroup.HasPassword)
                 {
                     SINnerGroup joinGroup = new SINnerGroup(searchgroup);
                     PluginHandler.MainForm.DoThreadSafe(() =>
@@ -416,12 +414,10 @@ namespace ChummerHub.Client.UI
                             }
 
                             var found = await client.GetGroupByIdAsync(searchgroup.Id);
+                            await Backend.Utils.ShowErrorResponseFormAsync(found);
+                            if (found?.CallSuccess == true)
                             {
-                                var res = Backend.Utils.HandleError(found);
-                                if (found?.CallSuccess == true)
-                                {
-                                    ssgr = new SINSearchGroupResult(found.MyGroup);
-                                }
+                                ssgr = new SINSearchGroupResult(found.MyGroup);
                             }
                         }
                     }
@@ -692,14 +688,11 @@ namespace ChummerHub.Client.UI
                     {
                         if (targetGroup.Groupname == "My SINners")
                         {
-                            var res = await client.DeleteLeaveGroupAsync(
-                                draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
+                            var res = await client.DeleteLeaveGroupAsync(draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
+                            await Backend.Utils.ShowErrorResponseFormAsync(res);
+                            if (res)
                             {
-                                var response = Backend.Utils.HandleError(res);
-                                if (res)
-                                {
-                                    bSearch_Click(sender, e);
-                                }
+                                bSearch_Click(sender, e);
                             }
                         }
                         if (draggedSINner.MySINner.MyGroup?.Id == targetGroup.Id)
@@ -710,12 +703,10 @@ namespace ChummerHub.Client.UI
                         try
                         {
                             var res = await client.PutSINerInGroupAsync(targetGroup.Id, draggedSINner.MySINner.Id, null);
+                            await Backend.Utils.ShowErrorResponseFormAsync(res);
+                            if (res != null)
                             {
-                                var response = Backend.Utils.HandleError(res);
-                                if (res != null)
-                                {
-                                    bSearch_Click(sender, e);
-                                }
+                                bSearch_Click(sender, e);
                             }
                         }
                         catch (Exception exception)
@@ -728,31 +719,25 @@ namespace ChummerHub.Client.UI
                     {
                         var res = await client.DeleteLeaveGroupAsync(
                             draggedSINner.MySINner.MyGroup.Id, draggedSINner.MySINner.Id);
-                        {
-                            var response = Backend.Utils.HandleError(res);
-                            MoveNode(draggedNode, targetNode);
-                        }
+                        await Backend.Utils.ShowErrorResponseFormAsync(res);
+                        MoveNode(draggedNode, targetNode);
                     }
                     else if (draggedSINner?.MySINner != null && targetNode == null)
                     {
                         var res = await client.PutSINerInGroupAsync(null, draggedSINner.MySINner.Id, null);
+                        await Backend.Utils.ShowErrorResponseFormAsync(res);
+                        if (res != null)
                         {
-                            var response = Backend.Utils.HandleError(res);
-                            if (res != null)
-                            {
-                                MoveNode(draggedNode, targetNode);
-                            }
+                            MoveNode(draggedNode, targetNode);
                         }
                     }
                     else if (draggedSINner?.MySINner != null && targetGroup != null)
                     {
                         var res = await client.PutSINerInGroupAsync(targetGroup.Id, draggedSINner.MySINner.Id, null);
+                        await Backend.Utils.ShowErrorResponseFormAsync(res);
+                        if (res != null)
                         {
-                            var response = Backend.Utils.HandleError(res);
-                            if (res != null)
-                            {
-                                MoveNode(draggedNode, targetNode);
-                            }
+                            MoveNode(draggedNode, targetNode);
                         }
                     }
                 }
