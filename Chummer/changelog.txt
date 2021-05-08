@@ -25,6 +25,7 @@ Application Changes:
 - Generating character sheets in languages where commas are used as decimal separators and/or periods are used as number group separators no longer sometimes causes the generator to stall out and silently crash. Fixes #4415.
 - When saving a character as created, the starting nuyen screen now allows the user to select which lifestyle to use for generating their starting nuyen. It now also includes a Cancel button and a button for automatically rolling dice for the chosen lifestyle.
 - Closing out the starting nuyen screen no longer causes weird issues with the character's saved Nuyen or saved Karma and also no longer prompts the user to save a created character.
+- Fixed life modules button not being visible in create mode.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -38,6 +39,8 @@ Data Changes:
 - Changed Imbue Item spell from SG to properly require being an adept, mystic adept or having the Advanced Ritual Casting art.
 - Off-Road Tires properly cost 400 Nuyen per tire and have an availability of 6.
 - Added the Grimmes Erwachen German splatbook and the Storyteller tradition statted in it.
+- Fixed page reference for the Extra Fragile critter power. Closes #4420
+- Fixed incorrect quality names for the Corp Teen, Rising Star, Company Troubleshooter, Tour of Duty (Desert Wars), In the Thick and Gone Native life modules that prevented them from being taken correctly. Closes #4386
 
 Changed/New Strings:
 - String_ContactPoints

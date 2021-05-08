@@ -6055,6 +6055,9 @@ namespace Chummer.Classes
                     {
                         if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
+                        if (objXmlSelectedQuality == null){
+                            Utils.BreakIfDebug();
+                        }
                         string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
                         string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;

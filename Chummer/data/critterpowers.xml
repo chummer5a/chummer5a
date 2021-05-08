@@ -2296,7 +2296,7 @@
           <stun>-20</stun>
         </conditionmonitor>
       </bonus>
-      <source>RF</source>
+      <source>HS</source>
       <page>191</page>
     </power>
     <power>
