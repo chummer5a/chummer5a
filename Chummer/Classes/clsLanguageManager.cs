@@ -96,17 +96,19 @@ namespace Chummer
         #endregion
 
         #region Methods
-       
+
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
-        public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "")
+        /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
+        public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true)
         {
             if (Utils.IsDesignerMode)
                 return;
-            objObject.SuspendLayout();
+            if (blnDoResumeLayout)
+                objObject.SuspendLayout();
             if (string.IsNullOrEmpty(strIntoLanguage))
                 strIntoLanguage = GlobalOptions.Language;
             if (LoadLanguage(strIntoLanguage))
@@ -118,7 +120,8 @@ namespace Chummer
             }
             else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
                 UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
-            objObject.ResumeLayout();
+            if (blnDoResumeLayout)
+                objObject.ResumeLayout();
         }
 
         public static bool LoadLanguage(string strLanguage)

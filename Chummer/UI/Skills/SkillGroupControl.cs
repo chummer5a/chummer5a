@@ -41,97 +41,94 @@ namespace Chummer.UI.Skills
                 return;
             _skillGroup = skillGroup;
             InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
-
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
-            lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
-            lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
-
-            int intMinimumSize;
-            using (Graphics g = CreateGraphics())
-                intMinimumSize = (int)(25 * g.DpiX / 96.0f);
-
-            // Creating these controls outside of the designer saves on handles
-            if (skillGroup.CharacterObject.Created)
+            try
             {
-                lblGroupRating = new Label
+                lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
+                lblName.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.ToolTip));
+
+                int intMinimumSize;
+                using (Graphics g = CreateGraphics())
+                    intMinimumSize = (int) (25 * g.DpiX / 96.0f);
+
+                // Creating these controls outside of the designer saves on handles
+                if (skillGroup.CharacterObject.Created)
                 {
-                    Anchor = AnchorStyles.Right,
-                    AutoSize = true,
-                    Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
-                    MinimumSize = new Size(intMinimumSize, 0),
-                    Name = "lblGroupRating",
-                    TextAlign = ContentAlignment.MiddleRight
-                };
-                btnCareerIncrease = new ButtonWithToolTip
+                    lblGroupRating = new Label
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
+                        MinimumSize = new Size(intMinimumSize, 0),
+                        Name = "lblGroupRating",
+                        TextAlign = ContentAlignment.MiddleRight
+                    };
+                    btnCareerIncrease = new ButtonWithToolTip
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                        Image = Resources.add,
+                        Margin = new Padding(3, 0, 3, 0),
+                        Name = "btnCareerIncrease",
+                        Padding = new Padding(1),
+                        UseVisualStyleBackColor = true
+                    };
+                    btnCareerIncrease.Click += btnCareerIncrease_Click;
+
+                    btnCareerIncrease.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
+                    btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skillGroup,
+                        nameof(SkillGroup.UpgradeToolTip));
+
+                    lblGroupRating.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
+
+                    tlpMain.Controls.Add(lblGroupRating, 2, 0);
+                    tlpMain.Controls.Add(btnCareerIncrease, 3, 0);
+                }
+                else
                 {
-                    Anchor = AnchorStyles.Right,
-                    AutoSize = true,
-                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                    Image = Resources.add,
-                    Margin = new Padding(3, 0, 3, 0),
-                    Name = "btnCareerIncrease",
-                    Padding = new Padding(1),
-                    UseVisualStyleBackColor = true
-                };
-                btnCareerIncrease.Click += btnCareerIncrease_Click;
+                    nudKarma = new NumericUpDownEx
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                        Margin = new Padding(3, 2, 3, 2),
+                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Name = "nudKarma"
+                    };
+                    nudSkill = new NumericUpDownEx
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                        Margin = new Padding(3, 2, 3, 2),
+                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Name = "nudSkill"
+                    };
 
-                btnCareerIncrease.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.CareerCanIncrease));
-                btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skillGroup, nameof(SkillGroup.UpgradeToolTip));
+                    nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
+                    nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
+                    nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
-                lblGroupRating.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.DisplayRating));
+                    nudSkill.DoDatabinding("Visible", _skillGroup.CharacterObject,
+                        nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                    nudSkill.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Base));
+                    nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
+                    nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
-                lblGroupRating.UpdateLightDarkMode();
-                lblGroupRating.TranslateWinForm();
-                btnCareerIncrease.UpdateLightDarkMode();
-                btnCareerIncrease.TranslateWinForm();
+                    tlpMain.Controls.Add(nudSkill, 2, 0);
+                    tlpMain.Controls.Add(nudKarma, 3, 0);
+                }
 
-                tlpMain.Controls.Add(lblGroupRating, 2, 0);
-                tlpMain.Controls.Add(btnCareerIncrease, 3, 0);
+                this.UpdateLightDarkMode();
+                this.TranslateWinForm(string.Empty, false);
             }
-            else
+            finally
             {
-                nudKarma = new NumericUpDownEx
-                {
-                    Anchor = AnchorStyles.Right,
-                    AutoSize = true,
-                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
-                    Margin = new Padding(3, 2, 3, 2),
-                    Maximum = new decimal(new[] {99, 0, 0, 0}),
-                    Name = "nudKarma"
-                };
-                nudSkill = new NumericUpDownEx
-                {
-                    Anchor = AnchorStyles.Right,
-                    AutoSize = true,
-                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
-                    Margin = new Padding(3, 2, 3, 2),
-                    Maximum = new decimal(new[] {99, 0, 0, 0}),
-                    Name = "nudSkill"
-                };
-
-                nudKarma.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Karma));
-                nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
-                nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
-
-                nudSkill.DoDatabinding("Visible", _skillGroup.CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                nudSkill.DoDatabinding("Value", _skillGroup, nameof(SkillGroup.Base));
-                nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));
-                nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
-
-                nudKarma.UpdateLightDarkMode();
-                nudKarma.TranslateWinForm();
-                nudSkill.UpdateLightDarkMode();
-                nudSkill.TranslateWinForm();
-
-                tlpMain.Controls.Add(nudSkill, 2, 0);
-                tlpMain.Controls.Add(nudKarma, 3, 0);
+                ResumeLayout(true);
             }
-
-            ResumeLayout();
             sw.TaskEnd("Create skillgroup");
         }
 

@@ -1286,7 +1286,7 @@ namespace Chummer
         /// <param name="strFile"></param>
         /// <param name="intCount"></param>
         /// <returns></returns>
-        private static frmLoading CreateAndShowProgressBar(string strFile = "", int intCount = -1)
+        public static frmLoading CreateAndShowProgressBar(string strFile = "", int intCount = -1)
         {
             frmLoading frmReturn = new frmLoading {CharacterFile = strFile};
             if (intCount > 0)
@@ -1574,7 +1574,7 @@ namespace Chummer
                 }
                 if (blnShowProgressBar && _frmProgressBar.IsNullOrDisposed())
                 {
-                    using (_frmProgressBar = CreateAndShowProgressBar(objCharacter.FileName, 35))
+                    using (_frmProgressBar = CreateAndShowProgressBar(objCharacter.FileName, Character.NumLoadingSections))
                     {
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");

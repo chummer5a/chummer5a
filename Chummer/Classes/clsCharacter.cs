@@ -2159,13 +2159,15 @@ namespace Chummer
             return LoadCoreAysnc(false, frmLoadingForm, showWarnings);
         }
 
+        public const int NumLoadingSections = 36;
+
         /// <summary>
         /// Load the Character from an XML file.
         /// Uses flag hack method design outlined here to avoid locking:
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called 35 times within this method, so plan accordingly.</param>
+        /// <param name="frmLoadingForm">Instance of frmLoading to use to update with loading progress. frmLoading::PerformStep() is called NumLoadingSections times within this method, so plan accordingly.</param>
         /// <param name="showWarnings">Whether warnings about book content and other character content should be loaded.</param>
         private async Task<bool> LoadCoreAysnc(bool blnSync, frmLoading frmLoadingForm = null, bool showWarnings = true)
         {
@@ -2193,10 +2195,11 @@ namespace Chummer
                         XmlNodeList objXmlLocationList;
                         Quality objLivingPersonaQuality = null;
                         XmlNode xmlRootQualitiesNode;
+
+                        frmLoadingForm?.PerformStep("XML");
+
                         using (_ = Timekeeper.StartSyncron("load_xml", loadActivity))
                         {
-                            frmLoadingForm?.PerformStep("XML");
-
                             if (!File.Exists(_strFileName))
                                 return false;
                             bool blnKeepLoading = blnSync
@@ -2267,10 +2270,10 @@ namespace Chummer
 
                         try
                         {
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Settings"));
-
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(_strFileName);
 
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("ignorerules", ref _blnIgnoreRules);
@@ -2317,39 +2320,39 @@ namespace Chummer
                                     }
                                 }
 #if !DEBUG
-                        if (!Utils.IsUnitTest)
-                        {
-                            string strMinimumVersion = string.Empty;
-                            // Check to see if a character has a minimum version set where they will not load properly on anything older
-                            if (xmlCharacterNavigator.TryGetStringFieldQuickly("minimumappversion", ref strMinimumVersion) &&
-                                !string.IsNullOrEmpty(strMinimumVersion))
-                            {
-                                strMinimumVersion = strMinimumVersion.TrimStartOnce("0.");
-                                if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Program.MainForm.CurrentVersion)
+                                if (!Utils.IsUnitTest)
                                 {
-                                    Program.MainForm.ShowMessageBox(
-                                        string.Format(GlobalOptions.CultureInfo,
-                                            LanguageManager.GetString("Message_OlderThanChummerSaveMinimumVersion"),
-                                            objMinimumVersion, Program.MainForm.CurrentVersion),
-                                        LanguageManager.GetString("MessageTitle_OlderThanChummerSaveMinimumVersion"),
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
-                                    return false;
+                                    string strMinimumVersion = string.Empty;
+                                    // Check to see if a character has a minimum version set where they will not load properly on anything older
+                                    if (xmlCharacterNavigator.TryGetStringFieldQuickly("minimumappversion", ref strMinimumVersion) &&
+                                        !string.IsNullOrEmpty(strMinimumVersion))
+                                    {
+                                        strMinimumVersion = strMinimumVersion.TrimStartOnce("0.");
+                                        if (Version.TryParse(strMinimumVersion, out Version objMinimumVersion) && objMinimumVersion > Program.MainForm.CurrentVersion)
+                                        {
+                                            Program.MainForm.ShowMessageBox(
+                                                string.Format(GlobalOptions.CultureInfo,
+                                                    LanguageManager.GetString("Message_OlderThanChummerSaveMinimumVersion"),
+                                                    objMinimumVersion, Program.MainForm.CurrentVersion),
+                                                LanguageManager.GetString("MessageTitle_OlderThanChummerSaveMinimumVersion"),
+                                                MessageBoxButtons.OK,
+                                                MessageBoxIcon.Error);
+                                            return false;
+                                        }
+                                    }
+                                    if (_verSavedVersion > Program.MainForm.CurrentVersion)
+                                    {
+                                        if (DialogResult.Yes != Program.MainForm.ShowMessageBox(
+                                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
+                                                _verSavedVersion, Program.MainForm.CurrentVersion),
+                                            LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
+                                            MessageBoxButtons.YesNo,
+                                            MessageBoxIcon.Warning))
+                                        {
+                                            return false;
+                                        }
+                                    }
                                 }
-                            }
-                            if (_verSavedVersion > Program.MainForm.CurrentVersion)
-                            {
-                                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(
-                                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
-                                        _verSavedVersion, Program.MainForm.CurrentVersion),
-                                    LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
-                                    MessageBoxButtons.YesNo,
-                                    MessageBoxIcon.Warning))
-                                {
-                                    return false;
-                                }
-                            }
-                        }
 #endif
 
                                 // Get the name of the settings file in use if possible.
@@ -2782,9 +2785,10 @@ namespace Chummer
                                 //end load_char_misc
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit");
                                 foreach (XmlNode objXmlMentor in objXmlNodeList)
@@ -2799,9 +2803,11 @@ namespace Chummer
 
                             List<Improvement> lstCyberadeptSweepGrades = new List<Improvement>();
                             _lstInternalIdsNeedingReapplyImprovements.Clear();
+
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
                                 string strCharacterInnerXml = objXmlCharacter.InnerXml;
@@ -2903,9 +2909,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_imp");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Contacts"));
                                 // Contacts.
                                 foreach (XPathNavigator xmlContact in xmlCharacterNavigator.Select("contacts/contact"))
                                 {
@@ -2917,9 +2924,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_contacts");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_quality", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Qualities"));
                                 // Qualities
 
                                 objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
@@ -3144,11 +3152,14 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_quality");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_attributes", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Attributes"));
                                 AttributeSection.Load(objXmlCharacter);
                             }
+
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
                             {
@@ -3161,7 +3172,6 @@ namespace Chummer
                                         ref _intMAGMagician);
                                 }
 
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Tradition"));
                                 // Attempt to load in the character's tradition (or equivalent for Technomancers)
                                 string strTemp = string.Empty;
                                 if (xmlCharacterNavigator.TryGetStringFieldQuickly("stream", ref strTemp) &&
@@ -3264,9 +3274,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_misc2");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Skills"));
                                 _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
                                 _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
 
@@ -3283,9 +3294,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_skills");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_loc", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Locations"));
                                 // Locations.
                                 objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
                                 foreach (XmlNode objXmlLocation in objXmlLocationList)
@@ -3395,9 +3407,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_sfoci");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_armor", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Armor"));
                                 // Armor.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
                                 foreach (XmlNode objXmlArmor in objXmlNodeList)
@@ -3410,9 +3423,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_armor");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Weapons"));
                                 // Weapons.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
                                 foreach (XmlNode objXmlWeapon in objXmlNodeList)
@@ -3425,9 +3439,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_weapons");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Drugs"));
                                 // Drugs.
                                 objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
                                 foreach (XmlNode objXmlDrug in objXmlNodeList)
@@ -3440,9 +3455,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_drugs");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Cyberware"));
                                 // Dictionary for instantly re-applying outdated improvements for 'ware with pair bonuses in legacy shim
                                 Dictionary<Cyberware, int> dicPairableCyberwares = new Dictionary<Cyberware, int>();
                                 // Cyberware/Bioware.
@@ -3644,9 +3660,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_ware");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_spells", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SelectedSpells"));
                                 // Spells.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
                                 foreach (XmlNode objXmlSpell in objXmlNodeList)
@@ -3659,9 +3676,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
                                 // Powers.
                                 bool blnDoEnhancedAccuracyRefresh = LastSavedVersion <= new Version(5, 198, 26);
                                 objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
@@ -3705,10 +3723,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_powers");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                             {
-
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Spirits"));
                                 // Spirits/Sprites.
                                 foreach (XPathNavigator xmlSpirit in xmlCharacterNavigator.Select("spirits/spirit"))
                                 {
@@ -3728,9 +3746,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spirits");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_complex", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_ComplexForms"));
                                 // Compex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
                                 foreach (XmlNode objXmlComplexForm in objXmlNodeList)
@@ -3743,9 +3762,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_complex");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_AdvancedPrograms"));
                                 // Compex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
                                 foreach (XmlNode objXmlProgram in objXmlNodeList)
@@ -3758,9 +3778,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_aiprogram");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_marts", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_MartialArts"));
                                 // Martial Arts.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
                                 foreach (XmlNode objXmlArt in objXmlNodeList)
@@ -3773,9 +3794,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_marts");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Limits"));
                                 // Limit Modifiers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
                                 foreach (XmlNode objXmlLimit in objXmlNodeList)
@@ -3788,10 +3810,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mod");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(
-                                    LanguageManager.GetString("String_SelectPACKSKit_Lifestyles"));
                                 // Lifestyles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
                                 foreach (XmlNode objXmlLifestyle in objXmlNodeList)
@@ -3804,9 +3826,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_lifestyle");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_gear", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Gear"));
                                 // <gears>
                                 objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
                                 foreach (XmlNode objXmlGear in objXmlNodeList)
@@ -3883,9 +3906,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_gear");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_car", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_Vehicles"));
                                 // Vehicles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
                                 foreach (XmlNode objXmlVehicle in objXmlNodeList)
@@ -3898,9 +3922,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_car");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_mmagic", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Metamagics"));
                                 // Metamagics/Echoes.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
                                 foreach (XmlNode objXmlMetamagic in objXmlNodeList)
@@ -3913,9 +3938,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_mmagic");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_arts", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Arts"));
                                 // Arts
                                 objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
                                 foreach (XmlNode objXmlArt in objXmlNodeList)
@@ -3928,9 +3954,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_arts");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_ench", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_Enhancements"));
                                 // Enhancements
                                 objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
                                 foreach (XmlNode objXmlEnhancement in objXmlNodeList)
@@ -3943,9 +3970,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_ench");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_cpow", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Critter"));
                                 // Critter Powers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
                                 foreach (XmlNode objXmlPower in objXmlNodeList)
@@ -3958,9 +3986,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_cpow");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_foci", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryFoci"));
                                 // Foci.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
                                 foreach (XmlNode objXmlFocus in objXmlNodeList)
@@ -3973,9 +4002,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_foci");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_init", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Label_SummaryInitiation"));
                                 // Initiation Grades.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
                                 foreach (XmlNode objXmlGrade in objXmlNodeList)
@@ -4018,9 +4048,10 @@ namespace Chummer
                                 }
                             }
 #endif
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
                                 // Improvement Groups.
                                 XmlNodeList objXmlGroupList =
                                     objXmlCharacter.SelectNodes("improvementgroups/improvementgroup");
@@ -4032,9 +4063,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_igroup");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Calendar"));
                                 // Calendar.
                                 XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
                                 foreach (XmlNode objXmlWeek in objXmlWeekList)
@@ -4047,9 +4079,10 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_calendar");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
+
                             using (_ = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
                             {
-                                frmLoadingForm?.PerformStep(LanguageManager.GetString("String_LegacyFixes"));
                                 // Look for the unarmed attack
                                 bool blnFoundUnarmed = false;
                                 foreach (Weapon objWeapon in _lstWeapons)
@@ -4235,6 +4268,8 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_flechettefix");
                             }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Options_Plugins"));
+
                             //Plugins
                             using (_ = Timekeeper.StartSyncron("load_plugins", loadActivity))
                             {
@@ -4255,10 +4290,11 @@ namespace Chummer
                             IsLoading = false;
                         }
 
+                        frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
+
                         // Refresh certain improvements
                         using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                         {
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("String_GeneratedImprovements"));
                             // Refresh permanent attribute changes due to essence loss
                             RefreshEssenceLossImprovements();
                             // Refresh dicepool modifiers due to filled condition monitor boxes
