@@ -21542,71 +21542,26 @@
                 <altdisadvantage>Wenn jemand eindringlich um Hilfe bittet, kann ein Anhänger des Feuerbringers diese nicht verweigern, wenn ihm keine Probe auf Charisma + Willenskraft (3) gelingt.</altdisadvantage>
                 <altpage>321</altpage>
             </mentor>
-            <mentor translated="True">
-                <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-                <name>Great Mother (SASS)</name>
-                <translate>Große Mutter (SASS)</translate>
+          <!--Great mother from SG-->
+            <mentor>
+                <id>a23c8a3d-b056-4173-88e4-e73bb64dd731</id>
+                <name>Great Mother</name>
+                <translate>Große Mutter</translate>
+                <name>+2 dice to First Aid</name>
+                <translate>+2 Würfel für Erste Hilfe Proben</translate>
                 <choices>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
-                    <choice>
-                        <name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-                        <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice>
-                        <name>Adept: Gain Empathic Healing for free.</name>
-                        <translate>Adept: Empathische Heilung gratis</translate>
-                    </choice>
+                  <choice>
+                    <name>Magicians: +2 for health spells, preparations, and spell rituals.</name>
+                    <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemistische Erzeugnisse der Kategorie Heiilung</translate>
+                  </choice>
+                  <choice>
+                    <name>Adepts: Gain Empathic Healing for free.</name>
+                    <translate>Adepten: Erhalte Empatische Heilung Gratis</translate>
+                  </choice>
                 </choices>
                 <altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe</altadvantage>
-                <altdisadvantage>Anhänger der Großen Mutter sind Liebhaber und Heiler, keine Kämpfer. Dadurch leiden sie unter einem –1 Würfel-Pool Modifikator für alle Aktionen, die mit Kämpfen in Verbindung stehen (Kampffertigkeit, oder einen Zauberspruch aus der Kategorie Kampf).</altdisadvantage>
-                <altpage>33</altpage>
+                <altdisadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er seine Zuwiderhandlung wiedergutgemacht hat.</altdisadvantage>
+                <altpage>232</altpage>
             </mentor>
             <mentor>
                 <id>a1faab23-0214-4c83-96ac-d5bb71d4aebb</id>
@@ -23084,17 +23039,18 @@
                 <altdisadvantage> Ratte ist von Natur aus ein Einzelgänger. Daher fällt es ihr manchmal schwer, anderen zu vertrauen. In Verbindung mit ihrer Intoleranz gegenüber Inkompetent könnte das in einem Team problematisch werden. Anhänger von Ratte können anderen nur durch Teamworkproben helfen oder von ihnen Hilfe erhalten, wenn sie diesen Personen vertrauen. Wenn sie diesen Personen vertrauen, dieses Vertrauen aber durch Verrat oder Inkompetenz missbraucht wird, muss ihnen zukünftig immer eine Probe auf Charisma + Willenskraft (4) gelingen, um mit dieser Person bei einer Teamworkprobe zusammenzuarbeiten.</altdisadvantage>
                 <altpage>99</altpage>
             </mentor>
+          <!--Great Mother from Forbidden Arcana-->
             <mentor>
                 <id>4d15a346-8f27-42c5-be8c-33a7bd56067d</id>
-                <name>Great Mother</name>
-                <translate>Große Mutter</translate>
+                <name>Great Mother (alt)</name>
+                <translate>Große Mutter (alt)</translate>
                 <altadvantage>Allgemein: Außerhalb urbaner Bereiche +1 Würfel auf alle Proben mit Fertigkeiten aus der Fertigkeitsgruppe Natur</altadvantage>
                 <altdisadvantage>Sämtliche Hintergrundstrahlung wegen Verschmutzung oder verdorbener Umgebung wirkt mit ihrer doppelten Stufe.</altdisadvantage>
                 <altpage>94</altpage>
                 <choices>
                     <choice>
                         <name>Magician: +2 for health spells, preparations, and spell rituals.</name>
-                        <translate>Zauberer: + Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Heilung</translate>
+                        <translate>Zauberer: +2 Würfel für Zauber, Alchemische Erzeugnisse und Rituale der Kategorie Heilung</translate>
                     </choice>
                     <choice>
                         <name>Adept: Gain Empathic Healing for free.</name>
@@ -23102,7 +23058,36 @@
                     </choice>
                 </choices>
             </mentor>
-            <mentor>
+          <!--Great Mother from SASS-->
+          <mentor>
+            <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
+            <name>Great Mother</name>
+            <translate>Große Mutter</translate>
+            <altadvantage>Allgemein: 2+ Würfel auf Erste Hilfe oder Medizin</altadvantage>
+            <altdisadvantage>Anhänger der Großen Mutter sind liebende und keine Kämpfer. Deswegen erhalten sie -1 Würfel für alle Kampf Aktionen (Benutzung einer Kampffertigkeit oder verwendung eines Zaubers der Kategorie Kampf)</altdisadvantage>
+            <choices>
+              <choice>
+                <name>+2 to First Aid</name>
+                <translate>+2 Würfel auf Erste Hilfe</translate>
+              </choice>
+              <choice>
+                <name>+2 to Medicine</name>
+                <translate>+2 Würfel auf Medizin</translate>
+              </choice>
+              <choice set="2">
+                <name>Magician: +2 dice for Health spells, preparations and rituals</name>
+                <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung
+                </translate>
+              </choice>
+              <choice set="2">
+                <name>Adept: 1 free level of Rapid Healing</name>
+                <translate>Adepten: Erhalte eine Stuffe der Kraft Schnellheilung gratis</translate>
+              </choice>
+            </choices>
+
+
+          </mentor>
+          <mentor>
                 <id>7397da6e-29b8-400f-9708-c99bd04d5c07</id>
                 <name>Guanyin</name>
                 <translate>Guanyin</translate>
