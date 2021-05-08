@@ -22681,7 +22681,7 @@
             </mentor>
             <mentor translated="True">
                 <id>f892e9b9-c400-4519-9ce0-ca8e77be12c9</id>
-                <name>Klabautermann</name>
+                <name>Sea Kobold</name>
                 <translate>Klabautermann</translate>
                 <choices>
                     <choice>
@@ -22717,7 +22717,7 @@
             </mentor>
             <mentor translated="True">
                 <id>6eb6293e-5a64-4e46-94f6-4e828c160628</id>
-                <name>Wolpertinger</name>
+                <name>Jackalope</name>
                 <translate>Wolpertinger</translate>
                 <choices>
                     <choice>
@@ -38516,9 +38516,9 @@
                 <translate>Brockenhexen</translate>
                 <altpage>42</altpage>
             </tradition>
-            <tradition translated="True">
+            <tradition>
                 <id>da78c84d-0494-483e-a15e-c17ddf28f6aa</id>
-                <name>Faustianer</name>
+                <name>Faustian</name>
                 <translate>Faustianer</translate>
                 <altpage>45</altpage>
             </tradition>

@@ -335,7 +335,7 @@ namespace Chummer
                                     {
                                         if (objExistingNode != null)
                                         {
-                                            treCharacterList.Nodes.Remove(objExistingNode);
+                                            treCharacterList.DoThreadSafe(() => treCharacterList.Nodes.Remove(objExistingNode));
                                         }
 
                                         if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
@@ -343,9 +343,12 @@ namespace Chummer
                                         {
                                             if (treCharacterList.IsNullOrDisposed())
                                                 return;
-                                            if (treCharacterList.Nodes.ContainsKey(node.Name))
-                                                treCharacterList.Nodes.RemoveByKey(node.Name);
-                                            treCharacterList.Nodes.Insert(1, node);
+                                            treCharacterList.DoThreadSafe(() =>
+                                            {
+                                                if (treCharacterList.Nodes.ContainsKey(node.Name))
+                                                    treCharacterList.Nodes.RemoveByKey(node.Name);
+                                                treCharacterList.Nodes.Insert(1, node);
+                                            });
                                         }
 
                                         node.Expand();

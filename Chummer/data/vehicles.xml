@@ -12630,9 +12630,9 @@
       <name>Off-Road Tires</name>
       <page>152</page>
       <source>R5</source>
-      <avail>4</avail>
+      <avail>6</avail>
       <category>All</category>
-      <cost>Rating * 250</cost>
+      <cost>Rating * 400</cost>
       <rating>50</rating>
       <slots>0</slots>
       <bonus>

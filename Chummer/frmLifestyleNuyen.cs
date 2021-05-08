@@ -17,13 +17,17 @@
  *  https://github.com/chummer5a/chummer5a
  */
 ﻿using System;
+ using System.Collections.Generic;
  using System.Windows.Forms;
+ using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     public partial class frmLifestyleNuyen : Form
     {
-        readonly Character _objCharacter;
+        private readonly Character _objCharacter;
+        private Lifestyle _objLifestyle;
+        private bool _blnIsSelectLifestyleRefreshing;
 
         #region Control Events
         public frmLifestyleNuyen(Character objCharacter)
@@ -45,20 +49,103 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
-            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice.ToString(GlobalOptions.CultureInfo));
-            nudDiceResult.Maximum = Dice * 6;
-            nudDiceResult.Minimum = Dice;
-            nudDiceResult_ValueChanged(sender, e);
+            RefreshSelectLifestyle();
         }
 
         private void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
             lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalOptions.CultureInfo) + ')' + strSpace + '×'
-                             + strSpace + Multiplier.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
+                             + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo)
                              + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Options.NuyenFormat + '¥', GlobalOptions.CultureInfo);
+        }
+
+        private void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
+        {
+            if (_blnIsSelectLifestyleRefreshing)
+                return;
+            if (cboSelectLifestyle.SelectedIndex < 0)
+                return;
+            _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
+            lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle?.Dice ?? 0);
+            RefreshCalculation(sender, e);
+        }
+
+        private void RefreshSelectLifestyle()
+        {
+            _blnIsSelectLifestyleRefreshing = true;
+            try
+            {
+                Lifestyle objPreferredLifestyle = null;
+                ListItem objPreferredLifestyleItem = default;
+                Lifestyle objCurrentlySelectedLifestyle = cboSelectLifestyle.SelectedIndex >= 0 ? ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle : null;
+                List<ListItem> lstLifestyleItems = new List<ListItem>();
+                foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
+                {
+                    ListItem objLifestyleItem = new ListItem(objLifestyle, objLifestyle.CurrentDisplayName);
+                    lstLifestyleItems.Add(new ListItem(objLifestyle, objLifestyle.CurrentDisplayName));
+                    // We already selected a lifestyle, so keep the selection if possible despite the refresh
+                    if (objCurrentlySelectedLifestyle != null)
+                    {
+                        if (objCurrentlySelectedLifestyle == objLifestyle)
+                            objPreferredLifestyleItem = objLifestyleItem;
+                    }
+                    else if (objPreferredLifestyle == null || objLifestyle.ExpectedValue > objPreferredLifestyle.ExpectedValue)
+                    {
+                        objPreferredLifestyleItem = objLifestyleItem;
+                        objPreferredLifestyle = objLifestyle;
+                    }
+                }
+                lstLifestyleItems.Sort();
+
+                cboSelectLifestyle.BeginUpdate();
+                cboSelectLifestyle.ValueMember = nameof(ListItem.Value);
+                cboSelectLifestyle.DisplayMember = nameof(ListItem.Name);
+                cboSelectLifestyle.DataSource = lstLifestyleItems;
+                cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
+                if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
+                    cboSelectLifestyle.SelectedIndex = 0;
+                cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
+                cboSelectLifestyle.EndUpdate();
+            }
+            finally
+            {
+                _blnIsSelectLifestyleRefreshing = false;
+                cboSelectLifestyle_SelectionChanged(this, EventArgs.Empty);
+                cmdRoll.Enabled = SelectedLifestyle != null && SelectedLifestyle.Dice > 0;
+            }
+        }
+
+        private void RefreshCalculation(object sender, EventArgs e)
+        {
+            nudDiceResult.SuspendLayout();
+            nudDiceResult.MinimumAsInt = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+            nudDiceResult.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
+            nudDiceResult.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
+            nudDiceResult.ResumeLayout();
+            nudDiceResult_ValueChanged(sender, e);
+        }
+
+        private void cmdRoll_Click(object sender, EventArgs e)
+        {
+            if (SelectedLifestyle == null)
+                return;
+            using (new CursorWait(this))
+            {
+                int intResult = 0;
+                for (int i = 0; i < SelectedLifestyle.Dice; ++i)
+                {
+                    intResult += GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                }
+                nudDiceResult.ValueAsInt = intResult;
+            }
         }
         #endregion
 
@@ -81,7 +168,12 @@ namespace Chummer
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.
         /// </summary>
-        public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * Multiplier);
+        public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle?.Multiplier) ?? 0;
+
+        /// <summary>
+        /// The currently selected lifestyl
+        /// </summary>
+        public Lifestyle SelectedLifestyle => _objLifestyle;
 
         #endregion
     }

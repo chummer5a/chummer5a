@@ -172,9 +172,7 @@ namespace Chummer
             bool blnFileFound = false;
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
-            {
-                await Task.Delay(20).ConfigureAwait(false);
-            }
+                await Task.Delay(100);
             foreach (string strDirectory in s_SetDataDirectories)
             {
                 strPath = Path.Combine(strDirectory, strFileName);
@@ -239,9 +237,7 @@ namespace Chummer
                 }
             }
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
-            {
-                await Task.Delay(20).ConfigureAwait(false);
-            }
+                await Task.Delay(100);
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
         }
 
@@ -288,9 +284,7 @@ namespace Chummer
             bool blnFileFound = false;
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
-            {
-                await Task.Delay(20).ConfigureAwait(false);
-            }
+                await Task.Delay(100);
             foreach (string strDirectory in s_SetDataDirectories)
             {
                 strPath = Path.Combine(strDirectory, strFileName);
@@ -432,9 +426,7 @@ namespace Chummer
             else
             {
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
-                {
-                    await Task.Delay(20).ConfigureAwait(false);
-                }
+                    await Task.Delay(100);
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)
                     xmlReturn = xmlReferenceOfReturn.XmlContent.Clone() as XmlDocument;

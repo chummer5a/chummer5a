@@ -31,6 +31,7 @@ using Application = System.Windows.Forms.Application;
 using System.Text;
 using System.Xml.XPath;
 using NLog;
+using System.Reflection;
 
 namespace Chummer
 {
@@ -278,8 +279,9 @@ namespace Chummer
             if (_blnLoading)
                 return;
             UseAILogging useAI = (UseAILogging)((ListItem)cboUseLoggingApplicationInsights.SelectedItem).Value;
+            GlobalOptions.UseLoggingResetCounter = 10;
             if (useAI > UseAILogging.Info
-                && GlobalOptions.UseLoggingApplicationInsights <= UseAILogging.Info
+                && GlobalOptions.UseLoggingApplicationInsightsPreference <= UseAILogging.Info
                 && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
                     LanguageManager.GetString("Message_Options_ConfirmTelemetry", _strSelectedLanguage).WordWrap(),
                     LanguageManager.GetString("MessageTitle_Options_ConfirmTelemetry", _strSelectedLanguage),
@@ -830,7 +832,7 @@ namespace Chummer
             GlobalOptions.LiveUpdateCleanCharacterFiles = chkLiveUpdateCleanCharacterFiles.Checked;
             GlobalOptions.UseLogging = chkUseLogging.Checked;
             if (Enum.TryParse(cboUseLoggingApplicationInsights.SelectedValue.ToString(), out UseAILogging useAI))
-                GlobalOptions.UseLoggingApplicationInsights = useAI;
+                GlobalOptions.UseLoggingApplicationInsightsPreference = useAI;
 
             if (string.IsNullOrEmpty(_strSelectedLanguage))
             {
@@ -1006,6 +1008,12 @@ namespace Chummer
             List<ListItem> lstUseAIOptions = new List<ListItem>(6);
             foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
             {
+                //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
+                if(Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !System.Diagnostics.Debugger.IsAttached)
+                {
+                    if (eOption > UseAILogging.NotSet)
+                        continue;
+                }
                 lstUseAIOptions.Add(new ListItem(eOption, LanguageManager.GetString("String_ApplicationInsights_" + eOption, _strSelectedLanguage)));
             }
 

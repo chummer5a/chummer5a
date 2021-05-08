@@ -39,7 +39,6 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Text;
-using System.Threading;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
 
@@ -875,52 +874,33 @@ namespace Chummer
             }
         }
 
-        private async void mnuMRU_Click(object sender, EventArgs e)
-        {
-            string strFileName = ((ToolStripMenuItem)sender).Text;
-            strFileName = strFileName.Substring(3, strFileName.Length - 3).Trim();
-            // Await makes sure we don't lock up
-            await Task.Run(() =>
-            {
-                using (new CursorWait(this))
-                    Program.MainForm.OpenCharacter(LoadCharacter(strFileName));
-            });
-        }
-
-        private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
-        {
-            if(e.Button == MouseButtons.Right)
-            {
-                string strFileName = ((ToolStripMenuItem)sender).Tag as string;
-                if (!string.IsNullOrEmpty(strFileName))
-                    GlobalOptions.FavoritedCharacters.Add(strFileName);
-            }
-        }
-
-        private async void mnuStickyMRU_Click(object sender, EventArgs e)
+        private void mnuMRU_Click(object sender, EventArgs e)
         {
             string strFileName = ((ToolStripMenuItem)sender).Tag as string;
             if (string.IsNullOrEmpty(strFileName))
                 return;
-            // Await makes sure we don't lock up
-            await Task.Run(() =>
-            {
-                using (new CursorWait(this))
-                    Program.MainForm.OpenCharacter(LoadCharacter(strFileName));
-            });
+            using (new CursorWait(this))
+                OpenCharacter(LoadCharacter(strFileName));
+        }
+
+        private void mnuMRU_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Right)
+                return;
+            string strFileName = ((ToolStripMenuItem)sender).Tag as string;
+            if (!string.IsNullOrEmpty(strFileName))
+                GlobalOptions.FavoritedCharacters.Add(strFileName);
         }
 
         private void mnuStickyMRU_MouseDown(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Right)
+            if (e.Button != MouseButtons.Right)
+                return;
+            string strFileName = ((ToolStripMenuItem)sender).Tag as string;
+            if (!string.IsNullOrEmpty(strFileName))
             {
-                string strFileName = ((ToolStripMenuItem)sender).Tag as string;
-
-                if (!string.IsNullOrEmpty(strFileName))
-                {
-                    GlobalOptions.FavoritedCharacters.Remove(strFileName);
-                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
-                }
+                GlobalOptions.FavoritedCharacters.Remove(strFileName);
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, strFileName);
             }
         }
 
@@ -1096,29 +1076,26 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
 
-        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
             // Await makes sure we don't lock up
-            await Task.Run(() =>
+            using (new CursorWait(this))
             {
-                using (new CursorWait(this))
+                // Open each file that has been dropped into the window.
+                string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+                if (s.Length == 0)
+                    return;
+                Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(s.Length);
+                for (int i = 0; i < s.Length; ++i)
                 {
-                    // Open each file that has been dropped into the window.
-                    string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
-                    if (s.Length == 0)
-                        return;
-                    Dictionary<int, string> dicIndexedStrings = new Dictionary<int, string>(s.Length);
-                    for (int i = 0; i < s.Length; ++i)
-                    {
-                        dicIndexedStrings.Add(i, s[i]);
-                    }
-
-                    // Array with locker instead of concurrent bag because we want to preserve order
-                    Character[] lstCharacters = new Character[s.Length];
-                    Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
-                    Program.MainForm.OpenCharacterList(lstCharacters);
+                    dicIndexedStrings.Add(i, s[i]);
                 }
-            });
+
+                // Array with locker instead of concurrent bag because we want to preserve order
+                Character[] lstCharacters = new Character[s.Length];
+                Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
+                OpenCharacterList(lstCharacters);
+            }
         }
 
         private void frmChummerMain_DragEnter(object sender, DragEventArgs e)
@@ -1398,61 +1375,53 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private async void OpenFile(object sender, EventArgs e)
+        private void OpenFile(object sender, EventArgs e)
         {
-            // Await makes sure we don't lock up
-            await Task.Run(() =>
+            using (new CursorWait(this))
             {
-                using (new CursorWait(this))
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
-                    using (OpenFileDialog openFileDialog = new OpenFileDialog
+                    Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
+                             LanguageManager.GetString("DialogFilter_All"),
+                    Multiselect = true
+                })
+                {
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    //Timekeeper.Start("load_sum");
+                    List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
+                    foreach (string strFile in openFileDialog.FileNames)
                     {
-                        Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
-                                 LanguageManager.GetString("DialogFilter_All"),
-                        Multiselect = true
-                    })
+                        Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
+                        if (objLoopCharacter != null)
+                            SwitchToOpenCharacter(objLoopCharacter, true);
+                        else
+                            lstFilesToOpen.Add(strFile);
+                    }
+
+                    // Array instead of concurrent bag because we want to preserve order
+                    if (lstFilesToOpen.Count <= 0)
+                        return;
+                    using (_frmProgressBar = CreateAndShowProgressBar(
+                        string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen),
+                        lstFilesToOpen.Count * 35))
                     {
-                        if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                            return;
-                        //Timekeeper.Start("load_sum");
-                        List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
-                        foreach (string strFile in openFileDialog.FileNames)
+                        Dictionary<int, string> dicIndexedStrings =
+                            new Dictionary<int, string>(lstFilesToOpen.Count);
+                        for (int i = 0; i < lstFilesToOpen.Count; ++i)
                         {
-                            Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
-                            if (objLoopCharacter != null)
-                                SwitchToOpenCharacter(objLoopCharacter, true);
-                            else
-                                lstFilesToOpen.Add(strFile);
+                            dicIndexedStrings.Add(i, lstFilesToOpen[i]);
                         }
 
-                        // Array instead of concurrent bag because we want to preserve order
-                        Character[] lstCharacters = null;
-                        if (lstFilesToOpen.Count > 0)
-                        {
-                            using (_frmProgressBar = CreateAndShowProgressBar(
-                                string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen),
-                                lstFilesToOpen.Count * 35))
-                            {
-                                lstCharacters = new Character[lstFilesToOpen.Count];
-                                Dictionary<int, string> dicIndexedStrings =
-                                    new Dictionary<int, string>(lstFilesToOpen.Count);
-                                for (int i = 0; i < lstFilesToOpen.Count; ++i)
-                                {
-                                    dicIndexedStrings.Add(i, lstFilesToOpen[i]);
-                                }
-
-                                Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
-                            }
-                        }
-
-                        Program.MainForm.OpenCharacterList(lstCharacters);
+                        Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                        Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
+                        OpenCharacterList(lstCharacters);
                     }
                 }
-
-                Application.DoEvents();
-                //Timekeeper.Finish("load_sum");
-                //Timekeeper.Log();
-            });
+            }
+            
+            //Timekeeper.Finish("load_sum");
+            //Timekeeper.Log();
         }
 
         /// <summary>
@@ -1590,7 +1559,7 @@ namespace Chummer
                             }
                         }
                     }
-                    if (blnLoadAutosave && Program.MainForm.ShowMessageBox(
+                    if (blnLoadAutosave && ShowMessageBox(
                         string.Format(GlobalOptions.CultureInfo,
                             LanguageManager.GetString("Message_AutosaveFound"),
                             Path.GetFileName(strFileName),
@@ -1649,7 +1618,7 @@ namespace Chummer
             }
             else if(blnShowErrors)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), strFileName),
+                ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), strFileName),
                     LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             return objCharacter;
@@ -1733,61 +1702,60 @@ namespace Chummer
             int i2 = 0;
             for(int i = 0; i < GlobalOptions.MaxMruSize; ++i)
             {
-                if(i2 < GlobalOptions.MostRecentlyUsedCharacters.Count && i < GlobalOptions.MostRecentlyUsedCharacters.Count)
+                if (i2 >= GlobalOptions.MostRecentlyUsedCharacters.Count ||
+                    i >= GlobalOptions.MostRecentlyUsedCharacters.Count)
+                    continue;
+                string strFile = GlobalOptions.MostRecentlyUsedCharacters[i];
+                if (GlobalOptions.FavoritedCharacters.Contains(strFile))
+                    continue;
+                ToolStripMenuItem objItem;
+                switch(i2)
                 {
-                    string strFile = GlobalOptions.MostRecentlyUsedCharacters[i];
-                    if(!GlobalOptions.FavoritedCharacters.Contains(strFile))
-                    {
-                        ToolStripMenuItem objItem;
-                        switch(i2)
-                        {
-                            case 0:
-                                objItem = mnuMRU0;
-                                break;
-                            case 1:
-                                objItem = mnuMRU1;
-                                break;
-                            case 2:
-                                objItem = mnuMRU2;
-                                break;
-                            case 3:
-                                objItem = mnuMRU3;
-                                break;
-                            case 4:
-                                objItem = mnuMRU4;
-                                break;
-                            case 5:
-                                objItem = mnuMRU5;
-                                break;
-                            case 6:
-                                objItem = mnuMRU6;
-                                break;
-                            case 7:
-                                objItem = mnuMRU7;
-                                break;
-                            case 8:
-                                objItem = mnuMRU8;
-                                break;
-                            case 9:
-                                objItem = mnuMRU9;
-                                break;
-                            default:
-                                continue;
-                        }
-
-                        if (i2 <= 9 && i2 >= 0)
-                        {
-                            string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);
-                            objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
-                        }
-                        else
-                            objItem.Text = (i2 + 1).ToString(GlobalOptions.CultureInfo) + strSpace + strFile;
-                        objItem.Tag = strFile;
-                        objItem.Visible = true;
-
-                        ++i2;
-                    }
+                    case 0:
+                        objItem = mnuMRU0;
+                        break;
+                    case 1:
+                        objItem = mnuMRU1;
+                        break;
+                    case 2:
+                        objItem = mnuMRU2;
+                        break;
+                    case 3:
+                        objItem = mnuMRU3;
+                        break;
+                    case 4:
+                        objItem = mnuMRU4;
+                        break;
+                    case 5:
+                        objItem = mnuMRU5;
+                        break;
+                    case 6:
+                        objItem = mnuMRU6;
+                        break;
+                    case 7:
+                        objItem = mnuMRU7;
+                        break;
+                    case 8:
+                        objItem = mnuMRU8;
+                        break;
+                    case 9:
+                        objItem = mnuMRU9;
+                        break;
+                    default:
+                        continue;
                 }
+
+                if (i2 <= 9 && i2 >= 0)
+                {
+                    string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);
+                    objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
+                }
+                else
+                    objItem.Text = (i2 + 1).ToString(GlobalOptions.CultureInfo) + strSpace + strFile;
+                objItem.Tag = strFile;
+                objItem.Visible = true;
+
+                ++i2;
             }
 
             ResumeLayout();
