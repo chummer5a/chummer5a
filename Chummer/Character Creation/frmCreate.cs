@@ -12768,30 +12768,11 @@ namespace Chummer
                 }
 
                 _blnSkipUpdate = true;
-                // See if the character has any Karma remaining.
-                if (intBuildPoints > CharacterObjectOptions.KarmaCarryover)
-                {
-                    CharacterObject.Karma = CharacterObject.EffectiveBuildMethodUsesPriorityTables ? CharacterObjectOptions.KarmaCarryover : 0;
-                }
-                else
-                {
-                    CharacterObject.Karma = intBuildPoints;
-                }
-                // Determine the highest Lifestyle the character has.
-                Lifestyle objLifestyle = CharacterObject.Lifestyles.FirstOrDefault();
-                if (objLifestyle != null)
-                {
-                    foreach (Lifestyle objCharacterLifestyle in CharacterObject.Lifestyles)
-                    {
-                        if (objCharacterLifestyle.Multiplier > objLifestyle.Multiplier)
-                            objLifestyle = objCharacterLifestyle;
-                    }
-                }
 
                 // If the character does not have any Lifestyles, give them the Street Lifestyle.
                 if (CharacterObject.Lifestyles.Count == 0)
                 {
-                    objLifestyle = new Lifestyle(CharacterObject);
+                    Lifestyle objLifestyle = new Lifestyle(CharacterObject);
                     XmlDocument objXmlDocument = CharacterObject.LoadData("lifestyles.xml");
                     XmlNode objXmlLifestyle = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = \"Street\"]");
 
@@ -12800,26 +12781,25 @@ namespace Chummer
                     CharacterObject.Lifestyles.Add(objLifestyle);
                 }
 
+                decimal decStartingNuyen = 0;
+                using (frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen(CharacterObject))
+                {
+                    if (frmStartingNuyen.ShowDialog(this) != DialogResult.OK)
+                        return false;
+                    decStartingNuyen = frmStartingNuyen.StartingNuyen;
+                }
+
+                // Assign starting values and overflows.
+                if (decStartingNuyen < 0)
+                    decStartingNuyen = 0;
                 if (CharacterObject.Nuyen > 5000)
-                {
                     CharacterObject.Nuyen = 5000;
-                }
-
-                using (frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen(CharacterObject)
-                {
-                    Dice = objLifestyle?.Dice ?? 1,
-                    Multiplier = objLifestyle?.Multiplier ?? 20
-                })
-                {
-                    frmStartingNuyen.ShowDialog(this);
-
-                    // Assign the starting Nuyen amount.
-                    decimal decStartingNuyen = frmStartingNuyen.StartingNuyen;
-                    if (decStartingNuyen < 0)
-                        decStartingNuyen = 0;
-
-                    CharacterObject.Nuyen += decStartingNuyen;
-                }
+                CharacterObject.Nuyen += decStartingNuyen;
+                // See if the character has any Karma remaining.
+                if (intBuildPoints > CharacterObjectOptions.KarmaCarryover)
+                    CharacterObject.Karma = CharacterObject.EffectiveBuildMethodUsesPriorityTables ? CharacterObjectOptions.KarmaCarryover : 0;
+                else
+                    CharacterObject.Karma = intBuildPoints;
 
                 return true;
             }

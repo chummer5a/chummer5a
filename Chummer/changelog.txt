@@ -23,7 +23,8 @@ Application Changes:
 - Added the ability to specify a city, district, and borough for a lifestyle.
 - If a character sheet is printed/exported in a language other than the one with which Chummer is being used, Chummer now attemtps to translate the names of gear, vehicle, and weapon locations.
 - Generating character sheets in languages where commas are used as decimal separators and/or periods are used as number group separators no longer sometimes causes the generator to stall out and silently crash. Fixes #4415.
-- You can now select which lifestyle to use for starting nuyen calculation.
+- When saving a character as created, the starting nuyen screen now allows the user to select which lifestyle to use for generating their starting nuyen. It now also includes a Cancel button and a button for automatically rolling dice for the chosen lifestyle.
+- Closing out the starting nuyen screen no longer causes weird issues with the character's saved Nuyen or saved Karma and also no longer prompts the user to save a created character.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -118,6 +119,7 @@ Changed/New Strings:
 - Label_SelectLifestyle_Borough
 - Label_SelectLifestyle_District
 - Label_SelectLifestyle_City
+- Label_LifestyleNuyen_SelectLifestyle
 
 Build 214
 Application Fixes:

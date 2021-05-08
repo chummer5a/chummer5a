@@ -49,6 +49,11 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
         private void frmLifestyleNuyen_Load(object sender, EventArgs e)
         {
             RefreshSelectLifestyle();
