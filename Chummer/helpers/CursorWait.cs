@@ -30,9 +30,9 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly object _intApplicationWaitCursorsLock = new object();
         private static int _intApplicationWaitCursors;
-        private static readonly ConcurrentDictionary<Control, ConcurrentStack<CursorWait>> _dicWaitingControls = new ConcurrentDictionary<Control, ConcurrentStack<CursorWait>>();
+        private static readonly ConcurrentDictionary<Control, ConcurrentStack<CursorWait>> s_dicWaitingControls = new ConcurrentDictionary<Control, ConcurrentStack<CursorWait>>();
         private readonly Control _objControl;
-        private readonly Form _objControlTopParent;
+        private readonly Form _frmControlTopParent;
         private readonly Stopwatch objTimer = new Stopwatch();
         private readonly Guid instance = Guid.NewGuid();
 
@@ -58,11 +58,11 @@ namespace Chummer
             {
                 if (frmControl != null)
                 {
-                    _objControlTopParent = frmControl.MdiParent;
+                    _frmControlTopParent = frmControl.MdiParent;
                 }
                 else if (_objControl is UserControl objUserControl)
                 {
-                    _objControlTopParent = objUserControl.ParentForm;
+                    _frmControlTopParent = objUserControl.ParentForm;
                 }
                 else
                 {
@@ -70,16 +70,16 @@ namespace Chummer
                     {
                         if (objLoop is Form objLoopForm)
                         {
-                            _objControlTopParent = objLoopForm;
+                            _frmControlTopParent = objLoopForm;
                             break;
                         }
                     }
                 }
             }
             ConcurrentStack<CursorWait> stkNew = new ConcurrentStack<CursorWait>();
-            while (!_dicWaitingControls.TryAdd(objControl, stkNew))
+            while (!s_dicWaitingControls.TryAdd(objControl, stkNew))
             {
-                if (!_dicWaitingControls.TryGetValue(objControl, out ConcurrentStack<CursorWait> stkExisting))
+                if (!s_dicWaitingControls.TryGetValue(objControl, out ConcurrentStack<CursorWait> stkExisting))
                     continue;
                 CursorWait objLastCursorWait = stkExisting.Peek();
                 stkExisting.Push(this);
@@ -103,12 +103,12 @@ namespace Chummer
             if (objCursor != null)
             {
                 _objControl.DoThreadSafe(() => _objControl.Cursor = objCursor);
-                _objControlTopParent?.DoThreadSafe(() => _objControlTopParent.Cursor = objCursor);
+                _frmControlTopParent?.DoThreadSafe(() => _frmControlTopParent.Cursor = objCursor);
             }
             else
             {
                 _objControl.DoThreadSafe(() => _objControl.ResetCursor());
-                _objControlTopParent?.DoThreadSafe(() => _objControlTopParent.ResetCursor());
+                _frmControlTopParent?.DoThreadSafe(() => _frmControlTopParent.ResetCursor());
             }
         }
 
@@ -133,7 +133,7 @@ namespace Chummer
             }
             Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + instance.ToString() + "\" after " + objTimer.ElapsedMilliseconds + "ms.");
             objTimer.Stop();
-            if (!_dicWaitingControls.TryGetValue(_objControl, out ConcurrentStack<CursorWait> stkCursorWaits) || stkCursorWaits == null || stkCursorWaits.Count <= 0)
+            if (!s_dicWaitingControls.TryGetValue(_objControl, out ConcurrentStack<CursorWait> stkCursorWaits) || stkCursorWaits == null || stkCursorWaits.Count <= 0)
             {
                 Utils.BreakIfDebug();
                 Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance.ToString() + "\" somehow does not have a CursorWait stack defined for it");
@@ -146,7 +146,10 @@ namespace Chummer
                 Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance.ToString() + "\" somehow does not have a CursorWait stack defined for it");
                 throw new ArgumentNullException(nameof(objPoppedCursorWait));
             }
-            SetControlCursor(stkCursorWaits.Peek()?.CursorToUse);
+            CursorWait objPreviousCursorWait = stkCursorWaits.Peek();
+            if (objPreviousCursorWait == null)
+                s_dicWaitingControls.TryRemove(_objControl, out ConcurrentStack<CursorWait> _);
+            SetControlCursor(objPreviousCursorWait?.CursorToUse);
         }
     }
 }
