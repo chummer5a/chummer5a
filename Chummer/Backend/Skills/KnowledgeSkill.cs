@@ -50,20 +50,6 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private IReadOnlyList<ListItem> _lstDefaultKnowledgeSkills;
-
-        public IReadOnlyList<ListItem> MyDefaultKnowledgeSkills
-        {
-            get
-            {
-                if (GlobalOptions.LiveCustomData || _lstDefaultKnowledgeSkills == null)
-                {
-                    return _lstDefaultKnowledgeSkills = DefaultKnowledgeSkills(CharacterObject);
-                }
-                return _lstDefaultKnowledgeSkills;
-            }
-        }
-
         public static IReadOnlyList<ListItem> DefaultKnowledgeSkills(Character objCharacter = null, string strLanguage = "")
         {
             List<ListItem> lstReturn = new List<ListItem>();
@@ -77,20 +63,6 @@ namespace Chummer.Backend.Skills
             }
             lstReturn.Sort(CompareListItems.CompareNames);
             return lstReturn;
-        }
-
-        private IReadOnlyList<ListItem> _lstKnowledgeTypes;
-
-        public IReadOnlyList<ListItem> MyKnowledgeTypes
-        {
-            get
-            {
-                if (GlobalOptions.LiveCustomData || _lstKnowledgeTypes == null)
-                {
-                    return _lstKnowledgeTypes = KnowledgeTypes(CharacterObject);
-                }
-                return _lstKnowledgeTypes;
-            }
         }
 
         /// <summary>

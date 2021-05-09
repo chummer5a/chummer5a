@@ -1150,6 +1150,34 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        private IReadOnlyList<ListItem> _lstDefaultKnowledgeSkills;
+
+        public IReadOnlyList<ListItem> MyDefaultKnowledgeSkills
+        {
+            get
+            {
+                if (GlobalOptions.LiveCustomData || _lstDefaultKnowledgeSkills == null)
+                {
+                    return _lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter);
+                }
+                return _lstDefaultKnowledgeSkills;
+            }
+        }
+
+        private IReadOnlyList<ListItem> _lstKnowledgeTypes;
+
+        public IReadOnlyList<ListItem> MyKnowledgeTypes
+        {
+            get
+            {
+                if (GlobalOptions.LiveCustomData || _lstKnowledgeTypes == null)
+                {
+                    return _lstKnowledgeTypes = KnowledgeSkill.KnowledgeTypes(_objCharacter);
+                }
+                return _lstKnowledgeTypes;
+            }
+        }
+
         private static readonly DependencyGraph<string, SkillsSection> s_SkillSectionDependencyGraph =
             new DependencyGraph<string, SkillsSection>(
                 new DependencyGraphNode<string, SkillsSection>(nameof(HasKnowledgePoints),

@@ -760,7 +760,7 @@ namespace Chummer.UI.Skills
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
                 })
                 {
-                    form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter));
+                    form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
                     if (form.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;

@@ -188,11 +188,11 @@ namespace Chummer.UI.Skills
                         Margin = new Padding(3, 0, 3, 0),
                         Name = "cboSelectAttribute"
                     };
-                    cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
                     cboSelectAttribute.BeginUpdate();
                     cboSelectAttribute.PopulateWithListItems(lstAttributeItems);
                     cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
                     cboSelectAttribute.EndUpdate();
+                    cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
                     pnlAttributes.Controls.Add(cboSelectAttribute);
                 }
                 else

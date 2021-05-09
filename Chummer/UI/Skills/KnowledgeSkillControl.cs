@@ -61,7 +61,7 @@ namespace Chummer.UI.Skills
                 cmdDelete.DoDatabinding("Visible", _skill, nameof(Skill.AllowDelete));
 
                 cboType.BeginUpdate();
-                cboType.PopulateWithListItems(KnowledgeSkill.KnowledgeTypes(_skill.CharacterObject));
+                cboType.PopulateWithListItems(_skill.CharacterObject.SkillsSection.MyKnowledgeTypes);
                 cboType.DoDatabinding("SelectedValue", _skill, nameof(KnowledgeSkill.Type));
                 cboType.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.AllowTypeChange));
                 cboType.EndUpdate();
@@ -71,10 +71,10 @@ namespace Chummer.UI.Skills
                 lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
 
                 cboName.BeginUpdate();
-                cboName.DoDatabinding("Visible", _skill, nameof(Skill.AllowNameChange));
-                cboName.PopulateWithListItems(KnowledgeSkill.DefaultKnowledgeSkills(_skill.CharacterObject));
+                cboName.PopulateWithListItems(_skill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills);
                 cboName.SelectedIndex = -1;
                 cboName.Text = _skill.WriteableName;
+                cboName.DoDatabinding("Visible", _skill, nameof(Skill.AllowNameChange));
                 cboName.EndUpdate();
                 _blnUpdatingName = false;
 
