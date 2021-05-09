@@ -59,6 +59,9 @@ namespace Chummer.UI.Skills
             _objAttributeActive = objSkill.AttributeObject;
             InitializeComponent();
             SuspendLayout();
+            pnlAttributes.SuspendLayout();
+            tlpMain.SuspendLayout();
+            tlpRight.SuspendLayout();
             try
             {
                 //Display
@@ -79,8 +82,7 @@ namespace Chummer.UI.Skills
                 lblModifiedRating.ToolTipText = objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
 
                 // Creating controls outside of the designer saves on handles if the controls would be invisible anyway
-                if (
-                    objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
+                if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
                 {
                     cmdDelete = new Button
                     {
@@ -188,10 +190,7 @@ namespace Chummer.UI.Skills
                     };
                     cboSelectAttribute.DropDownClosed += cboSelectAttribute_Closed;
                     cboSelectAttribute.BeginUpdate();
-                    cboSelectAttribute.DataSource = null;
-                    cboSelectAttribute.DataSource = lstAttributeItems;
-                    cboSelectAttribute.DisplayMember = nameof(ListItem.Name);
-                    cboSelectAttribute.ValueMember = nameof(ListItem.Value);
+                    cboSelectAttribute.PopulateWithListItems(lstAttributeItems);
                     cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
                     cboSelectAttribute.EndUpdate();
                     pnlAttributes.Controls.Add(cboSelectAttribute);
@@ -259,10 +258,7 @@ namespace Chummer.UI.Skills
                             TabStop = false
                         };
                         cboSpec.BeginUpdate();
-                        cboSpec.DataSource = null;
-                        cboSpec.DataSource = objSkill.CGLSpecializations;
-                        cboSpec.DisplayMember = nameof(ListItem.Name);
-                        cboSpec.ValueMember = nameof(ListItem.Value);
+                        cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
                         cboSpec.SelectedIndex = -1;
                         cboSpec.DoDatabinding("Text", objSkill, nameof(Skill.Specialization));
                         cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
@@ -301,6 +297,9 @@ namespace Chummer.UI.Skills
             finally
             {
                 _blnLoading = false;
+                tlpRight.ResumeLayout();
+                tlpMain.ResumeLayout();
+                pnlAttributes.ResumeLayout();
                 ResumeLayout(true);
                 _objSkill.PropertyChanged += Skill_PropertyChanged;
             }
@@ -337,10 +336,7 @@ namespace Chummer.UI.Skills
                     {
                         string strOldSpec = cboSpec.Text;
                         cboSpec.BeginUpdate();
-                        cboSpec.DataSource = null;
-                        cboSpec.DataSource = _objSkill.CGLSpecializations;
-                        cboSpec.DisplayMember = nameof(ListItem.Name);
-                        cboSpec.ValueMember = nameof(ListItem.Value);
+                        cboSpec.PopulateWithListItems(_objSkill.CGLSpecializations);
                         if (string.IsNullOrEmpty(strOldSpec))
                             cboSpec.SelectedIndex = -1;
                         else

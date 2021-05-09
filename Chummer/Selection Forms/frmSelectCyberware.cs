@@ -931,7 +931,7 @@ namespace Chummer
                 if (blnDoUIUpdate)
                 {
                     lstCyberware.BeginUpdate();
-                    lstCyberware.DataSource = new List<ListItem>();
+                    lstCyberware.PopulateWithListItems(new List<ListItem>());
                     lstCyberware.EndUpdate();
                 }
                 return null;
@@ -1181,10 +1181,7 @@ namespace Chummer
                 string strOldSelected = lstCyberware.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstCyberware.BeginUpdate();
-                lstCyberware.DataSource = null;
-                lstCyberware.DataSource = lstCyberwares;
-                lstCyberware.ValueMember = nameof(ListItem.Value);
-                lstCyberware.DisplayMember = nameof(ListItem.Name);
+                lstCyberware.PopulateWithListItems(lstCyberwares);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstCyberware.SelectedValue = strOldSelected;
@@ -1359,9 +1356,7 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboGrade.BeginUpdate();
-                cboGrade.ValueMember = nameof(ListItem.Value);
-                cboGrade.DisplayMember = nameof(ListItem.Name);
-                cboGrade.DataSource = lstGrade;
+                cboGrade.PopulateWithListItems(lstGrade);
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strForceGrade))
                     cboGrade.SelectedValue = strForceGrade;
@@ -1417,9 +1412,7 @@ namespace Chummer
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstCategory;
+            cboCategory.PopulateWithListItems(lstCategory);
             _blnLoading = blnOldLoading;
             cboCategory.SelectedValue = strOldSelected;
             if (cboCategory.SelectedIndex == -1 && lstCategory.Count > 0)

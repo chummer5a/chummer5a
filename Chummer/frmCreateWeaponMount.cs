@@ -90,9 +90,7 @@ namespace Chummer
             }
 
             cboSize.BeginUpdate();
-            cboSize.ValueMember = nameof(ListItem.Value);
-            cboSize.DisplayMember = nameof(ListItem.Name);
-            cboSize.DataSource = lstSize;
+            cboSize.PopulateWithListItems(lstSize);
             cboSize.Enabled = lstSize.Count > 1;
             cboSize.EndUpdate();
 
@@ -882,9 +880,7 @@ namespace Chummer
             string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
             string strOldControl = cboControl.SelectedValue?.ToString();
             cboVisibility.BeginUpdate();
-            cboVisibility.ValueMember = nameof(ListItem.Value);
-            cboVisibility.DisplayMember = nameof(ListItem.Name);
-            cboVisibility.DataSource = lstVisibility;
+            cboVisibility.PopulateWithListItems(lstVisibility);
             cboVisibility.Enabled = lstVisibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldVisibility))
                 cboVisibility.SelectedValue = strOldVisibility;
@@ -893,9 +889,7 @@ namespace Chummer
             cboVisibility.EndUpdate();
 
             cboFlexibility.BeginUpdate();
-            cboFlexibility.ValueMember = nameof(ListItem.Value);
-            cboFlexibility.DisplayMember = nameof(ListItem.Name);
-            cboFlexibility.DataSource = lstFlexibility;
+            cboFlexibility.PopulateWithListItems(lstFlexibility);
             cboFlexibility.Enabled = lstFlexibility.Count > 1;
             if (!string.IsNullOrEmpty(strOldFlexibility))
                 cboFlexibility.SelectedValue = strOldFlexibility;
@@ -904,9 +898,7 @@ namespace Chummer
             cboFlexibility.EndUpdate();
 
             cboControl.BeginUpdate();
-            cboControl.ValueMember = nameof(ListItem.Value);
-            cboControl.DisplayMember = nameof(ListItem.Name);
-            cboControl.DataSource = lstControl;
+            cboControl.PopulateWithListItems(lstControl);
             cboControl.Enabled = lstControl.Count > 1;
             if (!string.IsNullOrEmpty(strOldControl))
                 cboControl.SelectedValue = strOldControl;

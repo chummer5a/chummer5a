@@ -204,10 +204,7 @@ namespace Chummer
 
             lstSkills.Sort(CompareListItems.CompareNames);
             cboSkill.BeginUpdate();
-            cboSkill.ValueMember = nameof(ListItem.Value);
-            cboSkill.DisplayMember = nameof(ListItem.Name);
-            cboSkill.DataSource = lstSkills;
-
+            cboSkill.PopulateWithListItems(lstSkills);
             // Select the first Skill in the list.
             cboSkill.SelectedIndex = 0;
             cboSkill.EndUpdate();

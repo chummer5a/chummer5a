@@ -269,9 +269,7 @@ namespace Chummer
             _blnLoading = true;
             string strOldSelected = lstComplexForms.SelectedValue?.ToString();
             lstComplexForms.BeginUpdate();
-            lstComplexForms.ValueMember = nameof(ListItem.Value);
-            lstComplexForms.DisplayMember = nameof(ListItem.Name);
-            lstComplexForms.DataSource = lstComplexFormItems;
+            lstComplexForms.PopulateWithListItems(lstComplexFormItems);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstComplexForms.SelectedValue = strOldSelected;

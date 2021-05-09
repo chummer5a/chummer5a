@@ -963,16 +963,14 @@ namespace Chummer
             }
 
             cboLanguage.BeginUpdate();
-            cboLanguage.ValueMember = "Value";
-            cboLanguage.DisplayMember = "Name";
-            cboLanguage.DataSource = GetSheetLanguageList(lstCharacters);
+            cboLanguage.PopulateWithListItems(GetSheetLanguageList(lstCharacters));
             cboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (cboLanguage.SelectedIndex == -1)
                 cboLanguage.SelectedValue = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.DefaultLanguage;
             cboLanguage.EndUpdate();
         }
 
-        public static IList<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
+        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
         {
             List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");

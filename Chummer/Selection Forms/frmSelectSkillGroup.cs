@@ -72,13 +72,10 @@ namespace Chummer
             }
             lstGroups.Sort(CompareListItems.CompareNames);
             cboSkillGroup.BeginUpdate();
-            cboSkillGroup.ValueMember = nameof(ListItem.Value);
-            cboSkillGroup.DisplayMember = nameof(ListItem.Name);
-            cboSkillGroup.DataSource = lstGroups;
-            cboSkillGroup.EndUpdate();
-
+            cboSkillGroup.PopulateWithListItems(lstGroups);
             // Select the first Skill in the list.
             cboSkillGroup.SelectedIndex = 0;
+            cboSkillGroup.EndUpdate();
 
             if (cboSkillGroup.Items.Count == 1)
                 cmdOK_Click(sender, e);

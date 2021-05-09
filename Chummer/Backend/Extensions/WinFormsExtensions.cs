@@ -169,9 +169,35 @@ namespace Chummer
         #endregion
 
         #region ComboBox Extensions
-        public static bool IsInitalized(this ComboBox cboThis, bool isLoading)
+        public static bool IsInitialized(this ComboBox cboThis, bool isLoading)
         {
             return (isLoading || string.IsNullOrEmpty(cboThis?.SelectedValue?.ToString()));
+        }
+
+        public static void PopulateWithListItems(this ComboBox cboThis, IReadOnlyList<ListItem> lstItems)
+        {
+            if (ReferenceEquals(cboThis.DataSource, lstItems))
+                return;
+            if (cboThis.DataSource == null)
+            {
+                cboThis.ValueMember = nameof(ListItem.Value);
+                cboThis.DisplayMember = nameof(ListItem.Name);
+            }
+            cboThis.DataSource = lstItems;
+        }
+        #endregion
+
+        #region ListBox Extensions
+        public static void PopulateWithListItems(this ListBox lstThis, IReadOnlyList<ListItem> lstItems)
+        {
+            if (ReferenceEquals(lstThis.DataSource, lstItems))
+                return;
+            if (lstThis.DataSource == null)
+            {
+                lstThis.ValueMember = nameof(ListItem.Value);
+                lstThis.DisplayMember = nameof(ListItem.Name);
+            }
+            lstThis.DataSource = lstItems;
         }
         #endregion
 

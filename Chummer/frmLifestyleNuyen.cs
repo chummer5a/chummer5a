@@ -106,9 +106,7 @@ namespace Chummer
                 lstLifestyleItems.Sort();
 
                 cboSelectLifestyle.BeginUpdate();
-                cboSelectLifestyle.ValueMember = nameof(ListItem.Value);
-                cboSelectLifestyle.DisplayMember = nameof(ListItem.Name);
-                cboSelectLifestyle.DataSource = lstLifestyleItems;
+                cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
                 cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
                 if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
                     cboSelectLifestyle.SelectedIndex = 0;

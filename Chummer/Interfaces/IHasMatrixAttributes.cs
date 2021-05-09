@@ -197,8 +197,6 @@ namespace Chummer
 
             cboAttack.Enabled = false;
             cboAttack.BindingContext = new BindingContext();
-            cboAttack.ValueMember = nameof(ListItem.Value);
-            cboAttack.DisplayMember = nameof(ListItem.Name);
             cboAttack.DataSource = new List<string>(4) { (intBaseAttack + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo) };
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
@@ -206,8 +204,6 @@ namespace Chummer
 
             cboSleaze.Enabled = false;
             cboSleaze.BindingContext = new BindingContext();
-            cboSleaze.ValueMember = nameof(ListItem.Value);
-            cboSleaze.DisplayMember = nameof(ListItem.Name);
             cboSleaze.DataSource = new List<string>(4) { (intBaseAttack + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo) };
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
@@ -215,8 +211,6 @@ namespace Chummer
 
             cboDP.Enabled = false;
             cboDP.BindingContext = new BindingContext();
-            cboDP.ValueMember = nameof(ListItem.Value);
-            cboDP.DisplayMember = nameof(ListItem.Name);
             cboDP.DataSource = new List<string>(4) { (intBaseAttack + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo) };
             cboDP.SelectedIndex = 2;
             cboDP.Visible = true;
@@ -224,8 +218,6 @@ namespace Chummer
 
             cboFirewall.Enabled = false;
             cboFirewall.BindingContext = new BindingContext();
-            cboFirewall.ValueMember = nameof(ListItem.Value);
-            cboFirewall.DisplayMember = nameof(ListItem.Name);
             cboFirewall.DataSource = new List<string>(4) { (intBaseAttack + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo) };
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;

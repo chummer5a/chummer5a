@@ -41,9 +41,7 @@ namespace Chummer
             };
 
             cboSide.BeginUpdate();
-            cboSide.ValueMember = nameof(ListItem.Value);
-            cboSide.DisplayMember = nameof(ListItem.Name);
-            cboSide.DataSource = lstSides;
+            cboSide.PopulateWithListItems(lstSides);
             cboSide.EndUpdate();
         }
 

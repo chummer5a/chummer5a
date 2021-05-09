@@ -234,9 +234,7 @@ namespace Chummer
             lstMetatypes.Sort(CompareListItems.CompareNames);
 
             cboMetatype.BeginUpdate();
-            cboMetatype.ValueMember = nameof(ListItem.Value);
-            cboMetatype.DisplayMember = nameof(ListItem.Name);
-            cboMetatype.DataSource = lstMetatypes;
+            cboMetatype.PopulateWithListItems(lstMetatypes);
             cboMetatype.EndUpdate();
         }
 

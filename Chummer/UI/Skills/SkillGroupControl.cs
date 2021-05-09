@@ -44,6 +44,7 @@ namespace Chummer.UI.Skills
             //This is apparently a factor 30 faster than placed in load. NFI why
             Stopwatch sw = Stopwatch.StartNew();
             SuspendLayout();
+            tlpMain.SuspendLayout();
             try
             {
                 lblName.DoOneWayDataBinding("Text", _skillGroup, nameof(SkillGroup.CurrentDisplayName));
@@ -127,6 +128,7 @@ namespace Chummer.UI.Skills
             }
             finally
             {
+                tlpMain.ResumeLayout();
                 ResumeLayout(true);
             }
             sw.TaskEnd("Create skillgroup");

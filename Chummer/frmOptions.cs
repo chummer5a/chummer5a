@@ -709,10 +709,7 @@ namespace Chummer
             _blnSkipRefresh = true;
             lstGlobalSourcebookInfos.BeginUpdate();
             string strOldSelected = lstGlobalSourcebookInfos.SelectedValue?.ToString();
-            lstGlobalSourcebookInfos.DataSource = null;
-            lstGlobalSourcebookInfos.DataSource = lstSourcebookInfos;
-            lstGlobalSourcebookInfos.ValueMember = nameof(ListItem.Value);
-            lstGlobalSourcebookInfos.DisplayMember = nameof(ListItem.Name);
+            lstGlobalSourcebookInfos.PopulateWithListItems(lstSourcebookInfos);
             _blnSkipRefresh = blnOldSkipRefresh;
             if(string.IsNullOrEmpty(strOldSelected))
                 lstGlobalSourcebookInfos.SelectedIndex = -1;
@@ -924,12 +921,8 @@ namespace Chummer
             string strOldSelected = cboDefaultCharacterOption.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterOption;
 
             cboDefaultCharacterOption.BeginUpdate();
-            cboDefaultCharacterOption.DataSource = null;
-            cboDefaultCharacterOption.DataSource = lstCharacterOptions;
-            cboDefaultCharacterOption.ValueMember = nameof(ListItem.Value);
-            cboDefaultCharacterOption.DisplayMember = nameof(ListItem.Name);
-
-            if(!string.IsNullOrEmpty(strOldSelected))
+            cboDefaultCharacterOption.PopulateWithListItems(lstCharacterOptions);
+            if (!string.IsNullOrEmpty(strOldSelected))
             {
                 cboDefaultCharacterOption.SelectedValue = strOldSelected;
                 if(cboDefaultCharacterOption.SelectedIndex == -1 && lstCharacterOptions.Count > 0)
@@ -950,11 +943,7 @@ namespace Chummer
             string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
 
             cboMugshotCompression.BeginUpdate();
-            cboMugshotCompression.DataSource = null;
-            cboMugshotCompression.DataSource = lstMugshotCompressionOptions;
-            cboMugshotCompression.ValueMember = nameof(ListItem.Value);
-            cboMugshotCompression.DisplayMember = nameof(ListItem.Name);
-
+            cboMugshotCompression.PopulateWithListItems(lstMugshotCompressionOptions);
             if (!string.IsNullOrEmpty(strOldSelected))
             {
                 cboMugshotCompression.SelectedValue = strOldSelected;
@@ -985,12 +974,8 @@ namespace Chummer
             string strOldSelected = cboPDFParameters.SelectedValue?.ToString();
 
             cboPDFParameters.BeginUpdate();
-            cboPDFParameters.DataSource = null;
-            cboPDFParameters.DataSource = lstPdfParameters;
-            cboPDFParameters.ValueMember = nameof(ListItem.Value);
-            cboPDFParameters.DisplayMember = nameof(ListItem.Name);
+            cboPDFParameters.PopulateWithListItems(lstPdfParameters);
             cboPDFParameters.SelectedIndex = intIndex;
-
             if(!string.IsNullOrEmpty(strOldSelected))
             {
                 cboPDFParameters.SelectedValue = strOldSelected;
@@ -1018,11 +1003,7 @@ namespace Chummer
             }
 
             cboUseLoggingApplicationInsights.BeginUpdate();
-            cboUseLoggingApplicationInsights.DataSource = null;
-            cboUseLoggingApplicationInsights.DataSource = lstUseAIOptions;
-            cboUseLoggingApplicationInsights.ValueMember = nameof(ListItem.Value);
-            cboUseLoggingApplicationInsights.DisplayMember = nameof(ListItem.Name);
-
+            cboUseLoggingApplicationInsights.PopulateWithListItems(lstUseAIOptions);
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboUseLoggingApplicationInsights.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
             if (cboUseLoggingApplicationInsights.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
@@ -1041,11 +1022,7 @@ namespace Chummer
             }
 
             cboColorMode.BeginUpdate();
-            cboColorMode.DataSource = null;
-            cboColorMode.DataSource = lstColorModes;
-            cboColorMode.ValueMember = nameof(ListItem.Value);
-            cboColorMode.DisplayMember = nameof(ListItem.Name);
-
+            cboColorMode.PopulateWithListItems(lstColorModes);
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboColorMode.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);
             if (cboColorMode.SelectedIndex == -1 && lstColorModes.Count > 0)
@@ -1092,20 +1069,14 @@ namespace Chummer
             lstLanguages.Sort(CompareListItems.CompareNames);
 
             cboLanguage.BeginUpdate();
-            cboLanguage.DataSource = null;
-            cboLanguage.DataSource = lstLanguages;
-            cboLanguage.ValueMember = nameof(ListItem.Value);
-            cboLanguage.DisplayMember = nameof(ListItem.Name);
+            cboLanguage.PopulateWithListItems(lstLanguages);
             cboLanguage.EndUpdate();
         }
 
         private void PopulateSheetLanguageList()
         {
             cboSheetLanguage.BeginUpdate();
-            cboSheetLanguage.DataSource = null;
-            cboSheetLanguage.DataSource = GetSheetLanguageList();
-            cboSheetLanguage.ValueMember = nameof(ListItem.Value);
-            cboSheetLanguage.DisplayMember = nameof(ListItem.Name);
+            cboSheetLanguage.PopulateWithListItems(GetSheetLanguageList());
             cboSheetLanguage.EndUpdate();
         }
 
@@ -1184,12 +1155,8 @@ namespace Chummer
                 strOldSelected = strOldSelected.Substring(intPos + 1);
 
             cboXSLT.BeginUpdate();
-            cboXSLT.DataSource = null;
-            cboXSLT.DataSource = lstFiles;
-            cboXSLT.ValueMember = nameof(ListItem.Value);
-            cboXSLT.DisplayMember = nameof(ListItem.Name);
-
-            if(!string.IsNullOrEmpty(strOldSelected))
+            cboXSLT.PopulateWithListItems(lstFiles);
+            if (!string.IsNullOrEmpty(strOldSelected))
             {
                 cboXSLT.SelectedValue = !string.IsNullOrEmpty(strSelectedSheetLanguage) && strSelectedSheetLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strSelectedSheetLanguage, strOldSelected) : strOldSelected;
                 // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.

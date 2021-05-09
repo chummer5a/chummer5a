@@ -73,9 +73,7 @@ namespace Chummer
             }
 
             cboLifestyle.BeginUpdate();
-            cboLifestyle.ValueMember = nameof(ListItem.Value);
-            cboLifestyle.DisplayMember = nameof(ListItem.Name);
-            cboLifestyle.DataSource = lstLifestyle;
+            cboLifestyle.PopulateWithListItems(lstLifestyle);
 
             if (!string.IsNullOrEmpty(strSelectedId))
                 cboLifestyle.SelectedValue = strSelectedId;
@@ -98,9 +96,7 @@ namespace Chummer
                 }
             }
             cboCity.BeginUpdate();
-            cboCity.ValueMember = nameof(ListItem.Value);
-            cboCity.DisplayMember = nameof(ListItem.Name);
-            cboCity.DataSource = lstCity;
+            cboCity.PopulateWithListItems(lstCity);
             cboCity.EndUpdate();
 
             //Populate District and Borough ComboBox for the first time
@@ -491,10 +487,7 @@ namespace Chummer
             }
 
             cboDistrict.BeginUpdate();
-            cboDistrict.DataSource = null;
-            cboDistrict.DataSource = lstDistrict;
-            cboDistrict.ValueMember = nameof(ListItem.Value);
-            cboDistrict.DisplayMember = nameof(ListItem.Name);
+            cboDistrict.PopulateWithListItems(lstDistrict);
             cboDistrict.EndUpdate();
         }
 
@@ -519,10 +512,7 @@ namespace Chummer
             }
 
             cboBorough.BeginUpdate();
-            cboBorough.DataSource = null;
-            cboBorough.DataSource = lstBorough;
-            cboBorough.ValueMember = nameof(ListItem.Value);
-            cboBorough.DisplayMember = nameof(ListItem.Name);
+            cboBorough.PopulateWithListItems(lstBorough);
             cboBorough.EndUpdate();
         }
 

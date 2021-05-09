@@ -131,9 +131,7 @@ namespace Chummer
             string strOldSelected = lstAccessory.SelectedValue?.ToString();
             _blnLoading = true;
             lstAccessory.BeginUpdate();
-            lstAccessory.ValueMember = nameof(ListItem.Value);
-            lstAccessory.DisplayMember = nameof(ListItem.Name);
-            lstAccessory.DataSource = lstAccessories;
+            lstAccessory.PopulateWithListItems(lstAccessories);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstAccessory.SelectedValue = strOldSelected;

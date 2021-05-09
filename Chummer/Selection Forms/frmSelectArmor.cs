@@ -110,9 +110,7 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
+            cboCategory.PopulateWithListItems(_lstCategory);
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(s_StrSelectCategory))
@@ -496,9 +494,7 @@ namespace Chummer
                     _blnLoading = true;
                     string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();
-                    lstArmor.ValueMember = nameof(ListItem.Value);
-                    lstArmor.DisplayMember = nameof(ListItem.Name);
-                    lstArmor.DataSource = lstArmors;
+                    lstArmor.PopulateWithListItems(lstArmors);
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))
                         lstArmor.SelectedValue = strOldSelected;

@@ -74,23 +74,17 @@ namespace Chummer
 
             // Bind the Lists to the ComboBoxes.
             cboSkill.BeginUpdate();
-            cboSkill.ValueMember = nameof(ListItem.Value);
-            cboSkill.DisplayMember = nameof(ListItem.Name);
-            cboSkill.DataSource = lstSkills;
+            cboSkill.PopulateWithListItems(lstSkills);
             cboSkill.SelectedIndex = 0;
             cboSkill.EndUpdate();
 
             cboDVBase.BeginUpdate();
-            cboDVBase.ValueMember = nameof(ListItem.Value);
-            cboDVBase.DisplayMember = nameof(ListItem.Name);
-            cboDVBase.DataSource = lstDVBase;
+            cboDVBase.PopulateWithListItems(lstDVBase);
             cboDVBase.SelectedIndex = 0;
             cboDVBase.EndUpdate();
 
             cboDVType.BeginUpdate();
-            cboDVType.ValueMember = nameof(ListItem.Value);
-            cboDVType.DisplayMember = nameof(ListItem.Name);
-            cboDVType.DataSource = lstDVType;
+            cboDVType.PopulateWithListItems(lstDVType);
             cboDVType.SelectedIndex = 0;
             cboDVType.EndUpdate();
         }

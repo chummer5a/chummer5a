@@ -69,9 +69,7 @@ namespace Chummer
             }
             lstSkills.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstSkills;
+            cboCategory.PopulateWithListItems(lstSkills);
 
             // Select the first Skill in the list.
             if (lstSkills.Count > 0)
@@ -144,10 +142,7 @@ namespace Chummer
             string strOldText = cboSkillSpecialisations.Text;
             string strOldSelectedValue = cboSkillSpecialisations.SelectedValue?.ToString() ?? string.Empty;
             cboSkillSpecialisations.BeginUpdate();
-            cboSkillSpecialisations.DataSource = null;
-            cboSkillSpecialisations.DataSource = lstSkillSpecializations;
-            cboSkillSpecialisations.ValueMember = nameof(ListItem.Value);
-            cboSkillSpecialisations.DisplayMember = nameof(ListItem.Name);
+            cboSkillSpecialisations.PopulateWithListItems(lstSkillSpecializations);
             if (!string.IsNullOrEmpty(strOldSelectedValue))
                 cboSkillSpecialisations.SelectedValue = strOldSelectedValue;
             if (cboSkillSpecialisations.SelectedIndex == -1)

@@ -115,14 +115,14 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.DataSource = null;
-            cboCategory.DataSource = _lstCategory;
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
+            cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory)) cboCategory.SelectedIndex = 0;
-            else cboCategory.SelectedValue = s_StrSelectCategory;
-            if (cboCategory.SelectedIndex == -1) cboCategory.SelectedIndex = 0;
+            if (string.IsNullOrEmpty(s_StrSelectCategory))
+                cboCategory.SelectedIndex = 0;
+            else
+                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (cboCategory.SelectedIndex == -1)
+                cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
@@ -359,9 +359,7 @@ namespace Chummer
             string strOldSelected = lstSpells.SelectedValue?.ToString();
             _blnLoading = true;
             lstSpells.BeginUpdate();
-            lstSpells.ValueMember = nameof(ListItem.Value);
-            lstSpells.DisplayMember = nameof(ListItem.Name);
-            lstSpells.DataSource = lstSpellItems;
+            lstSpells.PopulateWithListItems(lstSpellItems);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstSpells.SelectedValue = strOldSelected;

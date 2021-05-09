@@ -232,10 +232,8 @@ namespace Chummer
 
                         return 0;
                     });
-
-                    cboStage.ValueMember = nameof(ListItem.Value);
-                    cboStage.DisplayMember = nameof(ListItem.Name);
-                    cboStage.DataSource = Stages;
+                    
+                    cboStage.PopulateWithListItems(Stages);
                 }
 
                 ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalOptions.InvariantCultureInfo));

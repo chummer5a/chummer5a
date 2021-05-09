@@ -73,10 +73,7 @@ namespace Chummer
                 lstBuildMethods.Add(new ListItem(CharacterBuildMethod.LifeModule, LanguageManager.GetString("String_LifeModule")));
 
             cboBuildMethod.BeginUpdate();
-            cboBuildMethod.DataSource = null;
-            cboBuildMethod.DataSource = lstBuildMethods;
-            cboBuildMethod.ValueMember = nameof(ListItem.Value);
-            cboBuildMethod.DisplayMember = nameof(ListItem.Name);
+            cboBuildMethod.PopulateWithListItems(lstBuildMethods);
             cboBuildMethod.EndUpdate();
 
             PopulateOptions();
@@ -126,10 +123,7 @@ namespace Chummer
                     _blnLoading = true;
                     cboSetting.BeginUpdate();
                     _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
-                    cboSetting.DataSource = null;
-                    cboSetting.DataSource = _lstSettings;
-                    cboSetting.ValueMember = nameof(ListItem.Value);
-                    cboSetting.DisplayMember = nameof(ListItem.Name);
+                    cboSetting.PopulateWithListItems(_lstSettings);
                     cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
                     cboSetting.EndUpdate();
                     _blnLoading = false;
@@ -372,10 +366,7 @@ namespace Chummer
                         new ListItem(_lstSettings[_intOldSelectedSettingIndex].Value, _objReferenceCharacterOptions.DisplayName);
                     cboSetting.BeginUpdate();
                     _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
-                    cboSetting.DataSource = null;
-                    cboSetting.DataSource = _lstSettings;
-                    cboSetting.ValueMember = nameof(ListItem.Value);
-                    cboSetting.DisplayMember = nameof(ListItem.Name);
+                    cboSetting.PopulateWithListItems(_lstSettings);
                     cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
                     cboSetting.EndUpdate();
                 }
@@ -421,10 +412,7 @@ namespace Chummer
                         new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value, _objReferenceCharacterOptions.DisplayName);
                     cboSetting.BeginUpdate();
                     _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
-                    cboSetting.DataSource = null;
-                    cboSetting.DataSource = _lstSettings;
-                    cboSetting.ValueMember = nameof(ListItem.Value);
-                    cboSetting.DisplayMember = nameof(ListItem.Name);
+                    cboSetting.PopulateWithListItems(_lstSettings);
                     cboSetting.SelectedIndex = intCurrentSelectedSettingIndex;
                     cboSetting.EndUpdate();
                 }
@@ -828,10 +816,7 @@ namespace Chummer
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;
             cboPriorityTable.BeginUpdate();
-            cboPriorityTable.DataSource = null;
-            cboPriorityTable.DataSource = lstPriorityTables;
-            cboPriorityTable.ValueMember = nameof(ListItem.Value);
-            cboPriorityTable.DisplayMember = nameof(ListItem.Name);
+            cboPriorityTable.PopulateWithListItems(lstPriorityTables);
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboPriorityTable.SelectedValue = strOldSelected;
             if (cboPriorityTable.SelectedIndex == -1 && lstPriorityTables.Count > 0)
@@ -864,10 +849,7 @@ namespace Chummer
 
             _blnSkipLimbCountUpdate = true;
             cboLimbCount.BeginUpdate();
-            cboLimbCount.DataSource = null;
-            cboLimbCount.DataSource = lstLimbCount;
-            cboLimbCount.ValueMember = nameof(ListItem.Value);
-            cboLimbCount.DisplayMember = nameof(ListItem.Name);
+            cboLimbCount.PopulateWithListItems(lstLimbCount);
             if (!string.IsNullOrEmpty(strLimbSlot))
                 cboLimbCount.SelectedValue = strLimbSlot;
             if (cboLimbCount.SelectedIndex == -1 && lstLimbCount.Count > 0)
@@ -1118,10 +1100,7 @@ namespace Chummer
                     strSelect = kvpCharacterOptionsEntry.Key;
             }
             _lstSettings.Sort(CompareListItems.CompareNames);
-            cboSetting.DataSource = null;
-            cboSetting.DataSource = _lstSettings;
-            cboSetting.ValueMember = nameof(ListItem.Value);
-            cboSetting.DisplayMember = nameof(ListItem.Name);
+            cboSetting.PopulateWithListItems(_lstSettings);
             if (!string.IsNullOrEmpty(strSelect))
                 cboSetting.SelectedValue = strSelect;
             if (cboSetting.SelectedIndex == -1 && _lstSettings.Count > 0)

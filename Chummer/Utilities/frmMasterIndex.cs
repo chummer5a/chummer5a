@@ -206,16 +206,12 @@ namespace Chummer
                     _lstFileNamesWithItems.Insert(0, new ListItem(string.Empty, LanguageManager.GetString("String_All")));
 
                     cboFile.BeginUpdate();
-                    cboFile.ValueMember = nameof(ListItem.Value);
-                    cboFile.DisplayMember = nameof(ListItem.Name);
-                    cboFile.DataSource = _lstFileNamesWithItems;
+                    cboFile.PopulateWithListItems(_lstFileNamesWithItems);
                     cboFile.SelectedIndex = 0;
                     cboFile.EndUpdate();
 
                     lstItems.BeginUpdate();
-                    lstItems.ValueMember = nameof(ListItem.Value);
-                    lstItems.DisplayMember = nameof(ListItem.Name);
-                    lstItems.DataSource = _lstItems;
+                    lstItems.PopulateWithListItems(_lstItems);
                     lstItems.SelectedIndex = -1;
                     lstItems.EndUpdate();
 
@@ -266,7 +262,7 @@ namespace Chummer
                 object objOldSelectedValue = lstItems.SelectedValue;
                 lstItems.BeginUpdate();
                 _blnSkipRefresh = true;
-                lstItems.DataSource = lstFilteredItems;
+                lstItems.PopulateWithListItems(lstFilteredItems);
                 _blnSkipRefresh = false;
                 if (objOldSelectedValue != null)
                 {

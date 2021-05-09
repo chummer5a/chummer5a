@@ -408,11 +408,11 @@ namespace Chummer
             nudBonusLP.DoDatabinding("Value", _objLifestyle,nameof(Lifestyle.BonusLP));
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
-            cboBaseLifestyle.ValueMember = nameof(ListItem.Value);
-            cboBaseLifestyle.DisplayMember = nameof(ListItem.Name);
-            cboBaseLifestyle.DataSource = lstLifestyles;
-
+            cboBaseLifestyle.PopulateWithListItems(lstLifestyles);
             cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;
+            if (cboBaseLifestyle.SelectedIndex == -1)
+                cboBaseLifestyle.SelectedIndex = 0;
+            cboBaseLifestyle.EndUpdate();
             txtLifestyleName.DoDatabinding("Text",_objLifestyle,nameof(Lifestyle.Name));
             nudRoommates.DoDatabinding("Value",_objLifestyle,nameof(Lifestyle.Roommates));
             nudPercentage.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.Percentage));
@@ -434,9 +434,6 @@ namespace Chummer
             lblComfortTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
             lblSecurityTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
             lblTotalLP.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
-            if (cboBaseLifestyle.SelectedIndex == -1)
-                cboBaseLifestyle.SelectedIndex = 0;
-            cboBaseLifestyle.EndUpdate();
 
             _objLifestyle.LifestyleQualities.CollectionChanged += LifestyleQualitiesOnCollectionChanged;
             _objLifestyle.FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
@@ -458,9 +455,7 @@ namespace Chummer
             }
 
             cboCity.BeginUpdate();
-            cboCity.ValueMember = nameof(ListItem.Value);
-            cboCity.DisplayMember = nameof(ListItem.Name);
-            cboCity.DataSource = lstCity;
+            cboCity.PopulateWithListItems(lstCity);
             cboCity.DoDatabinding("SelectedValue", _objLifestyle, nameof(Lifestyle.City));
             cboCity.EndUpdate();
 
@@ -800,10 +795,7 @@ namespace Chummer
             }
 
             cboDistrict.BeginUpdate();
-            cboDistrict.DataSource = null;
-            cboDistrict.DataSource = lstDistrict;
-            cboDistrict.ValueMember = nameof(ListItem.Value);
-            cboDistrict.DisplayMember = nameof(ListItem.Name);
+            cboDistrict.PopulateWithListItems(lstDistrict);
             cboDistrict.EndUpdate();
         }
 
@@ -828,10 +820,7 @@ namespace Chummer
             }
 
             cboBorough.BeginUpdate();
-            cboBorough.DataSource = null;
-            cboBorough.DataSource = lstBorough;
-            cboBorough.ValueMember = nameof(ListItem.Value);
-            cboBorough.DisplayMember = nameof(ListItem.Name);
+            cboBorough.PopulateWithListItems(lstBorough);
             cboBorough.EndUpdate();
         }
         #endregion

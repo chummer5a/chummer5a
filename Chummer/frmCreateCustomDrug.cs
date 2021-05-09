@@ -115,9 +115,7 @@ namespace Chummer
 			    _lstGrade.Add(new ListItem(objGrade.Name, objGrade.CurrentDisplayName));
 			}
             cboGrade.BeginUpdate();
-            cboGrade.DataSource = _lstGrade;
-            cboGrade.ValueMember = nameof(ListItem.Value);
-			cboGrade.DisplayMember = nameof(ListItem.Name);
+            cboGrade.PopulateWithListItems(_lstGrade);
             cboGrade.EndUpdate();
 		}
 

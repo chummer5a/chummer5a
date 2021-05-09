@@ -102,9 +102,7 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
+            cboCategory.PopulateWithListItems(_lstCategory);
             _blnLoading = false;
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
@@ -481,9 +479,7 @@ namespace Chummer
             string strOldSelected = lstVehicle.SelectedValue?.ToString();
             _blnLoading = true;
             lstVehicle.BeginUpdate();
-            lstVehicle.ValueMember = nameof(ListItem.Value);
-            lstVehicle.DisplayMember = nameof(ListItem.Name);
-            lstVehicle.DataSource = lstVehicles;
+            lstVehicle.PopulateWithListItems(lstVehicles);
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelected))
                 lstVehicle.SelectedIndex = -1;

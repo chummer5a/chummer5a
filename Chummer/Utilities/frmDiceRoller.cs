@@ -52,9 +52,7 @@ namespace Chummer
             };
 
             cboMethod.BeginUpdate();
-            cboMethod.ValueMember = nameof(ListItem.Value);
-            cboMethod.DisplayMember = nameof(ListItem.Name);
-            cboMethod.DataSource = lstMethod;
+            cboMethod.PopulateWithListItems(lstMethod);
             cboMethod.SelectedIndex = 0;
             cboMethod.EndUpdate();
 
@@ -176,10 +174,7 @@ namespace Chummer
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
-            lstResults.DataSource = null;
-            lstResults.DataSource = _lstResults;
-            lstResults.ValueMember = nameof(ListItem.Value);
-            lstResults.DisplayMember = nameof(ListItem.Name);
+            lstResults.PopulateWithListItems(_lstResults);
             lstResults.EndUpdate();
         }
 
@@ -332,10 +327,7 @@ namespace Chummer
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
-            lstResults.DataSource = null;
-            lstResults.DataSource = _lstResults;
-            lstResults.ValueMember = nameof(ListItem.Value);
-            lstResults.DisplayMember = nameof(ListItem.Name);
+            lstResults.PopulateWithListItems(_lstResults);
             lstResults.EndUpdate();
         }
         #endregion

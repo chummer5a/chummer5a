@@ -66,15 +66,12 @@ namespace Chummer
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
-            cboSetting.ValueMember = nameof(ListItem.Value);
-            cboSetting.DisplayMember = nameof(ListItem.Name);
-            cboSetting.DataSource = lstSettings;
-            cboSetting.EndUpdate();
-
+            cboSetting.PopulateWithListItems(lstSettings);
             // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
             cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
             if (cboSetting.SelectedIndex == -1)
                 cboSetting.SelectedIndex = 0;
+            cboSetting.EndUpdate();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)

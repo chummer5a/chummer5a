@@ -73,8 +73,6 @@ namespace Chummer
             {
                 cboChoice1.BeginUpdate();
                 cboChoice2.BeginUpdate();
-                cboChoice1.DataSource = null;
-                cboChoice2.DataSource = null;
 
                 // If the Mentor offers a choice of bonuses, build the list and let the user select one.
                 XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
@@ -94,26 +92,14 @@ namespace Chummer
                                 lstChoice1.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
                         }
                     }
-
-                    cboChoice1.Visible = true;
-                    cboChoice1.DataSource = lstChoice1;
-                    cboChoice1.ValueMember = nameof(ListItem.Value);
-                    cboChoice1.DisplayMember = nameof(ListItem.Name);
-
-                    if (lstChoice2.Count > 0)
-                    {
-                        cboChoice2.Visible = true;
-                        cboChoice2.DataSource = lstChoice2;
-                        cboChoice2.ValueMember = nameof(ListItem.Value);
-                        cboChoice2.DisplayMember = nameof(ListItem.Name);
-                    }
-                    else
-                    {
-                        cboChoice2.Visible = false;
-                    }
-
+                    
+                    if (lstChoice1.Count > 0)
+                        cboChoice1.PopulateWithListItems(lstChoice1);
                     cboChoice1.Visible = lstChoice1.Count > 0;
                     cboChoice1.Enabled = lstChoice1.Count > 1;
+                    if (lstChoice2.Count > 0)
+                        cboChoice2.PopulateWithListItems(lstChoice2);
+                    cboChoice2.Visible = lstChoice2.Count > 0;
                     cboChoice2.Enabled = lstChoice2.Count > 1;
                 }
                 else
@@ -240,9 +226,7 @@ namespace Chummer
             string strOldSelected = lstMentor.SelectedValue?.ToString();
             _blnSkipRefresh = true;
             lstMentor.BeginUpdate();
-            lstMentor.ValueMember = nameof(ListItem.Value);
-            lstMentor.DisplayMember = nameof(ListItem.Name);
-            lstMentor.DataSource = lstMentors;
+            lstMentor.PopulateWithListItems(lstMentors);
             _blnSkipRefresh = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstMentor.SelectedValue = strOldSelected;
