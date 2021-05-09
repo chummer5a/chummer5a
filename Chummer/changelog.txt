@@ -26,6 +26,7 @@ Application Changes:
 - When saving a character as created, the starting nuyen screen now allows the user to select which lifestyle to use for generating their starting nuyen. It now also includes a Cancel button and a button for automatically rolling dice for the chosen lifestyle.
 - Closing out the starting nuyen screen no longer causes weird issues with the character's saved Nuyen or saved Karma and also no longer prompts the user to save a created character.
 - Fixed life modules button not being visible in create mode.
+- Critter power karma costs are now properly retained when loading a saved character.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
