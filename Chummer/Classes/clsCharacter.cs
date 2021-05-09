@@ -6958,9 +6958,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Name of the file the Character is saved to.
+        /// Last write time of the file to which this character is saved.
         /// </summary>
-        public DateTime FileLastWriteTime => _dateFileLastWriteTime;
+        public DateTime FileLastWriteTime => _dateFileLastWriteTime > DateTime.MinValue ? _dateFileLastWriteTime : DateTime.UtcNow;
 
         /// <summary>
         /// Whether or not the character has been saved as Created and can no longer be modified using the Build system.
