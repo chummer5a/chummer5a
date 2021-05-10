@@ -319,7 +319,7 @@ namespace Chummer.Backend.Equipment
                     Description = LanguageManager.GetString("String_SelectWeaponCategoryAmmo"),
                     WeaponType = strAmmoWeaponType
                 };
-                if (!string.IsNullOrEmpty(_strForcedValue) && !_strForcedValue.Equals(_strName, StringComparison.Ordinal))
+                if (!string.IsNullOrEmpty(_strForcedValue) && !_strForcedValue.Equals(CurrentDisplayNameShort, StringComparison.Ordinal))
                     frmPickWeaponCategory.OnlyCategory = _strForcedValue;
 
                 if (frmPickWeaponCategory.ShowDialog(Program.MainForm) == DialogResult.Cancel)
