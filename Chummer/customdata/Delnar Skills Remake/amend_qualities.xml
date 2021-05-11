@@ -54,21 +54,24 @@
         </weaponcategorydv>
       </bonus>
       <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
-        <unlockskills xpathfilter=". = 'Adept' or . = 'Aware' or . = 'Explorer'" amendoperation="remove" />
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Astral">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Ritual Spellcasting">Name</unlockskills>
+        <!-- Need to remove nodes last to make sure filter keeps firing -->
+        <unlockskills xpathfilter=". = 'Adept' or . = 'Aware' or . = 'Explorer'" amendoperation="remove" />
       </bonus>
       <bonus xpathfilter="unlockskills = 'Sorcery,Conjuring,Enchanting'">
-        <unlockskills xpathfilter=". = 'Sorcery,Conjuring,Enchanting'" amendoperation="remove" />
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Astral">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Ritual Spellcasting">Name</unlockskills>
         <unlockskills amendoperation="addnode" >Sorcery,Conjuring</unlockskills>
+        <!-- Need to remove nodes last to make sure filter keeps firing -->
+        <unlockskills xpathfilter=". = 'Sorcery,Conjuring,Enchanting'" amendoperation="remove" />
       </bonus>
       <bonus xpathfilter="not(unlockskills = 'Magician') and unlockskills = 'Sorcery' and unlockskills = 'Conjuring'">
-        <unlockskills xpathfilter=". = 'Sorcery' or . = 'Conjuring'" amendoperation="remove" />
         <unlockskills amendoperation="addnode" >Magician</unlockskills>
+        <!-- Need to remove nodes last to make sure filter keeps firing -->
+        <unlockskills xpathfilter=". = 'Sorcery' or . = 'Conjuring'" amendoperation="remove" />
       </bonus>
       <required>
         <allof>
