@@ -252,7 +252,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlDocument Load(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
-            return LoadCoreAsync(false, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile).GetAwaiter().GetResult();
+            return LoadCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -265,7 +265,7 @@ namespace Chummer
         [Annotations.NotNull]
         public static Task<XmlDocument> LoadAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
-            return LoadCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
+            return LoadCoreAsync(false, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
         }
 
         /// <summary>
