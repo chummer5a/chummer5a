@@ -456,9 +456,14 @@ namespace ChummerHub.Client.Sinners
                         ResultSinnerGetOwnedSINByAlias res;
                         try
                         {
-                            res = blnSync
-                                ? client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias).GetAwaiter().GetResult()
-                                : await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
+                            if (blnSync)
+                            {
+                                var objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
+                                objSearchTask.RunSynchronously();
+                                res = objSearchTask.Result;
+                            }
+                            else
+                                res =  await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
                         }
                         catch (SerializationException e)
                         {

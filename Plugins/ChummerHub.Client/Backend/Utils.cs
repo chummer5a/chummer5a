@@ -1091,12 +1091,14 @@ namespace ChummerHub.Client.Backend
                 MySinnersClient client = StaticUtils.GetClient();
                 if (!StaticUtils.IsUnitTest)
                 {
-                    res = blnSync
-                        ? Task.Factory
-                            .StartNew(() => client.PostSINAsync(uploadInfoObject), CancellationToken.None,
-                                TaskCreationOptions.DenyChildAttach, objUIScheduler).GetAwaiter().GetResult()
-                            .GetAwaiter().GetResult()
-                        : await client.PostSINAsync(uploadInfoObject);
+                    if (blnSync)
+                    {
+                        var objPostTask = client.PostSINAsync(uploadInfoObject);
+                        objPostTask.RunSynchronously(objUIScheduler);
+                        res = objPostTask.Result;
+                    }
+                    else
+                        res = await client.PostSINAsync(uploadInfoObject);
                     if (res != null && res.CallSuccess == false)
                     {
                         var msg = "Post of " + ce.MyCharacter.Alias + " completed with StatusCode: " + res.CallSuccess;
@@ -1124,8 +1126,8 @@ namespace ChummerHub.Client.Backend
                 }
                 else if (blnSync)
                 {
-                    Task.Factory.StartNew(() => client.PostSINAsync(uploadInfoObject), CancellationToken.None,
-                        TaskCreationOptions.DenyChildAttach, objUIScheduler).Wait();
+                    var objPostTask = client.PostSINAsync(uploadInfoObject);
+                    objPostTask.RunSynchronously(objUIScheduler);
                 }
                 else
                 {
@@ -1176,9 +1178,14 @@ namespace ChummerHub.Client.Backend
                             if (ce.MySINnerFile.Id != null)
                             {
                                 FileParameter fp = new FileParameter(fs);
-                                res = blnSync
-                                    ? client.PutSINAsync(ce.MySINnerFile.Id.Value, fp).GetAwaiter().GetResult()
-                                    : await client.PutSINAsync(ce.MySINnerFile.Id.Value, fp);
+                                if (blnSync)
+                                {
+                                    var objPutTask = client.PutSINAsync(ce.MySINnerFile.Id.Value, fp);
+                                    objPutTask.RunSynchronously();
+                                    res = objPutTask.Result;
+                                }
+                                else
+                                    res = await client.PutSINAsync(ce.MySINnerFile.Id.Value, fp);
                             }
                             string msg = "Upload ended with statuscode: ";
                             msg += res?.CallSuccess + Environment.NewLine;

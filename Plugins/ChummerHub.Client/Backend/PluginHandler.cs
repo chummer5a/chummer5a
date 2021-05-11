@@ -591,7 +591,7 @@ namespace Chummer.Plugins
             search.Show();
         }
 
-        private void mnuSINnersArchetypes_Click(object sender, EventArgs e)
+        private async void mnuSINnersArchetypes_Click(object sender, EventArgs e)
         {
             ResultGroupGetSearchGroups res = null;
             try
@@ -599,37 +599,34 @@ namespace Chummer.Plugins
                 using (new CursorWait(MainForm, true))
                 {
                     var client = StaticUtils.GetClient();
-                    res = client.GetPublicGroupAsync("Archetypes", string.Empty).GetAwaiter().GetResult();
-                    if (!(ChummerHub.Client.Backend.Utils.ShowErrorResponseForm(res) is ResultGroupGetSearchGroups result))
+                    res = await client.GetPublicGroupAsync("Archetypes", string.Empty);
+                    if (!(await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res) is ResultGroupGetSearchGroups result))
                         return;
-                    if (result.CallSuccess == true)
+                    if (!result.CallSuccess)
+                        return;
+                    SINSearchGroupResult ssgr = result.MySearchGroupResult;
+                    if (ssgr != null && ssgr.SinGroups?.Count > 0)
                     {
-                        SINSearchGroupResult ssgr = result.MySearchGroupResult;
-                        var ssgr1 = ssgr;
-                        using (new CursorWait(MainForm, true))
+                        MainForm.CharacterRoster.DoThreadSafe(() =>
                         {
-                            MainForm.CharacterRoster.DoThreadSafe(() =>
+                            var nodelist = ChummerHub.Client.Backend.Utils
+                                .CharacterRosterTreeNodifyGroupList(
+                                    ssgr.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList();
+                            foreach (var node in nodelist)
                             {
-                                if (ssgr1 != null && ssgr1.SinGroups?.Count > 0)
-                                {
-                                    var nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(ssgr1.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList();
-                                    foreach (var node in nodelist)
-                                    {
-                                        MyTreeNodes2Add.AddOrUpdate(node.Name, node,
-                                            (key, oldValue) => node);
-                                    }
+                                MyTreeNodes2Add.AddOrUpdate(node.Name, node,
+                                    (key, oldValue) => node);
+                            }
 
-                                    MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                                    MainForm.CharacterRoster.treCharacterList.SelectedNode =
-                                        nodelist.FirstOrDefault(a => a.Name == "Archetypes");
-                                    MainForm.BringToFront();
-                                }
-                                else
-                                {
-                                    MainForm.ShowMessageBox("No archetypes found!");
-                                }
-                            });
-                        }
+                            MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                            MainForm.CharacterRoster.treCharacterList.SelectedNode =
+                                nodelist.FirstOrDefault(a => a.Name == "Archetypes");
+                            MainForm.BringToFront();
+                        });
+                    }
+                    else
+                    {
+                        MainForm.ShowMessageBox("No archetypes found!");
                     }
                 }
             }
