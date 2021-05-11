@@ -14535,6 +14535,10 @@ namespace Chummer
                     string strForceValue = strForceItemValue;
                     if (string.IsNullOrEmpty(strForceValue))
                         strForceValue = objAmmoForWeapon?.AmmoCategory;
+                    //If the amount of an ammunition was increased, force the correct weapon category.
+                    if (objStackGear?.Category == "Ammunition")
+                        strForceValue = objStackGear?.Extra;
+
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue);
 
