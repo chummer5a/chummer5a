@@ -42,6 +42,7 @@ Data Changes:
 - Added the Grimmes Erwachen German splatbook and the Storyteller tradition statted in it.
 - Fixed page reference for the Extra Fragile critter power. Closes #4420
 - Fixed incorrect quality names for the Corp Teen, Rising Star, Company Troubleshooter, Tour of Duty (Desert Wars), In the Thick and Gone Native life modules that prevented them from being taken correctly. Closes #4386
+- The Hemorrhage critter power no longer also has an entry as a learnable ritual.
 
 Changed/New Strings:
 - String_ContactPoints
