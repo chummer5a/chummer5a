@@ -14532,12 +14532,12 @@ namespace Chummer
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
-                    string strForceValue = strForceItemValue;
-                    if (string.IsNullOrEmpty(strForceValue))
-                        strForceValue = objAmmoForWeapon?.AmmoCategory;
-                    //If the amount of an ammunition was increased, force the correct weapon category.
-                    if (objStackGear?.Category == "Ammunition")
-                        strForceValue = objStackGear?.Extra;
+                    string strForceValue = objStackGear?.Extra ?? strForceItemValue;
+                    if (string.IsNullOrEmpty(strForceValue) && objAmmoForWeapon != null)
+                    {
+                        //If the amount of an ammunition was increased, force the correct weapon category.
+                        strForceValue = objAmmoForWeapon.AmmoCategory;
+                    }
 
                     Gear objGear = new Gear(CharacterObject);
                     objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, strForceValue);
