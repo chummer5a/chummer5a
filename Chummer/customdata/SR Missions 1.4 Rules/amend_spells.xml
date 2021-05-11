@@ -20,10 +20,6 @@
 <chummer>
   <spells>
     <spell>
-      <name>Hemorrhage</name>
-      <hide />
-    </spell>
-    <spell>
       <name>Manablade</name>
       <hide />
     </spell>
