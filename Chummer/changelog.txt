@@ -27,6 +27,7 @@ Application Changes:
 - Closing out the starting nuyen screen no longer causes weird issues with the character's saved Nuyen or saved Karma and also no longer prompts the user to save a created character.
 - Fixed life modules button not being visible in create mode.
 - Critter power karma costs are now properly retained when loading a saved character.
+- Enhanced use of weapondetails to allow using it in allof, oneof or group nodes.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -43,6 +44,7 @@ Data Changes:
 - Fixed page reference for the Extra Fragile critter power. Closes #4420
 - Fixed incorrect quality names for the Corp Teen, Rising Star, Company Troubleshooter, Tour of Duty (Desert Wars), In the Thick and Gone Native life modules that prevented them from being taken correctly. Closes #4386
 - The Hemorrhage critter power no longer also has an entry as a learnable ritual.
+- Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
 
 Changed/New Strings:
 - String_ContactPoints

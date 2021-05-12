@@ -17210,12 +17210,26 @@
       </forbidden>
       <rating>0</rating>
       <required>
-        <weapondetails>
-          <OR>
-            <ammo operation="contains">(cy)</ammo>
-            <ammo operation="contains">(d)</ammo>
-          </OR>
-        </weapondetails>
+        <oneof>
+          <group>
+            <weapondetails>
+              <OR>
+                <name>Enfield AS-7</name>
+                <name>Enfield AS-7 (2050)</name>
+              </OR>
+            </weapondetails>
+            <grouponeof>
+              <accessory>Drum Magazine, 24-round</accessory>
+              <accessory>Drum Magazine, 32-round</accessory>
+            </grouponeof>
+          </group>
+          <weapondetails>
+            <OR>
+              <ammo operation="contains">(cy)</ammo>
+              <ammo operation="contains">(d)</ammo>
+            </OR>
+          </weapondetails>
+        </oneof>
       </required>
     </accessory>
     <accessory>

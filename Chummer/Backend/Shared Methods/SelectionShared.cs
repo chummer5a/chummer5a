@@ -1249,7 +1249,11 @@ namespace Chummer
                     strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
                         Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_WeaponAccessory"));
                     return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
-                }
+                    }
+                case "weapondetails" when objParent is Weapon objWeapon:
+                    {
+                        return objWeapon.GetNode().CreateNavigator().ProcessFilterOperationNode(xmlNode, false);
+                    }
                 case "armormod":
                 {
                     if (blnShowMessage)
