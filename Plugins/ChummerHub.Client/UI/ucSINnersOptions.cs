@@ -12,8 +12,8 @@ using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using Microsoft.Rest;
 using Newtonsoft.Json;
+using ChummerHub.Client.Sinners;
 using NLog;
-using SINners.Models;
 using Utils = ChummerHub.Client.Backend.Utils;
 
 //using Nemiro.OAuth;
@@ -42,27 +42,7 @@ namespace ChummerHub.Client.UI
                     CanEdit = true,
                     Id = Guid.NewGuid()
                 };
-                if (string.IsNullOrEmpty(Settings.Default.SINnerVisibility))
-                {
-                    return _SINnerVisibility = new SINnerVisibility
-                    {
-                        Id = Guid.NewGuid(),
-                        IsPublic = Settings.Default.VisibilityIsPublic,
-                        UserRights = new List<SINnerUserRight>
-                        {
-                            ur
-                        }
-                    };
-                }
-                try
-                {
-                    return _SINnerVisibility = JsonConvert.DeserializeObject<SINnerVisibility>(Settings.Default.SINnerVisibility);
-                }
-                catch (Exception e)
-                {
-                    Log.Warn(e);
-                }
-                return _SINnerVisibility = new SINnerVisibility
+                return _SINnerVisibility = Utils.DefaultSINnerVisibility ?? new SINnerVisibility
                 {
                     Id = Guid.NewGuid(),
                     IsPublic = Settings.Default.VisibilityIsPublic,
@@ -76,7 +56,7 @@ namespace ChummerHub.Client.UI
             {
                 _SINnerVisibility = value;
                 if (value == null)
-                    Settings.Default.SINnerVisibility = null;
+                    Utils.DefaultSINnerVisibility = null;
             }
         }
 
@@ -138,7 +118,7 @@ namespace ChummerHub.Client.UI
             {
                 return;
             }
-            var sinnerurl = client.BaseUri.ToString();
+            var sinnerurl = client.BaseUrl.ToString();
             Settings.Default.SINnerUrls.Clear();
             Settings.Default.Save();
             Settings.Default.SINnerUrls.Add("https://chummer-stable.azurewebsites.net/");
@@ -160,7 +140,7 @@ namespace ChummerHub.Client.UI
                 _ = StartSTATask(
                     async () =>
                     {
-                        var roles = await GetRolesStatus(this).ConfigureAwait(true);
+                        var roles = await GetRolesStatus(this);
                         UpdateDisplay();
                         if (roles.Count == 0)
                             ShowWebBrowser();
@@ -212,7 +192,7 @@ namespace ChummerHub.Client.UI
             Settings.Default.Save();
         }
 
-        private async void CbSINnerUrl_SelectedValueChanged(object sender, EventArgs e)
+        private void CbSINnerUrl_SelectedValueChanged(object sender, EventArgs e)
         {
             Settings.Default.SINnerUrl = cbSINnerUrl.SelectedValue.ToString();
             Settings.Default.Save();
@@ -228,7 +208,7 @@ namespace ChummerHub.Client.UI
         public async void UpdateDisplay()
         {
             tlpOptions.Enabled = Settings.Default.UserModeRegistered;
-            var mail = await GetUserEmail().ConfigureAwait(true);
+            var mail = await GetUserEmail();
             this.DoThreadSafe(() =>
             {
                 try
@@ -266,7 +246,7 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Warn(ex);
                 }
-            });
+            }, false);
         }
 
         public async Task<string> GetUserEmail()
@@ -278,9 +258,13 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     if (client == null)
                         return null;
-                    string strEmail;
-                    using (var result = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(true))
-                        strEmail = result.Body?.MyApplicationUser.Email;
+                    var result = await client.GetUserByAuthorizationAsync();
+                    if (result ==  null)
+                    {
+                        LoginStatus = false;
+                        return null;
+                    }
+                    string strEmail = result.MyApplicationUser.Email;
                     if (!string.IsNullOrEmpty(strEmail))
                     {
                         Settings.Default.UserEmail = strEmail;
@@ -314,17 +298,15 @@ namespace ChummerHub.Client.UI
                           try
                           {
                               var client = StaticUtils.GetClient();
-                              using (var signout = await client.LogoutWithHttpMessagesAsync().ConfigureAwait(true))
+                              if (await client.LogoutAsync())
                               {
-                                  if (signout.Response.StatusCode != HttpStatusCode.OK)
-                                  {
-                                      var roles = GetRolesStatus(this).Result;
-                                  }
-                                  else
-                                  {
-                                      StaticUtils.UserRoles.Clear();
-                                  }
+                                  StaticUtils.UserRoles.Clear();
                               }
+                              else
+                              {
+                                  await GetRolesStatus(this);
+                              }
+
                               UpdateDisplay();
                           }
                           catch(Exception ex)
@@ -364,7 +346,7 @@ namespace ChummerHub.Client.UI
                         _ = StartSTATask(
                         async () =>
                         {
-                            var roles = await GetRolesStatus(this).ConfigureAwait(true);
+                            await GetRolesStatus(this);
                             UpdateDisplay();
                         });
                     })
@@ -376,7 +358,7 @@ namespace ChummerHub.Client.UI
                     _ = StartSTATask(
                            async () =>
                            {
-                               var roles = await GetRolesStatus(this).ConfigureAwait(true);
+                               await GetRolesStatus(this);
                                UpdateDisplay();
                            });
                 }
@@ -391,7 +373,7 @@ namespace ChummerHub.Client.UI
 
         private async Task<IList<string>> GetRolesStatus(Control sender)
         {
-            HttpOperationResponse<ResultAccountGetRoles> myresult = null;
+            ResultAccountGetRoles myresult = null;
             try
             {
                 using (new CursorWait(sender, true))
@@ -399,9 +381,9 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     if (client == null)
                         return StaticUtils.UserRoles;
-                    myresult = await client.GetRolesWithHttpMessagesAsync().ConfigureAwait(true);
-                    await Utils.HandleError(myresult, myresult.Body).ConfigureAwait(true);
-                    var myresultbody = myresult.Body;
+                    myresult = await client.GetRolesAsync();
+                    await Utils.ShowErrorResponseFormAsync(myresult);
+                    var myresultbody = myresult;
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
                         if (myresultbody?.CallSuccess == true)
@@ -442,7 +424,7 @@ namespace ChummerHub.Client.UI
             }
             finally
             {
-                myresult?.Dispose();
+                //myresult?.Dispose();
             }
             return null;
         }
@@ -489,7 +471,7 @@ namespace ChummerHub.Client.UI
                 {
                     foreach (var file in thisDialog.FileNames)
                     {
-                        using (_ = await Utils.UploadCharacterFromFile(file).ConfigureAwait(true))
+                        using (_ = await Utils.UploadCharacterFromFile(file))
                         {
                         }
                     }
@@ -529,8 +511,8 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    var getsinner = await client.AdminGetSINnersWithHttpMessagesAsync().ConfigureAwait(true);
-                    foreach (var sinner in getsinner.Body)
+                    var getsinner = await client.AdminGetSINnersAsync();
+                    foreach (var sinner in getsinner)
                     {
                         try
                         {
@@ -552,7 +534,7 @@ namespace ChummerHub.Client.UI
                             Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
                         }
                     }
-                    getsinner.Dispose();
+                    //getsinner.Dispose();
                 }
                 catch (Exception ex)
                 {
@@ -590,7 +572,7 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)
                     {
-                        HttpOperationResponse<ResultSinnerPostSIN> posttask = null;
+                        ResultSinnerPostSIN posttask = null;
                         try
                         {
                             string sinjson = File.ReadAllText(file.FullName);
@@ -604,15 +586,16 @@ namespace ChummerHub.Client.UI
                                     sin
                                 }
                             };
-                            posttask = await client.PostSINWithHttpMessagesAsync(uploadInfoObject).ConfigureAwait(true);
-                            if (posttask.Response.IsSuccessStatusCode)
+                            posttask = await client.PostSINAsync(uploadInfoObject);
+                            if (posttask.CallSuccess)
                             {
                                 Log.Info("SINner " + sin.Id + " posted!");
                             }
                             else
                             {
-                                string msg = posttask.Response.ReasonPhrase + ": " + Environment.NewLine;
-                                var content = posttask.Response.Content.ReadAsStringAsync().Result;
+                                string msg = posttask.ErrorText + ": " + Environment.NewLine;
+                                var content = posttask.MyException?.ToString();
+
                                 msg += content;
                                 Log.Warn("SINner " + sin.Id + " not posted: " + msg);
                             }
@@ -623,7 +606,7 @@ namespace ChummerHub.Client.UI
                         }
                         finally
                         {
-                            posttask?.Dispose();
+                            //posttask?.Dispose();
                         }
                     }
                 }
@@ -639,14 +622,11 @@ namespace ChummerHub.Client.UI
         {
             using (var fbd = new FolderBrowserDialog())
             {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    tbTempDownloadPath.Text = fbd.SelectedPath;
-                    OptionsUpdate();
-                    Settings.Default.Save();
-                }
+                if (fbd.ShowDialog(this) != DialogResult.OK || string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                    return;
+                tbTempDownloadPath.Text = fbd.SelectedPath;
+                OptionsUpdate();
+                Settings.Default.Save();
             }
         }
 
@@ -657,13 +637,10 @@ namespace ChummerHub.Client.UI
                 MyVisibility = SINnerVisibility
             })
             {
-                var result = visfrm.ShowDialog(this);
-                if (result == DialogResult.OK)
-                {
-                    SINnerVisibility = visfrm.MyVisibility;
-                    Settings.Default.SINnerVisibility = JsonConvert.SerializeObject(SINnerVisibility);
-                    Settings.Default.Save();
-                }
+                if (visfrm.ShowDialog(this) != DialogResult.OK)
+                    return;
+                SINnerVisibility = visfrm.MyVisibility;
+                Utils.DefaultSINnerVisibility = visfrm.MyVisibility;
             }
         }
 

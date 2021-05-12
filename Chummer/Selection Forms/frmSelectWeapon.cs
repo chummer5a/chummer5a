@@ -110,21 +110,17 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
-
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-
+            cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
                 cboCategory.SelectedValue = s_StrSelectCategory;
-
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
+
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             _blnLoading = false;
             RefreshList();
@@ -384,14 +380,7 @@ namespace Chummer
                     dgvWeapons.Columns[7].Visible = false;
                     dgvWeapons.Columns[8].Visible = false;
                 }
-                if (blnAnyMelee)
-                {
-                    dgvWeapons.Columns[9].Visible = true;
-                }
-                else
-                {
-                    dgvWeapons.Columns[9].Visible = false;
-                }
+                dgvWeapons.Columns[9].Visible = blnAnyMelee;
                 dgvWeapons.Columns[0].Visible = false;
                 dgvWeapons.Columns[13].DefaultCellStyle.Alignment = DataGridViewContentAlignment.TopRight;
                 dgvWeapons.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
@@ -486,9 +475,7 @@ namespace Chummer
                 string strOldSelected = lstWeapon.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstWeapon.BeginUpdate();
-                lstWeapon.ValueMember = nameof(ListItem.Value);
-                lstWeapon.DisplayMember = nameof(ListItem.Name);
-                lstWeapon.DataSource = lstWeapons;
+                lstWeapon.PopulateWithListItems(lstWeapons);
                 _blnLoading = false;
                 if (!string.IsNullOrEmpty(strOldSelected))
                     lstWeapon.SelectedValue = strOldSelected;

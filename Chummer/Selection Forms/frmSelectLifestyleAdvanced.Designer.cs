@@ -31,10 +31,10 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Positive Qualities");
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Negative Qualities");
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Entertainments");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Positive Qualities");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Negative Qualities");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Entertainments");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Free Matrix Grids");
             this.Label_SelectAdvancedLifestyle_Upgrade_Comforts = new System.Windows.Forms.Label();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -78,17 +78,17 @@ namespace Chummer
             this.nudBonusLP = new Chummer.NumericUpDownEx();
             this.chkBonusLPRandomize = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cboBorough = new Chummer.ElasticComboBox();
+            this.cboDistrict = new Chummer.ElasticComboBox();
+            this.cboCity = new Chummer.ElasticComboBox();
+            this.lblBorough = new System.Windows.Forms.Label();
+            this.lblDistrict = new System.Windows.Forms.Label();
+            this.lblCity = new System.Windows.Forms.Label();
             this.lblComforts = new System.Windows.Forms.Label();
             this.lblArea = new System.Windows.Forms.Label();
             this.lblSecurity = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpQualityButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblCity = new System.Windows.Forms.Label();
-            this.lblDistrict = new System.Windows.Forms.Label();
-            this.lblBoroigh = new System.Windows.Forms.Label();
-            this.cboCity = new Chummer.ElasticComboBox();
-            this.cboDistrict = new Chummer.ElasticComboBox();
-            this.cboBorough = new Chummer.ElasticComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSecurity)).BeginInit();
@@ -486,23 +486,23 @@ namespace Chummer
             this.treLifestyleQualities.HideSelection = false;
             this.treLifestyleQualities.Location = new System.Drawing.Point(3, 32);
             this.treLifestyleQualities.Name = "treLifestyleQualities";
-            treeNode5.Name = "nodPositiveLifestyleQualities";
-            treeNode5.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
-            treeNode5.Text = "Positive Qualities";
-            treeNode6.Name = "nodNegativeLifestyleQualities";
-            treeNode6.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
-            treeNode6.Text = "Negative Qualities";
-            treeNode7.Name = "nodLifestyleEntertainments";
-            treeNode7.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
-            treeNode7.Text = "Entertainments";
-            treeNode8.Name = "nodFreeMatrixGrids";
-            treeNode8.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
-            treeNode8.Text = "Free Matrix Grids";
+            treeNode1.Name = "nodPositiveLifestyleQualities";
+            treeNode1.Tag = "Node_SelectAdvancedLifestyle_PositiveQualities";
+            treeNode1.Text = "Positive Qualities";
+            treeNode2.Name = "nodNegativeLifestyleQualities";
+            treeNode2.Tag = "Node_SelectAdvancedLifestyle_NegativeQualities";
+            treeNode2.Text = "Negative Qualities";
+            treeNode3.Name = "nodLifestyleEntertainments";
+            treeNode3.Tag = "Node_SelectAdvancedLifestyle_Entertainments";
+            treeNode3.Text = "Entertainments";
+            treeNode4.Name = "nodFreeMatrixGrids";
+            treeNode4.Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids";
+            treeNode4.Text = "Free Matrix Grids";
             this.treLifestyleQualities.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8});
+            treeNode1,
+            treeNode2,
+            treeNode3,
+            treeNode4});
             this.tlpMain.SetRowSpan(this.treLifestyleQualities, 18);
             this.treLifestyleQualities.Size = new System.Drawing.Size(295, 508);
             this.treLifestyleQualities.TabIndex = 53;
@@ -737,7 +737,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.cboBorough, 2, 17);
             this.tlpMain.Controls.Add(this.cboDistrict, 1, 16);
             this.tlpMain.Controls.Add(this.cboCity, 1, 15);
-            this.tlpMain.Controls.Add(this.lblBoroigh, 0, 17);
+            this.tlpMain.Controls.Add(this.lblBorough, 0, 17);
             this.tlpMain.Controls.Add(this.lblDistrict, 0, 16);
             this.tlpMain.Controls.Add(this.lblCity, 0, 15);
             this.tlpMain.Controls.Add(this.treLifestyleQualities, 0, 1);
@@ -808,6 +808,78 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 84;
+            // 
+            // cboBorough
+            // 
+            this.cboBorough.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMain.SetColumnSpan(this.cboBorough, 3);
+            this.cboBorough.FormattingEnabled = true;
+            this.cboBorough.Location = new System.Drawing.Point(389, 444);
+            this.cboBorough.Name = "cboBorough";
+            this.cboBorough.Size = new System.Drawing.Size(374, 21);
+            this.cboBorough.TabIndex = 96;
+            this.cboBorough.TooltipText = "";
+            this.cboBorough.SelectedIndexChanged += new System.EventHandler(this.cboBorough_SelectedIndexChanged);
+            // 
+            // cboDistrict
+            // 
+            this.cboDistrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMain.SetColumnSpan(this.cboDistrict, 3);
+            this.cboDistrict.FormattingEnabled = true;
+            this.cboDistrict.Location = new System.Drawing.Point(389, 417);
+            this.cboDistrict.Name = "cboDistrict";
+            this.cboDistrict.Size = new System.Drawing.Size(374, 21);
+            this.cboDistrict.TabIndex = 95;
+            this.cboDistrict.TooltipText = "";
+            this.cboDistrict.SelectedIndexChanged += new System.EventHandler(this.cboDistrict_SelectedIndexChanged);
+            // 
+            // cboCity
+            // 
+            this.cboCity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMain.SetColumnSpan(this.cboCity, 3);
+            this.cboCity.FormattingEnabled = true;
+            this.cboCity.Location = new System.Drawing.Point(389, 390);
+            this.cboCity.Name = "cboCity";
+            this.cboCity.Size = new System.Drawing.Size(374, 21);
+            this.cboCity.TabIndex = 94;
+            this.cboCity.TooltipText = "";
+            this.cboCity.SelectedIndexChanged += new System.EventHandler(this.cboCity_SelectedIndexChanged);
+            // 
+            // lblBorough
+            // 
+            this.lblBorough.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblBorough.AutoSize = true;
+            this.lblBorough.Location = new System.Drawing.Point(333, 448);
+            this.lblBorough.Name = "lblBorough";
+            this.lblBorough.Size = new System.Drawing.Size(50, 13);
+            this.lblBorough.TabIndex = 93;
+            this.lblBorough.Tag = "Label_SelectLifestyle_Borough";
+            this.lblBorough.Text = "Borough:";
+            this.lblBorough.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblDistrict
+            // 
+            this.lblDistrict.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDistrict.AutoSize = true;
+            this.lblDistrict.Location = new System.Drawing.Point(341, 421);
+            this.lblDistrict.Name = "lblDistrict";
+            this.lblDistrict.Size = new System.Drawing.Size(42, 13);
+            this.lblDistrict.TabIndex = 92;
+            this.lblDistrict.Tag = "Label_SelectLifestyle_District";
+            this.lblDistrict.Text = "District:";
+            this.lblDistrict.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblCity
+            // 
+            this.lblCity.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblCity.AutoSize = true;
+            this.lblCity.Location = new System.Drawing.Point(356, 394);
+            this.lblCity.Name = "lblCity";
+            this.lblCity.Size = new System.Drawing.Size(27, 13);
+            this.lblCity.TabIndex = 91;
+            this.lblCity.Tag = "Label_SelectLifestyle_City";
+            this.lblCity.Text = "City:";
+            this.lblCity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblComforts
             // 
@@ -885,77 +957,6 @@ namespace Chummer
             this.tlpQualityButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpQualityButtons.Size = new System.Drawing.Size(178, 29);
             this.tlpQualityButtons.TabIndex = 90;
-            // 
-            // lblCity
-            // 
-            this.lblCity.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblCity.AutoSize = true;
-            this.lblCity.Location = new System.Drawing.Point(356, 394);
-            this.lblCity.Name = "lblCity";
-            this.lblCity.Size = new System.Drawing.Size(27, 13);
-            this.lblCity.TabIndex = 91;
-            this.lblCity.Tag = "Label_SelectLifestyle_City";
-            this.lblCity.Text = "City:";
-            this.lblCity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblDistrict
-            // 
-            this.lblDistrict.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblDistrict.AutoSize = true;
-            this.lblDistrict.Location = new System.Drawing.Point(341, 421);
-            this.lblDistrict.Name = "lblDistrict";
-            this.lblDistrict.Size = new System.Drawing.Size(42, 13);
-            this.lblDistrict.TabIndex = 92;
-            this.lblDistrict.Tag = "Label_SelectLifestyle_District";
-            this.lblDistrict.Text = "District:";
-            this.lblDistrict.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblBoroigh
-            // 
-            this.lblBoroigh.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblBoroigh.AutoSize = true;
-            this.lblBoroigh.Location = new System.Drawing.Point(333, 448);
-            this.lblBoroigh.Name = "lblBoroigh";
-            this.lblBoroigh.Size = new System.Drawing.Size(50, 13);
-            this.lblBoroigh.TabIndex = 93;
-            this.lblBoroigh.Tag = "Label_SelectLifestyle_Borough";
-            this.lblBoroigh.Text = "Borough:";
-            this.lblBoroigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cboCity
-            // 
-            this.tlpMain.SetColumnSpan(this.cboCity, 3);
-            this.cboCity.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboCity.FormattingEnabled = true;
-            this.cboCity.Location = new System.Drawing.Point(389, 390);
-            this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(374, 21);
-            this.cboCity.TabIndex = 94;
-            this.cboCity.TooltipText = "";
-            this.cboCity.SelectedIndexChanged += new System.EventHandler(this.cboCity_SelectedIndexChanged);
-            // 
-            // cboDistrict
-            // 
-            this.tlpMain.SetColumnSpan(this.cboDistrict, 3);
-            this.cboDistrict.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboDistrict.FormattingEnabled = true;
-            this.cboDistrict.Location = new System.Drawing.Point(389, 417);
-            this.cboDistrict.Name = "cboDistrict";
-            this.cboDistrict.Size = new System.Drawing.Size(374, 21);
-            this.cboDistrict.TabIndex = 95;
-            this.cboDistrict.TooltipText = "";
-            this.cboDistrict.SelectedIndexChanged += new System.EventHandler(this.cboDistrict_SelectedIndexChanged);
-            // 
-            // cboBorough
-            // 
-            this.tlpMain.SetColumnSpan(this.cboBorough, 3);
-            this.cboBorough.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cboBorough.FormattingEnabled = true;
-            this.cboBorough.Location = new System.Drawing.Point(389, 444);
-            this.cboBorough.Name = "cboBorough";
-            this.cboBorough.Size = new System.Drawing.Size(374, 21);
-            this.cboBorough.TabIndex = 96;
-            this.cboBorough.TooltipText = "";
             // 
             // frmSelectLifestyleAdvanced
             // 
@@ -1045,7 +1046,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpQualityButtons;
         private Label lblCity;
         private Label lblDistrict;
-        private Label lblBoroigh;
+        private Label lblBorough;
         private ElasticComboBox cboCity;
         private ElasticComboBox cboDistrict;
         private ElasticComboBox cboBorough;

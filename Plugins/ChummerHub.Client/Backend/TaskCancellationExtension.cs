@@ -20,9 +20,9 @@ namespace ChummerHub.Client.Backend
                 return default;
             var tcs = new TaskCompletionSource<bool>();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
-                if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(true))
+                if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cancellationToken);
-            return await task.ConfigureAwait(true);
+            return await task;
         }
 
 
@@ -39,9 +39,9 @@ namespace ChummerHub.Client.Backend
                 return;
             var tcs = new TaskCompletionSource<bool>();
             using (cancellationToken.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
-                if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(true))
+                if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cancellationToken);
-            await task.ConfigureAwait(true);
+            await task;
         }
 
 
@@ -61,10 +61,10 @@ namespace ChummerHub.Client.Backend
             cts.CancelAfter(milliseconds);
             var tcs = new TaskCompletionSource<bool>();
             using (cts.Token.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
-                if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(true))
+                if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cts.Token);
             cts.Dispose();
-            return await task.ConfigureAwait(true);
+            return await task;
         }
 
 
@@ -83,10 +83,10 @@ namespace ChummerHub.Client.Backend
             cts.CancelAfter(milliseconds);
             var tcs = new TaskCompletionSource<bool>();
             using (cts.Token.Register(s => ((TaskCompletionSource<bool>)s).TrySetResult(true), tcs))
-                if (task != await Task.WhenAny(task, tcs.Task).ConfigureAwait(true))
+                if (task != await Task.WhenAny(task, tcs.Task))
                     throw new OperationCanceledException(cts.Token);
             cts.Dispose();
-            await task.ConfigureAwait(true);
+            await task;
         }
     }
 }

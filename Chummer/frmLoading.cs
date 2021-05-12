@@ -34,9 +34,11 @@ namespace Chummer
                 if (_strCharacterFile == value)
                     return;
                 _strCharacterFile = value;
-                if (Disposing || IsDisposed)
+                if (this.IsNullOrDisposed())
                     return;
-                this.DoThreadSafe(() => Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), _strCharacterFile));
+                string strDisplayText = string.Format(GlobalOptions.CultureInfo,
+                    LanguageManager.GetString("String_Loading_Pattern"), value);
+                this.DoThreadSafe(() => Text = strDisplayText, false);
             }
         }
 
@@ -54,13 +56,14 @@ namespace Chummer
         /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
         public void Reset(int intMaxProgressBarValue = 100)
         {
-            if (Disposing || IsDisposed)
+            if (this.IsNullOrDisposed())
                 return;
-            this.DoThreadSafe(() =>
+            string strNewText = LanguageManager.GetString("String_Initializing");
+            lblLoadingInfo.DoThreadSafe(() => lblLoadingInfo.Text = strNewText, false);
+            pgbLoadingProgress.DoThreadSafe(() =>
             {
                 pgbLoadingProgress.Value = 0;
                 pgbLoadingProgress.Maximum = intMaxProgressBarValue;
-                lblLoadingInfo.Text = LanguageManager.GetString("String_Initializing");
             });
         }
 
@@ -70,18 +73,15 @@ namespace Chummer
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
         public void PerformStep(string strStepName = "")
         {
-            if (Disposing || IsDisposed)
+            if (this.IsNullOrDisposed())
                 return;
             string strNewText = string.IsNullOrEmpty(strStepName)
                     ? LanguageManager.GetString("String_Loading")
                     : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
             strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo)
                           + '/' + pgbLoadingProgress.Maximum.ToString(GlobalOptions.CultureInfo) + ')';
-            this.DoThreadSafe(() =>
-            {
-                pgbLoadingProgress.PerformStep();
-                lblLoadingInfo.Text = strNewText;
-            });
+            lblLoadingInfo.DoThreadSafe(() => lblLoadingInfo.Text = strNewText, false);
+            pgbLoadingProgress.DoThreadSafe(() => pgbLoadingProgress.PerformStep(), false);
         }
     }
 }

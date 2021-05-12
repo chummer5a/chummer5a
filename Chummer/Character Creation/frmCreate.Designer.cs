@@ -3713,7 +3713,7 @@ namespace Chummer
             this.cmdLifeModule.Tag = "String_LifeModule";
             this.cmdLifeModule.Text = "Life Module";
             this.cmdLifeModule.UseVisualStyleBackColor = true;
-            this.cmdLifeModule.Visible = false;
+            this.cmdLifeModule.Visible = true;
             this.cmdLifeModule.Click += new System.EventHandler(this.cmdLifeModule_Click);
             // 
             // cmdDeleteQuality

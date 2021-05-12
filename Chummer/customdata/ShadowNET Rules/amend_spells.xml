@@ -68,10 +68,6 @@
     -->
     <!-- Begin Blood Magic -->
     <spell>
-      <name>Hemorrhage</name>
-      <hide />
-    </spell>
-    <spell>
       <name>Corps Cadavre</name>
       <hide />
     </spell>

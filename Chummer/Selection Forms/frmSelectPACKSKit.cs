@@ -90,14 +90,10 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
-
+            cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedValue = s_StrSelectCategory;
-
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
@@ -135,10 +131,7 @@ namespace Chummer
             }
             lstKit.Sort(CompareListItems.CompareNames);
             lstKits.BeginUpdate();
-            lstKits.DataSource = null;
-            lstKits.DataSource = lstKit;
-            lstKits.ValueMember = nameof(ListItem.Value);
-            lstKits.DisplayMember = nameof(ListItem.Name);
+            lstKits.PopulateWithListItems(lstKit);
             lstKits.EndUpdate();
 
             if (lstKit.Count == 0)

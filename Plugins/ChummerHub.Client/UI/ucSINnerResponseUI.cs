@@ -2,7 +2,7 @@ using System;
 using System.Windows.Forms;
 using Chummer;
 using UserControl = System.Windows.Forms.UserControl;
-using ChummerHub.Client.Model;
+using ChummerHub.Client.Sinners;
 
 namespace ChummerHub.Client.UI
 {

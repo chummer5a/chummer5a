@@ -149,13 +149,10 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
+            cboCategory.PopulateWithListItems(_lstCategory);
+            cboCategory.EndUpdate();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-
-            cboCategory.EndUpdate();
 
             if (!string.IsNullOrEmpty(DefaultSearchText))
             {
@@ -1098,9 +1095,7 @@ namespace Chummer
                 string strOldSelected = lstGear.SelectedValue?.ToString();
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
-                lstGear.ValueMember = nameof(ListItem.Value);
-                lstGear.DisplayMember = nameof(ListItem.Name);
-                lstGear.DataSource = lstGears;
+                lstGear.PopulateWithListItems(lstGears);
                 _blnLoading = blnOldLoading;
                 if (string.IsNullOrEmpty(strOldSelected))
                     lstGear.SelectedIndex = -1;

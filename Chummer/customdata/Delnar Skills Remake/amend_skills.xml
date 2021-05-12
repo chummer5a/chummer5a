@@ -451,7 +451,7 @@
       <specs>
         <spec>Artillery</spec>
         <spec>Energy</spec>
-        <spec>Rocket/Missile</spec>
+        <spec>Rocket/Missile Launchers</spec>
         <spec>Small Arms</spec>
       </specs>
       <source>SR5</source>
@@ -490,7 +490,7 @@
     </skill>
     <skill>
       <id>470d49b8-69b5-496a-8f28-349625c14859</id>
-      <name>Launcher Weapons</name>
+      <name>Projectile Launchers</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
       <default>True</default>
@@ -500,7 +500,6 @@
         <spec>Grapple Guns</spec>
         <spec>Grenade Launchers</spec>
         <spec>Harpoon Guns</spec>
-        <spec>Missile/Rocket Launchers</spec>
         <spec>Net Guns</spec>
       </specs>
       <source>SR5</source>

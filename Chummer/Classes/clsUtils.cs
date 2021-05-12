@@ -40,10 +40,21 @@ namespace Chummer
 #endif
         }
 
+        /// <summary>
+        /// Returns if we are running inside Visual Studio, e.g. if we are in the designer.
+        /// WARNING! Noticeably slow at runtime, do not use in functions that get called all the time!
+        /// </summary>
         public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv"; // Cannot cache this, otherwise it won't fire when the Designer is running
 
-        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime || IsRunningInVisualStudio;
+        /// <summary>
+        /// Returns if we are in VS's Designer.
+        /// WARNING! Will not work with WPF! Use in combination with Utils.IsRunningInVisualStudio for WPF controls running inside of WinForms.
+        /// </summary>
+        public static bool IsDesignerMode => LicenseManager.UsageMode == LicenseUsageMode.Designtime;
 
+        /// <summary>
+        /// Cached latest version of Chummer from its GitHub page.
+        /// </summary>
         public static Version CachedGitVersion { get; set; }
 
         /// <summary>

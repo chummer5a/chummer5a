@@ -1,11 +1,13 @@
 using System;
 using System.Windows.Forms;
 using Chummer;
+using ChummerHub.Client;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
+using ChummerHub.Client.Sinners;
 using Newtonsoft.Json;
 using NLog;
-using SINners.Models;
+
 
 namespace ChummerHub.Client.UI
 {
@@ -72,28 +74,20 @@ namespace ChummerHub.Client.UI
                         return;
                     }
                     //var body = client.GetUserByAuthorizationAsync().Result;
-                    using (var user = await client.GetUserByAuthorizationWithHttpMessagesAsync().ConfigureAwait(false))
+                    var body = await client.GetUserByAuthorizationAsync().ConfigureAwait(false);
                     {
-                        var body = user.Body;
+                     
                         if (body?.CallSuccess == true)
                         {
                             login = true;
                             Program.MainForm.Invoke(new Action(() =>
                             {
-                                SINnerVisibility tempvis;
-                                if (!string.IsNullOrEmpty(Settings.Default.SINnerVisibility))
+                                SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
+                                                           ?? new SINnerVisibility
                                 {
-                                    tempvis = JsonConvert.DeserializeObject<SINnerVisibility>(Settings.Default.SINnerVisibility);
-                                }
-                                else
-                                {
-                                    tempvis = new SINnerVisibility
-                                    {
-                                        IsGroupVisible = true,
-                                        IsPublic = true
-                                    };
-                                }
-
+                                    IsGroupVisible = true,
+                                    IsPublic = true
+                                };
                                 tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
                                 Close();
                             }));

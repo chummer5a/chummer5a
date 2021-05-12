@@ -4949,6 +4949,7 @@
             <category translate="Technocritter">Technocritters</category>
             <category translate="Schattengeister">Shadow Spirits</category>
             <category translate="Kriegsformen">Warforms</category>
+          <category translate="Extraplanare Reisende">Extraplanar Travelers</category>
         </categories>
         <metatypes>
             <metatype>
@@ -22589,32 +22590,6 @@
                 <altpage>123</altpage>
             </mentor>
             <mentor>
-                <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-                <name>Great Mother</name>
-                <translate>Great Mother</translate>
-                <choices>
-                    <choice>
-                        <name>+2 to First Aid</name>
-                        <translate>+2 Würfel für Proben auf Erste Hilfe</translate>
-                    </choice>
-                    <choice>
-                        <name>+2 to Medicine</name>
-                        <translate>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Magician: +2 dice for Health spells</name>
-                        <translate>Zauberer: +2 Würfel für Heilzauber</translate>
-                    </choice>
-                    <choice set="2">
-                        <name>Adept: 1 free level of Rapid Healing</name>
-                        <translate>Adept: 1 Stufe Beschleunigte Heilung gratis</translate>
-                    </choice>
-                </choices>
-                <altadvantage>Allgemein: +2 Würfel für Proben auf Erste Hilfe oder Medizin</altadvantage>
-                <altdisadvantage>Followers of the Great Mother are lovers and healers, not fighters. As a result, they suffer a –1 dice pool modifier for any combat-related actions (using a combat skill, or casting a spell from the Combat category).</altdisadvantage>
-                <altpage>33</altpage>
-            </mentor>
-            <mentor>
                 <id>a9f0231a-2354-44a9-864b-630bf3d58ddb</id>
                 <name>Coyote</name>
                 <translate>Kojote</translate>
@@ -22706,7 +22681,7 @@
             </mentor>
             <mentor translated="True">
                 <id>f892e9b9-c400-4519-9ce0-ca8e77be12c9</id>
-                <name>Klabautermann</name>
+                <name>Sea Kobold</name>
                 <translate>Klabautermann</translate>
                 <choices>
                     <choice>
@@ -22742,7 +22717,7 @@
             </mentor>
             <mentor translated="True">
                 <id>6eb6293e-5a64-4e46-94f6-4e828c160628</id>
-                <name>Wolpertinger</name>
+                <name>Jackalope</name>
                 <translate>Wolpertinger</translate>
                 <choices>
                     <choice>
@@ -37625,12 +37600,6 @@
                 <altpage>23</altpage>
             </spell>
             <spell>
-                <id>2c7be069-208e-41e4-b3cf-97c9fc480fbc</id>
-                <name>Hemorrhage</name>
-                <translate>Blutsturz</translate>
-                <altpage>95</altpage>
-            </spell>
-            <spell>
                 <id>eab0bcfd-9bf5-4482-9cca-2bdecb7f7b59</id>
                 <name>Hand of Glory</name>
                 <translate>Hand des Ruhms</translate>
@@ -38541,9 +38510,9 @@
                 <translate>Brockenhexen</translate>
                 <altpage>42</altpage>
             </tradition>
-            <tradition translated="True">
+            <tradition>
                 <id>da78c84d-0494-483e-a15e-c17ddf28f6aa</id>
-                <name>Faustianer</name>
+                <name>Faustian</name>
                 <translate>Faustianer</translate>
                 <altpage>45</altpage>
             </tradition>
@@ -42654,7 +42623,7 @@
             <category translate="Granatwerfer">Grenade Launchers</category>
             <category translate="Raketenwerfer">Missile Launchers</category>
             <category translate="Improvisierte Waffen">Improvised Weapons</category>
-            <category translate="Gewehre">Sporting Rifles</category>
+            <category translate="Sportgewehre">Sporting Rifles</category>
             <category translate="Biowaffen">Bio-Weapon</category>
             <category translate="Cyberwaffen">Cyberweapon</category>
             <category translate="Unterlaufwaffen">Underbarrel Weapons</category>

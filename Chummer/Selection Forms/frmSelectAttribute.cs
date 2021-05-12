@@ -46,9 +46,7 @@ namespace Chummer
             }
 
             cboAttribute.BeginUpdate();
-            cboAttribute.ValueMember = nameof(ListItem.Value);
-            cboAttribute.DisplayMember = nameof(ListItem.Name);
-            cboAttribute.DataSource = _lstAttributes;
+            cboAttribute.PopulateWithListItems(_lstAttributes);
             if (_lstAttributes.Count >= 1)
                 cboAttribute.SelectedIndex = 0;
             else

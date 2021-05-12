@@ -5522,7 +5522,7 @@ namespace Chummer.Classes
             Log.Info("blackmarketdiscount = " + bonusNode.OuterXml);
             XPathNodeIterator nodeList = _objCharacter.LoadDataXPath("options.xml").Select("/chummer/blackmarketpipelinecategories/category");
             SelectedValue = string.Empty;
-            if (nodeList?.Count > 0)
+            if (nodeList.Count > 0)
             {
                 using (frmSelectItem frmPickItem = new frmSelectItem
                 {
@@ -5588,8 +5588,8 @@ namespace Chummer.Classes
 
             //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Options.BookXPath() + ')' + SkillFilter(filter) + "]");
 
-            List<ListItem> lstArmors = new List<ListItem>(objXmlNodeList?.Count ?? 0);
-            if (objXmlNodeList?.Count > 0)
+            List<ListItem> lstArmors = new List<ListItem>(objXmlNodeList.Count);
+            if (objXmlNodeList.Count > 0)
             {
                 foreach (XPathNavigator objNode in objXmlNodeList)
                 {
@@ -5650,8 +5650,8 @@ namespace Chummer.Classes
                     strCategory, _objCharacter.Options.BookXPath())
                 : "/chummer/cyberwares/cyberware[(" + _objCharacter.Options.BookXPath() + ")]");
 
-            List<ListItem> list = new List<ListItem>(objXmlNodeList?.Count ?? 0);
-            if (objXmlNodeList?.Count > 0)
+            List<ListItem> list = new List<ListItem>(objXmlNodeList.Count);
+            if (objXmlNodeList.Count > 0)
             {
                 foreach (XPathNavigator objNode in objXmlNodeList)
                 {
@@ -6055,6 +6055,9 @@ namespace Chummer.Classes
                     {
                         if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + "]");
+                        if (objXmlSelectedQuality == null){
+                            Utils.BreakIfDebug();
+                        }
                         string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
 
                         string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;

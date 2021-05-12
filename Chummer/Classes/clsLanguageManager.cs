@@ -96,17 +96,19 @@ namespace Chummer
         #endregion
 
         #region Methods
-       
+
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
         /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
-        public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "")
+        /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
+        public static void TranslateWinForm(this Control objObject, string strIntoLanguage = "", bool blnDoResumeLayout = true)
         {
             if (Utils.IsDesignerMode)
                 return;
-            objObject.SuspendLayout();
+            if (blnDoResumeLayout)
+                objObject.SuspendLayout();
             if (string.IsNullOrEmpty(strIntoLanguage))
                 strIntoLanguage = GlobalOptions.Language;
             if (LoadLanguage(strIntoLanguage))
@@ -118,7 +120,8 @@ namespace Chummer
             }
             else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
                 UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
-            objObject.ResumeLayout();
+            if (blnDoResumeLayout)
+                objObject.ResumeLayout();
         }
 
         public static bool LoadLanguage(string strLanguage)
@@ -915,33 +918,34 @@ namespace Chummer
                     });
                 }
             }
-            if (!objCancellationToken.IsCancellationRequested)
+
+            if (objCancellationToken.IsCancellationRequested)
+                return strReturn;
+            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
+                in s_LstAXPathsToSearch)
             {
-                foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
-                    in s_LstAXPathsToSearch)
+                Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
                 {
-                    Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                    foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
+                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
+                        .Select(objXPathPair.Item2))
                     {
-                        foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
-                            .Select(objXPathPair.Item2))
-                        {
-                            if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
-                                return;
-                            if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                continue;
-                            string strOriginal = objXPathPair.Item3(objNode);
-                            if (string.IsNullOrEmpty(strOriginal))
-                                continue;
-                            objState.Break();
-                            objCancellationTokenSource.Cancel();
-                            lock (strReturnLock)
-                                strReturn = strOriginal;
-                            break;
-                        }
-                    });
-                }
+                        if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
+                            return;
+                        if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                            continue;
+                        string strOriginal = objXPathPair.Item3(objNode);
+                        if (string.IsNullOrEmpty(strOriginal))
+                            continue;
+                        objState.Break();
+                        objCancellationTokenSource.Cancel();
+                        lock (strReturnLock)
+                            strReturn = strOriginal;
+                        break;
+                    }
+                });
             }
+
             return strReturn;
         }
 
@@ -949,9 +953,7 @@ namespace Chummer
         {
             if (cboLanguage == null)
                 throw new ArgumentNullException(nameof(cboLanguage));
-            string strDefaultSheetLanguage = GlobalOptions.Language;
-            if (defaultCulture != null)
-                strDefaultSheetLanguage = defaultCulture.Name.ToLowerInvariant();
+            string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.Language;
             int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
             if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)
             {
@@ -961,21 +963,14 @@ namespace Chummer
             }
 
             cboLanguage.BeginUpdate();
-            cboLanguage.ValueMember = "Value";
-            cboLanguage.DisplayMember = "Name";
-            cboLanguage.DataSource = GetSheetLanguageList(lstCharacters);
+            cboLanguage.PopulateWithListItems(GetSheetLanguageList(lstCharacters));
             cboLanguage.SelectedValue = strDefaultSheetLanguage;
             if (cboLanguage.SelectedIndex == -1)
-            {
-                if (defaultCulture != null)
-                    cboLanguage.SelectedValue = defaultCulture.Name.ToLowerInvariant();
-                else
-                    cboLanguage.SelectedValue = GlobalOptions.DefaultLanguage;
-            }
+                cboLanguage.SelectedValue = defaultCulture?.Name.ToLowerInvariant() ?? GlobalOptions.DefaultLanguage;
             cboLanguage.EndUpdate();
         }
 
-        public static IList<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
+        public static List<ListItem> GetSheetLanguageList(IEnumerable<Character> lstCharacters = null)
         {
             List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");

@@ -1071,6 +1071,28 @@
       </spirits>
     </tradition>
     <!-- End Region -->
+    <!-- Region Grimmes Erwachen -->
+    <tradition>
+      <id>deea732f-5768-4d13-8796-c93d0000c5c6</id>
+      <name>Storyteller</name>
+      <drain>WIL + CHA</drain>
+      <source>GE</source>
+      <page>68</page>
+      <bonus>
+        <spellcategory>
+          <name>Illusion</name>
+          <val>2</val>
+        </spellcategory>
+      </bonus>
+      <spirits>
+        <spiritcombat>Guardian Spirit</spiritcombat>
+        <spiritdetection>Spirit of Beasts</spiritdetection>
+        <spirithealth>Task Spirit</spirithealth>
+        <spiritillusion>Guidance Spirit</spiritillusion>
+        <spiritmanipulation>Spirit of Man</spiritmanipulation>
+      </spirits>
+    </tradition>
+    <!-- End Region -->
   </traditions>
   <spirits>
     <!-- Region Corebook spirits-->

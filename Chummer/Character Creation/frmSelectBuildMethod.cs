@@ -49,9 +49,7 @@ namespace Chummer
             }
             lstGameplayOptions.Sort(CompareListItems.CompareNames);
             cboCharacterOption.BeginUpdate();
-            cboCharacterOption.ValueMember = nameof(ListItem.Value);
-            cboCharacterOption.DisplayMember = nameof(ListItem.Name);
-            cboCharacterOption.DataSource = lstGameplayOptions;
+            cboCharacterOption.PopulateWithListItems(lstGameplayOptions);
             if (blnUseCurrentValues)
             {
                 cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[_objCharacter.CharacterOptionsKey];
@@ -156,7 +154,7 @@ namespace Chummer
             }
             lstGameplayOptions.Sort(CompareListItems.CompareNames);
             cboCharacterOption.BeginUpdate();
-            cboCharacterOption.DataSource = lstGameplayOptions;
+            cboCharacterOption.PopulateWithListItems(lstGameplayOptions);
             cboCharacterOption.SelectedValue = objOldSelected;
             if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
                 cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];

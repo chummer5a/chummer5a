@@ -102,7 +102,7 @@ namespace Chummer
             cmsContact.Show(imgLink, imgLink.Left - 700, imgLink.Top);
         }
 
-        private async void tsContactOpen_Click(object sender, EventArgs e)
+        private void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objContact.LinkedCharacter != null)
             {
@@ -111,7 +111,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName).ConfigureAwait(false);
+                        objOpenCharacter = Program.MainForm.LoadCharacter(_objContact.LinkedCharacter.FileName);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -234,9 +234,7 @@ namespace Chummer
             lstMetatypes.Sort(CompareListItems.CompareNames);
 
             cboMetatype.BeginUpdate();
-            cboMetatype.ValueMember = nameof(ListItem.Value);
-            cboMetatype.DisplayMember = nameof(ListItem.Name);
-            cboMetatype.DataSource = lstMetatypes;
+            cboMetatype.PopulateWithListItems(lstMetatypes);
             cboMetatype.EndUpdate();
         }
 

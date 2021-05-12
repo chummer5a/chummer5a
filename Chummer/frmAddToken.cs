@@ -19,7 +19,6 @@
  using System;
  using System.IO;
  using System.Linq;
- using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -43,21 +42,21 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private async void OpenFile(object sender, EventArgs e)
+        private void OpenFile(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All")
             })
                 if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    await LoadCharacter(openFileDialog.FileName).ConfigureAwait(false);
+                    LoadCharacter(openFileDialog.FileName);
         }
 
         /// <summary>
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private async Task<bool> LoadCharacter(string fileName)
+        private void LoadCharacter(string fileName)
         {
             if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
             {
@@ -67,12 +66,11 @@ namespace Chummer
                 };
                 using (new CursorWait(this))
                 {
-                    bool blnLoadSuccessful = await objCharacter.Load().ConfigureAwait(false);
-                    if (!blnLoadSuccessful)
+                    if (!objCharacter.Load())
                     {
                         // TODO edward setup error page
                         objCharacter.Dispose();
-                        return false; // we obviously cannot init
+                        return; // we obviously cannot init
                     }
 
                     nudInit.Value = objCharacter.InitiativeDice;
@@ -87,10 +85,7 @@ namespace Chummer
 
                     _character = objCharacter;
                 }
-
-                return true;
             }
-            return false;
         }
 
         /// <summary>

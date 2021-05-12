@@ -21,6 +21,14 @@ Application Changes:
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 - Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
 - Added the ability to track sustained spells and complex forms in the Career mode. They are found in their respective tabs. Psyche is also supported.
+- Added the ability to specify a city, district, and borough for a lifestyle.
+- If a character sheet is printed/exported in a language other than the one with which Chummer is being used, Chummer now attemtps to translate the names of gear, vehicle, and weapon locations.
+- Generating character sheets in languages where commas are used as decimal separators and/or periods are used as number group separators no longer sometimes causes the generator to stall out and silently crash. Fixes #4415.
+- When saving a character as created, the starting nuyen screen now allows the user to select which lifestyle to use for generating their starting nuyen. It now also includes a Cancel button and a button for automatically rolling dice for the chosen lifestyle.
+- Closing out the starting nuyen screen no longer causes weird issues with the character's saved Nuyen or saved Karma and also no longer prompts the user to save a created character.
+- Fixed life modules button not being visible in create mode.
+- Critter power karma costs are now properly retained when loading a saved character.
+- Enhanced use of weapondetails to allow using it in allof, oneof or group nodes.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -30,6 +38,14 @@ Data Changes:
 - Smartlink from the Shadowrun 2050 ruleset now properly gives a +2 dicepool bonus when using smartguns.
 - When creating spirit critters with forces not divisible by 3, the number of optional powers they get is now properly based on rounding the result of the division down instead of up. Fixes #4356.
 - All spirits now properly have a starting and maximum Essence equal to their Force instead of to 6. Fixes #4358.
+- Extraplanar Travelers is now a full category of selectable critters. Fixes #4394.
+- Changed Imbue Item spell from SG to properly require being an adept, mystic adept or having the Advanced Ritual Casting art.
+- Off-Road Tires properly cost 400 Nuyen per tire and have an availability of 6.
+- Added the Grimmes Erwachen German splatbook and the Storyteller tradition statted in it.
+- Fixed page reference for the Extra Fragile critter power. Closes #4420
+- Fixed incorrect quality names for the Corp Teen, Rising Star, Company Troubleshooter, Tour of Duty (Desert Wars), In the Thick and Gone Native life modules that prevented them from being taken correctly. Closes #4386
+- The Hemorrhage critter power no longer also has an entry as a learnable ritual.
+- Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
 
 Changed/New Strings:
 - String_ContactPoints
@@ -117,6 +133,10 @@ Changed/New Strings:
 - Label_NetHits
 - Label_Options_DicePenaltySustaining
 - Tip_Skill_Sustain
+- Label_SelectLifestyle_Borough
+- Label_SelectLifestyle_District
+- Label_SelectLifestyle_City
+- Label_LifestyleNuyen_SelectLifestyle
 
 Build 214
 Application Fixes:

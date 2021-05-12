@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using Chummer.Annotations;
 using NLog;
 
 namespace Chummer
@@ -35,18 +36,25 @@ namespace Chummer
         /// </summary>
         /// <param name="objControl">Parent control from which Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="blnSync">Whether to wait for the invocation to complete (True) or to keep going without waiting (False).</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void DoThreadSafe(this Control objControl, Action funcToRun)
+        public static void DoThreadSafe(this Control objControl, Action funcToRun, bool blnSync = true)
         {
-            if (objControl == null || funcToRun == null)
-                return;
-            if (objControl.Disposing || objControl.IsDisposed)
+            if (objControl.IsNullOrDisposed() || funcToRun == null)
                 return;
             try
             {
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                 if (myControlCopy.InvokeRequired)
-                    myControlCopy.Invoke(funcToRun);
+                {
+                    IAsyncResult objResult = myControlCopy.BeginInvoke(funcToRun);
+                    if (blnSync)
+                    {
+                        // Next to commands ensure easier debugging, prevent spamming of invokes to the UI thread that would cause lock-ups, and ensure safe invoke handle disposal
+                        objResult.AsyncWaitHandle.WaitOne();
+                        objResult.AsyncWaitHandle.Close();
+                    }
+                }
                 else
                     funcToRun.Invoke();
             }
@@ -147,12 +155,57 @@ namespace Chummer
             }
             objControl.DataBindings.Add(new NegatableBinding(strPropertyName, objDataSource, strDataMember, true));
         }
+
+        /// <summary>
+        /// Syntactic sugar for what is effectively a null check for disposable WinForms controls.
+        /// </summary>
+        /// <param name="objControl"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNullOrDisposed([CanBeNull]this Control objControl)
+        {
+            return objControl == null || objControl.Disposing || objControl.IsDisposed;
+        }
         #endregion
 
         #region ComboBox Extensions
-        public static bool IsInitalized(this ComboBox cboThis, bool isLoading)
+        public static bool IsInitialized(this ComboBox cboThis, bool isLoading)
         {
             return (isLoading || string.IsNullOrEmpty(cboThis?.SelectedValue?.ToString()));
+        }
+
+        public static void PopulateWithListItems(this ComboBox cboThis, IReadOnlyList<ListItem> lstItems)
+        {
+            if (ReferenceEquals(cboThis.DataSource, lstItems))
+                return;
+            if (cboThis.DataSource == null || !(cboThis.DataSource is IReadOnlyList<ListItem> lstCurrentList))
+            {
+                cboThis.ValueMember = nameof(ListItem.Value);
+                cboThis.DisplayMember = nameof(ListItem.Name);
+            }
+            // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+            else if (lstCurrentList.SequenceEqual(lstItems))
+                return;
+            // In the case of dropdown lists, binding multiple ComboBoxes to the same DataSource will also cause all selected values to sync up between them.
+            // This means the code we use has to set the DataSources to new lists instead of the same one
+            cboThis.DataSource = cboThis.DropDownStyle == ComboBoxStyle.DropDownList ? lstItems.ToList() : lstItems;
+        }
+        #endregion
+
+        #region ListBox Extensions
+        public static void PopulateWithListItems(this ListBox lstThis, IReadOnlyList<ListItem> lstItems)
+        {
+            if (ReferenceEquals(lstThis.DataSource, lstItems))
+                return;
+            if (lstThis.DataSource == null || !(lstThis.DataSource is IReadOnlyList<ListItem> lstCurrentList))
+            {
+                lstThis.ValueMember = nameof(ListItem.Value);
+                lstThis.DisplayMember = nameof(ListItem.Name);
+            }
+            // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+            else if (lstCurrentList.SequenceEqual(lstItems))
+                return;
+            lstThis.DataSource = lstItems;
         }
         #endregion
 

@@ -182,9 +182,7 @@ namespace Chummer
             string strOldSelected = lstArt.SelectedValue?.ToString();
             _blnLoading = true;
             lstArt.BeginUpdate();
-            lstArt.ValueMember = nameof(ListItem.Value);
-            lstArt.DisplayMember = nameof(ListItem.Name);
-            lstArt.DataSource = lstArts;
+            lstArt.PopulateWithListItems(lstArts);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstArt.SelectedValue = strOldSelected;

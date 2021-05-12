@@ -235,7 +235,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal async void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity)
+        internal void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity)
         {
             if (xmlSkillNode == null)
                 return;
@@ -436,7 +436,7 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                XPathNavigator skillsDocXPath = await _objCharacter.LoadDataXPathAsync("skills.xml");
+                XPathNavigator skillsDocXPath = _objCharacter.LoadDataXPath("skills.xml");
                 HashSet<string> hashSkillGuids = new HashSet<string>();
                 foreach (XPathNavigator node in skillsDocXPath.Select(
                     string.Format(GlobalOptions.InvariantCultureInfo, "/chummer/skills/skill[not(exotic) and ({0}){1}]",
@@ -446,7 +446,7 @@ namespace Chummer.Backend.Skills
                     if (!string.IsNullOrEmpty(strName))
                         hashSkillGuids.Add(strName);
                 }
-                XmlDocument skillsDoc = await _objCharacter.LoadDataAsync("skills.xml");
+                XmlDocument skillsDoc = _objCharacter.LoadData("skills.xml");
                 foreach (string skillId in hashSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                 {
                     XmlNode objXmlSkillNode = skillsDoc.SelectSingleNode("/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
@@ -1147,6 +1147,34 @@ namespace Chummer.Backend.Skills
                     return " and (" + strName + ')';
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eFilter), eFilter, null);
+            }
+        }
+
+        private IReadOnlyList<ListItem> _lstDefaultKnowledgeSkills;
+
+        public IReadOnlyList<ListItem> MyDefaultKnowledgeSkills
+        {
+            get
+            {
+                if (GlobalOptions.LiveCustomData || _lstDefaultKnowledgeSkills == null)
+                {
+                    return _lstDefaultKnowledgeSkills = KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter);
+                }
+                return _lstDefaultKnowledgeSkills;
+            }
+        }
+
+        private IReadOnlyList<ListItem> _lstKnowledgeTypes;
+
+        public IReadOnlyList<ListItem> MyKnowledgeTypes
+        {
+            get
+            {
+                if (GlobalOptions.LiveCustomData || _lstKnowledgeTypes == null)
+                {
+                    return _lstKnowledgeTypes = KnowledgeSkill.KnowledgeTypes(_objCharacter);
+                }
+                return _lstKnowledgeTypes;
             }
         }
 

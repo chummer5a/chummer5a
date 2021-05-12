@@ -1,8 +1,8 @@
 using System;
 using System.Windows.Forms;
-using SINners.Models;
 using Chummer.Plugins;
 using ChummerHub.Client.Backend;
+using ChummerHub.Client.Sinners;
 using Chummer;
 
 
@@ -51,8 +51,8 @@ namespace ChummerHub.Client.UI
                 cboLanguage1.SelectedValue = !string.IsNullOrEmpty(MyGroup.Language)
                     ? MyGroup.Language
                     : GlobalOptions.Language;
-                if (MyGroup.IsPublic.HasValue)
-                    cbIsPublic.Checked = MyGroup.IsPublic.Value;
+                if (MyGroup.IsPublic)
+                    cbIsPublic.Checked = MyGroup.IsPublic;
             }
 
             tbGroupCreatorUsername.ReadOnly = true;
@@ -95,7 +95,7 @@ namespace ChummerHub.Client.UI
         private SINnerGroup SaveValues(SINnerGroup myGroup)
         {
             if (myGroup == null)
-                myGroup = new SINnerGroup();
+                myGroup = new SINnerGroup(null);
 
             myGroup.Groupname = tbGroupname.Text;
             myGroup.Id = Guid.TryParse(tbGroupId.Text, out Guid id) ? id : Guid.NewGuid();

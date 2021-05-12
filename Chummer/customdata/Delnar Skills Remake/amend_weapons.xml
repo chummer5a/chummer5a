@@ -59,7 +59,7 @@
       <spec>Machine Guns</spec>
     </weapon>
     <weapon xpathfilter="category = 'Grenade Launchers' or ammocategory = 'Grenade Launchers' or (category = 'Gear' and (contains(spec,'Grenade Launcher') or contains(range,'Grenade Launcher')))">
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
       <spec>Grenade Launchers</spec>
     </weapon>
     <weapon xpathfilter="category = 'Bows'">
@@ -106,8 +106,8 @@
       <spec2>Revolvers</spec2>
     </weapon>
     <weapon xpathfilter="category = 'Missile Launchers' or (category = 'Gear' and (starts-with(name,'Missile') or starts-with(name,'Rocket')))">
-      <spec>Missile/Rocket Launchers</spec>
-      <useskill>Launcher Weapons</useskill>
+      <spec>Rocket/Missile Launchers</spec>
+      <useskill>Gunnery</useskill>
     </weapon>
     <weapon xpathfilter="category = 'Gear' and starts-with(name,'Grenade')">
       <spec>Grenades</spec>
@@ -234,7 +234,7 @@
     <weapon>
       <name>Aquadyne Shark-XS Harpoon Gun</name>
       <spec>Harpoon Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Ares Giantslayer Slingshot</name>
@@ -245,7 +245,7 @@
     <weapon>
       <name>Standard Harpoon Gun</name>
       <spec>Harpoon Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Ballistic Shield</name>
@@ -347,7 +347,7 @@
     <weapon>
       <name>Grapple Gun</name>
       <category>Grapple Guns</category>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
       <spec>Grapple Guns</spec>
     </weapon>
     <weapon>
@@ -357,7 +357,7 @@
     </weapon>
     <weapon>
       <name>Micro Flare Launcher</name>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
       <spec>Flare Launchers</spec>
     </weapon>
     <weapon>
@@ -530,13 +530,13 @@
       <name>SA Retarius Net Gun</name>
       <category>Net Guns</category>
       <spec>Net Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>SA Retarius Net Gun XL</name>
       <category>Net Guns</category>
       <spec>Net Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Tiffani Elegance Shooting Bracers</name>
@@ -602,7 +602,7 @@
     <weapon>
       <name>Grapple Fist</name>
       <spec>Grapple Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <!-- End Region -->
     <!--Region Chrome Flesh Bio-Weapons -->
@@ -616,7 +616,7 @@
     <weapon>
       <name>Tactical Grapple Gun</name>
       <spec>Grapple Guns</spec>
-      <useskill>Launcher Weapons</useskill>
+      <useskill>Projectile Launchers</useskill>
     </weapon>
     <weapon>
       <name>Sapphire Knife</name>

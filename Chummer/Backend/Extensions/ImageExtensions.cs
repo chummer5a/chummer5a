@@ -101,7 +101,7 @@ namespace Chummer
                     using (MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length))
                     {
                         await objStream.WriteAsync(bytImage, 0, bytImage.Length)
-                            .ContinueWith(x => imgReturn = Image.FromStream(objStream, true)).ConfigureAwait(false);
+                            .ContinueWith(x => imgReturn = Image.FromStream(objStream, true));
                     }
                 }
             }
@@ -122,7 +122,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<Bitmap> ToImageAsync(this string strBase64String, PixelFormat eFormat)
         {
-            using (Image imgInput = await strBase64String.ToImageAsync().ConfigureAwait(false))
+            using (Image imgInput = await strBase64String.ToImageAsync())
             {
                 Bitmap bmpInput = new Bitmap(imgInput);
                 if (bmpInput.PixelFormat == eFormat)

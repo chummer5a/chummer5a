@@ -254,7 +254,7 @@ namespace Chummer
             this.mnuStickyMRU0.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU0.Text = "[StickyMRU0]";
             this.mnuStickyMRU0.Visible = false;
-            this.mnuStickyMRU0.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU0.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU0.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU1
@@ -264,7 +264,7 @@ namespace Chummer
             this.mnuStickyMRU1.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU1.Text = "[StickyMRU1]";
             this.mnuStickyMRU1.Visible = false;
-            this.mnuStickyMRU1.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU1.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU2
@@ -274,7 +274,7 @@ namespace Chummer
             this.mnuStickyMRU2.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU2.Text = "[StickyMRU2]";
             this.mnuStickyMRU2.Visible = false;
-            this.mnuStickyMRU2.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU2.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU3
@@ -284,7 +284,7 @@ namespace Chummer
             this.mnuStickyMRU3.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU3.Text = "[StickyMRU3]";
             this.mnuStickyMRU3.Visible = false;
-            this.mnuStickyMRU3.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU3.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU4
@@ -294,7 +294,7 @@ namespace Chummer
             this.mnuStickyMRU4.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU4.Text = "[StickyMRU4]";
             this.mnuStickyMRU4.Visible = false;
-            this.mnuStickyMRU4.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU4.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU5
@@ -304,7 +304,7 @@ namespace Chummer
             this.mnuStickyMRU5.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU5.Text = "[StickyMRU5]";
             this.mnuStickyMRU5.Visible = false;
-            this.mnuStickyMRU5.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU5.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU5.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU6
@@ -314,7 +314,7 @@ namespace Chummer
             this.mnuStickyMRU6.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU6.Text = "[StickyMRU6]";
             this.mnuStickyMRU6.Visible = false;
-            this.mnuStickyMRU6.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU6.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU6.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU7
@@ -324,7 +324,7 @@ namespace Chummer
             this.mnuStickyMRU7.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU7.Text = "[StickyMRU7]";
             this.mnuStickyMRU7.Visible = false;
-            this.mnuStickyMRU7.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU7.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU7.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU8
@@ -334,7 +334,7 @@ namespace Chummer
             this.mnuStickyMRU8.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU8.Text = "[StickyMRU8]";
             this.mnuStickyMRU8.Visible = false;
-            this.mnuStickyMRU8.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU8.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU8.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuStickyMRU9
@@ -344,7 +344,7 @@ namespace Chummer
             this.mnuStickyMRU9.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU9.Text = "[StickyMRU9]";
             this.mnuStickyMRU9.Visible = false;
-            this.mnuStickyMRU9.Click += new System.EventHandler(this.mnuStickyMRU_Click);
+            this.mnuStickyMRU9.Click += new System.EventHandler(this.mnuMRU_Click);
             this.mnuStickyMRU9.MouseDown += new System.Windows.Forms.MouseEventHandler(this.mnuStickyMRU_MouseDown);
             // 
             // mnuMRU0

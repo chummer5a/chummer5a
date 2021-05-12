@@ -1,8 +1,9 @@
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using Chummer;
 
-namespace SINners.Models
+namespace ChummerHub.Client.Sinners
 {
     public partial class SINner
     {
@@ -39,12 +40,14 @@ namespace SINners.Models
             }
         }
 
-        public CharacterCache GetCharacterCache()
+        public async Task<CharacterCache> GetCharacterCache()
         {
             string strPath = FilePath;
             if (!string.IsNullOrEmpty(strPath))
-                return new CharacterCache(strPath);
-
+            {
+                CharacterCache objReturn = new CharacterCache();
+                return await objReturn.LoadFromFileAsync(strPath).ContinueWith(x => objReturn);
+            }
             return null;
         }
     }

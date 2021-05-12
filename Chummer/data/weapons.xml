@@ -7138,8 +7138,8 @@
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>6(c)</ammo>
-      <avail>0</avail>
-      <cost>0</cost>
+      <avail>10F</avail>
+      <cost>3500</cost>
       <source>SR5</source>
       <page>428</page>
       <accessorymounts>
@@ -7218,8 +7218,8 @@
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(ml)</ammo>
-      <avail>0</avail>
-      <cost>0</cost>
+      <avail>8R</avail>
+      <cost>600</cost>
       <source>SR5</source>
       <page>449</page>
       <range>Light Crossbows</range>
@@ -17210,12 +17210,26 @@
       </forbidden>
       <rating>0</rating>
       <required>
-        <weapondetails>
-          <OR>
-            <ammo operation="contains">(cy)</ammo>
-            <ammo operation="contains">(d)</ammo>
-          </OR>
-        </weapondetails>
+        <oneof>
+          <group>
+            <weapondetails>
+              <OR>
+                <name>Enfield AS-7</name>
+                <name>Enfield AS-7 (2050)</name>
+              </OR>
+            </weapondetails>
+            <grouponeof>
+              <accessory>Drum Magazine, 24-round</accessory>
+              <accessory>Drum Magazine, 32-round</accessory>
+            </grouponeof>
+          </group>
+          <weapondetails>
+            <OR>
+              <ammo operation="contains">(cy)</ammo>
+              <ammo operation="contains">(d)</ammo>
+            </OR>
+          </weapondetails>
+        </oneof>
       </required>
     </accessory>
     <accessory>

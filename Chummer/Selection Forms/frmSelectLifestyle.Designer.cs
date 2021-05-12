@@ -50,7 +50,7 @@ namespace Chummer
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblCity = new System.Windows.Forms.Label();
             this.lblDistrict = new System.Windows.Forms.Label();
-            this.lblBoroigh = new System.Windows.Forms.Label();
+            this.lblBorough = new System.Windows.Forms.Label();
             this.cboCity = new Chummer.ElasticComboBox();
             this.cboDistrict = new Chummer.ElasticComboBox();
             this.cboBorough = new Chummer.ElasticComboBox();
@@ -311,7 +311,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.tlpButtons, 1, 10);
             this.tlpMain.Controls.Add(this.lblCity, 1, 6);
             this.tlpMain.Controls.Add(this.lblDistrict, 1, 7);
-            this.tlpMain.Controls.Add(this.lblBoroigh, 1, 8);
+            this.tlpMain.Controls.Add(this.lblBorough, 1, 8);
             this.tlpMain.Controls.Add(this.cboCity, 2, 6);
             this.tlpMain.Controls.Add(this.cboDistrict, 2, 7);
             this.tlpMain.Controls.Add(this.cboBorough, 2, 8);
@@ -393,21 +393,21 @@ namespace Chummer
             this.lblDistrict.Text = "District:";
             this.lblDistrict.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblBoroigh
+            // lblBorough
             // 
-            this.lblBoroigh.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblBoroigh.AutoSize = true;
-            this.lblBoroigh.Location = new System.Drawing.Point(320, 214);
-            this.lblBoroigh.Name = "lblBoroigh";
-            this.lblBoroigh.Size = new System.Drawing.Size(50, 13);
-            this.lblBoroigh.TabIndex = 29;
-            this.lblBoroigh.Tag = "Label_SelectLifestyle_Borough";
-            this.lblBoroigh.Text = "Borough:";
-            this.lblBoroigh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblBorough.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblBorough.AutoSize = true;
+            this.lblBorough.Location = new System.Drawing.Point(320, 214);
+            this.lblBorough.Name = "lblBorough";
+            this.lblBorough.Size = new System.Drawing.Size(50, 13);
+            this.lblBorough.TabIndex = 29;
+            this.lblBorough.Tag = "Label_SelectLifestyle_Borough";
+            this.lblBorough.Text = "Borough:";
+            this.lblBorough.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cboCity
             // 
-            this.cboCity.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboCity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCity.FormattingEnabled = true;
             this.cboCity.Location = new System.Drawing.Point(376, 156);
             this.cboCity.Name = "cboCity";
@@ -418,7 +418,7 @@ namespace Chummer
             // 
             // cboDistrict
             // 
-            this.cboDistrict.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboDistrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboDistrict.FormattingEnabled = true;
             this.cboDistrict.Location = new System.Drawing.Point(376, 183);
             this.cboDistrict.Name = "cboDistrict";
@@ -429,7 +429,7 @@ namespace Chummer
             // 
             // cboBorough
             // 
-            this.cboBorough.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cboBorough.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboBorough.FormattingEnabled = true;
             this.cboBorough.Location = new System.Drawing.Point(376, 210);
             this.cboBorough.Name = "cboBorough";
@@ -490,7 +490,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpButtons;
         private System.Windows.Forms.Label lblCity;
         private System.Windows.Forms.Label lblDistrict;
-        private System.Windows.Forms.Label lblBoroigh;
+        private System.Windows.Forms.Label lblBorough;
         private ElasticComboBox cboCity;
         private ElasticComboBox cboDistrict;
         private ElasticComboBox cboBorough;

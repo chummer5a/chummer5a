@@ -55,7 +55,9 @@ namespace Chummer
             // Populate the Lifestyle ComboBoxes.
             List<ListItem> lstLifestyle = new List<ListItem>();
             using (XmlNodeList xmlLifestyleList = _objXmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Options.BookXPath() + "]"))
+            {
                 if (xmlLifestyleList?.Count > 0)
+                {
                     foreach (XmlNode objXmlLifestyle in xmlLifestyleList)
                     {
                         string strLifeStyleId = objXmlLifestyle["id"]?.InnerText;
@@ -67,11 +69,11 @@ namespace Chummer
                             lstLifestyle.Add(new ListItem(strLifeStyleId, objXmlLifestyle["translate"]?.InnerText ?? strName));
                         }
                     }
+                }
+            }
 
             cboLifestyle.BeginUpdate();
-            cboLifestyle.ValueMember = nameof(ListItem.Value);
-            cboLifestyle.DisplayMember = nameof(ListItem.Name);
-            cboLifestyle.DataSource = lstLifestyle;
+            cboLifestyle.PopulateWithListItems(lstLifestyle);
 
             if (!string.IsNullOrEmpty(strSelectedId))
                 cboLifestyle.SelectedValue = strSelectedId;
@@ -83,19 +85,21 @@ namespace Chummer
             List<ListItem> lstCity = new List<ListItem>();
 
             using (XmlNodeList xmlCityList = _objXmlDocument.SelectNodes("/chummer/cities/city"))
+            {
                 if (xmlCityList?.Count > 0)
+                {
                     foreach (XmlNode objXmlCity in xmlCityList)
                     {
                         string strName = objXmlCity["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
                         lstCity.Add(new ListItem(strName, objXmlCity["translate"]?.InnerText ?? strName));
                     }
+                }
+            }
             cboCity.BeginUpdate();
-            cboCity.ValueMember = nameof(ListItem.Value);
-            cboCity.DisplayMember = nameof(ListItem.Name);
-            cboCity.DataSource = lstCity;
+            cboCity.PopulateWithListItems(lstCity);
             cboCity.EndUpdate();
 
-            //Pupulate District and Borough ComboBox for the first time
+            //Populate District and Borough ComboBox for the first time
             RefreshDistrictList();
             RefreshBoroughList();
 
@@ -246,14 +250,14 @@ namespace Chummer
         }
 
 
-        private void cboCity_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
             RefreshDistrictList();
         }
 
-        private void cboDistrict_SelectedIndexChanged(object sender, System.EventArgs e)
+        private void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
@@ -285,25 +289,6 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
-            string strSelectedCity = "";
-            string strSelectedDistrict = "";
-            string strSelectedBorough = "";
-
-            if (!string.IsNullOrEmpty(cboCity.Text))
-            {
-                strSelectedCity = cboCity.Text;
-            }
-            if (!string.IsNullOrEmpty(cboDistrict.Text))
-            {
-                strSelectedDistrict = cboDistrict.Text;
-            }
-            if (!string.IsNullOrEmpty(cboBorough.Text))
-            {
-                strSelectedBorough = cboBorough.Text;
-            }
-  
-
-
             string strSelectedId = cboLifestyle.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -323,9 +308,9 @@ namespace Chummer
                 _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
-                _objLifestyle.City = strSelectedCity;
-                _objLifestyle.District = strSelectedDistrict;
-                _objLifestyle.Borough = strSelectedBorough;
+                _objLifestyle.City = cboCity.Text;
+                _objLifestyle.District = cboDistrict.Text;
+                _objLifestyle.Borough = cboBorough.Text;
 
                 if (objXmlLifestyle.TryGetField("id", Guid.TryParse, out Guid source))
                 {
@@ -487,28 +472,22 @@ namespace Chummer
         /// </summary>
         private void RefreshDistrictList()
         {
-            cboDistrict.DataSource = null;
-            cboDistrict.Items.Clear();
-
-            cboDistrict.BeginUpdate();
-            string strSelectedCityRefresh = (string)cboCity.SelectedValue;
-
+            string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
             List<ListItem> lstDistrict = new List<ListItem>();
-
-
-            using (XmlNodeList xmlDistrictList = _objXmlDocument.SelectNodes("/chummer/cities/city[name=\"" + strSelectedCityRefresh + "\"]/district"))
+            using (XmlNodeList xmlDistrictList = _objXmlDocument.SelectNodes("/chummer/cities/city[name = " + strSelectedCityRefresh.CleanXPath() + "]/district"))
+            {
                 if (xmlDistrictList?.Count > 0)
                 {
                     foreach (XmlNode objXmlDistrict in xmlDistrictList)
                     {
-                        string strName = objXmlDistrict["name"].InnerText ?? LanguageManager.GetString("String_Unknown");
+                        string strName = objXmlDistrict["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
                         lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                     }
                 }
+            }
 
-            cboDistrict.ValueMember = nameof(ListItem.Value);
-            cboDistrict.DisplayMember = nameof(ListItem.Name);
-            cboDistrict.DataSource = lstDistrict;
+            cboDistrict.BeginUpdate();
+            cboDistrict.PopulateWithListItems(lstDistrict);
             cboDistrict.EndUpdate();
         }
 
@@ -517,26 +496,23 @@ namespace Chummer
         /// </summary>
         private void RefreshBoroughList()
         {
-            cboBorough.DataSource = null;
-            cboBorough.Items.Clear();
-
-            
-            cboBorough.BeginUpdate();
-            string strSelectedDistrictRefresh = (string)cboDistrict.SelectedValue;
-
+            string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
+            string strSelectedDistrictRefresh = cboDistrict.SelectedValue?.ToString() ?? string.Empty;
             List<ListItem> lstBorough = new List<ListItem>();
-
-            using (XmlNodeList xmlBoroughList = _objXmlDocument.SelectNodes("/chummer/cities/city/district[name=\"" + strSelectedDistrictRefresh + "\"]/borough"))
+            using (XmlNodeList xmlBoroughList = _objXmlDocument.SelectNodes("/chummer/cities/city[name = " + strSelectedCityRefresh.CleanXPath() + "]/district[name = " + strSelectedDistrictRefresh.CleanXPath() + "]/borough"))
+            {
                 if (xmlBoroughList?.Count > 0)
+                {
                     foreach (XmlNode objXmlDistrict in xmlBoroughList)
                     {
-                        string strName = objXmlDistrict["name"].InnerText ?? LanguageManager.GetString("String_Unknown");
+                        string strName = objXmlDistrict["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
                         lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                     }
+                }
+            }
 
-            cboBorough.ValueMember = nameof(ListItem.Value);
-            cboBorough.DisplayMember = nameof(ListItem.Name);
-            cboBorough.DataSource = lstBorough;
+            cboBorough.BeginUpdate();
+            cboBorough.PopulateWithListItems(lstBorough);
             cboBorough.EndUpdate();
         }
 

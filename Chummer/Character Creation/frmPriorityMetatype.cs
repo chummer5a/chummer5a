@@ -147,37 +147,27 @@ namespace Chummer
                         {
                             case "Heritage":
                                 cboHeritage.BeginUpdate();
-                                cboHeritage.ValueMember = nameof(ListItem.Value);
-                                cboHeritage.DisplayMember = nameof(ListItem.Name);
-                                cboHeritage.DataSource = lstItems;
+                                cboHeritage.PopulateWithListItems(lstItems);
                                 cboHeritage.EndUpdate();
                                 break;
                             case "Talent":
                                 cboTalent.BeginUpdate();
-                                cboTalent.ValueMember = nameof(ListItem.Value);
-                                cboTalent.DisplayMember = nameof(ListItem.Name);
-                                cboTalent.DataSource = lstItems;
+                                cboTalent.PopulateWithListItems(lstItems);
                                 cboTalent.EndUpdate();
                                 break;
                             case "Attributes":
                                 cboAttributes.BeginUpdate();
-                                cboAttributes.ValueMember = nameof(ListItem.Value);
-                                cboAttributes.DisplayMember = nameof(ListItem.Name);
-                                cboAttributes.DataSource = lstItems;
+                                cboAttributes.PopulateWithListItems(lstItems);
                                 cboAttributes.EndUpdate();
                                 break;
                             case "Skills":
                                 cboSkills.BeginUpdate();
-                                cboSkills.ValueMember = nameof(ListItem.Value);
-                                cboSkills.DisplayMember = nameof(ListItem.Name);
-                                cboSkills.DataSource = lstItems;
+                                cboSkills.PopulateWithListItems(lstItems);
                                 cboSkills.EndUpdate();
                                 break;
                             case "Resources":
                                 cboResources.BeginUpdate();
-                                cboResources.ValueMember = nameof(ListItem.Value);
-                                cboResources.DisplayMember = nameof(ListItem.Name);
-                                cboResources.DataSource = lstItems;
+                                cboResources.PopulateWithListItems(lstItems);
                                 cboResources.EndUpdate();
                                 break;
                         }
@@ -364,9 +354,7 @@ namespace Chummer
                             bool blnOldLoading = _blnLoading;
                             int intOldSelectedIndex = cboSkill1.SelectedIndex;
                             int intOldDataSourceSize = cboSkill1.Items.Count;
-                            cboSkill1.ValueMember = nameof(ListItem.Value);
-                            cboSkill1.DisplayMember = nameof(ListItem.Name);
-                            cboSkill1.DataSource = lstSkills;
+                            cboSkill1.PopulateWithListItems(lstSkills);
                             cboSkill1.Visible = true;
                             if (intOldDataSourceSize == cboSkill1.Items.Count)
                             {
@@ -379,10 +367,7 @@ namespace Chummer
                             {
                                 intOldSelectedIndex = cboSkill2.SelectedIndex;
                                 intOldDataSourceSize = cboSkill2.Items.Count;
-                                cboSkill2.BindingContext = new BindingContext();
-                                cboSkill2.ValueMember = nameof(ListItem.Value);
-                                cboSkill2.DisplayMember = nameof(ListItem.Name);
-                                cboSkill2.DataSource = lstSkills;
+                                cboSkill2.PopulateWithListItems(lstSkills);
                                 cboSkill2.Visible = true;
                                 if (intOldDataSourceSize == cboSkill2.Items.Count)
                                 {
@@ -401,10 +386,7 @@ namespace Chummer
                                 {
                                     intOldSelectedIndex = cboSkill3.SelectedIndex;
                                     intOldDataSourceSize = cboSkill3.Items.Count;
-                                    cboSkill3.BindingContext = new BindingContext();
-                                    cboSkill3.ValueMember = nameof(ListItem.Value);
-                                    cboSkill3.DisplayMember = nameof(ListItem.Name);
-                                    cboSkill3.DataSource = lstSkills;
+                                    cboSkill3.PopulateWithListItems(lstSkills);
                                     cboSkill3.Visible = true;
                                     if (intOldDataSourceSize == cboSkill3.Items.Count)
                                     {
@@ -1574,10 +1556,7 @@ namespace Chummer
             int intOldSelectedIndex = cboTalents.SelectedIndex;
             int intOldDataSourceSize = cboTalents.Items.Count;
             cboTalents.BeginUpdate();
-            cboTalents.DataSource = null;
-            cboTalents.DataSource = lstTalent;
-            cboTalents.ValueMember = nameof(ListItem.Value);
-            cboTalents.DisplayMember = nameof(ListItem.Name);
+            cboTalents.PopulateWithListItems(lstTalent);
             if (intOldDataSourceSize == cboTalents.Items.Count)
             {
                 bool blnOldLoading = _blnLoading;
@@ -1629,9 +1608,7 @@ namespace Chummer
                     bool blnOldLoading = _blnLoading;
                     _blnLoading = true;
                     cboMetavariant.BeginUpdate();
-                    cboMetavariant.ValueMember = nameof(ListItem.Value);
-                    cboMetavariant.DisplayMember = nameof(ListItem.Name);
-                    cboMetavariant.DataSource = lstMetavariants;
+                    cboMetavariant.PopulateWithListItems(lstMetavariants);
                     cboMetavariant.Enabled = lstMetavariants.Count > 1;
                     _blnLoading = blnOldLoading;
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -1677,9 +1654,7 @@ namespace Chummer
                 else
                 {
                     cboMetavariant.BeginUpdate();
-                    cboMetavariant.ValueMember = nameof(ListItem.Value);
-                    cboMetavariant.DisplayMember = nameof(ListItem.Name);
-                    cboMetavariant.DataSource = lstMetavariants;
+                    cboMetavariant.PopulateWithListItems(lstMetavariants);
                     cboMetavariant.Enabled = false;
                     cboMetavariant.EndUpdate();
 
@@ -1696,9 +1671,7 @@ namespace Chummer
                 };
 
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.ValueMember = nameof(ListItem.Value);
-                cboMetavariant.DisplayMember = nameof(ListItem.Name);
-                cboMetavariant.DataSource = lstMetavariants;
+                cboMetavariant.PopulateWithListItems(lstMetavariants);
                 cboMetavariant.Enabled = false;
                 cboMetavariant.EndUpdate();
 
@@ -1740,9 +1713,7 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 lstMetatypes.BeginUpdate();
-                lstMetatypes.ValueMember = nameof(ListItem.Value);
-                lstMetatypes.DisplayMember = nameof(ListItem.Name);
-                lstMetatypes.DataSource = lstMetatype;
+                lstMetatypes.PopulateWithListItems(lstMetatype);
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strOldSelectedValue))
                     lstMetatypes.SelectedValue = strOldSelectedValue;
@@ -1800,9 +1771,7 @@ namespace Chummer
             bool blnOldLoading = _blnLoading;
             _blnLoading = true;
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstCategory;
+            cboCategory.PopulateWithListItems(lstCategory);
             _blnLoading = blnOldLoading;
             if (!string.IsNullOrEmpty(strOldSelected))
                 cboCategory.SelectedValue = strOldSelected;

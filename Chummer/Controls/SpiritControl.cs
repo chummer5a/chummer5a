@@ -157,7 +157,7 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, e);
         }
 
-        private async void tsContactOpen_Click(object sender, EventArgs e)
+        private void tsContactOpen_Click(object sender, EventArgs e)
         {
             if (_objSpirit.LinkedCharacter != null)
             {
@@ -166,7 +166,7 @@ namespace Chummer
                 {
                     if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName).ConfigureAwait(false);
+                        objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.LinkedCharacter.FileName);
                         Program.MainForm.OpenCharacter(objOpenCharacter);
                     }
                 }
@@ -425,11 +425,7 @@ namespace Chummer
             }
 
             cboSpiritName.BeginUpdate();
-            cboSpiritName.DataSource = null;
-            cboSpiritName.DataSource = lstCritters;
-            cboSpiritName.DisplayMember = nameof(ListItem.Name);
-            cboSpiritName.ValueMember = nameof(ListItem.Value);
-
+            cboSpiritName.PopulateWithListItems(lstCritters);
             // Set the control back to its original value.
             cboSpiritName.SelectedValue = strCurrentValue;
             cboSpiritName.EndUpdate();
@@ -440,10 +436,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private async void CreateCritter(string strCritterName, int intForce)
+        private void CreateCritter(string strCritterName, int intForce)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml").ConfigureAwait(false);
+            XmlDocument objXmlDocument = _objSpirit.CharacterObject.LoadData("critters.xml");
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + "]");
 
@@ -691,8 +687,7 @@ namespace Chummer
                 imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
                 ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                Character objOpenCharacter = await Program.MainForm.LoadCharacter(_objSpirit.FileName).ConfigureAwait(false);
-
+                Character objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }

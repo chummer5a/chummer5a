@@ -188,6 +188,7 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
             objNode.TryGetDecFieldQuickly("points", ref _decPowerPoints);
             objNode.TryGetBoolFieldQuickly("counttowardslimit", ref _blnCountTowardsLimit);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
@@ -218,6 +219,7 @@ namespace Chummer
             objWriter.WriteElementString("action", DisplayAction(strLanguageToPrint));
             objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
+            objWriter.WriteElementString("karma", Karma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (GlobalOptions.PrintNotes)

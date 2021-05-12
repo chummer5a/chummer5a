@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 using Chummer;
 using Newtonsoft.Json;
 
-namespace SINners.Models
+namespace ChummerHub.Client.Sinners
 {
     public partial class SINnerVisibility
     {
@@ -27,7 +27,7 @@ namespace SINners.Models
                     if (UserRights == null)
                         UserRights = new List<SINnerUserRight>();
                     if (UserRights != null)
-                        _UserRightsObservable = new BindingList<SINnerUserRight>(UserRights);
+                        _UserRightsObservable = new BindingList<SINnerUserRight>(UserRights.ToArray());
                 }
                 return _UserRightsObservable;
             }

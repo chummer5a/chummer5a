@@ -69,12 +69,7 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            //this could help circumvent a exception like this?	"InvalidArgument=Value of '0' is not valid for 'SelectedIndex'. Parameter name: SelectedIndex"
-            BindingList<ListItem> templist = new BindingList<ListItem>(_lstCategory);
-            cboCategory.DataSource = templist;
-
+            cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
             if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
@@ -143,7 +138,7 @@ namespace Chummer
                     {
                         int.TryParse(strKarma, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intBP);
 
-                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter) && !chkFree.Checked)
+                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter))
                         {
                             string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
                             switch (xmlQuality.SelectSingleNode("category")?.Value)
@@ -159,7 +154,7 @@ namespace Chummer
                         if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                         {
                             string strDoubleCostCareer = xmlQuality.SelectSingleNode("doublecareer")?.Value;
-                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer == bool.TrueString)
+                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
                             {
                                 intBP *= 2;
                             }
@@ -431,16 +426,13 @@ namespace Chummer
             foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + sbdFilter + "]"))
             {
                 string strLoopName = objXmlQuality.SelectSingleNode("name")?.Value;
-                if (!string.IsNullOrEmpty(strLoopName))
+                if (string.IsNullOrEmpty(strLoopName))
+                    continue;
+                if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
+                    continue;
+                if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
                 {
-                    if (_xmlMetatypeQualityRestrictionNode != null && _xmlMetatypeQualityRestrictionNode.SelectSingleNode(strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + "]") == null)
-                    {
-                        continue;
-                    }
-                    if (!chkLimitList.Checked || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
-                    {
-                        lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
-                    }
+                    lstQuality.Add(new ListItem(objXmlQuality.SelectSingleNode("id")?.Value ?? string.Empty, objXmlQuality.SelectSingleNode("translate")?.Value ?? strLoopName));
                 }
             }
             lstQuality.Sort(CompareListItems.CompareNames);
@@ -448,9 +440,7 @@ namespace Chummer
             string strOldSelectedQuality = lstQualities.SelectedValue?.ToString();
             _blnLoading = true;
             lstQualities.BeginUpdate();
-            lstQualities.ValueMember = nameof(ListItem.Value);
-            lstQualities.DisplayMember = nameof(ListItem.Name);
-            lstQualities.DataSource = lstQuality;
+            lstQualities.PopulateWithListItems(lstQuality);
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelectedQuality))
                 lstQualities.SelectedIndex = -1;

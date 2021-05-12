@@ -128,7 +128,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the selected XML file and its associated custom file synchronously.
+        /// Load the selected XML file and its associated custom files synchronously.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
         /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
@@ -139,11 +139,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathNavigator LoadXPath(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
-            return LoadXPathAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile).Result;
+            return LoadXPathCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile).GetAwaiter().GetResult();
         }
 
         /// <summary>
-        /// Load the selected XML file and its associated custom file asynchronously.
+        /// Load the selected XML file and its associated custom files asynchronously.
         /// XPathDocuments are usually faster than XmlDocuments, but are read-only and take longer to load if live custom data is enabled
         /// Returns a new XPathNavigator associated with the XPathDocument so that multiple threads each get their own navigator if they're called on the same file
         /// </summary>
@@ -151,14 +151,28 @@ namespace Chummer
         /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
-        public static async Task<XPathNavigator> LoadXPathAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        public static Task<XPathNavigator> LoadXPathAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        {
+            return LoadXPathCoreAsync(false, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
+        }
+
+        /// <summary>
+        /// Core of the method to load an XML file and its associated custom file.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        /// <returns></returns>
+        private static async Task<XPathNavigator> LoadXPathCoreAsync(bool blnSync, string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
-            {
-                await Task.Delay(20);
-            }
+                await Task.Delay(100);
             foreach (string strDirectory in s_SetDataDirectories)
             {
                 strPath = Path.Combine(strDirectory, strFileName);
@@ -189,9 +203,23 @@ namespace Chummer
                 || !s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
             {
                 // The file was not found in the reference list, so it must be loaded.
-                // ReSharper disable once MethodHasAsyncOverload
-                xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile); // Synchronous to make sure we are loaded before continuing
-                if (!s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn))
+                xmlReferenceOfReturn = null;
+                bool blnLoadSuccess;
+                if (blnSync)
+                {
+                    // ReSharper disable once MethodHasAsyncOverload
+                    xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
+                    blnLoadSuccess = s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                }
+                else
+                    blnLoadSuccess = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile)
+                    .ContinueWith(
+                        x =>
+                        {
+                            xmlDocumentOfReturn = x.Result;
+                            return s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                        });
+                if (!blnLoadSuccess)
                 {
                     Utils.BreakIfDebug();
                     return null;
@@ -209,9 +237,7 @@ namespace Chummer
                 }
             }
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
-            {
-                await Task.Delay(20);
-            }
+                await Task.Delay(100);
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
         }
 
@@ -226,7 +252,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlDocument Load(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
-            return LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile).Result;
+            return LoadCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile).GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -237,14 +263,28 @@ namespace Chummer
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         [Annotations.NotNull]
-        public static async Task<XmlDocument> LoadAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        public static Task<XmlDocument> LoadAsync(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        {
+            return LoadCoreAsync(false, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
+        }
+
+        /// <summary>
+        /// Load the selected XML file and its associated custom file asynchronously.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strFileName">Name of the XML file to load.</param>
+        /// <param name="lstEnabledCustomDataPaths">List of enabled custom data directory paths in their load order</param>
+        /// <param name="strLanguage">Language in which to load the data document.</param>
+        /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
+        [Annotations.NotNull]
+        private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
-            {
-                await Task.Delay(20);
-            }
+                await Task.Delay(100);
             foreach (string strDirectory in s_SetDataDirectories)
             {
                 strPath = Path.Combine(strDirectory, strFileName);
@@ -303,13 +343,19 @@ namespace Chummer
                 if (blnHasCustomData)
                 {
                     // If we have any custom data, make sure the base data is already loaded so we can easily just copy it over
-                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, strLanguage);
+                    XmlDocument xmlBaseDocument = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? Load(strFileName, null, strLanguage)
+                        : await LoadAsync(strFileName, null, strLanguage).ConfigureAwait(false);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
                 else if (strLanguage != GlobalOptions.DefaultLanguage)
                 {
                     // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
-                    XmlDocument xmlBaseDocument = await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage);
+                    XmlDocument xmlBaseDocument = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? Load(strFileName, null, GlobalOptions.DefaultLanguage)
+                        : await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage).ConfigureAwait(false);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
                 if (xmlReturn == null) // Not an else in case something goes wrong in safe cast in the line above
@@ -380,9 +426,7 @@ namespace Chummer
             else
             {
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
-                {
-                    await Task.Delay(20);
-                }
+                    await Task.Delay(100);
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)
                     xmlReturn = xmlReferenceOfReturn.XmlContent.Clone() as XmlDocument;

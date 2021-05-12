@@ -104,17 +104,12 @@ namespace Chummer
                 _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
-
+            cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
             if (!string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedValue = s_StrSelectCategory;
-
             if (cboCategory.SelectedIndex == -1 && _lstCategory.Count > 0)
                 cboCategory.SelectedIndex = 0;
-
             cboCategory.EndUpdate();
 
             _blnLoading = false;
@@ -416,9 +411,7 @@ namespace Chummer
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
             lstMod.BeginUpdate();
-            lstMod.ValueMember = nameof(ListItem.Value);
-            lstMod.DisplayMember = nameof(ListItem.Name);
-            lstMod.DataSource = lstMods;
+            lstMod.PopulateWithListItems(lstMods);
             _blnLoading = false;
             if (string.IsNullOrEmpty(strOldSelected))
                 lstMod.SelectedIndex = -1;

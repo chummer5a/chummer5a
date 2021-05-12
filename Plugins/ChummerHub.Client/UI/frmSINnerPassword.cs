@@ -2,7 +2,12 @@ using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using SINners.Models;
+using ChummerHub.Client.Sinners;
+using ChummerHub.Client;
+using System.Runtime;
+using IntPtr = System.IntPtr;
+using StructLayoutAttribute = System.Runtime.InteropServices.StructLayoutAttribute;
+using LayoutKind = System.Runtime.InteropServices.LayoutKind;
 
 namespace ChummerHub.Client.UI
 {

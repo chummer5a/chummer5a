@@ -73,9 +73,7 @@ namespace Chummer
             }
             lstOption.Sort(CompareListItems.CompareNames);
             lstOptions.BeginUpdate();
-            lstOptions.ValueMember = nameof(ListItem.Value);
-            lstOptions.DisplayMember = nameof(ListItem.Name);
-            lstOptions.DataSource = lstOption;
+            lstOptions.PopulateWithListItems(lstOption);
             lstOptions.EndUpdate();
         }
 

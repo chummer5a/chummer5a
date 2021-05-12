@@ -204,9 +204,7 @@ namespace Chummer
             string strOldSelected = lstTechniques.SelectedValue?.ToString();
             _blnLoading = true;
             lstTechniques.BeginUpdate();
-            lstTechniques.ValueMember = nameof(ListItem.Value);
-            lstTechniques.DisplayMember = nameof(ListItem.Name);
-            lstTechniques.DataSource = lstTechniqueItems;
+            lstTechniques.PopulateWithListItems(lstTechniqueItems);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstTechniques.SelectedValue = strOldSelected;

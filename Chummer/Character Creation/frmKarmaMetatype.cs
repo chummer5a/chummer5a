@@ -87,10 +87,7 @@ namespace Chummer
 
             lstCategories.Sort(CompareListItems.CompareNames);
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstCategories;
-
+            cboCategory.PopulateWithListItems(lstCategories);
             // Attempt to select the default Metahuman Category. If it could not be found, select the first item in the list instead.
             cboCategory.SelectedValue = _objCharacter.MetatypeCategory;
             if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
@@ -121,9 +118,7 @@ namespace Chummer
             }
 
             cboPossessionMethod.BeginUpdate();
-            cboPossessionMethod.ValueMember = nameof(ListItem.Value);
-            cboPossessionMethod.DisplayMember = nameof(ListItem.Name);
-            cboPossessionMethod.DataSource = lstMethods;
+            cboPossessionMethod.PopulateWithListItems(lstMethods);
             cboPossessionMethod.EndUpdate();
 
             PopulateMetatypes();
@@ -508,10 +503,7 @@ namespace Chummer
                 string strOldSelectedValue = cboMetavariant.SelectedValue?.ToString() ?? _objCharacter?.MetavariantGuid.ToString("D", GlobalOptions.InvariantCultureInfo);
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.DataSource = null;
-                cboMetavariant.DataSource = lstMetavariants;
-                cboMetavariant.ValueMember = nameof(ListItem.Value);
-                cboMetavariant.DisplayMember = nameof(ListItem.Name);
+                cboMetavariant.PopulateWithListItems(lstMetavariants);
                 cboMetavariant.Enabled = lstMetavariants.Count > 1;
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strOldSelectedValue))
@@ -581,10 +573,7 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboMetavariant.BeginUpdate();
-                cboMetavariant.DataSource = null;
-                cboMetavariant.DataSource = lstMetavariants;
-                cboMetavariant.ValueMember = nameof(ListItem.Value);
-                cboMetavariant.DisplayMember = nameof(ListItem.Name);
+                cboMetavariant.PopulateWithListItems(lstMetavariants);
                 cboMetavariant.Enabled = false;
                 _blnLoading = blnOldLoading;
                 cboMetavariant.SelectedIndex = 0;
@@ -626,10 +615,7 @@ namespace Chummer
                     strOldSelected = _objCharacter.GetNode(true)?.SelectSingleNode("id")?.Value ?? string.Empty;
                 _blnLoading = true;
                 lstMetatypes.BeginUpdate();
-                lstMetatypes.DataSource = null;
-                lstMetatypes.DataSource = lstMetatypeItems;
-                lstMetatypes.ValueMember = nameof(ListItem.Value);
-                lstMetatypes.DisplayMember = nameof(ListItem.Name);
+                lstMetatypes.PopulateWithListItems(lstMetatypeItems);
                 _blnLoading = blnOldLoading;
                 // Attempt to select the default Human item. If it could not be found, select the first item in the list instead.
                 if (!string.IsNullOrEmpty(strOldSelected))

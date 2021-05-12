@@ -66,11 +66,7 @@ namespace Chummer
                 lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
             }
             cboCategory.BeginUpdate();
-            cboCategory.DataSource = null;
-            cboCategory.DataSource = lstCategory;
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-
+            cboCategory.PopulateWithListItems(lstCategory);
             // Select the first Skill in the list.
             if (cboCategory.Items.Count > 0)
                 cboCategory.SelectedIndex = 0;

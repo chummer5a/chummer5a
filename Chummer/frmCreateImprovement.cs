@@ -70,9 +70,7 @@ namespace Chummer
 
             lstTypes.Sort(CompareListItems.CompareNames);
             cboImprovemetType.BeginUpdate();
-            cboImprovemetType.ValueMember = nameof(ListItem.Value);
-            cboImprovemetType.DisplayMember = nameof(ListItem.Name);
-            cboImprovemetType.DataSource = lstTypes;
+            cboImprovemetType.PopulateWithListItems(lstTypes);
 
             // Load the information from the passed Improvement if one has been given.
             if (EditImprovementObject != null)

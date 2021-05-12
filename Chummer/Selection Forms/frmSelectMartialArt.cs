@@ -234,9 +234,7 @@ namespace Chummer
             string strOldSelected = lstMartialArts.SelectedValue?.ToString();
             _blnLoading = true;
             lstMartialArts.BeginUpdate();
-            lstMartialArts.ValueMember = nameof(ListItem.Value);
-            lstMartialArts.DisplayMember = nameof(ListItem.Name);
-            lstMartialArts.DataSource = lstMartialArt;
+            lstMartialArts.PopulateWithListItems(lstMartialArt);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstMartialArts.SelectedValue = strOldSelected;

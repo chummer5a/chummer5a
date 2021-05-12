@@ -1,6 +1,6 @@
 using System;
 
-namespace ChummerHub.Client.Model
+namespace ChummerHub.Client.Sinners
 {
     public class ResultBase
     {

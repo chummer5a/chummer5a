@@ -148,36 +148,35 @@
       </xsl:choose>
     </xsl:variable>
 
-<!-- format the mask - allowing for local diacritic marks -->
+<!-- format the mask - do not translate the mask because mixing up commas and decimals in the mask will cause crashes -->
     <xsl:variable name="wk-mask">
-      <xsl:variable name="x-msk">
-        <xsl:choose>
-          <xsl:when test="$dec &gt; 0">
-            <xsl:variable name="x-dec">
-              <xsl:call-template name="fnx-repeat">
-                <xsl:with-param name="string" select="'0'"/>        
-                <xsl:with-param name="count" select="$dec"/>
-              </xsl:call-template>
-            </xsl:variable>
-            <xsl:value-of select="concat('#,##0.',$x-dec)"/>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:value-of select="'#,##0'"/>
-          </xsl:otherwise>
-        </xsl:choose>
-      </xsl:variable>
       <xsl:choose>
-        <xsl:when test="$mark = $en-marks">
-          <xsl:value-of select="$x-msk"/>
+        <xsl:when test="$dec &gt; 0">
+          <xsl:variable name="x-dec">
+            <xsl:call-template name="fnx-repeat">
+              <xsl:with-param name="string" select="'0'"/>
+              <xsl:with-param name="count" select="$dec"/>
+            </xsl:call-template>
+          </xsl:variable>
+          <xsl:value-of select="concat('#,##0.',$x-dec)"/>
         </xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="translate($x-msk,$en-marks,$mark)"/>
+          <xsl:value-of select="'#,##0'"/>
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
 
-<!-- format the number using the determined mask-->
-    <xsl:variable name="wk-fmt" select='format-number($wk-nmbr,$wk-mask)'/>
+<!-- format the number using the determined mask, also translating the number as appropriate -->
+      <xsl:variable name="wk-fmt" >
+          <xsl:choose>
+              <xsl:when test="$mark = $en-marks">
+                  <xsl:value-of select="format-number($wk-nmbr,$wk-mask)"/>
+              </xsl:when>
+              <xsl:otherwise>
+                  <xsl:value-of select="translate(format-number($wk-nmbr,$wk-mask),$en-marks,$mark)"/>
+              </xsl:otherwise>
+          </xsl:choose>
+      </xsl:variable>
     <xsl:variable name="wk-nbr">
       <xsl:choose>
         <xsl:when test="$wk-fmt = 'NaN'">

@@ -85,9 +85,7 @@ namespace Chummer
                 _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
             }
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
+            cboCategory.PopulateWithListItems(_lstCategory);
             cboCategory.Enabled = _lstCategory.Count > 1;
 
             if (!string.IsNullOrEmpty(s_StrSelectCategory))
@@ -394,9 +392,7 @@ namespace Chummer
                 string strOldSelectedQuality = lstLifestyleQualities.SelectedValue?.ToString();
                 _blnLoading = true;
                 lstLifestyleQualities.BeginUpdate();
-                lstLifestyleQualities.ValueMember = nameof(ListItem.Value);
-                lstLifestyleQualities.DisplayMember = nameof(ListItem.Name);
-                lstLifestyleQualities.DataSource = lstLifestyleQuality;
+                lstLifestyleQualities.PopulateWithListItems(lstLifestyleQuality);
                 _blnLoading = false;
                 if (string.IsNullOrEmpty(strOldSelectedQuality))
                     lstLifestyleQualities.SelectedIndex = -1;

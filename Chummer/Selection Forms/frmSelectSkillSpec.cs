@@ -85,9 +85,7 @@ namespace Chummer
 
             // Populate the lists.
             cboSpec.BeginUpdate();
-            cboSpec.ValueMember = nameof(ListItem.Value);
-            cboSpec.DisplayMember = nameof(ListItem.Name);
-            cboSpec.DataSource = lstItems;
+            cboSpec.PopulateWithListItems(lstItems);
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
             if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
@@ -100,14 +98,11 @@ namespace Chummer
                     AcceptForm();
                 else
                 {
-                    cboSpec.DataSource = null;
                     List<ListItem> lstSingle = new List<ListItem>
                     {
                         new ListItem(_strForceItem, _strForceItem)
                     };
-                    cboSpec.DataSource = lstSingle;
-                    cboSpec.ValueMember = nameof(ListItem.Value);
-                    cboSpec.DisplayMember = nameof(ListItem.Name);
+                    cboSpec.PopulateWithListItems(lstSingle);
                     cboSpec.SelectedIndex = 0;
                     AcceptForm();
                 }

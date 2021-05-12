@@ -88,9 +88,9 @@
     </mentor>
     <mentor>
       <id>f892e9b9-c400-4519-9ce0-ca8e77be12c9</id>
-      <name>Klabautermann</name>
+      <name>Sea Kobold</name>
       <advantage>All: +2 dice to Nautical Mechanic</advantage>
-      <disadvantage>Whenever a follower of Klabautermann is in danger (in reality or only in his imagination) or he has to stay on or in a vehicle for a prolonged time (be it cars, ships, planes or trains), he must make a CHA+WIL(3) test. Should he fail, he is convinced he saw the Klabautermann, resulting in him running scared and trying to flee, as well as trying to convince other characters that their plans will lead to a bad end.</disadvantage>
+      <disadvantage>Whenever a follower of Sea Kobold is in danger (in reality or only in his imagination) or he has to stay on or in a vehicle for a prolonged time (be it cars, ships, planes or trains), he must make a CHA + WIL (3) test. Should he fail, he is convinced he saw the Sea Kobold, resulting in him running scared and trying to flee, as well as trying to convince other characters that their plans will lead to a bad end.</disadvantage>
       <bonus>
         <specificskill>
           <name>Nautical Mechanic</name>
@@ -199,9 +199,9 @@
     </mentor>
     <mentor>
       <id>6eb6293e-5a64-4e46-94f6-4e828c160628</id>
-      <name>Wolpertinger</name>
+      <name>Jackalope</name>
       <advantage>All: +2 dice to dodge tests.</advantage>
-      <disadvantage>Whenever a follower of Wolpertinger is in danger (in reality or only in his imagination), he has to succeed in a WIL+CHA (3) test to not immediately succumb to his urge to flee.</disadvantage>
+      <disadvantage>Whenever a follower of Jackalope is in danger (in reality or only in his imagination), he has to succeed in a WIL + CHA (3) test to not immediately succumb to his urge to flee.</disadvantage>
       <bonus>
         <dodge>2</dodge>
       </bonus>
@@ -227,6 +227,42 @@
       </choices>
       <source>SG</source>
       <page>234</page>
+    </mentor>
+    <mentor>
+      <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
+      <name>Große Mutter (SG)</name>
+      <advantage>Allgemein: +2 Würfel für Proben auf erste Hilfe</advantage>
+      <disadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er seine Zuwiderhandlung wiedergutgemacht hat.</disadvantage>
+      <choices>
+        <choice>
+          <name>+2 to First Aid</name>
+          <bonus>
+            <specificskill>
+              <name>First Aid</name>
+              <bonus>2</bonus>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice set="2">
+          <name>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</name>
+          <bonus>
+            <spellcategory>
+              <name>Health</name>
+              <val>2</val>
+            </spellcategory>
+          </bonus>
+        </choice>
+        <choice set="2">
+          <name>Empathische Heilung gratis</name>
+          <bonus>
+            <specificpower>
+              <name>Empathic Healing</name>
+            </specificpower>
+          </bonus>
+        </choice>
+      </choices>
+      <source>SG</source>
+      <page>232</page>
     </mentor>
   </mentors>
 </chummer>

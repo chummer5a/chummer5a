@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using System.Windows.Forms;
 
@@ -129,7 +130,7 @@ namespace CrashHandler
                 _worker.RunWorkerAsync();
 		}
 
-        private void CollectCrashDump(object sender, DoWorkEventArgs e)
+        private async void CollectCrashDump(object sender, DoWorkEventArgs e)
         {
             SetProgress(CrashDumperProgress.Started);
             try
@@ -167,7 +168,7 @@ namespace CrashHandler
                 byte[] encrypted = Encrypt(zip, out byte[] iv, out byte[] key);
 
                 SetProgress(CrashDumperProgress.Uploading);
-                string location = Upload(encrypted);
+                string location = await Upload(encrypted);
 
                 CrashLogWriter.WriteLine("Files uploaded");
                 CrashLogWriter.Flush();
@@ -349,7 +350,7 @@ namespace CrashHandler
 			return encrypted;
 		}
 
-	    private string Upload(byte[] payload)
+	    private async Task<string> Upload(byte[] payload)
 	    {
             using (HttpClient client = new HttpClient())
             {
@@ -358,11 +359,9 @@ namespace CrashHandler
                     using (StreamContent content = new StreamContent(stream))
                     {
                         content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                        using (HttpResponseMessage response = client
-                            .PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content)
-                            .Result)
+                        using (HttpResponseMessage response = await client.PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content))
                         {
-                            string resp = response.Content.ReadAsStringAsync().Result;
+                            string resp = await response.Content.ReadAsStringAsync();
 
                             return ExtractUrl(resp);
                         }

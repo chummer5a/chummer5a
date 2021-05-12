@@ -51,10 +51,7 @@ namespace Chummer
                 lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstCategory;
-
+            cboCategory.PopulateWithListItems(lstCategory);
             // Select the first Skill in the list.
             cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();

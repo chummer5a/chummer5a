@@ -91,6 +91,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private readonly Character _objCharacter;
 
+
         private string _strCity;
         private string _strDistrict;
         private string _strBorough;
@@ -1104,6 +1105,11 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
+
+        /// <summary>
+        /// Calculates the Expected Value of an Lifestyle at chargen under the assumption that the average value was rolled
+        /// </summary>
+        public decimal ExpectedValue => _intDice * (decimal)3.5 * _decMultiplier;
 
         public string City
         {

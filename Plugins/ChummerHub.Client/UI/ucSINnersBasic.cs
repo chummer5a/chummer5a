@@ -7,10 +7,10 @@ using System.Windows.Forms;
 using Chummer;
 using Microsoft.Rest;
 using System.Net;
-using SINners.Models;
 using ChummerHub.Client.Backend;
 using Chummer.Plugins;
 using NLog;
+using ChummerHub.Client.Sinners;
 
 namespace ChummerHub.Client.UI
 {
@@ -93,13 +93,13 @@ namespace ChummerHub.Client.UI
                 using (new CursorWait(this, true))
                 {
                     var client = StaticUtils.GetClient();
-                    var response = await client.GetSINnerGroupFromSINerByIdWithHttpMessagesAsync(myUC.MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
-                    HttpStatusCode eResponseStatus = response.Response.StatusCode;
-                    SINnerGroup objMySiNnerGroup = eResponseStatus == HttpStatusCode.OK ? response.Body.MySINnerGroup : null;
-                    response.Dispose();
+                    var response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                    
+                    SINnerGroup objMySiNnerGroup = response.MySINnerGroup;
+                    
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {
-                        if (eResponseStatus == HttpStatusCode.OK)
+                        if (objMySiNnerGroup != null)
                         {
                             myUC.MyCE.MySINnerFile.MyGroup = objMySiNnerGroup;
                             bUpload.Text = "Remove from SINners";
@@ -107,7 +107,7 @@ namespace ChummerHub.Client.UI
                             lUploadStatus.Text = "Online";
                             bUpload.Enabled = true;
                         }
-                        else if (eResponseStatus == HttpStatusCode.NotFound)
+                        else
                         {
                             myUC.MyCE.MySINnerFile.MyGroup = null;
                             lUploadStatus.Text = "Not Online";
@@ -117,17 +117,17 @@ namespace ChummerHub.Client.UI
                             bUpload.Enabled = true;
                             bUpload.Text = "Upload";
                         }
-                        else if (eResponseStatus == HttpStatusCode.NoContent)
-                        {
-                            myUC.MyCE.MySINnerFile.MyGroup = null;
-                            lUploadStatus.Text = "Status Code: " + eResponseStatus;
-                            bGroupSearch.Enabled = true;
-                            bGroupSearch.SetToolTip(
-                                "SINner does not belong to a group.");
-                            bUpload.Text = "Remove from SINners";
-                            lUploadStatus.Text = "Online";
-                            bUpload.Enabled = true;
-                        }
+                        //else if (eResponseStatus == HttpStatusCode.NoContent)
+                        //{
+                        //    myUC.MyCE.MySINnerFile.MyGroup = null;
+                        //    lUploadStatus.Text = "Status Code: " + eResponseStatus;
+                        //    bGroupSearch.Enabled = true;
+                        //    bGroupSearch.SetToolTip(
+                        //        "SINner does not belong to a group.");
+                        //    bUpload.Text = "Remove from SINners";
+                        //    lUploadStatus.Text = "Online";
+                        //    bUpload.Enabled = true;
+                        //}
                         cbTagCustom.Enabled = false;
                         TagValueCustomName.Enabled = false;
                     });
@@ -292,12 +292,12 @@ namespace ChummerHub.Client.UI
                     if (bUpload.Text.Contains("Upload"))
                     {
                         lUploadStatus.Text = "Uploading";
-                        await myUC.MyCE.Upload().ConfigureAwait(true);
+                        await myUC.MyCE.Upload();
                     }
                     else
                     {
                         lUploadStatus.Text = "Removing";
-                        await myUC.RemoveSINnerAsync().ConfigureAwait(true);
+                        await myUC.RemoveSINnerAsync();
                     }
 
                 }
@@ -306,7 +306,7 @@ namespace ChummerHub.Client.UI
                     Program.MainForm.ShowMessageBox(exception.Message);
                 }
             }
-            await CheckSINnerStatus().ConfigureAwait(true);
+            await CheckSINnerStatus();
         }
 
         private void bGroupSearch_Click(object sender, EventArgs e)
@@ -335,16 +335,16 @@ namespace ChummerHub.Client.UI
                         var client = StaticUtils.GetClient();
                         if (myUC.MyCE.MySINnerFile.Id != null)
                         {
-                            HttpOperationResponse<ResultSinnerGetSINnerVisibilityById> res =
-                                await client.GetSINnerVisibilityByIdWithHttpMessagesAsync(
-                                    myUC.MyCE.MySINnerFile.Id.Value).ConfigureAwait(true);
-                            await Backend.Utils.HandleError(res, res.Body).ConfigureAwait(true);
-                            if (res.Body?.CallSuccess == true)
+                            ResultSinnerGetSINnerVisibilityById res =
+                                await client.GetSINnerVisibilityByIdAsync(
+                                    myUC.MyCE.MySINnerFile.Id.Value);
+                            await Backend.Utils.ShowErrorResponseFormAsync(res);
+                            if (res.CallSuccess == true)
                             {
-                                myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.Body.UserRights;
+                                myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.UserRights;
                             }
 
-                            res.Dispose();
+                            
                         }
                     }
                 }

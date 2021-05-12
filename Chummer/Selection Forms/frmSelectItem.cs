@@ -235,9 +235,7 @@ namespace Chummer
 
             // Populate the lists.
             cboAmmo.BeginUpdate();
-            cboAmmo.ValueMember = nameof(ListItem.Value);
-            cboAmmo.DisplayMember = nameof(ListItem.Name);
-            cboAmmo.DataSource = lstItems;
+            cboAmmo.PopulateWithListItems(lstItems);
 
             // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
             if (cboAmmo.Items.Count == 1 && _blnAllowAutoSelect)
