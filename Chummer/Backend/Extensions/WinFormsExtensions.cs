@@ -174,38 +174,44 @@ namespace Chummer
             return (isLoading || string.IsNullOrEmpty(cboThis?.SelectedValue?.ToString()));
         }
 
-        public static void PopulateWithListItems(this ComboBox cboThis, IReadOnlyList<ListItem> lstItems)
+        public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
         {
             if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
-            if (cboThis.DataSource == null || !(cboThis.DataSource is IReadOnlyList<ListItem> lstCurrentList))
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = lstItems?.ToList();
+            if (cboThis.DataSource == null || !(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
             {
                 cboThis.ValueMember = nameof(ListItem.Value);
                 cboThis.DisplayMember = nameof(ListItem.Name);
             }
             // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-            else if (lstCurrentList.SequenceEqual(lstItems))
+            else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                 return;
-            // In the case of dropdown lists, binding multiple ComboBoxes to the same DataSource will also cause all selected values to sync up between them.
-            // This means the code we use has to set the DataSources to new lists instead of the same one
-            cboThis.DataSource = cboThis.DropDownStyle == ComboBoxStyle.DropDownList ? lstItems.ToList() : lstItems;
+            cboThis.DataSource = lstItemsToSet;
         }
         #endregion
 
         #region ListBox Extensions
-        public static void PopulateWithListItems(this ListBox lstThis, IReadOnlyList<ListItem> lstItems)
+        public static void PopulateWithListItems(this ListBox lstThis, IEnumerable<ListItem> lstItems)
         {
             if (ReferenceEquals(lstThis.DataSource, lstItems))
                 return;
-            if (lstThis.DataSource == null || !(lstThis.DataSource is IReadOnlyList<ListItem> lstCurrentList))
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = lstItems?.ToList();
+            if (lstThis.DataSource == null || !(lstThis.DataSource is IEnumerable<ListItem> lstCurrentList))
             {
                 lstThis.ValueMember = nameof(ListItem.Value);
                 lstThis.DisplayMember = nameof(ListItem.Name);
             }
             // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
-            else if (lstCurrentList.SequenceEqual(lstItems))
+            else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                 return;
-            lstThis.DataSource = lstItems;
+            lstThis.DataSource = lstItemsToSet;
         }
         #endregion
 
