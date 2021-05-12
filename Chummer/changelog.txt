@@ -46,6 +46,7 @@ Data Changes:
 - Fixed incorrect quality names for the Corp Teen, Rising Star, Company Troubleshooter, Tour of Duty (Desert Wars), In the Thick and Gone Native life modules that prevented them from being taken correctly. Closes #4386
 - The Hemorrhage critter power no longer also has an entry as a learnable ritual.
 - Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
+- Unarmed Attack can no longer be bought as a weapon.
 
 Changed/New Strings:
 - String_ContactPoints
