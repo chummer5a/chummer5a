@@ -626,7 +626,7 @@ namespace Chummer.Backend.Attributes
                 int intReturn = RawMinimum;
                 if (intReturn < 1)
                 {
-                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                    if (_objCharacter.IsCritter || TotalMaximum == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                         intReturn = 0;
                     else
                         intReturn = 1;
@@ -1230,7 +1230,8 @@ namespace Chummer.Backend.Attributes
                                     new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum),
                                         new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMinimum)),
                                         new DependencyGraphNode<string, CharacterAttrib>(nameof(MinimumModifiers))
-                                    )
+                                    ),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum))
                                 ),
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum),
                                     new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),

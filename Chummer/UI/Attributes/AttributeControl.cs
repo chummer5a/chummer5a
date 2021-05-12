@@ -313,9 +313,11 @@ namespace Chummer.UI.Attributes
         private bool CanBeMetatypeMax(int intValue)
         {
             CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
-            if (_objCharacter.IgnoreRules || attrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Special) return true;
+            if (_objCharacter.IgnoreRules || attrib.MetatypeCategory == CharacterAttrib.AttributeCategory.Special)
+                return true;
             int intTotalMaximum = attrib.TotalMaximum;
-            if (intValue < intTotalMaximum || intTotalMaximum == 0) return true;
+            if (intValue < intTotalMaximum || intTotalMaximum == 0)
+                return true;
             //TODO: This should be in AttributeSection, but I can't be bothered finagling the option into working.
             //Ideally return 2 or 1, allow for an improvement type to increase or decrease the value.
             int intMaxOtherAttributesAtMax = _objCharacter.Options.Allow2ndMaxAttribute ? 1 : 0;

@@ -749,14 +749,20 @@ namespace Chummer.Backend.Skills
                         return false;
                     }
                 }
+
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
-                if (CharacterObject.IsAI)
+                switch (Attribute)
                 {
-                    _intCachedEnabled = Attribute != "MAG" && Attribute != "MAGAdept" && Attribute != "RES" ? 1 : 0;
-                }
-                else
-                {
-                    _intCachedEnabled = AttributeObject.Value != 0 ? 1 : 0;
+                    case "MAG":
+                    case "MAGAdept":
+                        _intCachedEnabled = CharacterObject.MAGEnabled ? 1 : 0;
+                        break;
+                    case "RES":
+                        _intCachedEnabled = CharacterObject.RESEnabled ? 1 : 0;
+                        break;
+                    case "DEP":
+                        _intCachedEnabled = CharacterObject.DEPEnabled ? 1 : 0;
+                        break;
                 }
 
                 return _intCachedEnabled > 0;
@@ -1029,10 +1035,16 @@ namespace Chummer.Backend.Skills
 
         public string CompileDicepoolTooltip(string abbrev = "")
         {
-            CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
             if (!Default && !Leveled)
             {
                 return LanguageManager.GetString("Tip_Skill_Cannot_Default");
+            }
+
+            CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
+
+            if (att.Value <= 0)
+            {
+                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_Zero_Attribute"), att.DisplayNameShort(GlobalOptions.Language));
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -1746,6 +1758,18 @@ namespace Chummer.Backend.Skills
                     if (RequiresFlyMovement)
                         OnPropertyChanged(nameof(Enabled));
                     break;
+                case nameof(Character.MAGEnabled):
+                    if (Attribute == "MAG" || Attribute == "MAGAdept")
+                        OnPropertyChanged(nameof(Enabled));
+                    break;
+                case nameof(Character.RESEnabled):
+                    if (Attribute == "RES")
+                        OnPropertyChanged(nameof(Enabled));
+                    break;
+                case nameof(Character.DEPEnabled):
+                    if (Attribute == "DEP")
+                        OnPropertyChanged(nameof(Enabled));
+                    break;
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
                     OnMultiplePropertyChanged(nameof(Base),
                         nameof(BaseUnlocked),
@@ -1857,7 +1881,6 @@ namespace Chummer.Backend.Skills
                 case nameof(CharacterAttrib.TotalValue):
                     OnPropertyChanged(nameof(AttributeModifiers));
                     break;
-                case nameof(CharacterAttrib.Value):
                 case nameof(CharacterAttrib.Abbrev):
                     OnPropertyChanged(nameof(Enabled));
                     break;

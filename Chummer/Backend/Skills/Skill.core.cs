@@ -234,14 +234,12 @@ namespace Chummer.Backend.Skills
             int intValue = intAttributeOverrideValue > int.MinValue
                 ? intAttributeOverrideValue
                 : CharacterObject.AttributeSection.GetAttributeByName(strAttribute).TotalValue;
+            if (intValue <= 0)
+                return 0;
             if (intRating > 0)
-            {
                 return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
-            }
             if (Default)
-            {
                 return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
-            }
             return 0;
         }
 

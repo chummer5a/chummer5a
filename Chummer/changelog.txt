@@ -28,6 +28,7 @@ Application Changes:
 - Fixed life modules button not being visible in create mode.
 - Critter power karma costs are now properly retained when loading a saved character.
 - Enhanced use of weapondetails to allow using it in allof, oneof or group nodes.
+- Characters who are forced to have some non-special attributes at zero (e.g. those with Quadriplegic) can now properly have a non-zero attribute at its maximum rating at character creation. They can also now properly learn skills linked to the forced-zero attribute(s), but their pools will always be zero when using that attribute.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -127,6 +128,7 @@ Changed/New Strings:
 - Label_SelectLifestyle_District
 - Label_SelectLifestyle_City
 - Label_LifestyleNuyen_SelectLifestyle
+- Tip_Skill_Zero_Attribute
 
 Build 214
 Application Fixes:
