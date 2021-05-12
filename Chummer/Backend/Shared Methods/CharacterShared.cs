@@ -6269,7 +6269,7 @@ namespace Chummer
                               _objOptions.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
-            this.DoThreadSafe(() => Text = strTitle, false);
+            this.QueueThreadSafe(() => Text = strTitle);
         }
 
         /// <summary>

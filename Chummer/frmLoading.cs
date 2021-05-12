@@ -38,7 +38,7 @@ namespace Chummer
                     return;
                 string strDisplayText = string.Format(GlobalOptions.CultureInfo,
                     LanguageManager.GetString("String_Loading_Pattern"), value);
-                this.DoThreadSafe(() => Text = strDisplayText, false);
+                this.QueueThreadSafe(() => Text = strDisplayText);
             }
         }
 
@@ -59,7 +59,7 @@ namespace Chummer
             if (this.IsNullOrDisposed())
                 return;
             string strNewText = LanguageManager.GetString("String_Initializing");
-            lblLoadingInfo.DoThreadSafe(() => lblLoadingInfo.Text = strNewText, false);
+            lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
             pgbLoadingProgress.DoThreadSafe(() =>
             {
                 pgbLoadingProgress.Value = 0;
@@ -80,8 +80,8 @@ namespace Chummer
                     : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
             strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo)
                           + '/' + pgbLoadingProgress.Maximum.ToString(GlobalOptions.CultureInfo) + ')';
-            lblLoadingInfo.DoThreadSafe(() => lblLoadingInfo.Text = strNewText, false);
-            pgbLoadingProgress.DoThreadSafe(() => pgbLoadingProgress.PerformStep(), false);
+            lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
+            pgbLoadingProgress.QueueThreadSafe(() => pgbLoadingProgress.PerformStep());
         }
     }
 }
