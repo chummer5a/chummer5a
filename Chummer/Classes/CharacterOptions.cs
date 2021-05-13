@@ -2976,7 +2976,6 @@ namespace Chummer
             set
             {
                 if (_intCyberlimbAttributeBonusCap != value)
-                if (_intCyberlimbAttributeBonusCap != value)
                 {
                     _intCyberlimbAttributeBonusCap = value;
                     OnPropertyChanged();

@@ -44,6 +44,7 @@ using System.Runtime.Serialization;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using NLog;
+using Org.BouncyCastle.Asn1.X509.Qualified;
 using Application = System.Windows.Forms.Application;
 using Formatting = System.Xml.Formatting;
 
@@ -3856,33 +3857,27 @@ namespace Chummer
 
                             using (_ = Timekeeper.StartSyncron("load_char_SustainedAbilities", loadActivity))
                             {
-                                objXmlNodeList = objXmlCharacter.SelectNodes("sustained/sustainedobject");
+                                objXmlNodeList = objXmlCharacter.SelectNodes("sustained/complexform");
                                 foreach (XmlNode objXmlSustained in objXmlNodeList)
                                 {
-                                    objXmlSustained.TryGetField<String>("type", out string _strType);
-
-                                    ISustainable objSustained;
-                                    //TODO find a way to make the cases smaller
-                                    switch (_strType)
-                                    {
-                                        case nameof(SustainedSpell):
-                                            objSustained = new SustainedSpell(this);
-                                            objSustained.Load(objXmlSustained);
-                                            _lstSustained.Add(objSustained);
-                                            break;
-
-                                        case nameof(SustainedComplexForm):
-                                            objSustained = new SustainedComplexForm(this);
-                                            objSustained.Load(objXmlSustained);
-                                            _lstSustained.Add(objSustained);
-                                            break;
-
-                                        case nameof(SustainedCritterPower):
-                                            objSustained = new SustainedCritterPower(this);
-                                            objSustained.Load(objXmlSustained);
-                                            _lstSustained.Add(objSustained);
-                                            break;
-                                    }
+                                    SustainedComplexForm objSustained = new SustainedComplexForm(this);
+                                    objSustained.Load(objXmlSustained);
+                                    _lstSustained.Add(objSustained);
+                                }
+                                objXmlNodeList = objXmlCharacter.SelectNodes("sustained/spell");
+                                foreach (XmlNode objXmlSustained in objXmlNodeList)
+                                {
+                                    SustainedSpell objSustained = new SustainedSpell(this);
+                                    objSustained.Load(objXmlSustained);
+                                    _lstSustained.Add(objSustained);
+                                }
+                                //TODO: Check if xml Node naming is correct
+                                objXmlNodeList = objXmlCharacter.SelectNodes("sustained/critterpower");
+                                foreach (XmlNode objXmlSustained in objXmlNodeList)
+                                {
+                                    SustainedCritterPower objSustained = new SustainedCritterPower(this);
+                                    objSustained.Load(objXmlSustained);
+                                    _lstSustained.Add(objSustained);
                                 }
                             }
 
@@ -5157,7 +5152,22 @@ namespace Chummer
             objWriter.WriteStartElement("sustained");
             foreach(ISustainable objSustained in SustainedCollection)
             {
-                objSustained.Print(objWriter, objCulture, strLanguageToPrint);
+               // objSustained.Print(objWriter, strLanguageToPrint);
+               switch (objSustained.GetType().Name)
+               {
+                    case nameof(SustainedSpell):
+                        SustainedSpell objSustainedSpell = (SustainedSpell) objSustained;
+                        objSustainedSpell.Print(objWriter, objCulture, strLanguageToPrint);
+                        break;
+                    case nameof(SustainedComplexForm):
+                        SustainedComplexForm objSustainedComplexForm = (SustainedComplexForm) objSustained;
+                        objSustainedComplexForm.Print(objWriter, strLanguageToPrint);
+                        break;
+                    case nameof(SustainedCritterPower):
+                        SustainedCritterPower objSustainedCritterPower = (SustainedCritterPower) objSustained;
+                        objSustainedCritterPower.Print(objWriter, strLanguageToPrint);
+                        break;
+               }
             }
 
             //</sustained>

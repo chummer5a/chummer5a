@@ -38,9 +38,9 @@ namespace Chummer
     public class Spell : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        protected Guid guiID;
-        protected Guid guiSourceID = Guid.Empty;
-        protected string strName = string.Empty;
+        private Guid _guiID;
+        private Guid _guiSourceID = Guid.Empty;
+        private string _strName = string.Empty;
         private string _strDescriptors = string.Empty;
         private string _strCategory = string.Empty;
         private string _strType = string.Empty;
@@ -54,7 +54,7 @@ namespace Chummer
         private bool _blnLimited;
         private bool _blnExtended;
         private string _strNotes = string.Empty;
-        protected readonly Character objCharacter;
+        private readonly Character _objCharacter;
         private bool _blnAlchemical;
         private bool _blnFreeBonus;
         private bool _blnUsesUnarmed;
@@ -66,8 +66,8 @@ namespace Chummer
         public Spell(Character objCharacter)
         {
             // Create the GUID for the new Spell.
-            guiID = Guid.NewGuid();
-            this.objCharacter = objCharacter;
+            _guiID = Guid.NewGuid();
+            _objCharacter = objCharacter;
         }
 
         /// Create a Spell from an XmlNode.
@@ -79,20 +79,20 @@ namespace Chummer
         /// <param name="objSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
         public virtual void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
-            if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out guiSourceID))
+            if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for xmlnode", objXmlSpellNode });
                 Utils.BreakIfDebug();
             }
-            objXmlSpellNode.TryGetStringFieldQuickly("name", ref strName);
+            objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
             _blnExtended = blnExtended;
 
             ImprovementManager.ForcedValue = strForcedValue;
             if (objXmlSpellNode["bonus"] != null)
             {
-                if (!ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Spell, guiID.ToString("D", GlobalOptions.InvariantCultureInfo), objXmlSpellNode["bonus"], 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Spell, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), objXmlSpellNode["bonus"], 1, DisplayNameShort(GlobalOptions.Language)))
                 {
-                    guiID = Guid.Empty;
+                    _guiID = Guid.Empty;
                     return;
                 }
                 if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
@@ -124,20 +124,20 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, objCharacter);
+        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public virtual void Save(XmlTextWriter objWriter)
+        public void Save(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("spell");
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", strName);
+            objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("descriptors", _strDescriptors);
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("type", _strType);
@@ -156,29 +156,31 @@ namespace Chummer
             objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
+            SaveDerived(objWriter);
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
-                objCharacter.SourceProcess(_strSource);
+                _objCharacter.SourceProcess(_strSource);
         }
+        public virtual void SaveDerived(XmlTextWriter objWriter) { }
 
         /// <summary>
         /// Load the Spell from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public virtual void Load(XmlNode objNode)
+        public void Load(XmlNode objNode)
         {
             if (objNode == null)
                 return;
-            if (!objNode.TryGetField("guid", Guid.TryParse, out guiID))
+            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
-                guiID = Guid.NewGuid();
+                _guiID = Guid.NewGuid();
             }
-            objNode.TryGetStringFieldQuickly("name", ref strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref guiSourceID))
+            objNode.TryGetStringFieldQuickly("name", ref _strName);
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
-                node?.TryGetGuidFieldQuickly("id", ref guiSourceID);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
@@ -193,7 +195,7 @@ namespace Chummer
             }
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetStringFieldQuickly("dv", ref _strDV);
-            if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && objCharacter.LastSavedVersion <= new Version(5, 197, 30))
+            if (objNode.TryGetBoolFieldQuickly("limited", ref _blnLimited) && _blnLimited && _objCharacter.LastSavedVersion <= new Version(5, 197, 30))
             {
                 GetNode()?.TryGetStringFieldQuickly("dv", ref _strDV);
             }
@@ -206,8 +208,10 @@ namespace Chummer
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+            LoadDerived(objNode);
         }
 
+        public virtual void LoadDerived(XmlNode objNode) { }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -215,7 +219,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public virtual void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
         {
             if (objWriter == null)
                 return;
@@ -241,16 +245,18 @@ namespace Chummer
             objWriter.WriteElementString("dv", DisplayDV(strLanguageToPrint));
             objWriter.WriteElementString("alchemy", Alchemical.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
-            objWriter.WriteElementString("source", objCharacter.LanguageBookShort(Source, strLanguageToPrint));
+            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
 
-            objWriter.WriteElementString("extra", objCharacter.TranslateExtra(Extra, strLanguageToPrint));
+            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
 
                 objWriter.WriteElementString("notes", Notes);
+            PrintDerived(objWriter);
             objWriter.WriteEndElement();
         }
 
+        public virtual void PrintDerived(XmlTextWriter objWriter) { }
         #endregion
 
         #region Properties
@@ -259,30 +265,30 @@ namespace Chummer
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
-        public Guid SourceID => guiSourceID;
+        public Guid SourceID => _guiSourceID;
 
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Internal identifier which will be used to identify this Spell in the Improvement system.
         /// </summary>
-        public string InternalId => guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         /// <summary>
         /// Spell's name.
         /// </summary>
         public virtual string Name
         {
-            get => strName;
+            get => _strName;
             set
             {
-                if (strName != value)
+                if (_strName != value)
                 {
                     _objCachedMyXmlNode = null;
-                    strName = value;
+                    _strName = value;
                 }
             }
         }
@@ -382,7 +388,7 @@ namespace Chummer
             if (strLanguage == GlobalOptions.DefaultLanguage)
                 return Category;
 
-            return objCharacter.LoadDataXPath("spells.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("spells.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -445,7 +451,7 @@ namespace Chummer
             {
                 StringBuilder sbdTip = new StringBuilder(LanguageManager.GetString("Tip_SpellDrainBase"));
                 string strSpace = LanguageManager.GetString("String_Space");
-                int intMAG = objCharacter.MAG.TotalValue;
+                int intMAG = _objCharacter.MAG.TotalValue;
                 string strDV = DV;
                 for (int i = 1; i <= intMAG * 2; i++)
                 {
@@ -485,7 +491,7 @@ namespace Chummer
                 sbdTip.Append(Environment.NewLine + LanguageManager.GetString("Label_Bonus"));
                 foreach (Improvement objLoopImprovement in lstDrainImprovements)
                 {
-                    sbdTip.Append(Environment.NewLine + objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
+                    sbdTip.Append(Environment.NewLine + _objCharacter.GetObjectName(objLoopImprovement) + strSpace + '(' + objLoopImprovement.Value.ToString("0;-0;0") + ')');
                 }
 
                 return sbdTip.ToString();
@@ -693,7 +699,7 @@ namespace Chummer
         public string Extra
         {
             get => _strExtra;
-            set => _strExtra = objCharacter.ReverseTranslateExtra(value);
+            set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
         }
 
         /// <summary>
@@ -759,7 +765,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(Extra))
             {
                 // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             }
             return strReturn;
         }
@@ -796,17 +802,17 @@ namespace Chummer
             {
                 if (Alchemical)
                 {
-                    return objCharacter.SkillsSection.GetActiveSkill("Alchemy");
+                    return _objCharacter.SkillsSection.GetActiveSkill("Alchemy");
                 }
                 if (Category == "Enchantments")
                 {
-                    return objCharacter.SkillsSection.GetActiveSkill("Artificing");
+                    return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
                 }
                 if (Category == "Rituals")
                 {
-                    return objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
+                    return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
                 }
-                return objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
+                return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
             }
         }
 
@@ -857,7 +863,7 @@ namespace Chummer
                     || x.ImproveType == Improvement.ImprovementType.SpellDicePool)
                     .Aggregate(strReturn, (current, objImprovement) =>
                         string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}{1}({4})",
-                            current, strSpace, "+", objCharacter.GetObjectName(objImprovement), objImprovement.Value));
+                            current, strSpace, "+", _objCharacter.GetObjectName(objImprovement), objImprovement.Value));
             }
         }
 
@@ -873,7 +879,7 @@ namespace Chummer
         {
             if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
-                _objCachedMyXmlNode = objCharacter.LoadData("spells.xml", strLanguage)
+                _objCachedMyXmlNode = _objCharacter.LoadData("spells.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/spells/spell[name = " + Name.CleanXPath() + ']'
                         : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -888,7 +894,7 @@ namespace Chummer
 
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false)
         {
-            foreach (Improvement objImprovement in objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
+            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
             {
                 switch (objImprovement.ImproveType)
                 {
@@ -980,7 +986,7 @@ namespace Chummer
         /// </summary>
         private Improvement CompareFocusPower(Improvement objImprovement)
         {
-            var list = objCharacter.Foci
+            var list = _objCharacter.Foci
                 .Where(x => x.GearObject.Bonus.InnerText == "MAGRating" && x.GearObject.Bonded).ToList();
             if (list.Count > 0)
             {
@@ -992,7 +998,7 @@ namespace Chummer
                 {
                     // This is hackz -- because we don't want to lose the original improvement's value
                     // we instantiate a fake version of the improvement that isn't saved to represent the diff
-                    return new Improvement(objCharacter)
+                    return new Improvement(_objCharacter)
                     {
                         Value = objImprovement.Value - powerFocusRating,
                         SourceName = objImprovement.SourceName,
@@ -1012,7 +1018,7 @@ namespace Chummer
         #region UI Methods
         public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = false)
         {
-            if (Grade != 0 && !string.IsNullOrEmpty(Source) && !objCharacter.Options.BookEnabled(Source))
+            if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
                 return null;
 
             string strText = CurrentDisplayName;
@@ -1062,8 +1068,8 @@ namespace Chummer
                     return false;
             }
 
-            objCharacter.Spells.Remove(this);
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Spell, InternalId);
+            _objCharacter.Spells.Remove(this);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Spell, InternalId);
             return true;
         }
 

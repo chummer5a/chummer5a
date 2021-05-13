@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,23 +34,24 @@ namespace Chummer
 
         private void SustainedSpellControl_Load(object sender, EventArgs e)
         {
-            lblSustainedSpell.Text = _objSustainedSpell.DisplayName(GlobalOptions.Language);
-            nudForce.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.Force));
-            nudNetHits.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.NetHits));
-
-            //Prevents the user from setting  SelfSustained of an SustainedCritterPower to true, because sustained critterpowers don't cause any dice loss
-            if (_objSustainedSpell is SustainedCritterPower)
+            try
             {
-                chkSelfSustained.Visible = false;
-                lblSelfSustained.Visible = false;
-            }
-            else
-            {
-                //Only do the databinding if necessary.
-                chkSelfSustained.DoDatabinding("Checked", _objSustainedSpell, nameof(_objSustainedSpell.SelfSustained));
-            }
+                lblSustainedSpell.Text = _objSustainedSpell.DisplayName(GlobalOptions.Language);
+                nudForce.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.Force));
+                nudNetHits.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.NetHits));
 
-            _blnLoading = false;
+                //Only shows and Databinds the chkSelfSustained, when it's actually needed
+                if (!(_objSustainedSpell is SustainedCritterPower))
+                {
+                    chkSelfSustained.Visible = true;
+                    lblSelfSustained.Visible = true;
+                    chkSelfSustained.DoDatabinding("Checked", _objSustainedSpell, nameof(_objSustainedSpell.SelfSustained));
+                }
+            }
+            finally
+            {
+                _blnLoading = false;
+            }
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)

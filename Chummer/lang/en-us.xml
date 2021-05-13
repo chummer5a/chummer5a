@@ -483,10 +483,6 @@
       <text>Delete</text>
     </string>
     <string>
-      <key>String_DeleteShort</key>
-      <text>X</text>
-    </string>
-    <string>
       <key>String_AddMore</key>
       <text>&amp;Add &amp;&amp; More</text>
     </string>
@@ -2032,7 +2028,7 @@
     </string>
     <string>
       <key>Message_DeleteSustainedSpell</key>
-      <text>Are you sure you want to no longer sustain this?</text>
+      <text>Are you sure you want to no longer sustain {0}?</text>
     </string>
     <string>
       <key>Message_DeleteSprite</key>
@@ -6434,7 +6430,7 @@
     </string>
     <string>
       <key>Tip_Skill_Sustain</key>
-      <text>Sustaining</text>
+      <text>Sustaining Penalties</text>
     </string>
     <string>
       <key>Tip_Skill_OffHand</key>
