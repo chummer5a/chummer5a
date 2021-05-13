@@ -42,10 +42,6 @@
         </choice>
       </choices>
     </mentor>
-    <mentor> <!--Great Mother SG-->
-      <id>a23c8a3d-b056-4173-88e4-e73bb64dd731</id>
-      <hide amendoperation="remove" />
-    </mentor>
     <mentor> <!--Great Mother SASS-->
       <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
       <hide />
