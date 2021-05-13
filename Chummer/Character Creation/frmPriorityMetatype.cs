@@ -679,8 +679,7 @@ namespace Chummer
                         }
                         _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText,
                             strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
-                            _xmlCritterPowerDocumentPowersNode,
-                            _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills"));
+                            _xmlCritterPowerDocumentPowersNode);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)

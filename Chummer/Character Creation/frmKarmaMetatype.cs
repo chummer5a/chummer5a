@@ -97,7 +97,6 @@ namespace Chummer
 
             // Add Possession and Inhabitation to the list of Critter Tradition variations.
             chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
-            chkBloodSpirit.SetToolTip(LanguageManager.GetString("Tip_Metatype_BloodSpirit"));
 
             List<ListItem> lstMethods = new List<ListItem>(2)
             {
@@ -237,9 +236,8 @@ namespace Chummer
                             }
                         }
                         _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant,
-                            objXmlMetatype,
-                            intForce, _xmlQualityDocumentQualitiesNode, _xmlCritterPowerDocumentPowersNode,
-                            _xmlSkillsDocumentKnowledgeSkillsNode);
+                            objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
+                            _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
@@ -637,14 +635,11 @@ namespace Chummer
                         chkPossessionBased.Checked = true;
                         cboPossessionMethod.SelectedValue = _strCurrentPossessionMethod;
                     }
-                    chkBloodSpirit.Visible = true;
                     chkPossessionBased.Visible = true;
                     cboPossessionMethod.Visible = true;
                 }
                 else
                 {
-                    chkBloodSpirit.Checked = false;
-                    chkBloodSpirit.Visible = false;
                     chkPossessionBased.Visible = false;
                     chkPossessionBased.Checked = false;
                     cboPossessionMethod.Visible = false;
@@ -655,9 +650,7 @@ namespace Chummer
                 lstMetatypes.BeginUpdate();
                 lstMetatypes.DataSource = null;
                 lstMetatypes.EndUpdate();
-
-                chkBloodSpirit.Checked = false;
-                chkBloodSpirit.Visible = false;
+                
                 chkPossessionBased.Visible = false;
                 chkPossessionBased.Checked = false;
                 cboPossessionMethod.Visible = false;

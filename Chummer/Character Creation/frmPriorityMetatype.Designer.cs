@@ -79,12 +79,14 @@ namespace Chummer
             this.lblSumtoTen = new System.Windows.Forms.Label();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetavariantQualitiesLabel = new System.Windows.Forms.Label();
-            this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.lblMetavariantKarmaLabel = new System.Windows.Forms.Label();
+            this.lblMetavariantLabel = new System.Windows.Forms.Label();
+            this.pnlQualities = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.tlpButtons.SuspendLayout();
             this.tlpTopHalf.SuspendLayout();
             this.tlpMain.SuspendLayout();
+            this.pnlQualities.SuspendLayout();
             this.SuspendLayout();
             // 
             // nudForce
@@ -155,8 +157,8 @@ namespace Chummer
             // lblMetavariantQualities
             // 
             this.lblMetavariantQualities.AutoSize = true;
-            this.tlpMain.SetColumnSpan(this.lblMetavariantQualities, 4);
-            this.lblMetavariantQualities.Location = new System.Drawing.Point(412, 319);
+            this.lblMetavariantQualities.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblMetavariantQualities.Location = new System.Drawing.Point(3, 6);
             this.lblMetavariantQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetavariantQualities.Name = "lblMetavariantQualities";
             this.lblMetavariantQualities.Size = new System.Drawing.Size(33, 13);
@@ -729,7 +731,6 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.cboSkill2, 1, 11);
             this.tlpMain.Controls.Add(this.cboSkill1, 1, 10);
             this.tlpMain.Controls.Add(this.lblMetatypeSkillSelection, 1, 9);
-            this.tlpMain.Controls.Add(this.lblMetavariantQualities, 2, 8);
             this.tlpMain.Controls.Add(this.lblMetavariantQualitiesLabel, 1, 8);
             this.tlpMain.Controls.Add(this.lstMetatypes, 0, 3);
             this.tlpMain.Controls.Add(this.lblSpecialAttributes, 5, 7);
@@ -761,6 +762,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.cboCategory, 0, 2);
             this.tlpMain.Controls.Add(this.lblINT, 1, 5);
             this.tlpMain.Controls.Add(this.tlpButtons, 1, 13);
+            this.tlpMain.Controls.Add(this.pnlQualities, 2, 8);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Margin = new System.Windows.Forms.Padding(0);
@@ -796,6 +798,20 @@ namespace Chummer
             this.lblMetavariantQualitiesLabel.Tag = "Label_Qualities";
             this.lblMetavariantQualitiesLabel.Text = "Qualities:";
             // 
+            // lblMetavariantKarmaLabel
+            // 
+            this.lblMetavariantKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMetavariantKarmaLabel.AutoSize = true;
+            this.lblMetavariantKarmaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMetavariantKarmaLabel.Location = new System.Drawing.Point(360, 294);
+            this.lblMetavariantKarmaLabel.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
+            this.lblMetavariantKarmaLabel.Name = "lblMetavariantKarmaLabel";
+            this.lblMetavariantKarmaLabel.Size = new System.Drawing.Size(46, 13);
+            this.lblMetavariantKarmaLabel.TabIndex = 76;
+            this.lblMetavariantKarmaLabel.Tag = "Label_Karma";
+            this.lblMetavariantKarmaLabel.Text = "Karma:";
+            this.lblMetavariantKarmaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // lblMetavariantLabel
             // 
             this.lblMetavariantLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -810,19 +826,18 @@ namespace Chummer
             this.lblMetavariantLabel.Text = "Metavariant:";
             this.lblMetavariantLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblMetavariantKarmaLabel
+            // pnlQualities
             // 
-            this.lblMetavariantKarmaLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMetavariantKarmaLabel.AutoSize = true;
-            this.lblMetavariantKarmaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblMetavariantKarmaLabel.Location = new System.Drawing.Point(360, 294);
-            this.lblMetavariantKarmaLabel.Margin = new System.Windows.Forms.Padding(23, 6, 3, 6);
-            this.lblMetavariantKarmaLabel.Name = "lblMetavariantKarmaLabel";
-            this.lblMetavariantKarmaLabel.Size = new System.Drawing.Size(46, 13);
-            this.lblMetavariantKarmaLabel.TabIndex = 76;
-            this.lblMetavariantKarmaLabel.Tag = "Label_Karma";
-            this.lblMetavariantKarmaLabel.Text = "Karma:";
-            this.lblMetavariantKarmaLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.pnlQualities.AutoScroll = true;
+            this.tlpMain.SetColumnSpan(this.pnlQualities, 4);
+            this.pnlQualities.Controls.Add(this.lblMetavariantQualities);
+            this.pnlQualities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlQualities.Location = new System.Drawing.Point(409, 313);
+            this.pnlQualities.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlQualities.Name = "pnlQualities";
+            this.pnlQualities.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlQualities.Size = new System.Drawing.Size(325, 71);
+            this.pnlQualities.TabIndex = 106;
             // 
             // frmPriorityMetatype
             // 
@@ -845,6 +860,8 @@ namespace Chummer
             this.tlpTopHalf.PerformLayout();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
+            this.pnlQualities.ResumeLayout(false);
+            this.pnlQualities.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -903,5 +920,6 @@ namespace Chummer
         internal System.Windows.Forms.Label lblMetavariantKarmaLabel;
         private System.Windows.Forms.Label lblMetavariantLabel;
         private System.Windows.Forms.Label lblMetavariantQualitiesLabel;
+        private System.Windows.Forms.Panel pnlQualities;
     }
 }

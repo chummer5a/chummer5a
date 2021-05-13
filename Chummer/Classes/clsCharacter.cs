@@ -963,7 +963,7 @@ namespace Chummer
         /// <summary>
         /// 
         /// </summary>
-        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode, XmlNode xmlCritterPowerDocumentPowersNode, XmlNode xmlSkillsDocumentKnowledgeSkillsNode, string strSelectedPossessionMethod = "", bool blnBloodSpirit = false)
+        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "")
         {
             if (objXmlMetatype == null)
                 throw new ArgumentNullException(nameof(objXmlMetatype));
@@ -1015,6 +1015,8 @@ namespace Chummer
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
             // Create the Qualities that come with the Metatype.
+            if (xmlQualityDocumentQualitiesNode == null)
+                xmlQualityDocumentQualitiesNode = LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
             if (xmlQualityDocumentQualitiesNode != null)
             {
                 using (XmlNodeList xmlQualityList = charNode.SelectNodes("qualities/*/quality"))
@@ -1036,6 +1038,8 @@ namespace Chummer
             }
 
             //Load any critter powers the character has.
+            if (xmlCritterPowerDocumentPowersNode == null)
+                xmlCritterPowerDocumentPowersNode = LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
             if (xmlCritterPowerDocumentPowersNode != null)
             {
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
@@ -1054,7 +1058,7 @@ namespace Chummer
             }
 
             //Load any natural weapons the character has.
-            foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
+            foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("naturalweapons/naturalweapon"))
             {
                 Weapon objWeapon = new Weapon(this)
                 {
@@ -1073,9 +1077,24 @@ namespace Chummer
                     Source = objXmlNaturalWeapon["source"].InnerText,
                     Page = objXmlNaturalWeapon["page"].InnerText
                 };
-
                 Weapons.Add(objWeapon);
             }
+
+            // Add the Unarmed Attack Weapon to the character.
+            if (Weapons.All(x => x.Name != "Unarmed Attack"))
+            {
+                XmlNode objXmlWeapon = LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                if (objXmlWeapon != null)
+                {
+                    Weapon objWeapon = new Weapon(this);
+                    objWeapon.Create(objXmlWeapon, lstWeapons);
+                    objWeapon.ParentID =
+                        Guid.NewGuid()
+                            .ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
+                    Weapons.Add(objWeapon);
+                }
+            }
+
             //Set the Active Skill Ratings for the Critter.
             foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
             {
@@ -1108,6 +1127,8 @@ namespace Chummer
             }
 
             //Set the Knowledge Skill Ratings for the Critter.
+            if (xmlSkillsDocumentKnowledgeSkillsNode == null)
+                xmlSkillsDocumentKnowledgeSkillsNode = LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
             if (xmlSkillsDocumentKnowledgeSkillsNode != null)
             {
                 foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
@@ -1292,7 +1313,6 @@ namespace Chummer
                 MAGAdept.AssignLimits(0, 0, 0);
             }
 
-
             if (strSelectedMetatypeCategory == "Spirits")
             {
                 XmlNode xmlOptionalPowersNode = charNode["optionalpowers"];
@@ -1310,69 +1330,42 @@ namespace Chummer
                     foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
                         ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId, bonusNode, 1, strMetatypeId);
                 }
-                //If this is a Blood Spirit, add their free Critter Powers.
-                if (blnBloodSpirit && xmlCritterPowerDocumentPowersNode != null)
-                {
-                    XmlNode objXmlCritterPower;
-                    CritterPower objPower;
-
-                    //Energy Drain.
-                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Energy Drain"))
-                    {
-                        objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Energy Drain\"]");
-                        objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
-                    }
-
-                    // Fear.
-                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Fear"))
-                    {
-                        objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Fear\"]");
-                        objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
-                    }
-
-                    // Natural Weapon.
-                    objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Natural Weapon\"]");
-                    objPower = new CritterPower(this);
-                    objPower.Create(objXmlCritterPower, 0, "DV " + intForce.ToString(GlobalOptions.InvariantCultureInfo) + "P, AP 0");
-                    objPower.CountTowardsLimit = false;
-                    CritterPowers.Add(objPower);
-                    ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
-                    ImprovementManager.Commit(this);
-
-                    // Evanescence.
-                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Evanescence"))
-                    {
-                        objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Evanescence\"]");
-                        objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
-                    }
-                }
 
                 // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
-                if (!string.IsNullOrEmpty(strSelectedPossessionMethod) && xmlCritterPowerDocumentPowersNode != null)
+                if (xmlCritterPowerDocumentPowersNode != null)
                 {
-                    CritterPower objMaterializationPower = CritterPowers.FirstOrDefault(x => x.Name == "Materialization");
-                    if (objMaterializationPower != null)
-                        CritterPowers.Remove(objMaterializationPower);
-
-                    if (CritterPowers.All(x => x.Name != strSelectedPossessionMethod))
+                    if (!string.IsNullOrEmpty(strSelectedPossessionMethod))
                     {
-                        // Add the selected Power.
-                        XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " + strSelectedPossessionMethod.CleanXPath() + "]");
+                        CritterPower objMaterializationPower =
+                            CritterPowers.FirstOrDefault(x => x.Name == "Materialization");
+                        if (objMaterializationPower != null)
+                            CritterPowers.Remove(objMaterializationPower);
+
+                        if (CritterPowers.All(x => !x.Name.Contains(strSelectedPossessionMethod)))
+                        {
+                            // Add the selected Power.
+                            XmlNode objXmlCritterPower =
+                                xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
+                                    strSelectedPossessionMethod.CleanXPath() + "]");
+                            if (objXmlCritterPower != null)
+                            {
+                                CritterPower objPower = new CritterPower(this);
+                                objPower.Create(objXmlCritterPower, 0, string.Empty);
+                                objPower.CountTowardsLimit = false;
+                                CritterPowers.Add(objPower);
+
+                                ImprovementManager.CreateImprovement(this, objPower.InternalId,
+                                    Improvement.ImprovementSource.Metatype, string.Empty,
+                                    Improvement.ImprovementType.CritterPower, string.Empty);
+                                ImprovementManager.Commit(this);
+                            }
+                        }
+                    }
+                    else if (CritterPowers.All(x => x.Name != "Materialization" && !x.Name.Contains("Possession") && !x.Name.Contains("Inhabitation")))
+                    {
+                        // Add the Materialization Power.
+                        XmlNode objXmlCritterPower =
+                            xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Materialization\"]");
                         if (objXmlCritterPower != null)
                         {
                             CritterPower objPower = new CritterPower(this);
@@ -1380,24 +1373,11 @@ namespace Chummer
                             objPower.CountTowardsLimit = false;
                             CritterPowers.Add(objPower);
 
-                            ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
+                            ImprovementManager.CreateImprovement(this, objPower.InternalId,
+                                Improvement.ImprovementSource.Metatype, string.Empty,
+                                Improvement.ImprovementType.CritterPower, string.Empty);
                             ImprovementManager.Commit(this);
                         }
-                    }
-                }
-                else if (CritterPowers.All(x => x.Name != "Materialization") && xmlCritterPowerDocumentPowersNode != null)
-                {
-                    // Add the Materialization Power.
-                    XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Materialization\"]");
-                    if (objXmlCritterPower != null)
-                    {
-                        CritterPower objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
                     }
                 }
             }

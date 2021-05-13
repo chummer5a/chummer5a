@@ -24,7 +24,6 @@ using System.Linq;
  using System.Windows.Forms;
 using System.Xml;
  using System.Xml.XPath;
- using Chummer.Backend.Equipment;
 using Chummer.Backend.Uniques;
 
 namespace Chummer
@@ -458,7 +457,9 @@ namespace Chummer
                     CharacterOptionsKey = _objSpirit.CharacterObject.CharacterOptionsKey,
                     // Override the defaults for the setting.
                     IgnoreRules = true,
-                    IsCritter = true
+                    IsCritter = true,
+                    Alias = strCritterName,
+                    Created = true
                 })
                 {
                     if (!string.IsNullOrEmpty(txtCritterName.Text))
@@ -477,218 +478,17 @@ namespace Chummer
                         objCharacter.FileName = strFileName;
                     }
 
-                    // Set Metatype information.
-                    if (strCritterName == "Ally Spirit")
-                    {
-                        objCharacter.BOD.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.AGI.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["agiaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.REA.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["reaaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.STR.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["straug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.CHA.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["chaaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.INT.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["intaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.LOG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["logaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.WIL.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.MAG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["magaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.RES.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["resaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.EDG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgaug"]?.InnerText, intForce, 0, 0));
-                        objCharacter.ESS.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"]?.InnerText, intForce, 0, 0));
-                    }
-                    else
-                    {
-                        int intMinModifier = -3;
-                        objCharacter.BOD.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.AGI.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.REA.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.STR.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.CHA.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.INT.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.LOG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.WIL.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.MAG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.RES.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.EDG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, intMinModifier, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 3, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 3, 0));
-                        objCharacter.ESS.AssignLimits(
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmin"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0, 0),
-                            CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"]?.InnerText, intForce, 0, 0));
-                    }
-
-                    // If we're working with a Critter, set the Attributes to their default values.
-                    objCharacter.BOD.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.AGI.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.REA.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.STR.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.CHA.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.INT.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.LOG.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.WIL.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.MAG.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.RES.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.EDG.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"]?.InnerText, intForce, 0, 0);
-                    objCharacter.ESS.MetatypeMinimum = CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"]?.InnerText, intForce, 0, 0);
-
-                    // Sprites can never have Physical Attributes.
-                    if (objXmlMetatype["category"].InnerText.EndsWith("Sprite", StringComparison.Ordinal))
-                    {
-                        objCharacter.BOD.AssignLimits(0, 0, 0);
-                        objCharacter.AGI.AssignLimits(0, 0, 0);
-                        objCharacter.REA.AssignLimits(0, 0, 0);
-                        objCharacter.STR.AssignLimits(0, 0, 0);
-                    }
-
-                    objCharacter.Metatype = strCritterName;
-                    objCharacter.MetatypeCategory = objXmlMetatype["category"].InnerText;
-                    objCharacter.Metavariant = string.Empty;
+                    objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-
-                    if (objXmlMetatype["movement"] != null)
-                        objCharacter.Movement = objXmlMetatype["movement"].InnerText;
-                    // Load the Qualities file.
-                    XmlDocument objXmlQualityDocument = _objSpirit.CharacterObject.LoadData("qualities.xml");
-
-                    // Determine if the Metatype has any bonuses.
-                    if (objXmlMetatype.InnerXml.Contains("bonus"))
-                        ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, strCritterName, objXmlMetatype.SelectSingleNode("bonus"), 1, strCritterName);
-
-                    // Create the Qualities that come with the Metatype.
-                    foreach (XmlNode objXmlQualityItem in objXmlMetatype.SelectNodes("qualities/*/quality"))
-                    {
-                        XmlNode objXmlQuality = objXmlQualityDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlQualityItem.InnerText.CleanXPath() + "]");
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Quality objQuality = new Quality(objCharacter);
-                        string strForceValue = objXmlQualityItem.Attributes?["select"]?.InnerText ?? string.Empty;
-                        QualitySource objSource = objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString ? QualitySource.MetatypeRemovable : QualitySource.Metatype;
-                        objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
-                        objCharacter.Qualities.Add(objQuality);
-
-                        // Add any created Weapons to the character.
-                        foreach (Weapon objWeapon in lstWeapons)
-                            objCharacter.Weapons.Add(objWeapon);
-                    }
-
-                    // Add any Critter Powers the Metatype/Critter should have.
-                    XmlNode objXmlCritter = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCharacter.Metatype.CleanXPath() + "]");
-
-                    objXmlDocument = _objSpirit.CharacterObject.LoadData("critterpowers.xml");
-                    foreach (XmlNode objXmlPower in objXmlCritter.SelectNodes("powers/power"))
-                    {
-                        XmlNode objXmlCritterPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath() + "]");
-                        CritterPower objPower = new CritterPower(objCharacter);
-                        string strForcedValue = objXmlPower.Attributes?["select"]?.InnerText ?? string.Empty;
-                        int intRating = CommonFunctions.ExpressionToInt(objXmlPower.Attributes?["rating"]?.InnerText, intForce, 0, 0);
-
-                        objPower.Create(objXmlCritterPower, intRating, strForcedValue);
-                        objCharacter.CritterPowers.Add(objPower);
-                    }
-                    
-                    XmlNode xmlOptionalPowersNode = objXmlCritter["optionalpowers"];
-                    if (xmlOptionalPowersNode != null && intForce >= 3)
-                    {
-                        XmlDocument objDummyDocument = new XmlDocument { XmlResolver = null };
-                        //For every 3 full points of Force a spirit has, it may gain one Optional Power.
-                        for (int i = intForce - 3; i >= 0; i -= 3)
-                        {
-                            XmlNode bonusNode = objDummyDocument.CreateNode(XmlNodeType.Element, "bonus", null);
-                            XmlNode powerNode = objDummyDocument.ImportNode(xmlOptionalPowersNode.CloneNode(true), true);
-                            bonusNode.AppendChild(powerNode);
-                            objDummyDocument.AppendChild(bonusNode);
-                        }
-                        foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
-                            ImprovementManager.CreateImprovements(objCharacter, Improvement.ImprovementSource.Metatype, objCharacter.Metatype, bonusNode, 1, objCharacter.Metatype);
-                    }
-
-                    // Add any Complex Forms the Critter comes with (typically Sprites)
-                    XmlDocument objXmlProgramDocument = _objSpirit.CharacterObject.LoadData("complexforms.xml");
-                    foreach (XmlNode objXmlComplexForm in objXmlCritter.SelectNodes("complexforms/complexform"))
-                    {
-                        string strForceValue = objXmlComplexForm.Attributes?["select"]?.InnerText ?? string.Empty;
-                        XmlNode objXmlComplexFormData = objXmlProgramDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + objXmlComplexForm.InnerText.CleanXPath() + "]");
-                        ComplexForm objComplexForm = new ComplexForm(objCharacter);
-                        objComplexForm.Create(objXmlComplexFormData, strForceValue);
-                        objCharacter.ComplexForms.Add(objComplexForm);
-                    }
-
-                    objCharacter.Alias = strCritterName;
-                    objCharacter.Created = true;
                     if (!objCharacter.Save())
                         return;
+
+                    // Link the newly-created Critter to the Spirit.
+                    imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
+                    ContactDetailChanged?.Invoke(this, EventArgs.Empty);
+                    
+                    Program.MainForm.OpenCharacter(objCharacter);
                 }
-
-                // Link the newly-created Critter to the Spirit.
-                imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
-                ContactDetailChanged?.Invoke(this, EventArgs.Empty);
-
-                Character objOpenCharacter = Program.MainForm.LoadCharacter(_objSpirit.FileName);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
             }
         }
         #endregion

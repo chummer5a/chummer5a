@@ -28844,8 +28844,10 @@
         <power>Astral Form</power>
         <power>Binding</power>
         <power>Energy Drain</power>
+        <power>Evanescence</power>
         <power>Fear</power>
         <power>Materialization</power>
+        <power select="DV (Force)P, AP 0">Natural Weapon</power>
         <power>Essence Loss</power>
       </powers>
       <skills>

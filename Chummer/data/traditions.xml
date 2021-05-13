@@ -2191,6 +2191,7 @@
         <power>Astral Form</power>
         <power>Binding</power>
         <power>Energy Drain (Essence, Touch, Physical Damage)</power>
+        <power>Evanescence</power>
         <power>Fear</power>
         <power>Materialization</power>
       </powers>
@@ -2539,6 +2540,7 @@
         <power>Aura Masking</power>
         <power>Deathly Aura</power>
         <power>Energy Drain (Essence)</power>
+        <power>Evanescence</power>
         <power>Fear</power>
         <power>Magical Guard</power>
         <power>Mimicry</power>

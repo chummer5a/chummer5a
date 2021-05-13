@@ -43,7 +43,6 @@ namespace Chummer
             this.nudForce = new Chummer.NumericUpDownEx();
             this.lblSTR = new System.Windows.Forms.Label();
             this.tlpBottom = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkBloodSpirit = new Chummer.ColorableCheckBox(this.components);
             this.chkPossessionBased = new Chummer.ColorableCheckBox(this.components);
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -70,10 +69,12 @@ namespace Chummer
             this.lblQualitiesLabel = new System.Windows.Forms.Label();
             this.lblKarma = new System.Windows.Forms.Label();
             this.cboMetavariant = new Chummer.ElasticComboBox();
+            this.pnlQualities = new System.Windows.Forms.Panel();
             this.tlpMetatypes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             this.tlpBottom.SuspendLayout();
             this.tlpButtons.SuspendLayout();
+            this.pnlQualities.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpMetatypes
@@ -108,12 +109,12 @@ namespace Chummer
             this.tlpMetatypes.Controls.Add(this.lblINTLabel, 1, 2);
             this.tlpMetatypes.Controls.Add(this.lblBODLabel, 1, 0);
             this.tlpMetatypes.Controls.Add(this.lblBOD, 1, 1);
-            this.tlpMetatypes.Controls.Add(this.lblQualities, 2, 6);
             this.tlpMetatypes.Controls.Add(this.lblMetavariantLabel, 1, 4);
             this.tlpMetatypes.Controls.Add(this.lblKarmaLabel, 1, 5);
             this.tlpMetatypes.Controls.Add(this.lblQualitiesLabel, 1, 6);
             this.tlpMetatypes.Controls.Add(this.lblKarma, 2, 5);
             this.tlpMetatypes.Controls.Add(this.cboMetavariant, 2, 4);
+            this.tlpMetatypes.Controls.Add(this.pnlQualities, 2, 6);
             this.tlpMetatypes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMetatypes.Location = new System.Drawing.Point(9, 9);
             this.tlpMetatypes.Name = "tlpMetatypes";
@@ -230,14 +231,12 @@ namespace Chummer
             // 
             this.tlpBottom.AutoSize = true;
             this.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpBottom.ColumnCount = 3;
+            this.tlpBottom.ColumnCount = 2;
             this.tlpMetatypes.SetColumnSpan(this.tlpBottom, 5);
             this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBottom.Controls.Add(this.chkBloodSpirit, 0, 0);
-            this.tlpBottom.Controls.Add(this.chkPossessionBased, 1, 0);
-            this.tlpBottom.Controls.Add(this.cboPossessionMethod, 2, 0);
+            this.tlpBottom.Controls.Add(this.chkPossessionBased, 0, 0);
+            this.tlpBottom.Controls.Add(this.cboPossessionMethod, 1, 0);
             this.tlpBottom.Controls.Add(this.tlpButtons, 0, 1);
             this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBottom.Location = new System.Drawing.Point(301, 463);
@@ -249,27 +248,12 @@ namespace Chummer
             this.tlpBottom.Size = new System.Drawing.Size(433, 56);
             this.tlpBottom.TabIndex = 70;
             // 
-            // chkBloodSpirit
-            // 
-            this.chkBloodSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkBloodSpirit.AutoSize = true;
-            this.chkBloodSpirit.DefaultColorScheme = true;
-            this.chkBloodSpirit.Location = new System.Drawing.Point(3, 5);
-            this.chkBloodSpirit.Name = "chkBloodSpirit";
-            this.chkBloodSpirit.Size = new System.Drawing.Size(79, 17);
-            this.chkBloodSpirit.TabIndex = 69;
-            this.chkBloodSpirit.Tag = "Checkbox_Metatype_BloodSpirit";
-            this.chkBloodSpirit.Text = "Blood Spirit";
-            this.chkBloodSpirit.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkBloodSpirit.UseVisualStyleBackColor = true;
-            this.chkBloodSpirit.Visible = false;
-            // 
             // chkPossessionBased
             // 
             this.chkPossessionBased.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPossessionBased.AutoSize = true;
             this.chkPossessionBased.DefaultColorScheme = true;
-            this.chkPossessionBased.Location = new System.Drawing.Point(88, 5);
+            this.chkPossessionBased.Location = new System.Drawing.Point(3, 5);
             this.chkPossessionBased.Name = "chkPossessionBased";
             this.chkPossessionBased.Size = new System.Drawing.Size(211, 17);
             this.chkPossessionBased.TabIndex = 64;
@@ -286,9 +270,9 @@ namespace Chummer
             this.cboPossessionMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPossessionMethod.Enabled = false;
             this.cboPossessionMethod.FormattingEnabled = true;
-            this.cboPossessionMethod.Location = new System.Drawing.Point(305, 3);
+            this.cboPossessionMethod.Location = new System.Drawing.Point(220, 3);
             this.cboPossessionMethod.Name = "cboPossessionMethod";
-            this.cboPossessionMethod.Size = new System.Drawing.Size(125, 21);
+            this.cboPossessionMethod.Size = new System.Drawing.Size(210, 21);
             this.cboPossessionMethod.TabIndex = 65;
             this.cboPossessionMethod.TooltipText = "";
             this.cboPossessionMethod.Visible = false;
@@ -298,7 +282,7 @@ namespace Chummer
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 2;
-            this.tlpBottom.SetColumnSpan(this.tlpButtons, 3);
+            this.tlpBottom.SetColumnSpan(this.tlpButtons, 2);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
@@ -519,8 +503,8 @@ namespace Chummer
             // lblQualities
             // 
             this.lblQualities.AutoSize = true;
-            this.tlpMetatypes.SetColumnSpan(this.lblQualities, 4);
-            this.lblQualities.Location = new System.Drawing.Point(412, 161);
+            this.lblQualities.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblQualities.Location = new System.Drawing.Point(3, 6);
             this.lblQualities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblQualities.Name = "lblQualities";
             this.lblQualities.Size = new System.Drawing.Size(33, 13);
@@ -591,6 +575,19 @@ namespace Chummer
             this.cboMetavariant.TooltipText = "";
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
+            // pnlQualities
+            // 
+            this.pnlQualities.AutoScroll = true;
+            this.tlpMetatypes.SetColumnSpan(this.pnlQualities, 4);
+            this.pnlQualities.Controls.Add(this.lblQualities);
+            this.pnlQualities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlQualities.Location = new System.Drawing.Point(409, 155);
+            this.pnlQualities.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlQualities.Name = "pnlQualities";
+            this.pnlQualities.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlQualities.Size = new System.Drawing.Size(325, 308);
+            this.pnlQualities.TabIndex = 71;
+            // 
             // frmKarmaMetatype
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -617,22 +614,21 @@ namespace Chummer
             this.tlpBottom.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            this.pnlQualities.ResumeLayout(false);
+            this.pnlQualities.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private Chummer.ColorableCheckBox chkBloodSpirit;
         private ElasticComboBox cboPossessionMethod;
         private Chummer.ColorableCheckBox chkPossessionBased;
         private Chummer.NumericUpDownEx nudForce;
         private System.Windows.Forms.Label lblForceLabel;
         private ElasticComboBox cboCategory;
-        internal System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Label lblQualities;
         internal System.Windows.Forms.Label lblKarma;
         private ElasticComboBox cboMetavariant;
-        internal System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.Label lblINILabel;
         internal System.Windows.Forms.Label lblINI;
         internal System.Windows.Forms.Label lblWILLabel;
@@ -654,9 +650,12 @@ namespace Chummer
         internal System.Windows.Forms.ListBox lstMetatypes;
         private BufferedTableLayoutPanel tlpMetatypes;
         private BufferedTableLayoutPanel tlpBottom;
-        private BufferedTableLayoutPanel tlpButtons;
         private Label lblMetavariantLabel;
         internal Label lblKarmaLabel;
         private Label lblQualitiesLabel;
+        private BufferedTableLayoutPanel tlpButtons;
+        internal Button cmdCancel;
+        internal Button cmdOK;
+        private Panel pnlQualities;
     }
 }

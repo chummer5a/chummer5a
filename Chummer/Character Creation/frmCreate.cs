@@ -10609,6 +10609,8 @@ namespace Chummer
                 ExpenseUndo objNuyenUndo = new ExpenseUndo();
                 objNuyenUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
                 objNuyen.Undo = objNuyenUndo;
+                
+                CharacterObject.Created = true;
 
                 _blnSkipToolStripRevert = true;
                 if (!CharacterObject.Save())
@@ -10621,6 +10623,7 @@ namespace Chummer
                             CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
                         }
                     }
+                    CharacterObject.Created = false;
                     return false;
                 }
 
@@ -12805,9 +12808,6 @@ namespace Chummer
 
             if (!ValidateCharacter())
                 return false;
-
-            // The user has confirmed that the character should be Create.
-            CharacterObject.Created = true;
 
             return true;
         }

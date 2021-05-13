@@ -24,9 +24,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using System.Xml;
 using System.Reflection;
-using Chummer.Backend.Equipment;
 using Application = System.Windows.Forms.Application;
 using DataFormats = System.Windows.Forms.DataFormats;
 using DragDropEffects = System.Windows.Forms.DragDropEffects;
@@ -823,54 +821,33 @@ namespace Chummer
 
         private void mnuNewCritter_Click(object sender, EventArgs e)
         {
-            Character objCharacter = new Character();
-
             using (new CursorWait(this))
             {
-                using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
-	            {
-	                frmPickSetting.ShowDialog(this);
-                    if (frmPickSetting.DialogResult == DialogResult.Cancel)
-	                    return;
-	            }
-
-                // Override the defaults for the setting.
-                objCharacter.IgnoreRules = true;
-                objCharacter.IsCritter = true;
-                objCharacter.Created = true;
-
-                // Show the Metatype selection window.
-                using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
+                using (Character objCharacter = new Character()) // Using is fine here because Dispose() code is skipped if the character is open in a form
                 {
-                    frmSelectMetatype.ShowDialog(this);
+                    using (frmSelectBuildMethod frmPickSetting = new frmSelectBuildMethod(objCharacter))
+                    {
+                        frmPickSetting.ShowDialog(this);
+                        if (frmPickSetting.DialogResult == DialogResult.Cancel)
+                            return;
+                    }
 
-                    if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                        return;
+                    // Override the defaults for the setting.
+                    objCharacter.IgnoreRules = true;
+                    objCharacter.IsCritter = true;
+                    objCharacter.Created = true;
+
+                    // Show the Metatype selection window.
+                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter, "critters.xml"))
+                    {
+                        frmSelectMetatype.ShowDialog(this);
+
+                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                            return;
+                    }
+
+                    OpenCharacter(objCharacter, false);
                 }
-
-                // Add the Unarmed Attack Weapon to the character.
-                XmlNode objXmlWeapon = objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-                if (objXmlWeapon != null)
-                {
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    Weapon objWeapon = new Weapon(objCharacter);
-                    objWeapon.Create(objXmlWeapon, lstWeapons);
-                    objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
-                    objCharacter.Weapons.Add(objWeapon);
-                    foreach (Weapon objLoopWeapon in lstWeapons)
-                        objCharacter.Weapons.Add(objLoopWeapon);
-                }
-
-                frmCareer frmNewCharacter = new frmCareer(objCharacter)
-                {
-                    MdiParent = this
-                };
-                if (MdiChildren.Length <= 1)
-                    frmNewCharacter.WindowState = FormWindowState.Maximized;
-                frmNewCharacter.Show();
-                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                if (MdiChildren.Length > 1)
-                    frmNewCharacter.WindowState = FormWindowState.Maximized;
             }
         }
 
@@ -1300,75 +1277,56 @@ namespace Chummer
         /// </summary>
         private void ShowNewForm(object sender, EventArgs e)
         {
-            Character objCharacter = new Character();
-            using (new CursorWait(this))
+            using (Character objCharacter = new Character())
             {
-                // Show the BP selection window.
-	            using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
-	            {
-	                frmBP.ShowDialog(this);
-                    if (frmBP.DialogResult == DialogResult.Cancel)
+                using (new CursorWait(this))
+                {
+                    // Show the BP selection window.
+                    using (frmSelectBuildMethod frmBP = new frmSelectBuildMethod(objCharacter))
                     {
-                        objCharacter.Dispose();
-                        return;
-                    }
-                }
-                // Show the Metatype selection window.
-	            if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
-	            {
-	                using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
-                    {
-                        frmSelectMetatype.ShowDialog(this);
-
-                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                        {
-                            objCharacter.Dispose();
+                        frmBP.ShowDialog(this);
+                        if (frmBP.DialogResult != DialogResult.OK)
                             return;
+                    }
+
+                    // Show the Metatype selection window.
+                    if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                    {
+                        using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(objCharacter))
+                        {
+                            frmSelectMetatype.ShowDialog(this);
+
+                            if (frmSelectMetatype.DialogResult != DialogResult.OK)
+                                return;
                         }
                     }
-                }
-                else
-                {
-                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
+                    else
                     {
-                        frmSelectMetatype.ShowDialog(this);
-
-                        if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
+                        using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(objCharacter))
                         {
-                            objCharacter.Dispose();
-                            return;
+                            frmSelectMetatype.ShowDialog(this);
+
+                            if (frmSelectMetatype.DialogResult != DialogResult.OK)
+                                return;
                         }
                     }
+
+                    OpenCharacters.Add(objCharacter);
                 }
 
-                // Add the Unarmed Attack Weapon to the character.
-                XmlNode objXmlWeapon = objCharacter.LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
-                if (objXmlWeapon != null)
+                using (new CursorWait(this))
                 {
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    Weapon objWeapon = new Weapon(objCharacter);
-                    objWeapon.Create(objXmlWeapon, lstWeapons);
-                    objWeapon.ParentID = Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
-                    objCharacter.Weapons.Add(objWeapon);
-                    foreach (Weapon objLoopWeapon in lstWeapons)
-                        objCharacter.Weapons.Add(objLoopWeapon);
+                    frmCreate frmNewCharacter = new frmCreate(objCharacter)
+                    {
+                        MdiParent = this
+                    };
+                    if (MdiChildren.Length <= 1)
+                        frmNewCharacter.WindowState = FormWindowState.Maximized;
+                    frmNewCharacter.Show();
+                    // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                    if (MdiChildren.Length > 1)
+                        frmNewCharacter.WindowState = FormWindowState.Maximized;
                 }
-
-                OpenCharacters.Add(objCharacter);
-            }
-
-            using (new CursorWait(this))
-            {
-                frmCreate frmNewCharacter = new frmCreate(objCharacter)
-                {
-                    MdiParent = this
-                };
-                if (MdiChildren.Length <= 1)
-                    frmNewCharacter.WindowState = FormWindowState.Maximized;
-                frmNewCharacter.Show();
-                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                if (MdiChildren.Length > 1)
-                    frmNewCharacter.WindowState = FormWindowState.Maximized;
             }
         }
 
