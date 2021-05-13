@@ -146,18 +146,18 @@ namespace Chummer
             {
                 if (!(objCharacterNode.Tag is CharacterCache objCache))
                     continue;
-                treCharacterList.DoThreadSafe(() => objCharacterNode.Text = objCache.CalculatedName(), false);
+                treCharacterList.QueueThreadSafe(() => objCharacterNode.Text = objCache.CalculatedName());
                 string strTooltip = string.Empty;
                 if (!string.IsNullOrEmpty(objCache.FilePath))
                     strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath, '<' + Application.ProductName + '>');
                 if (!string.IsNullOrEmpty(objCache.ErrorText))
                 {
-                    treCharacterList.DoThreadSafe(() => objCharacterNode.ForeColor = ColorManager.ErrorColor, false);
+                    treCharacterList.QueueThreadSafe(() => objCharacterNode.ForeColor = ColorManager.ErrorColor);
                     strTooltip += Environment.NewLine + Environment.NewLine + LanguageManager.GetString("String_Error") + LanguageManager.GetString("String_Colon") + Environment.NewLine + objCache.ErrorText;
                 }
                 else
-                    treCharacterList.DoThreadSafe(() => objCharacterNode.ForeColor = ColorManager.WindowText, false);
-                treCharacterList.DoThreadSafe(() => objCharacterNode.ToolTipText = strTooltip, false);
+                    treCharacterList.QueueThreadSafe(() => objCharacterNode.ForeColor = ColorManager.WindowText);
+                treCharacterList.QueueThreadSafe(() => objCharacterNode.ToolTipText = strTooltip);
             }
         }
 

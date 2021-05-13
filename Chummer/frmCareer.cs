@@ -11721,7 +11721,18 @@ namespace Chummer
 
         private void DeleteSustainedSpell(object sender, EventArgs e)
         {
+            if (sender is SustainedSpellControl objSender)
+            {
+                ISustainable objSustainedObject = objSender.SustainedObject;
 
+                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSustainedSpell")))
+                    return;
+
+                CharacterObject.SustainedCollection.Remove(objSustainedObject);
+
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
         }
 
         private void SustainedPropertyChanged(object sender, EventArgs e)

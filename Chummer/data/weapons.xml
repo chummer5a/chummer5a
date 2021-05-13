@@ -7062,6 +7062,7 @@
       <source>SR5</source>
       <page>132</page>
       <allowaccessory>False</allowaccessory>
+      <hide />
     </weapon>
     <weapon>
       <id>ae58f859-37ee-4fac-befa-365acd3c7da7</id>

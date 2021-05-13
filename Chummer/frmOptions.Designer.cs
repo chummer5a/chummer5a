@@ -43,14 +43,15 @@ namespace Chummer
             this.flpPDFOffset = new System.Windows.Forms.FlowLayoutPanel();
             this.nudPDFOffset = new System.Windows.Forms.NumericUpDown();
             this.cmdPDFTest = new System.Windows.Forms.Button();
+            this.cmdRemovePDFLocation = new System.Windows.Forms.Button();
             this.tlpGlobalOptions = new System.Windows.Forms.TableLayoutPanel();
-            this.chkUseLogging = new System.Windows.Forms.CheckBox();
-            this.chkAutomaticUpdate = new System.Windows.Forms.CheckBox();
-            this.chkConfirmKarmaExpense = new System.Windows.Forms.CheckBox();
-            this.chkConfirmDelete = new System.Windows.Forms.CheckBox();
-            this.chkHideItemsOverAvail = new System.Windows.Forms.CheckBox();
-            this.chkAllowSkillDiceRolling = new System.Windows.Forms.CheckBox();
-            this.chkSearchInCategoryOnly = new System.Windows.Forms.CheckBox();
+            this.chkUseLogging = new Chummer.ColorableCheckBox(this.components);
+            this.chkAutomaticUpdate = new Chummer.ColorableCheckBox(this.components);
+            this.chkConfirmKarmaExpense = new Chummer.ColorableCheckBox(this.components);
+            this.chkConfirmDelete = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideItemsOverAvail = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowSkillDiceRolling = new Chummer.ColorableCheckBox(this.components);
+            this.chkSearchInCategoryOnly = new Chummer.ColorableCheckBox(this.components);
             this.tlpGlobalOptionsTop = new Chummer.BufferedTableLayoutPanel(this.components);
             this.grpDateFormat = new System.Windows.Forms.GroupBox();
             this.tlpDateFormat = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -60,7 +61,7 @@ namespace Chummer
             this.tlpTimeFormat = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtTimeFormat = new System.Windows.Forms.TextBox();
             this.txtTimeFormatView = new System.Windows.Forms.TextBox();
-            this.chkCustomDateTimeFormats = new System.Windows.Forms.CheckBox();
+            this.chkCustomDateTimeFormats = new Chummer.ColorableCheckBox(this.components);
             this.lblXSLT = new System.Windows.Forms.Label();
             this.lblLanguage = new System.Windows.Forms.Label();
             this.cboSheetLanguage = new Chummer.ElasticComboBox();
@@ -76,11 +77,13 @@ namespace Chummer
             this.tlpCharacterRosterPath = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCharacterRoster = new System.Windows.Forms.Button();
             this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
+            this.cmdRemoveCharacterRoster = new System.Windows.Forms.Button();
             this.lblPDFParametersLabel = new System.Windows.Forms.Label();
             this.cboPDFParameters = new Chummer.ElasticComboBox();
             this.tlpPDFAppPath = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtPDFAppPath = new System.Windows.Forms.TextBox();
             this.cmdPDFAppPath = new System.Windows.Forms.Button();
+            this.cmdRemovePDFAppPath = new System.Windows.Forms.Button();
             this.tlpMugshotCompression = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblMugshotCompressionQuality = new System.Windows.Forms.Label();
             this.nudMugshotCompressionQuality = new System.Windows.Forms.NumericUpDown();
@@ -96,26 +99,26 @@ namespace Chummer
             this.lblBrowserVersion = new System.Windows.Forms.Label();
             this.nudBrowserVersion = new System.Windows.Forms.NumericUpDown();
             this.lblPDFAppPath = new System.Windows.Forms.Label();
-            this.chkLifeModule = new System.Windows.Forms.CheckBox();
-            this.chkLiveUpdateCleanCharacterFiles = new System.Windows.Forms.CheckBox();
-            this.chkCreateBackupOnCareer = new System.Windows.Forms.CheckBox();
-            this.chkLiveCustomData = new System.Windows.Forms.CheckBox();
-            this.chkSingleDiceRoller = new System.Windows.Forms.CheckBox();
-            this.chkPreferNightlyBuilds = new System.Windows.Forms.CheckBox();
-            this.chkPrintSkillsWithZeroRating = new System.Windows.Forms.CheckBox();
-            this.chkPrintExpenses = new System.Windows.Forms.CheckBox();
-            this.chkPrintFreeExpenses = new System.Windows.Forms.CheckBox();
-            this.chkDatesIncludeTime = new System.Windows.Forms.CheckBox();
-            this.chkPrintNotes = new System.Windows.Forms.CheckBox();
-            this.chkAllowEasterEggs = new System.Windows.Forms.CheckBox();
-            this.chkStartupFullscreen = new System.Windows.Forms.CheckBox();
-            this.chkPrintToFileFirst = new System.Windows.Forms.CheckBox();
-            this.chkHideCharacterRoster = new System.Windows.Forms.CheckBox();
+            this.chkLifeModule = new Chummer.ColorableCheckBox(this.components);
+            this.chkLiveUpdateCleanCharacterFiles = new Chummer.ColorableCheckBox(this.components);
+            this.chkCreateBackupOnCareer = new Chummer.ColorableCheckBox(this.components);
+            this.chkLiveCustomData = new Chummer.ColorableCheckBox(this.components);
+            this.chkSingleDiceRoller = new Chummer.ColorableCheckBox(this.components);
+            this.chkPreferNightlyBuilds = new Chummer.ColorableCheckBox(this.components);
+            this.chkPrintSkillsWithZeroRating = new Chummer.ColorableCheckBox(this.components);
+            this.chkPrintExpenses = new Chummer.ColorableCheckBox(this.components);
+            this.chkPrintFreeExpenses = new Chummer.ColorableCheckBox(this.components);
+            this.chkDatesIncludeTime = new Chummer.ColorableCheckBox(this.components);
+            this.chkPrintNotes = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowEasterEggs = new Chummer.ColorableCheckBox(this.components);
+            this.chkStartupFullscreen = new Chummer.ColorableCheckBox(this.components);
+            this.chkPrintToFileFirst = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideCharacterRoster = new Chummer.ColorableCheckBox(this.components);
             this.flpEnablePlugins = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkEnablePlugins = new System.Windows.Forms.CheckBox();
+            this.chkEnablePlugins = new Chummer.ColorableCheckBox(this.components);
             this.cmdPluginsHelp = new System.Windows.Forms.Button();
-            this.chkAllowHoverIncrement = new System.Windows.Forms.CheckBox();
-            this.chkHideMasterIndex = new System.Windows.Forms.CheckBox();
+            this.chkAllowHoverIncrement = new Chummer.ColorableCheckBox(this.components);
+            this.chkHideMasterIndex = new Chummer.ColorableCheckBox(this.components);
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.tabCustomDataDirectories = new System.Windows.Forms.TabPage();
@@ -135,9 +138,6 @@ namespace Chummer
             this.flpOKCancel = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmdRemovePDFLocation = new System.Windows.Forms.Button();
-            this.cmdRemoveCharacterRoster = new System.Windows.Forms.Button();
-            this.cmdRemovePDFAppPath = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -375,6 +375,21 @@ namespace Chummer
             this.cmdPDFTest.UseVisualStyleBackColor = true;
             this.cmdPDFTest.Click += new System.EventHandler(this.cmdPDFTest_Click);
             // 
+            // cmdRemovePDFLocation
+            // 
+            this.cmdRemovePDFLocation.AutoSize = true;
+            this.cmdRemovePDFLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdRemovePDFLocation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRemovePDFLocation.Enabled = false;
+            this.cmdRemovePDFLocation.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdRemovePDFLocation.Location = new System.Drawing.Point(442, 3);
+            this.cmdRemovePDFLocation.Name = "cmdRemovePDFLocation";
+            this.cmdRemovePDFLocation.Padding = new System.Windows.Forms.Padding(1);
+            this.cmdRemovePDFLocation.Size = new System.Drawing.Size(24, 24);
+            this.cmdRemovePDFLocation.TabIndex = 17;
+            this.cmdRemovePDFLocation.UseVisualStyleBackColor = true;
+            this.cmdRemovePDFLocation.Click += new System.EventHandler(this.cmdRemovePDFLocation_Click);
+            // 
             // tlpGlobalOptions
             // 
             this.tlpGlobalOptions.AutoScroll = true;
@@ -454,6 +469,7 @@ namespace Chummer
             // 
             this.chkUseLogging.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUseLogging.AutoSize = true;
+            this.chkUseLogging.DefaultColorScheme = true;
             this.chkUseLogging.Location = new System.Drawing.Point(3, 164);
             this.chkUseLogging.Name = "chkUseLogging";
             this.chkUseLogging.Size = new System.Drawing.Size(86, 17);
@@ -468,6 +484,7 @@ namespace Chummer
             this.chkAutomaticUpdate.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAutomaticUpdate.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAutomaticUpdate, 2);
+            this.chkAutomaticUpdate.DefaultColorScheme = true;
             this.chkAutomaticUpdate.Location = new System.Drawing.Point(3, 190);
             this.chkAutomaticUpdate.Name = "chkAutomaticUpdate";
             this.chkAutomaticUpdate.Size = new System.Drawing.Size(116, 17);
@@ -482,6 +499,7 @@ namespace Chummer
             this.chkConfirmKarmaExpense.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkConfirmKarmaExpense.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkConfirmKarmaExpense, 2);
+            this.chkConfirmKarmaExpense.DefaultColorScheme = true;
             this.chkConfirmKarmaExpense.Location = new System.Drawing.Point(445, 164);
             this.chkConfirmKarmaExpense.Name = "chkConfirmKarmaExpense";
             this.chkConfirmKarmaExpense.Size = new System.Drawing.Size(215, 17);
@@ -496,6 +514,7 @@ namespace Chummer
             this.chkConfirmDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkConfirmDelete.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkConfirmDelete, 2);
+            this.chkConfirmDelete.DefaultColorScheme = true;
             this.chkConfirmDelete.Location = new System.Drawing.Point(445, 136);
             this.chkConfirmDelete.Name = "chkConfirmDelete";
             this.chkConfirmDelete.Size = new System.Drawing.Size(215, 17);
@@ -513,6 +532,7 @@ namespace Chummer
             this.chkHideItemsOverAvail.Checked = true;
             this.chkHideItemsOverAvail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkHideItemsOverAvail, 2);
+            this.chkHideItemsOverAvail.DefaultColorScheme = true;
             this.chkHideItemsOverAvail.Location = new System.Drawing.Point(445, 190);
             this.chkHideItemsOverAvail.Name = "chkHideItemsOverAvail";
             this.chkHideItemsOverAvail.Size = new System.Drawing.Size(353, 17);
@@ -526,6 +546,7 @@ namespace Chummer
             this.chkAllowSkillDiceRolling.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowSkillDiceRolling.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowSkillDiceRolling, 2);
+            this.chkAllowSkillDiceRolling.DefaultColorScheme = true;
             this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(445, 259);
             this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
             this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(170, 17);
@@ -543,6 +564,7 @@ namespace Chummer
             this.chkSearchInCategoryOnly.Checked = true;
             this.chkSearchInCategoryOnly.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkSearchInCategoryOnly, 2);
+            this.chkSearchInCategoryOnly.DefaultColorScheme = true;
             this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(445, 282);
             this.chkSearchInCategoryOnly.Name = "chkSearchInCategoryOnly";
             this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(325, 17);
@@ -694,6 +716,7 @@ namespace Chummer
             this.chkCustomDateTimeFormats.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCustomDateTimeFormats.AutoSize = true;
             this.tlpGlobalOptionsTop.SetColumnSpan(this.chkCustomDateTimeFormats, 2);
+            this.chkCustomDateTimeFormats.DefaultColorScheme = true;
             this.chkCustomDateTimeFormats.Location = new System.Drawing.Point(3, 87);
             this.chkCustomDateTimeFormats.Name = "chkCustomDateTimeFormats";
             this.chkCustomDateTimeFormats.Size = new System.Drawing.Size(122, 17);
@@ -900,6 +923,21 @@ namespace Chummer
             this.txtCharacterRosterPath.TabIndex = 45;
             this.txtCharacterRosterPath.TextChanged += new System.EventHandler(this.OptionsChanged);
             // 
+            // cmdRemoveCharacterRoster
+            // 
+            this.cmdRemoveCharacterRoster.AutoSize = true;
+            this.cmdRemoveCharacterRoster.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdRemoveCharacterRoster.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRemoveCharacterRoster.Enabled = false;
+            this.cmdRemoveCharacterRoster.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdRemoveCharacterRoster.Location = new System.Drawing.Point(196, 3);
+            this.cmdRemoveCharacterRoster.Name = "cmdRemoveCharacterRoster";
+            this.cmdRemoveCharacterRoster.Padding = new System.Windows.Forms.Padding(1);
+            this.cmdRemoveCharacterRoster.Size = new System.Drawing.Size(24, 24);
+            this.cmdRemoveCharacterRoster.TabIndex = 48;
+            this.cmdRemoveCharacterRoster.UseVisualStyleBackColor = true;
+            this.cmdRemoveCharacterRoster.Click += new System.EventHandler(this.cmdRemoveCharacterRoster_Click);
+            // 
             // lblPDFParametersLabel
             // 
             this.lblPDFParametersLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -967,6 +1005,21 @@ namespace Chummer
             this.cmdPDFAppPath.Text = "...";
             this.cmdPDFAppPath.UseVisualStyleBackColor = true;
             this.cmdPDFAppPath.Click += new System.EventHandler(this.cmdPDFAppPath_Click);
+            // 
+            // cmdRemovePDFAppPath
+            // 
+            this.cmdRemovePDFAppPath.AutoSize = true;
+            this.cmdRemovePDFAppPath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdRemovePDFAppPath.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRemovePDFAppPath.Enabled = false;
+            this.cmdRemovePDFAppPath.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdRemovePDFAppPath.Location = new System.Drawing.Point(196, 3);
+            this.cmdRemovePDFAppPath.Name = "cmdRemovePDFAppPath";
+            this.cmdRemovePDFAppPath.Padding = new System.Windows.Forms.Padding(1);
+            this.cmdRemovePDFAppPath.Size = new System.Drawing.Size(24, 24);
+            this.cmdRemovePDFAppPath.TabIndex = 12;
+            this.cmdRemovePDFAppPath.UseVisualStyleBackColor = true;
+            this.cmdRemovePDFAppPath.Click += new System.EventHandler(this.cmdRemovePDFAppPath_Click);
             // 
             // tlpMugshotCompression
             // 
@@ -1185,6 +1238,7 @@ namespace Chummer
             this.chkLifeModule.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLifeModule.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkLifeModule, 2);
+            this.chkLifeModule.DefaultColorScheme = true;
             this.chkLifeModule.Location = new System.Drawing.Point(445, 481);
             this.chkLifeModule.Name = "chkLifeModule";
             this.chkLifeModule.Size = new System.Drawing.Size(117, 17);
@@ -1199,6 +1253,7 @@ namespace Chummer
             this.chkLiveUpdateCleanCharacterFiles.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLiveUpdateCleanCharacterFiles.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkLiveUpdateCleanCharacterFiles, 2);
+            this.chkLiveUpdateCleanCharacterFiles.DefaultColorScheme = true;
             this.chkLiveUpdateCleanCharacterFiles.Location = new System.Drawing.Point(3, 362);
             this.chkLiveUpdateCleanCharacterFiles.Name = "chkLiveUpdateCleanCharacterFiles";
             this.chkLiveUpdateCleanCharacterFiles.Size = new System.Drawing.Size(286, 30);
@@ -1215,6 +1270,7 @@ namespace Chummer
             this.chkCreateBackupOnCareer.AutoSize = true;
             this.chkCreateBackupOnCareer.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpGlobalOptions.SetColumnSpan(this.chkCreateBackupOnCareer, 2);
+            this.chkCreateBackupOnCareer.DefaultColorScheme = true;
             this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(3, 399);
             this.chkCreateBackupOnCareer.Name = "chkCreateBackupOnCareer";
             this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(333, 17);
@@ -1230,6 +1286,7 @@ namespace Chummer
             this.chkLiveCustomData.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLiveCustomData.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkLiveCustomData, 2);
+            this.chkLiveCustomData.DefaultColorScheme = true;
             this.chkLiveCustomData.Location = new System.Drawing.Point(3, 481);
             this.chkLiveCustomData.Name = "chkLiveCustomData";
             this.chkLiveCustomData.Size = new System.Drawing.Size(307, 17);
@@ -1244,7 +1301,8 @@ namespace Chummer
             this.chkSingleDiceRoller.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSingleDiceRoller.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkSingleDiceRoller, 2);
-            this.chkSingleDiceRoller.Location = new System.Drawing.Point(3, 535);
+            this.chkSingleDiceRoller.DefaultColorScheme = true;
+            this.chkSingleDiceRoller.Location = new System.Drawing.Point(3, 530);
             this.chkSingleDiceRoller.Name = "chkSingleDiceRoller";
             this.chkSingleDiceRoller.Size = new System.Drawing.Size(251, 17);
             this.chkSingleDiceRoller.TabIndex = 8;
@@ -1257,6 +1315,7 @@ namespace Chummer
             // 
             this.chkPreferNightlyBuilds.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPreferNightlyBuilds.AutoSize = true;
+            this.chkPreferNightlyBuilds.DefaultColorScheme = true;
             this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(23, 213);
             this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
@@ -1272,6 +1331,7 @@ namespace Chummer
             this.chkPrintSkillsWithZeroRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintSkillsWithZeroRating.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintSkillsWithZeroRating, 2);
+            this.chkPrintSkillsWithZeroRating.DefaultColorScheme = true;
             this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(3, 236);
             this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
             this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(229, 17);
@@ -1286,6 +1346,7 @@ namespace Chummer
             this.chkPrintExpenses.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintExpenses.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintExpenses, 2);
+            this.chkPrintExpenses.DefaultColorScheme = true;
             this.chkPrintExpenses.Location = new System.Drawing.Point(3, 259);
             this.chkPrintExpenses.Name = "chkPrintExpenses";
             this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
@@ -1300,6 +1361,7 @@ namespace Chummer
             this.chkPrintFreeExpenses.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintFreeExpenses.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintFreeExpenses, 2);
+            this.chkPrintFreeExpenses.DefaultColorScheme = true;
             this.chkPrintFreeExpenses.Location = new System.Drawing.Point(23, 282);
             this.chkPrintFreeExpenses.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkPrintFreeExpenses.Name = "chkPrintFreeExpenses";
@@ -1315,6 +1377,7 @@ namespace Chummer
             this.chkDatesIncludeTime.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDatesIncludeTime.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkDatesIncludeTime, 2);
+            this.chkDatesIncludeTime.DefaultColorScheme = true;
             this.chkDatesIncludeTime.Location = new System.Drawing.Point(3, 335);
             this.chkDatesIncludeTime.Name = "chkDatesIncludeTime";
             this.chkDatesIncludeTime.Size = new System.Drawing.Size(189, 17);
@@ -1330,6 +1393,7 @@ namespace Chummer
             this.chkPrintNotes.AutoSize = true;
             this.chkPrintNotes.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintNotes, 2);
+            this.chkPrintNotes.DefaultColorScheme = true;
             this.chkPrintNotes.Location = new System.Drawing.Point(3, 307);
             this.chkPrintNotes.Name = "chkPrintNotes";
             this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
@@ -1344,6 +1408,7 @@ namespace Chummer
             this.chkAllowEasterEggs.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowEasterEggs.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowEasterEggs, 2);
+            this.chkAllowEasterEggs.DefaultColorScheme = true;
             this.chkAllowEasterEggs.Location = new System.Drawing.Point(3, 504);
             this.chkAllowEasterEggs.Name = "chkAllowEasterEggs";
             this.chkAllowEasterEggs.Size = new System.Drawing.Size(111, 17);
@@ -1358,6 +1423,7 @@ namespace Chummer
             this.chkStartupFullscreen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkStartupFullscreen.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkStartupFullscreen, 2);
+            this.chkStartupFullscreen.DefaultColorScheme = true;
             this.chkStartupFullscreen.Location = new System.Drawing.Point(3, 456);
             this.chkStartupFullscreen.Name = "chkStartupFullscreen";
             this.chkStartupFullscreen.Size = new System.Drawing.Size(154, 17);
@@ -1371,6 +1437,7 @@ namespace Chummer
             // 
             this.chkPrintToFileFirst.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintToFileFirst.AutoSize = true;
+            this.chkPrintToFileFirst.DefaultColorScheme = true;
             this.chkPrintToFileFirst.Location = new System.Drawing.Point(445, 504);
             this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
             this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
@@ -1384,6 +1451,7 @@ namespace Chummer
             // 
             this.chkHideCharacterRoster.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideCharacterRoster.AutoSize = true;
+            this.chkHideCharacterRoster.DefaultColorScheme = true;
             this.chkHideCharacterRoster.Location = new System.Drawing.Point(445, 213);
             this.chkHideCharacterRoster.Name = "chkHideCharacterRoster";
             this.chkHideCharacterRoster.Size = new System.Drawing.Size(149, 17);
@@ -1401,7 +1469,7 @@ namespace Chummer
             this.tlpGlobalOptions.SetColumnSpan(this.flpEnablePlugins, 2);
             this.flpEnablePlugins.Controls.Add(this.chkEnablePlugins);
             this.flpEnablePlugins.Controls.Add(this.cmdPluginsHelp);
-            this.flpEnablePlugins.Location = new System.Drawing.Point(442, 529);
+            this.flpEnablePlugins.Location = new System.Drawing.Point(442, 524);
             this.flpEnablePlugins.Margin = new System.Windows.Forms.Padding(0);
             this.flpEnablePlugins.Name = "flpEnablePlugins";
             this.flpEnablePlugins.Size = new System.Drawing.Size(199, 29);
@@ -1411,6 +1479,7 @@ namespace Chummer
             // 
             this.chkEnablePlugins.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkEnablePlugins.AutoSize = true;
+            this.chkEnablePlugins.DefaultColorScheme = true;
             this.chkEnablePlugins.Location = new System.Drawing.Point(3, 6);
             this.chkEnablePlugins.Name = "chkEnablePlugins";
             this.chkEnablePlugins.Size = new System.Drawing.Size(164, 17);
@@ -1442,6 +1511,7 @@ namespace Chummer
             this.chkAllowHoverIncrement.Checked = true;
             this.chkAllowHoverIncrement.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowHoverIncrement, 2);
+            this.chkAllowHoverIncrement.DefaultColorScheme = true;
             this.chkAllowHoverIncrement.Location = new System.Drawing.Point(3, 427);
             this.chkAllowHoverIncrement.Name = "chkAllowHoverIncrement";
             this.chkAllowHoverIncrement.Size = new System.Drawing.Size(410, 17);
@@ -1455,6 +1525,7 @@ namespace Chummer
             // 
             this.chkHideMasterIndex.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideMasterIndex.AutoSize = true;
+            this.chkHideMasterIndex.DefaultColorScheme = true;
             this.chkHideMasterIndex.Location = new System.Drawing.Point(445, 236);
             this.chkHideMasterIndex.Name = "chkHideMasterIndex";
             this.chkHideMasterIndex.Size = new System.Drawing.Size(130, 17);
@@ -1732,51 +1803,6 @@ namespace Chummer
             this.cmdCancel.UseVisualStyleBackColor = true;
             this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
             // 
-            // cmdRemovePDFLocation
-            // 
-            this.cmdRemovePDFLocation.AutoSize = true;
-            this.cmdRemovePDFLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRemovePDFLocation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRemovePDFLocation.Enabled = false;
-            this.cmdRemovePDFLocation.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdRemovePDFLocation.Location = new System.Drawing.Point(442, 3);
-            this.cmdRemovePDFLocation.Name = "cmdRemovePDFLocation";
-            this.cmdRemovePDFLocation.Padding = new System.Windows.Forms.Padding(1);
-            this.cmdRemovePDFLocation.Size = new System.Drawing.Size(24, 24);
-            this.cmdRemovePDFLocation.TabIndex = 17;
-            this.cmdRemovePDFLocation.UseVisualStyleBackColor = true;
-            this.cmdRemovePDFLocation.Click += new System.EventHandler(this.cmdRemovePDFLocation_Click);
-            // 
-            // cmdRemoveCharacterRoster
-            // 
-            this.cmdRemoveCharacterRoster.AutoSize = true;
-            this.cmdRemoveCharacterRoster.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRemoveCharacterRoster.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRemoveCharacterRoster.Enabled = false;
-            this.cmdRemoveCharacterRoster.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdRemoveCharacterRoster.Location = new System.Drawing.Point(196, 3);
-            this.cmdRemoveCharacterRoster.Name = "cmdRemoveCharacterRoster";
-            this.cmdRemoveCharacterRoster.Padding = new System.Windows.Forms.Padding(1);
-            this.cmdRemoveCharacterRoster.Size = new System.Drawing.Size(24, 24);
-            this.cmdRemoveCharacterRoster.TabIndex = 48;
-            this.cmdRemoveCharacterRoster.UseVisualStyleBackColor = true;
-            this.cmdRemoveCharacterRoster.Click += new System.EventHandler(this.cmdRemoveCharacterRoster_Click);
-            // 
-            // cmdRemovePDFAppPath
-            // 
-            this.cmdRemovePDFAppPath.AutoSize = true;
-            this.cmdRemovePDFAppPath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRemovePDFAppPath.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRemovePDFAppPath.Enabled = false;
-            this.cmdRemovePDFAppPath.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdRemovePDFAppPath.Location = new System.Drawing.Point(196, 3);
-            this.cmdRemovePDFAppPath.Name = "cmdRemovePDFAppPath";
-            this.cmdRemovePDFAppPath.Padding = new System.Windows.Forms.Padding(1);
-            this.cmdRemovePDFAppPath.Size = new System.Drawing.Size(24, 24);
-            this.cmdRemovePDFAppPath.TabIndex = 12;
-            this.cmdRemovePDFAppPath.UseVisualStyleBackColor = true;
-            this.cmdRemovePDFAppPath.Click += new System.EventHandler(this.cmdRemovePDFAppPath_Click);
-            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1876,44 +1902,44 @@ namespace Chummer
         private System.Windows.Forms.Button cmdPDFTest;
         private System.Windows.Forms.TableLayoutPanel tlpGlobalOptions;
         private System.Windows.Forms.Label lblPDFParametersLabel;
-        private System.Windows.Forms.CheckBox chkHideMasterIndex;
-        private System.Windows.Forms.CheckBox chkHideCharacterRoster;
+        private ColorableCheckBox chkHideMasterIndex;
+        private ColorableCheckBox chkHideCharacterRoster;
         private System.Windows.Forms.GroupBox grpTimeFormat;
         private BufferedTableLayoutPanel tlpTimeFormat;
         private System.Windows.Forms.TextBox txtTimeFormat;
         private System.Windows.Forms.TextBox txtTimeFormatView;
-        private System.Windows.Forms.CheckBox chkSearchInCategoryOnly;
-        private System.Windows.Forms.CheckBox chkAllowEasterEggs;
+        private ColorableCheckBox chkSearchInCategoryOnly;
+        private ColorableCheckBox chkAllowEasterEggs;
         private System.Windows.Forms.ComboBox cboDefaultCharacterOption;
         private System.Windows.Forms.NumericUpDown nudBrowserVersion;
-        private System.Windows.Forms.CheckBox chkPreferNightlyBuilds;
+        private ColorableCheckBox chkPreferNightlyBuilds;
         private System.Windows.Forms.Label lblBrowserVersion;
-        private System.Windows.Forms.CheckBox chkLiveUpdateCleanCharacterFiles;
+        private ColorableCheckBox chkLiveUpdateCleanCharacterFiles;
         private System.Windows.Forms.Label lblLanguage;
-        private System.Windows.Forms.CheckBox chkDatesIncludeTime;
-        private System.Windows.Forms.CheckBox chkLiveCustomData;
-        private System.Windows.Forms.CheckBox chkSingleDiceRoller;
-        private System.Windows.Forms.CheckBox chkStartupFullscreen;
+        private ColorableCheckBox chkDatesIncludeTime;
+        private ColorableCheckBox chkLiveCustomData;
+        private ColorableCheckBox chkSingleDiceRoller;
+        private ColorableCheckBox chkStartupFullscreen;
         private System.Windows.Forms.Label lblXSLT;
         private System.Windows.Forms.PictureBox imgLanguageFlag;
-        private System.Windows.Forms.CheckBox chkLifeModule;
-        private System.Windows.Forms.CheckBox chkAutomaticUpdate;
-        private System.Windows.Forms.CheckBox chkAllowHoverIncrement;
-        private System.Windows.Forms.CheckBox chkUseLogging;
+        private ColorableCheckBox chkLifeModule;
+        private ColorableCheckBox chkAutomaticUpdate;
+        private ColorableCheckBox chkAllowHoverIncrement;
+        private ColorableCheckBox chkUseLogging;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
         private ElasticComboBox cboSheetLanguage;
         private ElasticComboBox cboLanguage;
         private System.Windows.Forms.Button cmdVerify;
         private System.Windows.Forms.Button cmdVerifyData;
         private ElasticComboBox cboXSLT;
-        private System.Windows.Forms.CheckBox chkCustomDateTimeFormats;
-        private System.Windows.Forms.CheckBox chkConfirmKarmaExpense;
-        private System.Windows.Forms.CheckBox chkConfirmDelete;
+        private ColorableCheckBox chkCustomDateTimeFormats;
+        private ColorableCheckBox chkConfirmKarmaExpense;
+        private ColorableCheckBox chkConfirmDelete;
         private System.Windows.Forms.ComboBox cboUseLoggingApplicationInsights;
         private ButtonWithToolTip cmdUseLoggingHelp;
-        private System.Windows.Forms.CheckBox chkHideItemsOverAvail;
+        private ColorableCheckBox chkHideItemsOverAvail;
         private System.Windows.Forms.FlowLayoutPanel flpEnablePlugins;
-        private System.Windows.Forms.CheckBox chkEnablePlugins;
+        private ColorableCheckBox chkEnablePlugins;
         private System.Windows.Forms.Button cmdPluginsHelp;
         private System.Windows.Forms.TextBox txtCharacterRosterPath;
         private System.Windows.Forms.Button cmdCharacterRoster;
@@ -1921,7 +1947,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpDateFormat;
         private System.Windows.Forms.TextBox txtDateFormat;
         private System.Windows.Forms.TextBox txtDateFormatView;
-        private System.Windows.Forms.CheckBox chkCreateBackupOnCareer;
+        private ColorableCheckBox chkCreateBackupOnCareer;
         private System.Windows.Forms.GroupBox gpbEditSourcebookInfo;
         private System.Windows.Forms.ListBox lstGlobalSourcebookInfos;
         private System.Windows.Forms.TabPage tabCustomDataDirectories;
@@ -1940,9 +1966,9 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpOKCancel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.CheckBox chkAllowSkillDiceRolling;
+        private ColorableCheckBox chkAllowSkillDiceRolling;
         private BufferedTableLayoutPanel tlpCharacterRosterPath;
-        private System.Windows.Forms.CheckBox chkPrintToFileFirst;
+        private ColorableCheckBox chkPrintToFileFirst;
         private BufferedTableLayoutPanel tlpMugshotCompression;
         private System.Windows.Forms.Label lblMugshotCompressionQuality;
         private System.Windows.Forms.NumericUpDown nudMugshotCompressionQuality;
@@ -1962,10 +1988,10 @@ namespace Chummer
         private System.Windows.Forms.Label lblColorMode;
         private System.Windows.Forms.ComboBox cboColorMode;
         private System.Windows.Forms.ListBox lsbCustomDataDirectories;
-        private System.Windows.Forms.CheckBox chkPrintSkillsWithZeroRating;
-        private System.Windows.Forms.CheckBox chkPrintExpenses;
-        private System.Windows.Forms.CheckBox chkPrintFreeExpenses;
-        private System.Windows.Forms.CheckBox chkPrintNotes;
+        private ColorableCheckBox chkPrintSkillsWithZeroRating;
+        private ColorableCheckBox chkPrintExpenses;
+        private ColorableCheckBox chkPrintFreeExpenses;
+        private ColorableCheckBox chkPrintNotes;
         private System.Windows.Forms.Button cmdRemovePDFLocation;
         private System.Windows.Forms.Button cmdRemoveCharacterRoster;
         private System.Windows.Forms.Button cmdRemovePDFAppPath;

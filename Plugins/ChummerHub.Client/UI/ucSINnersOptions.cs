@@ -209,7 +209,7 @@ namespace ChummerHub.Client.UI
         {
             tlpOptions.Enabled = Settings.Default.UserModeRegistered;
             var mail = await GetUserEmail();
-            this.DoThreadSafe(() =>
+            this.QueueThreadSafe(() =>
             {
                 try
                 {
@@ -246,7 +246,7 @@ namespace ChummerHub.Client.UI
                 {
                     Log.Warn(ex);
                 }
-            }, false);
+            });
         }
 
         public async Task<string> GetUserEmail()

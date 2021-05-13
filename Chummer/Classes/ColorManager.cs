@@ -309,9 +309,10 @@ namespace Chummer
                         if (chkControl is ColorableCheckBox chkControlColored)
                         {
                             chkControlColored.DefaultColorScheme = blnLightMode;
-                            chkControlColored.ForeColor = blnLightMode || chkControlColored.Enabled
-                                ? blnLightMode ? ControlTextLight : ControlTextDark
-                                : GrayText;
+                            if (blnLightMode) // Disabled case for Light mode already handled by the switch above
+                                chkControlColored.ForeColor = ControlTextLight;
+                            else
+                                chkControlColored.ForeColor = chkControlColored.Enabled ? ControlTextDark : GrayText;
                             break;
                         }
                         goto default;

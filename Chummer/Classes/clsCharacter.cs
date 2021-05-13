@@ -2333,7 +2333,7 @@ namespace Chummer
             return LoadCoreAysnc(false, frmLoadingForm, showWarnings);
         }
 
-        public const int NumLoadingSections = 36;
+        public const int NumLoadingSections = 37;
 
         /// <summary>
         /// Load the Character from an XML file.
@@ -3446,6 +3446,8 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("physicalcmfilled",
                                     ref _intPhysicalCMFilled);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("stuncmfilled", ref _intStunCMFilled);
+
+                                xmlCharacterNavigator.TryGetBoolFieldQuickly("psyche", ref _blnPsycheActive);
                                 //Timekeeper.Finish("load_char_misc2");
                             }
 
@@ -3847,8 +3849,13 @@ namespace Chummer
                                     objSpell.Load(objXmlSpell);
                                     _lstSpells.Add(objSpell);
                                 }
+                                //Timekeeper.Finish("load_char_spells");
+                            }
 
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tip_Skill_Sustain"));
 
+                            using (_ = Timekeeper.StartSyncron("load_char_SustainedAbilities", loadActivity))
+                            {
                                 objXmlNodeList = objXmlCharacter.SelectNodes("sustained/sustainedobject");
                                 foreach (XmlNode objXmlSustained in objXmlNodeList)
                                 {
@@ -3878,9 +3885,6 @@ namespace Chummer
                                     }
                                 }
                             }
-
-                            //Timekeeper.Finish("load_char_spells");
-
 
                             frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
 
@@ -4505,6 +4509,8 @@ namespace Chummer
                             RefreshEssenceLossImprovements();
                             // Refresh dicepool modifiers due to filled condition monitor boxes
                             RefreshWoundPenalties();
+                            // Refresh dicepool modifiers due to sustained spells
+                            RefreshSustainingPenalties();
                             // Refresh encumbrance penalties
                             RefreshEncumbrance();
                             // Curb Mystic Adept power points if the values that were loaded in would be illegal
@@ -4870,7 +4876,7 @@ namespace Chummer
             objWriter.WriteElementString("cmoverflow", CMOverflow.ToString(objCulture));
 
 
-            // <psyhce>
+            // <psyche>
             objWriter.WriteElementString("psyche", _blnPsycheActive.ToString(GlobalOptions.InvariantCultureInfo));
 
             // Calculate Initiatives.
@@ -15823,22 +15829,24 @@ namespace Chummer
         /// <summary>
         /// Recalculates the Dicepoolmodifier for sustaining spells or complex forms
         /// </summary>
-        public void RefreshSustainingPenalties()
+        private bool RefreshSustainingPenalties()
         {
-            // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
-            if (IsLoading)
-                return;
+            if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
+            {
+                PostLoadMethods.Enqueue(RefreshSustainingPenalties);
+                return true;
+            }
 
-                
-            
-                int intPenaltyWithPsyche = -1;
-                int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
+            int intPenaltyWithPsyche = -1;
+            int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
 
-                //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
-                int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained && !(objSustainedSpell is SustainedCritterPower));
-                int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell;
+            //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
+            int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained && !(objSustainedSpell is SustainedCritterPower));
+            int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell;
                                                                                                                
-                _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
+            _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
+
+            return true;
         }
 
         private int _intSustainingPenalty;

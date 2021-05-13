@@ -2032,7 +2032,7 @@
     </string>
     <string>
       <key>Message_DeleteSustainedSpell</key>
-      <text>Are you sure you want to no longer sustain this Spell?</text>
+      <text>Are you sure you want to no longer sustain this?</text>
     </string>
     <string>
       <key>Message_DeleteSprite</key>
@@ -6447,6 +6447,10 @@
     <string>
       <key>Tip_SkillGroup_Skills</key>
       <text>Skills in this Group:</text>
+    </string>
+    <string>
+      <key>Tip_Skill_Zero_Attribute</key>
+      <text>Attribute ({0}) is zero.</text>
     </string>
     <!-- End Region-->
     <!-- Region Spirits/Sprites -->
