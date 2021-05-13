@@ -763,6 +763,9 @@ namespace Chummer.Backend.Skills
                     case "DEP":
                         _intCachedEnabled = CharacterObject.DEPEnabled ? 1 : 0;
                         break;
+                    default:
+                        _intCachedEnabled = 1;
+                        break;
                 }
 
                 return _intCachedEnabled > 0;
@@ -1042,7 +1045,7 @@ namespace Chummer.Backend.Skills
 
             CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
 
-            if (att.Value <= 0)
+            if (att.TotalValue <= 0)
             {
                 return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_Zero_Attribute"), att.DisplayNameShort(GlobalOptions.Language));
             }
