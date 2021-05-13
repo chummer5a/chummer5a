@@ -826,9 +826,9 @@ namespace Chummer.Backend.Skills
             objWriter.WriteStartElement("skilljackknowledgeskills");
             lstKnoSkillsOrdered = new List<KnowledgeSkill>(KnowsoftSkills);
             lstKnoSkillsOrdered.Sort(CompareSkills);
-            foreach (KnowledgeSkill objSkill in lstKnoSkillsOrdered)
+            foreach (KnowledgeSkill objKnowledgeSkill in lstKnoSkillsOrdered)
             {
-                objSkill.WriteTo(objWriter);
+                objKnowledgeSkill.WriteTo(objWriter);
             }
             objWriter.WriteEndElement();
 
