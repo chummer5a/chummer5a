@@ -10559,7 +10559,7 @@ namespace Chummer
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public override void SaveCharacterAsCreated()
+        public override bool SaveCharacterAsCreated()
         {
             using (new CursorWait(this))
             {
@@ -10576,9 +10576,10 @@ namespace Chummer
                     objKarma.Undo = objKarmaUndo;
                 }
 
+                List<CharacterAttrib> lstAttributesToAdd = null;
                 if (CharacterObject.MetatypeCategory == "Shapeshifter")
                 {
-                    List<CharacterAttrib> lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
+                    lstAttributesToAdd = new List<CharacterAttrib>(AttributeSection.AttributeStrings.Count);
                     XmlDocument xmlDoc = CharacterObject.LoadData("metatypes.xml");
                     string strMetavariantXPath = "/chummer/metatypes/metatype[id = "
                                                  + CharacterObject.MetatypeGuid.ToString("D", GlobalOptions.InvariantCultureInfo).CleanXPath()
@@ -10611,12 +10612,24 @@ namespace Chummer
 
                 _blnSkipToolStripRevert = true;
                 if (!CharacterObject.Save())
-                    return;
+                {
+                    CharacterObject.ExpenseEntries.Clear();
+                    if (lstAttributesToAdd != null)
+                    {
+                        foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                        {
+                            CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                        }
+                    }
+                    return false;
+                }
+
                 IsDirty = false;
                 Character objOpenCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
             }
+            return true;
         }
 
         /// <summary>

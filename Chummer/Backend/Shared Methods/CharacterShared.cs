@@ -6280,34 +6280,26 @@ namespace Chummer
             // If the Character does not have a file name, trigger the Save As menu item instead.
             if (string.IsNullOrEmpty(_objCharacter.FileName))
             {
-                return SaveCharacterAs();
+                return SaveCharacterAs(blnDoCreated);
             }
-            // If the Created is checked, make sure the user wants to actually save this character.
+            
             if (blnDoCreated)
             {
+                // If the Created is checked, make sure the user wants to actually save this character.
                 if (blnNeedConfirm && !ConfirmSaveCreatedCharacter())
-                {
                     return false;
-                }
+                // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
+                return SaveCharacterAsCreated();
             }
 
             using (new CursorWait(this))
             {
-                if (_objCharacter.Save())
-                {
-                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
-                    IsDirty = false;
-
-                    // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
-                    if (blnDoCreated)
-                    {
-                        SaveCharacterAsCreated();
-                    }
-
-                    return true;
-                }
+                if (!_objCharacter.Save())
+                    return false;
+                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                IsDirty = false;
             }
-            return false;
+            return true;
         }
 
         /// <summary>
@@ -6316,12 +6308,9 @@ namespace Chummer
         public virtual bool SaveCharacterAs(bool blnDoCreated = false)
         {
             // If the Created is checked, make sure the user wants to actually save this character.
-            if (blnDoCreated)
+            if (blnDoCreated && !ConfirmSaveCreatedCharacter())
             {
-                if (!ConfirmSaveCreatedCharacter())
-                {
-                    return false;
-                }
+                return false;
             }
 
             using (SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -6336,20 +6325,18 @@ namespace Chummer
 
                 saveFileDialog.FileName = strShowFileName;
 
-                if (saveFileDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    _objCharacter.FileName = saveFileDialog.FileName;
-                    return SaveCharacter(false, blnDoCreated);
-                }
+                if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
+                    return false;
 
-                return false;
+                _objCharacter.FileName = saveFileDialog.FileName;
             }
+            return SaveCharacter(false, blnDoCreated);
         }
 
         /// <summary>
         /// Save the character as Created and re-open it in Career Mode.
         /// </summary>
-        public virtual void SaveCharacterAsCreated() { }
+        public virtual bool SaveCharacterAsCreated() { return false; }
 
         /// <summary>
         /// Verify that the user wants to save this character as Created.
