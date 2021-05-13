@@ -16610,11 +16610,11 @@ namespace Chummer
             //Could be merged with AddSustainedComplex form and create an more or less universal method to add ISustainables from tre viewers. Not worth the trouble and probably not better at the moment.
             if (treSpells.SelectedNode != null && treSpells.SelectedNode.Level > 0 && treSpells.SelectedNode.Tag is Spell objSpell)
             {
-                SustainedSpell objNewSustainedSpell = new SustainedSpell(CharacterObject);
+                SustainedSpell objSustained = new SustainedSpell(CharacterObject);
 
-                objNewSustainedSpell.Create(objSpell);
+                objNewSustainedSpell.CreateByMapping(objSpell, objSustained);
 
-                CharacterObject.SustainedCollection.Add(objNewSustainedSpell);
+                CharacterObject.SustainedCollection.Add(objSustained);
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -16630,7 +16630,7 @@ namespace Chummer
             {
                 SustainedComplexForm objSustained = new SustainedComplexForm(CharacterObject);
 
-                objSustained.Create(objComplexForm);
+                objSustained.CreateByMapping(objComplexForm, objSustained);
 
                 CharacterObject.SustainedCollection.Add(objSustained);
 
@@ -16648,7 +16648,7 @@ namespace Chummer
             {
                 SustainedCritterPower objSustained = new SustainedCritterPower(CharacterObject);
 
-                objSustained.Create(objCritterPower);
+                objSustained.CreateByMapping(objCritterPower, objSustained);
 
                 CharacterObject.SustainedCollection.Add(objSustained);
 
