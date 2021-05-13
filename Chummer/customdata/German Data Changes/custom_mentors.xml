@@ -228,41 +228,5 @@
       <source>SG</source>
       <page>234</page>
     </mentor>
-    <mentor>
-      <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-      <name>Große Mutter (SG)</name>
-      <advantage>Allgemein: +2 Würfel für Proben auf erste Hilfe</advantage>
-      <disadvantage>Immer wenn ein Anhänger der Großen Mutter absichtlich oder unabsichtlich dem lebensspendenden Wesen der Natur (seiner Auslegung) zuwiderhandelt, erleidet er einen Würfelpoolmodifikator von -1 auf alle Handlungen, bis er seine Zuwiderhandlung wiedergutgemacht hat.</disadvantage>
-      <choices>
-        <choice>
-          <name>+2 to First Aid</name>
-          <bonus>
-            <specificskill>
-              <name>First Aid</name>
-              <bonus>2</bonus>
-            </specificskill>
-          </bonus>
-        </choice>
-        <choice set="2">
-          <name>+2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Heilung</name>
-          <bonus>
-            <spellcategory>
-              <name>Health</name>
-              <val>2</val>
-            </spellcategory>
-          </bonus>
-        </choice>
-        <choice set="2">
-          <name>Empathische Heilung gratis</name>
-          <bonus>
-            <specificpower>
-              <name>Empathic Healing</name>
-            </specificpower>
-          </bonus>
-        </choice>
-      </choices>
-      <source>SG</source>
-      <page>232</page>
-    </mentor>
   </mentors>
 </chummer>
