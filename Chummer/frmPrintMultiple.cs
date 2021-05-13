@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+ using System.Threading;
  using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -101,7 +102,7 @@ namespace Chummer
             }
         }
 
-        private void DoPrint(object sender, DoWorkEventArgs e)
+        private async void DoPrint(object sender, DoWorkEventArgs e)
         {
             void FuncIncreaseProgress()
             {
@@ -122,28 +123,34 @@ namespace Chummer
                 };
             }
 
+            CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
+
             // Parallelized load because this is one major bottleneck.
-
-            Parallel.ForEach(lstCharacters, (objCharacter, objState) =>
+            await Task.Run(() =>
             {
-                if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
+                Parallel.ForEach(lstCharacters, (objCharacter, objState) =>
                 {
-                    if (!objState.IsStopped)
-                        objState.Stop();
-                    return;
-                }
+                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration || objCancellationTokenSource.IsCancellationRequested)
+                    {
+                        if (!objState.IsStopped)
+                            objState.Stop();
+                        objCancellationTokenSource.Cancel();
+                        return;
+                    }
 
-                bool blnLoadSuccessful = objCharacter.Load();
-                if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
-                {
-                    if (!objState.IsStopped)
-                        objState.Stop();
-                    return;
-                }
+                    bool blnLoadSuccessful = objCharacter.Load();
+                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration || objCancellationTokenSource.IsCancellationRequested)
+                    {
+                        if (!objState.IsStopped)
+                            objState.Stop();
+                        objCancellationTokenSource.Cancel();
+                        return;
+                    }
 
-                if (blnLoadSuccessful)
-                    prgProgress.Invoke((Action) FuncIncreaseProgress);
-            });
+                    if (blnLoadSuccessful)
+                        prgProgress.Invoke((Action) FuncIncreaseProgress);
+                });
+            }, objCancellationTokenSource.Token);
             if (_workerPrinter.CancellationPending)
                 e.Cancel = true;
             else

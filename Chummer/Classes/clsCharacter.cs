@@ -6298,6 +6298,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Attempt to translate any Extra text for an item using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public Task<string> TranslateExtraAsync(string strExtra, string strIntoLanguage = "", string strPreferFile = "")
+        {
+            return LanguageManager.TranslateExtraAsync(strExtra, strIntoLanguage, this, strPreferFile);
+        }
+
+        /// <summary>
         /// Attempt to translate any Extra text for an item from a foreign language to the default one using the character's data files.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
@@ -6306,6 +6317,17 @@ namespace Chummer
         public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", string strPreferFile = "")
         {
             return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this, strPreferFile);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public Task<string> ReverseTranslateExtraAsync(string strExtra, string strFromLanguage = "", string strPreferFile = "")
+        {
+            return LanguageManager.ReverseTranslateExtraAsync(strExtra, strFromLanguage, this, strPreferFile);
         }
         #endregion
 

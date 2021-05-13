@@ -2184,7 +2184,7 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
         }
 
-        private void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
+        private async void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
         {
             int intClones;
             using (frmSelectNumber frmPickNumber = new frmSelectNumber(0)
@@ -2211,7 +2211,10 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 Character[] lstClones = new Character[intClones];
-                Parallel.For(0, intClones, i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true));
+                // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
+                await Task.Run(() => Parallel.For(0, intClones,
+                    i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName,
+                        CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true)));
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }
