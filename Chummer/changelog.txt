@@ -31,6 +31,7 @@ Application Changes:
 - Characters who are forced to have some non-special attributes at zero (e.g. those with Quadriplegic) can now properly have a non-zero attribute at its maximum rating at character creation. They can also now properly learn skills linked to the forced-zero attribute(s), but their pools will always be zero when using that attribute.
 - Saving a character in Create mode as Created when they were never saved beforehand no longer causes the character to be saved with them still in Create mode.
 - Checkboxes in the options menus now properly respond to being set to Dark Mode. Fixes #4438.
+- When calculating the karma value of a character in Priority or Sum-to-Ten, the karma amount displayed for comparison to Point Buy now uses the Point Buy costs for the character's metatype instead of the value of their combined attribute adjustments and qualities.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -132,6 +133,7 @@ Changed/New Strings:
 - Label_SelectLifestyle_City
 - Label_LifestyleNuyen_SelectLifestyle
 - Tip_Skill_Zero_Attribute
+- String_TotalComparisonWithPointBuy
 
 Build 214
 Application Fixes:

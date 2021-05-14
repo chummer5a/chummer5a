@@ -6012,6 +6012,14 @@ namespace Chummer
                 // Subtract extra karma cost of a metatype in priority
                 intReturn -= MetatypeBP;
             }
+            else
+            {
+                // Karma needs to be added based on the character's metatype/metavariant Point Buy karma cost because that is what is used in Point Buy,
+                // not the metatype/metavariant attribute/quality costs.
+                int intTemp = 0;
+                if (GetNode()?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
+                    intExtraKarmaToRemoveForPointBuyComparison -= intTemp;
+            }
 
             sbdMessage.Append(Environment.NewLine + LanguageManager.GetString("Label_Base", strLanguage) + strColonCharacter + strSpace
                               + intReturn.ToString(GlobalOptions.CultureInfo) + strSpace + strKarmaString);
@@ -6066,7 +6074,10 @@ namespace Chummer
                     }
                 }
 
-                if(intTemp - intAttributesValue + intMetatypeQualitiesValue != 0)
+                // For point buy comparisons, we need to use the metatype's Point Buy cost for the comparison, not attributes + metatype qualities.
+                intExtraKarmaToRemoveForPointBuyComparison += intTemp - intAttributesValue + intMetatypeQualitiesValue;
+
+                if (intTemp - intAttributesValue + intMetatypeQualitiesValue != 0)
                 {
                     sbdMessage.Append(Environment.NewLine + LanguageManager.GetString("Label_SumtoTenHeritage", strLanguage) + strSpace
                                       + (intTemp - intAttributesValue + intMetatypeQualitiesValue).ToString(GlobalOptions.CultureInfo) + strSpace + strKarmaString);
