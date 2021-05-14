@@ -480,12 +480,13 @@ namespace Chummer
         /// Check the Keys in the selected language file against the English version.
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
-        public static void VerifyStrings(string strLanguage)
+        public static async Task VerifyStrings(string strLanguage)
         {
-            ConcurrentBag<string> lstEnglish = new ConcurrentBag<string>();
-            ConcurrentBag<string> lstLanguage = new ConcurrentBag<string>();
-            Parallel.Invoke(
-                () =>
+            HashSet<string> lstEnglish = new HashSet<string>();
+            HashSet<string> lstLanguage = new HashSet<string>();
+            // Potentially expensive checks that can (and therefore should) be parallelized.
+            await Task.WhenAll(
+                Task.Run(() =>
                 {
                     // Load the English version.
                     string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
@@ -508,8 +509,8 @@ namespace Chummer
                     catch (XmlException)
                     {
                     }
-                },
-                () =>
+                }),
+                Task.Run(() =>
                 {
                     // Load the selected language version.
                     string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
@@ -532,12 +533,14 @@ namespace Chummer
                     catch (XmlException)
                     {
                     }
-                });
+                }));
 
             StringBuilder sbdMissingMessage = new StringBuilder();
             StringBuilder sbdUnusedMessage = new StringBuilder();
-            Parallel.Invoke(
-                () =>
+            // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+            // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+            await Task.WhenAll(
+                Task.Run(() =>
                 {
                     // Check for strings that are in the English file but not in the selected language file.
                     foreach (string strKey in lstEnglish)
@@ -545,8 +548,8 @@ namespace Chummer
                         if (!lstLanguage.Contains(strKey))
                             sbdMissingMessage.AppendLine("Missing String: " + strKey);
                     }
-                },
-                () =>
+                }),
+                Task.Run(() =>
                 {
                     // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
                     foreach (string strKey in lstLanguage)
@@ -554,7 +557,7 @@ namespace Chummer
                         if (!lstEnglish.Contains(strKey))
                             sbdUnusedMessage.AppendLine("Unused String: " + strKey);
                     }
-                });
+                }));
 
             string strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
@@ -675,15 +678,9 @@ namespace Chummer
             string strPreferFile = "")
         {
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            Task<string> objTask = TranslateExtraAsync(strExtra, strIntoLanguage, objCharacter, strPreferFile);
-            if (objTask.Status == TaskStatus.Created)
-                objTask.Start();
-            while (!objTask.IsCompleted)
-            {
-                Application.DoEvents();
-                Thread.Sleep(100);
-            }
-            return objTask.Result;
+            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+            // TODO: Do this overhaul.
+            return Utils.RunWithoutThreadLock(() => TranslateExtraAsync(strExtra, strIntoLanguage, objCharacter, strPreferFile));
         }
 
         /// <summary>
@@ -870,16 +867,9 @@ namespace Chummer
             Character objCharacter = null, string strPreferFile = "")
         {
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            Task<string> objTask =
-                ReverseTranslateExtraAsync(strExtra, strFromLanguage, objCharacter, strPreferFile);
-            if (objTask.Status == TaskStatus.Created)
-                objTask.Start();
-            while (!objTask.IsCompleted)
-            {
-                Application.DoEvents();
-                Thread.Sleep(100);
-            }
-            return objTask.Result;
+            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+            // TODO: Do this overhaul.
+            return Utils.RunWithoutThreadLock(() => ReverseTranslateExtraAsync(strExtra, strFromLanguage, objCharacter, strPreferFile));
         }
 
         /// <summary>

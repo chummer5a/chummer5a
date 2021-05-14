@@ -144,10 +144,10 @@ namespace Chummer
                 PopulateXsltList();
         }
 
-        private void cmdVerify_Click(object sender, EventArgs e)
+        private async void cmdVerify_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                LanguageManager.VerifyStrings(_strSelectedLanguage);
+                await LanguageManager.VerifyStrings(_strSelectedLanguage);
         }
 
         private void cmdVerifyData_Click(object sender, EventArgs e)

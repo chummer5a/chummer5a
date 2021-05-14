@@ -102,7 +102,7 @@ namespace Chummer
             }
         }
 
-        private async void DoPrint(object sender, DoWorkEventArgs e)
+        private void DoPrint(object sender, DoWorkEventArgs e)
         {
             void FuncIncreaseProgress()
             {
@@ -125,9 +125,11 @@ namespace Chummer
 
             CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
 
-            // Parallelized load because this is one major bottleneck.
-            await Task.Run(() =>
+            // Because we're printing info from characters here and we don't have locker objects assigned to characters to prevent changes while a print method is running,
+            // we cannot make this method async, but we still do not want Parallel.ForEach to block UI events
+            Utils.RunWithoutThreadLock(() =>
             {
+                // Parallelized load because this is one major bottleneck.
                 Parallel.ForEach(lstCharacters, (objCharacter, objState) =>
                 {
                     if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration || objCancellationTokenSource.IsCancellationRequested)
@@ -150,7 +152,7 @@ namespace Chummer
                     if (blnLoadSuccessful)
                         prgProgress.Invoke((Action) FuncIncreaseProgress);
                 });
-            }, objCancellationTokenSource.Token);
+            });
             if (_workerPrinter.CancellationPending)
                 e.Cancel = true;
             else

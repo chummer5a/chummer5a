@@ -92,10 +92,10 @@ namespace Chummer
             }
         }
 
-        private void frmCharacterRoster_Load(object sender, EventArgs e)
+        private async void frmCharacterRoster_Load(object sender, EventArgs e)
         {
             SetMyEventHandlers();
-            LoadCharacters();
+            await LoadCharacters();
             UpdateCharacter(null);
         }
 
@@ -104,17 +104,17 @@ namespace Chummer
             SetMyEventHandlers(true);
         }
 
-        private void RefreshWatchListOnly(object sender, EventArgs e)
+        private async void RefreshWatchListOnly(object sender, EventArgs e)
         {
             if(_blnSkipUpdate)
                 return;
 
             SuspendLayout();
-            LoadCharacters(false, false, true, false);
+            await LoadCharacters(false, false, true, false);
             ResumeLayout();
         }
 
-        public void PopulateCharacterList(object sender, TextEventArgs e)
+        public async void PopulateCharacterList(object sender, TextEventArgs e)
         {
             if(_blnSkipUpdate)
                 return;
@@ -125,7 +125,7 @@ namespace Chummer
                 try
                 {
                     treCharacterList.Nodes.Clear();
-                    LoadCharacters(true, true, true, false);
+                    await LoadCharacters(true, true, true, false);
                 }
                 catch (ObjectDisposedException)
                 {
@@ -135,7 +135,7 @@ namespace Chummer
             }
             else
             {
-                LoadCharacters(false, true, true, false);
+                await LoadCharacters(false, true, true, false);
             }
             ResumeLayout();
         }
@@ -161,7 +161,7 @@ namespace Chummer
             }
         }
 
-        public void LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true, bool blnRefreshPlugins = true)
+        public async Task LoadCharacters(bool blnRefreshFavorites = true, bool blnRefreshRecents = true, bool blnRefreshWatch = true, bool blnRefreshPlugins = true)
         {
             _blnSkipUpdate = true;
             ReadOnlyObservableCollection<string> lstFavorites = new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters);
@@ -183,10 +183,8 @@ namespace Chummer
             List<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
 
             Dictionary<string,string> dicWatch = new Dictionary<string, string>();
-            int intWatchFolderCount = 0;
             if(!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
             {
-                intWatchFolderCount++;
                 foreach (string strFile in Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
                 {
                     // Make sure we're not loading a character that was already loaded by the MRU list.
@@ -203,25 +201,23 @@ namespace Chummer
                     string strNewParent = objInfo.Directory.FullName.Replace(GlobalOptions.CharacterRosterPath+"\\", string.Empty);
                     dicWatch.Add(strFile,strNewParent);
                 }
-
-                intWatchFolderCount++;
             }
 
             bool blnAddWatchNode = false;
             TreeNode objWatchNode = null;
-            TreeNode[] lstWatchNodes = null;
             if(blnRefreshWatch)
             {
                 objWatchNode = treCharacterList.FindNode("Watch", false);
-                objWatchNode?.Remove();
                 blnAddWatchNode = dicWatch.Count > 0;
-
                 if (blnAddWatchNode)
                 {
-                    objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
+                    if (objWatchNode != null)
+                        objWatchNode.Nodes.Clear();
+                    else
+                        objWatchNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_WatchFolder")) { Tag = "Watch" };
                 }
-
-                lstWatchNodes = new TreeNode[intWatchFolderCount];
+                else
+                    objWatchNode?.Remove();
             }
 
             bool blnAddRecentNode = false;
@@ -255,36 +251,42 @@ namespace Chummer
                 lstRecentsNodes = new TreeNode[lstRecents.Count];
             }
 
-            Parallel.Invoke(
-                () =>
+            await Task.WhenAll(
+                Task.Run(() =>
                 {
                     if (lstFavoritesNodes == null || lstFavorites.Count <= 0)
                         return;
                     Parallel.For(0, lstFavorites.Count, i => lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]));
-                    if(blnAddFavoriteNode && objFavoriteNode != null)
+                    if (!blnAddFavoriteNode || objFavoriteNode == null)
+                        return;
+                    foreach (TreeNode objNode in lstFavoritesNodes)
                     {
-                        foreach (TreeNode objNode in lstFavoritesNodes)
-                        {
-                            if(objNode != null)
-                                objFavoriteNode.Nodes.Add(objNode);
-                        }
+                        if (objNode == null)
+                            continue;
+                        if (objFavoriteNode.TreeView != null)
+                            objFavoriteNode.TreeView.DoThreadSafe(() => objFavoriteNode.Nodes.Add(objNode));
+                        else
+                            objFavoriteNode.Nodes.Add(objNode);
                     }
-                },
-                () =>
+                }),
+                Task.Run(() =>
                 {
                     if (lstRecentsNodes == null || lstRecents.Count <= 0)
                         return;
                     Parallel.For(0, lstRecents.Count, i => lstRecentsNodes[i] = CacheCharacter(lstRecents[i]));
-                    if(blnAddRecentNode && objRecentNode != null)
+                    if (!blnAddRecentNode || objRecentNode == null)
+                        return;
+                    foreach (TreeNode objNode in lstRecentsNodes)
                     {
-                        foreach (TreeNode objNode in lstRecentsNodes)
-                        {
-                            if(objNode != null)
-                                objRecentNode.Nodes.Add(objNode);
-                        }
+                        if (objNode == null)
+                            continue;
+                        if (objRecentNode.TreeView != null)
+                            objRecentNode.TreeView.DoThreadSafe(() => objRecentNode.Nodes.Add(objNode));
+                        else
+                            objRecentNode.Nodes.Add(objNode);
                     }
-                },
-                () =>
+                }),
+                Task.Run(() =>
                 {
                     if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count <= 0)
                         return;
@@ -294,13 +296,19 @@ namespace Chummer
                     {
                         if (s == "Watch")
                             continue;
-                        objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
+                        if (objWatchNode.TreeView != null)
+                            objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s }));
+                        else
+                            objWatchNode.Nodes.Add(new TreeNode(s) { Tag = s });
                     }
                     foreach (KeyValuePair<TreeNode, string> kvtNode in dicWatchNodes)
                     {
                         if (kvtNode.Value == "Watch")
                         {
-                            objWatchNode.Nodes.Add(kvtNode.Key);
+                            if (objWatchNode.TreeView != null)
+                                objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                            else
+                                objWatchNode.Nodes.Add(kvtNode.Key);
                         }
                         else
                         {
@@ -308,138 +316,127 @@ namespace Chummer
                             {
                                 if (objNode.Tag.ToString() == kvtNode.Value)
                                 {
-                                    objNode.Nodes.Add(kvtNode.Key);
+                                    if (objWatchNode.TreeView != null)
+                                        objWatchNode.TreeView.DoThreadSafe(() => objWatchNode.Nodes.Add(kvtNode.Key));
+                                    else
+                                        objNode.Nodes.Add(kvtNode.Key);
                                 }
                             }
                         }
                     }
-                },
-                async () =>
+                }),
+                Task.Run(async () =>
                 {
-                    foreach(IPlugin plugin in Program.PluginLoader.MyActivePlugins)
+                    foreach (IPlugin plugin in Program.PluginLoader.MyActivePlugins)
                     {
-                        List<TreeNode> lstNodes = await Task.Run(async () =>
+                        Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin);
+                        List<TreeNode> lstNodes = (await plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins))?.OrderBy(a => a.Text).ToList() ?? new List<TreeNode>();
+                        foreach (TreeNode node in lstNodes)
                         {
-                            Log.Info("Starting new Task to get CharacterRosterTreeNodes for plugin:" + plugin);
-                            ICollection<TreeNode> lstTreeNodes = await plugin.GetCharacterRosterTreeNode(this, blnRefreshPlugins);
-                            return lstTreeNodes?.OrderBy(a => a.Text).ToList() ?? new List<TreeNode>();
-                        });
-                        await Task.Run(() =>
-                        {
-                            foreach(TreeNode node in lstNodes)
+                            TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>()
+                                .FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
+                            try
                             {
-                                TreeNode objExistingNode = treCharacterList.Nodes.Cast<TreeNode>().FirstOrDefault(x => x.Text == node.Text && x.Tag == node.Tag);
-                                Program.MainForm.DoThreadSafe(() =>
+                                if (objExistingNode != null)
                                 {
-                                    try
-                                    {
-                                        if (objExistingNode != null)
-                                        {
-                                            treCharacterList.DoThreadSafe(() => treCharacterList.Nodes.Remove(objExistingNode));
-                                        }
+                                    await treCharacterList.DoThreadSafeAsync(() => treCharacterList.Nodes.Remove(objExistingNode));
+                                }
 
-                                        if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
-                                            || node.Tag != null)
-                                        {
-                                            if (treCharacterList.IsNullOrDisposed())
-                                                return;
-                                            treCharacterList.DoThreadSafe(() =>
-                                            {
-                                                if (treCharacterList.Nodes.ContainsKey(node.Name))
-                                                    treCharacterList.Nodes.RemoveByKey(node.Name);
-                                                treCharacterList.Nodes.Insert(1, node);
-                                            });
-                                        }
+                                if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
+                                                         || node.Tag != null)
+                                {
+                                    if (treCharacterList.IsNullOrDisposed())
+                                        return;
+                                    await treCharacterList.DoThreadSafeAsync(() =>
+                                    {
+                                        if (treCharacterList.Nodes.ContainsKey(node.Name))
+                                            treCharacterList.Nodes.RemoveByKey(node.Name);
+                                        treCharacterList.Nodes.Insert(1, node);
+                                    });
+                                }
 
-                                        node.Expand();
-                                    }
-                                    catch (ObjectDisposedException e)
-                                    {
-                                        Log.Trace(e);
-                                    }
-                                    catch (InvalidAsynchronousStateException e)
-                                    {
-                                        Log.Trace(e);
-                                    }
-                                    catch (ArgumentException e)
-                                    {
-                                        Log.Trace(e);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Log.Warn(e);
-                                    }
-                                });
+                                await treCharacterList.DoThreadSafeAsync(() => node.Expand());
                             }
-                            Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
-                        });
-                    }
-                });
-            Log.Info("Populating CharacterRosterTreeNode (MainThread).");
-            treCharacterList.SuspendLayout();
-            if (objFavoriteNode != null)
-            {
-                if(blnAddFavoriteNode)
-                {
-                    treCharacterList.Nodes.Add(objFavoriteNode);
-                    objFavoriteNode.Expand();
-                }
-                else
-                {
-                    objFavoriteNode.Nodes.Clear();
-                    foreach (TreeNode objNode in lstFavoritesNodes)
-                    {
-                        if(objNode != null)
-                            objFavoriteNode.Nodes.Add(objNode);
-                    }
-                }
-            }
+                            catch (ObjectDisposedException e)
+                            {
+                                Log.Trace(e);
+                            }
+                            catch (InvalidAsynchronousStateException e)
+                            {
+                                Log.Trace(e);
+                            }
+                            catch (ArgumentException e)
+                            {
+                                Log.Trace(e);
+                            }
+                            catch (Exception e)
+                            {
+                                Log.Warn(e);
+                            }
+                        }
 
-            if(objRecentNode != null)
+                        Log.Info("Task to get and add CharacterRosterTreeNodes for plugin " + plugin + " finished.");
+                    }
+                }));
+            Log.Info("Populating CharacterRosterTreeNode (MainThread).");
+            await treCharacterList.DoThreadSafeAsync(() =>
             {
-                if(blnAddRecentNode)
+                treCharacterList.SuspendLayout();
+                if (objFavoriteNode != null)
                 {
-                    treCharacterList.Nodes.Add(objRecentNode);
-                    objRecentNode.Expand();
-                }
-                else
-                {
-                    try
+                    if (blnAddFavoriteNode)
                     {
-                        objRecentNode.Nodes.Clear();
-                        foreach (TreeNode objNode in lstRecentsNodes)
+                        treCharacterList.Nodes.Add(objFavoriteNode);
+                        objFavoriteNode.Expand();
+                    }
+                    else if (lstFavoritesNodes != null)
+                    {
+                        objFavoriteNode.Nodes.Clear();
+                        foreach (TreeNode objNode in lstFavoritesNodes)
                         {
                             if (objNode != null)
-                                objRecentNode.Nodes.Add(objNode);
+                                objFavoriteNode.Nodes.Add(objNode);
                         }
                     }
-                    catch (ObjectDisposedException e)
+                }
+
+                if (objRecentNode != null)
+                {
+                    if (blnAddRecentNode)
                     {
-                        //just swallow this
-                        Log.Trace(e, "ObjectDisposedException can be ignored here.");
+                        treCharacterList.Nodes.Add(objRecentNode);
+                        objRecentNode.Expand();
+                    }
+                    else if (lstRecentsNodes != null)
+                    {
+                        try
+                        {
+                            objRecentNode.Nodes.Clear();
+                            foreach (TreeNode objNode in lstRecentsNodes)
+                            {
+                                if (objNode != null)
+                                    objRecentNode.Nodes.Add(objNode);
+                            }
+                        }
+                        catch (ObjectDisposedException e)
+                        {
+                            //just swallow this
+                            Log.Trace(e, "ObjectDisposedException can be ignored here.");
+                        }
                     }
                 }
-            }
-            if(objWatchNode != null)
-            {
-                if(blnAddWatchNode)
+
+                if (objWatchNode != null && blnAddWatchNode)
                 {
-                    treCharacterList.Nodes.Add(objWatchNode);
+                    if (objWatchNode.TreeView == null)
+                        treCharacterList.Nodes.Add(objWatchNode);
                     objWatchNode.Expand();
                 }
-                else
-                {
-                    objWatchNode.Nodes.Clear();
-                    foreach (TreeNode objNode in lstWatchNodes)
-                    {
-                        if(objNode != null)
-                            objWatchNode.Nodes.Add(objNode);
-                    }
-                }
-            }
-            treCharacterList.ExpandAll();
-            treCharacterList.ResumeLayout();
-            UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache);
+
+                treCharacterList.ExpandAll();
+                treCharacterList.ResumeLayout();
+            });
+            await this.DoThreadSafeAsync(() => UpdateCharacter(treCharacterList.SelectedNode?.Tag as CharacterCache));
             _blnSkipUpdate = false;
         }
 

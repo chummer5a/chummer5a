@@ -371,7 +371,7 @@ namespace Chummer
                         _objCharacter.Spells.FirstOrDefault(x => x.Name == strArguments && !string.IsNullOrEmpty(x.Extra))?.Extra;
                     if (!string.IsNullOrEmpty(strExtra))
                     {
-                        return _objCharacter.TranslateExtra(strExtra, strLanguage);
+                        return await _objCharacter.TranslateExtraAsync(strExtra, strLanguage);
                     }
 
                     return string.Empty;

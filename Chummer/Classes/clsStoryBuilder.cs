@@ -38,11 +38,11 @@ namespace Chummer
             persistenceDictionary.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
-        public string GetStory(string strLanguage)
+        public async Task<string> GetStory(string strLanguage)
         {
             //Little bit of data required for following steps
-            XmlDocument xmlDoc = _objCharacter.LoadData("lifemodules.xml", strLanguage);
-            XPathNavigator xdoc = _objCharacter.LoadDataXPath("lifemodules.xml", strLanguage);
+            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage);
+            XPathNavigator xdoc = await _objCharacter.LoadDataXPathAsync("lifemodules.xml", strLanguage);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
             List<XmlNode> modules = new List<XmlNode>(10);
@@ -76,7 +76,9 @@ namespace Chummer
             string[] story = new string[modules.Count];
             XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNode("/chummer/storybuilder/macros");
             //Actually "write" the story
-            Parallel.For(0, modules.Count, i => story[i] = Write(new StringBuilder(), modules[i]["story"]?.InnerText ?? string.Empty, 5, xmlBaseMacrosNode).ToString());
+            await Task.Run(() => Parallel.For(0, modules.Count,
+                i => story[i] = Write(new StringBuilder(), modules[i]["story"]?.InnerText ?? string.Empty, 5,
+                    xmlBaseMacrosNode).ToString()));
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
 

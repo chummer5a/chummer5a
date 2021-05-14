@@ -313,12 +313,9 @@ namespace ChummerHub.Client.UI
         {
             using (frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE, this))
             {
-                gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
+                gs.MySINnerGroupSearch.OnGroupJoinCallback += async (o, group) =>
                 {
-                    PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
-                    {
-                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                    });
+                    await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                 };
                 gs.ShowDialog(Program.MainForm);
             }

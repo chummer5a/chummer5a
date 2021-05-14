@@ -750,7 +750,10 @@ namespace Chummer.Backend.Skills
             //First create dictionary mapping name=>guid
             ConcurrentDictionary<string, Guid> dicGroups = new ConcurrentDictionary<string, Guid>();
             ConcurrentDictionary<string, Guid> dicSkills = new ConcurrentDictionary<string, Guid>();
-            Parallel.Invoke(
+            // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+            // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+            // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
+            Utils.RunWithoutThreadLock(
                 () =>
                 {
                     Parallel.ForEach(SkillGroups, x =>

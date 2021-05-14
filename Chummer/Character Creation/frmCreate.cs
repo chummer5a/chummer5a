@@ -14278,15 +14278,18 @@ namespace Chummer
             WriteNotes(objNotes, treMartialArts.SelectedNode);
         }
 
-        private void btnCreateBackstory_Click(object sender, EventArgs e)
+        private async void btnCreateBackstory_Click(object sender, EventArgs e)
         {
-            if (_objStoryBuilder == null)
+            using (new CursorWait(this))
             {
-                _objStoryBuilder = new StoryBuilder(CharacterObject);
-                btnCreateBackstory.Enabled = false;
-            }
+                if (_objStoryBuilder == null)
+                {
+                    _objStoryBuilder = new StoryBuilder(CharacterObject);
+                    btnCreateBackstory.Enabled = false;
+                }
 
-            CharacterObject.Background = _objStoryBuilder.GetStory(GlobalOptions.Language);
+                CharacterObject.Background = await _objStoryBuilder.GetStory(GlobalOptions.Language);
+            }
         }
 
         private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)

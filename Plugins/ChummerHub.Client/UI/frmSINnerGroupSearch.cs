@@ -1,7 +1,6 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using Chummer;
 using Chummer.Plugins;
 using ChummerHub.Client.Sinners;
 using NLog;
@@ -42,14 +41,11 @@ namespace ChummerHub.Client.UI
             };
         }
 
-        private void FrmSINnerGroupSearch_FormClosing(object sender, FormClosingEventArgs e)
+        private async void FrmSINnerGroupSearch_FormClosing(object sender, FormClosingEventArgs e)
         {
             try
             {
-                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
-                {
-                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                });
+                await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
             }
             catch (Exception exception)
             {

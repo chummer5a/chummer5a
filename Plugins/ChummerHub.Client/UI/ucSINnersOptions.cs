@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -118,16 +117,14 @@ namespace ChummerHub.Client.UI
             {
                 return;
             }
-            var sinnerurl = client.BaseUrl.ToString();
+            var sinnerurl = client.BaseUrl;
             Settings.Default.SINnerUrls.Clear();
             Settings.Default.Save();
             Settings.Default.SINnerUrls.Add("https://chummer-stable.azurewebsites.net/");
             Settings.Default.SINnerUrls.Add("https://chummer-beta.azurewebsites.net/");
             Settings.Default.Save();
             cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;
-            cbSINnerUrl.SelectedItem = sinnerurl;
-            if (cbSINnerUrl.SelectedItem == null)
-                cbSINnerUrl.SelectedItem = Settings.Default.SINnerUrls[0];
+            cbSINnerUrl.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
 
             cbVisibilityIsPublic.Checked = Settings.Default.VisibilityIsPublic;
             cbIgnoreWarnings.Checked = Settings.Default.IgnoreWarningsOnOpening;
@@ -209,7 +206,7 @@ namespace ChummerHub.Client.UI
         {
             tlpOptions.Enabled = Settings.Default.UserModeRegistered;
             var mail = await GetUserEmail();
-            this.QueueThreadSafe(() =>
+            this.QueueThreadSafe(async () =>
             {
                 try
                 {
@@ -220,10 +217,8 @@ namespace ChummerHub.Client.UI
                     {
                         lUsername.Text = mail;
                         //also, since we are logged in in now, refresh the frmCharacterRoster!
-                        PluginHandler.MainForm?.DoThreadSafe(() =>
-                        {
-                            PluginHandler.MainForm.CharacterRoster.LoadCharacters();
-                        });
+                        if (PluginHandler.MainForm != null)
+                            await PluginHandler.MainForm.CharacterRoster.LoadCharacters();
                         bLogin.Text = "Logout";
                         BindingSource bs = new BindingSource
                         {
@@ -589,7 +584,7 @@ namespace ChummerHub.Client.UI
                             posttask = await client.PostSINAsync(uploadInfoObject);
                             if (posttask.CallSuccess)
                             {
-                                Log.Info("SINner " + sin.Id + " posted!");
+                                Log.Info("SINner " + (sin?.Id.ToString() ?? "null") + " posted!");
                             }
                             else
                             {
@@ -597,7 +592,7 @@ namespace ChummerHub.Client.UI
                                 var content = posttask.MyException?.ToString();
 
                                 msg += content;
-                                Log.Warn("SINner " + sin.Id + " not posted: " + msg);
+                                Log.Warn("SINner " + (sin?.Id.ToString() ?? "null") + " not posted: " + msg);
                             }
                         }
                         catch (Exception ex)

@@ -453,7 +453,7 @@ namespace ChummerHub.Client.Backend
             MyTreeNodeList = new List<TreeNode>();
             try
             {
-                PluginHandler.MainForm.DoThreadSafe(() =>
+                await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                 {
                     MyTreeNodeList.Clear();
                 });
@@ -472,7 +472,7 @@ namespace ChummerHub.Client.Backend
                             ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login"
                         };
                         Log.Warn(e, "Online, not logged in");
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                         {
                             MyTreeNodeList.Add(node);
                         });
@@ -486,7 +486,7 @@ namespace ChummerHub.Client.Backend
                             msg += Environment.NewLine + e.InnerException.Message;
                         }
                         Log.Error(e, msg);
-                        PluginHandler.MainForm.DoThreadSafe(() =>
+                        await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                         {
                             MyTreeNodeList.Add(new TreeNode
                             {
@@ -498,7 +498,7 @@ namespace ChummerHub.Client.Backend
                 }
                 if (response == null || response.CallSuccess == false)
                 {
-                    string msg = "Could not load online Sinners: " + response.ErrorText;
+                    string msg = "Could not load online Sinners: " + (response?.ErrorText ?? "Response is null.");
                     
                     Log.Warn(msg);
                     var errornode = new TreeNode
@@ -881,10 +881,7 @@ namespace ChummerHub.Client.Backend
                                 await client.DeleteAsync(sinner.Id.Value).ConfigureAwait(false);
                             }
                             objCache.ErrorText = "deleted!";
-                            PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
-                            {
-                                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                            });
+                            await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         }
                     }
                 }
@@ -917,10 +914,7 @@ namespace ChummerHub.Client.Backend
                         if (result.CallSuccess)
                         {
                             objCache.ErrorText = "deleted!";
-                            PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
-                            {
-                                PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                            });
+                            await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         }
                     }
                 }
@@ -1045,10 +1039,10 @@ namespace ChummerHub.Client.Backend
         {
             using (new CursorWait(PluginHandler.MainForm, true))
             {
+                Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
+                                             ?? PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
                 PluginHandler.MainForm.DoThreadSafe(() =>
                 {
-                    Character objOpenCharacter = PluginHandler.MainForm.OpenCharacters.FirstOrDefault(x => x.FileName == objCache.FilePath)
-                                                 ?? PluginHandler.MainForm.LoadCharacter(objCache.FilePath);
                     SwitchToCharacter(objOpenCharacter);
                 });
             }
@@ -1084,6 +1078,7 @@ namespace ChummerHub.Client.Backend
                 Log.Info("Posting " + ce.MySINnerFile.Id + "...");
                 TaskScheduler objUIScheduler = null;
                 if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
                     Program.MainForm.DoThreadSafe(() =>
                     {
                         objUIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -1201,10 +1196,7 @@ namespace ChummerHub.Client.Backend
                                 }
                                 using (new CursorWait(PluginHandler.MainForm, true))
                                 {
-                                    PluginHandler.MainForm.DoThreadSafe(() =>
-                                    {
-                                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                                    });
+                                    await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                                 }
                             }
                         }

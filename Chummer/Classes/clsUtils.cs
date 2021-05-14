@@ -20,10 +20,13 @@
  using System.ComponentModel;
  using System.Diagnostics;
 ﻿using System.IO;
-using System.Reflection;
+ using System.Linq;
+ using System.Reflection;
+ using System.Runtime.CompilerServices;
  using System.Security.AccessControl;
  using System.Security.Principal;
  using System.Text;
+ using System.Threading.Tasks;
  using System.Windows.Forms;
  using NLog;
 
@@ -69,6 +72,8 @@ namespace Chummer
         public static string GetStartupPath => !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
+
+        public const int DefaultSleepDuration = 100;
 
         /// <summary>
         /// Can the current user context write to a given file path?
@@ -171,6 +176,261 @@ namespace Chummer
             };
             Application.Exit();
             Process.Start(startInfo);
+        }
+
+        /// <summary>
+        /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
+        /// </summary>
+        private static bool s_blnIsOKToRunDoEvents = true;
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Action funcToRun)
+        {
+            Task objTask = Task.Run(funcToRun);
+            while (!objTask.IsCompleted)
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(params Action[] afuncToRun)
+        {
+            Task[] aobjTasks = new Task[afuncToRun.Length];
+            for (int i = 0; i < afuncToRun.Length; ++i)
+                aobjTasks[i] = Task.Run(afuncToRun[i]);
+            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T RunWithoutThreadLock<T>(Func<T> funcToRun)
+        {
+            Task<T> objTask = Task.Run(funcToRun);
+            while (!objTask.IsCompleted)
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(params Func<T>[] afuncToRun)
+        {
+            Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
+            for (int i = 0; i < afuncToRun.Length; ++i)
+                aobjTasks[i] = Task.Run(afuncToRun[i]);
+            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
+            T[] aobjReturn = new T[afuncToRun.Length];
+            for (int i = 0; i < afuncToRun.Length; ++i)
+                aobjReturn[i] = aobjTasks[i].Result;
+            return aobjReturn;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T RunWithoutThreadLock<T>(Func<Task<T>> funcToRun)
+        {
+            Task<T> objTask = Task.Run(funcToRun);
+            while (!objTask.IsCompleted)
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
+            return objTask.Result;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T[] RunWithoutThreadLock<T>(params Func<Task<T>>[] afuncToRun)
+        {
+            Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
+            for (int i = 0; i < afuncToRun.Length; ++i)
+                aobjTasks[i] = Task.Run(afuncToRun[i]);
+            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
+            T[] aobjReturn = new T[afuncToRun.Length];
+            for (int i = 0; i < afuncToRun.Length; ++i)
+                aobjReturn[i] = aobjTasks[i].Result;
+            return aobjReturn;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="funcToRun">Code to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(Func<Task> funcToRun)
+        {
+            Task objTask = Task.Run(funcToRun);
+            while (!objTask.IsCompleted)
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(params Func<Task>[] afuncToRun)
+        {
+            Task[] aobjTasks = new Task[afuncToRun.Length];
+            for (int i = 0; i < afuncToRun.Length; ++i)
+                aobjTasks[i] = Task.Run(afuncToRun[i]);
+            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
+            {
+                bool blnDoEvents = s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                    Task.Delay(DefaultSleepDuration).Wait();
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = true;
+                }
+            }
         }
     }
 }

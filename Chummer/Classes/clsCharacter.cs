@@ -2154,7 +2154,7 @@ namespace Chummer
             if(!File.Exists(_strFileName))
                 return false;
             while (IsLoadMethodRunning)
-                await Task.Delay(100);
+                await Task.Delay(Utils.DefaultSleepDuration);
             IsLoadMethodRunning = true;
             try
             {
@@ -2557,14 +2557,19 @@ namespace Chummer
                                 if (blnShowSelectBP)
                                 {
                                     DialogResult ePickBPResult = DialogResult.Cancel;
-                                    Program.MainForm.DoThreadSafe(() =>
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        Program.MainForm.DoThreadSafe(ShowBP);
+                                    else
+                                        await Program.MainForm.DoThreadSafeAsync(ShowBP);
+                                    void ShowBP()
                                     {
                                         using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                         {
                                             frmPickBP.ShowDialog(Program.MainForm);
                                             ePickBPResult = frmPickBP.DialogResult;
                                         }
-                                    });
+                                    }
                                     if (ePickBPResult != DialogResult.OK)
                                     {
                                         return false;
@@ -2913,7 +2918,10 @@ namespace Chummer
                                 objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
                                 bool blnHasOldQualities = false;
                                 xmlRootQualitiesNode =
-                                    (blnSync ? LoadData("qualities.xml") : await LoadDataAsync("qualities.xml"))
+                                    (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LoadData("qualities.xml")
+                                        : await LoadDataAsync("qualities.xml"))
                                     .SelectSingleNode("/chummer/qualities");
                                 foreach (XmlNode objXmlQuality in objXmlNodeList)
                                 {
@@ -3036,7 +3044,12 @@ namespace Chummer
                                                     }
 
                                                     DialogResult ePickItemResult = DialogResult.Cancel;
-                                                    Program.MainForm.DoThreadSafe(() =>
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        Program.MainForm.DoThreadSafe(DoSelectItem);
+                                                    else
+                                                        await Program.MainForm.DoThreadSafeAsync(DoSelectItem);
+                                                    void DoSelectItem()
                                                     {
                                                         using (frmSelectItem frmPickItem = new frmSelectItem())
                                                         {
@@ -3046,7 +3059,8 @@ namespace Chummer
                                                             ePickItemResult = frmPickItem.DialogResult;
                                                             selectedContactUniqueId = frmPickItem.SelectedItem;
                                                         }
-                                                    });
+                                                    }
+
                                                     // Make sure the dialogue window was not canceled.
                                                     if (ePickItemResult != DialogResult.OK)
                                                     {
@@ -3159,7 +3173,10 @@ namespace Chummer
                                 {
                                     // Legacy load a Technomancer tradition
                                     XmlNode xmlTraditionListDataNode =
-                                        (blnSync ? LoadData("streams.xml") : await LoadDataAsync("streams.xml"))
+                                        (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LoadData("streams.xml")
+                                            : await LoadDataAsync("streams.xml"))
                                         .SelectSingleNode("/chummer/traditions");
                                     if (xmlTraditionListDataNode != null)
                                     {
@@ -3212,6 +3229,7 @@ namespace Chummer
                                     {
                                         XmlNode xmlTraditionListDataNode =
                                             (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 ? LoadData("traditions.xml")
                                                 : await LoadDataAsync("traditions.xml"))
                                             .SelectSingleNode("/chummer/traditions");
@@ -4077,8 +4095,10 @@ namespace Chummer
                                 if (!blnFoundUnarmed)
                                 {
                                     // Add the Unarmed Attack Weapon to the character.
-                                    XmlDocument objXmlWeaponDoc =
-                                        blnSync ? LoadData("weapons.xml") : await LoadDataAsync("weapons.xml");
+                                    XmlDocument objXmlWeaponDoc = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LoadData("weapons.xml")
+                                        : await LoadDataAsync("weapons.xml");
                                     XmlNode objXmlWeapon =
                                         objXmlWeaponDoc.SelectSingleNode(
                                             "/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
@@ -16557,7 +16577,7 @@ namespace Chummer
             if(!File.Exists(strPorFile))
                 return false;
             while (IsLoadMethodRunning)
-                await Task.Delay(100);
+                await Task.Delay(Utils.DefaultSleepDuration);
             IsLoadMethodRunning = true;
             try
             {
@@ -16816,6 +16836,7 @@ namespace Chummer
                                     if (strRaceString == "Metasapient")
                                         strRaceString = "A.I.";
                                     foreach (XPathNavigator xmlMetatype in (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             ? LoadDataXPath("metatypes.xml")
                                             : await LoadDataXPathAsync("metatypes.xml"))
                                         .Select("/chummer/metatypes/metatype"))
@@ -17207,8 +17228,10 @@ namespace Chummer
                                     " (15)"
                                 };
                                 // Qualities
-                                XmlDocument xmlQualitiesDocument =
-                                    blnSync ? LoadData("qualities.xml") : await LoadDataAsync("qualities.xml");
+                                XmlDocument xmlQualitiesDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("qualities.xml")
+                                    : await LoadDataAsync("qualities.xml");
                                 foreach (XPathNavigator xmlQualityToImport in xmlStatBlockBaseNode.Select(
                                     "qualities/positive/quality[traitcost/@bp != \"0\"]"))
                                 {
@@ -17592,9 +17615,14 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
                             {
                                 // Armor.
-                                xmlGearDocument = blnSync ? LoadData("gear.xml") : await LoadDataAsync("gear.xml");
-                                XmlDocument xmlArmorDocument =
-                                    blnSync ? LoadData("armor.xml") : await LoadDataAsync("armor.xml");
+                                xmlGearDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("gear.xml")
+                                    : await LoadDataAsync("gear.xml");
+                                XmlDocument xmlArmorDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("armor.xml")
+                                    : await LoadDataAsync("armor.xml");
                                 foreach (XPathNavigator xmlArmorToImport in xmlStatBlockBaseNode.Select(
                                     "gear/armor/item[@useradded != \"no\"]"))
                                 {
@@ -17902,7 +17930,10 @@ namespace Chummer
                             {
                                 // Spells.
                                 xmlNodeList = xmlStatBlockBaseNode.Select("magic/spells/spell");
-                                XmlDocument xmlSpellDocument = LoadData("spells.xml");
+                                XmlDocument xmlSpellDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("spells.xml")
+                                    : await LoadDataAsync("spells.xml");
                                 foreach (XPathNavigator xmlHeroLabSpell in xmlNodeList)
                                 {
                                     string strSpellName = xmlHeroLabSpell.SelectSingleNode("@name")?.Value;
@@ -18174,8 +18205,10 @@ namespace Chummer
                             {
                                 // Powers.
                                 xmlNodeList = xmlStatBlockBaseNode.Select("magic/adeptpowers/adeptpower");
-                                XmlDocument xmlPowersDocument =
-                                    blnSync ? LoadData("powers.xml") : await LoadDataAsync("powers.xml");
+                                XmlDocument xmlPowersDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("powers.xml")
+                                    : await LoadDataAsync("powers.xml");
                                 foreach (XPathNavigator xmlHeroLabPower in xmlNodeList)
                                 {
                                     string strPowerName = xmlHeroLabPower.SelectSingleNode("@name")?.Value;
@@ -18278,6 +18311,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strComplexFormsLine))
                                 {
                                     XmlDocument xmlComplexFormsDocument = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? LoadData("complexforms.xml")
                                         : await LoadDataAsync("complexforms.xml");
 
@@ -18628,8 +18662,10 @@ namespace Chummer
                                 if (!blnFoundUnarmed)
                                 {
                                     // Add the Unarmed Attack Weapon to the character.
-                                    XmlDocument objXmlWeaponDoc =
-                                        blnSync ? LoadData("weapons.xml") : await LoadDataAsync("weapons.xml");
+                                    XmlDocument objXmlWeaponDoc = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LoadData("weapons.xml")
+                                        : await LoadDataAsync("weapons.xml");
                                     XmlNode objXmlWeapon =
                                         objXmlWeaponDoc.SelectSingleNode(
                                             "/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
@@ -19289,7 +19325,7 @@ namespace Chummer
         private async Task<bool> LoadFromFileCoreAsync(bool blnSync, string strFile)
         {
             while (IsLoadMethodRunning)
-                await Task.Delay(100);
+                await Task.Delay(Utils.DefaultSleepDuration);
             IsLoadMethodRunning = true;
             try
             {

@@ -235,14 +235,13 @@ namespace Chummer
                             // Attempt to cache all XML files that are used the most.
                             using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                             {
-                                // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
                                 await Task.Run(() =>
-                                    Parallel.ForEach(s_astrPreloadFileNames, async x =>
+                                    Parallel.ForEach(s_astrPreloadFileNames, x =>
                                     {
                                         // Load default language data first for performance reasons
                                         if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
-                                            await XmlManager.LoadAsync(x, null, GlobalOptions.DefaultLanguage);
-                                        await XmlManager.LoadAsync(x);
+                                            XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
+                                        XmlManager.Load(x);
                                         _frmProgressBar.PerformStep(Application.ProductName);
                                     }));
                                 //Timekeeper.Finish("cache_load");
@@ -301,8 +300,7 @@ namespace Chummer
                                             setFilesToLoad.Add(strArg);
                                         }
                                     }
-
-                                    // Embedding Parallel.ForEach inside Task.Run is hacky but prevents lock-ups
+                                    
                                     await Task.Run(() =>
                                         Parallel.ForEach(setFilesToLoad, x =>
                                         {
@@ -1053,9 +1051,8 @@ namespace Chummer
             return Screen.AllScreens.Any(screen => screen.WorkingArea.Contains(Properties.Settings.Default.Location));
         }
 
-        private void frmChummerMain_DragDrop(object sender, DragEventArgs e)
+        private async void frmChummerMain_DragDrop(object sender, DragEventArgs e)
         {
-            // Await makes sure we don't lock up
             using (new CursorWait(this))
             {
                 // Open each file that has been dropped into the window.
@@ -1070,7 +1067,7 @@ namespace Chummer
 
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
-                Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
+                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value)));
                 OpenCharacterList(lstCharacters);
             }
         }
@@ -1333,7 +1330,7 @@ namespace Chummer
         /// <summary>
         /// Show the Open File dialogue, then load the selected character.
         /// </summary>
-        private void OpenFile(object sender, EventArgs e)
+        private async void OpenFile(object sender, EventArgs e)
         {
             using (new CursorWait(this))
             {
@@ -1372,7 +1369,7 @@ namespace Chummer
                         }
 
                         Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                        Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value));
+                        await Task.Run(() => Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value)));
                         OpenCharacterList(lstCharacters);
                     }
                 }
