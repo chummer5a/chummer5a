@@ -849,7 +849,7 @@ namespace Chummer
             GlobalOptions.Language = _strSelectedLanguage;
             GlobalOptions.ColorModeSetting = _eSelectedColorModeSetting;
             GlobalOptions.DpiScalingMethodSetting = cboDpiScalingMethod.SelectedIndex >= 0
-                ? (DpiScalingMethod)Enum.Parse(typeof(DpiScalingMethod), cboDpiScalingMethod.SelectedValue.ToString()) 
+                ? (DpiScalingMethod) Enum.Parse(typeof(DpiScalingMethod), cboDpiScalingMethod.SelectedValue.ToString()) 
                 : GlobalOptions.DefaultDpiScalingMethod;
             GlobalOptions.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.SingleDiceRoller = chkSingleDiceRoller.Checked;

@@ -475,7 +475,7 @@ namespace Chummer
         {
             if (this.IsNullOrDisposed()) // Safety check for external calls
                 return;
-            tlpCharacterRoster.SuspendLayout();
+            tlpRight.SuspendLayout();
             if(objCache != null)
             {
                 string strUnknown = LanguageManager.GetString("String_Unknown");
@@ -571,7 +571,7 @@ namespace Chummer
             lblFilePathLabel.Visible = !string.IsNullOrEmpty(lblFilePath.Text);
             lblSettingsLabel.Visible = !string.IsNullOrEmpty(lblSettings.Text);
             ProcessMugshotSizeMode();
-            tlpCharacterRoster.ResumeLayout();
+            tlpRight.ResumeLayout();
         }
 
         #region Form Methods

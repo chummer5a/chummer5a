@@ -432,8 +432,8 @@ namespace Chummer
             this.tlpBasicOptions.AutoSize = true;
             this.tlpBasicOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpBasicOptions.ColumnCount = 2;
-            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
             this.tlpBasicOptions.Controls.Add(this.cmdEnableSourcebooks, 0, 1);
             this.tlpBasicOptions.Controls.Add(this.gpbSourcebook, 0, 0);
             this.tlpBasicOptions.Controls.Add(this.flpBasicOptions, 1, 0);
@@ -452,7 +452,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 558);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
-            this.cmdEnableSourcebooks.Size = new System.Drawing.Size(295, 23);
+            this.cmdEnableSourcebooks.Size = new System.Drawing.Size(297, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
             this.cmdEnableSourcebooks.Tag = "Button_ToggleSourcebooks";
             this.cmdEnableSourcebooks.Text = "Toggle all Sourcebooks On/Off";
@@ -461,11 +461,13 @@ namespace Chummer
             // 
             // gpbSourcebook
             // 
+            this.gpbSourcebook.AutoSize = true;
+            this.gpbSourcebook.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbSourcebook.Controls.Add(this.treSourcebook);
             this.gpbSourcebook.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbSourcebook.Location = new System.Drawing.Point(3, 3);
             this.gpbSourcebook.Name = "gpbSourcebook";
-            this.gpbSourcebook.Size = new System.Drawing.Size(295, 549);
+            this.gpbSourcebook.Size = new System.Drawing.Size(297, 549);
             this.gpbSourcebook.TabIndex = 38;
             this.gpbSourcebook.TabStop = false;
             this.gpbSourcebook.Tag = "Label_Options_SourcebooksToUse";
@@ -480,7 +482,7 @@ namespace Chummer
             this.treSourcebook.ShowLines = false;
             this.treSourcebook.ShowPlusMinus = false;
             this.treSourcebook.ShowRootLines = false;
-            this.treSourcebook.Size = new System.Drawing.Size(289, 530);
+            this.treSourcebook.Size = new System.Drawing.Size(291, 530);
             this.treSourcebook.TabIndex = 1;
             this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treSourcebook_AfterCheck);
             // 
@@ -492,11 +494,11 @@ namespace Chummer
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCyberlimbs);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsRounding);
             this.flpBasicOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpBasicOptions.Location = new System.Drawing.Point(301, 0);
+            this.flpBasicOptions.Location = new System.Drawing.Point(303, 0);
             this.flpBasicOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flpBasicOptions.Name = "flpBasicOptions";
             this.tlpBasicOptions.SetRowSpan(this.flpBasicOptions, 2);
-            this.flpBasicOptions.Size = new System.Drawing.Size(913, 584);
+            this.flpBasicOptions.Size = new System.Drawing.Size(911, 584);
             this.flpBasicOptions.TabIndex = 39;
             // 
             // gpbBasicOptionsCreateSettings
@@ -4279,6 +4281,7 @@ namespace Chummer
             this.tabBasicOptions.ResumeLayout(false);
             this.tabBasicOptions.PerformLayout();
             this.tlpBasicOptions.ResumeLayout(false);
+            this.tlpBasicOptions.PerformLayout();
             this.gpbSourcebook.ResumeLayout(false);
             this.flpBasicOptions.ResumeLayout(false);
             this.flpBasicOptions.PerformLayout();

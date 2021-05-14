@@ -83,35 +83,51 @@ namespace Chummer
         private bool _blnSkipOnMarginChanged;
         private float _fltMyDpiX = 96.0f;
         private float _fltMyDpiY = 96.0f;
+        private Padding _objSavedMargins;
+        private bool _blnMarginsSaved;
 
         private void OnMarginChanged(object sender, EventArgs e)
         {
             if (_blnSkipOnMarginChanged)
                 return;
-            using (Graphics g = CreateGraphics())
+            try
             {
-                // Only care about adjusting margins for non-standard DPI
-                if (Math.Abs(g.DpiX - _fltMyDpiX) < float.Epsilon &&
-                    Math.Abs(g.DpiY - _fltMyDpiY) < float.Epsilon)
-                    return;
-                float fltOldDpiX = _fltMyDpiX;
-                float fltOldDpiY = _fltMyDpiY;
-                _fltMyDpiX = g.DpiX;
-                _fltMyDpiY = g.DpiY;
-                // No non-zero margins, exit
-                if (Margin.All == 0)
-                    return;
-                Padding objNewMargins = new Padding(
-                    (int)(Margin.Left * _fltMyDpiX / fltOldDpiX),
-                    (int)(Margin.Top * _fltMyDpiY / fltOldDpiY),
-                    (int)(Margin.Right * _fltMyDpiX / fltOldDpiX),
-                    (int)(Margin.Bottom * _fltMyDpiY / fltOldDpiY));
-                this.DoThreadSafe(() =>
+                using (Graphics g = CreateGraphics())
                 {
+                    // Only care about adjusting margins for non-standard DPI
+                    if (Math.Abs(g.DpiX - _fltMyDpiX) < float.Epsilon &&
+                        Math.Abs(g.DpiY - _fltMyDpiY) < float.Epsilon)
+                    {
+                        if (_blnMarginsSaved)
+                        {
+                            _blnSkipOnMarginChanged = true;
+                            this.DoThreadSafe(() => Margin = _objSavedMargins);
+                        }
+                        return;
+                    }
+                    float fltOldDpiX = _fltMyDpiX;
+                    float fltOldDpiY = _fltMyDpiY;
+                    _fltMyDpiX = g.DpiX;
+                    _fltMyDpiY = g.DpiY;
+                    // No non-zero margins, exit
+                    if (Margin.All == 0)
+                        return;
+                    Padding objNewMargins = new Padding(
+                        (Margin.Left * _fltMyDpiX / fltOldDpiX).StandardRound(),
+                        (Margin.Top * _fltMyDpiY / fltOldDpiY).StandardRound(),
+                        (Margin.Right * _fltMyDpiX / fltOldDpiX).StandardRound(),
+                        (Margin.Bottom * _fltMyDpiY / fltOldDpiY).StandardRound());
+                    if (objNewMargins.Equals(Margin))
+                        return;
                     _blnSkipOnMarginChanged = true;
-                    Margin = objNewMargins;
-                    _blnSkipOnMarginChanged = false;
-                });
+                    this.DoThreadSafe(() => Margin = objNewMargins);
+                }
+            }
+            finally
+            {
+                _objSavedMargins = Margin;
+                _blnSkipOnMarginChanged = false;
+                _blnMarginsSaved = true;
             }
         }
 
