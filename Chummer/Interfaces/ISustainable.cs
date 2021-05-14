@@ -48,6 +48,7 @@ namespace Chummer
         /// </summary>
         bool SelfSustained { get; set; }
 
+        //TODO: Move Save() and DisplayName() to their own interfaces.
         /// <summary>
         /// Saves an Sustainable object to .xml
         /// </summary>

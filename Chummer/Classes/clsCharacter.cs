@@ -280,6 +280,7 @@ namespace Chummer
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
             _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
             _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
+            _lstSustained.CollectionChanged += SustainedOnCollectionChanged;
             _objTradition = new Tradition(this);
         }
 
@@ -982,6 +983,10 @@ namespace Chummer
             }
         }
 
+        private void SustainedOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            RefreshSustainingPenalties();
+        }
         [HubTag] public AttributeSection AttributeSection { get; }
 
         public bool IsSaving { get; set; }
@@ -15839,7 +15844,7 @@ namespace Chummer
         /// <summary>
         /// Recalculates the Dicepoolmodifier for sustaining spells or complex forms
         /// </summary>
-        private bool RefreshSustainingPenalties()
+        public bool RefreshSustainingPenalties()
         {
             if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
             {
@@ -16079,8 +16084,6 @@ namespace Chummer
                         new DependencyGraphNode<string, Character>(nameof(HomeNode))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(SustainingPenalty),
-                        new DependencyGraphNode<string, Character>(nameof(SustainedCollection)),
-                        new DependencyGraphNode<string, Character>(nameof(ISustainable.SelfSustained)),
                         new DependencyGraphNode<string, Character>(nameof(PsycheActive))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(WoundModifier),

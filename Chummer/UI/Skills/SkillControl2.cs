@@ -79,8 +79,7 @@ namespace Chummer.UI.Skills
 
                 btnAttribute.DoOneWayDataBinding("Text", objSkill, nameof(Skill.DisplayAttribute));
 
-            var threadRefreshing = new Thread(SkillControl2_RefreshPoolTooltipAndDisplay) {IsBackground = true};
-            threadRefreshing.Start();
+                SkillControl2_RefreshPoolTooltipAndDisplay();
 
                 // Creating controls outside of the designer saves on handles if the controls would be invisible anyway
                 if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
@@ -322,8 +321,7 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    var threadRefreshing = new Thread(SkillControl2_RefreshPoolTooltipAndDisplay) { IsBackground = true };
-                    threadRefreshing.Start();
+                    SkillControl2_RefreshPoolTooltipAndDisplay();
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
                     break;
@@ -363,8 +361,7 @@ namespace Chummer.UI.Skills
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
 
-                    var threadRefreshing = new Thread(SkillControl2_RefreshPoolTooltipAndDisplay) { IsBackground = true };
-                    threadRefreshing.Start();
+                    SkillControl2_RefreshPoolTooltipAndDisplay();
 
                     break;
             }
@@ -578,6 +575,7 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void SkillControl2_RefreshPoolTooltipAndDisplay()
         {
+            //TODO: Run this async somehow, QueueThreadSafe maybe.
             if (_blnLoading || lblModifiedRating.Text != 0.ToString(GlobalOptions.CultureInfo))
             {
                 string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);

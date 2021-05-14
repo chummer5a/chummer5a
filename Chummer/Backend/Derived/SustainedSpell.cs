@@ -20,11 +20,13 @@
 using Chummer.Backend.Skills;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
@@ -38,7 +40,7 @@ namespace Chummer
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
 
-    public class SustainedSpell : Spell, IHasInternalId, ISustainable
+    public class SustainedSpell : Spell, IHasInternalId, ISustainable, INotifyPropertyChanged
     {
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
@@ -47,6 +49,8 @@ namespace Chummer
         private int _intNetHits = 0;
         private readonly Character _objCharacter;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         #region Constructor, Create, Save, Load, and Print Methods
 
         public SustainedSpell(Character objCharacter) : base(objCharacter)
@@ -54,6 +58,8 @@ namespace Chummer
             //Create the GUID for new sustained spells
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
+
+            PropertyChanged += OnSustainedChanged;
         }
 
         /// <summary>
@@ -147,7 +153,7 @@ namespace Chummer
                 if (_blnSelfSustained != value)
                 {
                     _blnSelfSustained = value;
-                    _objCharacter.OnPropertyChanged();
+                    OnPropertyChanged();
                 }
             }
         }
@@ -170,6 +176,18 @@ namespace Chummer
             set => _intNetHits = value;
         }
         public new string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        #endregion
+
+        #region Property Changed
+        protected void OnPropertyChanged([CallerMemberName] string name = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        }
+
+        private void OnSustainedChanged(object sender, PropertyChangedEventArgs e)
+        {
+            _objCharacter.RefreshSustainingPenalties();
+        }
         #endregion
     }
 }

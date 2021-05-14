@@ -24,12 +24,19 @@ namespace Chummer
         public event EventHandler UnsustainSpell;
 
 
+
         public SustainedSpellControl(ISustainable objSustainedSpell)
         {
             _objSustainedSpell = objSustainedSpell;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+
+            if (!(objSustainedSpell is SustainedCritterPower))
+            {
+                chkSelfSustained.Visible = true;
+                lblSelfSustained.Visible = true;
+            }
         }
 
         private void SustainedSpellControl_Load(object sender, EventArgs e)
@@ -40,13 +47,10 @@ namespace Chummer
                 nudForce.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.Force));
                 nudNetHits.DoDatabinding("Value", _objSustainedSpell, nameof(_objSustainedSpell.NetHits));
 
-                //Only shows and Databinds the chkSelfSustained, when it's actually needed
+                //Only do  the binding if it's actually needed
                 if (!(_objSustainedSpell is SustainedCritterPower))
-                {
-                    chkSelfSustained.Visible = true;
-                    lblSelfSustained.Visible = true;
                     chkSelfSustained.DoDatabinding("Checked", _objSustainedSpell, nameof(_objSustainedSpell.SelfSustained));
-                }
+                
             }
             finally
             {

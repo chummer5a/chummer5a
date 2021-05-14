@@ -16433,8 +16433,7 @@ namespace Chummer
 
                                 refreshingPanel.Controls.Add(objSustainedSpellControl);
                             }
-                            CharacterObject.OnPropertyChanged(nameof(CharacterObject.SustainedCollection));
-                        }
+                    }
                         break;
                     case NotifyCollectionChangedAction.Remove:
                         {
@@ -16476,8 +16475,6 @@ namespace Chummer
                                 CharacterObject.PsycheActive = false;
                                 chkPsycheActive.Visible = false;
                             }
-
-                            CharacterObject.OnPropertyChanged(nameof(CharacterObject.SustainedCollection));
                         }
                         break;
                     case NotifyCollectionChangedAction.Replace:
@@ -16531,8 +16528,7 @@ namespace Chummer
 
                                 refreshingPanel.Controls.Add(objSustainedSpellControl);
                             }
-                            CharacterObject.OnPropertyChanged(nameof(CharacterObject.SustainedCollection));
-                        }
+                    }
                         break;
                     case NotifyCollectionChangedAction.Reset:
                         RefreshSustainedSpells(flpSustainedSpells, flpSustainedComplexForms, flpSustainedCritterPowers);
