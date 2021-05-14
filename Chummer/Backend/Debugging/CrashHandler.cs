@@ -24,7 +24,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Web.Script.Serialization;
@@ -36,12 +35,6 @@ namespace Chummer.Backend
 {
     public static class CrashHandler
     {
-        private static class NativeMethods
-        {
-            [DllImport("kernel32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
-            internal static extern uint GetCurrentThreadId();
-        }
-
         private sealed class DumpData : ISerializable
         {
             public DumpData(Exception ex)

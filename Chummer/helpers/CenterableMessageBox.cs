@@ -32,7 +32,7 @@ namespace Chummer
     public class CenterableMessageBox
     {
         private static IWin32Window _owner;
-        private static readonly HookProc _hookProc;
+        private static readonly NativeMethods.HookProc _hookProc;
         private static IntPtr _hHook;
 
         public static DialogResult Show(string text)
@@ -110,13 +110,8 @@ namespace Chummer
         {
             _owner = owner;
             Initialize();
-            return MessageBox.Show(owner, text, caption, buttons, icon,
-                                   defButton, options);
+            return MessageBox.Show(owner, text, caption, buttons, icon, defButton, options);
         }
-
-        public delegate IntPtr HookProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-        public delegate void TimerProc(IntPtr hWnd, uint uMsg, UIntPtr nIDEvent, uint dwTime);
 
         public const int WH_CALLWNDPROCRET = 12;
 
@@ -133,36 +128,6 @@ namespace Chummer
             HCBT_SYSCOMMAND = 8,
             HCBT_SETFOCUS = 9
         }
-
-        [DllImport("user32.dll")]
-        private static extern bool GetWindowRect(IntPtr hWnd, ref Rectangle lpRect);
-
-        [DllImport("user32.dll")]
-        private static extern int MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
-
-        [DllImport("User32.dll")]
-        public static extern UIntPtr SetTimer(IntPtr hWnd, UIntPtr nIDEvent, uint uElapse, TimerProc lpTimerFunc);
-
-        [DllImport("User32.dll")]
-        public static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, int threadId);
-
-        [DllImport("user32.dll")]
-        public static extern int UnhookWindowsHookEx(IntPtr idHook);
-
-        [DllImport("user32.dll")]
-        public static extern IntPtr CallNextHookEx(IntPtr idHook, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll")]
-        public static extern int GetWindowTextLength(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        public static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int maxLength);
-
-        [DllImport("user32.dll")]
-        public static extern int EndDialog(IntPtr hDlg, IntPtr nResult);
 
         [StructLayout(LayoutKind.Sequential)]
         public struct CWPRETSTRUCT
@@ -189,7 +154,7 @@ namespace Chummer
 
             if (_owner != null)
             {
-                _hHook = SetWindowsHookEx(WH_CALLWNDPROCRET, _hookProc, IntPtr.Zero, Thread.CurrentThread.ManagedThreadId);
+                _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, _hookProc, IntPtr.Zero, Thread.CurrentThread.ManagedThreadId);
             }
         }
 
@@ -197,7 +162,7 @@ namespace Chummer
         {
             if (nCode < 0)
             {
-                return CallNextHookEx(_hHook, nCode, wParam, lParam);
+                return NativeMethods.CallNextHookEx(_hHook, nCode, wParam, lParam);
             }
 
             CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(CWPRETSTRUCT));
@@ -211,25 +176,25 @@ namespace Chummer
                 }
                 finally
                 {
-                    UnhookWindowsHookEx(_hHook);
+                    NativeMethods.UnhookWindowsHookEx(_hHook);
                     _hHook = IntPtr.Zero;
                 }
             }
 
-            return CallNextHookEx(hook, nCode, wParam, lParam);
+            return NativeMethods.CallNextHookEx(hook, nCode, wParam, lParam);
         }
 
         private static void CenterWindow(IntPtr hChildWnd)
         {
             Rectangle recChild = new Rectangle(0, 0, 0, 0);
-            if (!GetWindowRect(hChildWnd, ref recChild))
+            if (!NativeMethods.GetWindowRect(hChildWnd, ref recChild))
                 return;
 
             int width = recChild.Width - recChild.X;
             int height = recChild.Height - recChild.Y;
 
             Rectangle recParent = new Rectangle(0, 0, 0, 0);
-            if (!GetWindowRect(_owner.Handle, ref recParent))
+            if (!NativeMethods.GetWindowRect(_owner.Handle, ref recParent))
                 return;
 
             Point ptCenter = new Point(
@@ -243,7 +208,7 @@ namespace Chummer
             ptStart.X = ptStart.X < 0 ? 0 : ptStart.X;
             ptStart.Y = ptStart.Y < 0 ? 0 : ptStart.Y;
 
-            MoveWindow(hChildWnd, ptStart.X, ptStart.Y, width, height, false);
+            NativeMethods.MoveWindow(hChildWnd, ptStart.X, ptStart.Y, width, height, false);
         }
     }
 }

@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using System.Xml.XPath;
 using NLog;
 
@@ -104,28 +103,14 @@ namespace Chummer
                     // drag the form without the caption bar
                     // present on left mouse button
                     HideBalloonTip();
-                    ReleaseCapture();
-                    SendMessage(Handle, 0xa1, 0x2, 0);
+                    NativeMethods.ReleaseCapture();
+                    NativeMethods.SendMessage(Handle, 0xa1, 0x2, 0);
                     break;
                 case MouseButtons.Left:
                     ShowBalloonTip();
                     break;
             }
         }
-        #endregion
-        #region Form Dragging API Support
-        //The SendMessage function sends a message to a window or windows.
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-
-        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-
-        //ReleaseCapture releases a mouse capture
-
-        [DllImportAttribute("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-
-        public static extern bool ReleaseCapture();
-
         #endregion
         #region Draw Eyes
         private void DrawEyes(Graphics gr)

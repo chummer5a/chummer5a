@@ -1067,6 +1067,18 @@
       <text>Dark</text>
     </string>
     <string>
+      <key>String_Zoom</key>
+      <text>Zoom</text>
+    </string>
+    <string>
+      <key>String_Rescale</key>
+      <text>Rescale</text>
+    </string>
+    <string>
+      <key>String_SmartZoom</key>
+      <text>Smart Zoom</text>
+    </string>
+    <string>
       <key>String_ContactPoints</key>
       <text>Contact Points</text>
     </string>
@@ -6982,6 +6994,10 @@
     <string>
       <key>Label_Options_NuyenPerBP</key>
       <text>Nuyen per Karma</text>
+    </string>
+    <string>
+      <key>Label_Options_DpiScalingMode</key>
+      <text>Display Scaling Mode:</text>
     </string>
     <string>
       <key>Label_Options_ColorMode</key>

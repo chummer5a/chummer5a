@@ -64,6 +64,8 @@ namespace Chummer
             var startTime = DateTimeOffset.UtcNow;
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
+                // Set DPI Stuff
+                SetProcessDPI(GlobalOptions.DpiScalingMethodSetting);
                 // Set default cultures based on the currently set language
                 CultureInfo.DefaultThreadCurrentCulture = GlobalOptions.CultureInfo;
                 CultureInfo.DefaultThreadCurrentUICulture = GlobalOptions.CultureInfo;
@@ -386,10 +388,6 @@ namespace Chummer
             }
         }
 
-        [DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool DeleteFile(string name);
-
         private static bool UnblockPath(string strPath)
         {
             bool blnAllUnblocked = true;
@@ -428,9 +426,67 @@ namespace Chummer
 
         private static bool UnblockFile(string strFileName)
         {
-            return DeleteFile(strFileName + ":Zone.Identifier");
+            return NativeMethods.DeleteFile(strFileName + ":Zone.Identifier");
         }
 
+        private static void SetProcessDPI(DpiScalingMethod eMethod)
+        {
+            switch (eMethod)
+            {
+                case DpiScalingMethod.None:
+                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    {
+                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
+                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDPIAwareness.Unaware);
+                        else
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.Unaware);
+                    }
+                    break;
+                // System
+                case DpiScalingMethod.Zoom:
+                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    {
+                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
+                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDPIAwareness.System);
+                        else
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.System);
+                    }
+                    else
+                        NativeMethods.SetProcessDPIAware();
+                    break;
+                // PerMonitor/PerMonitorV2
+                case DpiScalingMethod.Rescale:
+                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    {
+                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext and PerMonitorV2
+                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDPIAwareness.PerMonitorV2);
+                        else
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.PerMonitor);
+                    }
+                    else
+                        NativeMethods.SetProcessDPIAware(); // System as backup, because it's better than remaining unaware if we want PerMonitor/PerMonitorV2
+                    break;
+                // System (Enhanced)
+                case DpiScalingMethod.SmartZoom:
+                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    {
+                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
+                        {
+                            NativeMethods.SetProcessDpiAwarenessContext(
+                                Environment.OSVersion.Version >= new Version(10, 0, 17763)
+                                    ? NativeMethods.ContextDPIAwareness.UnawareGdiScaled // Windows 10 Version 1809 Added GDI+ Scaling
+                                    : NativeMethods.ContextDPIAwareness.System); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
+                        }
+                        else
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.System);
+                    }
+                    else
+                        NativeMethods.SetProcessDPIAware(); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eMethod), eMethod, null);
+            }
+        }
 
         /// <summary>
         /// Main application form.

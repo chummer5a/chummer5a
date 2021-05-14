@@ -32,6 +32,7 @@ Application Changes:
 - Saving a character in Create mode as Created when they were never saved beforehand no longer causes the character to be saved with them still in Create mode.
 - Checkboxes in the options menus now properly respond to being set to Dark Mode. Fixes #4438.
 - When calculating the karma value of a character in Priority or Sum-to-Ten, the karma amount displayed for comparison to Point Buy now uses the Point Buy costs for the character's metatype instead of the value of their combined attribute adjustments and qualities.
+- Added the ability to manually set Chummer's display scaling method in the Global Options screen, though a restart is required to see any changes. The default display scaling method is now also Zoom (i.e. System) instead of Rescale (i.e. PerMonitorV2).
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -134,6 +135,7 @@ Changed/New Strings:
 - Label_LifestyleNuyen_SelectLifestyle
 - Tip_Skill_Zero_Attribute
 - String_TotalComparisonWithPointBuy
+- Label_Options_DpiScalingMode
 
 Build 214
 Application Fixes:

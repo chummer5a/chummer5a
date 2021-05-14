@@ -687,6 +687,7 @@ namespace Chummer
             PopulateCustomDataDirectoryListBox();
             PopulateApplicationInsightsOptions();
             PopulateColorModes();
+            PopulateDpiScalingMethods();
         }
 
         private void RefreshGlobalSourcebookInfosListView()
@@ -781,6 +782,7 @@ namespace Chummer
             cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
             PopulateApplicationInsightsOptions();
             PopulateColorModes();
+            PopulateDpiScalingMethods();
 
             chkLifeModule.Checked = GlobalOptions.LifeModuleEnabled;
             chkStartupFullscreen.Checked = GlobalOptions.StartupFullscreen;
@@ -846,6 +848,9 @@ namespace Chummer
             }
             GlobalOptions.Language = _strSelectedLanguage;
             GlobalOptions.ColorModeSetting = _eSelectedColorModeSetting;
+            GlobalOptions.DpiScalingMethodSetting = cboDpiScalingMethod.SelectedIndex >= 0
+                ? (DpiScalingMethod)Enum.Parse(typeof(DpiScalingMethod), cboDpiScalingMethod.SelectedValue.ToString()) 
+                : GlobalOptions.DefaultDpiScalingMethod;
             GlobalOptions.StartupFullscreen = chkStartupFullscreen.Checked;
             GlobalOptions.SingleDiceRoller = chkSingleDiceRoller.Checked;
             GlobalOptions.DefaultCharacterSheet = cboXSLT.SelectedValue?.ToString() ?? GlobalOptions.DefaultCharacterSheetDefaultValue;
@@ -1028,6 +1033,36 @@ namespace Chummer
             if (cboColorMode.SelectedIndex == -1 && lstColorModes.Count > 0)
                 cboColorMode.SelectedIndex = 0;
             cboColorMode.EndUpdate();
+        }
+
+        private void PopulateDpiScalingMethods()
+        {
+            string strOldSelected = cboDpiScalingMethod.SelectedValue?.ToString() ?? GlobalOptions.DpiScalingMethodSetting.ToString();
+
+            List<ListItem> lstDpiScalingMethods = new List<ListItem>(3);
+            foreach (DpiScalingMethod eLoopDpiScalingMethod in Enum.GetValues(typeof(DpiScalingMethod)))
+            {
+                switch (eLoopDpiScalingMethod)
+                {
+                    case DpiScalingMethod.Rescale:
+                        if (Environment.OSVersion.Version < new Version(6, 3, 0)) // Need at least Windows 8.1 to get PerMonitor/PerMonitorV2 Scaling
+                            continue;
+                        break;
+                    case DpiScalingMethod.SmartZoom:
+                        if (Environment.OSVersion.Version < new Version(10, 0, 17763)) // Need at least Windows 10 Version 1809 to get GDI+ Scaling
+                            continue;
+                        break;
+                }
+                lstDpiScalingMethods.Add(new ListItem(eLoopDpiScalingMethod, LanguageManager.GetString("String_" + eLoopDpiScalingMethod, _strSelectedLanguage)));
+            }
+
+            cboDpiScalingMethod.BeginUpdate();
+            cboDpiScalingMethod.PopulateWithListItems(lstDpiScalingMethods);
+            if (!string.IsNullOrEmpty(strOldSelected))
+                cboDpiScalingMethod.SelectedValue = Enum.Parse(typeof(DpiScalingMethod), strOldSelected);
+            if (cboDpiScalingMethod.SelectedIndex == -1 && lstDpiScalingMethods.Count > 0)
+                cboDpiScalingMethod.SelectedIndex = 0;
+            cboDpiScalingMethod.EndUpdate();
         }
 
         private void SetToolTips()

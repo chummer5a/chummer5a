@@ -25,7 +25,6 @@ using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Windows.Forms;
@@ -622,7 +621,7 @@ namespace Chummer
             string strOldDefaultPrinter = null;
             try
             {
-                strOldDefaultPrinter = SystemPrinters.GetDefaultPrinter();
+                strOldDefaultPrinter = NativeMethods.GetDefaultPrinter();
                 // Try to remove headers and footers from the printer and set default printer settings to be conducive to sheet printing
                 try
                 {
@@ -653,7 +652,7 @@ namespace Chummer
                 }
 
                 // webBrowser can only print to the default printer, so we (temporarily) change it to the PDF printer
-                if (SystemPrinters.SetDefaultPrinter(strPdfPrinterName))
+                if (NativeMethods.SetDefaultPrinter(strPdfPrinterName))
                 {
                     // There is also no way to silently have it print to a PDF, so we have to show the print dialog
                     // and have the user click through, though the PDF printer will be temporarily set as their default
@@ -668,7 +667,7 @@ namespace Chummer
             finally
             {
                 if (!string.IsNullOrEmpty(strOldDefaultPrinter))
-                    SystemPrinters.SetDefaultPrinter(strOldDefaultPrinter);
+                    NativeMethods.SetDefaultPrinter(strOldDefaultPrinter);
                 // Try to remove headers and footers from the printer and
                 try
                 {
@@ -773,40 +772,6 @@ namespace Chummer
             }
             _blnLoading = false;
             RefreshCharacters();
-        }
-
-        public static class SystemPrinters
-        {
-            [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern bool SetDefaultPrinter(string strName);
-
-            [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern bool GetDefaultPrinter(StringBuilder sbdBuffer, ref int ptrBuffer);
-
-            public static string GetDefaultPrinter()
-            {
-
-                int ptrBuffer = 0;
-                if (GetDefaultPrinter(null, ref ptrBuffer))
-                {
-                    return null;
-                }
-                int intLastWin32Error = Marshal.GetLastWin32Error();
-                if (intLastWin32Error == 122) // ERROR_INSUFFICIENT_BUFFER
-                {
-                    StringBuilder sbdBuffer = new StringBuilder(ptrBuffer);
-                    if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
-                    {
-                        return sbdBuffer.ToString();
-                    }
-                    intLastWin32Error = Marshal.GetLastWin32Error();
-                }
-                if (intLastWin32Error == 2) // ERROR_FILE_NOT_FOUND
-                {
-                    return null;
-                }
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-            }
         }
     }
 }
