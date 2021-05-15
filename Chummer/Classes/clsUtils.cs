@@ -26,6 +26,7 @@
  using System.Security.AccessControl;
  using System.Security.Principal;
  using System.Text;
+ using System.Threading;
  using System.Threading.Tasks;
  using System.Windows.Forms;
  using NLog;
@@ -43,11 +44,14 @@ namespace Chummer
 #endif
         }
 
+        // Need this as a Lazy, otherwise it won't fire properly in the designer if we just cache it, and the check itself is also quite expensive
+        private static readonly Lazy<bool> s_blnIsRunningInVisualStudio =
+            new Lazy<bool>(() => Process.GetCurrentProcess().ProcessName == "devenv");
+
         /// <summary>
         /// Returns if we are running inside Visual Studio, e.g. if we are in the designer.
-        /// WARNING! Noticeably slow at runtime, do not use in functions that get called all the time!
         /// </summary>
-        public static bool IsRunningInVisualStudio => Process.GetCurrentProcess().ProcessName == "devenv"; // Cannot cache this, otherwise it won't fire when the Designer is running
+        public static bool IsRunningInVisualStudio => s_blnIsRunningInVisualStudio.Value;
 
         /// <summary>
         /// Returns if we are in VS's Designer.
@@ -60,10 +64,22 @@ namespace Chummer
         /// </summary>
         public static Version CachedGitVersion { get; set; }
 
+        private static bool s_blnIsUnitTest;
+
         /// <summary>
         /// This property is set in the Constructor of frmChummerMain (and NO where else!)
         /// </summary>
-        public static bool IsUnitTest { get; set; }
+        public static bool IsUnitTest
+        {
+            get => s_blnIsUnitTest;
+            set
+            {
+                if (s_blnIsUnitTest == value)
+                    return;
+                s_blnIsUnitTest = value;
+                s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
+            }
+        }
 
         /// <summary>
         /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
@@ -73,7 +89,7 @@ namespace Chummer
 
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
 
-        public const int DefaultSleepDuration = 100;
+        public const int DefaultSleepDuration = 20;
 
         /// <summary>
         /// Can the current user context write to a given file path?
@@ -178,10 +194,12 @@ namespace Chummer
             Process.Start(startInfo);
         }
 
+        private static bool DefaultIsOKToRunDoEvents => !IsUnitTest && !IsDesignerMode && !IsRunningInVisualStudio;
+
         /// <summary>
         /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
         /// </summary>
-        private static bool s_blnIsOKToRunDoEvents = !IsUnitTest;
+        private static bool s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
 
         /// <summary>
         /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
@@ -202,12 +220,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
         }
@@ -233,12 +251,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
         }
@@ -262,12 +280,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
             return objTask.Result;
@@ -294,12 +312,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
             T[] aobjReturn = new T[afuncToRun.Length];
@@ -327,12 +345,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
             return objTask.Result;
@@ -359,12 +377,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
             T[] aobjReturn = new T[afuncToRun.Length];
@@ -392,12 +410,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
         }
@@ -423,12 +441,12 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = false;
                         Application.DoEvents();
                     }
-                    Task.Delay(DefaultSleepDuration).Wait();
+                    Thread.Sleep(DefaultSleepDuration);
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = !IsUnitTest;
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
         }

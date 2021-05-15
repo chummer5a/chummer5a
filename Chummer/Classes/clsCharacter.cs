@@ -41,6 +41,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Threading;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using NLog;
@@ -2154,7 +2155,13 @@ namespace Chummer
             if(!File.Exists(_strFileName))
                 return false;
             while (IsLoadMethodRunning)
-                await Task.Delay(Utils.DefaultSleepDuration);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
+
             IsLoadMethodRunning = true;
             try
             {
@@ -16588,7 +16595,12 @@ namespace Chummer
             if(!File.Exists(strPorFile))
                 return false;
             while (IsLoadMethodRunning)
-                await Task.Delay(Utils.DefaultSleepDuration);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
             IsLoadMethodRunning = true;
             try
             {
@@ -19336,7 +19348,13 @@ namespace Chummer
         private async Task<bool> LoadFromFileCoreAsync(bool blnSync, string strFile)
         {
             while (IsLoadMethodRunning)
-                await Task.Delay(Utils.DefaultSleepDuration);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
+
             IsLoadMethodRunning = true;
             try
             {
