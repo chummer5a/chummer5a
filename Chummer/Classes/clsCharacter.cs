@@ -19477,7 +19477,7 @@ namespace Chummer
                     strBuildMethod,
                     LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode"));
             }
-            if (blnAddMarkerIfOpen && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == FilePath))
+            if (blnAddMarkerIfOpen && Program.MainForm?.OpenCharacterForms.Any(x => x.CharacterObject.FileName == FilePath) == true)
                 strReturn = "* " + strReturn;
             return strReturn;
         }

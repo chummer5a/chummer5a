@@ -181,7 +181,7 @@ namespace Chummer
         /// <summary>
         /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
         /// </summary>
-        private static bool s_blnIsOKToRunDoEvents = true;
+        private static bool s_blnIsOKToRunDoEvents = !IsUnitTest;
 
         /// <summary>
         /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.
@@ -207,7 +207,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
         }
@@ -238,7 +238,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
         }
@@ -267,7 +267,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
             return objTask.Result;
@@ -299,7 +299,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
             T[] aobjReturn = new T[afuncToRun.Length];
@@ -332,7 +332,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
             return objTask.Result;
@@ -364,7 +364,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
             T[] aobjReturn = new T[afuncToRun.Length];
@@ -397,7 +397,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
         }
@@ -428,7 +428,7 @@ namespace Chummer
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = true;
+                        s_blnIsOKToRunDoEvents = !IsUnitTest;
                 }
             }
         }
