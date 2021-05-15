@@ -434,9 +434,7 @@ namespace Chummer
                     Location = Properties.Settings.Default.Location;
                     Size = Properties.Settings.Default.Size;
                 }
-                if (Utils.IsUnitTest)
-                    WindowState = FormWindowState.Minimized;
-                else if (GlobalOptions.StartupFullscreen)
+                if (!Utils.IsUnitTest && GlobalOptions.StartupFullscreen)
                     WindowState = FormWindowState.Maximized;
             }
 
