@@ -4354,31 +4354,25 @@ namespace Chummer
             }
         }
 
-#if DEBUG
-        /// <summary>
-        /// Print this character information to a MemoryStream. This creates only the character object itself, not any of the opening or closing XmlDocument items.
-        /// This can be used to write multiple characters to a single XmlDocument.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write to.</param>
-        /// <param name="objCulture">Culture in which to print.</param>
-        /// <param name="strLanguageToPrint">Language in which to print.</param>
-        /// <param name="objStream">MemoryStream to use.</param>
-        public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter, CultureInfo objCulture = null,
-            string strLanguageToPrint = "")
-#else
-        /// <summary>
-        /// Print this character information to a MemoryStream. This creates only the character object itself, not any of the opening or closing XmlDocument items.
-        /// This can be used to write multiple characters to a single XmlDocument.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write to.</param>
-        /// <param name="objCulture">Culture in which to print.</param>
-        /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
-#endif
+        public XmlDocument GenerateExportXml(CultureInfo objCultureInfo, string strLanguage)
         {
-            // This line left in for debugging. Write the output to a fixed file name.
-            //FileStream objStream = new FileStream("D:\\temp\\print.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);//(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            return CommonFunctions.GenerateCharactersExportXml(objCultureInfo, strLanguage, this);
+        }
 
+        public XmlDocument GenerateExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken)
+        {
+            return CommonFunctions.GenerateCharactersExportXml(objCultureInfo, strLanguage, objToken, this);
+        }
+
+        /// <summary>
+        /// Print this character information to a XmlTextWriter. This creates only the character object itself, not any of the opening or closing XmlDocument items.
+        /// This can be used to write multiple characters to a single XmlDocument.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write to.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
+        public void PrintToXmlTextWriter(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        {
             if (objWriter == null)
                 throw new ArgumentNullException(nameof(objWriter));
             if (objCulture == null)

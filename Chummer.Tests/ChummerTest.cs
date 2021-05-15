@@ -181,43 +181,12 @@ namespace Chummer.Tests
                             continue;
                         CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
                         string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
-                        XmlDocument xmlCharacter = new XmlDocument { XmlResolver = null };
-                        // Write the Character information to a MemoryStream so we don't need to create any files.
-                        MemoryStream objStream = new MemoryStream();
-                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
-                        {
-                            // Being the document.
-                            objWriter.WriteStartDocument();
-
-                            // </characters>
-                            objWriter.WriteStartElement("characters");
-
-#if DEBUG
-                            objCharacter.PrintToStream(objStream, objWriter, objExportCultureInfo, strExportLanguage);
-#else
-                            objCharacter.PrintToStream(objWriter, objExportCultureInfo, strExportLanguage);
-#endif
-
-                            // </characters>
-                            objWriter.WriteEndElement();
-
-                            // Finish the document and flush the Writer and Stream.
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
-
-                            // Read the stream.
-                            objStream.Position = 0;
-                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
-                                    xmlCharacter.Load(objXmlReader);
-                            xmlCharacter.Save(strDestination);
-                        }
+                        XmlDocument xmlCharacter = objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
+                        xmlCharacter.Save(strDestination);
                     }
                 }
             }
         }
-
-
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
