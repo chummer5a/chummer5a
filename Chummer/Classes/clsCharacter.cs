@@ -44,7 +44,6 @@ using System.Runtime.Serialization;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using NLog;
-using Org.BouncyCastle.Asn1.X509.Qualified;
 using Application = System.Windows.Forms.Application;
 using Formatting = System.Xml.Formatting;
 
@@ -233,8 +232,7 @@ namespace Chummer
         private readonly ObservableCollection<Location> _lstGearLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<Location> _lstArmorLocations = new ObservableCollection<Location>();
 
-        private readonly TaggedObservableCollection<Location> _lstVehicleLocations =
-            new TaggedObservableCollection<Location>();
+        private readonly TaggedObservableCollection<Location> _lstVehicleLocations = new TaggedObservableCollection<Location>();
 
         private readonly ObservableCollection<Location> _lstWeaponLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
@@ -15859,7 +15857,7 @@ namespace Chummer
             int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained && !(objSustainedSpell is SustainedCritterPower));
             int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell;
                                                                                                                
-            _intSustainingPenalty = intSustainedSpells * intModifierPerSpell;
+            SustainingPenalty = intSustainedSpells * intModifierPerSpell;
 
             return true;
         }
@@ -15871,9 +15869,20 @@ namespace Chummer
         public int WoundModifier => _intWoundModifier;
 
         /// <summary>
-        /// Dicepool modifie the character has from sustaining spells. Should be non-positive
+        /// Dicepool modifie the character has from sustaining spells. Should be negative
         /// </summary>
-        public int SustainingPenalty => _intSustainingPenalty;
+        public int SustainingPenalty
+        {
+            get => _intSustainingPenalty;
+            private set //Private set instead of read only, to allow inclusion of OnPropertyChanged
+            {
+                if (value != _intSustainingPenalty)
+                {
+                    _intSustainingPenalty = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public Version LastSavedVersion => _verSavedVersion;
 

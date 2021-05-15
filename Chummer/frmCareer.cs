@@ -258,6 +258,7 @@ namespace Chummer
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
                         chkPsycheActive.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
+                        chkPsycheActiveTechnomancer.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
                     }
 
                     if (!CharacterObjectOptions.BookEnabled("RF"))
@@ -16375,6 +16376,7 @@ namespace Chummer
             {
                 //Sets up the Psyche Active Checkbox
                 chkPsycheActive.Visible = true;
+                chkPsycheActiveTechnomancer.Visible = true;
             }
 
             if(notifyCollectionChangedEventArgs == null)
@@ -16474,6 +16476,7 @@ namespace Chummer
                             {
                                 CharacterObject.PsycheActive = false;
                                 chkPsycheActive.Visible = false;
+                                chkPsycheActiveTechnomancer.Visible = false;
                             }
                         }
                         break;
