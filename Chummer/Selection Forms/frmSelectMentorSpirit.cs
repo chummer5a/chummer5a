@@ -45,190 +45,133 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void frmSelectMentorSpirit_Load(object sender, EventArgs e)
-        {
-            RefreshMentorsList();
-        }
-
-        private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
-
-        private void lstMentor_DoubleClick(object sender, EventArgs e)
-        {
-            AcceptForm();
-        }
-
         private void lstMentor_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
                 return;
-
-            XPathNavigator objXmlMentor = null;
-            string strSelectedId = lstMentor.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + lstMentor.SelectedValue.ToString().CleanXPath() + "]");
-            if (objXmlMentor != null)
+            SuspendLayout();
+            try
             {
-                cboChoice1.BeginUpdate();
-                cboChoice2.BeginUpdate();
-
-                // If the Mentor offers a choice of bonuses, build the list and let the user select one.
-                XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
-                if (xmlChoices != null)
+                XPathNavigator objXmlMentor = null;
+                if (lstMentor.SelectedIndex >= 0)
                 {
-                    List<ListItem> lstChoice1 = new List<ListItem>();
-                    List<ListItem> lstChoice2 = new List<ListItem>();
+                    string strSelectedId = lstMentor.SelectedValue?.ToString();
+                    if (!string.IsNullOrEmpty(strSelectedId))
+                        objXmlMentor =
+                            _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " +
+                                                                          strSelectedId.CleanXPath() + "]");
+                }
 
-                    foreach (XPathNavigator objChoice in xmlChoices.Select("choice"))
+                if (objXmlMentor != null)
+                {
+                    cboChoice1.BeginUpdate();
+                    cboChoice2.BeginUpdate();
+
+                    // If the Mentor offers a choice of bonuses, build the list and let the user select one.
+                    XPathNavigator xmlChoices = objXmlMentor.SelectSingleNode("choices");
+                    if (xmlChoices != null)
                     {
-                        string strName = objChoice.SelectSingleNode("name")?.Value ?? string.Empty;
-                        if ((_objCharacter.AdeptEnabled || !strName.StartsWith("Adept:", StringComparison.Ordinal)) && (_objCharacter.MagicianEnabled || !strName.StartsWith("Magician:", StringComparison.Ordinal)))
+                        List<ListItem> lstChoice1 = new List<ListItem>();
+                        List<ListItem> lstChoice2 = new List<ListItem>();
+
+                        foreach (XPathNavigator objChoice in xmlChoices.Select("choice"))
                         {
-                            if (objChoice.SelectSingleNode("@set")?.Value == "2")
-                                lstChoice2.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
-                            else
-                                lstChoice1.Add(new ListItem(strName, objChoice.SelectSingleNode("translate")?.Value ?? strName));
+                            string strName = objChoice.SelectSingleNode("name")?.Value ?? string.Empty;
+                            if ((_objCharacter.AdeptEnabled ||
+                                 !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
+                                (_objCharacter.MagicianEnabled ||
+                                 !strName.StartsWith("Magician:", StringComparison.Ordinal)))
+                            {
+                                if (objChoice.SelectSingleNode("@set")?.Value == "2")
+                                    lstChoice2.Add(new ListItem(strName,
+                                        objChoice.SelectSingleNode("translate")?.Value ?? strName));
+                                else
+                                    lstChoice1.Add(new ListItem(strName,
+                                        objChoice.SelectSingleNode("translate")?.Value ?? strName));
+                            }
                         }
-                    }
-                    
-                    //If there is only a single option, show it as a label.
-                    //If there are more, show the drop down menu
-                    if (lstChoice1.Count > 0)
-                        cboChoice1.PopulateWithListItems(lstChoice1);
-                    cboChoice1.Visible = lstChoice1.Count > 1;
-                    cboChoice1.Enabled = lstChoice1.Count > 1;
 
-                    if (lstChoice1.Count == 1)
-                    {
-                        lblBonusText1.Text = lstChoice1[0].Name;
-                        lblBonus1.Text = LanguageManager.GetString("Label_SelectMentor_Bonus");
+                        //If there is only a single option, show it as a label.
+                        //If there are more, show the drop down menu
+                        if (lstChoice1.Count > 0)
+                            cboChoice1.PopulateWithListItems(lstChoice1);
+                        cboChoice1.Visible = lstChoice1.Count > 1;
+                        lblBonusText1.Visible = lstChoice1.Count == 1;
+                        if (lstChoice1.Count == 1)
+                            lblBonusText1.Text = lstChoice1[0].Name;
+                        if (lstChoice2.Count > 0)
+                            cboChoice2.PopulateWithListItems(lstChoice2);
+                        cboChoice2.Visible = lstChoice2.Count > 1;
+                        lblBonusText2.Visible = lstChoice2.Count == 1;
+                        if (lstChoice2.Count == 1)
+                            lblBonusText2.Text = lstChoice2[0].Name;
                     }
                     else
                     {
-                        lblBonusText1.Text = string.Empty;
-                        lblBonus1.Text = string.Empty;
-                    }
-                    lblBonusText1.Visible = lstChoice1.Count == 1;
-
-                    if (lstChoice2.Count > 0)
-                        cboChoice2.PopulateWithListItems(lstChoice2);
-                    cboChoice2.Visible = lstChoice2.Count > 1;
-                    cboChoice2.Enabled = lstChoice2.Count > 1;
-
-                    if (lstChoice2.Count == 1)
-                    {
-                        lblBonusText2.Text = lstChoice2[0].Name;
-                        lblBonus2.Text = LanguageManager.GetString("Label_SelectMentor_Bonus");
-                    }
-                    else
-                    {
-                        lblBonusText2.Text = string.Empty;
-                        lblBonus2.Text = string.Empty;
+                        cboChoice1.Visible = false;
+                        cboChoice2.Visible = false;
+                        lblBonusText1.Visible = false;
+                        lblBonusText2.Visible = false;
                     }
 
-                    lblBonusText2.Visible = lstChoice2.Count == 1;
+                    cboChoice1.EndUpdate();
+                    cboChoice2.EndUpdate();
+                    lblChoice1.Visible = cboChoice1.Visible;
+                    lblChoice2.Visible = cboChoice2.Visible;
+                    lblBonus1.Visible = lblBonusText1.Visible;
+                    lblBonus2.Visible = lblBonusText2.Visible;
+
+                    // Get the information for the selected Mentor.
+                    lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
+                                        objXmlMentor.SelectSingleNode("advantage")?.Value ??
+                                        LanguageManager.GetString("String_Unknown");
+                    lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
+                    lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
+                                           objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
+                                           LanguageManager.GetString("String_Unknown");
+                    lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
+
+                    string strSource = objXmlMentor.SelectSingleNode("source")?.Value ??
+                                       LanguageManager.GetString("String_Unknown");
+                    string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ??
+                                     objXmlMentor.SelectSingleNode("page")?.Value ??
+                                     LanguageManager.GetString("String_Unknown");
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language,
+                        GlobalOptions.CultureInfo, _objCharacter);
+                    objSourceString.SetControl(lblSource);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    cmdOK.Enabled = true;
                 }
                 else
                 {
+                    lblAdvantageLabel.Visible = false;
+                    lblAdvantage.Text = string.Empty;
+                    lblDisadvantageLabel.Visible = false;
+                    lblDisadvantage.Text = string.Empty;
+                    lblChoice1.Visible = false;
+                    lblChoice2.Visible = false;
                     cboChoice1.Visible = false;
                     cboChoice2.Visible = false;
+                    lblBonus1.Visible = false;
+                    lblBonus2.Visible = false;
                     lblBonusText1.Visible = false;
                     lblBonusText2.Visible = false;
-                    lblBonusText1.Text = string.Empty;
-                    lblBonusText2.Text = string.Empty;
+                    lblSourceLabel.Visible = false;
+                    lblSource.Text = string.Empty;
+                    lblSource.SetToolTip(string.Empty);
+                    cmdOK.Enabled = false;
                 }
-                cboChoice1.EndUpdate();
-                cboChoice2.EndUpdate();
-                lblChoice1.Visible = cboChoice1.Visible;
-                lblChoice2.Visible = cboChoice2.Visible;
-                lblBonus1.Visible = lblBonusText1.Visible;
-                lblBonus2.Visible = lblBonusText2.Visible;
-
-                // Get the information for the selected Mentor.
-                lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
-                                    objXmlMentor.SelectSingleNode("advantage")?.Value ??
-                                    LanguageManager.GetString("String_Unknown");
-                lblAdvantageLabel.Visible = !string.IsNullOrEmpty(lblAdvantage.Text);
-                lblDisadvantage.Text = objXmlMentor.SelectSingleNode("altdisadvantage")?.Value ??
-                                       objXmlMentor.SelectSingleNode("disadvantage")?.Value ??
-                                       LanguageManager.GetString("String_Unknown");
-                lblDisadvantageLabel.Visible = !string.IsNullOrEmpty(lblDisadvantage.Text);
-
-                string strSource = objXmlMentor.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = objXmlMentor.SelectSingleNode("altpage")?.Value ?? objXmlMentor.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
-                objSourceString.SetControl(lblSource);
-                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-                cmdOK.Enabled = true;
             }
-            else
+            finally
             {
-                lblAdvantageLabel.Visible = false;
-                lblAdvantage.Text = string.Empty;
-                lblDisadvantageLabel.Visible = false;
-                lblDisadvantage.Text = string.Empty;
-                lblChoice1.Visible = false;
-                lblChoice2.Visible = false;
-                cboChoice1.Visible = false;
-                cboChoice2.Visible = false;
-                lblBonus1.Visible = false;
-                lblBonus2.Visible = false;
-                lblBonusText1.Visible = false;
-                lblBonusText2.Visible = false;
-                lblBonusText1.Text = string.Empty;
-                lblBonusText2.Text = string.Empty;
-                lblBonus1.Text = string.Empty;
-                lblBonus2.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
-                cmdOK.Enabled = false;
+                ResumeLayout();
             }
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
-        {
-            RefreshMentorsList();
-        }
-
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
-        #endregion
-
-        #region Properties
-        /// <summary>
-        /// Forced selection for mentor spirit
-        /// </summary>
-        public string ForcedMentor
-        {
-            set => _strForceMentor = value;
-        }
-
-        /// <summary>
-        /// Mentor that was selected in the dialogue.
-        /// </summary>
-        public string SelectedMentor { get; private set; } = string.Empty;
-
-        /// <summary>
-        /// First choice that was selected in the dialogue.
-        /// </summary>
-        public string Choice1 => cboChoice1.SelectedValue?.ToString() ?? string.Empty;
-
-        /// <summary>
-        /// Second choice that was selected in the dialogue.
-        /// </summary>
-        public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
-        #endregion
-
-        #region Methods
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private void AcceptForm(object sender, EventArgs e)
         {
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
@@ -246,7 +189,7 @@ namespace Chummer
         /// <summary>
         /// Populate the Mentor list.
         /// </summary>
-        private void RefreshMentorsList()
+        private void RefreshMentorsList(object sender, EventArgs e)
         {
             string strForceId = string.Empty;
 
@@ -286,7 +229,36 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
+
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
         #endregion
 
+        #region Properties
+        /// <summary>
+        /// Forced selection for mentor spirit
+        /// </summary>
+        public string ForcedMentor
+        {
+            set => _strForceMentor = value;
+        }
+
+        /// <summary>
+        /// Mentor that was selected in the dialogue.
+        /// </summary>
+        public string SelectedMentor { get; private set; } = string.Empty;
+
+        /// <summary>
+        /// First choice that was selected in the dialogue.
+        /// </summary>
+        public string Choice1 => cboChoice1.SelectedValue?.ToString() ?? string.Empty;
+
+        /// <summary>
+        /// Second choice that was selected in the dialogue.
+        /// </summary>
+        public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
+        #endregion
     }
 }
