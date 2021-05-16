@@ -259,7 +259,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 16;
-            this.tlpMain.Paint += new System.Windows.Forms.PaintEventHandler(this.tlpMain_Paint);
             // 
             // lblBonus1
             // 
@@ -272,7 +271,6 @@ namespace Chummer
             this.lblBonus1.TabIndex = 76;
             this.lblBonus1.Tag = "Label_SelectMentor_Bonus";
             this.lblBonus1.Text = "Bonus:";
-            this.lblBonus1.Click += new System.EventHandler(this.label1_Click);
             // 
             // lblBonusText1
             // 
@@ -307,7 +305,6 @@ namespace Chummer
             this.lblBonus2.TabIndex = 78;
             this.lblBonus2.Tag = "Label_SelectMentor_Bonus";
             this.lblBonus2.Text = "Bonus:";
-            this.lblBonus2.Click += new System.EventHandler(this.label3_Click);
             // 
             // txtSearch
             // 
@@ -379,7 +376,6 @@ namespace Chummer
             this.lblDummy1.Name = "lblDummy1";
             this.lblDummy1.Size = new System.Drawing.Size(217, 189);
             this.lblDummy1.TabIndex = 80;
-            this.lblDummy1.Click += new System.EventHandler(this.label1_Click_1);
             // 
             // frmSelectMentorSpirit
             // 
