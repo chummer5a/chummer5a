@@ -7873,6 +7873,14 @@
       <key>MessageTitle_CharacterOptions_SettingFileNameTooLongError</key>
       <text>No Valid Settings Name Possible</text>
     </string>
+    <string>
+      <key>Tooltip_CharacterOptions_ManifestMissing</key>
+      <text>There is no or an empty manifest file present for this Custom Data Directory.</text>
+    </string>
+    <string>
+      <key>Tooltip_CharacterOptions_LanguageSpecificManifestMissing</key>
+      <text>There was no manifest present in your language.</text>
+    </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>
