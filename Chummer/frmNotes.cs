@@ -58,6 +58,8 @@ namespace Chummer
             _blnLoading = false;
             txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
 
+            btnColorSelect.Enabled = txtNotes.Text.Length > 0;
+
             _colNotes = colNotes ?? ColorManager.HasNotesColor;
             if (_colNotes.IsEmpty)
                 _colNotes = ColorManager.HasNotesColor;
@@ -105,12 +107,17 @@ namespace Chummer
 
         private void btnColorSelect_Click(object sender, EventArgs e)
         {
+            colorDialog1.Color = _colNotes;
             var resNewColor = colorDialog1.ShowDialog();
             if (resNewColor == DialogResult.OK)
             {
                 _colNotes = colorDialog1.Color;
                 updateColorRepresentation();
             }
+        }
+        private void txtNotes_TextChanged(object sender, EventArgs e)
+        {
+            btnColorSelect.Enabled = txtNotes.Text.Length > 0;
         }
 
         #endregion

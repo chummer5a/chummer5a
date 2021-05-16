@@ -71,17 +71,20 @@ namespace Chummer
             this.txtNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtNotes.Size = new System.Drawing.Size(618, 281);
             this.txtNotes.TabIndex = 1;
+            this.txtNotes.TextChanged += new System.EventHandler(this.txtNotes_TextChanged);
             // 
             // btnColorSelect
             // 
             this.btnColorSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnColorSelect.AutoSize = true;
-            this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.btnColorSelect.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.btnColorSelect.Location = new System.Drawing.Point(3, 295);
             this.btnColorSelect.Name = "btnColorSelect";
-            this.btnColorSelect.Size = new System.Drawing.Size(187, 23);
+            this.btnColorSelect.Size = new System.Drawing.Size(174, 23);
             this.btnColorSelect.TabIndex = 2;
-            this.btnColorSelect.Text = "Choose custom color";
+            this.btnColorSelect.Tag = "Button_ChooseCustomColor";
+            this.btnColorSelect.Text = "Choose custom color for this note";
             this.btnColorSelect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnColorSelect.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnColorSelect.UseVisualStyleBackColor = true;
@@ -104,7 +107,7 @@ namespace Chummer
             // 
             // btnOK
             // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnOK.AutoSize = true;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Location = new System.Drawing.Point(75, 3);
@@ -118,6 +121,7 @@ namespace Chummer
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnCancel.AutoSize = true;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
