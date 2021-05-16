@@ -33,6 +33,7 @@ Application Changes:
 - Checkboxes in the options menus now properly respond to being set to Dark Mode. Fixes #4438.
 - When calculating the karma value of a character in Priority or Sum-to-Ten, the karma amount displayed for comparison to Point Buy now uses the Point Buy costs for the character's metatype instead of the value of their combined attribute adjustments and qualities.
 - Added the ability to manually set Chummer's display scaling method in the Global Options screen, though a restart is required to see any changes. The default display scaling method is now also Zoom (i.e. System) instead of Rescale (i.e. PerMonitorV2).
+- Mentor spirits that do not require to choose one out of several bonuses are now showing the entire bonus text
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -136,6 +137,8 @@ Changed/New Strings:
 - Tip_Skill_Zero_Attribute
 - String_TotalComparisonWithPointBuy
 - Label_Options_DpiScalingMode
+- Label_SelectMentor_ChooseOne
+- Label_SelectMentor_Bonus
 
 Build 214
 Application Fixes:

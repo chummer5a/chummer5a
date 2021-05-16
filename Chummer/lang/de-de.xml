@@ -5086,8 +5086,12 @@
         </string>
         <string>
             <key>Label_SelectMentor_ChooseOne</key>
-            <text>Wählen Sie einen Mentor:</text>
+            <text>Bonus wählen:</text>
         </string>
+      <string>
+        <key>Label_SelectMentor_Bonus</key>
+        <text>Bonus:</text>
+      </string>
         <string>
             <key>Title_ExportCharacter</key>
             <text>Charakter exportieren</text>

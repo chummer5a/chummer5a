@@ -43,10 +43,15 @@ namespace Chummer
             this.cboChoice2 = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblBonus1 = new System.Windows.Forms.Label();
+            this.lblBonusText1 = new System.Windows.Forms.Label();
+            this.lblBonusText2 = new System.Windows.Forms.Label();
+            this.lblBonus2 = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.tlpChoices = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblDummy1 = new System.Windows.Forms.Label();
             this.tlpMain.SuspendLayout();
             this.tlpChoices.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -55,7 +60,7 @@ namespace Chummer
             // lblDisadvantage
             // 
             this.lblDisadvantage.AutoSize = true;
-            this.lblDisadvantage.Location = new System.Drawing.Point(386, 111);
+            this.lblDisadvantage.Location = new System.Drawing.Point(386, 161);
             this.lblDisadvantage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDisadvantage.MaximumSize = new System.Drawing.Size(270, 0);
             this.lblDisadvantage.Name = "lblDisadvantage";
@@ -67,7 +72,7 @@ namespace Chummer
             // 
             this.lblDisadvantageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDisadvantageLabel.AutoSize = true;
-            this.lblDisadvantageLabel.Location = new System.Drawing.Point(304, 111);
+            this.lblDisadvantageLabel.Location = new System.Drawing.Point(304, 161);
             this.lblDisadvantageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDisadvantageLabel.Name = "lblDisadvantageLabel";
             this.lblDisadvantageLabel.Size = new System.Drawing.Size(76, 13);
@@ -78,7 +83,7 @@ namespace Chummer
             // lblAdvantage
             // 
             this.lblAdvantage.AutoSize = true;
-            this.lblAdvantage.Location = new System.Drawing.Point(386, 86);
+            this.lblAdvantage.Location = new System.Drawing.Point(386, 136);
             this.lblAdvantage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAdvantage.MaximumSize = new System.Drawing.Size(270, 0);
             this.lblAdvantage.Name = "lblAdvantage";
@@ -90,7 +95,7 @@ namespace Chummer
             // 
             this.lblAdvantageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAdvantageLabel.AutoSize = true;
-            this.lblAdvantageLabel.Location = new System.Drawing.Point(318, 86);
+            this.lblAdvantageLabel.Location = new System.Drawing.Point(318, 136);
             this.lblAdvantageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAdvantageLabel.Name = "lblAdvantageLabel";
             this.lblAdvantageLabel.Size = new System.Drawing.Size(62, 13);
@@ -118,7 +123,7 @@ namespace Chummer
             this.lstMentor.FormattingEnabled = true;
             this.lstMentor.Location = new System.Drawing.Point(3, 3);
             this.lstMentor.Name = "lstMentor";
-            this.tlpMain.SetRowSpan(this.lstMentor, 7);
+            this.tlpMain.SetRowSpan(this.lstMentor, 9);
             this.lstMentor.Size = new System.Drawing.Size(295, 417);
             this.lstMentor.TabIndex = 0;
             this.lstMentor.SelectedIndexChanged += new System.EventHandler(this.lstMentor_SelectedIndexChanged);
@@ -223,21 +228,26 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.lblBonus1, 1, 2);
+            this.tlpMain.Controls.Add(this.lblBonusText1, 2, 2);
+            this.tlpMain.Controls.Add(this.lblBonusText2, 2, 3);
+            this.tlpMain.Controls.Add(this.lblBonus2, 1, 3);
             this.tlpMain.Controls.Add(this.lstMentor, 0, 0);
             this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
             this.tlpMain.Controls.Add(this.lblSearchLabel, 1, 0);
-            this.tlpMain.Controls.Add(this.lblSource, 2, 5);
-            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 5);
-            this.tlpMain.Controls.Add(this.lblDisadvantage, 2, 3);
-            this.tlpMain.Controls.Add(this.lblDisadvantageLabel, 1, 3);
-            this.tlpMain.Controls.Add(this.lblAdvantageLabel, 1, 2);
-            this.tlpMain.Controls.Add(this.lblAdvantage, 2, 2);
+            this.tlpMain.Controls.Add(this.lblSource, 2, 7);
+            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 7);
+            this.tlpMain.Controls.Add(this.lblDisadvantage, 2, 5);
+            this.tlpMain.Controls.Add(this.lblDisadvantageLabel, 1, 5);
+            this.tlpMain.Controls.Add(this.lblAdvantageLabel, 1, 4);
+            this.tlpMain.Controls.Add(this.lblAdvantage, 2, 4);
             this.tlpMain.Controls.Add(this.tlpChoices, 1, 1);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 6);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 8);
+            this.tlpMain.Controls.Add(this.lblDummy1, 2, 6);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 7;
+            this.tlpMain.RowCount = 9;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -245,8 +255,56 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 16;
+            // 
+            // lblBonus1
+            // 
+            this.lblBonus1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblBonus1.AutoSize = true;
+            this.lblBonus1.Location = new System.Drawing.Point(340, 86);
+            this.lblBonus1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBonus1.Name = "lblBonus1";
+            this.lblBonus1.Size = new System.Drawing.Size(40, 13);
+            this.lblBonus1.TabIndex = 76;
+            this.lblBonus1.Tag = "Label_SelectMentor_Bonus";
+            this.lblBonus1.Text = "Bonus:";
+            // 
+            // lblBonusText1
+            // 
+            this.lblBonusText1.AutoSize = true;
+            this.lblBonusText1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblBonusText1.Location = new System.Drawing.Point(386, 86);
+            this.lblBonusText1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBonusText1.Name = "lblBonusText1";
+            this.lblBonusText1.Size = new System.Drawing.Size(217, 13);
+            this.lblBonusText1.TabIndex = 77;
+            this.lblBonusText1.Text = "BonusText1";
+            // 
+            // lblBonusText2
+            // 
+            this.lblBonusText2.AutoSize = true;
+            this.lblBonusText2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblBonusText2.Location = new System.Drawing.Point(386, 111);
+            this.lblBonusText2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBonusText2.Name = "lblBonusText2";
+            this.lblBonusText2.Size = new System.Drawing.Size(217, 13);
+            this.lblBonusText2.TabIndex = 79;
+            this.lblBonusText2.Text = "BonusText2";
+            // 
+            // lblBonus2
+            // 
+            this.lblBonus2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblBonus2.AutoSize = true;
+            this.lblBonus2.Location = new System.Drawing.Point(340, 111);
+            this.lblBonus2.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBonus2.Name = "lblBonus2";
+            this.lblBonus2.Size = new System.Drawing.Size(40, 13);
+            this.lblBonus2.TabIndex = 78;
+            this.lblBonus2.Tag = "Label_SelectMentor_Bonus";
+            this.lblBonus2.Text = "Bonus:";
             // 
             // txtSearch
             // 
@@ -311,11 +369,20 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 75;
             // 
+            // lblDummy1
+            // 
+            this.lblDummy1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblDummy1.Location = new System.Drawing.Point(386, 180);
+            this.lblDummy1.Name = "lblDummy1";
+            this.lblDummy1.Size = new System.Drawing.Size(217, 189);
+            this.lblDummy1.TabIndex = 80;
+            // 
             // frmSelectMentorSpirit
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScroll = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
@@ -360,5 +427,10 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.TableLayoutPanel tlpChoices;
         private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.Label lblBonus1;
+        private System.Windows.Forms.Label lblBonusText1;
+        private System.Windows.Forms.Label lblBonusText2;
+        private System.Windows.Forms.Label lblBonus2;
+        private System.Windows.Forms.Label lblDummy1;
     }
 }
