@@ -1491,7 +1491,7 @@ namespace Chummer
                     objWriter.WriteElementString("name", _strName);
                     SaveMugshots(objWriter);
 
-                    // <sex />
+                    // <gender />
                     objWriter.WriteElementString("gender", _strGender);
                     // <age />
                     objWriter.WriteElementString("age", _strAge);

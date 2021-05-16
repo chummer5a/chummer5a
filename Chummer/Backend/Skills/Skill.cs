@@ -100,6 +100,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(Notes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("name", Name);
             if (!CharacterObject.Created)
             {
@@ -258,6 +259,10 @@ namespace Chummer.Backend.Skills
 
             if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                 xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (!objLoadingSkill.IsNativeLanguage)
             {

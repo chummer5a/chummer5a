@@ -146,6 +146,7 @@ namespace Chummer
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
 
             CharacterObject.SourceProcess(_strSource);
@@ -162,6 +163,11 @@ namespace Chummer
             _intRating = intRating;
             if (!objNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
             {
                 objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
@@ -275,6 +281,11 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             Bonus = objNode["bonus"];
             if (objNode["adeptway"] != null)
             {
@@ -289,6 +300,10 @@ namespace Chummer
                     {
                         Create(objXmlPower, intTemp, null, false);
                         objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                        sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                        objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                        _colNotes = ColorTranslator.FromHtml(sNotesColor);
                     }
                 }
             }
