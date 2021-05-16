@@ -211,7 +211,8 @@ namespace Chummer
 
                     cboFile.BeginUpdate();
                     cboFile.PopulateWithListItems(_lstFileNamesWithItems);
-                    cboFile.SelectedIndex = 0;
+                    if (_lstFileNamesWithItems.Count > 0)
+                        cboFile.SelectedIndex = 0;
                     cboFile.EndUpdate();
 
                     lstItems.BeginUpdate();
