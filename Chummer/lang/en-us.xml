@@ -8370,6 +8370,10 @@
       <key>Label_SelectMentor_ChooseOne</key>
       <text>Choose One:</text>
     </string>
+    <string>
+      <key>Label_SelectMentor_Bonus</key>
+      <text>Bonus:</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Generic -->
     <string>

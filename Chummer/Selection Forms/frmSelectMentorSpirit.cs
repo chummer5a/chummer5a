@@ -93,24 +93,58 @@ namespace Chummer
                         }
                     }
                     
+                    //If there is only a single option, show it as a label.
+                    //If there are more, show the drop down menu
                     if (lstChoice1.Count > 0)
                         cboChoice1.PopulateWithListItems(lstChoice1);
-                    cboChoice1.Visible = lstChoice1.Count > 0;
+                    cboChoice1.Visible = lstChoice1.Count > 1;
                     cboChoice1.Enabled = lstChoice1.Count > 1;
+
+                    if (lstChoice1.Count == 1)
+                    {
+                        lblBonusText1.Text = lstChoice1[0].Name;
+                        lblBonus1.Text = LanguageManager.GetString("Label_SelectMentor_Bonus");
+                    }
+                    else
+                    {
+                        lblBonusText1.Text = string.Empty;
+                        lblBonus1.Text = string.Empty;
+                    }
+                    lblBonusText1.Visible = lstChoice1.Count == 1;
+
                     if (lstChoice2.Count > 0)
                         cboChoice2.PopulateWithListItems(lstChoice2);
-                    cboChoice2.Visible = lstChoice2.Count > 0;
+                    cboChoice2.Visible = lstChoice2.Count > 1;
                     cboChoice2.Enabled = lstChoice2.Count > 1;
+
+                    if (lstChoice2.Count == 1)
+                    {
+                        lblBonusText2.Text = lstChoice2[0].Name;
+                        lblBonus2.Text = LanguageManager.GetString("Label_SelectMentor_Bonus");
+                    }
+                    else
+                    {
+                        lblBonusText2.Text = string.Empty;
+                        lblBonus2.Text = string.Empty;
+                    }
+
+                    lblBonusText2.Visible = lstChoice2.Count == 1;
                 }
                 else
                 {
                     cboChoice1.Visible = false;
                     cboChoice2.Visible = false;
+                    lblBonusText1.Visible = false;
+                    lblBonusText2.Visible = false;
+                    lblBonusText1.Text = string.Empty;
+                    lblBonusText2.Text = string.Empty;
                 }
                 cboChoice1.EndUpdate();
                 cboChoice2.EndUpdate();
                 lblChoice1.Visible = cboChoice1.Visible;
                 lblChoice2.Visible = cboChoice2.Visible;
+                lblBonus1.Visible = lblBonusText1.Visible;
+                lblBonus2.Visible = lblBonusText2.Visible;
 
                 // Get the information for the selected Mentor.
                 lblAdvantage.Text = objXmlMentor.SelectSingleNode("altadvantage")?.Value ??
@@ -139,6 +173,14 @@ namespace Chummer
                 lblChoice2.Visible = false;
                 cboChoice1.Visible = false;
                 cboChoice2.Visible = false;
+                lblBonus1.Visible = false;
+                lblBonus2.Visible = false;
+                lblBonusText1.Visible = false;
+                lblBonusText2.Visible = false;
+                lblBonusText1.Text = string.Empty;
+                lblBonusText2.Text = string.Empty;
+                lblBonus1.Text = string.Empty;
+                lblBonus2.Text = string.Empty;
                 lblSourceLabel.Visible = false;
                 lblSource.Text = string.Empty;
                 lblSource.SetToolTip(string.Empty);
@@ -245,5 +287,25 @@ namespace Chummer
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
         #endregion
+
+        private void tlpMain_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label1_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }
