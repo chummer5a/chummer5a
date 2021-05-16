@@ -20,6 +20,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -74,8 +75,9 @@ namespace Chummer.Tests
             {
                 frmTestForm = new frmChummerMain(true)
                 {
-                    WindowState = FormWindowState.Normal,
-                    ShowInTaskbar = false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                    WindowState = FormWindowState.Minimized,
+                    ShowInTaskbar =
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
@@ -196,8 +198,9 @@ namespace Chummer.Tests
             {
                 frmTestForm = new frmChummerMain(true)
                 {
-                    WindowState = FormWindowState.Normal,
-                    ShowInTaskbar = false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
+                    WindowState = FormWindowState.Minimized,
+                    ShowInTaskbar =
+                        false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
@@ -217,8 +220,8 @@ namespace Chummer.Tests
                                 : new frmCreate(objCharacter))
                             {
                                 frmCharacterForm.MdiParent = frmTestForm;
-                                frmCharacterForm.WindowState = FormWindowState.Normal;
                                 frmCharacterForm.ShowInTaskbar = false;
+                                frmCharacterForm.WindowState = FormWindowState.Minimized;
                                 frmCharacterForm.Show();
                             }
                         }
