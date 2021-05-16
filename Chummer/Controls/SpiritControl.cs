@@ -273,7 +273,7 @@ namespace Chummer
 
         private void imgNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmSpritNotes = new frmNotes(_objSpirit.Notes))
+            using (frmNotes frmSpritNotes = new frmNotes(_objSpirit.Notes, _objSpirit.NotesColor))
             {
                 frmSpritNotes.ShowDialog(this);
                 if (frmSpritNotes.DialogResult != DialogResult.OK)

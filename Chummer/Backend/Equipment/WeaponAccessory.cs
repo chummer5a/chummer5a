@@ -62,6 +62,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
         private int _intAccuracy;
@@ -950,6 +951,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
         public string DisplayTotalAvail => TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -1480,9 +1490,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return IncludedInWeapon
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColorDimmed
+                        : NotesColor;
                 }
                 return IncludedInWeapon
                     ? ColorManager.GrayText

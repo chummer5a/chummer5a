@@ -42,6 +42,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private bool _blnContributeToLP = true;
         private bool _blnPrint = true;
         private int _intLP;
@@ -598,6 +599,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         ///     Nuyen cost of the Quality.
         /// </summary>
         public decimal Cost
@@ -791,9 +801,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return OriginSource == QualitySource.BuiltIn
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColor
+                        : NotesColorDimmed;
                 }
                 return OriginSource == QualitySource.BuiltIn
                     ? ColorManager.GrayText

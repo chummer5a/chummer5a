@@ -88,6 +88,7 @@ namespace Chummer.Backend.Equipment
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
         private readonly ObservableCollection<LifestyleQuality> _lstFreeGrids = new ObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private int _intSortOrder;
         private readonly Character _objCharacter;
 
@@ -975,6 +976,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Type of the Lifestyle.
         /// </summary>
         public LifestyleType StyleType
@@ -1337,7 +1347,7 @@ namespace Chummer.Backend.Equipment
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? NotesColor
                 : ColorManager.WindowText;
         #endregion
         #endregion

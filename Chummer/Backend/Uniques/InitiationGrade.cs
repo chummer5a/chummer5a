@@ -40,6 +40,7 @@ namespace Chummer
         private bool _blnTechnomancer;
         private int _intGrade;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
 
         private readonly Character _objCharacter;
 
@@ -275,9 +276,18 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? NotesColor
                 : ColorManager.WindowText;
         #endregion
 

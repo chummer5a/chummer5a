@@ -49,6 +49,7 @@ namespace Chummer
         private decimal _decPowerPoints;
         private XmlNode _nodBonus;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private readonly Character _objCharacter;
         private bool _blnCountTowardsLimit = true;
         private int _intRating;
@@ -554,6 +555,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Whether or not the Critter Power counts towards their total number of Critter Powers.
         /// </summary>
         public bool CountTowardsLimit
@@ -628,9 +638,11 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return Grade != 0
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColorDimmed
+                        : NotesColor;
                 }
                 return Grade != 0
                     ? ColorManager.GrayText

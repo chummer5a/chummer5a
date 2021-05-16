@@ -86,6 +86,7 @@ namespace Chummer.Backend.Equipment
         private WeaponMount _objWeaponMount;
         private VehicleMod _objVehicleMod;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private string _strUseSkill = string.Empty;
         private string _strUseSkillSpec = string.Empty;
         private Location _objLocation;
@@ -1788,6 +1789,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -5441,9 +5451,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColorDimmed
+                        : NotesColor;
                 }
                 return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText

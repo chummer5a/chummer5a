@@ -63,6 +63,7 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private bool _blnDiscountCost;
         private bool _blnStolen;
         private bool _blnEncumbrance = true;
@@ -814,6 +815,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Value that was selected during the Improvement Manager dialogue.
         /// </summary>
         public string Extra
@@ -1332,9 +1342,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return IncludedInArmor
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColorDimmed
+                        : NotesColor;
                 }
                 return IncludedInArmor
                     ? ColorManager.GrayText

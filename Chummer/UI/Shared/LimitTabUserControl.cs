@@ -133,7 +133,7 @@ namespace Chummer.UI.Shared
                     if (objImprovement.ImproveType != Improvement.ImprovementType.LimitModifier ||
                         objImprovement.SourceName != treLimit.SelectedNode?.Tag.ToString())
                         continue;
-                    using (frmNotes frmItemNotes = new frmNotes(objImprovement.Notes))
+                    using (frmNotes frmItemNotes = new frmNotes(objImprovement.Notes, objImprovement.NotesColor))
                     {
                         frmItemNotes.ShowDialog(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -163,13 +163,14 @@ namespace Chummer.UI.Shared
         /// <param name="treNode"></param>
         private void WriteNotes(IHasNotes objNotes, TreeNode treNode)
         {
-            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
 
                 objNotes.Notes = frmItemNotes.Notes;
+                objNotes.NotesColor = frmItemNotes.NotesColor;
             }
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap();

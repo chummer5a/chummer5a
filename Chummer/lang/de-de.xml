@@ -3857,6 +3857,10 @@
             <text>Notizen</text>
         </string>
         <string>
+            <key>Button_ChooseCustomColor</key>
+          <text>Individuelle Farbe wählen</text>
+        </string>
+        <string>
             <key>Title_Options</key>
             <text>Optionen</text>
         </string>

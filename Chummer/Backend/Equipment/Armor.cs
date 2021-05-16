@@ -62,6 +62,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<ArmorMod> _lstArmorMods = new TaggedObservableCollection<ArmorMod>();
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private Location _objLocation;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
@@ -1343,6 +1344,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
@@ -1812,7 +1822,7 @@ namespace Chummer.Backend.Equipment
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? NotesColor
                 : ColorManager.WindowText;
 
         #endregion

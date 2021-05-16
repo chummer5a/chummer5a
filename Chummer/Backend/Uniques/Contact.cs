@@ -73,6 +73,7 @@ namespace Chummer
         private string _strRelativeName = string.Empty;
         private Character _objLinkedCharacter;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private Color _objColour;
         private bool _blnIsGroup;
         private readonly Character _objCharacter;
@@ -891,6 +892,15 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>

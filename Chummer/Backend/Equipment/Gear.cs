@@ -75,6 +75,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private Location _objLocation;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
@@ -1749,6 +1750,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Device Rating string.
         /// </summary>
         public string DeviceRating
@@ -3143,9 +3153,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return !string.IsNullOrEmpty(ParentID)
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColorDimmed
+                        : NotesColor;
                 }
                 return !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText

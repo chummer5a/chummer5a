@@ -54,6 +54,7 @@ namespace Chummer
         private bool _blnLimited;
         private bool _blnExtended;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private readonly Character _objCharacter;
         private bool _blnAlchemical;
         private bool _blnFreeBonus;
@@ -728,6 +729,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
@@ -1035,9 +1045,11 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return Grade != 0
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColorDimmed
+                        : NotesColor;
                 }
                 return Grade != 0
                     ? ColorManager.GrayText

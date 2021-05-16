@@ -81,6 +81,7 @@ namespace Chummer.Backend.Skills
 
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
+        private Color _colNotes = Color.Empty;
         public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(10); //List of suggested specializations for this skill
         private bool _blnDefault;
 
@@ -1731,9 +1732,18 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? NotesColor
                 : ColorManager.ControlText;
 
         public SkillGroup SkillGroupObject { get; }

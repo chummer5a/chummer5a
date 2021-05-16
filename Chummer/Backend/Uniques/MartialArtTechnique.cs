@@ -36,6 +36,7 @@ namespace Chummer
         private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private readonly Character _objCharacter;
@@ -226,6 +227,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Sourcebook.
         /// </summary>
         public string Source
@@ -323,7 +333,7 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? NotesColor
                 : ColorManager.WindowText;
         #endregion
 

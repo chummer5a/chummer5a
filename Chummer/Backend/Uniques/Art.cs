@@ -42,6 +42,7 @@ namespace Chummer
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Art;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
 
         private readonly Character _objCharacter;
 
@@ -304,6 +305,15 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
@@ -356,9 +366,11 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
+                    Color cGray = ColorManager.GrayText;
+                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
                     return Grade == -1
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? NotesColorDimmed
+                        : NotesColor;
                 }
                 return Grade == -1
                     ? ColorManager.GrayText

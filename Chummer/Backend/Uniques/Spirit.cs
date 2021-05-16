@@ -60,6 +60,7 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strRelativeName = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private Character _objLinkedCharacter;
 
         private readonly List<Image> _lstMugshots = new List<Image>(1);
@@ -600,6 +601,15 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         private bool _blnFettered;

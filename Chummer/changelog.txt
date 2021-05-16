@@ -52,6 +52,8 @@ Data Changes:
 - The Hemorrhage critter power no longer also has an entry as a learnable ritual.
 - Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
 - Unarmed Attack can no longer be bought as a weapon.
+- Added an option to assign a color to each note to allow a way to categorize notes.
+- Added OK/Cancel buttons in the note field to align the user interface with other dialoges
 
 Changed/New Strings:
 - String_ContactPoints
@@ -139,6 +141,7 @@ Changed/New Strings:
 - Label_Options_DpiScalingMode
 - Label_SelectMentor_ChooseOne
 - Label_SelectMentor_Bonus
+- Button_ChooseCustomColor
 
 Build 214
 Application Fixes:

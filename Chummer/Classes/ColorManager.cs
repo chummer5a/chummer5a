@@ -143,8 +143,8 @@ namespace Chummer
         private static Color WindowTextLight => SystemColors.WindowText;
         private static Color WindowTextDark => GenerateDarkModeColor(WindowTextLight);
         public static Color Window => IsLightMode ? WindowLight : WindowDark;
-        private static Color WindowLight => SystemColors.Window;
-        private static Color WindowDark => GenerateDarkModeColor(WindowLight);
+        public static Color WindowLight => SystemColors.Window;
+        public static Color WindowDark => GenerateDarkModeColor(WindowLight);
         public static Color InfoText => IsLightMode ? InfoTextLight : InfoTextDark;
         private static Color InfoTextLight => SystemColors.InfoText;
         private static Color InfoTextDark => GenerateDarkModeColor(InfoTextLight);

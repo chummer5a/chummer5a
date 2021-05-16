@@ -57,6 +57,7 @@ namespace Chummer
         private bool _blnDiscountedGeas;
         private XPathNavigator _nodAdeptWayRequirements;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
         private decimal _decFreePoints;
@@ -814,6 +815,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Action.
         /// </summary>
         public string Action
@@ -861,7 +871,7 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? NotesColor
                 : ColorManager.WindowText;
 
         #endregion

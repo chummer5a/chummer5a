@@ -36,6 +36,7 @@ namespace Chummer
         private Guid _guiID;
         private string _strName;
         private string _strNotes = string.Empty;
+        private Color _colNotes = Color.Empty;
         private int _intSortOrder;
         private readonly Character _objCharacter;
         #region Constructor, Create, Save, Load, and Print Methods
@@ -157,6 +158,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Used by our sorting algorithm to remember which order the user moves things to
         /// </summary>
         public int SortOrder
@@ -189,7 +199,7 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? NotesColor
                 : ColorManager.WindowText;
         #endregion
 
