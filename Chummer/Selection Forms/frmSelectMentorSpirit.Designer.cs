@@ -43,24 +43,24 @@ namespace Chummer
             this.cboChoice2 = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblBonus1 = new System.Windows.Forms.Label();
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblBonusText1 = new System.Windows.Forms.Label();
             this.lblBonusText2 = new System.Windows.Forms.Label();
             this.lblBonus2 = new System.Windows.Forms.Label();
-            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.lblBonus1 = new System.Windows.Forms.Label();
             this.lblSearchLabel = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
-            this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblDisadvantage
             // 
             this.lblDisadvantage.AutoSize = true;
             this.lblDisadvantage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDisadvantage.Location = new System.Drawing.Point(85, 161);
+            this.lblDisadvantage.Location = new System.Drawing.Point(85, 186);
             this.lblDisadvantage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDisadvantage.Name = "lblDisadvantage";
             this.lblDisadvantage.Size = new System.Drawing.Size(372, 13);
@@ -71,7 +71,7 @@ namespace Chummer
             // 
             this.lblDisadvantageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDisadvantageLabel.AutoSize = true;
-            this.lblDisadvantageLabel.Location = new System.Drawing.Point(3, 161);
+            this.lblDisadvantageLabel.Location = new System.Drawing.Point(3, 186);
             this.lblDisadvantageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDisadvantageLabel.Name = "lblDisadvantageLabel";
             this.lblDisadvantageLabel.Size = new System.Drawing.Size(76, 13);
@@ -83,7 +83,7 @@ namespace Chummer
             // 
             this.lblAdvantage.AutoSize = true;
             this.lblAdvantage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblAdvantage.Location = new System.Drawing.Point(85, 136);
+            this.lblAdvantage.Location = new System.Drawing.Point(85, 161);
             this.lblAdvantage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAdvantage.Name = "lblAdvantage";
             this.lblAdvantage.Size = new System.Drawing.Size(372, 13);
@@ -94,7 +94,7 @@ namespace Chummer
             // 
             this.lblAdvantageLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAdvantageLabel.AutoSize = true;
-            this.lblAdvantageLabel.Location = new System.Drawing.Point(17, 136);
+            this.lblAdvantageLabel.Location = new System.Drawing.Point(17, 161);
             this.lblAdvantageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAdvantageLabel.Name = "lblAdvantageLabel";
             this.lblAdvantageLabel.Size = new System.Drawing.Size(62, 13);
@@ -132,7 +132,7 @@ namespace Chummer
             // 
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(85, 495);
+            this.lblSource.Location = new System.Drawing.Point(85, 136);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -144,7 +144,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(35, 495);
+            this.lblSourceLabel.Location = new System.Drawing.Point(35, 136);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -229,22 +229,50 @@ namespace Chummer
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 2;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 16;
             // 
-            // lblBonus1
+            // tlpRight
             // 
-            this.lblBonus1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblBonus1.AutoSize = true;
-            this.lblBonus1.Location = new System.Drawing.Point(39, 59);
-            this.lblBonus1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBonus1.Name = "lblBonus1";
-            this.lblBonus1.Size = new System.Drawing.Size(40, 13);
-            this.lblBonus1.TabIndex = 76;
-            this.lblBonus1.Tag = "Label_SelectMentor_Bonus";
-            this.lblBonus1.Text = "Bonus:";
+            this.tlpRight.AutoScroll = true;
+            this.tlpRight.AutoSize = true;
+            this.tlpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.ColumnCount = 2;
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Controls.Add(this.cboChoice1, 1, 1);
+            this.tlpRight.Controls.Add(this.lblBonusText1, 1, 2);
+            this.tlpRight.Controls.Add(this.lblBonusText2, 1, 4);
+            this.tlpRight.Controls.Add(this.cboChoice2, 1, 3);
+            this.tlpRight.Controls.Add(this.lblDisadvantage, 1, 7);
+            this.tlpRight.Controls.Add(this.lblBonus2, 0, 4);
+            this.tlpRight.Controls.Add(this.lblChoice2, 0, 3);
+            this.tlpRight.Controls.Add(this.lblBonus1, 0, 2);
+            this.tlpRight.Controls.Add(this.lblDisadvantageLabel, 0, 7);
+            this.tlpRight.Controls.Add(this.lblChoice1, 0, 1);
+            this.tlpRight.Controls.Add(this.lblAdvantage, 1, 6);
+            this.tlpRight.Controls.Add(this.lblAdvantageLabel, 0, 6);
+            this.tlpRight.Controls.Add(this.lblSearchLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.txtSearch, 1, 0);
+            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 5);
+            this.tlpRight.Controls.Add(this.lblSource, 1, 5);
+            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRight.Location = new System.Drawing.Point(306, 0);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpRight.Name = "tlpRight";
+            this.tlpRight.RowCount = 8;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.Size = new System.Drawing.Size(460, 205);
+            this.tlpRight.TabIndex = 80;
             // 
             // lblBonusText1
             // 
@@ -280,15 +308,17 @@ namespace Chummer
             this.lblBonus2.Tag = "Label_SelectMentor_Bonus";
             this.lblBonus2.Text = "Bonus:";
             // 
-            // txtSearch
+            // lblBonus1
             // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(85, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(372, 20);
-            this.txtSearch.TabIndex = 72;
-            this.txtSearch.TextChanged += new System.EventHandler(this.RefreshMentorsList);
+            this.lblBonus1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblBonus1.AutoSize = true;
+            this.lblBonus1.Location = new System.Drawing.Point(39, 59);
+            this.lblBonus1.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBonus1.Name = "lblBonus1";
+            this.lblBonus1.Size = new System.Drawing.Size(40, 13);
+            this.lblBonus1.TabIndex = 76;
+            this.lblBonus1.Tag = "Label_SelectMentor_Bonus";
+            this.lblBonus1.Text = "Bonus:";
             // 
             // lblSearchLabel
             // 
@@ -301,6 +331,16 @@ namespace Chummer
             this.lblSearchLabel.TabIndex = 69;
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(85, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(372, 20);
+            this.txtSearch.TabIndex = 72;
+            this.txtSearch.TextChanged += new System.EventHandler(this.RefreshMentorsList);
             // 
             // tlpButtons
             // 
@@ -319,45 +359,6 @@ namespace Chummer
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 75;
-            // 
-            // tlpRight
-            // 
-            this.tlpRight.AutoScroll = true;
-            this.tlpRight.ColumnCount = 2;
-            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Controls.Add(this.cboChoice1, 1, 1);
-            this.tlpRight.Controls.Add(this.lblBonusText1, 1, 2);
-            this.tlpRight.Controls.Add(this.lblBonusText2, 1, 4);
-            this.tlpRight.Controls.Add(this.cboChoice2, 1, 3);
-            this.tlpRight.Controls.Add(this.lblDisadvantage, 1, 6);
-            this.tlpRight.Controls.Add(this.lblBonus2, 0, 4);
-            this.tlpRight.Controls.Add(this.lblChoice2, 0, 3);
-            this.tlpRight.Controls.Add(this.lblBonus1, 0, 2);
-            this.tlpRight.Controls.Add(this.lblDisadvantageLabel, 0, 6);
-            this.tlpRight.Controls.Add(this.lblChoice1, 0, 1);
-            this.tlpRight.Controls.Add(this.lblAdvantage, 1, 5);
-            this.tlpRight.Controls.Add(this.lblAdvantageLabel, 0, 5);
-            this.tlpRight.Controls.Add(this.lblSearchLabel, 0, 0);
-            this.tlpRight.Controls.Add(this.txtSearch, 1, 0);
-            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 8);
-            this.tlpRight.Controls.Add(this.lblSource, 1, 8);
-            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(306, 0);
-            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpRight.Name = "tlpRight";
-            this.tlpRight.RowCount = 9;
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.Size = new System.Drawing.Size(460, 514);
-            this.tlpRight.TabIndex = 80;
             // 
             // frmSelectMentorSpirit
             // 
@@ -380,10 +381,10 @@ namespace Chummer
             this.Load += new System.EventHandler(this.RefreshMentorsList);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.tlpButtons.ResumeLayout(false);
-            this.tlpButtons.PerformLayout();
             this.tlpRight.ResumeLayout(false);
             this.tlpRight.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

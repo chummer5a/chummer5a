@@ -41,7 +41,7 @@ namespace Chummer
             this.cmdDelete = new System.Windows.Forms.Button();
             this.treCharacters = new System.Windows.Forms.TreeView();
             this.prgProgress = new System.Windows.Forms.ProgressBar();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -191,7 +191,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.TreeView treCharacters;
         private System.Windows.Forms.ProgressBar prgProgress;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

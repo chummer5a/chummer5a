@@ -163,10 +163,11 @@ namespace Chummer
             // 
             this.lblCalendarStart.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblCalendarStart, 6);
+            this.lblCalendarStart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblCalendarStart.Location = new System.Drawing.Point(3, 6);
             this.lblCalendarStart.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCalendarStart.Name = "lblCalendarStart";
-            this.lblCalendarStart.Size = new System.Drawing.Size(311, 13);
+            this.lblCalendarStart.Size = new System.Drawing.Size(320, 16);
             this.lblCalendarStart.TabIndex = 0;
             this.lblCalendarStart.Tag = "Label_CalendarStart";
             this.lblCalendarStart.Text = "Enter the year, month, and week number to start the calendar at.";
@@ -253,6 +254,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(344, 101);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
