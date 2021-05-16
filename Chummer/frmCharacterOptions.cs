@@ -740,6 +740,7 @@ namespace Chummer
                     if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
+                        objNode.ToolTipText = objInfo.GetManifestData(objInfo.Path);
                     }
                     else
                     {
@@ -773,6 +774,7 @@ namespace Chummer
 
             if(objOldSelected != null)
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
+            treCustomDataDirectories.ShowNodeToolTips = true;
             treCustomDataDirectories.EndUpdate();
         }
 

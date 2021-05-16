@@ -34,6 +34,7 @@ Application Changes:
 - When calculating the karma value of a character in Priority or Sum-to-Ten, the karma amount displayed for comparison to Point Buy now uses the Point Buy costs for the character's metatype instead of the value of their combined attribute adjustments and qualities.
 - Added the ability to manually set Chummer's display scaling method in the Global Options screen, though a restart is required to see any changes. The default display scaling method is now also Zoom (i.e. System) instead of Rescale (i.e. PerMonitorV2).
 - For mentor spirits that do not allow the user to select from multiple bonuses, the entire bonus is now shown as regular text instead of it being cut off in a grayed-out dropdown box.
+- Custom data directories can now implement a manifest folder with [langcode].txt files to serve as an explanation for the custom data. This explanation is also displayed in the Custom Data Directory selection. 
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -139,6 +140,8 @@ Changed/New Strings:
 - Label_Options_DpiScalingMode
 - Label_SelectMentor_ChooseOne
 - Label_SelectMentor_Bonus
+- Tooltip_CharacterOptions_ManifestMissing
+- Tooltip_CharacterOptions_LanguageSpecificManifestMissing
 
 Build 214
 Application Fixes:

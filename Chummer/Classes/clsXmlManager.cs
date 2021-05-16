@@ -19,7 +19,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Drawing.Imaging;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -1855,6 +1857,61 @@ namespace Chummer
         public bool Equals(CustomDataDirectoryInfo other)
         {
             return other != null && Name == other.Name && Path == other.Path;
+        }
+
+        /// <summary>
+        /// Reads a Manifest.txt and gives out it's content as a string
+        /// </summary>
+        /// <param name="strDirectory">the directory in which the Manifest.txt is present</param>
+        /// <returns>The content of the language specific manifest as String, defaults to English and adds a comment that it happened.
+        /// If no Directory or File is present returns a missing notification.</returns>
+        public string GetManifestData(string strDirectory)
+        {
+            string strLanguage = GlobalOptions.Language;
+            string strManifestsDirectory = strDirectory + "\\Manifests\\";
+            string strManifest;
+            bool blnDefaultedToEng = false;
+
+            try
+            {
+                string strCorrectDirectory;
+
+                string[] directories = Directory.GetFiles(@strManifestsDirectory);
+
+                string strDirectoryLangSpecific =
+                    Array.Find(directories, LangDirectory => LangDirectory.Contains(strLanguage));
+
+                //Check if an file in the correct language exists
+                if (File.Exists(strDirectoryLangSpecific))
+                    strCorrectDirectory = strDirectoryLangSpecific;
+
+                //Check if an english file exists to default to
+                else if (File.Exists(Array.Find(directories, LangDirectory => LangDirectory.Contains("en-us"))))
+                {
+                    blnDefaultedToEng = true;
+                    strCorrectDirectory = Array.Find(directories, LangDirectory => LangDirectory.Contains("en-us"));
+                }
+                else
+                    return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
+                
+                strManifest = File.ReadAllText(@strCorrectDirectory);
+
+                //Add that the correct language could not be found
+                if (blnDefaultedToEng)
+                    strManifest =
+                        LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
+                        "\n" + "\n" + strManifest;
+            }
+            //If the directory doesn't exists or is inaccessible in some other way GetFiles throws an exception, just display that it's missing instead of breaking.
+            catch (Exception e)
+            {
+                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
+            }
+
+            //Don't want any nulls to break stuff and whitespace just isn't a manifest
+            return string.IsNullOrWhiteSpace(strManifest)
+                ? LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing")
+                : strManifest;
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
