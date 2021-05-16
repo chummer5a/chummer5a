@@ -902,7 +902,7 @@ namespace Chummer
 
         public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
         {
-            return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None);
+            return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, lstCharacters);
         }
 
         public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
