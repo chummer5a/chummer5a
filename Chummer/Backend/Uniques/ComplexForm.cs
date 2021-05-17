@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer
@@ -527,9 +528,19 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strReturn = string.Empty;
+                string strFormat = strSpace + "{0}" + strSpace + "({1})";
+                CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
+                if (objResonanceAttrib != null)
+                {
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                        objResonanceAttrib.DisplayNameFormatted, objResonanceAttrib.DisplayValue);
+                }
                 if (Skill != null)
                 {
-                    strReturn = Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES"), CurrentDisplayName);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
+                                                         (objResonanceAttrib?.TotalValue ?? 0), CurrentDisplayName);
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -537,8 +548,9 @@ namespace Chummer
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
                     && objImprovement.ImprovedName == "Threading"))
                 {
-                    strReturn += string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                        strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                 }
 
                 return strReturn;

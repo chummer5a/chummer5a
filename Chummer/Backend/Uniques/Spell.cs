@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer
@@ -837,20 +838,35 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strReturn = string.Empty;
+                string strFormat = strSpace + "{0}" + strSpace + "({1})";
                 Skill objSkill = Skill;
+                CharacterAttrib objAttrib = _objCharacter.GetAttribute(UsesUnarmed ? "MAG" : (objSkill?.Attribute ?? "MAG"));
+                if (objAttrib != null)
+                {
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                        objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
+                }
                 if (objSkill != null)
                 {
                     int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
-                    strReturn = objSkill.FormattedDicePool(intPool, Category);
+                    if (objAttrib != null)
+                        intPool -= objAttrib.TotalValue;
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += objSkill.FormattedDicePool(intPool, Category);
                 }
 
                 // Include any Improvements to the Spell Category or Spell Name.
-                return RelevantImprovements(x =>
-                    x.ImproveType == Improvement.ImprovementType.SpellCategory
-                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool)
-                    .Aggregate(strReturn, (current, objImprovement) =>
-                        string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}{1}({4})",
-                            current, strSpace, "+", _objCharacter.GetObjectName(objImprovement), objImprovement.Value));
+                string result = strReturn;
+                foreach (Improvement objImprovement in RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.SpellCategory || x.ImproveType == Improvement.ImprovementType.SpellDicePool))
+                {
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                        _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                }
+
+                return result;
             }
         }
 
