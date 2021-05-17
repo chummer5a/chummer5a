@@ -37,6 +37,7 @@ Application Changes:
 - Trust Fund can now be selected for non-advanced lifestyles.
 - Skill pool tooltips no longer sometimes show the skill's category as its specialization.
 - Spell and Complex Form pool tooltips are no longer combine the contribution of their linked attribute and their linked skill.
+- Spells and Complex Forms with special damage amounts, targets, and/or ranges now have those translated properly when printing/exporting in a non-English language.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -55,7 +56,7 @@ Data Changes:
 - The Hemorrhage critter power no longer also has an entry as a learnable ritual.
 - Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
 - Unarmed Attack can no longer be bought as a weapon.
-- For some mentor spirits the German translation was broken. This is now fixed again.
+- Fixed the German translations for some mentor spirits that were broken in an update a few years ago.
 
 Changed/New Strings:
 - String_ContactPoints

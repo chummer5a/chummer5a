@@ -310,7 +310,8 @@ namespace Chummer
                     .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", strLanguage))
                     .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", strLanguage))
                     .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", strLanguage))
-                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage));
+                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage))
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
             }
             return strReturn;
         }
@@ -439,6 +440,8 @@ namespace Chummer
                     return LanguageManager.GetString("String_ComplexFormTargetHost", strLanguage);
                 case "IC":
                     return LanguageManager.GetString("String_ComplexFormTargetIC", strLanguage);
+                case "Special":
+                    return LanguageManager.GetString("String_Special", strLanguage);
                 default:
                     return LanguageManager.GetString("String_None", strLanguage);
             }

@@ -426,7 +426,8 @@ namespace Chummer
                     .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", strLanguage))
                     .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", strLanguage))
                     .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", strLanguage))
-                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage));
+                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage))
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
             }
 
             return strReturn;
@@ -510,7 +511,8 @@ namespace Chummer
                     .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage))
                     .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
                     .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
-                    .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
+                    .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage))
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
             }
 
             return strReturn;
@@ -530,7 +532,8 @@ namespace Chummer
         /// </summary>
         public string DisplayDamage(string strLanguage)
         {
-            if (Damage != "S" && Damage != "P") return LanguageManager.GetString("String_None", strLanguage);
+            if (Damage != "S" && Damage != "P")
+                return LanguageManager.GetString("String_None", strLanguage);
             StringBuilder sBld = new StringBuilder("0");
 
             foreach (var improvement in RelevantImprovements(i =>
@@ -637,7 +640,8 @@ namespace Chummer
                     strDV += " + 2";
                 }
                 object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
-                if (!blnIsSuccess) return strReturn;
+                if (!blnIsSuccess)
+                    return strReturn;
                 if (force)
                 {
                     strReturn = string.Format(GlobalOptions.InvariantCultureInfo, "F{0:+0;-0;}", xprResult);
