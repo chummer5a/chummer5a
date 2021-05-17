@@ -50,7 +50,7 @@ namespace Chummer.UI.Editors
             this.tsbUnorderedList = new System.Windows.Forms.ToolStripButton();
             this.tsbIncreaseIndent = new System.Windows.Forms.ToolStripButton();
             this.tsbDecreaseIndent = new System.Windows.Forms.ToolStripButton();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel();
             this.rtbContent = new System.Windows.Forms.RichTextBox();
             this.tsControls.SuspendLayout();
             this.tlpMain.SuspendLayout();

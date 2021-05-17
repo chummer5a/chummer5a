@@ -197,6 +197,6 @@ namespace Chummer.UI.Skills
         private BufferedTableLayoutPanel tlpMain;
         private Panel pnlAttributes;
         private LabelWithToolTip lblModifiedRating;
-        private TableLayoutPanel tlpRight;
+        private BufferedTableLayoutPanel tlpRight;
     }
 }
