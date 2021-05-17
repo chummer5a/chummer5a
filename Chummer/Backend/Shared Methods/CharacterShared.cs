@@ -6294,10 +6294,14 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                if (!_objCharacter.Save())
-                    return false;
-                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
-                IsDirty = false;
+                using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                {
+                    frmProgressBar.PerformStep(_objCharacter.CharacterName);
+                    if (!_objCharacter.Save())
+                        return false;
+                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);
+                    IsDirty = false;
+                }
             }
             return true;
         }

@@ -38,6 +38,7 @@ Application Changes:
 - Skill pool tooltips no longer sometimes show the skill's category as its specialization.
 - Spell and Complex Form pool tooltips are no longer combine the contribution of their linked attribute and their linked skill.
 - Spells and Complex Forms with special damage amounts, targets, and/or ranges now have those translated properly when printing/exporting in a non-English language.
+- In order to prevent users from thinking Chummer has locked up when it is still working, Chummer now shows a visible loading progress bar when it is loading in a character's UI elements or when it is saving a character.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

@@ -480,8 +480,12 @@ namespace Chummer
 
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-                    if (!objCharacter.Save())
-                        return;
+                    using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                    {
+                        frmProgressBar.PerformStep(objCharacter.CharacterName);
+                        if (!objCharacter.Save())
+                            return;
+                    }
 
                     // Link the newly-created Critter to the Spirit.
                     imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));

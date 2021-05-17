@@ -212,6 +212,8 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
+                        ConcurrentList<Character> lstCharactersToLoad = new ConcurrentList<Character>();
+                        Task objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length))
                         {
 #if DEBUG
@@ -254,7 +256,6 @@ namespace Chummer
 
                             // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
                             string[] strArgs = Environment.GetCommandLineArgs();
-                            ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
                             bool blnShowTest = false;
                             if (!Utils.IsUnitTest && strArgs.Length > 1)
                             {
@@ -301,7 +302,7 @@ namespace Chummer
                                         }
                                     }
                                     
-                                    await Task.Run(() =>
+                                    objCharacterLoadingTask = Task.Run(() =>
                                         Parallel.ForEach(setFilesToLoad, x =>
                                         {
                                             Character objCharacter = LoadCharacter(x);
@@ -357,9 +358,6 @@ namespace Chummer
                                 frmTest frmTestData = new frmTest();
                                 frmTestData.Show();
                             }
-
-                            if (lstCharactersToLoad.Count > 0)
-                                OpenCharacterList(lstCharactersToLoad);
                         }
 
                         Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
@@ -376,6 +374,11 @@ namespace Chummer
                             tssItem.UpdateLightDarkMode();
                             tssItem.TranslateToolStripItemsRecursively();
                         }
+
+                        if (objCharacterLoadingTask?.IsCompleted == false)
+                            await objCharacterLoadingTask;
+                        if (lstCharactersToLoad.Count > 0)
+                            OpenCharacterList(lstCharactersToLoad);
                     }
                 }
                 catch (Exception ex)
@@ -1355,6 +1358,7 @@ namespace Chummer
                     // Array instead of concurrent bag because we want to preserve order
                     if (lstFilesToOpen.Count <= 0)
                         return;
+                    Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (_frmProgressBar = CreateAndShowProgressBar(
                         string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen),
                         lstFilesToOpen.Count * 35))
@@ -1366,10 +1370,9 @@ namespace Chummer
                             dicIndexedStrings.Add(i, lstFilesToOpen[i]);
                         }
 
-                        Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                         await Task.Run(() => Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value)));
-                        OpenCharacterList(lstCharacters);
                     }
+                    OpenCharacterList(lstCharacters);
                 }
             }
             
@@ -1392,36 +1395,46 @@ namespace Chummer
         /// <param name="blnIncludeInMRU">Added the opened characters to the Most Recently Used list.</param>
         public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMRU = true)
         {
-            if(lstCharacters == null)
+            if (lstCharacters == null)
                 return;
-
+            List<Character> lstNewCharacters = lstCharacters.ToList();
+            if (lstNewCharacters.Count == 0)
+                return;
             FormWindowState wsPreference = MdiChildren.Length == 0
                                            || MdiChildren.Any(x => x.WindowState == FormWindowState.Maximized)
                 ? FormWindowState.Maximized
                 : FormWindowState.Normal;
             List<CharacterShared> lstNewFormsToProcess = new List<CharacterShared>();
-            foreach (Character objCharacter in lstCharacters)
+            string strUI = LanguageManager.GetString("String_UI");
+            string strSpace = LanguageManager.GetString("String_Space");
+            using (_frmProgressBar = CreateAndShowProgressBar(strUI, lstNewCharacters.Count))
             {
-                if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
-                    continue;
-                //Timekeeper.Start("load_event_time");
-                // Show the character forms.
-                this.DoThreadSafe(() =>
+                foreach (Character objCharacter in lstNewCharacters)
                 {
-                    CharacterShared frmNewCharacter = objCharacter.Created
-                        ? (CharacterShared) new frmCareer(objCharacter)
-                        : new frmCreate(objCharacter);
-                    frmNewCharacter.MdiParent = this;
-                    frmNewCharacter.Show();
-                    lstNewFormsToProcess.Add(frmNewCharacter);
-                });
-                if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
-                    GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
+                    _frmProgressBar.PerformStep(objCharacter == null ? strUI : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
+                    if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
+                        continue;
+                    //Timekeeper.Start("load_event_time");
+                    // Show the character forms.
+                    this.DoThreadSafe(() =>
+                    {
+                        CharacterShared frmNewCharacter = objCharacter.Created
+                            ? (CharacterShared)new frmCareer(objCharacter)
+                            : new frmCreate(objCharacter);
+                        frmNewCharacter.MdiParent = this;
+                        frmNewCharacter.Show();
+                        lstNewFormsToProcess.Add(frmNewCharacter);
+                    });
+                    if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) &&
+                        File.Exists(objCharacter.FileName))
+                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
-                UpdateCharacterTabTitle(objCharacter, new PropertyChangedEventArgs(nameof(Character.CharacterName)));
-
-                //Timekeeper.Finish("load_event_time");
+                    UpdateCharacterTabTitle(objCharacter,
+                        new PropertyChangedEventArgs(nameof(Character.CharacterName)));
+                    //Timekeeper.Finish("load_event_time");
+                }
             }
+
             // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
             foreach (CharacterShared frmNewCharacter in lstNewFormsToProcess)
                 frmNewCharacter.QueueThreadSafe(() => frmNewCharacter.WindowState = wsPreference);

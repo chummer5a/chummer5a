@@ -50,6 +50,13 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
+        private async void frmLoading_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // Make sure we always complete the progress bar before closing out
+            await pgbLoadingProgress.DoThreadSafeAsync(() => pgbLoadingProgress.Value = pgbLoadingProgress.Maximum);
+            Application.DoEvents();
+        }
+
         /// <summary>
         /// Resets the ProgressBar
         /// </summary>
@@ -63,7 +70,7 @@ namespace Chummer
             pgbLoadingProgress.DoThreadSafe(() =>
             {
                 pgbLoadingProgress.Value = 0;
-                pgbLoadingProgress.Maximum = intMaxProgressBarValue;
+                pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
             });
         }
 
@@ -78,8 +85,9 @@ namespace Chummer
             string strNewText = string.IsNullOrEmpty(strStepName)
                     ? LanguageManager.GetString("String_Loading")
                     : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Loading_Pattern"), strStepName);
-            strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo)
-                          + '/' + pgbLoadingProgress.Maximum.ToString(GlobalOptions.CultureInfo) + ')';
+            if (pgbLoadingProgress.Maximum > 2)
+                strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalOptions.CultureInfo)
+                              + '/' + (pgbLoadingProgress.Maximum - 1).ToString(GlobalOptions.CultureInfo) + ')';
             lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
             pgbLoadingProgress.QueueThreadSafe(() => pgbLoadingProgress.PerformStep());
         }

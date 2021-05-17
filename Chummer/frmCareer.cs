@@ -2935,11 +2935,15 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        objMerge.FileName = saveFileDialog.FileName;
-                        if (objMerge.Save())
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
                         {
-                            // Get the name of the file and destroy the references to the Vessel and the merged character.
-                            strOpenFile = objMerge.FileName;
+                            frmProgressBar.PerformStep(objMerge.CharacterName);
+                            objMerge.FileName = saveFileDialog.FileName;
+                            if (objMerge.Save())
+                            {
+                                // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                strOpenFile = objMerge.FileName;
+                            }
                         }
                     }
                 }
@@ -3087,11 +3091,15 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        objMerge.FileName = saveFileDialog.FileName;
-                        if (objMerge.Save())
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
                         {
-                            // Get the name of the file and destroy the references to the Vessel and the merged character.
-                            strOpenFile = objMerge.FileName;
+                            frmProgressBar.PerformStep(objMerge.CharacterName);
+                            objMerge.FileName = saveFileDialog.FileName;
+                            if (objMerge.Save())
+                            {
+                                // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                strOpenFile = objMerge.FileName;
+                            }
                         }
                     }
                 }
