@@ -132,7 +132,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objColor">Color whose lightness should be inverted.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values inverted.</returns>
-        public static Color GenerateDarkModeColor(Color objColor)
+        private static Color GenerateDarkModeColor(Color objColor)
         {
             if (!s_DicDarkModeColors.TryGetValue(objColor, out Color objDarkModeColor))
             {
@@ -156,6 +156,42 @@ namespace Chummer
             }
             return objInverseDarkModeColor;
         }
+
+        /// <summary>
+        /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
+        /// </summary>
+        /// <param name="objColor">Color as it would be in Light mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
+        public static Color GenerateCurrentModeColor(Color objColor)
+        {
+            if (IsLightMode)
+            {
+                return objColor;
+            }
+            else
+            {
+                return GenerateDarkModeColor(objColor);
+            }
+        }
+
+        /// <summary>
+        /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
+        /// </summary>
+        /// <param name="objColor">Color as it is shown in current color mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
+        public static Color GenerateModeIndependentColor(Color objColor)
+        {
+            if (IsLightMode)
+            {
+                return objColor;
+            }
+            else
+            {
+                return GenerateInverseDarkModeColor(objColor);
+            }
+        }
+
+
 
         /// <summary>
         /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
