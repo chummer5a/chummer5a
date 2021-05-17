@@ -585,10 +585,7 @@ namespace Chummer
         {
             if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
             {
-                lblQualityLPLabel.Visible = true;
-                lblQualityCostLabel.Visible = true;
-                lblQualitySourceLabel.Visible = true;
-                chkQualityContributesLP.Visible = true;
+                tlpLifestyleQuality.Visible = true;
                 chkQualityContributesLP.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
 
                 _blnSkipRefresh = true;
@@ -602,14 +599,7 @@ namespace Chummer
             }
             else
             {
-                lblQualityLPLabel.Visible = false;
-                lblQualityCostLabel.Visible = false;
-                lblQualitySourceLabel.Visible = false;
-                chkQualityContributesLP.Visible = false;
-                lblQualityLp.Text = string.Empty;
-                lblQualityCost.Text = string.Empty;
-                lblQualitySource.Text = string.Empty;
-                lblQualitySource.SetToolTip(null);
+                tlpLifestyleQuality.Visible = false;
                 cmdDeleteQuality.Enabled = false;
             }
         }

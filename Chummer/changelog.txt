@@ -34,6 +34,10 @@ Application Changes:
 - When calculating the karma value of a character in Priority or Sum-to-Ten, the karma amount displayed for comparison to Point Buy now uses the Point Buy costs for the character's metatype instead of the value of their combined attribute adjustments and qualities.
 - Added the ability to manually set Chummer's display scaling method in the Global Options screen, though a restart is required to see any changes. The default display scaling method is now also Zoom (i.e. System) instead of Rescale (i.e. PerMonitorV2).
 - For mentor spirits that do not allow the user to select from multiple bonuses, the entire bonus is now shown as regular text instead of it being cut off in a grayed-out dropdown box.
+- Trust Fund can now be selected for non-advanced lifestyles.
+- Skill pool tooltips no longer sometimes show the skill's category as its specialization.
+- Spell and Complex Form pool tooltips are no longer combine the contribution of their linked attribute and their linked skill.
+- Spells and Complex Forms with special damage amounts, targets, and/or ranges now have those translated properly when printing/exporting in a non-English language.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -52,6 +56,7 @@ Data Changes:
 - The Hemorrhage critter power no longer also has an entry as a learnable ritual.
 - Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
 - Unarmed Attack can no longer be bought as a weapon.
+- Fixed the German translations for some mentor spirits that were broken in an update a few years ago.
 - Added an option to assign a color to each note to allow a way to categorize notes.
 - Added OK/Cancel buttons in the note field to align the user interface with other dialoges
 

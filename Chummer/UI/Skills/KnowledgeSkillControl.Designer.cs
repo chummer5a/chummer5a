@@ -37,8 +37,8 @@ namespace Chummer.UI.Skills
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblName = new System.Windows.Forms.Label();
-            this.tlpMiddle = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMiddle = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
             this.tlpMiddle.SuspendLayout();
@@ -226,7 +226,7 @@ namespace Chummer.UI.Skills
         private BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblName;
         private BufferedTableLayoutPanel tlpLeft;
-        private System.Windows.Forms.TableLayoutPanel tlpMiddle;
-        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private Chummer.BufferedTableLayoutPanel tlpMiddle;
+        private Chummer.BufferedTableLayoutPanel tlpRight;
     }
 }

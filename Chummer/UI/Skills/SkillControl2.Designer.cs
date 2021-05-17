@@ -43,7 +43,7 @@ namespace Chummer.UI.Skills
             this.lblName = new Chummer.LabelWithToolTip();
             this.pnlAttributes = new System.Windows.Forms.Panel();
             this.btnAttribute = new System.Windows.Forms.Button();
-            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmsSkillLabel.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.pnlAttributes.SuspendLayout();
@@ -197,6 +197,6 @@ namespace Chummer.UI.Skills
         private BufferedTableLayoutPanel tlpMain;
         private Panel pnlAttributes;
         private LabelWithToolTip lblModifiedRating;
-        private TableLayoutPanel tlpRight;
+        private BufferedTableLayoutPanel tlpRight;
     }
 }

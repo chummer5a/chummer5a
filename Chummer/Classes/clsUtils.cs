@@ -194,7 +194,15 @@ namespace Chummer
             Process.Start(startInfo);
         }
 
-        private static bool DefaultIsOKToRunDoEvents => !IsUnitTest && !IsDesignerMode && !IsRunningInVisualStudio;
+        /// <summary>
+        /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
+        /// </summary>
+        private static bool EverDoEvents => !IsDesignerMode && !IsRunningInVisualStudio;
+
+        /// <summary>
+        /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
+        /// </summary>
+        private static bool DefaultIsOKToRunDoEvents => !IsUnitTest && EverDoEvents;
 
         /// <summary>
         /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
@@ -209,6 +217,11 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(Action funcToRun)
         {
+            if (!EverDoEvents)
+            {
+                funcToRun.Invoke();
+                return;
+            }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
@@ -238,6 +251,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(params Action[] afuncToRun)
         {
+            if (!EverDoEvents)
+            {
+                foreach (Action funcToRun in afuncToRun)
+                    funcToRun.Invoke();
+                return;
+            }
             Task[] aobjTasks = new Task[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
@@ -269,6 +288,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T RunWithoutThreadLock<T>(Func<T> funcToRun)
         {
+            if (!EverDoEvents)
+            {
+                return funcToRun.Invoke();
+            }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
@@ -299,6 +322,13 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<T>[] afuncToRun)
         {
+            T[] aobjReturn = new T[afuncToRun.Length];
+            if (!EverDoEvents)
+            {
+                for (int i = 0; i < afuncToRun.Length; ++i)
+                    aobjReturn[i] = afuncToRun[i].Invoke();
+                return aobjReturn;
+            }
             Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
@@ -320,7 +350,6 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
-            T[] aobjReturn = new T[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -334,6 +363,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T RunWithoutThreadLock<T>(Func<Task<T>> funcToRun)
         {
+            if (!EverDoEvents)
+            {
+                Task<T> objSyncTask = funcToRun.Invoke();
+                objSyncTask.RunSynchronously();
+                return objSyncTask.Result;
+            }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
@@ -364,6 +399,17 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T[] RunWithoutThreadLock<T>(params Func<Task<T>>[] afuncToRun)
         {
+            T[] aobjReturn = new T[afuncToRun.Length];
+            if (!EverDoEvents)
+            {
+                for (int i = 0; i < afuncToRun.Length; ++i)
+                {
+                    Task<T> objSyncTask = afuncToRun[i].Invoke();
+                    objSyncTask.RunSynchronously();
+                    aobjReturn[i] = objSyncTask.Result;
+                }
+                return aobjReturn;
+            }
             Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
@@ -385,7 +431,6 @@ namespace Chummer
                         s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
                 }
             }
-            T[] aobjReturn = new T[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -399,6 +444,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(Func<Task> funcToRun)
         {
+            if (!EverDoEvents)
+            {
+                Task objSyncTask = funcToRun.Invoke();
+                objSyncTask.RunSynchronously();
+                return;
+            }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
@@ -428,6 +479,15 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void RunWithoutThreadLock(params Func<Task>[] afuncToRun)
         {
+            if (!EverDoEvents)
+            {
+                foreach (Func<Task> funcToRun in afuncToRun)
+                {
+                    Task objSyncTask = funcToRun.Invoke();
+                    objSyncTask.RunSynchronously();
+                }
+                return;
+            }
             Task[] aobjTasks = new Task[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);

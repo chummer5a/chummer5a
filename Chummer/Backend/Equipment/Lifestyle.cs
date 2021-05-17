@@ -1039,23 +1039,21 @@ namespace Chummer.Backend.Equipment
             set => _blnTrustFund = value;
         }
 
-        public bool IsTrustFundEligible
-        {
-            get
-            {
-                switch (_objCharacter.TrustFund)
-                {
-                    case 1:
-                    case 4:
-                        return BaseLifestyle == "Medium";
-                    case 2:
-                        return BaseLifestyle == "Low";
-                    case 3:
-                        return BaseLifestyle == "High";
-                }
+        public bool IsTrustFundEligible => StaticIsTrustFundEligible(_objCharacter, BaseLifestyle);
 
-                return false;
+        public static bool StaticIsTrustFundEligible(Character objCharacter, string strBaseLifestyle)
+        {
+            switch (objCharacter.TrustFund)
+            {
+                case 1:
+                case 4:
+                    return strBaseLifestyle == "Medium";
+                case 2:
+                    return strBaseLifestyle == "Low";
+                case 3:
+                    return strBaseLifestyle == "High";
             }
+            return false;
         }
 
         /// <summary>

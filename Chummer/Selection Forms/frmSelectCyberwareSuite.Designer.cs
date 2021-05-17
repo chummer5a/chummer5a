@@ -38,12 +38,17 @@ namespace Chummer
             this.lblEssenceLabel = new System.Windows.Forms.Label();
             this.lblCost = new System.Windows.Forms.Label();
             this.lblCostLabel = new System.Windows.Forms.Label();
-            this.lblCyberwareLabel = new System.Windows.Forms.Label();
             this.lblCyberware = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.gpbCyberware = new System.Windows.Forms.GroupBox();
+            this.pnlCyberware = new System.Windows.Forms.Panel();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
+            this.tlpRight.SuspendLayout();
+            this.gpbCyberware.SuspendLayout();
+            this.pnlCyberware.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdCancel
@@ -81,8 +86,8 @@ namespace Chummer
             this.lstCyberware.FormattingEnabled = true;
             this.lstCyberware.Location = new System.Drawing.Point(3, 3);
             this.lstCyberware.Name = "lstCyberware";
-            this.tlpMain.SetRowSpan(this.lstCyberware, 6);
-            this.lstCyberware.Size = new System.Drawing.Size(295, 417);
+            this.tlpMain.SetRowSpan(this.lstCyberware, 3);
+            this.lstCyberware.Size = new System.Drawing.Size(297, 417);
             this.lstCyberware.Sorted = true;
             this.lstCyberware.TabIndex = 0;
             this.lstCyberware.SelectedIndexChanged += new System.EventHandler(this.lstCyberware_SelectedIndexChanged);
@@ -92,7 +97,7 @@ namespace Chummer
             // 
             this.lblGradeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGradeLabel.AutoSize = true;
-            this.lblGradeLabel.Location = new System.Drawing.Point(320, 6);
+            this.lblGradeLabel.Location = new System.Drawing.Point(15, 6);
             this.lblGradeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGradeLabel.Name = "lblGradeLabel";
             this.lblGradeLabel.Size = new System.Drawing.Size(39, 13);
@@ -103,20 +108,22 @@ namespace Chummer
             // lblGrade
             // 
             this.lblGrade.AutoSize = true;
-            this.lblGrade.Location = new System.Drawing.Point(365, 6);
+            this.lblGrade.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblGrade.Location = new System.Drawing.Point(60, 6);
             this.lblGrade.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGrade.Name = "lblGrade";
-            this.lblGrade.Size = new System.Drawing.Size(42, 13);
+            this.lblGrade.Size = new System.Drawing.Size(240, 13);
             this.lblGrade.TabIndex = 2;
             this.lblGrade.Text = "[Grade]";
             // 
             // lblEssence
             // 
             this.lblEssence.AutoSize = true;
-            this.lblEssence.Location = new System.Drawing.Point(365, 31);
+            this.lblEssence.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblEssence.Location = new System.Drawing.Point(60, 31);
             this.lblEssence.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssence.Name = "lblEssence";
-            this.lblEssence.Size = new System.Drawing.Size(54, 13);
+            this.lblEssence.Size = new System.Drawing.Size(240, 13);
             this.lblEssence.TabIndex = 4;
             this.lblEssence.Text = "[Essence]";
             // 
@@ -124,7 +131,7 @@ namespace Chummer
             // 
             this.lblEssenceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblEssenceLabel.AutoSize = true;
-            this.lblEssenceLabel.Location = new System.Drawing.Point(308, 31);
+            this.lblEssenceLabel.Location = new System.Drawing.Point(3, 31);
             this.lblEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceLabel.Name = "lblEssenceLabel";
             this.lblEssenceLabel.Size = new System.Drawing.Size(51, 13);
@@ -135,10 +142,11 @@ namespace Chummer
             // lblCost
             // 
             this.lblCost.AutoSize = true;
-            this.lblCost.Location = new System.Drawing.Point(365, 56);
+            this.lblCost.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblCost.Location = new System.Drawing.Point(60, 56);
             this.lblCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCost.Name = "lblCost";
-            this.lblCost.Size = new System.Drawing.Size(34, 13);
+            this.lblCost.Size = new System.Drawing.Size(240, 13);
             this.lblCost.TabIndex = 6;
             this.lblCost.Text = "[Cost]";
             // 
@@ -146,7 +154,7 @@ namespace Chummer
             // 
             this.lblCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCostLabel.AutoSize = true;
-            this.lblCostLabel.Location = new System.Drawing.Point(328, 56);
+            this.lblCostLabel.Location = new System.Drawing.Point(23, 56);
             this.lblCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCostLabel.Name = "lblCostLabel";
             this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
@@ -154,23 +162,11 @@ namespace Chummer
             this.lblCostLabel.Tag = "Label_Cost";
             this.lblCostLabel.Text = "Cost:";
             // 
-            // lblCyberwareLabel
-            // 
-            this.lblCyberwareLabel.AutoSize = true;
-            this.tlpMain.SetColumnSpan(this.lblCyberwareLabel, 2);
-            this.lblCyberwareLabel.Location = new System.Drawing.Point(304, 81);
-            this.lblCyberwareLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCyberwareLabel.Name = "lblCyberwareLabel";
-            this.lblCyberwareLabel.Size = new System.Drawing.Size(144, 13);
-            this.lblCyberwareLabel.TabIndex = 7;
-            this.lblCyberwareLabel.Tag = "Label_SelectCyberwareSuite_PartsInSuite";
-            this.lblCyberwareLabel.Text = "Parts in this Cyberware Suite:";
-            // 
             // lblCyberware
             // 
             this.lblCyberware.AutoSize = true;
-            this.tlpMain.SetColumnSpan(this.lblCyberware, 2);
-            this.lblCyberware.Location = new System.Drawing.Point(304, 106);
+            this.lblCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblCyberware.Location = new System.Drawing.Point(3, 6);
             this.lblCyberware.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberware.Name = "lblCyberware";
             this.lblCyberware.Size = new System.Drawing.Size(63, 13);
@@ -181,30 +177,21 @@ namespace Chummer
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 3;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.lstCyberware, 0, 0);
-            this.tlpMain.Controls.Add(this.lblGradeLabel, 1, 0);
-            this.tlpMain.Controls.Add(this.lblCyberware, 1, 4);
-            this.tlpMain.Controls.Add(this.lblGrade, 2, 0);
-            this.tlpMain.Controls.Add(this.lblCyberwareLabel, 1, 3);
-            this.tlpMain.Controls.Add(this.lblEssenceLabel, 1, 1);
-            this.tlpMain.Controls.Add(this.lblCost, 2, 2);
-            this.tlpMain.Controls.Add(this.lblEssence, 2, 1);
-            this.tlpMain.Controls.Add(this.lblCostLabel, 1, 2);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 5);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 2);
+            this.tlpMain.Controls.Add(this.tlpRight, 1, 0);
+            this.tlpMain.Controls.Add(this.gpbCyberware, 1, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 6;
+            this.tlpMain.RowCount = 3;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 11;
             // 
@@ -214,7 +201,6 @@ namespace Chummer
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 2;
-            this.tlpMain.SetColumnSpan(this.tlpButtons, 2);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
@@ -227,12 +213,61 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 10;
             // 
+            // tlpRight
+            // 
+            this.tlpRight.AutoSize = true;
+            this.tlpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.ColumnCount = 2;
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Controls.Add(this.lblGradeLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.lblGrade, 1, 0);
+            this.tlpRight.Controls.Add(this.lblEssenceLabel, 0, 1);
+            this.tlpRight.Controls.Add(this.lblCost, 1, 2);
+            this.tlpRight.Controls.Add(this.lblEssence, 1, 1);
+            this.tlpRight.Controls.Add(this.lblCostLabel, 0, 2);
+            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRight.Location = new System.Drawing.Point(303, 0);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpRight.Name = "tlpRight";
+            this.tlpRight.RowCount = 3;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.Size = new System.Drawing.Size(303, 75);
+            this.tlpRight.TabIndex = 11;
+            // 
+            // gpbCyberware
+            // 
+            this.gpbCyberware.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbCyberware.Controls.Add(this.pnlCyberware);
+            this.gpbCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbCyberware.Location = new System.Drawing.Point(306, 78);
+            this.gpbCyberware.Name = "gpbCyberware";
+            this.gpbCyberware.Size = new System.Drawing.Size(297, 313);
+            this.gpbCyberware.TabIndex = 12;
+            this.gpbCyberware.TabStop = false;
+            this.gpbCyberware.Tag = "Label_SelectCyberwareSuite_PartsInSuite";
+            this.gpbCyberware.Text = "Parts in this Cyberware Suite:";
+            // 
+            // pnlCyberware
+            // 
+            this.pnlCyberware.AutoScroll = true;
+            this.pnlCyberware.Controls.Add(this.lblCyberware);
+            this.pnlCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlCyberware.Location = new System.Drawing.Point(3, 16);
+            this.pnlCyberware.Name = "pnlCyberware";
+            this.pnlCyberware.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlCyberware.Size = new System.Drawing.Size(291, 294);
+            this.pnlCyberware.TabIndex = 0;
+            // 
             // frmSelectCyberwareSuite
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
@@ -250,6 +285,11 @@ namespace Chummer
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            this.tlpRight.ResumeLayout(false);
+            this.tlpRight.PerformLayout();
+            this.gpbCyberware.ResumeLayout(false);
+            this.pnlCyberware.ResumeLayout(false);
+            this.pnlCyberware.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -266,9 +306,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblEssenceLabel;
         private System.Windows.Forms.Label lblCost;
         private System.Windows.Forms.Label lblCostLabel;
-        private System.Windows.Forms.Label lblCyberwareLabel;
         private System.Windows.Forms.Label lblCyberware;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
+        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.GroupBox gpbCyberware;
+        private System.Windows.Forms.Panel pnlCyberware;
     }
 }

@@ -211,8 +211,15 @@ namespace Chummer
 
                     cboFile.BeginUpdate();
                     cboFile.PopulateWithListItems(_lstFileNamesWithItems);
-                    if (_lstFileNamesWithItems.Count > 0)
+                    try
+                    {
                         cboFile.SelectedIndex = 0;
+                    }
+                    // For some reason, some unit tests will fire this exception even when _lstFileNamesWithItems is explicitly checked for having enough items
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        cboFile.SelectedIndex = -1;
+                    }
                     cboFile.EndUpdate();
 
                     lstItems.BeginUpdate();
