@@ -145,6 +145,8 @@ Changed/New Strings:
 - Label_Options_DpiScalingMode
 - Label_SelectMentor_ChooseOne
 - Label_SelectMentor_Bonus
+- String_Saving
+- String_Saving_Pattern
 
 Build 214
 Application Fixes:

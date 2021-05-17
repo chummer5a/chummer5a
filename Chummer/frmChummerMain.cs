@@ -1261,7 +1261,7 @@ namespace Chummer
         /// <param name="strFile"></param>
         /// <param name="intCount"></param>
         /// <returns></returns>
-        public static frmLoading CreateAndShowProgressBar(string strFile = "", int intCount = -1)
+        public static frmLoading CreateAndShowProgressBar(string strFile = "", int intCount = 1)
         {
             frmLoading frmReturn = new frmLoading {CharacterFile = strFile};
             if (intCount > 0)

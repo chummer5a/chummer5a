@@ -10613,9 +10613,9 @@ namespace Chummer
                 CharacterObject.Created = true;
 
                 _blnSkipToolStripRevert = true;
-                using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                 {
-                    frmProgressBar.PerformStep(CharacterObject.CharacterName);
+                    frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
                     if (!CharacterObject.Save())
                     {
                         CharacterObject.ExpenseEntries.Clear();
@@ -12759,9 +12759,9 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
-                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
-                            frmProgressBar.PerformStep(CharacterObject.CharacterName);
+                            frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
                             if (!CharacterObject.Save(strNewName))
                                 return false;
                         }

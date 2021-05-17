@@ -6294,9 +6294,9 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                 {
-                    frmProgressBar.PerformStep(_objCharacter.CharacterName);
+                    frmProgressBar.PerformStep(_objCharacter.CharacterName, true);
                     if (!_objCharacter.Save())
                         return false;
                     GlobalOptions.MostRecentlyUsedCharacters.Insert(0, _objCharacter.FileName);

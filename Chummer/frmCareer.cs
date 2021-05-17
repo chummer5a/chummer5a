@@ -2935,9 +2935,9 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
-                            frmProgressBar.PerformStep(objMerge.CharacterName);
+                            frmProgressBar.PerformStep(objMerge.CharacterName, true);
                             objMerge.FileName = saveFileDialog.FileName;
                             if (objMerge.Save())
                             {
@@ -3091,9 +3091,9 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
-                            frmProgressBar.PerformStep(objMerge.CharacterName);
+                            frmProgressBar.PerformStep(objMerge.CharacterName, true);
                             objMerge.FileName = saveFileDialog.FileName;
                             if (objMerge.Save())
                             {

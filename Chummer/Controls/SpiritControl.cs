@@ -480,9 +480,9 @@ namespace Chummer
 
                     objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
                     objCharacter.MetatypeBP = 0;
-                    using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar(string.Empty, 1))
+                    using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                     {
-                        frmProgressBar.PerformStep(objCharacter.CharacterName);
+                        frmProgressBar.PerformStep(objCharacter.CharacterName, true);
                         if (!objCharacter.Save())
                             return;
                     }
