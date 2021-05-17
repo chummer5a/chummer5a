@@ -53,7 +53,7 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
             this.bufferedTableLayoutPanel1.RowCount = 2;
             this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 34F));
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(624, 321);
             this.bufferedTableLayoutPanel1.TabIndex = 1;
             // 
@@ -78,10 +78,11 @@ namespace Chummer
             this.btnColorSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnColorSelect.AutoSize = true;
             this.btnColorSelect.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnColorSelect.Image = global::Chummer.Properties.Resources.color_wheel;
             this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
             this.btnColorSelect.Location = new System.Drawing.Point(3, 295);
             this.btnColorSelect.Name = "btnColorSelect";
-            this.btnColorSelect.Size = new System.Drawing.Size(174, 23);
+            this.btnColorSelect.Size = new System.Drawing.Size(190, 23);
             this.btnColorSelect.TabIndex = 2;
             this.btnColorSelect.Tag = "Button_ChooseCustomColor";
             this.btnColorSelect.Text = "Choose custom color for this note";

@@ -123,13 +123,15 @@ namespace Chummer
         }
 
         private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
         /// </summary>
         /// <param name="objColor">Color whose lightness should be inverted.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values inverted.</returns>
-        private static Color GenerateDarkModeColor(Color objColor)
+        public static Color GenerateDarkModeColor(Color objColor)
         {
             if (!s_DicDarkModeColors.TryGetValue(objColor, out Color objDarkModeColor))
             {
@@ -139,12 +141,39 @@ namespace Chummer
             return objDarkModeColor;
         }
 
+        /// <summary>
+        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// </summary>
+        /// <param name="objColor">Color whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        public static Color GenerateCurrentModeDimmedColor(Color objColor)
+        {
+            Color objRetColor;
+            if (IsLightMode)
+            {
+                if (!s_DicDimmedColors.TryGetValue(objColor, out objRetColor))
+                {
+                    objRetColor = GetDimmedVersion(objColor);
+                    s_DicDimmedColors.TryAdd(objColor, objRetColor);
+                }
+            } else
+            {
+                if (!s_DicBrightenedColors.TryGetValue(objColor, out objRetColor))
+                {
+                    objRetColor = GetBrightenedVersion(objColor);
+                    s_DicBrightenedColors.TryAdd(objColor, objRetColor);
+                }
+            }
+            
+            return objRetColor;
+        }
+
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
         private static Color WindowTextLight => SystemColors.WindowText;
         private static Color WindowTextDark => GenerateDarkModeColor(WindowTextLight);
         public static Color Window => IsLightMode ? WindowLight : WindowDark;
-        public static Color WindowLight => SystemColors.Window;
-        public static Color WindowDark => GenerateDarkModeColor(WindowLight);
+        private static Color WindowLight => SystemColors.Window;
+        private static Color WindowDark => GenerateDarkModeColor(WindowLight);
         public static Color InfoText => IsLightMode ? InfoTextLight : InfoTextDark;
         private static Color InfoTextLight => SystemColors.InfoText;
         private static Color InfoTextDark => GenerateDarkModeColor(InfoTextLight);
@@ -235,6 +264,26 @@ namespace Chummer
             fltNewLightness = Math.Min(fltNewLightness, 1.0f);
             fltSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
             return FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+        }
+
+        private static Color GetBrightenedVersion(Color objColor)
+        {
+            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
+            float fltHue = objColor.GetHue() / 360.0f;
+            float fltBrightness = objColor.GetBrightness();
+            float fltLightness = objColor.GetSaturation();
+            fltLightness = Math.Min(fltLightness + 0.2f,1);
+            return FromHsva(fltHue, fltBrightness, fltLightness, objColor.A);
+        }
+
+        private static Color GetDimmedVersion(Color objColor)
+        {
+            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
+            float fltHue = objColor.GetHue() / 360.0f;
+            float fltBrightness = objColor.GetBrightness();
+            float fltLightness = objColor.GetSaturation();
+            fltLightness = Math.Max(0,fltLightness - 0.2f);
+            return FromHsva(fltHue, fltBrightness, fltLightness, objColor.A);
         }
 
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)

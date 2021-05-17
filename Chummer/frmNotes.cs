@@ -37,7 +37,9 @@ namespace Chummer
         private Color _colNotes;
 
         #region Control Events
-        public frmNotes(string strOldNotes, Color? colNotes = null)
+        public frmNotes(string strOldNotes) : this(strOldNotes, ColorManager.HasNotesColor) { }
+
+        public frmNotes(string strOldNotes, Color colNotes)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -60,7 +62,7 @@ namespace Chummer
 
             btnColorSelect.Enabled = txtNotes.Text.Length > 0;
 
-            _colNotes = colNotes ?? ColorManager.HasNotesColor;
+            _colNotes = colNotes;
             if (_colNotes.IsEmpty)
                 _colNotes = ColorManager.HasNotesColor;
 
@@ -73,9 +75,7 @@ namespace Chummer
                 Close();
             if (e.KeyCode == Keys.Enter && e.Control)
             {
-                _strNotes = txtNotes.Text;
-                DialogResult = DialogResult.OK;
-                Close();
+                btnOK_Click(sender, e);
             }
         }
 
@@ -134,16 +134,7 @@ namespace Chummer
 
         private void updateColorRepresentation()
         {
-            Bitmap bmp1 = new Bitmap(16,16);
-            using (Graphics graph1 = Graphics.FromImage(bmp1))
-            {
-                Point[] lstPoints1 = { new Point(0, 0), new Point(0, 16), new Point(16, 0) };
-                Point[] lstPoints2 = { new Point(16, 0), new Point(0, 16), new Point(16, 16) };
-                graph1.FillPolygon(new SolidBrush(ColorManager.WindowLight), lstPoints1);
-                graph1.FillPolygon(new SolidBrush(ColorManager.WindowDark), lstPoints2);
-                graph1.FillEllipse(new SolidBrush(_colNotes), new Rectangle(3, 3, 9, 9));
-            }
-            btnColorSelect.Image = bmp1;
+            txtNotes.ForeColor = _colNotes;
         }
     }
 }

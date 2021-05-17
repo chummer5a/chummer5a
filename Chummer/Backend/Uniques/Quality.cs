@@ -1096,7 +1096,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     Color cGray = ColorManager.GrayText;
-                    Color NotesColorDimmed = Color.FromArgb((NotesColor.R + cGray.R) / 2, (NotesColor.G + cGray.G) / 2, (NotesColor.B + cGray.B) / 2);
+                    Color NotesColorDimmed = ColorManager.GenerateCurrentModeDimmedColor(NotesColor);
                     return OriginSource == QualitySource.BuiltIn
                            || OriginSource == QualitySource.Improvement
                            || OriginSource == QualitySource.LifeModule
