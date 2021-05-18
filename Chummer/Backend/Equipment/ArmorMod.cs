@@ -63,7 +63,7 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
         private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnDiscountCost;
         private bool _blnStolen;
         private bool _blnEncumbrance = true;

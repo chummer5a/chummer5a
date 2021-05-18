@@ -93,7 +93,7 @@ namespace Chummer
         private string _strPage = string.Empty;
         private bool _blnMutant;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnImplemented = true;
         private bool _blnContributeToBP = true;
         private bool _blnContributeToLimit = true;

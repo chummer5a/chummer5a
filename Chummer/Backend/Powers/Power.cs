@@ -57,7 +57,7 @@ namespace Chummer
         private bool _blnDiscountedGeas;
         private XPathNavigator _nodAdeptWayRequirements;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
         private decimal _decFreePoints;

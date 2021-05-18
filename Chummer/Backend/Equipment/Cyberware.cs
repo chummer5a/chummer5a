@@ -88,7 +88,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private int _intEssenceDiscount;
         private string _strForceGrade = string.Empty;
         private bool _blnDiscountCost;

@@ -62,7 +62,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
         private int _intAccuracy;

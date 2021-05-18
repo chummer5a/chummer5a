@@ -86,7 +86,7 @@ namespace Chummer.Backend.Equipment
         private WeaponMount _objWeaponMount;
         private VehicleMod _objVehicleMod;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strUseSkill = string.Empty;
         private string _strUseSkillSpec = string.Empty;
         private Location _objLocation;

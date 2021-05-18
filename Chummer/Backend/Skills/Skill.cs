@@ -81,7 +81,7 @@ namespace Chummer.Backend.Skills
 
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(10); //List of suggested specializations for this skill
         private bool _blnDefault;
 

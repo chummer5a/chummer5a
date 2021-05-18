@@ -75,7 +75,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;

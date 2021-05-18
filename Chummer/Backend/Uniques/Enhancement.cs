@@ -41,7 +41,7 @@ namespace Chummer
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Enhancement;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private SourceString _objCachedSourceDetail;
 
         private readonly Character _objCharacter;

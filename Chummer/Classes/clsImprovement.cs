@@ -423,7 +423,7 @@ namespace Chummer
         private string _strCustomId = string.Empty;
         private string _strCustomGroup = string.Empty;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnAddToRating;
         private bool _blnEnabled = true;
         private int _intOrder;

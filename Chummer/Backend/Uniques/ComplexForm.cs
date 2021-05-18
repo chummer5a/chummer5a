@@ -47,7 +47,7 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strExtra = string.Empty;
         private int _intGrade;
         private readonly Character _objCharacter;

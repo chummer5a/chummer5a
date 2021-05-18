@@ -45,7 +45,7 @@ namespace Chummer
         private XmlNode _nodBonus;
         private Improvement.ImprovementSource _eImprovementSource = Improvement.ImprovementSource.Metamagic;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
 
         private readonly Character _objCharacter;
 

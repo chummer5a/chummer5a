@@ -88,7 +88,7 @@ namespace Chummer.Backend.Equipment
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
         private readonly ObservableCollection<LifestyleQuality> _lstFreeGrids = new ObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
 

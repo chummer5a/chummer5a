@@ -36,7 +36,7 @@ namespace Chummer
         private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private readonly Character _objCharacter;

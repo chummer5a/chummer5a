@@ -49,7 +49,7 @@ namespace Chummer
         private decimal _decPowerPoints;
         private XmlNode _nodBonus;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
         private bool _blnCountTowardsLimit = true;
         private int _intRating;

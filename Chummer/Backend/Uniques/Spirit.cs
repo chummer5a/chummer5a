@@ -60,7 +60,7 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strRelativeName = string.Empty;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Character _objLinkedCharacter;
 
         private readonly List<Image> _lstMugshots = new List<Image>(1);

@@ -36,7 +36,7 @@ namespace Chummer
         private Guid _guiID;
         private string _strName;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
         #region Constructor, Create, Save, Load, and Print Methods

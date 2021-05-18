@@ -55,7 +55,7 @@ namespace Chummer
         private bool _blnLimited;
         private bool _blnExtended;
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
         private bool _blnAlchemical;
         private bool _blnFreeBonus;

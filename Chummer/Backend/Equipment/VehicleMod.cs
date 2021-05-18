@@ -59,7 +59,7 @@ namespace Chummer.Backend.Equipment
         private int _intConditionMonitor;
         private readonly TaggedObservableCollection<Weapon> _lstVehicleWeapons = new TaggedObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strSubsystems = string.Empty;
         private readonly TaggedObservableCollection<Cyberware> _lstCyberware = new TaggedObservableCollection<Cyberware>();
         private string _strExtra = string.Empty;

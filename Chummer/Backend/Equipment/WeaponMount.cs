@@ -47,7 +47,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnEquipped = true;
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
-        private Color _colNotes = Color.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strExtra = string.Empty;
         private string _strAllowedWeaponCategories = string.Empty;
         private bool _blnDiscountCost;
