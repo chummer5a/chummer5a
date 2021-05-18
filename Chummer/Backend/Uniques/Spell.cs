@@ -281,7 +281,7 @@ namespace Chummer
         /// <summary>
         /// Spell's name.
         /// </summary>
-        public virtual string Name
+        public string Name
         {
             get => _strName;
             set
@@ -716,7 +716,6 @@ namespace Chummer
             set => _blnLimited = value;
         }
 
-
         /// <summary>
         /// Whether or not the Spell is Extended.
         /// </summary>
@@ -785,7 +784,6 @@ namespace Chummer
             get => _blnFreeBonus;
             set => _blnFreeBonus = value;
         }
-
 
         /// <summary>
         /// Does the spell use Unarmed in place of Spellcasting for its casting test?
