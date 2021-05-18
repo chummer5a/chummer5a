@@ -886,7 +886,7 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? NotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
 
         #endregion

@@ -1748,8 +1748,9 @@ namespace Chummer.Backend.Skills
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? NotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.ControlText;
+
 
         public SkillGroup SkillGroupObject { get; }
 

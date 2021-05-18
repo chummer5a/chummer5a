@@ -5465,11 +5465,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    Color cGray = ColorManager.GrayText;
-                    Color NotesColorDimmed = ColorManager.GenerateCurrentModeDimmedColor(NotesColor);
                     return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
-                        ? NotesColorDimmed
-                        : NotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return Cyberware || Category == "Gear" || Category.StartsWith("Quality", StringComparison.Ordinal) || !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText

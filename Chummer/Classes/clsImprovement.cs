@@ -2286,11 +2286,9 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    Color cGray = ColorManager.GrayText;
-                    Color NotesColorDimmed = ColorManager.GenerateCurrentModeDimmedColor(NotesColor);
                     return !Enabled
-                        ? NotesColorDimmed
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !Enabled
                     ? ColorManager.GrayText

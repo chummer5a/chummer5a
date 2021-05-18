@@ -1038,11 +1038,9 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    Color cGray = ColorManager.GrayText;
-                    Color NotesColorDimmed = ColorManager.GenerateCurrentModeDimmedColor(NotesColor);
                     return IncludedInVehicle
-                        ? NotesColorDimmed
-                        : NotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return IncludedInVehicle
                     ? ColorManager.GrayText

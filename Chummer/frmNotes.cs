@@ -107,11 +107,13 @@ namespace Chummer
 
         private void btnColorSelect_Click(object sender, EventArgs e)
         {
-            colorDialog1.Color = ColorManager.GenerateCurrentModeColor(_colNotes);
+            //colorDialog1.Color = ColorManager.GenerateCurrentModeColor(_colNotes);
+            _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
             var resNewColor = colorDialog1.ShowDialog();
             if (resNewColor == DialogResult.OK)
             {
-                _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
+                //_colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
+                _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode.
                 updateColorRepresentation();
             }
         }

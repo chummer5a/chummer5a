@@ -420,11 +420,9 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    Color cGray = ColorManager.GrayText;
-                    Color NotesColorDimmed = ColorManager.GenerateCurrentModeDimmedColor(NotesColor);
                     return Grade == -1
-                        ? NotesColorDimmed
-                        : NotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return Grade == -1
                     ? ColorManager.GrayText

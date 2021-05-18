@@ -1095,16 +1095,13 @@ namespace Chummer
                 }
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    Color cGray = ColorManager.GrayText;
-                    Color NotesColorDimmed = ColorManager.GenerateCurrentModeDimmedColor(NotesColor);
                     return OriginSource == QualitySource.BuiltIn
                            || OriginSource == QualitySource.Improvement
                            || OriginSource == QualitySource.LifeModule
                            || OriginSource == QualitySource.Metatype
                            || OriginSource == QualitySource.Heritage
-                        ? NotesColorDimmed
-                        : NotesColor;
-                    
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return OriginSource == QualitySource.BuiltIn
                        || OriginSource == QualitySource.Improvement
