@@ -258,17 +258,25 @@ namespace Chummer
             float fltHue = objColor.GetHue() / 360.0f;
             float fltBrightness = objColor.GetBrightness();
             float fltLightness = fltBrightness * (1 - objColor.GetSaturation() / 2);
+            float fltSaturationHsl = fltLightness > 0 && fltLightness < 1
+                ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
+                : 0;
             float fltNewLightness = 1.0f - fltLightness;
             // Lighten dark colors a little (so that minimum lightness instead gets 0.25)
             fltNewLightness += 0.25f * fltLightness * fltLightness;
             fltNewLightness = Math.Min(fltNewLightness, 1.0f);
             // Lightness affects saturation, so only set it after we have set up Lightness
-            float fltSaturationHsl = fltNewLightness > 0 && fltNewLightness < 1
+            Color objColorIntermediate = FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+            if (fltSaturationHsl == 0) // Shortcut, no desaturation step necessary
+                return objColorIntermediate;
+            fltBrightness = objColorIntermediate.GetBrightness();
+            fltNewLightness = fltBrightness * (1 - objColorIntermediate.GetSaturation() / 2);
+            float fltNewSaturationHsl = fltNewLightness > 0 && fltNewLightness < 1
                 ? (fltBrightness - fltNewLightness) / Math.Min(fltNewLightness, 1 - fltNewLightness)
                 : 0;
             // Desaturate high saturation colors a little
-            fltSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
-            return FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+            fltNewSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
+            return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
 
         /// <summary>
@@ -286,19 +294,26 @@ namespace Chummer
             float fltSaturationHsl = fltLightness > 0 && fltLightness < 1
                 ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
                 : 0;
-            // x - 0.1x^2 = n is the regular transform where n is the Dark Mode saturation
-            // To get it back, we need to solve for x knowing only n:
-            // x^2 - 10x + 10n = 0
-            // x = (10 +/- sqrt(100 - 40n))/2 = 5 +/- sqrt(25 - 10n)
-            // Because saturation cannot be greater than 1, positive result is unreal, therefore: x = 5 - sqrt(25 - 10n)
-            fltSaturationHsl = Math.Min((float) (5.0 - Math.Sqrt(25.0 - 10.0 * fltSaturationHsl)), 1.0f);
+            float fltNewSaturationHsl = 0;
+            if (fltSaturationHsl != 0)
+            {
+                // x - 0.1x^2 = n is the regular transform where n is the Dark Mode saturation
+                // To get it back, we need to solve for x knowing only n:
+                // x^2 - 10x + 10n = 0
+                // x = (10 +/- sqrt(100 - 40n))/2 = 5 +/- sqrt(25 - 10n)
+                // Because saturation cannot be greater than 1, positive result is unreal, therefore: x = 5 - sqrt(25 - 10n)
+                fltNewSaturationHsl = Math.Min((float) (5.0 - Math.Sqrt(25.0 - 10.0 * fltSaturationHsl)), 1.0f);
+                Color objColorIntermediate = FromHsla(fltHue, fltNewSaturationHsl, fltLightness, objColor.A);
+                fltBrightness = objColorIntermediate.GetBrightness();
+                fltLightness = fltBrightness * (1 - objColorIntermediate.GetSaturation() / 2);
+            }
             // 1 - y + 0.25y^2 = m is the regular transform where m is the Dark Mode Lightness
             // To get it back, we need to solve for y knowing only m:
             // y^2 - 4y + 4 - 4m = 0
             // y = (4 +/- sqrt(16 - 16 + 16m))/2 = (4 +/- sqrt(16m))/2 = 2 +/- 2*sqrt(m)
             // Because lightness cannot be greater than 1, positive result is unreal, therefore: y = 2 - 2*sqrt(m)
             float fltNewLightness = Math.Min((float) (2 - 2 * Math.Sqrt(fltLightness)), 1.0f);
-            return FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+            return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
 
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
