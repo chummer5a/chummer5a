@@ -107,11 +107,11 @@ namespace Chummer
 
         private void btnColorSelect_Click(object sender, EventArgs e)
         {
-            colorDialog1.Color = _colNotes;
+            colorDialog1.Color = ColorManager.GenerateCurrentModeColor(_colNotes);
             var resNewColor = colorDialog1.ShowDialog();
             if (resNewColor == DialogResult.OK)
             {
-                _colNotes = colorDialog1.Color;
+                _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
                 updateColorRepresentation();
             }
         }
@@ -134,7 +134,7 @@ namespace Chummer
 
         private void updateColorRepresentation()
         {
-            txtNotes.ForeColor = _colNotes;
+            txtNotes.ForeColor = ColorManager.GenerateCurrentModeColor(_colNotes);
         }
     }
 }
