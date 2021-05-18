@@ -19,19 +19,15 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Drawing.Imaging;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
-using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace Chummer
 {
