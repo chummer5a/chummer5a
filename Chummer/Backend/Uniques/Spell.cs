@@ -60,6 +60,7 @@ namespace Chummer
         private bool _blnFreeBonus;
         private bool _blnUsesUnarmed;
         private int _intGrade;
+
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -77,7 +78,7 @@ namespace Chummer
         /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
         /// <param name="blnAlchemical">Whether or not the Spell is one for an alchemical preparation.</param>
         /// <param name="objSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
-        public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
+        public virtual void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
             if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -156,11 +157,13 @@ namespace Chummer
             objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
+            SaveDerived(objWriter);
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
                 _objCharacter.SourceProcess(_strSource);
         }
+        public virtual void SaveDerived(XmlTextWriter objWriter) { }
 
         /// <summary>
         /// Load the Spell from the XmlNode.
@@ -206,7 +209,10 @@ namespace Chummer
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+            LoadDerived(objNode);
         }
+
+        public virtual void LoadDerived(XmlNode objNode) { }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -242,11 +248,16 @@ namespace Chummer
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
+
                 objWriter.WriteElementString("notes", Notes);
+            PrintDerived(objWriter);
             objWriter.WriteEndElement();
         }
+
+        public virtual void PrintDerived(XmlTextWriter objWriter) { }
         #endregion
 
         #region Properties
@@ -270,7 +281,7 @@ namespace Chummer
         /// <summary>
         /// Spell's name.
         /// </summary>
-        public string Name
+        public virtual string Name
         {
             get => _strName;
             set
@@ -705,6 +716,7 @@ namespace Chummer
             set => _blnLimited = value;
         }
 
+
         /// <summary>
         /// Whether or not the Spell is Extended.
         /// </summary>
@@ -773,6 +785,7 @@ namespace Chummer
             get => _blnFreeBonus;
             set => _blnFreeBonus = value;
         }
+
 
         /// <summary>
         /// Does the spell use Unarmed in place of Spellcasting for its casting test?

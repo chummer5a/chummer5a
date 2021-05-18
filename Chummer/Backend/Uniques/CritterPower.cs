@@ -112,7 +112,7 @@ namespace Chummer
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
                     _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
@@ -155,11 +155,14 @@ namespace Chummer
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
+            SaveDerived(objWriter);
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
                 _objCharacter.SourceProcess(_strSource);
         }
+
+        public virtual void SaveDerived(XmlTextWriter objWriter) { }
 
         /// <summary>
         /// Load the Critter Power from the XmlNode.
@@ -195,7 +198,10 @@ namespace Chummer
             _nodBonus = objNode["bonus"];
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            LoadDerived(objNode);
         }
+
+        public virtual void LoadDerived(XmlNode objNode) { }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -224,8 +230,11 @@ namespace Chummer
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
+            PrintDerived(objWriter);
             objWriter.WriteEndElement();
         }
+        public virtual void PrintDerived(XmlTextWriter objWriter) { }
+
         #endregion
 
         #region Properties

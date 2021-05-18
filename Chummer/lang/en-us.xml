@@ -2039,6 +2039,10 @@
       <text>Are you sure you want to delete this Spirit?</text>
     </string>
     <string>
+      <key>Message_DeleteSustainedSpell</key>
+      <text>Are you sure you want to no longer sustain {0}?</text>
+    </string>
+    <string>
       <key>Message_DeleteSprite</key>
       <text>Are you sure you want to delete this Sprite?</text>
     </string>
@@ -4602,7 +4606,30 @@
       <key>Tip_SpellsSpirits</key>
       <text>Each Service a Spirit owes costs {0} Karma.</text>
     </string>
-    <!-- End Region -->
+    <string>
+      <key>Button_Sustain</key>
+      <text>Sustain</text>
+    </string>
+    <string>
+      <key>Label_PsycheActive</key>
+      <text>Psyche</text>
+    </string>
+
+    <!--End Region-->
+    <!--Region Sustained Spell Control-->
+    <string>
+      <key>Label_SustainedSelf</key>
+      <text>Self \n Sustained</text>
+    </string>
+    <string>
+      <key>Label_SustainedForce</key>
+      <text>Force:</text>
+    </string>
+    <string>
+      <key>Label_NetHits</key>
+      <text>Net Hits:</text>
+    </string>
+    <!--End Region-->
     <!-- Region Adept Tab -->
     <string>
       <key>Label_PowerPoints</key>
@@ -5693,6 +5720,10 @@
       <text>Custom Time Format</text>
     </string>
     <string>
+      <key>Label_Options_DicePenaltySustaining</key>
+      <text>Dice Penalty for each sustained spell or complex form:</text>
+    </string>
+    <string>
       <key>Label_Options_DateFormat</key>
       <text>Date Format</text>
     </string>
@@ -6408,6 +6439,10 @@
     <string>
       <key>Tip_Skill_Wounds</key>
       <text>Wounds</text>
+    </string>
+    <string>
+      <key>Tip_Skill_Sustain</key>
+      <text>Sustaining Penalties</text>
     </string>
     <string>
       <key>Tip_Skill_OffHand</key>

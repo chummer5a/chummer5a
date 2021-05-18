@@ -848,9 +848,9 @@ namespace Chummer.Backend.Skills
             if (intValue <= 0)
                 return 0;
             if (intRating > 0)
-                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
+                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
             if (Default)
-                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
+                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
             return 0;
         }
 
@@ -1566,6 +1566,13 @@ namespace Chummer.Backend.Skills
                 s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds") + strSpace + '(' + wound.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
+            int sustains = CharacterObject.SustainingPenalty;
+            if (sustains != 0)
+            {
+                s.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace).Append('(').Append(sustains.ToString(GlobalOptions.CultureInfo)).Append(')');
+            }
+
             if (att.Abbrev == "STR" || att.Abbrev == "AGI")
             {
                 foreach (Cyberware cyberware in CharacterObject.Cyberware)
@@ -1787,6 +1794,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayOtherAttribute(string strAttribute)
         {
+
             int intPool = PoolOtherAttribute(strAttribute);
             if ((IsExoticSkill || string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x =>
                      x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
@@ -2192,6 +2200,9 @@ namespace Chummer.Backend.Skills
                     OnMultiplePropertyChanged(nameof(CanUpgradeCareer), nameof(CanAffordSpecialization));
                     break;
                 case nameof(Character.WoundModifier):
+                    OnPropertyChanged(nameof(PoolOtherAttribute));
+                    break;
+                case nameof(Character.SustainingPenalty):
                     OnPropertyChanged(nameof(PoolOtherAttribute));
                     break;
                 case nameof(Character.PrimaryArm):
