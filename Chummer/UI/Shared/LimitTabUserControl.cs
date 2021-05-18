@@ -67,6 +67,9 @@ namespace Chummer.UI.Shared
                 _objCharacter = new Character();
             }
 
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return;
+
             lblPhysical.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitPhysical));
             lblPhysical.DoOneWayDataBinding("ToolTipText", _objCharacter, nameof(Character.LimitPhysicalToolTip));
             lblMental.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.LimitMental));

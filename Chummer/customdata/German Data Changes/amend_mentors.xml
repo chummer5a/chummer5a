@@ -17,11 +17,6 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!--
-  Hide the German skilljack because it's stupid
-  Set skilljack to flat 0.1 ess and R*1000 cost
-  Set skillwires to R*0.1 ess
--->
 <chummer>
   <mentors>
     <mentor>
@@ -46,6 +41,10 @@
           </bonus>
         </choice>
       </choices>
+    </mentor>
+    <mentor> <!--Great Mother SASS-->
+      <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
+      <hide />
     </mentor>
   </mentors>
 </chummer>

@@ -121,12 +121,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public bool AllowUpgrade
         {
-            get
-            {
-                if (IsNativeLanguage)
-                    return false;
-                return _blnAllowUpgrade;
-            }
+            get => !IsNativeLanguage && _blnAllowUpgrade;
             set => _blnAllowUpgrade = value;
         }
 
@@ -136,15 +131,9 @@ namespace Chummer.Backend.Skills
             set
             {
                 if (ForcedName)
-                {
                     return;
-                }
-
                 if (string.Equals(CurrentDisplayName, value, StringComparison.CurrentCulture))
-                {
                     return;
-                }
-
                 LoadSkillFromData(value);
                 Name = value;
                 OnPropertyChanged();
@@ -210,6 +199,14 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedCyberwareRating = int.MinValue;
+
+        protected override void ResetCachedCyberwareRating()
+        {
+            _intCachedCyberwareRating = int.MinValue;
+        }
+
         /// <summary>
         /// The attributeValue this skill have from Skilljacks + Knowsoft
         /// </summary>
@@ -222,25 +219,35 @@ namespace Chummer.Backend.Skills
                     return _intCachedCyberwareRating;
 
                 string strTranslatedName = CurrentDisplayName;
-                int intMaxHardwire = CharacterObject.Improvements
-                    .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
-                                            (objImprovement.ImprovedName == Name || objImprovement.ImprovedName == strTranslatedName) &&
-                                             objImprovement.Enabled)
-                    .Select(objImprovement => objImprovement.Value.StandardRound()).Concat((-1).Yield()).Max();
+                int intMaxHardwire = -1;
+                foreach (Improvement objImprovement in CharacterObject.Improvements)
+                {
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire &&
+                        (objImprovement.ImprovedName == DictionaryKey ||
+                         objImprovement.ImprovedName == strTranslatedName) && objImprovement.Enabled)
+                    {
+                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
+                    }
+                }
                 if (intMaxHardwire >= 0)
                 {
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
                 int intMaxSkillsoftRating = ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess).StandardRound();
-                if (intMaxSkillsoftRating <= 0) return _intCachedCyberwareRating = 0;
-                int intMax = CharacterObject.Improvements
-                    .Where(objSkillsoftImprovement => objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
-                                                      objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
-                    .Select(objSkillsoftImprovement => objSkillsoftImprovement.Value.StandardRound()).Concat(0.Yield()).Max();
+                if (intMaxSkillsoftRating <= 0)
+                    return _intCachedCyberwareRating = 0;
+                int intMax = 0;
+                foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
+                {
+                    if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Skillsoft &&
+                        objSkillsoftImprovement.ImprovedName == InternalId && objSkillsoftImprovement.Enabled)
+                    {
+                        intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                    }
+                }
 
                 return _intCachedCyberwareRating = Math.Min(intMax, intMaxSkillsoftRating);
-
             }
         }
 
@@ -332,7 +339,7 @@ namespace Chummer.Backend.Skills
                     if (objLoopImprovement.Minimum <= intTotalBaseRating &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        if (objLoopImprovement.ImprovedName == DictionaryKey || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
                                 decExtra += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
@@ -398,7 +405,7 @@ namespace Chummer.Backend.Skills
                     if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName))
+                        if (objLoopImprovement.ImprovedName == DictionaryKey || string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillKarmaCost)
                                 decExtra += objLoopImprovement.Value;
@@ -413,7 +420,7 @@ namespace Chummer.Backend.Skills
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                         }
 
-                        if ((objLoopImprovement.ImprovedName == Name ||
+                        if ((objLoopImprovement.ImprovedName == DictionaryKey ||
                             string.IsNullOrWhiteSpace(objLoopImprovement.ImprovedName) ||
                             objLoopImprovement.ImprovedName == SkillCategory) && objLoopImprovement.ImproveType ==
                             Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum)
@@ -451,7 +458,7 @@ namespace Chummer.Backend.Skills
                     if (objLoopImprovement.Minimum <= BasePoints &&
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        if (objLoopImprovement.ImprovedName == DictionaryKey || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                         {
                             if (objLoopImprovement.ImproveType == Improvement.ImprovementType.KnowledgeSkillPointCost)
                                 decExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
@@ -476,41 +483,12 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override void WriteTo(XmlTextWriter objWriter)
+        public override void WriteToDerived(XmlTextWriter objWriter)
         {
-            if (objWriter == null)
-                return;
-            objWriter.WriteStartElement("skill");
-            objWriter.WriteElementString("guid", Id.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("isknowledge", bool.TrueString);
-            objWriter.WriteElementString("skillcategory", SkillCategory);
-            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
-            objWriter.WriteElementString("notes", Notes);
-            if (!CharacterObject.Created)
-            {
-                objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            }
-
-            if (Specializations.Count != 0)
-            {
-                objWriter.WriteStartElement("specs");
-                foreach (SkillSpecialization objSpecialization in Specializations)
-                {
-                    objSpecialization.Save(objWriter);
-                }
-                objWriter.WriteEndElement();
-            }
-
-            objWriter.WriteElementString("name", Name);
-            objWriter.WriteElementString("type", _strType);
-            objWriter.WriteElementString("isnativelanguage", _blnIsNativeLanguage.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("type", Type);
+            objWriter.WriteElementString("isnativelanguage", IsNativeLanguage.ToString(GlobalOptions.InvariantCultureInfo));
             if (ForcedName)
                 objWriter.WriteElementString("forced", null);
-
-            objWriter.WriteEndElement();
-
         }
 
         public void Load(XmlNode xmlNode)

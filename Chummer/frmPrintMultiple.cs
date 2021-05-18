@@ -20,6 +20,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+ using System.Threading;
  using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -122,27 +123,35 @@ namespace Chummer
                 };
             }
 
-            // Parallelized load because this is one major bottleneck.
+            CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
 
-            Parallel.ForEach(lstCharacters, (objCharacter, objState) =>
+            // Because we're printing info from characters here and we don't have locker objects assigned to characters to prevent changes while a print method is running,
+            // we cannot make this method async, but we still do not want Parallel.ForEach to block UI events
+            Utils.RunWithoutThreadLock(() =>
             {
-                if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
+                // Parallelized load because this is one major bottleneck.
+                Parallel.ForEach(lstCharacters, (objCharacter, objState) =>
                 {
-                    if (!objState.IsStopped)
-                        objState.Stop();
-                    return;
-                }
+                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration || objCancellationTokenSource.IsCancellationRequested)
+                    {
+                        if (!objState.IsStopped)
+                            objState.Stop();
+                        objCancellationTokenSource.Cancel();
+                        return;
+                    }
 
-                bool blnLoadSuccessful = objCharacter.Load();
-                if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration)
-                {
-                    if (!objState.IsStopped)
-                        objState.Stop();
-                    return;
-                }
+                    bool blnLoadSuccessful = objCharacter.Load();
+                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration || objCancellationTokenSource.IsCancellationRequested)
+                    {
+                        if (!objState.IsStopped)
+                            objState.Stop();
+                        objCancellationTokenSource.Cancel();
+                        return;
+                    }
 
-                if (blnLoadSuccessful)
-                    prgProgress.Invoke((Action) FuncIncreaseProgress);
+                    if (blnLoadSuccessful)
+                        prgProgress.Invoke((Action) FuncIncreaseProgress);
+                });
             });
             if (_workerPrinter.CancellationPending)
                 e.Cancel = true;

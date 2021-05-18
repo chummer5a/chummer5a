@@ -119,7 +119,7 @@ namespace Chummer
                         }
                     }
                     lblIncludedTechniques.Text = objTechniqueStringBuilder.ToString();
-                    lblIncludedTechniquesLabel.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
+                    gpbIncludedTechniques.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
 
                     string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
@@ -131,7 +131,7 @@ namespace Chummer
                 {
                     lblKarmaCostLabel.Visible = false;
                     lblKarmaCost.Text = string.Empty;
-                    lblIncludedTechniquesLabel.Visible = false;
+                    gpbIncludedTechniques.Visible = false;
                     lblIncludedTechniques.Text = string.Empty;
                     lblSourceLabel.Visible = false;
                     lblSource.Text = string.Empty;
@@ -142,7 +142,7 @@ namespace Chummer
             {
                 lblKarmaCostLabel.Visible = false;
                 lblKarmaCost.Text = string.Empty;
-                lblIncludedTechniquesLabel.Visible = false;
+                gpbIncludedTechniques.Visible = false;
                 lblIncludedTechniques.Text = string.Empty;
                 lblSourceLabel.Visible = false;
                 lblSource.Text = string.Empty;

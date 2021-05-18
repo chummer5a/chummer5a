@@ -923,9 +923,10 @@
       <source>SG</source>
       <page>86</page>
     </mentor>
+    <!--Great Mother from SASS-->
     <mentor>
       <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
-      <name>Great Mother (SASS)</name>
+      <name>Great Mother</name>
       <advantage>All: +2 to First Aid or Medicine Tests</advantage>
       <disadvantage>Followers of the Great Mother are lovers and healers, not fighters. As a result, they suffer a –1 dice pool modifier for any combat-related actions (using a combat skill, or casting a spell from the Combat category).</disadvantage>
       <choices>
@@ -948,7 +949,7 @@
           </bonus>
         </choice>
         <choice set="2">
-          <name>Magician: +2 dice for Health spells</name>
+          <name>Magician: +2 dice for Health spells, preparations and rituals</name>
           <bonus>
             <spellcategory>
               <name>Health</name>
@@ -2097,7 +2098,7 @@
     </mentor>
     <mentor>
       <id>4d15a346-8f27-42c5-be8c-33a7bd56067d</id>
-      <name>Great Mother</name>
+      <name>Great Mother (alt)</name>
       <advantage>All: When not in an urban area, gain +1 to any skill test with skills in the Outdoors skill group.</advantage>
       <disadvantage>Treat any background count due to pollution or twisted element as twice the actual rating.</disadvantage>
       <choices>

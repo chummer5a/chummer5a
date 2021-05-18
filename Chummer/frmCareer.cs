@@ -257,7 +257,7 @@ namespace Chummer
                         lblPossessed.DoDatabinding("Visible", CharacterObject, nameof(Character.Possessed));
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
-                        chkPsycheActive.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
+                        chkPsycheActiveMagician.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
                         chkPsycheActiveTechnomancer.DoDatabinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
                     }
 
@@ -2202,7 +2202,7 @@ namespace Chummer
             IsCharacterUpdateRequested = true;
         }
 
-        private void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
+        private async void mnuSpecialCloningMachine_Click(object sender, EventArgs e)
         {
             int intClones;
             using (frmSelectNumber frmPickNumber = new frmSelectNumber(0)
@@ -2229,7 +2229,10 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 Character[] lstClones = new Character[intClones];
-                Parallel.For(0, intClones, i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName, CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true));
+                // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
+                await Task.Run(() => Parallel.For(0, intClones,
+                    i => lstClones[i] = Program.MainForm.LoadCharacter(CharacterObject.FileName,
+                        CharacterObject.Alias + strSpace + i.ToString(GlobalOptions.CultureInfo), true)));
                 Program.MainForm.OpenCharacterList(lstClones, false);
             }
         }
@@ -2950,11 +2953,15 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        objMerge.FileName = saveFileDialog.FileName;
-                        if (objMerge.Save())
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
-                            // Get the name of the file and destroy the references to the Vessel and the merged character.
-                            strOpenFile = objMerge.FileName;
+                            frmProgressBar.PerformStep(objMerge.CharacterName, true);
+                            objMerge.FileName = saveFileDialog.FileName;
+                            if (objMerge.Save())
+                            {
+                                // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                strOpenFile = objMerge.FileName;
+                            }
                         }
                     }
                 }
@@ -3102,11 +3109,15 @@ namespace Chummer
                     {
                         if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
                             return;
-                        objMerge.FileName = saveFileDialog.FileName;
-                        if (objMerge.Save())
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                         {
-                            // Get the name of the file and destroy the references to the Vessel and the merged character.
-                            strOpenFile = objMerge.FileName;
+                            frmProgressBar.PerformStep(objMerge.CharacterName, true);
+                            objMerge.FileName = saveFileDialog.FileName;
+                            if (objMerge.Save())
+                            {
+                                // Get the name of the file and destroy the references to the Vessel and the merged character.
+                                strOpenFile = objMerge.FileName;
+                            }
                         }
                     }
                 }
@@ -6143,7 +6154,7 @@ namespace Chummer
 
 
 
-        private void cmdSustainSpell_Click(object sender, EventArgs e)
+        private void cmdAddSustainedSpell_Click(object sender, EventArgs e)
         {
             AddSustainedSpell();
         }
@@ -16372,10 +16383,10 @@ namespace Chummer
             if (flpSustainedSpells == null && flpSustainedComplexForms == null && flpSustainedCritterPowers == null)
                 return;
 
-            if (CharacterObject.SustainedCollection.Count != 0 && !chkPsycheActive.Visible)
+            if (CharacterObject.SustainedCollection.Count != 0 && !chkPsycheActiveMagician.Visible)
             {
                 //Sets up the Psyche Active Checkbox
-                chkPsycheActive.Visible = true;
+                chkPsycheActiveMagician.Visible = true;
                 chkPsycheActiveTechnomancer.Visible = true;
             }
 
@@ -16475,7 +16486,7 @@ namespace Chummer
                             if (CharacterObject.SustainedCollection.Count == 0)
                             {
                                 CharacterObject.PsycheActive = false;
-                                chkPsycheActive.Visible = false;
+                                chkPsycheActiveMagician.Visible = false;
                                 chkPsycheActiveTechnomancer.Visible = false;
                             }
                         }

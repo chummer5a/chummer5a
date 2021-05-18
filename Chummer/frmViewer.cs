@@ -25,9 +25,9 @@ using System.Drawing.Printing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
@@ -48,6 +48,7 @@ namespace Chummer
         private string _strPrintLanguage = GlobalOptions.Language;
         private readonly BackgroundWorker _workerRefresher = new BackgroundWorker();
         private bool _blnQueueRefresherRun;
+        private CancellationTokenSource _objRefresherCancellationTokenSource;
         private readonly BackgroundWorker _workerOutputGenerator = new BackgroundWorker();
         private bool _blnQueueOutputGeneratorRun;
         private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo) + ".htm");
@@ -159,7 +160,10 @@ namespace Chummer
             if (_blnQueueRefresherRun)
             {
                 if (!_workerRefresher.IsBusy)
+                {
+                    _objRefresherCancellationTokenSource = new CancellationTokenSource();
                     _workerRefresher.RunWorkerAsync();
+                }
             }
             else if (_blnQueueOutputGeneratorRun && !_workerOutputGenerator.IsBusy)
             {
@@ -239,7 +243,10 @@ namespace Chummer
             Application.Idle -= RunQueuedWorkers;
 
             if (_workerRefresher.IsBusy)
+            {
+                _objRefresherCancellationTokenSource.Cancel();
                 _workerRefresher.CancelAsync();
+            }
             if (_workerOutputGenerator.IsBusy)
                 _workerOutputGenerator.CancelAsync();
 
@@ -290,7 +297,10 @@ namespace Chummer
             if (_workerOutputGenerator.IsBusy)
                 _workerOutputGenerator.CancelAsync();
             if (_workerRefresher.IsBusy)
+            {
+                _objRefresherCancellationTokenSource.Cancel();
                 _workerRefresher.CancelAsync();
+            }
             _blnQueueRefresherRun = true;
         }
 
@@ -317,69 +327,8 @@ namespace Chummer
                 _objCharacterXml = null;
                 return;
             }
-            // Write the Character information to a MemoryStream so we don't need to create any files.
-            using (MemoryStream objStream = new MemoryStream())
-            {
-                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
-                {
-                    // Begin the document.
-                    objWriter.WriteStartDocument();
-
-                    // </characters>
-                    objWriter.WriteStartElement("characters");
-
-                    foreach (Character objCharacter in _lstCharacters)
-                    {
-                        if (_workerRefresher.CancellationPending)
-                        {
-                            e.Cancel = true;
-                            return;
-                        }
-#if DEBUG
-                        objCharacter.PrintToStream(objStream, objWriter, _objPrintCulture, _strPrintLanguage);
-#else
-                        objCharacter.PrintToStream(objWriter, _objPrintCulture, _strPrintLanguage);
-#endif
-                    }
-
-                    // </characters>
-                    objWriter.WriteEndElement();
-                    if (_workerRefresher.CancellationPending)
-                    {
-                        e.Cancel = true;
-                        return;
-                    }
-
-                    // Finish the document and flush the Writer and Stream.
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-
-                    objStream.Position = 0;
-
-                    // Read the stream.
-                    XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-                    // Read it back in as an XmlDocument.
-                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                    {
-                        using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
-                        {
-                            if (_workerRefresher.CancellationPending)
-                            {
-                                e.Cancel = true;
-                                return;
-                            }
-
-                            // Put the stream into an XmlDocument and send it off to the Viewer.
-                            objCharacterXml.Load(objXmlReader);
-                        }
-                    }
-
-                    if (_workerRefresher.CancellationPending)
-                        e.Cancel = true;
-                    else
-                        _objCharacterXml = objCharacterXml;
-                }
-            }
+            _objCharacterXml = CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
+                _objRefresherCancellationTokenSource.Token, _lstCharacters.ToArray());
         }
 
         private void FinishRefresh(object sender, RunWorkerCompletedEventArgs e)
@@ -622,7 +571,7 @@ namespace Chummer
             string strOldDefaultPrinter = null;
             try
             {
-                strOldDefaultPrinter = SystemPrinters.GetDefaultPrinter();
+                strOldDefaultPrinter = NativeMethods.GetDefaultPrinter();
                 // Try to remove headers and footers from the printer and set default printer settings to be conducive to sheet printing
                 try
                 {
@@ -653,7 +602,7 @@ namespace Chummer
                 }
 
                 // webBrowser can only print to the default printer, so we (temporarily) change it to the PDF printer
-                if (SystemPrinters.SetDefaultPrinter(strPdfPrinterName))
+                if (NativeMethods.SetDefaultPrinter(strPdfPrinterName))
                 {
                     // There is also no way to silently have it print to a PDF, so we have to show the print dialog
                     // and have the user click through, though the PDF printer will be temporarily set as their default
@@ -668,7 +617,7 @@ namespace Chummer
             finally
             {
                 if (!string.IsNullOrEmpty(strOldDefaultPrinter))
-                    SystemPrinters.SetDefaultPrinter(strOldDefaultPrinter);
+                    NativeMethods.SetDefaultPrinter(strOldDefaultPrinter);
                 // Try to remove headers and footers from the printer and
                 try
                 {
@@ -773,40 +722,6 @@ namespace Chummer
             }
             _blnLoading = false;
             RefreshCharacters();
-        }
-
-        public static class SystemPrinters
-        {
-            [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern bool SetDefaultPrinter(string strName);
-
-            [DllImport("winspool.drv", CharSet = CharSet.Auto, SetLastError = true)]
-            public static extern bool GetDefaultPrinter(StringBuilder sbdBuffer, ref int ptrBuffer);
-
-            public static string GetDefaultPrinter()
-            {
-
-                int ptrBuffer = 0;
-                if (GetDefaultPrinter(null, ref ptrBuffer))
-                {
-                    return null;
-                }
-                int intLastWin32Error = Marshal.GetLastWin32Error();
-                if (intLastWin32Error == 122) // ERROR_INSUFFICIENT_BUFFER
-                {
-                    StringBuilder sbdBuffer = new StringBuilder(ptrBuffer);
-                    if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
-                    {
-                        return sbdBuffer.ToString();
-                    }
-                    intLastWin32Error = Marshal.GetLastWin32Error();
-                }
-                if (intLastWin32Error == 2) // ERROR_FILE_NOT_FOUND
-                {
-                    return null;
-                }
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-            }
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Chummer
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtText = new System.Windows.Forms.TextBox();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
@@ -230,7 +230,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
         private System.Windows.Forms.TextBox txtText;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;

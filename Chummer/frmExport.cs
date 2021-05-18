@@ -23,6 +23,7 @@
  using System.IO;
  using System.Text;
  using System.Text.RegularExpressions;
+ using System.Threading;
  using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
@@ -38,6 +39,7 @@ namespace Chummer
         private readonly BackgroundWorker _workerJsonLoader = new BackgroundWorker();
         private readonly BackgroundWorker _workerXmlLoader = new BackgroundWorker();
         private readonly BackgroundWorker _workerXmlGenerator = new BackgroundWorker();
+        private CancellationTokenSource _objXmlGeneratorCancellationTokenSource;
         private XmlDocument _objCharacterXml;
         private bool _blnSelected;
         private string _strXslt;
@@ -93,6 +95,7 @@ namespace Chummer
 
         private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
         {
+            _objXmlGeneratorCancellationTokenSource?.Cancel();
             _workerJsonLoader.CancelAsync();
             _workerXmlLoader.CancelAsync();
             _workerXmlGenerator.CancelAsync();
@@ -148,6 +151,7 @@ namespace Chummer
                 UseWaitCursor = true;
                 cmdOK.Enabled = false;
                 txtText.Text = LanguageManager.GetString("String_Generating_Data");
+                _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                 _workerXmlGenerator.RunWorkerAsync();
                 return;
             }
@@ -197,43 +201,7 @@ namespace Chummer
         #region Methods
         private void GenerateCharacterXml(object sender, DoWorkEventArgs e)
         {
-            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
-            // Write the Character information to a MemoryStream so we don't need to create any files.
-            MemoryStream objStream = new MemoryStream();
-            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
-            {
-                // Being the document.
-                objWriter.WriteStartDocument();
-
-                // </characters>
-                objWriter.WriteStartElement("characters");
-
-#if DEBUG
-                _objCharacter.PrintToStream(objStream, objWriter, _objExportCulture, _strExportLanguage);
-#else
-                _objCharacter.PrintToStream(objWriter, _objExportCulture, _strExportLanguage);
-#endif
-
-                // </characters>
-                objWriter.WriteEndElement();
-
-                if (e.Cancel)
-                    return;
-
-                // Finish the document and flush the Writer and Stream.
-                objWriter.WriteEndDocument();
-                objWriter.Flush();
-
-                if (e.Cancel)
-                    return;
-
-                // Read the stream.
-                objStream.Position = 0;
-                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
-                        objCharacterXml.Load(objXmlReader);
-            }
-            e.Result = objCharacterXml;
+            e.Result = _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage, _objXmlGeneratorCancellationTokenSource.Token);
         }
 
         private void FinalizeCharacterXml(object sender, RunWorkerCompletedEventArgs e)

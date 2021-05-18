@@ -46,13 +46,14 @@ namespace Chummer
             this.lblThreshold = new System.Windows.Forms.Label();
             this.chkCinematicGameplay = new Chummer.ColorableCheckBox(this.components);
             this.chkRushJob = new Chummer.ColorableCheckBox(this.components);
-            this.tlpTopBar = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTopBar = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpRollParameters = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRollControls = new System.Windows.Forms.FlowLayoutPanel();
             this.lblResults = new System.Windows.Forms.Label();
             this.chkVariableGlitch = new Chummer.ColorableCheckBox(this.components);
             this.chkBubbleDie = new Chummer.ColorableCheckBox(this.components);
+            this.pnlResults = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
@@ -60,6 +61,7 @@ namespace Chummer
             this.tlpTopBar.SuspendLayout();
             this.flpRollParameters.SuspendLayout();
             this.flpRollControls.SuspendLayout();
+            this.pnlResults.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblRoll
@@ -79,6 +81,16 @@ namespace Chummer
             this.nudDice.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudDice.AutoSize = true;
             this.nudDice.Location = new System.Drawing.Point(34, 3);
+            this.nudDice.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudDice.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudDice.Name = "nudDice";
             this.nudDice.Size = new System.Drawing.Size(41, 20);
             this.nudDice.TabIndex = 1;
@@ -158,9 +170,9 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.chkCinematicGameplay, 1, 2);
             this.tlpMain.Controls.Add(this.chkRushJob, 1, 3);
             this.tlpMain.Controls.Add(this.tlpTopBar, 0, 0);
-            this.tlpMain.Controls.Add(this.lblResults, 2, 8);
             this.tlpMain.Controls.Add(this.chkVariableGlitch, 1, 5);
             this.tlpMain.Controls.Add(this.chkBubbleDie, 1, 4);
+            this.tlpMain.Controls.Add(this.pnlResults, 2, 8);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -204,6 +216,16 @@ namespace Chummer
             this.nudGremlins.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudGremlins.AutoSize = true;
             this.nudGremlins.Location = new System.Drawing.Point(217, 173);
+            this.nudGremlins.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudGremlins.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudGremlins.Name = "nudGremlins";
             this.nudGremlins.Size = new System.Drawing.Size(41, 20);
             this.nudGremlins.TabIndex = 7;
@@ -225,6 +247,16 @@ namespace Chummer
             this.nudThreshold.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudThreshold.AutoSize = true;
             this.nudThreshold.Location = new System.Drawing.Point(217, 147);
+            this.nudThreshold.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudThreshold.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudThreshold.Name = "nudThreshold";
             this.nudThreshold.Size = new System.Drawing.Size(41, 20);
             this.nudThreshold.TabIndex = 14;
@@ -346,7 +378,8 @@ namespace Chummer
             // lblResults
             // 
             this.lblResults.AutoSize = true;
-            this.lblResults.Location = new System.Drawing.Point(217, 202);
+            this.lblResults.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblResults.Location = new System.Drawing.Point(3, 6);
             this.lblResults.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblResults.Name = "lblResults";
             this.lblResults.Size = new System.Drawing.Size(48, 13);
@@ -382,10 +415,21 @@ namespace Chummer
             this.chkBubbleDie.Text = "Bubble Die (Fix Even Dicepool Glitch Chances)";
             this.chkBubbleDie.UseVisualStyleBackColor = true;
             // 
+            // pnlResults
+            // 
+            this.pnlResults.AutoScroll = true;
+            this.pnlResults.Controls.Add(this.lblResults);
+            this.pnlResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlResults.Location = new System.Drawing.Point(214, 196);
+            this.pnlResults.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlResults.Name = "pnlResults";
+            this.pnlResults.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlResults.Size = new System.Drawing.Size(392, 227);
+            this.pnlResults.TabIndex = 19;
+            // 
             // frmDiceRoller
             // 
             this.AcceptButton = this.cmdRollDice;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
@@ -411,6 +455,8 @@ namespace Chummer
             this.flpRollParameters.PerformLayout();
             this.flpRollControls.ResumeLayout(false);
             this.flpRollControls.PerformLayout();
+            this.pnlResults.ResumeLayout(false);
+            this.pnlResults.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -436,10 +482,11 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkBubbleDie;
         private Chummer.ColorableCheckBox chkCinematicGameplay;
         private Chummer.ColorableCheckBox chkRushJob;
-        private System.Windows.Forms.TableLayoutPanel tlpTopBar;
+        private Chummer.BufferedTableLayoutPanel tlpTopBar;
         private System.Windows.Forms.FlowLayoutPanel flpRollParameters;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpRollControls;
         private Chummer.ColorableCheckBox chkVariableGlitch;
+        private System.Windows.Forms.Panel pnlResults;
     }
 }

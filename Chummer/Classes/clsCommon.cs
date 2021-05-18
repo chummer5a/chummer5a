@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Forms;
 using System.IO;
 using System.Linq;
@@ -27,6 +28,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using Chummer.Annotations;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
@@ -896,6 +898,50 @@ namespace Chummer
             return !GlobalOptions.ConfirmKarmaExpense ||
                    Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
+        {
+            return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, lstCharacters);
+        }
+
+        public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
+        {
+            XmlDocument objReturn = new XmlDocument { XmlResolver = null };
+            // Write the Character information to a MemoryStream so we don't need to create any files.
+            using (MemoryStream objStream = new MemoryStream())
+            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+            {
+                // Begin the document.
+                objWriter.WriteStartDocument();
+
+                // </characters>
+                objWriter.WriteStartElement("characters");
+
+                foreach (Character objCharacter in lstCharacters)
+                {
+                    objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                    if (objToken.IsCancellationRequested)
+                        return objReturn;
+                }
+
+                // </characters>
+                objWriter.WriteEndElement();
+
+                // Finish the document and flush the Writer and Stream.
+                objWriter.WriteEndDocument();
+                objWriter.Flush();
+
+                if (objToken.IsCancellationRequested)
+                    return objReturn;
+
+                // Read the stream.
+                objStream.Position = 0;
+                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                    objReturn.Load(objXmlReader);
+            }
+            return objReturn;
         }
 
         #region PDF Functions

@@ -64,7 +64,7 @@ namespace Chummer
             this.txtName = new System.Windows.Forms.TextBox();
             this.chkArea = new Chummer.ColorableCheckBox();
             this.chkLimited = new Chummer.ColorableCheckBox();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpRestrictedTarget = new System.Windows.Forms.FlowLayoutPanel();
             this.flpDV = new System.Windows.Forms.FlowLayoutPanel();
             this.flpModifiers = new System.Windows.Forms.FlowLayoutPanel();
@@ -714,7 +714,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtName;
         private Chummer.ColorableCheckBox chkArea;
         private Chummer.ColorableCheckBox chkLimited;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpRestrictedTarget;
         private System.Windows.Forms.FlowLayoutPanel flpDV;
         private System.Windows.Forms.FlowLayoutPanel flpModifiers;

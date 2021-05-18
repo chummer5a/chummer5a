@@ -93,6 +93,9 @@ namespace Chummer.UI.Skills
                 Utils.BreakIfDebug();
             }
 
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return;
+
             _lstDropDownActiveSkills = GenerateDropdownFilter(_objCharacter);
             _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter(_objCharacter);
 

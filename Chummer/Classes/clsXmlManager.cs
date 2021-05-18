@@ -24,6 +24,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -43,7 +44,7 @@ namespace Chummer
             /// <summary>
             /// Whether or not the XML content has been successfully checked for duplicate guids.
             /// </summary>
-            public bool DuplicatesChecked { get; set; }
+            public bool DuplicatesChecked { get; set; } = Utils.IsUnitTest;
 
             private XmlDocument _xmlContent = new XmlDocument { XmlResolver = null };
 
@@ -172,7 +173,12 @@ namespace Chummer
             bool blnFileFound = false;
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
-                await Task.Delay(100);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
             foreach (string strDirectory in s_SetDataDirectories)
             {
                 strPath = Path.Combine(strDirectory, strFileName);
@@ -237,7 +243,13 @@ namespace Chummer
                 }
             }
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
-                await Task.Delay(100);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
+
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
         }
 
@@ -284,7 +296,13 @@ namespace Chummer
             bool blnFileFound = false;
             string strPath = string.Empty;
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
-                await Task.Delay(100);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
+
             foreach (string strDirectory in s_SetDataDirectories)
             {
                 strPath = Path.Combine(strDirectory, strFileName);
@@ -426,7 +444,12 @@ namespace Chummer
             else
             {
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
-                    await Task.Delay(100);
+                {
+                    if (blnSync)
+                        Thread.Sleep(Utils.DefaultSleepDuration);
+                    else
+                        await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                }
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)
                     xmlReturn = xmlReferenceOfReturn.XmlContent.Clone() as XmlDocument;
@@ -491,7 +514,7 @@ namespace Chummer
                         sbdDuplicatesNames.AppendLine();
                     sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                 }
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
+                Program.MainForm?.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
                     , LanguageManager.GetString("Message_DuplicateGuidWarning")
                     , setDuplicateIDs.Count
                     , strFileName
@@ -500,7 +523,7 @@ namespace Chummer
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
+                Program.MainForm?.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
                     , LanguageManager.GetString("Message_NonGuidIdWarning")
                     , lstItemsWithMalformedIDs.Count
                     , strFileName
@@ -1027,7 +1050,7 @@ namespace Chummer
                         }
                         catch (ArgumentException ex)
                         {
-                            Program.MainForm.ShowMessageBox(ex.ToString());
+                            Program.MainForm?.ShowMessageBox(ex.ToString());
                             return false;
                         }
 
@@ -1199,7 +1222,7 @@ namespace Chummer
                                                                     }
                                                                     catch (ArgumentException ex)
                                                                     {
-                                                                        Program.MainForm.ShowMessageBox(ex.ToString());
+                                                                        Program.MainForm?.ShowMessageBox(ex.ToString());
                                                                         // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
                                                                         // So just exit out early instead of spamming the user with a bunch of error messages
                                                                         if (!blnReturn)
@@ -1229,7 +1252,7 @@ namespace Chummer
                                                     }
                                                     catch (ArgumentException ex)
                                                     {
-                                                        Program.MainForm.ShowMessageBox(ex.ToString());
+                                                        Program.MainForm?.ShowMessageBox(ex.ToString());
                                                         // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
                                                         // So just exit out early instead of spamming the user with a bunch of error messages
                                                         if (!blnReturn)
@@ -1400,12 +1423,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                Program.MainForm?.ShowMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                Program.MainForm?.ShowMessageBox(ex.ToString());
                 return;
             }
 

@@ -63,7 +63,7 @@ namespace Chummer.UI.Powers
             this.cboDisplayFilter.IntegralHeight = false;
             this.cboDisplayFilter.Location = new System.Drawing.Point(238, 4);
             this.cboDisplayFilter.Name = "cboDisplayFilter";
-            this.cboDisplayFilter.Size = new System.Drawing.Size(239, 21);
+            this.cboDisplayFilter.Size = new System.Drawing.Size(240, 21);
             this.cboDisplayFilter.TabIndex = 5;
             this.cboDisplayFilter.TooltipText = "";
             this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
@@ -107,9 +107,9 @@ namespace Chummer.UI.Powers
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 4;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.Controls.Add(this.cmdAddPower, 2, 0);
             this.tlpMain.Controls.Add(this.lblPowerPointsLabel, 0, 1);
             this.tlpMain.Controls.Add(this.lblPowerPoints, 1, 1);
@@ -121,7 +121,7 @@ namespace Chummer.UI.Powers
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(480, 80);
+            this.tlpMain.Size = new System.Drawing.Size(481, 80);
             this.tlpMain.TabIndex = 11;
             // 
             // PowersTabUserControl
@@ -133,7 +133,7 @@ namespace Chummer.UI.Powers
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(480, 80);
             this.Name = "PowersTabUserControl";
-            this.Size = new System.Drawing.Size(480, 80);
+            this.Size = new System.Drawing.Size(481, 80);
             this.Load += new System.EventHandler(this.PowersTabUserControl_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

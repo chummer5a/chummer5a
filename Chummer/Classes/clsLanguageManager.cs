@@ -480,12 +480,13 @@ namespace Chummer
         /// Check the Keys in the selected language file against the English version.
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
-        public static void VerifyStrings(string strLanguage)
+        public static async Task VerifyStrings(string strLanguage)
         {
-            ConcurrentBag<string> lstEnglish = new ConcurrentBag<string>();
-            ConcurrentBag<string> lstLanguage = new ConcurrentBag<string>();
-            Parallel.Invoke(
-                () =>
+            HashSet<string> lstEnglish = new HashSet<string>();
+            HashSet<string> lstLanguage = new HashSet<string>();
+            // Potentially expensive checks that can (and therefore should) be parallelized.
+            await Task.WhenAll(
+                Task.Run(() =>
                 {
                     // Load the English version.
                     string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalOptions.DefaultLanguage + ".xml");
@@ -508,8 +509,8 @@ namespace Chummer
                     catch (XmlException)
                     {
                     }
-                },
-                () =>
+                }),
+                Task.Run(() =>
                 {
                     // Load the selected language version.
                     string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
@@ -532,12 +533,14 @@ namespace Chummer
                     catch (XmlException)
                     {
                     }
-                });
+                }));
 
             StringBuilder sbdMissingMessage = new StringBuilder();
             StringBuilder sbdUnusedMessage = new StringBuilder();
-            Parallel.Invoke(
-                () =>
+            // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
+            // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+            await Task.WhenAll(
+                Task.Run(() =>
                 {
                     // Check for strings that are in the English file but not in the selected language file.
                     foreach (string strKey in lstEnglish)
@@ -545,8 +548,8 @@ namespace Chummer
                         if (!lstLanguage.Contains(strKey))
                             sbdMissingMessage.AppendLine("Missing String: " + strKey);
                     }
-                },
-                () =>
+                }),
+                Task.Run(() =>
                 {
                     // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
                     foreach (string strKey in lstLanguage)
@@ -554,7 +557,7 @@ namespace Chummer
                         if (!lstEnglish.Contains(strKey))
                             sbdUnusedMessage.AppendLine("Unused String: " + strKey);
                     }
-                });
+                }));
 
             string strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
@@ -671,7 +674,24 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public static string TranslateExtra(string strExtra, string strIntoLanguage = "", Character objCharacter = null, string strPreferFile = "")
+        public static string TranslateExtra(string strExtra, string strIntoLanguage = "", Character objCharacter = null,
+            string strPreferFile = "")
+        {
+            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
+            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+            // TODO: Do this overhaul.
+            return Utils.RunWithoutThreadLock(() => TranslateExtraAsync(strExtra, strIntoLanguage, objCharacter, strPreferFile));
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public static async Task<string> TranslateExtraAsync(string strExtra, string strIntoLanguage = "", Character objCharacter = null,
+            string strPreferFile = "")
         {
             if (string.IsNullOrEmpty(strExtra))
                 return string.Empty;
@@ -760,57 +780,70 @@ namespace Chummer
                         object strReturnLock = new object();
                         if (!string.IsNullOrEmpty(strPreferFile))
                         {
-                            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
-                                in s_LstAXPathsToSearch)
+                            await Task.Run(() =>
                             {
-                                Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
+                                foreach (Tuple<string, string, Func<XPathNavigator, string>,
+                                    Func<XPathNavigator, string>>[] aobjPaths
+                                in s_LstAXPathsToSearch)
                                 {
-                                    foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
-                                        .Select(objXPathPair.Item2))
-                                    {
-                                        if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
-                                            return;
-                                        if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                            continue;
-                                        string strTranslate = objXPathPair.Item4(objNode);
-                                        if (string.IsNullOrEmpty(strTranslate))
-                                            continue;
-                                        objState.Break();
-                                        objCancellationTokenSource.Cancel();
-                                        lock (strReturnLock)
-                                            strReturn = strTranslate;
-                                        break;
-                                    }
-                                });
-                            }
+                                    Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
+                                        (objXPathPair, objState) =>
+                                        {
+                                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
+                                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths,
+                                                    strIntoLanguage)
+                                                .Select(objXPathPair.Item2))
+                                            {
+                                                if (objCancellationToken.IsCancellationRequested ||
+                                                    objState.ShouldExitCurrentIteration)
+                                                    return;
+                                                if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                                    continue;
+                                                string strTranslate = objXPathPair.Item4(objNode);
+                                                if (string.IsNullOrEmpty(strTranslate))
+                                                    continue;
+                                                objState.Break();
+                                                objCancellationTokenSource.Cancel();
+                                                lock (strReturnLock)
+                                                    strReturn = strTranslate;
+                                                break;
+                                            }
+                                        });
+
+                                }
+                            }, objCancellationTokenSource.Token);
                         }
                         if (!objCancellationToken.IsCancellationRequested)
                         {
-                            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
-                                in s_LstAXPathsToSearch)
+                            await Task.Run(() =>
                             {
-                                Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                                foreach (Tuple<string, string, Func<XPathNavigator, string>,
+                                        Func<XPathNavigator, string>>[] aobjPaths
+                                    in s_LstAXPathsToSearch)
                                 {
-                                    foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
-                                        .Select(objXPathPair.Item2))
+                                    Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
                                     {
-                                        if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
-                                            return;
-                                        if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                            continue;
-                                        string strTranslate = objXPathPair.Item4(objNode);
-                                        if (string.IsNullOrEmpty(strTranslate))
-                                            continue;
-                                        objState.Break();
-                                        objCancellationTokenSource.Cancel();
-                                        lock (strReturnLock)
-                                            strReturn = strTranslate;
-                                        break;
-                                    }
-                                });
-                            }
+                                        foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
+                                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
+                                            .Select(objXPathPair.Item2))
+                                        {
+                                            if (objCancellationToken.IsCancellationRequested ||
+                                                objState.ShouldExitCurrentIteration)
+                                                return;
+                                            if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                                continue;
+                                            string strTranslate = objXPathPair.Item4(objNode);
+                                            if (string.IsNullOrEmpty(strTranslate))
+                                                continue;
+                                            objState.Break();
+                                            objCancellationTokenSource.Cancel();
+                                            lock (strReturnLock)
+                                                strReturn = strTranslate;
+                                            break;
+                                        }
+                                    });
+                                }
+                            }, objCancellationTokenSource.Token);
                         }
                         break;
                 }
@@ -830,7 +863,24 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
-        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", Character objCharacter = null, string strPreferFile = "")
+        public static string ReverseTranslateExtra(string strExtra, string strFromLanguage = "",
+            Character objCharacter = null, string strPreferFile = "")
+        {
+            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
+            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
+            // TODO: Do this overhaul.
+            return Utils.RunWithoutThreadLock(() => ReverseTranslateExtraAsync(strExtra, strFromLanguage, objCharacter, strPreferFile));
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public static async Task<string> ReverseTranslateExtraAsync(string strExtra, string strFromLanguage = "",
+            Character objCharacter = null, string strPreferFile = "")
         {
             if (string.IsNullOrEmpty(strFromLanguage))
                 strFromLanguage = GlobalOptions.Language;
@@ -893,57 +943,66 @@ namespace Chummer
             object strReturnLock = new object();
             if (!string.IsNullOrEmpty(strPreferFile))
             {
-                foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
-                    in s_LstAXPathsToSearch)
+                await Task.Run(() =>
                 {
-                    Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
+                    foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]
+                            aobjPaths
+                        in s_LstAXPathsToSearch)
                     {
-                        foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
-                            .Select(objXPathPair.Item2))
+                        Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
                         {
-                            if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
-                                return;
-                            if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                continue;
-                            string strOriginal = objXPathPair.Item3(objNode);
-                            if (string.IsNullOrEmpty(strOriginal))
-                                continue;
-                            objState.Break();
-                            objCancellationTokenSource.Cancel();
-                            lock (strReturnLock)
-                                strReturn = strOriginal;
-                            break;
-                        }
-                    });
-                }
+                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
+                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
+                                .Select(objXPathPair.Item2))
+                            {
+                                if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
+                                    return;
+                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                    continue;
+                                string strOriginal = objXPathPair.Item3(objNode);
+                                if (string.IsNullOrEmpty(strOriginal))
+                                    continue;
+                                objState.Break();
+                                objCancellationTokenSource.Cancel();
+                                lock (strReturnLock)
+                                    strReturn = strOriginal;
+                                break;
+                            }
+                        });
+                    }
+                }, objCancellationTokenSource.Token);
             }
 
-            if (objCancellationToken.IsCancellationRequested)
-                return strReturn;
-            foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[] aobjPaths
-                in s_LstAXPathsToSearch)
+            if (!objCancellationToken.IsCancellationRequested)
             {
-                Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                await Task.Run(() =>
                 {
-                    foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
-                        .Select(objXPathPair.Item2))
+                    foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]
+                            aobjPaths
+                        in s_LstAXPathsToSearch)
                     {
-                        if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
-                            return;
-                        if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                            continue;
-                        string strOriginal = objXPathPair.Item3(objNode);
-                        if (string.IsNullOrEmpty(strOriginal))
-                            continue;
-                        objState.Break();
-                        objCancellationTokenSource.Cancel();
-                        lock (strReturnLock)
-                            strReturn = strOriginal;
-                        break;
+                        Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                        {
+                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
+                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
+                                .Select(objXPathPair.Item2))
+                            {
+                                if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
+                                    return;
+                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                    continue;
+                                string strOriginal = objXPathPair.Item3(objNode);
+                                if (string.IsNullOrEmpty(strOriginal))
+                                    continue;
+                                objState.Break();
+                                objCancellationTokenSource.Cancel();
+                                lock (strReturnLock)
+                                    strReturn = strOriginal;
+                                break;
+                            }
+                        });
                     }
-                });
+                }, objCancellationTokenSource.Token);
             }
 
             return strReturn;

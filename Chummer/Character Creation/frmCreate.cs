@@ -10609,22 +10609,31 @@ namespace Chummer
                 ExpenseUndo objNuyenUndo = new ExpenseUndo();
                 objNuyenUndo.CreateNuyen(NuyenExpenseType.ManualAdd, string.Empty);
                 objNuyen.Undo = objNuyenUndo;
+                
+                CharacterObject.Created = true;
 
                 _blnSkipToolStripRevert = true;
-                if (!CharacterObject.Save())
+                using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                 {
-                    CharacterObject.ExpenseEntries.Clear();
-                    if (lstAttributesToAdd != null)
+                    frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                    if (!CharacterObject.Save())
                     {
-                        foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                        CharacterObject.ExpenseEntries.Clear();
+                        if (lstAttributesToAdd != null)
                         {
-                            CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                            foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                            {
+                                CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                            }
                         }
+
+                        CharacterObject.Created = false;
+                        return false;
                     }
-                    return false;
+
+                    IsDirty = false;
                 }
 
-                IsDirty = false;
                 Character objOpenCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
@@ -12750,8 +12759,12 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
-                        if (!CharacterObject.Save(strNewName))
-                            return false;
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
+                        {
+                            frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                            if (!CharacterObject.Save(strNewName))
+                                return false;
+                        }
                     }
                 }
 
@@ -12805,9 +12818,6 @@ namespace Chummer
 
             if (!ValidateCharacter())
                 return false;
-
-            // The user has confirmed that the character should be Create.
-            CharacterObject.Created = true;
 
             return true;
         }
@@ -14278,15 +14288,18 @@ namespace Chummer
             WriteNotes(objNotes, treMartialArts.SelectedNode);
         }
 
-        private void btnCreateBackstory_Click(object sender, EventArgs e)
+        private async void btnCreateBackstory_Click(object sender, EventArgs e)
         {
-            if (_objStoryBuilder == null)
+            using (new CursorWait(this))
             {
-                _objStoryBuilder = new StoryBuilder(CharacterObject);
-                btnCreateBackstory.Enabled = false;
-            }
+                if (_objStoryBuilder == null)
+                {
+                    _objStoryBuilder = new StoryBuilder(CharacterObject);
+                    btnCreateBackstory.Enabled = false;
+                }
 
-            CharacterObject.Background = _objStoryBuilder.GetStory(GlobalOptions.Language);
+                CharacterObject.Background = await _objStoryBuilder.GetStory(GlobalOptions.Language);
+            }
         }
 
         private void mnuSpecialConfirmValidity_Click(object sender, EventArgs e)

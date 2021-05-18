@@ -76,6 +76,9 @@ namespace Chummer.UI.Powers
                 _objCharacter = new Character();
             }
 
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return;
+
             _objCharacter.Powers.ListChanged += (sender, e) => {
                 if (e.ListChangedType == ListChangedType.ItemChanged)
                 {

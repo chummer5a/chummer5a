@@ -67,6 +67,14 @@ namespace Chummer
         Dark
     }
 
+    public enum DpiScalingMethod
+    {
+        None = 0,
+        Zoom,       // System
+        Rescale,    // PerMonitor/PerMonitorV2
+        SmartZoom   // System (Enhanced)
+    }
+
     public sealed class SourcebookInfo : IDisposable
     {
         private string _strPath = string.Empty;
@@ -153,6 +161,9 @@ namespace Chummer
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
         public const string DefaultCharacterOptionDefaultValue = "223a11ff-80e0-428b-89a9-6ef1c243b8b6"; // GUID for built-in Standard option
+        public const DpiScalingMethod DefaultDpiScalingMethod = DpiScalingMethod.Zoom;
+
+        private static DpiScalingMethod _eDpiScalingMethod = DefaultDpiScalingMethod;
 
         private static bool _blnAutomaticUpdate;
         private static bool _blnLiveCustomData;
@@ -354,6 +365,18 @@ namespace Chummer
 
             // Whether or not the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
+
+            try
+            {
+                string strDPIScalingMethod = DefaultDpiScalingMethod.ToString();
+                LoadStringFromRegistry(ref strDPIScalingMethod, "dpiscalingmethod");
+                _eDpiScalingMethod = (DpiScalingMethod)Enum.Parse(typeof(DpiScalingMethod), strDPIScalingMethod);
+            }
+            catch (Exception e)
+            {
+                Log.Warn(e);
+                _eDpiScalingMethod = DefaultDpiScalingMethod;
+            }
 
             //Should the App "Phone home"
             try
@@ -634,6 +657,7 @@ namespace Chummer
                     objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("liveupdatecleancharacterfiles",
                         LiveUpdateCleanCharacterFiles.ToString(InvariantCultureInfo));
+                    objRegistry.SetValue("dpiscalingmethod", DpiScalingMethodSetting.ToString());
                     objRegistry.SetValue("uselogging", UseLogging.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
                     objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
@@ -768,6 +792,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// DPI Scaling method to use
+        /// </summary>
+        public static DpiScalingMethod DpiScalingMethodSetting
+        {
+            get => _eDpiScalingMethod;
+            set => _eDpiScalingMethod = value;
+        }
+
+        /// <summary>
         /// Whether or not Automatic Updates are enabled.
         /// </summary>
         public static bool AutomaticUpdate
@@ -842,7 +875,9 @@ namespace Chummer
             set => _blnSearchInCategoryOnly = value;
         }
 
-        public static NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
+        public static NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement
+            ? NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver
+            : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
         /// <summary>
         /// Whether or not dice rolling is allowed for Skills.

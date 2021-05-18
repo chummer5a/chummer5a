@@ -49,8 +49,8 @@ namespace Chummer
             this.lblFileNameLabel = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTop = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpTop.SuspendLayout();
@@ -445,8 +445,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblFileNameLabel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private System.Windows.Forms.TableLayoutPanel tlpTop;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpTop;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

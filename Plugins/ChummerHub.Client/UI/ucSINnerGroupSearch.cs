@@ -241,8 +241,7 @@ namespace ChummerHub.Client.UI
                     using (new CursorWait(this))
                     {
                         var task = JoinGroupTask(item, MyCE);
-#pragma warning disable CA2008 // Do not create tasks without passing a TaskScheduler
-                        await task.ContinueWith(a =>
+                        await task.ContinueWith(async a =>
                         {
                             if (a.IsFaulted)
                             {
@@ -277,7 +276,7 @@ namespace ChummerHub.Client.UI
                                              ".";
                                 Log.Info(msg);
                                 Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                this.DoThreadSafe(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
+                                await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
                             }
                             else
                             {
@@ -290,12 +289,10 @@ namespace ChummerHub.Client.UI
                                              ".";
                                 Log.Info(msg);
                                 Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                this.DoThreadSafe(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
-                                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
-                                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false));
+                                await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
+                                await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                             }
                         });
-#pragma warning restore CA2008 // Do not create tasks without passing a TaskScheduler
                     }
                 }
             }
@@ -551,7 +548,7 @@ namespace ChummerHub.Client.UI
 
         private void BGroupFoundLoadInCharacterRoster_Click(object sender, EventArgs e)
         {
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            PluginHandler.MainForm.DoThreadSafe(async () =>
             {
                 TreeNode selectedNode = tvGroupSearchResult.SelectedNode;
                 var item = selectedNode?.Tag as SINnerSearchGroup;
@@ -568,7 +565,7 @@ namespace ChummerHub.Client.UI
                     {
                         PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
                     }
-                    PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                    await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
                     PluginHandler.MainForm.CharacterRoster.BringToFront();
                     MyParentForm.Close();
                 }

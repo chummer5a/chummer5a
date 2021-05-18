@@ -43,30 +43,32 @@ namespace Chummer
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.lblBuildMethodParamLabel = new System.Windows.Forms.Label();
             this.lblBuildMethodParam = new System.Windows.Forms.Label();
-            this.lblBooksLabel = new System.Windows.Forms.Label();
-            this.lblCustomDataLabel = new System.Windows.Forms.Label();
             this.lblMaxAvail = new System.Windows.Forms.Label();
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblQualityKarmaLabel = new System.Windows.Forms.Label();
             this.lblQualityKarma = new System.Windows.Forms.Label();
             this.lblMaxNuyen = new System.Windows.Forms.Label();
+            this.pnlBooks = new System.Windows.Forms.Panel();
             this.lblBooks = new System.Windows.Forms.Label();
+            this.pnlCustomData = new System.Windows.Forms.Panel();
             this.lblCustomData = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
-            this.nudMaxAvail = new System.Windows.Forms.NumericUpDown();
+            this.nudMaxAvail = new Chummer.NumericUpDownEx();
             this.cboGamePlay = new Chummer.ElasticComboBox();
             this.lblStartingKarma = new System.Windows.Forms.Label();
-            this.pnlBooks = new System.Windows.Forms.Panel();
-            this.pnlCustomData = new System.Windows.Forms.Panel();
+            this.gpbBooks = new System.Windows.Forms.GroupBox();
+            this.gpbCustomData = new System.Windows.Forms.GroupBox();
             this.tlpMain.SuspendLayout();
             this.tlpSummary.SuspendLayout();
-            this.tlpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
             this.pnlBooks.SuspendLayout();
             this.pnlCustomData.SuspendLayout();
+            this.tlpButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
+            this.gpbBooks.SuspendLayout();
+            this.gpbCustomData.SuspendLayout();
             this.SuspendLayout();
             // 
             // chkIgnoreRules
@@ -219,8 +221,6 @@ namespace Chummer
             this.tlpSummary.Controls.Add(this.lblBuildMethod, 1, 0);
             this.tlpSummary.Controls.Add(this.lblBuildMethodParamLabel, 2, 0);
             this.tlpSummary.Controls.Add(this.lblBuildMethodParam, 3, 0);
-            this.tlpSummary.Controls.Add(this.lblBooksLabel, 0, 3);
-            this.tlpSummary.Controls.Add(this.lblCustomDataLabel, 2, 3);
             this.tlpSummary.Controls.Add(this.lblKarmaLabel, 0, 1);
             this.tlpSummary.Controls.Add(this.lblMaxAvailLabel, 0, 2);
             this.tlpSummary.Controls.Add(this.lblMaxAvail, 1, 2);
@@ -229,18 +229,18 @@ namespace Chummer
             this.tlpSummary.Controls.Add(this.lblMaxNuyenLabel, 2, 2);
             this.tlpSummary.Controls.Add(this.lblQualityKarma, 3, 1);
             this.tlpSummary.Controls.Add(this.lblMaxNuyen, 3, 2);
-            this.tlpSummary.Controls.Add(this.pnlBooks, 0, 4);
-            this.tlpSummary.Controls.Add(this.pnlCustomData, 2, 4);
+            this.tlpSummary.Controls.Add(this.gpbBooks, 0, 3);
+            this.tlpSummary.Controls.Add(this.gpbCustomData, 2, 3);
             this.tlpSummary.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpSummary.Location = new System.Drawing.Point(0, 54);
             this.tlpSummary.Margin = new System.Windows.Forms.Padding(0);
             this.tlpSummary.Name = "tlpSummary";
-            this.tlpSummary.RowCount = 5;
+            this.tlpSummary.RowCount = 4;
             this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSummary.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpSummary.Size = new System.Drawing.Size(606, 340);
             this.tlpSummary.TabIndex = 19;
             // 
@@ -290,30 +290,6 @@ namespace Chummer
             this.lblBuildMethodParam.Size = new System.Drawing.Size(61, 13);
             this.lblBuildMethodParam.TabIndex = 18;
             this.lblBuildMethodParam.Text = "[Parameter]";
-            // 
-            // lblBooksLabel
-            // 
-            this.lblBooksLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.lblBooksLabel.AutoSize = true;
-            this.tlpSummary.SetColumnSpan(this.lblBooksLabel, 2);
-            this.lblBooksLabel.Location = new System.Drawing.Point(111, 81);
-            this.lblBooksLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBooksLabel.Name = "lblBooksLabel";
-            this.lblBooksLabel.Size = new System.Drawing.Size(79, 13);
-            this.lblBooksLabel.TabIndex = 24;
-            this.lblBooksLabel.Text = "Enabled Books";
-            // 
-            // lblCustomDataLabel
-            // 
-            this.lblCustomDataLabel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.lblCustomDataLabel.AutoSize = true;
-            this.tlpSummary.SetColumnSpan(this.lblCustomDataLabel, 2);
-            this.lblCustomDataLabel.Location = new System.Drawing.Point(420, 81);
-            this.lblCustomDataLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCustomDataLabel.Name = "lblCustomDataLabel";
-            this.lblCustomDataLabel.Size = new System.Drawing.Size(68, 13);
-            this.lblCustomDataLabel.TabIndex = 25;
-            this.lblCustomDataLabel.Text = "Custom Data";
             // 
             // lblMaxAvail
             // 
@@ -375,6 +351,18 @@ namespace Chummer
             this.lblMaxNuyen.Text = "[Karma]";
             this.lblMaxNuyen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // pnlBooks
+            // 
+            this.pnlBooks.AutoScroll = true;
+            this.pnlBooks.Controls.Add(this.lblBooks);
+            this.pnlBooks.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlBooks.Location = new System.Drawing.Point(3, 16);
+            this.pnlBooks.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlBooks.Name = "pnlBooks";
+            this.pnlBooks.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlBooks.Size = new System.Drawing.Size(290, 240);
+            this.pnlBooks.TabIndex = 30;
+            // 
             // lblBooks
             // 
             this.lblBooks.AutoSize = true;
@@ -385,6 +373,18 @@ namespace Chummer
             this.lblBooks.Size = new System.Drawing.Size(43, 13);
             this.lblBooks.TabIndex = 26;
             this.lblBooks.Text = "[Books]";
+            // 
+            // pnlCustomData
+            // 
+            this.pnlCustomData.AutoScroll = true;
+            this.pnlCustomData.Controls.Add(this.lblCustomData);
+            this.pnlCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlCustomData.Location = new System.Drawing.Point(3, 16);
+            this.pnlCustomData.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlCustomData.Name = "pnlCustomData";
+            this.pnlCustomData.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlCustomData.Size = new System.Drawing.Size(292, 240);
+            this.pnlCustomData.TabIndex = 31;
             // 
             // lblCustomData
             // 
@@ -456,6 +456,16 @@ namespace Chummer
             // nudMaxAvail
             // 
             this.nudMaxAvail.Location = new System.Drawing.Point(0, 0);
+            this.nudMaxAvail.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxAvail.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMaxAvail.Name = "nudMaxAvail";
             this.nudMaxAvail.Size = new System.Drawing.Size(120, 20);
             this.nudMaxAvail.TabIndex = 0;
@@ -475,31 +485,35 @@ namespace Chummer
             this.lblStartingKarma.Size = new System.Drawing.Size(100, 23);
             this.lblStartingKarma.TabIndex = 0;
             // 
-            // pnlBooks
+            // gpbBooks
             // 
-            this.pnlBooks.AutoScroll = true;
-            this.tlpSummary.SetColumnSpan(this.pnlBooks, 2);
-            this.pnlBooks.Controls.Add(this.lblBooks);
-            this.pnlBooks.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlBooks.Location = new System.Drawing.Point(0, 100);
-            this.pnlBooks.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlBooks.Name = "pnlBooks";
-            this.pnlBooks.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
-            this.pnlBooks.Size = new System.Drawing.Size(302, 240);
-            this.pnlBooks.TabIndex = 30;
+            this.gpbBooks.AutoSize = true;
+            this.gpbBooks.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpSummary.SetColumnSpan(this.gpbBooks, 2);
+            this.gpbBooks.Controls.Add(this.pnlBooks);
+            this.gpbBooks.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbBooks.Location = new System.Drawing.Point(3, 78);
+            this.gpbBooks.Name = "gpbBooks";
+            this.gpbBooks.Size = new System.Drawing.Size(296, 259);
+            this.gpbBooks.TabIndex = 32;
+            this.gpbBooks.TabStop = false;
+            this.gpbBooks.Tag = "Label_SelectBP_EnabledBooks";
+            this.gpbBooks.Text = "Enabled Books";
             // 
-            // pnlCustomData
+            // gpbCustomData
             // 
-            this.pnlCustomData.AutoScroll = true;
-            this.tlpSummary.SetColumnSpan(this.pnlCustomData, 2);
-            this.pnlCustomData.Controls.Add(this.lblCustomData);
-            this.pnlCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlCustomData.Location = new System.Drawing.Point(302, 100);
-            this.pnlCustomData.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlCustomData.Name = "pnlCustomData";
-            this.pnlCustomData.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
-            this.pnlCustomData.Size = new System.Drawing.Size(304, 240);
-            this.pnlCustomData.TabIndex = 31;
+            this.gpbCustomData.AutoSize = true;
+            this.gpbCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpSummary.SetColumnSpan(this.gpbCustomData, 2);
+            this.gpbCustomData.Controls.Add(this.pnlCustomData);
+            this.gpbCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbCustomData.Location = new System.Drawing.Point(305, 78);
+            this.gpbCustomData.Name = "gpbCustomData";
+            this.gpbCustomData.Size = new System.Drawing.Size(298, 259);
+            this.gpbCustomData.TabIndex = 33;
+            this.gpbCustomData.TabStop = false;
+            this.gpbCustomData.Tag = "Label_SelectBP_CustomData";
+            this.gpbCustomData.Text = "Custom Data";
             // 
             // frmSelectBuildMethod
             // 
@@ -524,13 +538,15 @@ namespace Chummer
             this.tlpMain.PerformLayout();
             this.tlpSummary.ResumeLayout(false);
             this.tlpSummary.PerformLayout();
-            this.tlpButtons.ResumeLayout(false);
-            this.tlpButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
             this.pnlBooks.ResumeLayout(false);
             this.pnlBooks.PerformLayout();
             this.pnlCustomData.ResumeLayout(false);
             this.pnlCustomData.PerformLayout();
+            this.tlpButtons.ResumeLayout(false);
+            this.tlpButtons.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
+            this.gpbBooks.ResumeLayout(false);
+            this.gpbCustomData.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -555,19 +571,19 @@ namespace Chummer
         private System.Windows.Forms.Label lblBuildMethod;
         private System.Windows.Forms.Label lblBuildMethodParam;
         private System.Windows.Forms.Label lblMaxAvail;
-        private System.Windows.Forms.NumericUpDown nudMaxAvail;
+        private NumericUpDownEx nudMaxAvail;
         private ElasticComboBox cboGamePlay;
         private System.Windows.Forms.Label lblStartingKarma;
         private System.Windows.Forms.Label lblMaxNuyen;
         private System.Windows.Forms.Label lblKarma;
         private System.Windows.Forms.Label lblQualityKarmaLabel;
         private System.Windows.Forms.Label lblQualityKarma;
-        private System.Windows.Forms.Label lblBooksLabel;
-        private System.Windows.Forms.Label lblCustomDataLabel;
         private System.Windows.Forms.Label lblBooks;
         private System.Windows.Forms.Label lblCustomData;
         private BufferedTableLayoutPanel tlpButtons;
         private System.Windows.Forms.Panel pnlBooks;
         private System.Windows.Forms.Panel pnlCustomData;
+        private System.Windows.Forms.GroupBox gpbBooks;
+        private System.Windows.Forms.GroupBox gpbCustomData;
     }
 }

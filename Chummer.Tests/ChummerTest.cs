@@ -20,7 +20,6 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -64,7 +63,7 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [TestMethod, TestCategory("UI")]
         public void Test00_BasicStartup()
         {
             Debug.WriteLine("Unit test initialized for: Test00_BasicStartup()");
@@ -81,11 +80,9 @@ namespace Chummer.Tests
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
                 frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
-                while (
-                    !frmTestForm
-                        .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(Utils.DefaultSleepDuration);
                     Application.DoEvents();
                 }
                 frmTestForm.Close();
@@ -99,7 +96,7 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [TestMethod, TestCategory("I/O")]
         public void Test01_LoadThenSave()
         {
             Debug.WriteLine("Unit test initialized for: Test01_LoadThenSave()");
@@ -115,7 +112,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [TestMethod, TestCategory("I/O")]
         public void Test02_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test02_LoadThenSaveIsDeterministic()");
@@ -165,7 +162,7 @@ namespace Chummer.Tests
             }
         }
 
-        [TestMethod]
+        [TestMethod, TestCategory("I/O")]
         public void Test03_LoadThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadThenPrint()");
@@ -181,46 +178,15 @@ namespace Chummer.Tests
                             continue;
                         CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
                         string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
-                        XmlDocument xmlCharacter = new XmlDocument { XmlResolver = null };
-                        // Write the Character information to a MemoryStream so we don't need to create any files.
-                        MemoryStream objStream = new MemoryStream();
-                        using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
-                        {
-                            // Being the document.
-                            objWriter.WriteStartDocument();
-
-                            // </characters>
-                            objWriter.WriteStartElement("characters");
-
-#if DEBUG
-                            objCharacter.PrintToStream(objStream, objWriter, objExportCultureInfo, strExportLanguage);
-#else
-                            objCharacter.PrintToStream(objWriter, objExportCultureInfo, strExportLanguage);
-#endif
-
-                            // </characters>
-                            objWriter.WriteEndElement();
-
-                            // Finish the document and flush the Writer and Stream.
-                            objWriter.WriteEndDocument();
-                            objWriter.Flush();
-
-                            // Read the stream.
-                            objStream.Position = 0;
-                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
-                                    xmlCharacter.Load(objXmlReader);
-                            xmlCharacter.Save(strDestination);
-                        }
+                        XmlDocument xmlCharacter = objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
+                        xmlCharacter.Save(strDestination);
                     }
                 }
             }
         }
 
-
-
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [TestMethod, TestCategory("UI")]
         public void Test04_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test04_LoadCharacterForms()");
@@ -239,7 +205,7 @@ namespace Chummer.Tests
                 frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
                 while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(Utils.DefaultSleepDuration);
                     Application.DoEvents();
                 }
                 foreach (FileInfo objFileInfo in TestFiles)
@@ -253,6 +219,7 @@ namespace Chummer.Tests
                                 : new frmCreate(objCharacter))
                             {
                                 frmCharacterForm.MdiParent = frmTestForm;
+                                frmCharacterForm.ShowInTaskbar = false;
                                 frmCharacterForm.WindowState = FormWindowState.Minimized;
                                 frmCharacterForm.Show();
                             }

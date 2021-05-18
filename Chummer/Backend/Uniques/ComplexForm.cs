@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer
@@ -321,7 +322,8 @@ namespace Chummer
                     .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", strLanguage))
                     .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", strLanguage))
                     .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", strLanguage))
-                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage));
+                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage))
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
             }
             return strReturn;
         }
@@ -450,6 +452,8 @@ namespace Chummer
                     return LanguageManager.GetString("String_ComplexFormTargetHost", strLanguage);
                 case "IC":
                     return LanguageManager.GetString("String_ComplexFormTargetIC", strLanguage);
+                case "Special":
+                    return LanguageManager.GetString("String_Special", strLanguage);
                 default:
                     return LanguageManager.GetString("String_None", strLanguage);
             }
@@ -539,9 +543,19 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strReturn = string.Empty;
+                string strFormat = strSpace + "{0}" + strSpace + "({1})";
+                CharacterAttrib objResonanceAttrib = _objCharacter.GetAttribute("RES");
+                if (objResonanceAttrib != null)
+                {
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                        objResonanceAttrib.DisplayNameFormatted, objResonanceAttrib.DisplayValue);
+                }
                 if (Skill != null)
                 {
-                    strReturn = Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES"), CurrentDisplayName);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += Skill.FormattedDicePool(Skill.PoolOtherAttribute("RES") -
+                                                         (objResonanceAttrib?.TotalValue ?? 0), CurrentDisplayName);
                 }
 
                 // Include any Improvements to the Spell Category.
@@ -549,8 +563,9 @@ namespace Chummer
                     .Where(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.ActionDicePool && objImprovement.Enabled
                     && objImprovement.ImprovedName == "Threading"))
                 {
-                    strReturn += string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                        strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                 }
 
                 return strReturn;

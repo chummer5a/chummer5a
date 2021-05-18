@@ -264,6 +264,7 @@
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Extensions\FloatExtensions.cs" />
     <Compile Include="Backend\Extensions\IntegerExtensions.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
@@ -305,7 +306,6 @@
     <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
-    <Compile Include="Backend\Skills\Skill.core.cs" />
     <Compile Include="Backend\Skills\Skill.cs" />
     <Compile Include="Backend\Skills\SkillExtensions.cs" />
     <Compile Include="Backend\Skills\SkillGroup.cs" />
@@ -365,6 +365,7 @@
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
     <Compile Include="Classes\ITranslatable.cs" />
+    <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="Classes\OptionsManager.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>

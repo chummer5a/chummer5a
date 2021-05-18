@@ -42,7 +42,7 @@ namespace ChummerHub.Client.UI
         {
             MyVisibility = vis;
             InitializeComponent();
-            cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible == null ? false : MyVisibility.IsGroupVisible;
+            cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible != null && MyVisibility.IsGroupVisible;
             clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
@@ -65,7 +65,7 @@ namespace ChummerHub.Client.UI
                         clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit);
                     }
                     clbVisibilityToUsers.Refresh();
-                    cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible==null?false:MyVisibility.IsGroupVisible;
+                    cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible != null && MyVisibility.IsGroupVisible;
                 }
                 catch (Exception e)
                 {

@@ -41,6 +41,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using System.Threading;
 using Microsoft.ApplicationInsights;
 using Newtonsoft.Json;
 using NLog;
@@ -994,10 +995,7 @@ namespace Chummer
         /// <summary>
         /// 
         /// </summary>
-        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId,
-            XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode,
-            XmlNode xmlCritterPowerDocumentPowersNode, XmlNode xmlSkillsDocumentKnowledgeSkillsNode,
-            string strSelectedPossessionMethod = "", bool blnBloodSpirit = false)
+        public void Create(string strSelectedMetatypeCategory, string strMetatypeId, string strMetavariantId, XmlNode objXmlMetatype, int intForce, XmlNode xmlQualityDocumentQualitiesNode = null, XmlNode xmlCritterPowerDocumentPowersNode = null, XmlNode xmlSkillsDocumentKnowledgeSkillsNode = null, string strSelectedPossessionMethod = "")
         {
             if (objXmlMetatype == null)
                 throw new ArgumentNullException(nameof(objXmlMetatype));
@@ -1062,6 +1060,8 @@ namespace Chummer
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
             // Create the Qualities that come with the Metatype.
+            if (xmlQualityDocumentQualitiesNode == null)
+                xmlQualityDocumentQualitiesNode = LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
             if (xmlQualityDocumentQualitiesNode != null)
             {
                 using (XmlNodeList xmlQualityList = charNode.SelectNodes("qualities/*/quality"))
@@ -1088,6 +1088,8 @@ namespace Chummer
             }
 
             //Load any critter powers the character has.
+            if (xmlCritterPowerDocumentPowersNode == null)
+                xmlCritterPowerDocumentPowersNode = LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
             if (xmlCritterPowerDocumentPowersNode != null)
             {
                 foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
@@ -1111,7 +1113,7 @@ namespace Chummer
             }
 
             //Load any natural weapons the character has.
-            foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("nautralweapons/naturalweapon"))
+            foreach (XmlNode objXmlNaturalWeapon in charNode.SelectNodes("naturalweapons/naturalweapon"))
             {
                 Weapon objWeapon = new Weapon(this)
                 {
@@ -1130,8 +1132,22 @@ namespace Chummer
                     Source = objXmlNaturalWeapon["source"].InnerText,
                     Page = objXmlNaturalWeapon["page"].InnerText
                 };
-
                 Weapons.Add(objWeapon);
+            }
+
+            // Add the Unarmed Attack Weapon to the character.
+            if (Weapons.All(x => x.Name != "Unarmed Attack"))
+            {
+                XmlNode objXmlWeapon = LoadData("weapons.xml").SelectSingleNode("/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
+                if (objXmlWeapon != null)
+                {
+                    Weapon objWeapon = new Weapon(this);
+                    objWeapon.Create(objXmlWeapon, lstWeapons);
+                    objWeapon.ParentID =
+                        Guid.NewGuid()
+                            .ToString("D", GlobalOptions.InvariantCultureInfo); // Unarmed Attack can never be removed
+                    Weapons.Add(objWeapon);
+                }
             }
 
             //Set the Active Skill Ratings for the Critter.
@@ -1173,6 +1189,8 @@ namespace Chummer
             }
 
             //Set the Knowledge Skill Ratings for the Critter.
+            if (xmlSkillsDocumentKnowledgeSkillsNode == null)
+                xmlSkillsDocumentKnowledgeSkillsNode = LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
             if (xmlSkillsDocumentKnowledgeSkillsNode != null)
             {
                 foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/knowledge"))
@@ -1380,7 +1398,6 @@ namespace Chummer
                 MAGAdept.AssignLimits(0, 0, 0);
             }
 
-
             if (strSelectedMetatypeCategory == "Spirits")
             {
                 XmlNode xmlOptionalPowersNode = charNode["optionalpowers"];
@@ -1401,86 +1418,41 @@ namespace Chummer
                             strMetatypeId, bonusNode, 1, strMetatypeId);
                 }
 
-                //If this is a Blood Spirit, add their free Critter Powers.
-                if (blnBloodSpirit && xmlCritterPowerDocumentPowersNode != null)
-                {
-                    XmlNode objXmlCritterPower;
-                    CritterPower objPower;
-
-                    //Energy Drain.
-                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Energy Drain"))
-                    {
-                        objXmlCritterPower =
-                            xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Energy Drain\"]");
-                        objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
-                    }
-
-                    // Fear.
-                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Fear"))
-                    {
-                        objXmlCritterPower =
-                            xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Fear\"]");
-                        objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
-                    }
-
-                    // Natural Weapon.
-                    objXmlCritterPower =
-                        xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Natural Weapon\"]");
-                    objPower = new CritterPower(this);
-                    objPower.Create(objXmlCritterPower, 0,
-                        "DV " + intForce.ToString(GlobalOptions.InvariantCultureInfo) + "P, AP 0");
-                    objPower.CountTowardsLimit = false;
-                    CritterPowers.Add(objPower);
-                    ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                        Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.CritterPower,
-                        string.Empty);
-                    ImprovementManager.Commit(this);
-
-                    // Evanescence.
-                    if (CritterPowers.All(objFindPower => objFindPower.Name != "Evanescence"))
-                    {
-                        objXmlCritterPower =
-                            xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Evanescence\"]");
-                        objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
-                    }
-                }
-
                 // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
-                if (!string.IsNullOrEmpty(strSelectedPossessionMethod) && xmlCritterPowerDocumentPowersNode != null)
+                if (xmlCritterPowerDocumentPowersNode != null)
                 {
-                    CritterPower objMaterializationPower =
-                        CritterPowers.FirstOrDefault(x => x.Name == "Materialization");
-                    if (objMaterializationPower != null)
-                        CritterPowers.Remove(objMaterializationPower);
-
-                    if (CritterPowers.All(x => x.Name != strSelectedPossessionMethod))
+                    if (!string.IsNullOrEmpty(strSelectedPossessionMethod))
                     {
-                        // Add the selected Power.
+                        CritterPower objMaterializationPower =
+                            CritterPowers.FirstOrDefault(x => x.Name == "Materialization");
+                        if (objMaterializationPower != null)
+                            CritterPowers.Remove(objMaterializationPower);
+
+                        if (CritterPowers.All(x => !x.Name.Contains(strSelectedPossessionMethod)))
+                        {
+                            // Add the selected Power.
+                            XmlNode objXmlCritterPower =
+                                xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
+                                    strSelectedPossessionMethod.CleanXPath() + "]");
+                            if (objXmlCritterPower != null)
+                            {
+                                CritterPower objPower = new CritterPower(this);
+                                objPower.Create(objXmlCritterPower, 0, string.Empty);
+                                objPower.CountTowardsLimit = false;
+                                CritterPowers.Add(objPower);
+
+                                ImprovementManager.CreateImprovement(this, objPower.InternalId,
+                                    Improvement.ImprovementSource.Metatype, string.Empty,
+                                    Improvement.ImprovementType.CritterPower, string.Empty);
+                                ImprovementManager.Commit(this);
+                            }
+                        }
+                    }
+                    else if (CritterPowers.All(x => x.Name != "Materialization" && !x.Name.Contains("Possession") && !x.Name.Contains("Inhabitation")))
+                    {
+                        // Add the Materialization Power.
                         XmlNode objXmlCritterPower =
-                            xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
-                                                                               strSelectedPossessionMethod
-                                                                                   .CleanXPath() + "]");
+                            xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Materialization\"]");
                         if (objXmlCritterPower != null)
                         {
                             CritterPower objPower = new CritterPower(this);
@@ -1493,25 +1465,6 @@ namespace Chummer
                                 Improvement.ImprovementType.CritterPower, string.Empty);
                             ImprovementManager.Commit(this);
                         }
-                    }
-                }
-                else if (CritterPowers.All(x => x.Name != "Materialization") &&
-                         xmlCritterPowerDocumentPowersNode != null)
-                {
-                    // Add the Materialization Power.
-                    XmlNode objXmlCritterPower =
-                        xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = \"Materialization\"]");
-                    if (objXmlCritterPower != null)
-                    {
-                        CritterPower objPower = new CritterPower(this);
-                        objPower.Create(objXmlCritterPower, 0, string.Empty);
-                        objPower.CountTowardsLimit = false;
-                        CritterPowers.Add(objPower);
-
-                        ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.CritterPower, string.Empty);
-                        ImprovementManager.Commit(this);
                     }
                 }
             }
@@ -2352,7 +2305,13 @@ namespace Chummer
             if (!File.Exists(_strFileName))
                 return false;
             while (IsLoadMethodRunning)
-                await Task.Delay(100);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
+
             IsLoadMethodRunning = true;
             try
             {
@@ -2756,14 +2715,19 @@ namespace Chummer
                                 if (blnShowSelectBP)
                                 {
                                     DialogResult ePickBPResult = DialogResult.Cancel;
-                                    Program.MainForm.DoThreadSafe(() =>
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        Program.MainForm.DoThreadSafe(ShowBP);
+                                    else
+                                        await Program.MainForm.DoThreadSafeAsync(ShowBP);
+                                    void ShowBP()
                                     {
                                         using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                         {
                                             frmPickBP.ShowDialog(Program.MainForm);
                                             ePickBPResult = frmPickBP.DialogResult;
                                         }
-                                    });
+                                    }
                                     if (ePickBPResult != DialogResult.OK)
                                     {
                                         return false;
@@ -3112,7 +3076,10 @@ namespace Chummer
                                 objXmlNodeList = objXmlCharacter.SelectNodes("qualities/quality");
                                 bool blnHasOldQualities = false;
                                 xmlRootQualitiesNode =
-                                    (blnSync ? LoadData("qualities.xml") : await LoadDataAsync("qualities.xml"))
+                                    (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LoadData("qualities.xml")
+                                        : await LoadDataAsync("qualities.xml"))
                                     .SelectSingleNode("/chummer/qualities");
                                 foreach (XmlNode objXmlQuality in objXmlNodeList)
                                 {
@@ -3235,7 +3202,12 @@ namespace Chummer
                                                     }
 
                                                     DialogResult ePickItemResult = DialogResult.Cancel;
-                                                    Program.MainForm.DoThreadSafe(() =>
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        Program.MainForm.DoThreadSafe(DoSelectItem);
+                                                    else
+                                                        await Program.MainForm.DoThreadSafeAsync(DoSelectItem);
+                                                    void DoSelectItem()
                                                     {
                                                         using (frmSelectItem frmPickItem = new frmSelectItem())
                                                         {
@@ -3245,7 +3217,8 @@ namespace Chummer
                                                             ePickItemResult = frmPickItem.DialogResult;
                                                             selectedContactUniqueId = frmPickItem.SelectedItem;
                                                         }
-                                                    });
+                                                    }
+
                                                     // Make sure the dialogue window was not canceled.
                                                     if (ePickItemResult != DialogResult.OK)
                                                     {
@@ -3358,7 +3331,10 @@ namespace Chummer
                                 {
                                     // Legacy load a Technomancer tradition
                                     XmlNode xmlTraditionListDataNode =
-                                        (blnSync ? LoadData("streams.xml") : await LoadDataAsync("streams.xml"))
+                                        (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? LoadData("streams.xml")
+                                            : await LoadDataAsync("streams.xml"))
                                         .SelectSingleNode("/chummer/traditions");
                                     if (xmlTraditionListDataNode != null)
                                     {
@@ -3411,6 +3387,7 @@ namespace Chummer
                                     {
                                         XmlNode xmlTraditionListDataNode =
                                             (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 ? LoadData("traditions.xml")
                                                 : await LoadDataAsync("traditions.xml"))
                                             .SelectSingleNode("/chummer/traditions");
@@ -4305,8 +4282,10 @@ namespace Chummer
                                 if (!blnFoundUnarmed)
                                 {
                                     // Add the Unarmed Attack Weapon to the character.
-                                    XmlDocument objXmlWeaponDoc =
-                                        blnSync ? LoadData("weapons.xml") : await LoadDataAsync("weapons.xml");
+                                    XmlDocument objXmlWeaponDoc = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LoadData("weapons.xml")
+                                        : await LoadDataAsync("weapons.xml");
                                     XmlNode objXmlWeapon =
                                         objXmlWeaponDoc.SelectSingleNode(
                                             "/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
@@ -4557,31 +4536,25 @@ namespace Chummer
             }
         }
 
-#if DEBUG
-        /// <summary>
-        /// Print this character information to a MemoryStream. This creates only the character object itself, not any of the opening or closing XmlDocument items.
-        /// This can be used to write multiple characters to a single XmlDocument.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write to.</param>
-        /// <param name="objCulture">Culture in which to print.</param>
-        /// <param name="strLanguageToPrint">Language in which to print.</param>
-        /// <param name="objStream">MemoryStream to use.</param>
-        public void PrintToStream(MemoryStream objStream, XmlTextWriter objWriter, CultureInfo objCulture = null,
-            string strLanguageToPrint = "")
-#else
-        /// <summary>
-        /// Print this character information to a MemoryStream. This creates only the character object itself, not any of the opening or closing XmlDocument items.
-        /// This can be used to write multiple characters to a single XmlDocument.
-        /// </summary>
-        /// <param name="objWriter">XmlTextWriter to write to.</param>
-        /// <param name="objCulture">Culture in which to print.</param>
-        /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void PrintToStream(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
-#endif
+        public XmlDocument GenerateExportXml(CultureInfo objCultureInfo, string strLanguage)
         {
-            // This line left in for debugging. Write the output to a fixed file name.
-            //FileStream objStream = new FileStream("D:\\temp\\print.xml", FileMode.Create, FileAccess.Write, FileShare.ReadWrite);//(_strFileName, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
+            return CommonFunctions.GenerateCharactersExportXml(objCultureInfo, strLanguage, this);
+        }
 
+        public XmlDocument GenerateExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken)
+        {
+            return CommonFunctions.GenerateCharactersExportXml(objCultureInfo, strLanguage, objToken, this);
+        }
+
+        /// <summary>
+        /// Print this character information to a XmlTextWriter. This creates only the character object itself, not any of the opening or closing XmlDocument items.
+        /// This can be used to write multiple characters to a single XmlDocument.
+        /// </summary>
+        /// <param name="objWriter">XmlTextWriter to write to.</param>
+        /// <param name="objCulture">Culture in which to print.</param>
+        /// <param name="strLanguageToPrint">Language in which to print.</param>
+        public void PrintToXmlTextWriter(XmlTextWriter objWriter, CultureInfo objCulture = null, string strLanguageToPrint = "")
+        {
             if (objWriter == null)
                 throw new ArgumentNullException(nameof(objWriter));
             if (objCulture == null)
@@ -6253,6 +6226,14 @@ namespace Chummer
                 // Subtract extra karma cost of a metatype in priority
                 intReturn -= MetatypeBP;
             }
+            else
+            {
+                // Karma needs to be added based on the character's metatype/metavariant Point Buy karma cost because that is what is used in Point Buy,
+                // not the metatype/metavariant attribute/quality costs.
+                int intTemp = 0;
+                if (GetNode()?.TryGetInt32FieldQuickly("karma", ref intTemp) == true)
+                    intExtraKarmaToRemoveForPointBuyComparison -= intTemp;
+            }
 
             sbdMessage.Append(Environment.NewLine + LanguageManager.GetString("Label_Base", strLanguage) + strColonCharacter + strSpace
                               + intReturn.ToString(GlobalOptions.CultureInfo) + strSpace + strKarmaString);
@@ -6307,7 +6288,10 @@ namespace Chummer
                     }
                 }
 
-                if(intTemp - intAttributesValue + intMetatypeQualitiesValue != 0)
+                // For point buy comparisons, we need to use the metatype's Point Buy cost for the comparison, not attributes + metatype qualities.
+                intExtraKarmaToRemoveForPointBuyComparison += intTemp - intAttributesValue + intMetatypeQualitiesValue;
+
+                if (intTemp - intAttributesValue + intMetatypeQualitiesValue != 0)
                 {
                     sbdMessage.Append(Environment.NewLine + LanguageManager.GetString("Label_SumtoTenHeritage", strLanguage) + strSpace
                                       + (intTemp - intAttributesValue + intMetatypeQualitiesValue).ToString(GlobalOptions.CultureInfo) + strSpace + strKarmaString);
@@ -6539,6 +6523,17 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Attempt to translate any Extra text for an item using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public Task<string> TranslateExtraAsync(string strExtra, string strIntoLanguage = "", string strPreferFile = "")
+        {
+            return LanguageManager.TranslateExtraAsync(strExtra, strIntoLanguage, this, strPreferFile);
+        }
+
+        /// <summary>
         /// Attempt to translate any Extra text for an item from a foreign language to the default one using the character's data files.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
@@ -6547,6 +6542,17 @@ namespace Chummer
         public string ReverseTranslateExtra(string strExtra, string strFromLanguage = "", string strPreferFile = "")
         {
             return LanguageManager.ReverseTranslateExtra(strExtra, strFromLanguage, this, strPreferFile);
+        }
+
+        /// <summary>
+        /// Attempt to translate any Extra text for an item from a foreign language to the default one using the character's data files.
+        /// </summary>
+        /// <param name="strExtra">Extra string to translate.</param>
+        /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
+        public Task<string> ReverseTranslateExtraAsync(string strExtra, string strFromLanguage = "", string strPreferFile = "")
+        {
+            return LanguageManager.ReverseTranslateExtraAsync(strExtra, strFromLanguage, this, strPreferFile);
         }
         #endregion
 
@@ -16879,7 +16885,12 @@ namespace Chummer
             if(!File.Exists(strPorFile))
                 return false;
             while (IsLoadMethodRunning)
-                await Task.Delay(100);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
             IsLoadMethodRunning = true;
             try
             {
@@ -17138,6 +17149,7 @@ namespace Chummer
                                     if (strRaceString == "Metasapient")
                                         strRaceString = "A.I.";
                                     foreach (XPathNavigator xmlMetatype in (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             ? LoadDataXPath("metatypes.xml")
                                             : await LoadDataXPathAsync("metatypes.xml"))
                                         .Select("/chummer/metatypes/metatype"))
@@ -17529,8 +17541,10 @@ namespace Chummer
                                     " (15)"
                                 };
                                 // Qualities
-                                XmlDocument xmlQualitiesDocument =
-                                    blnSync ? LoadData("qualities.xml") : await LoadDataAsync("qualities.xml");
+                                XmlDocument xmlQualitiesDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("qualities.xml")
+                                    : await LoadDataAsync("qualities.xml");
                                 foreach (XPathNavigator xmlQualityToImport in xmlStatBlockBaseNode.Select(
                                     "qualities/positive/quality[traitcost/@bp != \"0\"]"))
                                 {
@@ -17914,9 +17928,14 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
                             {
                                 // Armor.
-                                xmlGearDocument = blnSync ? LoadData("gear.xml") : await LoadDataAsync("gear.xml");
-                                XmlDocument xmlArmorDocument =
-                                    blnSync ? LoadData("armor.xml") : await LoadDataAsync("armor.xml");
+                                xmlGearDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("gear.xml")
+                                    : await LoadDataAsync("gear.xml");
+                                XmlDocument xmlArmorDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("armor.xml")
+                                    : await LoadDataAsync("armor.xml");
                                 foreach (XPathNavigator xmlArmorToImport in xmlStatBlockBaseNode.Select(
                                     "gear/armor/item[@useradded != \"no\"]"))
                                 {
@@ -18224,7 +18243,10 @@ namespace Chummer
                             {
                                 // Spells.
                                 xmlNodeList = xmlStatBlockBaseNode.Select("magic/spells/spell");
-                                XmlDocument xmlSpellDocument = LoadData("spells.xml");
+                                XmlDocument xmlSpellDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("spells.xml")
+                                    : await LoadDataAsync("spells.xml");
                                 foreach (XPathNavigator xmlHeroLabSpell in xmlNodeList)
                                 {
                                     string strSpellName = xmlHeroLabSpell.SelectSingleNode("@name")?.Value;
@@ -18496,8 +18518,10 @@ namespace Chummer
                             {
                                 // Powers.
                                 xmlNodeList = xmlStatBlockBaseNode.Select("magic/adeptpowers/adeptpower");
-                                XmlDocument xmlPowersDocument =
-                                    blnSync ? LoadData("powers.xml") : await LoadDataAsync("powers.xml");
+                                XmlDocument xmlPowersDocument = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LoadData("powers.xml")
+                                    : await LoadDataAsync("powers.xml");
                                 foreach (XPathNavigator xmlHeroLabPower in xmlNodeList)
                                 {
                                     string strPowerName = xmlHeroLabPower.SelectSingleNode("@name")?.Value;
@@ -18600,6 +18624,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strComplexFormsLine))
                                 {
                                     XmlDocument xmlComplexFormsDocument = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? LoadData("complexforms.xml")
                                         : await LoadDataAsync("complexforms.xml");
 
@@ -18950,8 +18975,10 @@ namespace Chummer
                                 if (!blnFoundUnarmed)
                                 {
                                     // Add the Unarmed Attack Weapon to the character.
-                                    XmlDocument objXmlWeaponDoc =
-                                        blnSync ? LoadData("weapons.xml") : await LoadDataAsync("weapons.xml");
+                                    XmlDocument objXmlWeaponDoc = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LoadData("weapons.xml")
+                                        : await LoadDataAsync("weapons.xml");
                                     XmlNode objXmlWeapon =
                                         objXmlWeaponDoc.SelectSingleNode(
                                             "/chummer/weapons/weapon[name = \"Unarmed Attack\"]");
@@ -19611,7 +19638,13 @@ namespace Chummer
         private async Task<bool> LoadFromFileCoreAsync(bool blnSync, string strFile)
         {
             while (IsLoadMethodRunning)
-                await Task.Delay(100);
+            {
+                if (blnSync)
+                    Thread.Sleep(Utils.DefaultSleepDuration);
+                else
+                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+            }
+
             IsLoadMethodRunning = true;
             try
             {
@@ -19752,7 +19785,7 @@ namespace Chummer
                     strBuildMethod,
                     LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode"));
             }
-            if (blnAddMarkerIfOpen && Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject.FileName == FilePath))
+            if (blnAddMarkerIfOpen && Program.MainForm?.OpenCharacterForms.Any(x => x.CharacterObject.FileName == FilePath) == true)
                 strReturn = "* " + strReturn;
             return strReturn;
         }
