@@ -1,1 +1,0 @@
-Versucht alle durch Pegasus in den deutschen Regelwerken eingeführten Änderungen zu implementieren.

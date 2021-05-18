@@ -7875,11 +7875,15 @@
     </string>
     <string>
       <key>Tooltip_CharacterOptions_ManifestMissing</key>
-      <text>There is no or an empty manifest file present for this Custom Data Directory.</text>
+      <text>There is no, an empty or an inaccessible manifest.xml present for this Custom Data Directory.</text>
     </string>
     <string>
       <key>Tooltip_CharacterOptions_LanguageSpecificManifestMissing</key>
-      <text>There was no manifest present in your language.</text>
+      <text>There was no description present in your language.</text>
+    </string>
+    <string>
+      <key>Tooltip_CharacterOptions_ManifestDescriptionMissing</key>
+      <text>The manifest.xml for this custom data directory is missing a description!</text>
     </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->

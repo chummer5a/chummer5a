@@ -24,12 +24,14 @@ using System.IO;
 using System.IO.Packaging;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using Encoder = System.Drawing.Imaging.Encoder;
 
 namespace Chummer
 {
@@ -1860,58 +1862,66 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Reads a Manifest.txt and gives out it's content as a string
+        /// Reads in an Manifest.xml in the given directory and returns it's language specific description. Defaults to an description without any attributes.
         /// </summary>
-        /// <param name="strDirectory">the directory in which the Manifest.txt is present</param>
-        /// <returns>The content of the language specific manifest as String, defaults to English and adds a comment that it happened.
-        /// If no Directory or File is present returns a missing notification.</returns>
+        /// <param name="strDirectory"></param>
+        /// <returns>A description as String, adds a comment if it defaulted to a node without language attribute</returns>
         public string GetManifestData(string strDirectory)
         {
             string strLanguage = GlobalOptions.Language;
-            string strManifestsDirectory = strDirectory + "\\Manifests\\";
-            string strManifest;
+            XmlDocument xmlObjManifest = new XmlDocument();
+            string strFullDirectory = strDirectory + "\\manifest.xml";
             bool blnDefaultedToEng = false;
+
+            //This will come up very often, so check this here instead of handling the exception. It also catches all exceptions regarding permission and bad strings(Paths)
+            if(!File.Exists(@strFullDirectory))
+                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
 
             try
             {
-                string strCorrectDirectory;
-
-                string[] directories = Directory.GetFiles(@strManifestsDirectory);
-
-                string strDirectoryLangSpecific =
-                    Array.Find(directories, LangDirectory => LangDirectory.Contains(strLanguage));
-
-                //Check if an file in the correct language exists
-                if (File.Exists(strDirectoryLangSpecific))
-                    strCorrectDirectory = strDirectoryLangSpecific;
-
-                //Check if an english file exists to default to
-                else if (File.Exists(Array.Find(directories, LangDirectory => LangDirectory.Contains("en-us"))))
-                {
-                    blnDefaultedToEng = true;
-                    strCorrectDirectory = Array.Find(directories, LangDirectory => LangDirectory.Contains("en-us"));
-                }
-                else
-                    return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
-                
-                strManifest = File.ReadAllText(@strCorrectDirectory);
-
-                //Add that the correct language could not be found
-                if (blnDefaultedToEng)
-                    strManifest =
-                        LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
-                        "\n" + "\n" + strManifest;
+                xmlObjManifest.LoadStandard(@strFullDirectory);
             }
-            //If the directory doesn't exists or is inaccessible in some other way GetFiles throws an exception, just display that it's missing instead of breaking.
-            catch (Exception e)
+            //The .xml in malformed or not really an .xml
+            catch (XmlException ex)
             {
-                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
+                return string.Format(GlobalOptions.CultureInfo,
+                    LanguageManager.GetString("Message_FailedLoad"),
+                    ex.Message);
+            }
+            catch (NotSupportedException ex)
+            {
+                return string.Format(GlobalOptions.CultureInfo,
+                    LanguageManager.GetString("Message_FailedLoad"),
+                    ex.Message);
+            }
+            //Try to get a language specific description
+            XmlNode xmlNodeDescription = xmlObjManifest.SelectSingleNode("manifest/descriptions/description[@lang='" + strLanguage + "']");
+
+            if (xmlNodeDescription == null)
+            {
+                //select a node without any attribute, this should be the English one
+                xmlNodeDescription = xmlObjManifest.SelectSingleNode("manifest/descriptions/description[count(@*)=0]");
+
+                //If we are in English we will always "default" to the string without an Attribute... which should be the English one. This way we don't add the error to each description
+                if (!strLanguage.Equals("en-us"))
+                    blnDefaultedToEng = true;
             }
 
-            //Don't want any nulls to break stuff and whitespace just isn't a manifest
-            return string.IsNullOrWhiteSpace(strManifest)
-                ? LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing")
-                : strManifest;
+            //If neither a lang specific, nor an default en-us string could be found
+            if (xmlNodeDescription == null)
+                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing");
+
+            string strDescription = xmlNodeDescription.InnerText;
+
+            //Add that the correct language could not be found
+            if (blnDefaultedToEng)
+                strDescription =
+                    LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
+                    "\n" + "\n" + strDescription;
+
+            return string.IsNullOrWhiteSpace(strDescription)
+                ? LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing")
+                : strDescription;
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)

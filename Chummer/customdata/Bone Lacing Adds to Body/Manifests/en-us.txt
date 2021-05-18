@@ -1,1 +1,0 @@
-Bone Lacing now increases your BOD instead of just increasing your damage resistance pool.
