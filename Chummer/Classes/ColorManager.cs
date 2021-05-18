@@ -329,13 +329,21 @@ namespace Chummer
                 ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
                 : 0;
             float fltNewLightness = 1.0f - fltLightness;
-            // Lighten dark colors a little (so that minimum lightness instead gets 0.2)
-            fltNewLightness += 0.2f * fltLightness * fltLightness;
-            // Desaturate high saturation colors a little and also lighten them a bit
-            fltNewLightness += 0.1f * fltSaturationHsl * fltSaturationHsl;
+            // Lighten dark colors a little (so that minimum lightness instead gets 0.25)
+            fltNewLightness += 0.25f * fltLightness * fltLightness;
             fltNewLightness = Math.Min(fltNewLightness, 1.0f);
-            fltSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
-            return FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+            // Lightness affects saturation, so only set it after we have set up Lightness
+            Color objColorIntermediate = FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+            if (fltSaturationHsl == 0) // Shortcut, no desaturation step necessary
+                return objColorIntermediate;
+            fltBrightness = objColorIntermediate.GetBrightness();
+            fltNewLightness = fltBrightness * (1 - objColorIntermediate.GetSaturation() / 2);
+            float fltNewSaturationHsl = fltNewLightness > 0 && fltNewLightness < 1
+                ? (fltBrightness - fltNewLightness) / Math.Min(fltNewLightness, 1 - fltNewLightness)
+                : 0;
+            // Desaturate high saturation colors a little
+            fltNewSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
+            return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
 
         /// <summary>
@@ -353,21 +361,26 @@ namespace Chummer
             float fltSaturationHsl = fltLightness > 0 && fltLightness < 1
                 ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
                 : 0;
-            // x - 0.1x^2 = n is the regular transform where n is the Dark Mode saturation
-            // To get it back, we need to solve for x knowing only n:
-            // x^2 - 10x + 10n = 0
-            // x = (10 +/- sqrt(100 - 40n))/2 = 5 +/- sqrt(25 - 10n)
-            // Because saturation cannot be greater than 1, positive result is unreal, therefore: x = 5 - sqrt(25 - 10n)
-            fltSaturationHsl = Math.Min((float) (5.0 - Math.Sqrt(25.0 - 10.0 * fltSaturationHsl)), 1.0f);
-            // 1 - y + 0.2y^2 + 0.1x^2 = m is the regular transform where m is the Dark Mode Lightness
-            // To get it back, we need to solve for y knowing only m and x:
-            // y^2 - 5y + 5 + 0.5x^2 - 5m = 0
-            // y = (5 +/- sqrt(25 - 20 - 2x^2 + 20m))/2 = (5 +/- sqrt(5 - 2x^2 + 20m))/2 = 2.5 +/- sqrt(1.25 - 0.5x^2 + 5m)
-            // Because lightness cannot be greater than 1, positive result is unreal, therefore: y = 2.5 - sqrt(1.25 - 0.5x^2 + 5m)
-            float fltNewLightness =
-                Math.Min((float) (2.5 - Math.Sqrt(1.25 - 0.5 * fltSaturationHsl * fltSaturationHsl + 5 * fltLightness)),
-                    1.0f);
-            return FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
+            float fltNewSaturationHsl = 0;
+            if (fltSaturationHsl != 0)
+            {
+                // x - 0.1x^2 = n is the regular transform where n is the Dark Mode saturation
+                // To get it back, we need to solve for x knowing only n:
+                // x^2 - 10x + 10n = 0
+                // x = (10 +/- sqrt(100 - 40n))/2 = 5 +/- sqrt(25 - 10n)
+                // Because saturation cannot be greater than 1, positive result is unreal, therefore: x = 5 - sqrt(25 - 10n)
+                fltNewSaturationHsl = Math.Min((float) (5.0 - Math.Sqrt(25.0 - 10.0 * fltSaturationHsl)), 1.0f);
+                Color objColorIntermediate = FromHsla(fltHue, fltNewSaturationHsl, fltLightness, objColor.A);
+                fltBrightness = objColorIntermediate.GetBrightness();
+                fltLightness = fltBrightness * (1 - objColorIntermediate.GetSaturation() / 2);
+            }
+            // 1 - y + 0.25y^2 = m is the regular transform where m is the Dark Mode Lightness
+            // To get it back, we need to solve for y knowing only m:
+            // y^2 - 4y + 4 - 4m = 0
+            // y = (4 +/- sqrt(16 - 16 + 16m))/2 = (4 +/- sqrt(16m))/2 = 2 +/- 2*sqrt(m)
+            // Because lightness cannot be greater than 1, positive result is unreal, therefore: y = 2 - 2*sqrt(m)
+            float fltNewLightness = Math.Min((float) (2 - 2 * Math.Sqrt(fltLightness)), 1.0f);
+            return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
 
         private static Color GetBrightenedVersion(Color objColor)
