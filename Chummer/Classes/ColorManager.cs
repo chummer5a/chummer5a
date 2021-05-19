@@ -196,6 +196,22 @@ namespace Chummer
         private static Color GrayHasNotesColorDark => GenerateDarkModeColor(GrayHasNotesColorLight);
         public static Color ErrorColor => Color.Red;
 
+        public static Color DieGlitchFore => IsLightMode ? DieGlitchForeLight : DieGlitchForeDark;
+        public static Color DieGlitchBackground => IsLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
+        public static Color DieHitFore => IsLightMode ? DieHitForeLight : DieHitForeDark;
+        public static Color DieHitBackground => IsLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+
+        private static Color DieGlitchForeLight => Color.White;
+        private static Color DieGlitchBackgroundLight => Color.DarkRed;
+        private static Color DieHitForeLight => Color.Black;
+        private static Color DieHitBackgroundLight => Color.LightGreen;
+
+        private static Color DieGlitchForeDark => GenerateDarkModeColor(Color.White);
+        private static Color DieGlitchBackgroundDark => GenerateDarkModeColor(Color.DarkRed);
+        private static Color DieHitForeDark => GenerateDarkModeColor(Color.Black);
+        private static Color DieHitBackgroundDark => GenerateDarkModeColor(Color.LightGreen);
+
+
         public static void UpdateLightDarkMode(this Control objControl)
         {
             ApplyColorsRecursively(objControl, IsLightMode);
