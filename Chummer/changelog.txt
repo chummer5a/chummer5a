@@ -40,6 +40,7 @@ Application Changes:
 - Spells and Complex Forms with special damage amounts, targets, and/or ranges now have those translated properly when printing/exporting in a non-English language.
 - In order to prevent users from thinking Chummer has locked up when it is still working, Chummer now shows a visible loading progress bar when it is loading in a character's UI elements or when it is saving a character.
 - Fixes a crash in the dicetool if a user has more hits than initial dice (due to the rule of 6) and still does re-roll glitches.
+- Added colors to the dicetool to find hits and glitches faster.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

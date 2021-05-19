@@ -243,6 +243,12 @@ namespace Chummer
                     intKeepSum += intResult;
             }
 
+            if(intNewDicePool==0)
+            {
+                MessageBox.Show(LanguageManager.GetString("String_NoDiceLeft_Text"), LanguageManager.GetString("String_NoDiceLeft_Title"));
+                return;
+            }
+
             int intHitCount = _lstResults.Count;
             if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 intHitCount = intKeepSum;
