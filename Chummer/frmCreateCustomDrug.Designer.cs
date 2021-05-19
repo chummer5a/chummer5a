@@ -49,7 +49,7 @@ namespace Chummer
             this.cboGrade = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpMiddle = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMiddle = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.flpButtons.SuspendLayout();
             this.tlpMiddle.SuspendLayout();
@@ -328,6 +328,6 @@ namespace Chummer
 		private ElasticComboBox cboGrade;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpButtons;
-        private System.Windows.Forms.TableLayoutPanel tlpMiddle;
+        private Chummer.BufferedTableLayoutPanel tlpMiddle;
     }
 }

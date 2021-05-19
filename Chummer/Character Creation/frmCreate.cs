@@ -10613,21 +10613,27 @@ namespace Chummer
                 CharacterObject.Created = true;
 
                 _blnSkipToolStripRevert = true;
-                if (!CharacterObject.Save())
+                using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                 {
-                    CharacterObject.ExpenseEntries.Clear();
-                    if (lstAttributesToAdd != null)
+                    frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                    if (!CharacterObject.Save())
                     {
-                        foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                        CharacterObject.ExpenseEntries.Clear();
+                        if (lstAttributesToAdd != null)
                         {
-                            CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                            foreach (CharacterAttrib objAttributeToAdd in lstAttributesToAdd)
+                            {
+                                CharacterObject.AttributeSection.AttributeList.Remove(objAttributeToAdd);
+                            }
                         }
+
+                        CharacterObject.Created = false;
+                        return false;
                     }
-                    CharacterObject.Created = false;
-                    return false;
+
+                    IsDirty = false;
                 }
 
-                IsDirty = false;
                 Character objOpenCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName);
                 Program.MainForm.OpenCharacter(objOpenCharacter);
                 Close();
@@ -12753,8 +12759,12 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
-                        if (!CharacterObject.Save(strNewName))
-                            return false;
+                        using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
+                        {
+                            frmProgressBar.PerformStep(CharacterObject.CharacterName, true);
+                            if (!CharacterObject.Save(strNewName))
+                                return false;
+                        }
                     }
                 }
 

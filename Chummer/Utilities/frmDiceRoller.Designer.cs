@@ -54,7 +54,7 @@ namespace Chummer
             this.lblThreshold = new System.Windows.Forms.Label();
             this.chkCinematicGameplay = new Chummer.ColorableCheckBox(this.components);
             this.chkRushJob = new Chummer.ColorableCheckBox(this.components);
-            this.tlpTopBar = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTopBar = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpRollParameters = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRollControls = new System.Windows.Forms.FlowLayoutPanel();
@@ -516,7 +516,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkBubbleDie;
         private Chummer.ColorableCheckBox chkCinematicGameplay;
         private Chummer.ColorableCheckBox chkRushJob;
-        private System.Windows.Forms.TableLayoutPanel tlpTopBar;
+        private Chummer.BufferedTableLayoutPanel tlpTopBar;
         private System.Windows.Forms.FlowLayoutPanel flpRollParameters;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpRollControls;

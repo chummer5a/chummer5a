@@ -231,11 +231,13 @@ namespace Chummer
             int intKeepSum = 0;
             int intResult;
             // Remove everything that is not a hit
+            int intNewDicePool = 0;
             for (int i = _lstResults.Count - 1; i >= 0; --i)
             {
                 if (!int.TryParse(_lstResults[i].Text, out intResult) || intResult < intKeepThreshold)
                 {
                     _lstResults.RemoveAt(i);
+                    intNewDicePool++;
                 }
                 else
                     intKeepSum += intResult;
@@ -245,14 +247,14 @@ namespace Chummer
             if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 intHitCount = intKeepSum;
             int intGlitchCount = 0;
-            List<int> lstRandom = new List<int>(nudDice.ValueAsInt - intHitCount);
+            List<int> lstRandom = new List<int>(intNewDicePool);
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             int intGlitchMin = 1;
             if (chkRushJob.Checked)
                 intGlitchMin = 2;
 
-            for (int intCounter = 1; intCounter <= nudDice.Value - intHitCount; intCounter++)
+            for (int intCounter = 1; intCounter <= intNewDicePool; intCounter++)
             {
                 if (chkRuleOf6.Checked)
                 {

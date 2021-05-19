@@ -77,7 +77,7 @@ namespace Chummer
             this.lblSkillsLabel = new System.Windows.Forms.Label();
             this.cboHeritage = new Chummer.ElasticComboBox();
             this.lblSumtoTen = new System.Windows.Forms.Label();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblMetavariantQualitiesLabel = new System.Windows.Forms.Label();
             this.lblMetavariantKarmaLabel = new System.Windows.Forms.Label();
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
@@ -916,7 +916,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSkillsLabel;
         private ElasticComboBox cboHeritage;
         private System.Windows.Forms.Label lblSumtoTen;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
         internal System.Windows.Forms.Label lblMetavariantKarmaLabel;
         private System.Windows.Forms.Label lblMetavariantLabel;

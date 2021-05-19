@@ -50,29 +50,32 @@ namespace Chummer
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(434, 63);
+            this.tlpMain.Size = new System.Drawing.Size(430, 59);
             this.tlpMain.TabIndex = 0;
+            this.tlpMain.UseWaitCursor = true;
             // 
             // lblLoadingInfo
             // 
             this.lblLoadingInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblLoadingInfo.AutoSize = true;
-            this.lblLoadingInfo.Location = new System.Drawing.Point(3, 12);
+            this.lblLoadingInfo.Location = new System.Drawing.Point(3, 8);
             this.lblLoadingInfo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLoadingInfo.Name = "lblLoadingInfo";
             this.lblLoadingInfo.Size = new System.Drawing.Size(83, 13);
             this.lblLoadingInfo.TabIndex = 0;
             this.lblLoadingInfo.Tag = "String_Initializing";
             this.lblLoadingInfo.Text = "Loading [Item]...";
+            this.lblLoadingInfo.UseWaitCursor = true;
             // 
             // pgbLoadingProgress
             // 
             this.pgbLoadingProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 34);
+            this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 30);
             this.pgbLoadingProgress.Name = "pgbLoadingProgress";
-            this.pgbLoadingProgress.Size = new System.Drawing.Size(428, 26);
+            this.pgbLoadingProgress.Size = new System.Drawing.Size(424, 26);
             this.pgbLoadingProgress.Step = 1;
             this.pgbLoadingProgress.TabIndex = 1;
+            this.pgbLoadingProgress.UseWaitCursor = true;
             // 
             // frmLoading
             // 
@@ -80,7 +83,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(452, 81);
+            this.ClientSize = new System.Drawing.Size(448, 77);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
@@ -94,6 +97,8 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.Tag = "String_Loading";
             this.Text = "Loading [Character]...";
+            this.UseWaitCursor = true;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmLoading_FormClosing);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.ResumeLayout(false);
