@@ -48,7 +48,7 @@ namespace Chummer
             this.cmdChangeSelection = new System.Windows.Forms.Button();
             this.chkApplyToRating = new Chummer.ColorableCheckBox(this.components);
             this.chkFree = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
             this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
             this.chkIgnoreLimits = new Chummer.ColorableCheckBox(this.components);
@@ -482,7 +482,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdChangeSelection;
         private Chummer.ColorableCheckBox chkApplyToRating;
         private Chummer.ColorableCheckBox chkFree;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtTranslateSelection;
         private System.Windows.Forms.FlowLayoutPanel flpSelectValue;
         private Chummer.ColorableCheckBox chkIgnoreLimits;

@@ -60,7 +60,7 @@ namespace Chummer
             this.txtCharacterNotes = new System.Windows.Forms.TextBox();
             this.panGameNotes = new System.Windows.Forms.TabPage();
             this.txtGameNotes = new System.Windows.Forms.TextBox();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
@@ -562,7 +562,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtCharacterNotes;
         private System.Windows.Forms.TabPage panGameNotes;
         private System.Windows.Forms.TextBox txtGameNotes;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

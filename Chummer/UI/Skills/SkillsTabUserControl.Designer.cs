@@ -40,11 +40,11 @@ namespace Chummer.UI.Skills
             this.components = new System.ComponentModel.Container();
             this.splitSkills = new System.Windows.Forms.SplitContainer();
             this.tlpTopPanel = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpSkillGroups = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpSkillGroups = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblGroupsSp = new System.Windows.Forms.Label();
             this.lblGroupKarma = new System.Windows.Forms.Label();
             this.lblSkillGroups = new System.Windows.Forms.Label();
-            this.tlpActiveSkills = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpActiveSkills = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblActiveSp = new System.Windows.Forms.Label();
             this.lblActiveSkills = new System.Windows.Forms.Label();
             this.lblActiveKarma = new System.Windows.Forms.Label();
@@ -560,8 +560,8 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Label lblCustomKnowledgeSkillsReminder;
         private ElasticComboBox cboSortKnowledge;
         private ElasticComboBox cboDisplayFilterKnowledge;
-        private System.Windows.Forms.TableLayoutPanel tlpSkillGroups;
-        private System.Windows.Forms.TableLayoutPanel tlpActiveSkills;
+        private Chummer.BufferedTableLayoutPanel tlpSkillGroups;
+        private Chummer.BufferedTableLayoutPanel tlpActiveSkills;
         private BufferedTableLayoutPanel tlpTopPanel;
         private BufferedTableLayoutPanel tlpBottomPanel;
         private BufferedTableLayoutPanel tlpKnowledgeSkillsHeader;

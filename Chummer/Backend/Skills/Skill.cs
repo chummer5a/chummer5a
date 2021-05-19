@@ -2788,7 +2788,7 @@ namespace Chummer.Backend.Skills
                 if (intSpecBonus != 0)
                     strReturn +=
                         string.Format(GlobalOptions.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+', LanguageManager.GetString("String_ExpenseSpecialization"),
-                            LanguageManager.GetString("String_Colon"), DisplayCategory(GlobalOptions.Language), intSpecBonus);
+                            LanguageManager.GetString("String_Colon"), strValidSpec, intSpecBonus);
             }
 
             return strReturn;

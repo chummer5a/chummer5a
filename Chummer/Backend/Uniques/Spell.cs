@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer
@@ -425,7 +426,8 @@ namespace Chummer
                     .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue", strLanguage))
                     .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV", strLanguage))
                     .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV", strLanguage))
-                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage));
+                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower", strLanguage))
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
             }
 
             return strReturn;
@@ -509,7 +511,8 @@ namespace Chummer
                     .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage))
                     .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
                     .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
-                    .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
+                    .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage))
+                    .CheapReplace("Special", () => LanguageManager.GetString("String_Special", strLanguage));
             }
 
             return strReturn;
@@ -529,7 +532,8 @@ namespace Chummer
         /// </summary>
         public string DisplayDamage(string strLanguage)
         {
-            if (Damage != "S" && Damage != "P") return LanguageManager.GetString("String_None", strLanguage);
+            if (Damage != "S" && Damage != "P")
+                return LanguageManager.GetString("String_None", strLanguage);
             StringBuilder sBld = new StringBuilder("0");
 
             foreach (var improvement in RelevantImprovements(i =>
@@ -636,7 +640,8 @@ namespace Chummer
                     strDV += " + 2";
                 }
                 object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
-                if (!blnIsSuccess) return strReturn;
+                if (!blnIsSuccess)
+                    return strReturn;
                 if (force)
                 {
                     strReturn = string.Format(GlobalOptions.InvariantCultureInfo, "F{0:+0;-0;}", xprResult);
@@ -837,20 +842,35 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strReturn = string.Empty;
+                string strFormat = strSpace + "{0}" + strSpace + "({1})";
                 Skill objSkill = Skill;
+                CharacterAttrib objAttrib = _objCharacter.GetAttribute(UsesUnarmed ? "MAG" : (objSkill?.Attribute ?? "MAG"));
+                if (objAttrib != null)
+                {
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                        objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
+                }
                 if (objSkill != null)
                 {
                     int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
-                    strReturn = objSkill.FormattedDicePool(intPool, Category);
+                    if (objAttrib != null)
+                        intPool -= objAttrib.TotalValue;
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += objSkill.FormattedDicePool(intPool, Category);
                 }
 
                 // Include any Improvements to the Spell Category or Spell Name.
-                return RelevantImprovements(x =>
-                    x.ImproveType == Improvement.ImprovementType.SpellCategory
-                    || x.ImproveType == Improvement.ImprovementType.SpellDicePool)
-                    .Aggregate(strReturn, (current, objImprovement) =>
-                        string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}{1}({4})",
-                            current, strSpace, "+", _objCharacter.GetObjectName(objImprovement), objImprovement.Value));
+                string result = strReturn;
+                foreach (Improvement objImprovement in RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.SpellCategory || x.ImproveType == Improvement.ImprovementType.SpellDicePool))
+                {
+                    if (!string.IsNullOrEmpty(strReturn))
+                        strReturn += strSpace + '+' + strSpace;
+                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                        _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                }
+
+                return result;
             }
         }
 

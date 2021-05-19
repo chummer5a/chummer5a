@@ -44,8 +44,8 @@ namespace Chummer
             this.nudPDFOffset = new Chummer.NumericUpDownEx();
             this.cmdPDFTest = new System.Windows.Forms.Button();
             this.cmdRemovePDFLocation = new System.Windows.Forms.Button();
-            this.tlpGlobalOptions = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpDpiScalingMode = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpGlobalOptions = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDpiScalingMode = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cboDpiScalingMethod = new System.Windows.Forms.ComboBox();
             this.lblDpiScalingMode = new System.Windows.Forms.Label();
             this.chkUseLogging = new Chummer.ColorableCheckBox(this.components);
@@ -90,7 +90,7 @@ namespace Chummer
             this.lblMugshotCompressionQuality = new System.Windows.Forms.Label();
             this.nudMugshotCompressionQuality = new Chummer.NumericUpDownEx();
             this.cboMugshotCompression = new Chummer.ElasticComboBox();
-            this.tlpColorMode = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpColorMode = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblColorMode = new System.Windows.Forms.Label();
             this.cboColorMode = new System.Windows.Forms.ComboBox();
             this.lblDefaultCharacterOption = new System.Windows.Forms.Label();
@@ -1953,7 +1953,7 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpPDFOffset;
         private NumericUpDownEx nudPDFOffset;
         private System.Windows.Forms.Button cmdPDFTest;
-        private System.Windows.Forms.TableLayoutPanel tlpGlobalOptions;
+        private Chummer.BufferedTableLayoutPanel tlpGlobalOptions;
         private System.Windows.Forms.Label lblPDFParametersLabel;
         private ColorableCheckBox chkHideMasterIndex;
         private ColorableCheckBox chkHideCharacterRoster;
@@ -2036,7 +2036,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtPDFAppPath;
         private System.Windows.Forms.Button cmdPDFAppPath;
         private System.Windows.Forms.FlowLayoutPanel flpBrowserVersion;
-        private System.Windows.Forms.TableLayoutPanel tlpColorMode;
+        private Chummer.BufferedTableLayoutPanel tlpColorMode;
         private System.Windows.Forms.Label lblColorMode;
         private System.Windows.Forms.ComboBox cboColorMode;
         private System.Windows.Forms.ListBox lsbCustomDataDirectories;
@@ -2047,7 +2047,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdRemovePDFLocation;
         private System.Windows.Forms.Button cmdRemoveCharacterRoster;
         private System.Windows.Forms.Button cmdRemovePDFAppPath;
-        private System.Windows.Forms.TableLayoutPanel tlpDpiScalingMode;
+        private Chummer.BufferedTableLayoutPanel tlpDpiScalingMode;
         private System.Windows.Forms.ComboBox cboDpiScalingMethod;
         private System.Windows.Forms.Label lblDpiScalingMode;
         private BufferedTableLayoutPanel tlpButtons;

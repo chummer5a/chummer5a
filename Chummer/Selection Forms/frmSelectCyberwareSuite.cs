@@ -41,18 +41,16 @@ namespace Chummer
         {
             InitializeComponent();
             _eSource = eSource;
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
-
             if (_eSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
                 _strType = "bioware";
-                Text = LanguageManager.GetString("Title_SelectBiowareSuite");
-                lblCyberwareLabel.Text = LanguageManager.GetString("Label_SelectBiowareSuite_PartsInSuite");
+                Tag = "Title_SelectBiowareSuite";
+                gpbCyberware.Tag = "Label_SelectBiowareSuite_PartsInSuite";
             }
-
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
             _objCharacter = objCharacter;
             _objXmlDocument = objCharacter.LoadData(_strType + ".xml", string.Empty, true);
         }

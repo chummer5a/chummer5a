@@ -9681,6 +9681,14 @@
       <text>Loading {0}...</text>
     </string>
     <string>
+      <key>String_Saving</key>
+      <text>Saving...</text>
+    </string>
+    <string>
+      <key>String_Saving_Pattern</key>
+      <text>Saving {0}...</text>
+    </string>
+    <string>
       <key>String_Initializing</key>
       <text>Initializing...</text>
     </string>

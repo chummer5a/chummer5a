@@ -44,7 +44,7 @@ namespace Chummer
             this.lblGroupNameLabel = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.cmdChangeColour = new System.Windows.Forms.Button();
-            this.chkFreeContact = new Chummer.ColorableCheckBox();
+            this.chkFreeContact = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
@@ -162,10 +162,11 @@ namespace Chummer
             // lblTotalConnectionModifier
             // 
             this.lblTotalConnectionModifier.AutoSize = true;
+            this.lblTotalConnectionModifier.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTotalConnectionModifier.Location = new System.Drawing.Point(140, 140);
             this.lblTotalConnectionModifier.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTotalConnectionModifier.Name = "lblTotalConnectionModifier";
-            this.lblTotalConnectionModifier.Size = new System.Drawing.Size(13, 13);
+            this.lblTotalConnectionModifier.Size = new System.Drawing.Size(223, 13);
             this.lblTotalConnectionModifier.TabIndex = 11;
             this.lblTotalConnectionModifier.Text = "0";
             // 
@@ -223,6 +224,7 @@ namespace Chummer
             // 
             this.cmdChangeColour.AutoSize = true;
             this.cmdChangeColour.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdChangeColour.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdChangeColour.Location = new System.Drawing.Point(140, 162);
             this.cmdChangeColour.Name = "cmdChangeColour";
             this.cmdChangeColour.Size = new System.Drawing.Size(87, 23);
@@ -234,11 +236,12 @@ namespace Chummer
             // 
             // chkFreeContact
             // 
-            this.chkFreeContact.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.chkFreeContact.AutoSize = true;
-            this.chkFreeContact.Location = new System.Drawing.Point(47, 165);
+            this.chkFreeContact.DefaultColorScheme = true;
+            this.chkFreeContact.Dock = System.Windows.Forms.DockStyle.Right;
+            this.chkFreeContact.Location = new System.Drawing.Point(47, 162);
             this.chkFreeContact.Name = "chkFreeContact";
-            this.chkFreeContact.Size = new System.Drawing.Size(87, 17);
+            this.chkFreeContact.Size = new System.Drawing.Size(87, 23);
             this.chkFreeContact.TabIndex = 12;
             this.chkFreeContact.Tag = "Checkbox_SelectContactConnection_FreeContact";
             this.chkFreeContact.Text = "Free Contact";
@@ -308,6 +311,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(384, 241);
             this.Controls.Add(this.tlpMain);
