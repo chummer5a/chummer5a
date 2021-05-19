@@ -28,6 +28,7 @@ namespace Chummer
     {
         private readonly frmChummerMain _frmMain;
         private readonly List<ListViewItem> _lstResults = new List<ListViewItem>(40);
+        private bool hasBubbleDie = false;
 
         #region Control Events
         public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
@@ -62,6 +63,7 @@ namespace Chummer
 
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
+            hasBubbleDie = false;
             List<int> lstRandom = new List<int>(nudDice.ValueAsInt);
             int intHitCount = 0;
             int intGlitchCount = 0;
@@ -153,7 +155,7 @@ namespace Chummer
                         && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                ListViewItem lviCur = new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo), LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
+                ListViewItem lviCur = new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo) + strSpace + LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
                 if ((cboMethod.SelectedValue.ToString() == "Standard"
                      || cboMethod.SelectedValue.ToString() == "Large")
                     && intBubbleDieResult <= intGlitchMin)
@@ -162,6 +164,7 @@ namespace Chummer
                     lviCur.ForeColor = ColorManager.DieGlitchFore;
                     lviCur.BackColor = ColorManager.DieGlitchBackground;
                 }
+                hasBubbleDie = true;
                 _lstResults.Add(lviCur);
             }
 
@@ -230,6 +233,14 @@ namespace Chummer
 
             int intKeepSum = 0;
             int intResult;
+
+            //Remove the BubbleDie (it is always at the end)
+            if(hasBubbleDie && _lstResults.Count>0)
+            {
+                _lstResults.RemoveAt(_lstResults.Count - 1);
+            }
+            hasBubbleDie = false;
+
             // Remove everything that is not a hit
             int intNewDicePool = 0;
             for (int i = _lstResults.Count - 1; i >= 0; --i)
@@ -336,7 +347,7 @@ namespace Chummer
                         && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                ListViewItem lviCur=new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
+                ListViewItem lviCur=new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo) + strSpace +
                     LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
                 if ((cboMethod.SelectedValue.ToString() == "Standard"
                      || cboMethod.SelectedValue.ToString() == "Large")
@@ -345,6 +356,7 @@ namespace Chummer
                     intGlitchCount++;
                     lviCur.ForeColor = ColorManager.DieGlitchFore;
                     lviCur.BackColor = ColorManager.DieGlitchBackground;
+                    hasBubbleDie = true;
                 }
                 _lstResults.Add(lviCur);
             }
