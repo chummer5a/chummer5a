@@ -10157,7 +10157,8 @@ namespace Chummer
         /// Composure (WIL + CHA).
         /// </summary>
         public int Composure => WIL.TotalValue + CHA.TotalValue +
-                                ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure).StandardRound();
+                                ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure).StandardRound()
+                                + SustainingPenalty;
 
         public string ComposureToolTip
         {
@@ -10167,8 +10168,10 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
                     .Append(strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + WIL.DisplayAbbrev)
-                    .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
-                foreach(Improvement objLoopImprovement in Improvements)
+                    .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Composure &&
                         objLoopImprovement.Enabled)
@@ -10187,7 +10190,8 @@ namespace Chummer
         /// </summary>
         public int JudgeIntentions => INT.TotalValue + CHA.TotalValue +
                                       (ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions)
-                                       + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense)).StandardRound();
+                                       + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense)).StandardRound()
+                                      + SustainingPenalty;
 
         public string JudgeIntentionsToolTip
         {
@@ -10197,8 +10201,10 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
                     .Append(strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + INT.DisplayAbbrev)
-                    .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
-                foreach(Improvement objLoopImprovement in Improvements)
+                    .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions
                         || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsOffense)
@@ -10248,7 +10254,8 @@ namespace Chummer
         /// Lifting and Carrying (STR + BOD).
         /// </summary>
         public int LiftAndCarry => STR.TotalValue + BOD.TotalValue +
-                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry).StandardRound();
+                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry).StandardRound()
+                                   + SustainingPenalty;
 
         public string LiftAndCarryToolTip
         {
@@ -10258,8 +10265,10 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder(BOD.DisplayAbbrev)
                     .Append(strSpace + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + STR.DisplayAbbrev)
-                    .Append(strSpace + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
-                foreach(Improvement objLoopImprovement in Improvements)
+                    .Append(strSpace + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.LiftAndCarry
                        && objLoopImprovement.Enabled)
@@ -10279,7 +10288,8 @@ namespace Chummer
         /// Memory (LOG + WIL).
         /// </summary>
         public int Memory => LOG.TotalValue + WIL.TotalValue +
-                             ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory).StandardRound();
+                             ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory).StandardRound()
+                             + SustainingPenalty;
 
         public string MemoryToolTip
         {
@@ -10289,8 +10299,10 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev)
                     .Append(strSpace + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + WIL.DisplayAbbrev)
-                    .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
-                foreach(Improvement objLoopImprovement in Improvements)
+                    .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Memory &&
                         objLoopImprovement.Enabled)
@@ -11129,7 +11141,7 @@ namespace Chummer
             }
         }
         #region Dodge
-        public int Dodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating + SustainingPenalty + WoundModifier;
+        public int Dodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating + SustainingPenalty;
 
         public string DisplayDodge => Dodge.ToString(GlobalOptions.CultureInfo);
 
@@ -11142,8 +11154,6 @@ namespace Chummer
                     .Append(strSpace + '(' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + INT.DisplayAbbrev)
                     .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
-                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
                     .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
 
@@ -11723,7 +11733,7 @@ namespace Chummer
         #endregion
         #endregion
 
-        public int Surprise => REA.TotalValue + INT.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise).StandardRound();
+        public int Surprise => REA.TotalValue + INT.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise).StandardRound() + SustainingPenalty;
 
         public string SurpriseToolTip
         {
@@ -11733,7 +11743,9 @@ namespace Chummer
                 StringBuilder sbdToolTip = new StringBuilder(REA.DisplayAbbrev)
                     .Append(strSpace + '(' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + INT.DisplayAbbrev)
-                    .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                    .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
 
                 if (CurrentCounterspellingDice != 0)
                     sbdToolTip.Append(strSpace + '+' + strSpace + LanguageManager.GetString("Label_CounterspellingDice"))
@@ -16164,7 +16176,8 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DodgeToolTip),
                         new DependencyGraphNode<string, Character>(nameof(Dodge),
-                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating))
+                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating)),
+                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplaySpellDefenseIndirectDodge),
@@ -16367,22 +16380,32 @@ namespace Chummer
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(ComposureToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(Composure))
+                        new DependencyGraphNode<string, Character>(nameof(Composure),
+                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(SurpriseToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(Surprise))
+                        new DependencyGraphNode<string, Character>(nameof(Surprise),
+                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(JudgeIntentionsToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(JudgeIntentions))
+                        new DependencyGraphNode<string, Character>(nameof(JudgeIntentions),
+                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(JudgeIntentionsResistToolTip),
                         new DependencyGraphNode<string, Character>(nameof(JudgeIntentionsResist))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(LiftAndCarryToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(LiftAndCarry))
+                        new DependencyGraphNode<string, Character>(nameof(LiftAndCarry),
+                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(MemoryToolTip),
-                        new DependencyGraphNode<string, Character>(nameof(Memory))
+                        new DependencyGraphNode<string, Character>(nameof(Memory),
+                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                        )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplayCyberwareEssence),
                         new DependencyGraphNode<string, Character>(nameof(CyberwareEssence))
