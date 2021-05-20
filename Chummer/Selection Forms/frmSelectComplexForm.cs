@@ -127,7 +127,7 @@ namespace Chummer
                 }
 
                 string strFV = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
-                if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))
                         .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))

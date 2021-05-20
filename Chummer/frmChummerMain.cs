@@ -241,7 +241,7 @@ namespace Chummer
                                     Parallel.ForEach(s_astrPreloadFileNames, x =>
                                     {
                                         // Load default language data first for performance reasons
-                                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                        if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                                             XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
                                         XmlManager.Load(x);
                                         _frmProgressBar.PerformStep(Application.ProductName);

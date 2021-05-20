@@ -114,7 +114,7 @@ namespace Chummer
                                 if (objTechniqueStringBuilder.Length > 0)
                                     objTechniqueStringBuilder.AppendLine(",");
 
-                                objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
+                                objTechniqueStringBuilder.Append(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
                             }
                         }
                     }

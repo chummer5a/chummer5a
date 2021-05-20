@@ -113,7 +113,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;

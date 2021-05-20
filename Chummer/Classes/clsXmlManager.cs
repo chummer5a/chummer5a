@@ -367,7 +367,7 @@ namespace Chummer
                         : await LoadAsync(strFileName, null, strLanguage).ConfigureAwait(false);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
-                else if (strLanguage != GlobalOptions.DefaultLanguage)
+                else if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
                     XmlDocument xmlBaseDocument = blnSync
@@ -420,7 +420,7 @@ namespace Chummer
                 }
 
                 // Load the translation file for the current base data file if the selected language is not en-us.
-                if (strLanguage != GlobalOptions.DefaultLanguage)
+                if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
                     // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
@@ -1372,7 +1372,7 @@ namespace Chummer
                         string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                         if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                         {
-                            lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
+                            lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                                     ? Path.Combine(strLanguage, strSheetFileName)
                                     : strSheetFileName,
                                 xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
@@ -1389,7 +1389,7 @@ namespace Chummer
                     string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                     if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                     {
-                        lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
+                        lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                                 ? Path.Combine(strLanguage, strSheetFileName)
                                 : strSheetFileName,
                             xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
@@ -1409,7 +1409,7 @@ namespace Chummer
         /// <param name="lstBooks">List of books.</param>
         public static void Verify(string strLanguage, ICollection<string> lstBooks)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return;
             XPathDocument objLanguageDoc;
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
