@@ -740,7 +740,7 @@ namespace Chummer
                     if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
-                        objNode.ToolTipText = objInfo.GetManifestData(objInfo.Path);
+                        objNode.ToolTipText = objInfo.Description;
                     }
                     else
                     {
