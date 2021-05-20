@@ -94,7 +94,7 @@ namespace Chummer
             _lstResults.Clear();
             foreach (int intResult in lstRandom)
             {
-                ListViewItem lviCur=new ListViewItem(intResult.ToString(GlobalOptions.InvariantCultureInfo), intResult.ToString(GlobalOptions.CultureInfo));
+                ListViewItem lviCur=new ListViewItem(intResult.ToString(GlobalOptions.CultureInfo));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -103,12 +103,14 @@ namespace Chummer
                     if (chkCinematicGameplay.Checked)
                         intTarget = 4;
 
-                    if (intResult >= intTarget) {
+                    if (intResult >= intTarget)
+                    {
                         intHitCount++;
                         lviCur.ForeColor = ColorManager.DieHitFore;
                         lviCur.BackColor = ColorManager.DieHitBackground;
                     }
-                    if (intResult <= intGlitchMin) {
+                    if (intResult <= intGlitchMin)
+                    {
                         intGlitchCount++;
                         lviCur.ForeColor = ColorManager.DieGlitchFore;
                         lviCur.BackColor = ColorManager.DieGlitchBackground;
@@ -290,7 +292,7 @@ namespace Chummer
 
             foreach (int intLoopResult in lstRandom)
             {
-                ListViewItem lviCur=new ListViewItem(intLoopResult.ToString(GlobalOptions.InvariantCultureInfo), intLoopResult.ToString(GlobalOptions.CultureInfo));
+                ListViewItem lviCur=new ListViewItem(intLoopResult.ToString(GlobalOptions.CultureInfo));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -347,7 +349,7 @@ namespace Chummer
                         && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                ListViewItem lviCur=new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo) + strSpace +
+                ListViewItem lviCur=new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + strSpace +
                     LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
                 if ((cboMethod.SelectedValue.ToString() == "Standard"
                      || cboMethod.SelectedValue.ToString() == "Large")
