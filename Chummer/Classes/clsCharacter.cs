@@ -15871,7 +15871,9 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DodgeToolTip),
                         new DependencyGraphNode<string, Character>(nameof(Dodge),
-                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating))
+                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating),
+                            new DependencyGraphNode<string, Character>(nameof(WoundModifier))
+                            )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplaySpellDefenseIndirectDodge),
