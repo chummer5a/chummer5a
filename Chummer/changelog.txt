@@ -41,6 +41,7 @@ Application Changes:
 - In order to prevent users from thinking Chummer has locked up when it is still working, Chummer now shows a visible loading progress bar when it is loading in a character's UI elements or when it is saving a character.
 - The dice roller no longer crashes when a user re-rolls failures while having more hits than initial dice (due to enabling Rule of 6).
 - When using Chummer in a non-English language, contact controls will no longer attempt to immediately translate and then re-translate the contents of text fields after every single possible change. Fixes #4450.
+- Gear that can act as ammunition without being in the ammunition category is now properly treated as such when exporting character information, printing sheets, or buying more ammo. Fixes #4457.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

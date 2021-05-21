@@ -11181,7 +11181,7 @@ namespace Chummer
 
                     bool blnMatchFound = false;
                     // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition")
+                    if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
                     {
                         foreach (Gear objCharacterGear in CharacterObject.Gear)
                         {
