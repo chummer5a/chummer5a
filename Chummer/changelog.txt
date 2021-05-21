@@ -60,6 +60,7 @@ Data Changes:
 - Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
 - Unarmed Attack can no longer be bought as a weapon.
 - Fixed the German translations for some mentor spirits that were broken in an update a few years ago.
+- Fixed a typo in Baseline Reagents' availability. Fixes #4458.
 
 Changed/New Strings:
 - String_ContactPoints
