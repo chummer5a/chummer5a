@@ -117,33 +117,18 @@ namespace Chummer
             string strSelectedLifestyleId = lstLifestyleQualities.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelectedLifestyleId))
             {
-                lblMinimum.Visible = false;
-                lblMinimumLabel.Visible = false;
-                lblCost.Visible = false;
-                lblCostLabel.Visible = false;
-                lblBP.Text = string.Empty;
-                lblBPLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
-                lblSourceLabel.Visible = false;
+                tlpRight.Visible = false;
                 return;
             }
 
             XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + "]");
             if (objXmlQuality == null)
             {
-                lblMinimum.Visible = false;
-                lblMinimumLabel.Visible = false;
-                lblCost.Visible = false;
-                lblCostLabel.Visible = false;
-                lblBP.Text = string.Empty;
-                lblBPLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
-                lblSourceLabel.Visible = false;
+                tlpRight.Visible = false;
                 return;
             }
 
+            SuspendLayout();
             int intBP = 0;
             objXmlQuality.TryGetInt32FieldQuickly("lp", ref intBP);
             lblBP.Text = chkFree.Checked ? LanguageManager.GetString("Checkbox_Free") : intBP.ToString(GlobalOptions.CultureInfo);
@@ -199,6 +184,8 @@ namespace Chummer
                 lblCost.Visible = false;
                 lblCostLabel.Visible = false;
             }
+            tlpRight.Visible = true;
+            ResumeLayout();
         }
 
         private static string GetMinimumRequirement(string strAllowedLifestyles)

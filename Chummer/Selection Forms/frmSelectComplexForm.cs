@@ -71,94 +71,93 @@ namespace Chummer
             string strSelectedComplexFormId = lstComplexForms.SelectedValue?.ToString();
             if (_blnLoading || string.IsNullOrEmpty(strSelectedComplexFormId))
             {
-                lblDuration.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblFV.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
             // Display the Complex Form information.
             XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + "]");
-            if (xmlComplexForm != null)
+            if (xmlComplexForm == null)
             {
-                switch (xmlComplexForm.SelectSingleNode("duration")?.Value)
-                {
-                    case "P":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent");
-                        break;
-                    case "S":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
-                        break;
-                    case "Special":
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
-                        break;
-                    default:
-                        lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant");
-                        break;
-                }
-
-                switch (xmlComplexForm.SelectSingleNode("target")?.Value)
-                {
-                    case "Persona":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetPersona");
-                        break;
-                    case "Device":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetDevice");
-                        break;
-                    case "File":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetFile");
-                        break;
-                    case "Self":
-                        lblTarget.Text = LanguageManager.GetString("String_SpellRangeSelf");
-                        break;
-                    case "Sprite":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetSprite");
-                        break;
-                    case "Host":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetHost");
-                        break;
-                    case "IC":
-                        lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetIC");
-                        break;
-                    default:
-                        lblTarget.Text = LanguageManager.GetString("String_None");
-                        break;
-                }
-
-                string strFV = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
-                if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                {
-                    strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))
-                        .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
-                        .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"))
-                        .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV"))
-                        .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"))
-                        .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
-                }
-
-                lblFV.Text = strFV;
-
-                string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ?? xmlComplexForm.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-
-                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
-                                     LanguageManager.GetString("String_Page") + strSpace + strPage);
+                tlpRight.Visible = false;
+                return;
             }
-            else
+
+            SuspendLayout();
+            switch (xmlComplexForm.SelectSingleNode("duration")?.Value)
             {
-                lblDuration.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblFV.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                case "P":
+                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent");
+                    break;
+                case "S":
+                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
+                    break;
+                case "Special":
+                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
+                    break;
+                default:
+                    lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant");
+                    break;
             }
+
+            switch (xmlComplexForm.SelectSingleNode("target")?.Value)
+            {
+                case "Persona":
+                    lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetPersona");
+                    break;
+                case "Device":
+                    lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetDevice");
+                    break;
+                case "File":
+                    lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetFile");
+                    break;
+                case "Self":
+                    lblTarget.Text = LanguageManager.GetString("String_SpellRangeSelf");
+                    break;
+                case "Sprite":
+                    lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetSprite");
+                    break;
+                case "Host":
+                    lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetHost");
+                    break;
+                case "IC":
+                    lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetIC");
+                    break;
+                default:
+                    lblTarget.Text = LanguageManager.GetString("String_None");
+                    break;
+            }
+
+            string strFV = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
+            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))
+                    .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
+                    .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"))
+                    .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV"))
+                    .CheapReplace("Disease DV", () => LanguageManager.GetString("String_SpellDiseaseDV"))
+                    .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
+            }
+
+            lblFV.Text = strFV;
+
+            string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ??
+                               LanguageManager.GetString("String_Unknown");
+            string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ??
+                             xmlComplexForm.SelectSingleNode("page")?.Value ??
+                             LanguageManager.GetString("String_Unknown");
+            string strSpace = LanguageManager.GetString("String_Space");
+            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
+
+            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
+                                 LanguageManager.GetString("String_Page") + strSpace + strPage);
 
             lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblFVLabel.Visible = !string.IsNullOrEmpty(lblFV.Text);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
+            ResumeLayout();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

@@ -476,27 +476,7 @@ namespace Chummer
             }
             if (xmlSpell == null)
             {
-                lblDescriptorsLabel.Visible = false;
-                chkAlchemical.Visible = false;
-                lblTypeLabel.Visible = false;
-                lblDurationLabel.Visible = false;
-                chkExtended.Visible = false;
-                lblRangeLabel.Visible = false;
-                lblDamageLabel.Visible = false;
-                lblDVLabel.Visible = false;
-                chkFreeBonus.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblDescriptors.Text = string.Empty;
-                chkAlchemical.Checked = false;
-                lblType.Text = string.Empty;
-                lblDuration.Text = string.Empty;
-                chkExtended.Checked = false;
-                lblRange.Text = string.Empty;
-                lblDamage.Text = string.Empty;
-                lblDV.Text = string.Empty;
-                chkFreeBonus.Checked = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -725,6 +705,7 @@ namespace Chummer
             lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
                                  LanguageManager.GetString("String_Page") + strSpace + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
             _blnRefresh = false;
         }
         #endregion

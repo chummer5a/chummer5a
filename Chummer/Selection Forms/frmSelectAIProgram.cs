@@ -192,6 +192,8 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
+            SuspendLayout();
+            tlpRight.Visible = false;
             string strSelectedId = lstAIPrograms.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -234,19 +236,8 @@ namespace Chummer
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
+                    tlpRight.Visible = true;
                 }
-                else
-                {
-                    lblRequiresProgram.Text = string.Empty;
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
-                }
-            }
-            else
-            {
-                lblRequiresProgram.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
             }
 
             lblRequiresProgramLabel.Visible = !string.IsNullOrEmpty(lblRequiresProgram.Text);

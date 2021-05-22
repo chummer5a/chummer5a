@@ -710,29 +710,11 @@ namespace Chummer
                 SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                tlpRight.Visible = true;
             }
             else
             {
-                lblRatingNALabel.Visible = false;
-                lblRatingLabel.Text = string.Empty;
-                nudRating.Visible = false;
-                lblSlotsLabel.Visible = false;
-                lblSlots.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblAvailLabel.Visible = false;
-                lblAvail.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblTestLabel.Visible = false;
-                lblTest.Text = string.Empty;
-                lblCategoryLabel.Visible = false;
-                lblCategory.Text = string.Empty;
-                lblVehicleCapacityLabel.Visible = false;
-                lblVehicleCapacity.Visible = false;
-                lblLimit.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
             }
             _blnSkipUpdate = false;
         }

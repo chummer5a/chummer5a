@@ -186,14 +186,11 @@ namespace Chummer
                 lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
                 lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
                 lblSourceLabel.Visible = lblSource.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                tlpRight.Visible = true;
             }
             else
             {
-                lblBPLabel.Visible = false;
-                lblBP.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblSource.Visible = false;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
             }
         }
 

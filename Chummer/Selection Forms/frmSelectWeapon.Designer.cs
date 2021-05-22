@@ -67,13 +67,10 @@ namespace Chummer
             this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
             this.lblIncludedAccessories = new System.Windows.Forms.Label();
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblSource = new System.Windows.Forms.Label();
-            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
             this.lblWeaponConceal = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblWeaponDamageLabel = new System.Windows.Forms.Label();
+            this.lblSource = new System.Windows.Forms.Label();
             this.lblWeaponConcealLabel = new System.Windows.Forms.Label();
             this.lblWeaponDamage = new System.Windows.Forms.Label();
             this.lblWeaponRCLabel = new System.Windows.Forms.Label();
@@ -81,6 +78,9 @@ namespace Chummer
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
+            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
             this.lblWeaponMode = new System.Windows.Forms.Label();
             this.lblWeaponCost = new System.Windows.Forms.Label();
             this.lblWeaponCostLabel = new System.Windows.Forms.Label();
@@ -109,9 +109,9 @@ namespace Chummer
             this.gpbIncludedAccessories.SuspendLayout();
             this.pnlIncludedAccessories.SuspendLayout();
             this.tlpRight.SuspendLayout();
-            this.flpCheckBoxes.SuspendLayout();
             this.flpMarkup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
+            this.flpCheckBoxes.SuspendLayout();
             this.tabBrowse.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -505,13 +505,13 @@ namespace Chummer
             // 
             // chkHideOverAvailLimit
             // 
+            this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
             this.chkHideOverAvailLimit.DefaultColorScheme = true;
-            this.chkHideOverAvailLimit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chkHideOverAvailLimit.Location = new System.Drawing.Point(303, 409);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
-            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(446, 17);
+            this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 70;
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
@@ -520,13 +520,13 @@ namespace Chummer
             // 
             // chkShowOnlyAffordItems
             // 
+            this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.chkShowOnlyAffordItems.DefaultColorScheme = true;
-            this.chkShowOnlyAffordItems.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(303, 434);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
-            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(446, 17);
+            this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
             this.chkShowOnlyAffordItems.TabIndex = 71;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
@@ -539,9 +539,9 @@ namespace Chummer
             this.gpbIncludedAccessories.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbIncludedAccessories.Controls.Add(this.pnlIncludedAccessories);
             this.gpbIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpbIncludedAccessories.Location = new System.Drawing.Point(303, 202);
+            this.gpbIncludedAccessories.Location = new System.Drawing.Point(303, 204);
             this.gpbIncludedAccessories.Name = "gpbIncludedAccessories";
-            this.gpbIncludedAccessories.Size = new System.Drawing.Size(446, 200);
+            this.gpbIncludedAccessories.Size = new System.Drawing.Size(446, 198);
             this.gpbIncludedAccessories.TabIndex = 74;
             this.gpbIncludedAccessories.TabStop = false;
             this.gpbIncludedAccessories.Tag = "Label_SelectWeapon_IncludedItems";
@@ -556,7 +556,7 @@ namespace Chummer
             this.pnlIncludedAccessories.Location = new System.Drawing.Point(3, 16);
             this.pnlIncludedAccessories.Name = "pnlIncludedAccessories";
             this.pnlIncludedAccessories.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
-            this.pnlIncludedAccessories.Size = new System.Drawing.Size(440, 181);
+            this.pnlIncludedAccessories.Size = new System.Drawing.Size(440, 179);
             this.pnlIncludedAccessories.TabIndex = 0;
             // 
             // lblIncludedAccessories
@@ -617,66 +617,8 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.Size = new System.Drawing.Size(452, 199);
+            this.tlpRight.Size = new System.Drawing.Size(452, 201);
             this.tlpRight.TabIndex = 77;
-            // 
-            // lblSource
-            // 
-            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSource.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.lblSource, 3);
-            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(59, 180);
-            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSource.TabIndex = 65;
-            this.lblSource.Text = "[Source]";
-            this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
-            // flpCheckBoxes
-            // 
-            this.flpCheckBoxes.AutoSize = true;
-            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpRight.SetColumnSpan(this.flpCheckBoxes, 4);
-            this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
-            this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
-            this.flpCheckBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpCheckBoxes.Location = new System.Drawing.Point(0, 151);
-            this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
-            this.flpCheckBoxes.Name = "flpCheckBoxes";
-            this.flpCheckBoxes.Size = new System.Drawing.Size(452, 23);
-            this.flpCheckBoxes.TabIndex = 73;
-            // 
-            // chkFreeItem
-            // 
-            this.chkFreeItem.AutoSize = true;
-            this.chkFreeItem.DefaultColorScheme = true;
-            this.chkFreeItem.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkFreeItem.Location = new System.Drawing.Point(3, 3);
-            this.chkFreeItem.Name = "chkFreeItem";
-            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
-            this.chkFreeItem.TabIndex = 58;
-            this.chkFreeItem.Tag = "Checkbox_Free";
-            this.chkFreeItem.Text = "Free!";
-            this.chkFreeItem.UseVisualStyleBackColor = true;
-            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
-            // 
-            // chkBlackMarketDiscount
-            // 
-            this.chkBlackMarketDiscount.AutoSize = true;
-            this.chkBlackMarketDiscount.DefaultColorScheme = true;
-            this.chkBlackMarketDiscount.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 3);
-            this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
-            this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
-            this.chkBlackMarketDiscount.TabIndex = 69;
-            this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
-            this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
-            this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
-            this.chkBlackMarketDiscount.Visible = false;
-            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
             // 
             // lblWeaponConceal
             // 
@@ -694,7 +636,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(9, 180);
+            this.lblSourceLabel.Location = new System.Drawing.Point(9, 182);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -715,6 +657,21 @@ namespace Chummer
             this.lblWeaponDamageLabel.Tag = "Label_Damage";
             this.lblWeaponDamageLabel.Text = "Damage:";
             this.lblWeaponDamageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblSource
+            // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSource.AutoSize = true;
+            this.tlpRight.SetColumnSpan(this.lblSource, 3);
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSource.Location = new System.Drawing.Point(59, 182);
+            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSource.Name = "lblSource";
+            this.lblSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSource.TabIndex = 65;
+            this.lblSource.Text = "[Source]";
+            this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblWeaponConcealLabel
             // 
@@ -756,23 +713,23 @@ namespace Chummer
             // 
             // flpMarkup
             // 
+            this.flpMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.flpMarkup.AutoSize = true;
             this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpMarkup.Location = new System.Drawing.Point(284, 125);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(168, 26);
+            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
             this.flpMarkup.TabIndex = 72;
             this.flpMarkup.WrapContents = false;
             // 
             // nudMarkup
             // 
+            this.nudMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudMarkup.AutoSize = true;
             this.nudMarkup.DecimalPlaces = 2;
-            this.nudMarkup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudMarkup.Location = new System.Drawing.Point(3, 3);
             this.nudMarkup.Maximum = new decimal(new int[] {
             1000,
@@ -791,12 +748,12 @@ namespace Chummer
             // 
             // lblMarkupPercentLabel
             // 
+            this.lblMarkupPercentLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblMarkupPercentLabel.Location = new System.Drawing.Point(65, 6);
             this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
-            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 14);
+            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblMarkupPercentLabel.TabIndex = 61;
             this.lblMarkupPercentLabel.Text = "%";
             this.lblMarkupPercentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -813,6 +770,51 @@ namespace Chummer
             this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
             this.lblMarkupLabel.Text = "Markup:";
             this.lblMarkupLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // flpCheckBoxes
+            // 
+            this.flpCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpCheckBoxes.AutoSize = true;
+            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.SetColumnSpan(this.flpCheckBoxes, 4);
+            this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
+            this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
+            this.flpCheckBoxes.Location = new System.Drawing.Point(0, 151);
+            this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpCheckBoxes.Name = "flpCheckBoxes";
+            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 25);
+            this.flpCheckBoxes.TabIndex = 73;
+            // 
+            // chkFreeItem
+            // 
+            this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkFreeItem.AutoSize = true;
+            this.chkFreeItem.DefaultColorScheme = true;
+            this.chkFreeItem.Location = new System.Drawing.Point(3, 4);
+            this.chkFreeItem.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkFreeItem.Name = "chkFreeItem";
+            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
+            this.chkFreeItem.TabIndex = 58;
+            this.chkFreeItem.Tag = "Checkbox_Free";
+            this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.UseVisualStyleBackColor = true;
+            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
+            // 
+            // chkBlackMarketDiscount
+            // 
+            this.chkBlackMarketDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkBlackMarketDiscount.AutoSize = true;
+            this.chkBlackMarketDiscount.DefaultColorScheme = true;
+            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 4);
+            this.chkBlackMarketDiscount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
+            this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
+            this.chkBlackMarketDiscount.TabIndex = 69;
+            this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
+            this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
+            this.chkBlackMarketDiscount.Visible = false;
+            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
             // 
             // lblWeaponMode
             // 
@@ -1120,11 +1122,11 @@ namespace Chummer
             this.pnlIncludedAccessories.PerformLayout();
             this.tlpRight.ResumeLayout(false);
             this.tlpRight.PerformLayout();
-            this.flpCheckBoxes.ResumeLayout(false);
-            this.flpCheckBoxes.PerformLayout();
             this.flpMarkup.ResumeLayout(false);
             this.flpMarkup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
+            this.flpCheckBoxes.ResumeLayout(false);
+            this.flpCheckBoxes.PerformLayout();
             this.tabBrowse.ResumeLayout(false);
             this.tableLayoutPanel2.ResumeLayout(false);
             this.tableLayoutPanel2.PerformLayout();

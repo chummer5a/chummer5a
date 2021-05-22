@@ -141,24 +141,11 @@ namespace Chummer
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     cmdOK.Enabled = true;
+                    tlpRight.Visible = true;
                 }
                 else
                 {
-                    lblAdvantageLabel.Visible = false;
-                    lblAdvantage.Text = string.Empty;
-                    lblDisadvantageLabel.Visible = false;
-                    lblDisadvantage.Text = string.Empty;
-                    lblChoice1.Visible = false;
-                    lblChoice2.Visible = false;
-                    cboChoice1.Visible = false;
-                    cboChoice2.Visible = false;
-                    lblBonus1.Visible = false;
-                    lblBonus2.Visible = false;
-                    lblBonusText1.Visible = false;
-                    lblBonusText2.Visible = false;
-                    lblSourceLabel.Visible = false;
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
+                    tlpRight.Visible = false;
                     cmdOK.Enabled = false;
                 }
             }
