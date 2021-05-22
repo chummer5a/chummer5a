@@ -478,13 +478,14 @@ namespace ChummerHub
             using (var serviceScope = serviceScopeFactory.CreateScope())
             {
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
-                //dbContext.Database.EnsureDeleted();
-                dbContext.Database.EnsureCreated();
-
+                if (dbContext != null)
+                {
+                    //dbContext.Database.EnsureDeleted();
+                    dbContext.Database.EnsureCreated();
+                }
             }
 
             Seed(app);
-
         }
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'Program.Seed()'

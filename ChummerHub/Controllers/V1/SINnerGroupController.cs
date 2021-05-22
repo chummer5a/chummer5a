@@ -253,7 +253,7 @@ namespace ChummerHub.Controllers.V1
                     res = new ResultGroupPutSetting(e);
                     return NotFound(res);
                 }
-                user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                user = await _signInManager.UserManager.FindByNameAsync(User.Identity?.Name ?? string.Empty);
 
                 if (user == null)
                 {
@@ -375,14 +375,14 @@ namespace ChummerHub.Controllers.V1
                     SINnerGroup parentGroup = null;
 
 
-                    user = await _signInManager.UserManager.FindByNameAsync(userName: User.Identity.Name);
+                    user = await _signInManager.UserManager.FindByNameAsync(userName: User.Identity?.Name ?? string.Empty);
                     SINnerGroup storegroup = mygroup.Id != null && mygroup.Id != Guid.Empty
                         ? await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Id == mygroup.Id)
                         : await _context.SINnerGroups.FirstOrDefaultAsync(a => a.Groupname == mygroup.Groupname && a.Language == mygroup.Language);
 
                     if (storegroup != null)
                     {
-                        user = await _signInManager.UserManager.FindByNameAsync(userName: User.Identity.Name);
+                        user = await _signInManager.UserManager.FindByNameAsync(userName: User.Identity?.Name ?? string.Empty);
                         var roles = await _userManager.GetRolesAsync(user: user);
                         if (!roles.Contains(item: "GroupAdmin") || roles.Contains(item: storegroup.MyAdminIdentityRole))
                         {

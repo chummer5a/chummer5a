@@ -1,15 +1,10 @@
 using Chummer;
 using Chummer.Plugins;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using NLog;
 
 namespace SamplePlugin
@@ -29,16 +24,16 @@ namespace SamplePlugin
         {
             try
             {
-                //this function is only for "you"
-                //feel free to initialize yourself and set/change anything in the ChummerMain-Form you want.
-                //as an example, lets change the MAIN TITLE!
-                mainControl.Text = "SamplePlugin changed the title!";
+                // This function is only for "you"
+                // Feel free to initialize yourself and set/change anything in the ChummerMain-Form you want.
+
+                // If you uncomment the following line as an example, the main title of the entire program gets changed!
+                //mainControl.Text = "SamplePlugin changed the title!";
             }
             catch(Exception e)
             {
                 Log.Error(e);
             }
-           
         }
 
         public void Dispose()
@@ -83,8 +78,6 @@ namespace SamplePlugin
         {
             try
             {
-
-
                 //this is the first thing needed for reflection in Chummer Main. Please don't return null, but your assembly
                 //that is probably bad coding AND we should change it, but for now, just stick with it...
                 return this.GetType().Assembly;

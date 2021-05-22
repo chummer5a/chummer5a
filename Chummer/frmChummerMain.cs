@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -1711,6 +1710,7 @@ namespace Chummer
                         continue;
                 }
 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (i2 <= 9 && i2 >= 0)
                 {
                     string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);

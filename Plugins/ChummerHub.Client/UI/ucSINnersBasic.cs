@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
-using Microsoft.Rest;
-using System.Net;
 using ChummerHub.Client.Backend;
 using Chummer.Plugins;
 using NLog;

@@ -2,14 +2,12 @@ using System;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Xml.Serialization;
 using Chummer;
 
 using Newtonsoft.Json;
-using ChummerHub.Client.Backend;
 
 namespace ChummerHub.Client.Sinners
 {
@@ -94,7 +92,7 @@ namespace ChummerHub.Client.Sinners
                     childtag.SetSinnerIdRecursive(id);
         }
 
-        internal void SetTagTypeEnumFromCLRType(System.Type typeValue)
+        internal void SetTagTypeEnumFromCLRType(Type typeValue)
         {
             if (typeof(int).IsAssignableFrom(typeValue))
             {
@@ -138,7 +136,7 @@ namespace ChummerHub.Client.Sinners
         {
             if (objItem == null || objAttribute == null)
                 return;
-            System.Type objItemType = objItem.GetType();
+            Type objItemType = objItem.GetType();
             StringBuilder sbdPropertyValues = new StringBuilder();
             foreach (string strProperty in objAttribute.ListCommentProperties)
             {

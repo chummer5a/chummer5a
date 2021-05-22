@@ -50,13 +50,6 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private async void frmLoading_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Make sure we always complete the progress bar before closing out
-            await pgbLoadingProgress.DoThreadSafeAsync(() => pgbLoadingProgress.Value = pgbLoadingProgress.Maximum);
-            Application.DoEvents();
-        }
-
         /// <summary>
         /// Resets the ProgressBar
         /// </summary>

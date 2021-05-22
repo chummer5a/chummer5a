@@ -615,7 +615,8 @@ namespace Chummer
         private void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
             clbPlugins.Items.Clear();
-            if (Program.PluginLoader.MyPlugins.Count == 0) return;
+            if (Program.PluginLoader.MyPlugins.Count == 0)
+                return;
             using (new CursorWait(this))
             {
                 foreach (var plugin in Program.PluginLoader.MyPlugins)
