@@ -799,14 +799,60 @@ namespace Chummer
             if (string.IsNullOrEmpty(strNeedle))
                 return string.Empty;
             string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
+            // Construct a second needle for French where we have zero-width spaces between a starting consonant and an apostrophe in order to fix ListView's weird way of alphabetically sorting names
+            string strSearchText2 = string.Empty;
+            if (GlobalOptions.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
+            {
+                strSearchText2 = strSearchText
+                    .Replace("D\'A", "D​\'A")
+                    .Replace("D\'À", "D​\'À")
+                    .Replace("D\'Â", "D​\'Â")
+                    .Replace("D\'E", "D​\'E")
+                    .Replace("D\'É", "D​\'É")
+                    .Replace("D\'È", "D​\'È")
+                    .Replace("D\'Ê", "D​\'Ê")
+                    .Replace("D\'I", "D​\'I")
+                    .Replace("D\'Î", "D​\'Î")
+                    .Replace("D\'Ï", "D​\'Ï")
+                    .Replace("D\'O", "D​\'O")
+                    .Replace("D\'Ô", "D​\'Ô")
+                    .Replace("D\'Œ", "D​\'Œ")
+                    .Replace("D\'U", "D​\'U")
+                    .Replace("D\'Û", "D​\'Û")
+                    .Replace("L\'A", "L​\'A")
+                    .Replace("L\'À", "L​\'À")
+                    .Replace("L\'Â", "L​\'Â")
+                    .Replace("L\'E", "L​\'E")
+                    .Replace("L\'É", "L​\'É")
+                    .Replace("L\'È", "L​\'È")
+                    .Replace("L\'Ê", "L​\'Ê")
+                    .Replace("L\'I", "L​\'I")
+                    .Replace("L\'Î", "L​\'Î")
+                    .Replace("L\'Ï", "L​\'Ï")
+                    .Replace("L\'O", "L​\'O")
+                    .Replace("L\'Ô", "L​\'Ô")
+                    .Replace("L\'Œ", "L​\'Œ")
+                    .Replace("L\'U", "L​\'U")
+                    .Replace("L\'Û", "L​\'Û");
+            }
             // Treat everything as being uppercase so the search is case-insensitive.
             string strReturn = string.Format(
                 GlobalOptions.InvariantCultureInfo,
-                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
-                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2}))",
+                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
+                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2}))",
                 strTranslateElement,
                 strNameElement,
                 strSearchText);
+            if (!string.IsNullOrEmpty(strSearchText2))
+            {
+                strReturn = '(' + strReturn + string.Format(
+                    GlobalOptions.InvariantCultureInfo,
+                    " or ((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
+                    "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})))",
+                    strTranslateElement,
+                    strNameElement,
+                    strSearchText2);
+            }
             return strReturn;
         }
 

@@ -63,6 +63,7 @@ Data Changes:
 - Unarmed Attack can no longer be bought as a weapon.
 - Fixed the German translations for some mentor spirits that were broken in an update a few years ago.
 - Fixed a typo in Baseline Reagents' availability. Fixes #4458.
+- All French translations that contain a shortened article (i.e. "d'" or "l'") now have zero-width spaces between the consonant and the apostrophe in order to prevent weirdness with the way they are sorted alphabetically. Searching without a zero-width space should still work, however.
 
 Changed/New Strings:
 - String_ContactPoints
