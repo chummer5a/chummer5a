@@ -553,6 +553,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Selection Forms\frmSelectDependencies.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Selection Forms\frmSelectDependencies.Designer.cs">
+      <DependentUpon>frmSelectDependencies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Selection Forms\frmSelectDrug.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1336,6 +1342,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterOptions.resx">
       <DependentUpon>frmCharacterOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Selection Forms\frmSelectDependencies.resx">
+      <DependentUpon>frmSelectDependencies.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Selection Forms\frmSelectDrug.resx">
       <DependentUpon>frmSelectDrug.cs</DependentUpon>

@@ -7885,6 +7885,46 @@
       <key>Tooltip_CharacterOptions_ManifestDescriptionMissing</key>
       <text>The manifest.xml for this custom data directory is missing a description!</text>
     </string>
+    <string>
+      <key>Title_CustomDataDirectoryInfo</key>
+      <text>Custom Data Directory Infos</text>
+    </string>
+    <string>
+      <key>Label_DirectoryName</key>
+      <text>Directory Name:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryAuthors</key>
+      <text>Authors:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryVersion</key>
+      <text>Version:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryDescription</key>
+      <text>Description:</text>
+    </string>
+    <string>
+      <key>Title_DirectoryDependencies</key>
+      <text>Dependencies</text>
+    </string>
+    <string>
+      <key>Title_DirectoryExclusivities</key>
+      <text>Exclusivities</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_Missing</key>
+      <text>Missing dependencies: {0}</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_Missing</key>
+      <text>Forbidden Dependencies: {0}</text>
+    </string>
+    <string>
+      <key>Main_Author</key>
+      <text>Main</text>
+    </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>

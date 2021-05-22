@@ -4,26 +4,38 @@
   <!--version and author are just here to serve as an example-->
   <version>1.0</version>
   <authors>
-    <author>Author 1</author>
-    <author>Author 2</author>
+    <author>
+      <name>Author 1</name>
+      <main>true</main>
+    </author>
+    <author>
+      <name>Author 2</name>
+      <main>false</main>
+    </author>
   </authors>
   <descriptions>
-    <description lang="de-de">Dieser Custom Data Ordner versucht alle durch Pegasus in den Deutschen Regelwerken eingeführten Regeländerungen zu implementieren. Hierbei werden die Deutschen Bücher als errata betrachtet und überschreiben alte Objekte.</description>
-    <description>This folder tries to implement all changes, that are made by Pegasus in the German Sourcebooks. Old English objects will be overridden by the new German rules.</description>
+    <description>
+      <text>Dieser Custom Data Ordner versucht alle durch Pegasus in den Deutschen Regelwerken eingeführten Regeländerungen zu implementieren. Hierbei werden die Deutschen Bücher als errata betrachtet und überschreiben alte Objekte.</text>
+      <lang>de-de</lang>
+    </description>
+    <description>
+      <text>This folder tries to implement all changes, that are made by Pegasus in the German Sourcebooks. Old English objects will be overridden by the new German rules.</text>
+      <lang>en-us</lang>
+    </description>
   </descriptions>
   <!--Those are only present as example!-->
   <dependencies>
     <dependency>
       <name>Example Name</name>
       <version>1</version>
-      <hash>I'm a hash, trust me</hash>
+      <hash>1234</hash>
     </dependency>
   </dependencies>
   <exclusivities>
     <exclusivitie>
       <name>Example Name 2</name>
       <version>1</version>
-      <hash>I'm a hash, trust me</hash>
+      <hash>1234</hash>
     </exclusivitie>
   </exclusivities>
 </manifest>

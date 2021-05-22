@@ -681,6 +681,15 @@ namespace Chummer
                 return;
             _objCharacterOptions.PriorityTable = strNewPriorityTable;
         }
+
+        private void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            CustomDataDirectoryInfo objSelected = (CustomDataDirectoryInfo)treCustomDataDirectories.SelectedNode.Tag;
+            txtDirectoryDescription.Text = objSelected.DisplayDescription;
+            lblDirectoryVersion.Text = objSelected.Version;
+            lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
+            lblDirectoryName.Text = objSelected.Name;
+        }
         #endregion
 
         #region Methods
@@ -740,7 +749,23 @@ namespace Chummer
                     if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
-                        objNode.ToolTipText = objInfo.Description;
+
+                        string strMissingDependencies = objInfo.CheckDependency(_objCharacterOptions);
+
+                        if (strMissingDependencies != string.Empty)
+                        {
+                            objNode.BackColor = Color.Red;
+                            objNode.ToolTipText = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), strMissingDependencies);
+                        }
+
+                        string strForbiddenDataFiles = objInfo.CheckExclusivity(_objCharacterOptions);
+
+                        if (strForbiddenDataFiles != string.Empty)
+                        {
+                            objNode.BackColor = Color.Red;
+                            objNode.ToolTipText = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), strMissingDependencies);
+                        }
+
                     }
                     else
                     {
@@ -1200,5 +1225,16 @@ namespace Chummer
             }
         }
         #endregion
+
+        private void cmdManageDependencies_Click(object sender, EventArgs e)
+        {
+            if (treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo tag)
+            {
+                var dirToModify = tag;
+                frmSelectDependencies selectDependencies = new frmSelectDependencies(_objCharacterOptions, dirToModify, _lstCharacterCustomDataDirectoryInfos);
+                selectDependencies.ShowDialog();
+            }
+
+        }
     }
 }

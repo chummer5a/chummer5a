@@ -62,6 +62,11 @@ namespace Chummer
             //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
             var startTime = DateTimeOffset.UtcNow;
+
+            //Both of these need to be set, before any windows are created. 
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
                 // Set DPI Stuff
@@ -126,7 +131,7 @@ namespace Chummer
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
+
 
                 sw.TaskEnd("languagefreestartup");
 #if !DEBUG
@@ -169,7 +174,7 @@ namespace Chummer
 
                 sw.TaskEnd("Startup");
 
-                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {
