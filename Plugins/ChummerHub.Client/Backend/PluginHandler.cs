@@ -270,6 +270,7 @@ namespace Chummer.Plugins
                 //only stop the server if this is the last instance!
                 if (!BlnHasDuplicate)
                     PipeManager.StopServer();
+                PipeManager.Dispose();
             }
         }
 
@@ -857,7 +858,7 @@ namespace Chummer.Plugins
                         try
                         {
                             res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
-                            var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, null);
+                            var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                             if (res != null)
                                 await MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         }
@@ -884,7 +885,7 @@ namespace Chummer.Plugins
                 {
                     var client = StaticUtils.GetClient();
                     res = await client.PutGroupInGroupAsync(ssg.Id, null, Guid.Empty, null, null);
-                    var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, null);
+                    var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                     if (res != null)
                     {
                         await MainForm.CharacterRoster.LoadCharacters(false, false, false);
@@ -922,7 +923,7 @@ namespace Chummer.Plugins
                         {
                             var res = await client.PutSINerInGroupAsync(null, sinnerid, null);
                             
-                            var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, null);
+                            var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                             if (res != null)
                             {
                                 await MainForm.CharacterRoster.LoadCharacters(false, false, false);
@@ -950,7 +951,7 @@ namespace Chummer.Plugins
                     var client = StaticUtils.GetClient();
                     var res = await client.PutGroupInGroupAsync(ssg.Id, null, null, null, null);
                     {
-                        var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, null);
+                        var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                         if (res != null)
                         {
                             await MainForm.CharacterRoster.LoadCharacters(false, false, false);
@@ -1039,43 +1040,40 @@ namespace Chummer.Plugins
 
         public void CustomInitialize(frmChummerMain mainControl)
         {
-            
-                Log.Info("CustomInitialize for Plugin ChummerHub.Client entered.");
-                MainForm = mainControl;
-                if (string.IsNullOrEmpty(Settings.Default.TempDownloadPath))
+            Log.Info("CustomInitialize for Plugin ChummerHub.Client entered.");
+            MainForm = mainControl;
+            if (string.IsNullOrEmpty(Settings.Default.TempDownloadPath))
+            {
+                Settings.Default.TempDownloadPath = Path.GetTempPath();
+            }
+
+            //check global mutex
+            BlnHasDuplicate = false;
+            try
+            {
+                BlnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
+            }
+            catch (AbandonedMutexException ex)
+            {
+                Log.Error(ex);
+                Utils.BreakIfDebug();
+                BlnHasDuplicate = true;
+            }
+            if (PipeManager == null)
+            {
+                PipeManager = new NamedPipeManager();
+                Log.Info("blnHasDuplicate = " + BlnHasDuplicate.ToString(CultureInfo.InvariantCulture));
+                // If there is more than 1 instance running, do not let the application start a receiving server.
+                if (BlnHasDuplicate)
                 {
-                    Settings.Default.TempDownloadPath = Path.GetTempPath();
+                    Log.Info("More than one instance, not starting NamedPipe-Server...");
+                    throw new ApplicationException("More than one instance is running.");
                 }
 
-                //check global mutex
-                BlnHasDuplicate = false;
-                try
-                {
-                    BlnHasDuplicate = !Program.GlobalChummerMutex.WaitOne(0, false);
-                }
-                catch (AbandonedMutexException ex)
-                {
-                    Log.Error(ex);
-                    Utils.BreakIfDebug();
-                    BlnHasDuplicate = true;
-                }
-                if (PipeManager == null)
-                {
-                    PipeManager = new NamedPipeManager();
-                    Log.Info("blnHasDuplicate = " + BlnHasDuplicate.ToString(CultureInfo.InvariantCulture));
-                    // If there is more than 1 instance running, do not let the application start a receiving server.
-                    if (BlnHasDuplicate)
-                    {
-                        Log.Info("More than one instance, not starting NamedPipe-Server...");
-                        throw new ApplicationException("More than one instance is running.");
-                    }
-
-                    Log.Info("Only one instance, starting NamedPipe-Server...");
-                    PipeManager.StartServer();
-                    PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
-                }
-            
-
+                Log.Info("Only one instance, starting NamedPipe-Server...");
+                PipeManager.StartServer();
+                PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+            }
         }
 
         private static string fileNameToLoad = string.Empty;
