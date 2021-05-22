@@ -2157,9 +2157,9 @@ namespace Chummer
             while (IsLoadMethodRunning)
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             IsLoadMethodRunning = true;
@@ -16622,9 +16622,9 @@ namespace Chummer
             while (IsLoadMethodRunning)
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
             IsLoadMethodRunning = true;
             try
@@ -19375,9 +19375,9 @@ namespace Chummer
             while (IsLoadMethodRunning)
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             IsLoadMethodRunning = true;

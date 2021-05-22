@@ -41,8 +41,7 @@ namespace Chummer
                     LoadCharacterOptions();
                 while (s_intDicLoadedCharacterOptionsLoadedStatus <= 0)
                 {
-                    Thread.Sleep(Utils.DefaultSleepDuration);
-                    Application.DoEvents();
+                    Utils.SafeSleep();
                 }
                 return s_dicLoadedCharacterOptions;
             }

@@ -383,7 +383,7 @@ namespace Chummer
                     ChummerTelemetryClient.Flush();
                     //we have to wait a bit to give it time to upload the data
                     Console.WriteLine("Waiting a bit to flush logging data...");
-                    Thread.Sleep(TimeSpan.FromSeconds(2));
+                    Utils.SafeSleepLong(TimeSpan.FromSeconds(2));
                 }
             }
         }

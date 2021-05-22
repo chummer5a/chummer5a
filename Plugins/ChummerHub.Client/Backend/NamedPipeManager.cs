@@ -141,12 +141,12 @@ namespace ChummerHub.Client.Backend
                 catch (IOException e)
                 {
                     Log.Warn(e);
-                    await Task.Delay(Chummer.Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Chummer.Utils.SafeSleepAsync();
                 }
                 catch (Exception e)
                 {
                     Log.Error(e);
-                    await Task.Delay(Chummer.Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Chummer.Utils.SafeSleepAsync();
                 }
             }
         }

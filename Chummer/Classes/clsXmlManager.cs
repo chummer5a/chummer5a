@@ -175,9 +175,9 @@ namespace Chummer
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -245,9 +245,9 @@ namespace Chummer
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
@@ -298,9 +298,9 @@ namespace Chummer
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             foreach (string strDirectory in s_SetDataDirectories)
@@ -446,9 +446,9 @@ namespace Chummer
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
                 {
                     if (blnSync)
-                        Thread.Sleep(Utils.DefaultSleepDuration);
+                        Utils.SafeSleep();
                     else
-                        await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                        await Utils.SafeSleepAsync();
                 }
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)

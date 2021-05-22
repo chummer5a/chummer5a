@@ -85,8 +85,7 @@ namespace ChummerHub.Client.Backend
                                 };
                                 break;
                             }
-                            Thread.Sleep(Chummer.Utils.DefaultSleepDuration);
-                            Application.DoEvents();
+                            Chummer.Utils.SafeSleep();
                         }
                     }
                 }
@@ -114,8 +113,7 @@ namespace ChummerHub.Client.Backend
                                 _possibleRoles = new List<string> { "none" };
                                 break;
                             }
-                            Thread.Sleep(Chummer.Utils.DefaultSleepDuration);
-                            Application.DoEvents();
+                            Chummer.Utils.SafeSleep();
                         }
                     }
                 }
