@@ -8,7 +8,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -258,7 +257,7 @@ namespace Chummer.Plugins
             switch (onlyparameter)
             {
                 case "Load":
-                    return HandleLoadCommand(argument);
+                    return HandleLoadCommand(argument).GetAwaiter().GetResult();
             }
             Log.Warn("Unknown command line parameter: " + parameter);
             return true;
@@ -274,7 +273,7 @@ namespace Chummer.Plugins
             }
         }
 
-        private bool HandleLoadCommand(string argument)
+        private async Task<bool> HandleLoadCommand(string argument)
         {
             //check global mutex
             bool blnHasDuplicate;
@@ -288,14 +287,14 @@ namespace Chummer.Plugins
                 Utils.BreakIfDebug();
                 blnHasDuplicate = true;
             }
-            var thread = new Thread(myargument =>
+            await Task.Run(async () =>
             {
                 if (!blnHasDuplicate)
                 {
                     var uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                     if (uptime < TimeSpan.FromSeconds(2))
                     {
-                        Thread.Sleep(TimeSpan.FromSeconds(1));
+                        await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                     }
                 }
                 if (PipeManager != null)
@@ -316,9 +315,7 @@ namespace Chummer.Plugins
                                 transaction = transaction.Substring(0, callbackInt).TrimEnd(':');
                                 callback = WebUtility.UrlDecode(callback);
                             }
-                            var task = Task.Run(async () =>
-                                await StaticUtils.WebCall(callback, 10, "Sending Open Character Request"));
-                            task.Wait();
+                            await StaticUtils.WebCall(callback, 10, "Sending Open Character Request");
                         }
                     }
                     catch (Exception e)
@@ -326,13 +323,11 @@ namespace Chummer.Plugins
                         Log.Error(e);
                         MainForm.ShowMessageBox("Error loading SINner: " + e.Message);
                     }
-                    string msg = "Load:" + myargument;
+                    string msg = "Load:" + argument;
                     Log.Trace("Sending argument to Pipeserver: " + msg);
                     PipeManager.Write(msg);
                 }
             });
-            thread.Start(argument);
-            thread.Join();
             if (blnHasDuplicate)
             {
                 Environment.ExitCode = -1;
@@ -636,7 +631,7 @@ namespace Chummer.Plugins
             }
             catch (Exception ex)
             {
-                if (!(ChummerHub.Client.Backend.Utils.ShowErrorResponseForm(res, ex) is ResultGroupGetSearchGroups))
+                if (!(await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, ex) is ResultGroupGetSearchGroups))
                     return;
             }
             finally
@@ -862,7 +857,7 @@ namespace Chummer.Plugins
                         try
                         {
                             res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
-                            var response = ChummerHub.Client.Backend.Utils.ShowErrorResponseForm(res, null);
+                            var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, null);
                             if (res != null)
                                 await MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         }
@@ -889,7 +884,7 @@ namespace Chummer.Plugins
                 {
                     var client = StaticUtils.GetClient();
                     res = await client.PutGroupInGroupAsync(ssg.Id, null, Guid.Empty, null, null);
-                    var response = ChummerHub.Client.Backend.Utils.ShowErrorResponseForm(res, null);
+                    var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res, null);
                     if (res != null)
                     {
                         await MainForm.CharacterRoster.LoadCharacters(false, false, false);
@@ -1093,26 +1088,25 @@ namespace Chummer.Plugins
                 //make sure the mainform is visible ...
                 var uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 if (uptime < TimeSpan.FromSeconds(5))
-                    Thread.Sleep(TimeSpan.FromSeconds(4));
+                    await Task.Delay(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
                 if (MainForm.Visible == false)
                 {
-                    MainForm.DoThreadSafe(() =>
+                    await MainForm.DoThreadSafeAsync(() =>
                     {
                         if (MainForm.WindowState == FormWindowState.Minimized)
                             MainForm.WindowState = FormWindowState.Normal;
-
                     });
                 }
 
-                MainForm.DoThreadSafe(() =>
+                await MainForm.DoThreadSafeAsync(() =>
                 {
                     MainForm.Activate();
                     MainForm.BringToFront();
                 });
                 var client = StaticUtils.GetClient();
-                while (MainForm.Visible == false)
+                while (!MainForm.Visible)
                 {
-                    Thread.Sleep(TimeSpan.FromSeconds(1));
+                    await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
                 }
                 if (argument.StartsWith("Load:", StringComparison.Ordinal))
                 {

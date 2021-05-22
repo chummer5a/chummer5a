@@ -361,7 +361,7 @@ namespace ChummerHub.Client.UI
                 if (searchgroup.HasPassword)
                 {
                     SINnerGroup joinGroup = new SINnerGroup(searchgroup);
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         groupEdit = new frmSINnerGroupEdit(joinGroup, true);
                         result = groupEdit.ShowDialog(this);

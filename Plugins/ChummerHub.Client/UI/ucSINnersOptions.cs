@@ -379,7 +379,7 @@ namespace ChummerHub.Client.UI
                     myresult = await client.GetRolesAsync();
                     await Utils.ShowErrorResponseFormAsync(myresult);
                     var myresultbody = myresult;
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         if (myresultbody?.CallSuccess == true)
                         {

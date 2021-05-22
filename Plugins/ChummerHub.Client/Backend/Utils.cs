@@ -85,7 +85,8 @@ namespace ChummerHub.Client.Backend
                                 };
                                 break;
                             }
-                            Thread.Sleep(100);
+                            Thread.Sleep(Chummer.Utils.DefaultSleepDuration);
+                            Application.DoEvents();
                         }
                     }
                 }
@@ -113,7 +114,8 @@ namespace ChummerHub.Client.Backend
                                 _possibleRoles = new List<string> { "none" };
                                 break;
                             }
-                            Thread.Sleep(100);
+                            Thread.Sleep(Chummer.Utils.DefaultSleepDuration);
+                            Application.DoEvents();
                         }
                     }
                 }
@@ -519,7 +521,7 @@ namespace ChummerHub.Client.Backend
                         });
                     };
                     errornode.Tag = errorCache;
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         MyTreeNodeList.Add(errornode);
                     });
@@ -966,7 +968,7 @@ namespace ChummerHub.Client.Backend
                         objCache.SettingsFile = tempCache.SettingsFile;
                     }
                 }
-                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeAsync(() =>
                 {
                     PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
                 });
@@ -980,7 +982,7 @@ namespace ChummerHub.Client.Backend
             string filepath = await DownloadFileTask(sinner, objCache);
             PluginHandler.MySINnerLoading = sinner;
             PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            await PluginHandler.MainForm.DoThreadSafeAsync(() =>
             {
                 Character c = PluginHandler.MainForm.LoadCharacter(filepath);
                 if (c != null)

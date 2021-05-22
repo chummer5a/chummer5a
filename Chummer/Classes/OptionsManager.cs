@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -39,7 +40,10 @@ namespace Chummer
                 if (s_intDicLoadedCharacterOptionsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
                     LoadCharacterOptions();
                 while (s_intDicLoadedCharacterOptionsLoadedStatus <= 0)
+                {
                     Thread.Sleep(Utils.DefaultSleepDuration);
+                    Application.DoEvents();
+                }
                 return s_dicLoadedCharacterOptions;
             }
         }
