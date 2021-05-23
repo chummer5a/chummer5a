@@ -15,6 +15,9 @@ namespace Chummer
         private readonly CharacterOptions _objCharacterOptions;
         private CustomDataDirectoryInfo _objDirectoryInfoToModify;
         private readonly List<Tuple<object, bool>> _lstCharacterCustomDataDirectoryInfos;
+        private readonly List<Tuple<int, string, string>> _lstFormDependencies;
+        private readonly List<Tuple<int, string, string>> _lstFormExclusivities;
+
 
         public frmSelectDependencies(CharacterOptions objCharacterOptions, CustomDataDirectoryInfo objDirectoryInfoToModify, List<Tuple<object, bool>> lstCharacterCustomDataDirectoryInfos)
         {
@@ -26,11 +29,11 @@ namespace Chummer
 
         private void PopulateTreCustomDataDirectories()
         {
-            object objOldSelected = treCustomDataFiles.SelectedNode?.Tag;
-            treCustomDataFiles.BeginUpdate();
-            if (_lstCharacterCustomDataDirectoryInfos.Count != treCustomDataFiles.Nodes.Count)
+            object objOldSelected = treCustomDataDirectories.SelectedNode?.Tag;
+            treCustomDataDirectories.BeginUpdate();
+            if (_lstCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
             {
-                treCustomDataFiles.Nodes.Clear();
+                treCustomDataDirectories.Nodes.Clear();
 
                 foreach (Tuple<object, bool> objCustomDataDirectory in _lstCharacterCustomDataDirectoryInfos)
                 {
@@ -47,14 +50,14 @@ namespace Chummer
                         objNode.Text = objCustomDataDirectory.Item1.ToString();
                         objNode.ForeColor = SystemColors.GrayText;
                     }
-                    treCustomDataFiles.Nodes.Add(objNode);
+                    treCustomDataDirectories.Nodes.Add(objNode);
                 }
             }
             else
             {
-                for (int i = 0; i < treCustomDataFiles.Nodes.Count; ++i)
+                for (int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
                 {
-                    TreeNode objNode = treCustomDataFiles.Nodes[i];
+                    TreeNode objNode = treCustomDataDirectories.Nodes[i];
                     Tuple<object, bool> objCustomDataDirectory = _lstCharacterCustomDataDirectoryInfos[i];
                     if (objCustomDataDirectory.Item1 != objNode.Tag)
                         objNode.Tag = objCustomDataDirectory.Item1;
@@ -71,8 +74,8 @@ namespace Chummer
             }
 
             if (objOldSelected != null)
-                treCustomDataFiles.SelectedNode = treCustomDataFiles.FindNodeByTag(objOldSelected);
-            treCustomDataFiles.EndUpdate();
+                treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
+            treCustomDataDirectories.EndUpdate();
         }
 
         private void PopulateTreDependencies()
@@ -82,7 +85,7 @@ namespace Chummer
 
             foreach (var dependency in _objDirectoryInfoToModify.DependenciesList)
             {
-                string nameAndVersion = string.Format(dependency.Item2 + " (" + dependency.Item3 + ")");
+                string nameAndVersion = string.Format(dependency.Item2 + LanguageManager.GetString("AddVersion"), dependency.Item3);
                 TreeNode newNode = new TreeNode
                 {
                     Tag = dependency,
@@ -103,7 +106,7 @@ namespace Chummer
 
             foreach (var exclusivity in _objDirectoryInfoToModify.ExclusivitiesList)
             {
-                string nameAndVersion = string.Format(exclusivity.Item2 + " (" + exclusivity.Item3 + ")");
+                string nameAndVersion = string.Format(exclusivity.Item2 + LanguageManager.GetString("AddVersion"), exclusivity.Item3);
                 TreeNode newNode = new TreeNode()
                 {
                     Tag = exclusivity,
@@ -117,6 +120,35 @@ namespace Chummer
             treExclusivities.EndUpdate();
         }
 
+        private void RefreshRtboxDescription()
+        {
+            
+        }
+
+        private void AcceptForm()
+        {
+            foreach (TreeNode dependencyNode in treDependencies.Nodes)
+            {
+                if (dependencyNode.Tag is Tuple<int, string, string> dependency)
+                    _lstFormDependencies.Add(dependency);
+            }
+            foreach (TreeNode exclusivityNode in treExclusivities.Nodes)
+            {
+                if (exclusivityNode.Tag is Tuple<int, string, string> exclusivity)
+                    _lstFormExclusivities.Add(exclusivity);
+            }
+            foreach (TreeNode authorNode in treAuthors.Nodes)
+            {
+                if (authorNode.Tag is KeyValuePair<string, bool> author)
+                    FrmAuthorDictionary.Add(author);
+            }
+
+
+            DialogResult = DialogResult.OK;
+        }
+
+
+        #region ControlEvents
         private void frmSelectDependencies_Load(object sender, EventArgs e)
         {
             PopulateTreCustomDataDirectories();
@@ -127,16 +159,16 @@ namespace Chummer
 
         private void cmdAddDependency_Click(object sender, EventArgs e)
         {
-            if (treCustomDataFiles.SelectedNode.Tag is CustomDataDirectoryInfo infoToAdd)
+            if (treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo infoToAdd)
             {
                 treDependencies.BeginUpdate();
 
-                Tuple<int, string, string> newDependency = new Tuple<int, string, string>(infoToAdd.Hash, infoToAdd.Name, infoToAdd.Version);
+                Tuple<int, string, string> newExclusivity = new Tuple<int, string, string>(infoToAdd.Hash, infoToAdd.Name, infoToAdd.Version);
 
-                string nameAndVersion = string.Format(newDependency.Item2 + " (" + newDependency.Item3 + ")");
+                string nameAndVersion = string.Format(newExclusivity.Item2 + LanguageManager.GetString("AddVersion"), newExclusivity.Item3);
                 TreeNode newNode = new TreeNode
                 {
-                    Tag = newDependency,
+                    Tag = newExclusivity,
                     Text = nameAndVersion
                 };
 
@@ -152,7 +184,7 @@ namespace Chummer
 
         private void cmdAddExclusivity_Click(object sender, EventArgs e)
         {
-            if (treCustomDataFiles.SelectedNode.Tag is CustomDataDirectoryInfo infoToAdd)
+            if (treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo infoToAdd)
             {
                 treExclusivities.BeginUpdate();
 
@@ -174,5 +206,41 @@ namespace Chummer
         {
             treExclusivities.SelectedNode.Remove();
         }
+
+        private void cmdOk_Click(object sender, EventArgs e)
+        {
+            AcceptForm();
+        }
+
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// A Dictionary, that uses the author name as key and provides a bool if he is the main author
+        /// </summary>
+        public IDictionary<string, bool> FrmAuthorDictionary { get; } = new Dictionary<string, bool>();
+
+        /// <summary>
+        /// A Dictionary containing all Descriptions, which uses the language code as key
+        /// </summary>
+        public IDictionary<string, string> FrmDescriptionDictionary { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// A list of all dependencies each formatted as Tuple(int Hash, str name, str version).
+        /// </summary>
+        public IReadOnlyList<Tuple<int, string, string>> DependenciesList => _lstFormDependencies;
+
+        /// <summary>
+        /// A list of all exclusivities each formatted as Tuple(int Hash, str name, str version).
+        /// </summary>
+        public IReadOnlyList<Tuple<int, string, string>> ExclusivitiesList => _lstFormExclusivities;
+
+        #endregion
+
     }
 }

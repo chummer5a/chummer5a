@@ -12,7 +12,6 @@ namespace Chummer
 {
     public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>
     {
-        private readonly List<Tuple<string, bool>> _lstAuthors = new List<Tuple<string, bool>>();
         private bool _blnCreated;
 
         private string _strVersion;
@@ -21,7 +20,7 @@ namespace Chummer
 
         private bool _blnIsSaving;
 
-        //Tuple<int Hash, string Version, string Name>
+        //Tuple<int Hash, string Version, string Name> (should this be Dictionary<int, KeyValuePair<string, string>>?)
         private readonly List<Tuple<int, string, string>> _lstDependencies= new List<Tuple<int, string, string>>();
         private readonly List<Tuple<int, string, string>> _lstExclusivities = new List<Tuple<int, string, string>>();
 
@@ -32,73 +31,34 @@ namespace Chummer
             Create();
         }
 
-        public int CompareTo(object obj)
-        {
-            if (obj == null)
-                return 1;
-            if (obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
-            {
-                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
-                if (intReturn == 0)
-                {
-                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
-                }
 
-                return intReturn;
-            }
+        #region Create, Load and Save Methods
 
-            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
-            if (obj is CustomDataDirectoryInfo objOther)
-                return Equals(objOther);
-            return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return new { Name, Path }.GetHashCode();
-        }
-
-        public bool Equals(CustomDataDirectoryInfo other)
-        {
-            return other != null && Name == other.Name && Path == other.Path;
-        }
-
-        #region Create and Load Methods
-
+        #region Create() Helper Methods
         /// <summary>
         /// Selects the description in the correct language and saves it to _strDisplayDescription
         /// </summary>
         private void GetDisplayDescription()
         {
             bool blnDefaultedToEng = false;
-            var objDescription = DescriptionList.Find(description => description.Item2.Equals(GlobalOptions.Language));
 
-            if (objDescription == null)
+            DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description);
+
+            if (description == null)
             {
-                objDescription = DescriptionList.Find(description => description.Item2.Equals("en-us"));
+                DescriptionDictionary.TryGetValue("en-us", out description);
                 blnDefaultedToEng = true;
             }
 
-            if(objDescription == null)
+            if(description == null)
                 return;
 
-            string strDescription = objDescription.Item1;
-
             if (blnDefaultedToEng)
-                strDescription =
+                description =
                     LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
-                    Environment.NewLine + Environment.NewLine + strDescription;
+                    Environment.NewLine + Environment.NewLine + description;
 
-            DisplayDescription = strDescription;
+            DisplayDescription = description;
         }
 
         /// <summary>
@@ -117,8 +77,8 @@ namespace Chummer
                 descriptionNode.TryGetField("text", out string text);
                 descriptionNode.TryGetField("lang", out string language);
 
-                Tuple<string, string> newDescriptionTuple = new Tuple<string, string>(text, language);
-                DescriptionList.Add(newDescriptionTuple);
+                if(!string.IsNullOrEmpty(language))
+                    DescriptionDictionary.Add(language, text);
             }
             GetDisplayDescription();
         }
@@ -139,8 +99,9 @@ namespace Chummer
                 objXmlNode.TryGetField("name", out string authorName);
                 objXmlNode.TryGetField("name", out bool authorMain);
 
-                Tuple<string, bool> newAuthor = new Tuple<string, bool>(authorName, authorMain);
-                _lstAuthors.Add(newAuthor);
+                if(!string.IsNullOrEmpty(authorName))
+                    //Maybe a stupid idea? But who would add two authors with the same name anyway?
+                    AuthorDictionary.Add(authorName, authorMain);
             }
             //After the list is fully formed, set the display author
             GetDisplayAuthors();
@@ -152,12 +113,12 @@ namespace Chummer
         private void GetDisplayAuthors()
         {
             List<string> authorsList = new List<string>();
-            foreach (var (authorName, authorIsMain) in _lstAuthors)
+            foreach ( KeyValuePair<string, bool> kvp in AuthorDictionary)
             {
-                string formattedName = authorName;
+                string formattedName = kvp.Key;
 
-                if (authorIsMain)
-                    formattedName = authorName + "(" + LanguageManager.GetString("Main_Author") + ")";
+                if (kvp.Value)
+                    formattedName = kvp.Key + LanguageManager.GetString("Main_Author");
 
                 authorsList.Add(formattedName);
             }
@@ -246,6 +207,7 @@ namespace Chummer
 
             return intHash;
         }
+        #endregion
 
         /// <summary>
         /// Loads and gets all relevant infos from the manifest.xml and stores them in the respective property
@@ -291,44 +253,13 @@ namespace Chummer
             }
         }
 
-        #endregion
-
-
-        /// <summary>
-        /// Checks if all necessary dependencies are loaded in the passed Character Options
-        /// </summary>
-        /// <param name="objCharacterOptions"></param>
-        /// <returns>List of the names of all missing dependencies as a single string</returns>
-        public string CheckDependency(CharacterOptions objCharacterOptions)
-        {
-            var strMissingDependencies = string.Join(", ", (from dependency in DependenciesList let intNeededHash = dependency.Item1
-                where objCharacterOptions.EnabledCustomDataDirectoryInfos.All(obj => obj.Hash != intNeededHash)
-                    select string.Format(dependency.Item2 + " (" + dependency.Item3 + ")")).ToArray());
-
-            return string.IsNullOrEmpty(strMissingDependencies)? string.Empty : strMissingDependencies;
-        }
-
-        /// <summary>
-        /// Checks if any prohibited custom data directories are activated
-        /// </summary>
-        /// <param name="objCharacterOptions"></param>
-        /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public string CheckExclusivity(CharacterOptions objCharacterOptions)
-        {
-            var strExistingExclusivities = string.Join(", ", (from dependency in ExclusivitiesList let intProhibitedHash = dependency.Item1
-                where objCharacterOptions.EnabledCustomDataDirectoryInfos.Any(obj => obj.Hash == intProhibitedHash)
-                    select string.Format(dependency.Item2 + " (" + dependency.Item3 + ")")).ToArray());
-
-            return string.IsNullOrEmpty(strExistingExclusivities) ? string.Empty : strExistingExclusivities;
-        }
-
         public bool Save()
         {
             if (_blnIsSaving)
                 return false;
 
-            string strFileName = "manifest";
-            
+            var pathToSave = System.IO.Path.Combine(Path, "manifest.xml");
+
             bool blnErrorFree = true;
             _blnIsSaving = true;
             using (MemoryStream objStream = new MemoryStream())
@@ -345,26 +276,26 @@ namespace Chummer
                     //<manifest>
                     objWriter.WriteStartElement("manifest");
 
-                    objWriter.WriteElementString("name",Name);
+                    objWriter.WriteElementString("name", Name);
                     objWriter.WriteElementString("version", Version);
 
                     //<authors>
                     objWriter.WriteStartElement("authors");
-                    foreach (var (name, isMain) in AuthorList)
+                    foreach (var kvp in AuthorDictionary)
                     {
-                        objWriter.WriteElementString("name", name);
-                        objWriter.WriteElementString("main", isMain.ToString());
+                        objWriter.WriteElementString("name", kvp.Key);
+                        objWriter.WriteElementString("main", kvp.Value.ToString());
                     }
                     //</authors>
                     objWriter.WriteEndElement();
 
                     //<descriptions>
                     objWriter.WriteStartElement("descriptions");
-                    foreach (var (name, languageCode) in DescriptionList)
+                    foreach (var kvp in DescriptionDictionary)
                     {
                         objWriter.WriteStartElement("descriptions");
-                        objWriter.WriteElementString("name", name);
-                        objWriter.WriteElementString("lang", languageCode);
+                        objWriter.WriteElementString("name", kvp.Value);
+                        objWriter.WriteElementString("lang", kvp.Key);
                         objWriter.WriteEndElement();
                     }
                     //</descriptions>
@@ -396,6 +327,8 @@ namespace Chummer
                     //</exclusivities>
                     objWriter.WriteEndElement();
 
+                    objWriter.WriteElementString("hash", Hash.ToString());
+
                     //</manifest>
                     objWriter.WriteEndElement();
 
@@ -405,10 +338,11 @@ namespace Chummer
 
                     try
                     {
-                        XmlDocument objDoc = new XmlDocument { XmlResolver = null };
-                        using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalOptions.SafeXmlReaderSettings))
+                        XmlDocument objDoc = new XmlDocument {XmlResolver = null};
+                        using (XmlReader objXmlReader =
+                            XmlReader.Create(objStream, GlobalOptions.SafeXmlReaderSettings))
                             objDoc.Load(objXmlReader);
-                        objDoc.Save(strFileName);
+                        objDoc.Save(pathToSave);
                     }
                     catch (IOException e)
                     {
@@ -433,9 +367,183 @@ namespace Chummer
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
                         blnErrorFree = false;
                     }
+                    finally
+                    {
+                        _blnIsSaving = false;
+                    }
                 }
             }
             return blnErrorFree;
+        }
+
+        /// <summary>
+        /// Completely overrides all properties of an CustomDataDirectoryInfo object
+        /// </summary>
+        /// <param name="newVersion">The new Version</param>
+        /// <param name="newAuthorDictionary">IDictionary(name, isMain)</param>
+        /// <param name="newDescriptionDictionary">IDictionary(languageCode, text)</param>
+        /// <param name="newDependencyList">List(Tuple(Hash, name, version))</param>
+        /// <param name="newExclusivityList">List(Tuple(Hash, name, version))</param>
+        public void Override(string newVersion, IDictionary<string, bool> newAuthorDictionary,
+            IDictionary<string, string> newDescriptionDictionary, List<Tuple<int, string, string>> newDependencyList,
+            IEnumerable<Tuple<int, string, string>> newExclusivityList)
+        {
+            _strVersion = newVersion;
+
+            AuthorDictionary.Clear();
+            foreach (var author in newAuthorDictionary)
+            {
+                AuthorDictionary.Add(author);
+            }
+            GetDisplayAuthors();
+
+            DescriptionDictionary.Clear();
+            foreach (var description in newDescriptionDictionary)
+            {
+                DescriptionDictionary.Add(description);
+            }
+            GetDisplayDescription();
+
+            _lstDependencies.Clear();
+            foreach (var dependency in newDependencyList)
+            {
+                _lstDependencies.Add(dependency);
+            }
+
+            _lstExclusivities.Clear();
+            foreach (var exclusivity in newExclusivityList)
+            {
+                _lstExclusivities.Add(exclusivity);
+            }
+
+            Save();
+        }
+        #endregion
+
+
+        /// <summary>
+        /// Checks if all necessary dependencies are loaded in the passed Character Options
+        /// </summary>
+        /// <param name="objCharacterOptions"></param>
+        /// <returns>List of the names of all missing dependencies as a single string</returns>
+        public string CheckDependency(CharacterOptions objCharacterOptions)
+        {
+            var strMissingDependencies = string.Join(", ", (from dependency in DependenciesList let intNeededHash = dependency.Item1
+                where objCharacterOptions.EnabledCustomDataDirectoryInfos.All(obj => obj.Hash != intNeededHash)
+                    select string.Format(dependency.Item2 + " (" + dependency.Item3 + ")")).ToArray());
+
+            return string.IsNullOrEmpty(strMissingDependencies)? string.Empty : strMissingDependencies;
+        }
+
+        /// <summary>
+        /// Checks if any prohibited custom data directories are activated
+        /// </summary>
+        /// <param name="objCharacterOptions"></param>
+        /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
+        public string CheckExclusivity(CharacterOptions objCharacterOptions)
+        {
+            var strExistingExclusivities = string.Join(", ", (from dependency in ExclusivitiesList let intProhibitedHash = dependency.Item1
+                where objCharacterOptions.EnabledCustomDataDirectoryInfos.Any(obj => obj.Hash == intProhibitedHash)
+                    select string.Format(dependency.Item2 + " (" + dependency.Item3 + ")")).ToArray());
+
+            return string.IsNullOrEmpty(strExistingExclusivities) ? string.Empty : strExistingExclusivities;
+        }
+
+   
+
+        #region Properties
+
+        /// <summary>
+        /// The name of the custom data directory
+        /// </summary>
+        public string Name { get; }
+
+        /// <summary>
+        /// The path to the Custom Data Directory
+        /// </summary>
+        public string Path { get; }
+
+        /// <summary>
+        /// The version of the custom data directory
+        /// </summary>
+        public string Version => _strVersion;
+
+        /// <summary>
+        /// The Sha512 Hash of all non manifest.xml files in the directory
+        /// </summary>
+        public int Hash { get; private set; }
+
+        /// <summary>
+        /// A list of all dependencies each formatted as Tuple(int Hash, str name, str version).
+        /// </summary>
+        public IReadOnlyList<Tuple<int, string, string>> DependenciesList => _lstDependencies;
+
+        /// <summary>
+        /// A list of all exclusivities each formatted as Tuple(int Hash, str name, str version).
+        /// </summary>
+        public IReadOnlyList<Tuple<int, string, string>> ExclusivitiesList => _lstExclusivities;
+
+        /// <summary>
+        /// A Dictionary containing all Descriptions, which uses the language code as key
+        /// </summary>
+        public IDictionary<string, string> DescriptionDictionary { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// The description to display
+        /// </summary>
+        public string DisplayDescription { get; private set; }
+
+        /// <summary>
+        /// A Dictionary, that uses the author name as key and provides a bool if he is the main author
+        /// </summary>
+        public IDictionary<string, bool> AuthorDictionary { get; } = new Dictionary<string, bool>();
+
+        /// <summary>
+        /// A string containing all Authors formatted as Author(main), Author2 
+        /// </summary>
+        public string DisplayAuthors { get; private set; }
+        #endregion
+
+        #region Interface Implementations and Operators
+
+        public int CompareTo(object obj)
+        {
+            if (obj == null)
+                return 1;
+            if (obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
+            {
+                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
+                if (intReturn == 0)
+                {
+                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
+                }
+
+                return intReturn;
+            }
+
+            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj is CustomDataDirectoryInfo objOther)
+                return Equals(objOther);
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return new { Name, Path }.GetHashCode();
+        }
+
+        public bool Equals(CustomDataDirectoryInfo other)
+        {
+            return other != null && Name == other.Name && Path == other.Path;
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
@@ -473,48 +581,7 @@ namespace Chummer
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
 
-        #region Properties
-
-        public string Name { get; }
-
-        public string Path { get; }
-
-        /// <summary>
-        /// The description to display
-        /// </summary>
-        public string DisplayDescription { get; private set; }
-
-        /// <summary>
-        /// The version of the custom data directory
-        /// </summary>
-        public string Version => _strVersion;
-
-        /// <summary>
-        /// A string containing all Authors formatted as Author(main), Author2 
-        /// </summary>
-        public string DisplayAuthors { get; private set; }
-
-        /// <summary>
-        /// The Sha512 Hash of all non manifest.xml files in the directory
-        /// </summary>
-        public int Hash { get; private set; }
-
-        /// <summary>
-        /// A list of all dependencies each formatted as Tuple(int Hash, str name, str version).
-        /// </summary>
-        public IReadOnlyList<Tuple<int, string, string>> DependenciesList => _lstDependencies;
-
-        /// <summary>
-        /// A list of all exclusivities each formatted as Tuple(int Hash, str name, str version).
-        /// </summary>
-        public IReadOnlyList<Tuple<int, string, string>> ExclusivitiesList => _lstExclusivities;
-
-        /// <summary>
-        /// A list of all descriptions each formatted as Tuple(str Description, str LanguageCode)
-        /// </summary>
-        public List<Tuple<string, string>> DescriptionList { get; } = new List<Tuple<string, string>>();
-
-        public IReadOnlyList<Tuple<string, bool>> AuthorList => _lstAuthors;
+        #endregion
     }
-    #endregion
+    
 }

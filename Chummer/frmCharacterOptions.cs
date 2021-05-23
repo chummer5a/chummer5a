@@ -684,11 +684,39 @@ namespace Chummer
 
         private void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            CustomDataDirectoryInfo objSelected = (CustomDataDirectoryInfo)treCustomDataDirectories.SelectedNode.Tag;
-            txtDirectoryDescription.Text = objSelected.DisplayDescription;
-            lblDirectoryVersion.Text = objSelected.Version;
-            lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
-            lblDirectoryName.Text = objSelected.Name;
+            if (treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo objSelected)
+            {
+                gbpDirectoryInfo.SuspendLayout();
+                tboxDirectoryDescription.Text = objSelected.DisplayDescription;
+                lblDirectoryVersion.Text = objSelected.Version;
+                lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
+                lblDirectoryName.Text = objSelected.Name;
+
+
+                flpDirectoryDependencies.Controls.Clear();
+                if (objSelected.DependenciesList.Count > 0)
+                {
+                    foreach (var (_, name, version) in objSelected.DependenciesList)
+                    {
+                        var depLabel = new Label {Text = name + "(" + version + ")"};
+                        flpDirectoryDependencies.Controls.Add(depLabel);
+                    }
+                }
+
+
+                flpExclusivities.Controls.Clear();
+                if (objSelected.ExclusivitiesList.Count > 0)
+                {
+                    foreach (var (_, name, version) in objSelected.ExclusivitiesList)
+                    {
+                        var depLabel = new Label { Text = name + "(" + version + ")" };
+                        flpExclusivities.Controls.Add(depLabel);
+                    }
+                }
+
+
+                gbpDirectoryInfo.ResumeLayout();
+            }
         }
         #endregion
 
@@ -1231,6 +1259,7 @@ namespace Chummer
             if (treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo tag)
             {
                 var dirToModify = tag;
+
                 frmSelectDependencies selectDependencies = new frmSelectDependencies(_objCharacterOptions, dirToModify, _lstCharacterCustomDataDirectoryInfos);
                 selectDependencies.ShowDialog();
             }

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
   <name>German Data Changes</name>
-  <!--version and author are just here to serve as an example-->
   <version>1.0</version>
   <authors>
     <author>
@@ -23,19 +22,28 @@
       <lang>en-us</lang>
     </description>
   </descriptions>
-  <!--Those are only present as example!-->
   <dependencies>
     <dependency>
-      <name>Example Name</name>
+      <name>Dependency 1</name>
       <version>1</version>
+      <hash>1000</hash>
+    </dependency>
+    <dependency>
+      <name>Dependency 2</name>
+      <version>2</version>
       <hash>1234</hash>
     </dependency>
   </dependencies>
   <exclusivities>
-    <exclusivitie>
+    <exclusivity>
       <name>Example Name 2</name>
       <version>1</version>
       <hash>1234</hash>
-    </exclusivitie>
+    </exclusivity>
+    <exclusivity>
+      <name>Example Name 3</name>
+      <version>1999</version>
+      <hash>1234</hash>
+    </exclusivity>
   </exclusivities>
 </manifest>

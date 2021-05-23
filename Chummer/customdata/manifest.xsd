@@ -6,14 +6,14 @@
     xmlns:mstns="http://tempuri.org/manifest.xsd"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
 >
-  <xs:complexType name ="Manifest">
+  <xs:complexType name ="manifest">
     <xs:sequence>
       <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"/>
       <xs:element name="version" type="xs:string" minOccurs="0" maxOccurs="1"/>
-      <xs:element name="authors" type="xs:string" minOccurs="0" maxOccurs="1">
+      <xs:element name="authors" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="author" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="author" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
                 <xs:sequence>
                   <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1"></xs:element>
@@ -27,7 +27,7 @@
       <xs:element name="descriptions" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="description" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
                 <xs:sequence>
                   <xs:element name="text" type="xs:string" minOccurs="1" maxOccurs="1"></xs:element>
@@ -38,11 +38,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <!--Those don't have functionality yet, the idea for later is to use GuID to identify dependencies and exclusivities, maybe with the anyof/allof schema-->
-      <xs:element name="dependencies" type="xs:string" minOccurs="0" maxOccurs="1">
+      <xs:element name="dependencies" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="dependency" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="dependency" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
                 <xs:sequence>
                   <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -54,10 +53,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="exclusivities" type="xs:string" minOccurs="0" maxOccurs="1">
+      <xs:element name="exclusivities" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="exclusivity" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="exclusivity" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
                 <xs:sequence>
                   <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
