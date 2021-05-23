@@ -246,6 +246,7 @@
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
+    <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentList.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentStack.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />

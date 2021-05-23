@@ -241,15 +241,14 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
         Version _verSavedVersion = new Version();
 
+        /// <summary>
+        /// Set of unique methods to run after the character's Save() method is otherwise finished.
+        /// Input is the character in question, output is if the code resolved without errors.
+        /// </summary>
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        [CanBeNull]
-        public EventHandler<Character> OnSaveCompleted
-        {
-            get;
-            set;
-        }
+        public ConcurrentHashSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new ConcurrentHashSet<Func<Character, bool>>();
 
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -2047,7 +2046,10 @@ namespace Chummer
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
             if (callOnSaveCallBack)
-                OnSaveCompleted?.Invoke(this, this);
+            {
+                foreach (Func<Character, bool> funcToRun in DoOnSaveCompleted)
+                    blnErrorFree = funcToRun(this) && blnErrorFree;
+            }
             return blnErrorFree;
         }
 
@@ -2118,7 +2120,7 @@ namespace Chummer
         /// <summary>
         /// Queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public Queue<Func<bool>> PostLoadMethods => new Queue<Func<bool>>();
+        public Queue<Func<bool>> PostLoadMethods { get; } = new Queue<Func<bool>>();
 
         /// <summary>
         /// Load the Character from an XML file synchronously.

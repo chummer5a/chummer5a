@@ -404,67 +404,78 @@ namespace Chummer.Plugins
             return returnme;
         }
 
-        public static async void MyOnSaveUpload(object sender, Character input)
+        public static bool MyOnSaveUpload(Character input)
         {
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
-            try
+            if (Settings.Default.UserModeRegistered == false)
             {
-                if (Settings.Default.UserModeRegistered == false)
+                string msg = "Public Mode currently does not save to the SINners Plugin by default, even if \"onlinemode\" is enabled!" + Environment.NewLine;
+                msg += "If you want to use SINners as online store, please register!";
+                Log.Warn(msg);
+            }
+            else
+            {
+                if (input.DoOnSaveCompleted.Remove(MyOnSaveUpload)) // Makes we only run this if we haven't already triggered the callback
                 {
-                    string msg = "Public Mode currently does not save to the SINners Plugin by default, even if \"onlinemode\" is enabled!" + Environment.NewLine;
-                    msg += "If you want to use SINners as online store, please register!";
-                    Log.Warn(msg);
-                    return;
-                }
-                input.OnSaveCompleted = null;
-                using (new CursorWait(MainForm, true))
-                {
-                    using (var ce = await GetMyCe(input))
+                    Task.Run(async () =>
                     {
-                        //ce = new CharacterExtended(input, null);
-                        if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a => a != null && a.TagName == "Reflection") == false)
+                        try
                         {
-                            ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
+                            using (new CursorWait(MainForm, true))
+                            {
+                                using (var ce = await GetMyCe(input))
+                                {
+                                    //ce = new CharacterExtended(input, null);
+                                    if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a =>
+                                            a != null && a.TagName == "Reflection") ==
+                                        false)
+                                    {
+                                        ce.MySINnerFile.SiNnerMetaData.Tags = ce.PopulateTags();
+                                    }
+
+                                    await ce.Upload();
+                                }
+
+                                TabPage tabPage = null;
+                                var found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
+                                if (found is frmCreate frm && frm.TabCharacterTabs.TabPages.ContainsKey("SINners"))
+                                {
+                                    var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                    tabPage = frm.TabCharacterTabs.TabPages[index];
+                                }
+                                else if (found is frmCareer frm2 &&
+                                         frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"))
+                                {
+                                    var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
+                                    tabPage = frm2.TabCharacterTabs.TabPages[index];
+                                }
+
+                                if (tabPage == null)
+                                    return;
+                                var ucseq = tabPage.Controls.Find("SINnersBasic", true);
+                                foreach (var uc in ucseq)
+                                {
+                                    if (uc is ucSINnersBasic sb)
+                                        await sb.CheckSINnerStatus();
+                                }
+
+                                var ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                            }
                         }
-
-                        await ce.Upload();
-                    }
-
-                    TabPage tabPage = null;
-                    var found = MainForm.OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == input);
-                    if (found is frmCreate frm && frm.TabCharacterTabs.TabPages.ContainsKey("SINners"))
-                    {
-                        var index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                        tabPage = frm.TabCharacterTabs.TabPages[index];
-                    }
-                    else if (found is frmCareer frm2 && frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"))
-                    {
-                        var index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
-                        tabPage = frm2.TabCharacterTabs.TabPages[index];
-                    }
-
-                    if (tabPage == null)
-                        return;
-                    var ucseq = tabPage.Controls.Find("SINnersBasic", true);
-                    foreach (var uc in ucseq)
-                    {
-                        if (uc is ucSINnersBasic sb)
-                            await sb.CheckSINnerStatus();
-                    }
-
-                    var ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
+                        catch (Exception e)
+                        {
+                            Trace.TraceError(e.ToString());
+                        }
+                        finally
+                        {
+                            input.DoOnSaveCompleted.TryAdd(MyOnSaveUpload);
+                            _isSaving = false;
+                        }
+                    });
                 }
             }
-            catch(Exception e)
-            {
-                Trace.TraceError(e.ToString());
-            }
-            finally
-            {
-                input.OnSaveCompleted += MyOnSaveUpload;
-                _isSaving = false;
-            }
+            return true;
         }
 
         private static async Task<CharacterExtended> GetMyCe(Character input)
