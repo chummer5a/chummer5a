@@ -36,20 +36,22 @@ namespace Chummer
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.lblKarmaCostLabel = new System.Windows.Forms.Label();
-            this.lblKarmaCost = new System.Windows.Forms.Label();
-            this.lblIncludedTechniques = new System.Windows.Forms.Label();
-            this.txtSearch = new System.Windows.Forms.TextBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblSearchLabel = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.lblKarmaCostLabel = new System.Windows.Forms.Label();
+            this.lblKarmaCost = new System.Windows.Forms.Label();
             this.gpbIncludedTechniques = new System.Windows.Forms.GroupBox();
             this.pnlIncludedTechniques = new System.Windows.Forms.Panel();
+            this.lblIncludedTechniques = new System.Windows.Forms.Label();
+            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.gpbIncludedTechniques.SuspendLayout();
             this.pnlIncludedTechniques.SuspendLayout();
+            this.tlpTopRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdCancel
@@ -73,7 +75,7 @@ namespace Chummer
             this.lstMartialArts.FormattingEnabled = true;
             this.lstMartialArts.Location = new System.Drawing.Point(3, 3);
             this.lstMartialArts.Name = "lstMartialArts";
-            this.tlpMain.SetRowSpan(this.lstMartialArts, 3);
+            this.tlpMain.SetRowSpan(this.lstMartialArts, 4);
             this.lstMartialArts.Size = new System.Drawing.Size(297, 417);
             this.lstMartialArts.TabIndex = 0;
             this.lstMartialArts.SelectedIndexChanged += new System.EventHandler(this.lstMartialArts_SelectedIndexChanged);
@@ -109,10 +111,10 @@ namespace Chummer
             // 
             // lblSource
             // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblSource.Location = new System.Drawing.Point(53, 57);
+            this.lblSource.Location = new System.Drawing.Point(53, 31);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -122,9 +124,9 @@ namespace Chummer
             // 
             // lblSourceLabel
             // 
+            this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblSourceLabel.Location = new System.Drawing.Point(3, 57);
+            this.lblSourceLabel.Location = new System.Drawing.Point(3, 31);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -140,74 +142,20 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.lstMartialArts, 0, 0);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 2);
-            this.tlpMain.Controls.Add(this.tlpRight, 1, 0);
-            this.tlpMain.Controls.Add(this.gpbIncludedTechniques, 1, 1);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 3);
+            this.tlpMain.Controls.Add(this.gpbIncludedTechniques, 1, 2);
+            this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
+            this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowCount = 4;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 6;
-            // 
-            // lblSearchLabel
-            // 
-            this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSearchLabel.Name = "lblSearchLabel";
-            this.lblSearchLabel.Size = new System.Drawing.Size(44, 14);
-            this.lblSearchLabel.TabIndex = 70;
-            this.lblSearchLabel.Tag = "Label_Search";
-            this.lblSearchLabel.Text = "&Search:";
-            // 
-            // lblKarmaCostLabel
-            // 
-            this.lblKarmaCostLabel.AutoSize = true;
-            this.lblKarmaCostLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblKarmaCostLabel.Location = new System.Drawing.Point(7, 32);
-            this.lblKarmaCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaCostLabel.Name = "lblKarmaCostLabel";
-            this.lblKarmaCostLabel.Size = new System.Drawing.Size(40, 13);
-            this.lblKarmaCostLabel.TabIndex = 3;
-            this.lblKarmaCostLabel.Tag = "Label_Karma";
-            this.lblKarmaCostLabel.Text = "Karma:";
-            // 
-            // lblKarmaCost
-            // 
-            this.lblKarmaCost.AutoSize = true;
-            this.lblKarmaCost.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblKarmaCost.Location = new System.Drawing.Point(53, 32);
-            this.lblKarmaCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaCost.Name = "lblKarmaCost";
-            this.lblKarmaCost.Size = new System.Drawing.Size(247, 13);
-            this.lblKarmaCost.TabIndex = 4;
-            this.lblKarmaCost.Text = "[0]";
-            // 
-            // lblIncludedTechniques
-            // 
-            this.lblIncludedTechniques.AutoSize = true;
-            this.lblIncludedTechniques.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblIncludedTechniques.Location = new System.Drawing.Point(3, 6);
-            this.lblIncludedTechniques.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblIncludedTechniques.Name = "lblIncludedTechniques";
-            this.lblIncludedTechniques.Size = new System.Drawing.Size(39, 13);
-            this.lblIncludedTechniques.TabIndex = 6;
-            this.lblIncludedTechniques.Text = "[None]";
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(53, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(247, 20);
-            this.txtSearch.TabIndex = 71;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             // 
             // tlpButtons
             // 
@@ -236,22 +184,64 @@ namespace Chummer
             this.tlpRight.ColumnCount = 2;
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Controls.Add(this.lblSearchLabel, 0, 0);
-            this.tlpRight.Controls.Add(this.lblSource, 1, 2);
-            this.tlpRight.Controls.Add(this.txtSearch, 1, 0);
-            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 2);
-            this.tlpRight.Controls.Add(this.lblKarmaCostLabel, 0, 1);
-            this.tlpRight.Controls.Add(this.lblKarmaCost, 1, 1);
+            this.tlpRight.Controls.Add(this.lblSource, 1, 1);
+            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 1);
+            this.tlpRight.Controls.Add(this.lblKarmaCostLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.lblKarmaCost, 1, 0);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(303, 0);
+            this.tlpRight.Location = new System.Drawing.Point(303, 26);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
-            this.tlpRight.RowCount = 3;
+            this.tlpRight.RowCount = 2;
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.Size = new System.Drawing.Size(303, 76);
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpRight.Size = new System.Drawing.Size(303, 50);
             this.tlpRight.TabIndex = 74;
+            // 
+            // lblSearchLabel
+            // 
+            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSearchLabel.AutoSize = true;
+            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSearchLabel.Name = "lblSearchLabel";
+            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSearchLabel.TabIndex = 70;
+            this.lblSearchLabel.Tag = "Label_Search";
+            this.lblSearchLabel.Text = "&Search:";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(53, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(247, 20);
+            this.txtSearch.TabIndex = 71;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
+            // lblKarmaCostLabel
+            // 
+            this.lblKarmaCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaCostLabel.AutoSize = true;
+            this.lblKarmaCostLabel.Location = new System.Drawing.Point(7, 6);
+            this.lblKarmaCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaCostLabel.Name = "lblKarmaCostLabel";
+            this.lblKarmaCostLabel.Size = new System.Drawing.Size(40, 13);
+            this.lblKarmaCostLabel.TabIndex = 3;
+            this.lblKarmaCostLabel.Tag = "Label_Karma";
+            this.lblKarmaCostLabel.Text = "Karma:";
+            // 
+            // lblKarmaCost
+            // 
+            this.lblKarmaCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaCost.AutoSize = true;
+            this.lblKarmaCost.Location = new System.Drawing.Point(53, 6);
+            this.lblKarmaCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaCost.Name = "lblKarmaCost";
+            this.lblKarmaCost.Size = new System.Drawing.Size(19, 13);
+            this.lblKarmaCost.TabIndex = 4;
+            this.lblKarmaCost.Text = "[0]";
             // 
             // gpbIncludedTechniques
             // 
@@ -274,6 +264,35 @@ namespace Chummer
             this.pnlIncludedTechniques.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
             this.pnlIncludedTechniques.Size = new System.Drawing.Size(291, 293);
             this.pnlIncludedTechniques.TabIndex = 0;
+            // 
+            // lblIncludedTechniques
+            // 
+            this.lblIncludedTechniques.AutoSize = true;
+            this.lblIncludedTechniques.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lblIncludedTechniques.Location = new System.Drawing.Point(3, 6);
+            this.lblIncludedTechniques.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblIncludedTechniques.Name = "lblIncludedTechniques";
+            this.lblIncludedTechniques.Size = new System.Drawing.Size(39, 13);
+            this.lblIncludedTechniques.TabIndex = 6;
+            this.lblIncludedTechniques.Text = "[None]";
+            // 
+            // tlpTopRight
+            // 
+            this.tlpTopRight.AutoSize = true;
+            this.tlpTopRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTopRight.ColumnCount = 2;
+            this.tlpTopRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTopRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTopRight.Controls.Add(this.lblSearchLabel, 0, 0);
+            this.tlpTopRight.Controls.Add(this.txtSearch, 1, 0);
+            this.tlpTopRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTopRight.Location = new System.Drawing.Point(303, 0);
+            this.tlpTopRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTopRight.Name = "tlpTopRight";
+            this.tlpTopRight.RowCount = 1;
+            this.tlpTopRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTopRight.Size = new System.Drawing.Size(303, 26);
+            this.tlpTopRight.TabIndex = 76;
             // 
             // frmSelectMartialArt
             // 
@@ -304,6 +323,8 @@ namespace Chummer
             this.gpbIncludedTechniques.ResumeLayout(false);
             this.pnlIncludedTechniques.ResumeLayout(false);
             this.pnlIncludedTechniques.PerformLayout();
+            this.tlpTopRight.ResumeLayout(false);
+            this.tlpTopRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -327,5 +348,6 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpRight;
         private System.Windows.Forms.GroupBox gpbIncludedTechniques;
         private System.Windows.Forms.Panel pnlIncludedTechniques;
+        private BufferedTableLayoutPanel tlpTopRight;
     }
 }

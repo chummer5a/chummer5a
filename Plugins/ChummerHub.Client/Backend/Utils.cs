@@ -8,6 +8,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -15,8 +16,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
-using ChummerHub.Client.Sinners;
 using ChummerHub.Client.Properties;
+using ChummerHub.Client.Sinners;
 using ChummerHub.Client.UI;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -24,18 +25,17 @@ using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
 
-
 namespace ChummerHub.Client.Backend
 {
     public static class StaticUtils
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
-        public static System.Type GetListType(object someList)
+        public static Type GetListType(object someList)
         {
             if (someList == null)
                 throw new ArgumentNullException(nameof(someList));
-            System.Type result;
+            Type result;
             var type = someList.GetType();
 
             if (!type.IsGenericType)
@@ -85,7 +85,7 @@ namespace ChummerHub.Client.Backend
                                 };
                                 break;
                             }
-                            Thread.Sleep(100);
+                            Chummer.Utils.SafeSleep();
                         }
                     }
                 }
@@ -113,7 +113,7 @@ namespace ChummerHub.Client.Backend
                                 _possibleRoles = new List<string> { "none" };
                                 break;
                             }
-                            Thread.Sleep(100);
+                            Chummer.Utils.SafeSleep();
                         }
                     }
                 }
@@ -211,7 +211,7 @@ namespace ChummerHub.Client.Backend
                                         StringBuilder cookieData,
                                         ref int size,
                                         int dwFlags,
-                                        System.IntPtr lpReserved);
+                                        IntPtr lpReserved);
 
         private const int InternetCookieHttponly = 0x2000;
 
@@ -230,7 +230,7 @@ namespace ChummerHub.Client.Backend
             StringBuilder cookieData = new StringBuilder(datasize);
             try
             {
-                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, System.IntPtr.Zero))
+                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
                 {
                     if (datasize < 0)
                         return null;
@@ -241,7 +241,7 @@ namespace ChummerHub.Client.Backend
                         null, cookieData,
                         ref datasize,
                         InternetCookieHttponly,
-                        System.IntPtr.Zero))
+                        IntPtr.Zero))
                         return null;
                 }
             }
@@ -267,7 +267,7 @@ namespace ChummerHub.Client.Backend
             StringBuilder cookieData = new StringBuilder(datasize);
             try
             {
-                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, System.IntPtr.Zero))
+                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
                 {
                     if (datasize < 0)
                         return false;
@@ -278,7 +278,7 @@ namespace ChummerHub.Client.Backend
                         null, cookieData,
                         ref datasize,
                         InternetCookieHttponly,
-                        System.IntPtr.Zero))
+                        IntPtr.Zero))
                         return false;
                 }
                 if (InternetSetCookie(uri.ToString(), null, ""))
@@ -326,7 +326,7 @@ namespace ChummerHub.Client.Backend
             MySinnersClient client = null;
             try
             {
-                var assembly = System.Reflection.Assembly.GetAssembly(typeof(frmChummerMain));
+                var assembly = Assembly.GetAssembly(typeof(frmChummerMain));
                 Settings.Default.SINnerUrl = assembly.GetName().Version.Build == 0
                     ? "https://chummer-stable.azurewebsites.net"
                     : "https://chummer-beta.azurewebsites.net";
@@ -519,7 +519,7 @@ namespace ChummerHub.Client.Backend
                         });
                     };
                     errornode.Tag = errorCache;
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         MyTreeNodeList.Add(errornode);
                     });
@@ -909,7 +909,7 @@ namespace ChummerHub.Client.Backend
                     {
                         var client = StaticUtils.GetClient();
                         var res = client.DeleteAsync(sinner.Id.Value).ConfigureAwait(false);
-                        if (!((await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res)) is ResultGroupGetSearchGroups result))
+                        if (!((await ShowErrorResponseFormAsync(res)) is ResultGroupGetSearchGroups result))
                             return;
                         if (result.CallSuccess)
                         {
@@ -966,7 +966,7 @@ namespace ChummerHub.Client.Backend
                         objCache.SettingsFile = tempCache.SettingsFile;
                     }
                 }
-                PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
+                await PluginHandler.MainForm.CharacterRoster.DoThreadSafeAsync(() =>
                 {
                     PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache);
                 });
@@ -980,7 +980,7 @@ namespace ChummerHub.Client.Backend
             string filepath = await DownloadFileTask(sinner, objCache);
             PluginHandler.MySINnerLoading = sinner;
             PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
-            PluginHandler.MainForm.DoThreadSafe(() =>
+            await PluginHandler.MainForm.DoThreadSafeAsync(() =>
             {
                 Character c = PluginHandler.MainForm.LoadCharacter(filepath);
                 if (c != null)
@@ -1279,6 +1279,7 @@ namespace ChummerHub.Client.Backend
                         {
                             using (WebClient wc = new WebClient())
                             {
+                                // ReSharper disable once MethodHasAsyncOverload
                                 wc.DownloadFile(
                                     // Param1 = Link of file
                                     new Uri(sinner.DownloadUrl),

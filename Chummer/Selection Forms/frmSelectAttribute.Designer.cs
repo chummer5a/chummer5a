@@ -60,7 +60,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAttribute.FormattingEnabled = true;
-            this.cboAttribute.Location = new System.Drawing.Point(3, 37);
+            this.cboAttribute.Location = new System.Drawing.Point(3, 35);
             this.cboAttribute.Name = "cboAttribute";
             this.cboAttribute.Size = new System.Drawing.Size(320, 21);
             this.cboAttribute.TabIndex = 1;
@@ -73,7 +73,7 @@ namespace Chummer
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(320, 22);
+            this.lblDescription.Size = new System.Drawing.Size(320, 20);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Text = "Description goes here.";
             // 
@@ -94,12 +94,13 @@ namespace Chummer
             // 
             // chkDoNotAffectMetatypeMaximum
             // 
+            this.chkDoNotAffectMetatypeMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDoNotAffectMetatypeMaximum.AutoSize = true;
             this.chkDoNotAffectMetatypeMaximum.DefaultColorScheme = true;
-            this.chkDoNotAffectMetatypeMaximum.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 64);
+            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 63);
+            this.chkDoNotAffectMetatypeMaximum.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDoNotAffectMetatypeMaximum.Name = "chkDoNotAffectMetatypeMaximum";
-            this.chkDoNotAffectMetatypeMaximum.Size = new System.Drawing.Size(320, 17);
+            this.chkDoNotAffectMetatypeMaximum.Size = new System.Drawing.Size(182, 17);
             this.chkDoNotAffectMetatypeMaximum.TabIndex = 2;
             this.chkDoNotAffectMetatypeMaximum.Tag = "Checkbox_DoNotAffectMaximum";
             this.chkDoNotAffectMetatypeMaximum.Text = "Do not affect Metatype Maximum";

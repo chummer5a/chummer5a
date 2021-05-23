@@ -52,7 +52,7 @@ namespace Chummer
             objTimer.Start();
             Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance.ToString() + "\".");
             _objControl = objControl;
-            Form frmControl = objControl as Form;
+            Form frmControl = _objControl as Form;
             CursorToUse = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             if (frmControl?.IsMdiChild != false)
             {
@@ -77,9 +77,9 @@ namespace Chummer
                 }
             }
             ConcurrentList<CursorWait> lstNew = new ConcurrentList<CursorWait>();
-            while (!s_dicWaitingControls.TryAdd(objControl, lstNew))
+            while (_objControl != null && !s_dicWaitingControls.TryAdd(_objControl, lstNew))
             {
-                if (!s_dicWaitingControls.TryGetValue(objControl, out ConcurrentList<CursorWait> lstExisting))
+                if (!s_dicWaitingControls.TryGetValue(_objControl, out ConcurrentList<CursorWait> lstExisting))
                     continue;
                 CursorWait objLastCursorWait = null;
                 // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
@@ -109,6 +109,19 @@ namespace Chummer
                 }
                 else if (objLastCursorWait == null || objLastCursorWait.CursorToUse == Cursors.AppStarting)
                     SetControlCursor(CursorToUse);
+                return;
+            }
+            // Here for safety purposes
+            if (_objControl.IsNullOrDisposed())
+            {
+                _objControl = null;
+                _frmControlTopParent = null;
+                lock (_intApplicationWaitCursorsLock)
+                {
+                    _intApplicationWaitCursors += 1;
+                    if (_intApplicationWaitCursors > 0)
+                        Application.UseWaitCursor = true;
+                }
                 return;
             }
             lstNew.Add(this);

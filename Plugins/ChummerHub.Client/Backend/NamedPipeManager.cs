@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.IO.Pipes;
 using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 
 namespace ChummerHub.Client.Backend
@@ -10,15 +11,15 @@ namespace ChummerHub.Client.Backend
     /// A very simple Named Pipe Server implementation that makes it
     /// easy to pass string messages between two applications.
     /// </summary>
-    public class NamedPipeManager
+    public class NamedPipeManager : IDisposable
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         public string NamedPipeName { get; }
         public event Action<string> ReceiveString;
 
         private const string EXIT_STRING = "__EXIT__";
-        private bool _isRunning;
-        private Thread Thread;
+        private CancellationTokenSource _objCancellationTokenSource;
+        private Task _objRunningTask;
 
         public NamedPipeManager(string name = "Chummer")
         {
@@ -28,57 +29,13 @@ namespace ChummerHub.Client.Backend
         /// <summary>
         /// Starts a new Pipe server on a new thread
         /// </summary>
-        public void StartServer()
+        public async void StartServer()
         {
             StopServer();
-            Thread = new Thread(pipeName =>
-            {
-                if (!(pipeName is string pipeNameString))
-                    throw new ArgumentNullException(nameof(pipeName));
-                if (Thread.CurrentThread.Name == null)
-                    Thread.CurrentThread.Name = "PipeThread to receive Chummerfiles to open";
-                PipeSecurity ps = new PipeSecurity();
-                System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
-                PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-                //PipeAccessRule psRule = new PipeAccessRule(@"Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
-                ps.AddAccessRule(par);
-                _isRunning = true;
-                while (_isRunning)
-                {
-                    try
-                    {
-                        string text;
-                        using (var server = new NamedPipeServerStream(pipeNameString,
-                            PipeDirection.InOut, 1,
-                            PipeTransmissionMode.Message, PipeOptions.None,
-                            4028, 4028, ps))
-                        {
-                            server.WaitForConnection();
-
-                            using (StreamReader reader = new StreamReader(server))
-                            {
-                                text = reader.ReadToEnd();
-                            }
-                        }
-
-                        if (text == EXIT_STRING)
-                            break;
-
-                        OnReceiveString(text);
-                    }
-                    catch (IOException e)
-                    {
-                        Log.Warn(e);
-                        Thread.Sleep(50);
-                    }
-                    catch (Exception e)
-                    {
-                        Log.Error(e);
-                        Thread.Sleep(50);
-                    }
-                }
-            });
-            Thread.Start(NamedPipeName);
+            if (_objRunningTask?.IsCompleted == false) // Wait for existing thread to shut down
+                await _objRunningTask;
+            _objCancellationTokenSource = new CancellationTokenSource();
+            _objRunningTask = Task.Run(RunChummerFilePipeThread, _objCancellationTokenSource.Token);
         }
 
         /// <summary>
@@ -87,16 +44,15 @@ namespace ChummerHub.Client.Backend
         /// <param name="text"></param>
         protected virtual void OnReceiveString(string text) => ReceiveString?.Invoke(text);
 
-
         /// <summary>
         /// Shuts down the pipe server
         /// </summary>
         public void StopServer()
         {
-            _isRunning = false;
+            if (_objCancellationTokenSource != null)
+                _objCancellationTokenSource.Cancel();
             Log.Trace("Sending Exit to PipeServer...");
             Write(EXIT_STRING);
-            Thread.Sleep(60); // give time for thread shutdown
         }
 
         /// <summary>
@@ -149,6 +105,55 @@ namespace ChummerHub.Client.Backend
             }
             return true;
         }
-    }
 
+        private async Task RunChummerFilePipeThread()
+        {
+            if (!(NamedPipeName is string pipeNameString))
+                throw new ArgumentNullException(nameof(NamedPipeName));
+            PipeSecurity ps = new PipeSecurity();
+            System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
+            PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+            //PipeAccessRule psRule = new PipeAccessRule(@"Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
+            ps.AddAccessRule(par);
+            while (!_objCancellationTokenSource.IsCancellationRequested)
+            {
+                try
+                {
+                    string text;
+                    using (var server = new NamedPipeServerStream(pipeNameString,
+                        PipeDirection.InOut, 1,
+                        PipeTransmissionMode.Message, PipeOptions.None,
+                        4028, 4028, ps))
+                    {
+                        await server.WaitForConnectionAsync();
+
+                        using (StreamReader reader = new StreamReader(server))
+                        {
+                            text = await reader.ReadToEndAsync();
+                        }
+                    }
+
+                    if (text == EXIT_STRING)
+                        break;
+
+                    OnReceiveString(text);
+                }
+                catch (IOException e)
+                {
+                    Log.Warn(e);
+                    await Chummer.Utils.SafeSleepAsync();
+                }
+                catch (Exception e)
+                {
+                    Log.Error(e);
+                    await Chummer.Utils.SafeSleepAsync();
+                }
+            }
+        }
+
+        public void Dispose()
+        {
+            _objCancellationTokenSource?.Dispose();
+        }
+    }
 }

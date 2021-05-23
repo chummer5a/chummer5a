@@ -164,7 +164,7 @@ namespace Chummer
             // Translate the Critter name if applicable.
             string strName = Name;
             XmlNode objXmlCritterNode = GetNode(strLanguageToPrint);
-            if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
+            if (!strLanguageToPrint.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
             }
@@ -374,7 +374,7 @@ namespace Chummer
                         break;
                 }
 
-                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && strLanguageToPrint != GlobalOptions.DefaultLanguage)
+                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && !strLanguageToPrint.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strDisplayRange = strDisplayRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguageToPrint))
                         .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint))

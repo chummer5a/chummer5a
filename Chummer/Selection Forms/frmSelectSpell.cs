@@ -476,27 +476,7 @@ namespace Chummer
             }
             if (xmlSpell == null)
             {
-                lblDescriptorsLabel.Visible = false;
-                chkAlchemical.Visible = false;
-                lblTypeLabel.Visible = false;
-                lblDurationLabel.Visible = false;
-                chkExtended.Visible = false;
-                lblRangeLabel.Visible = false;
-                lblDamageLabel.Visible = false;
-                lblDVLabel.Visible = false;
-                chkFreeBonus.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblDescriptors.Text = string.Empty;
-                chkAlchemical.Checked = false;
-                lblType.Text = string.Empty;
-                lblDuration.Text = string.Empty;
-                chkExtended.Checked = false;
-                lblRange.Text = string.Empty;
-                lblDamage.Text = string.Empty;
-                lblDV.Text = string.Empty;
-                chkFreeBonus.Checked = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -619,7 +599,7 @@ namespace Chummer
             }
 
             string strRange = xmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"))
                     .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"))
@@ -648,7 +628,7 @@ namespace Chummer
             }
 
             string strDV = xmlSpell.SelectSingleNode("dv")?.Value.Replace('/', '÷') ?? string.Empty;
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strDV = strDV.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"))
                     .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
@@ -725,6 +705,7 @@ namespace Chummer
             lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
                                  LanguageManager.GetString("String_Page") + strSpace + strPage);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
             _blnRefresh = false;
         }
         #endregion

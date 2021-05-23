@@ -99,8 +99,7 @@ namespace Chummer
             string strSelected = lstArt.SelectedValue?.ToString();
             if (string.IsNullOrEmpty(strSelected))
             {
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -109,8 +108,7 @@ namespace Chummer
 
             if (objXmlMetamagic == null)
             {
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -119,6 +117,7 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
             lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            tlpRight.Visible = true;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

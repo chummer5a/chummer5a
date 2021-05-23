@@ -528,29 +528,7 @@ namespace Chummer
             string strSelectedId = lstGear.SelectedValue?.ToString();
             if (_blnLoading || string.IsNullOrEmpty(strSelectedId))
             {
-                lblGearDeviceRatingLabel.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblCostLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblCapacityLabel.Visible = false;
-                lblRatingLabel.Visible = false;
-                nudRating.Visible = false;
-                lblRatingNALabel.Visible = false;
-                lblGearQtyLabel.Visible = false;
-                nudGearQty.Visible = false;
-                chkStack.Visible = false;
-                lblGearDeviceRating.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblAvail.Text = string.Empty;
-                lblCost.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblTest.Text = string.Empty;
-                lblCapacity.Text = string.Empty;
-                nudRating.Minimum = 0;
-                nudRating.Maximum = 0;
-                nudRating.Enabled = false;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -559,32 +537,11 @@ namespace Chummer
 
             if (objXmlGear == null)
             {
-                lblGearDeviceRatingLabel.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblCostLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblCapacityLabel.Visible = false;
-                lblRatingLabel.Visible = false;
-                nudRating.Visible = false;
-                lblRatingNALabel.Visible = false;
-                lblGearQtyLabel.Visible = false;
-                nudGearQty.Visible = false;
-                chkStack.Visible = false;
-                lblGearDeviceRating.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblAvail.Text = string.Empty;
-                lblCost.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblTest.Text = string.Empty;
-                lblCapacity.Text = string.Empty;
-                nudRating.Minimum = 0;
-                nudRating.Maximum = 0;
-                nudRating.Enabled = false;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
+            SuspendLayout();
             // Retrieve the information for the selected piece of Cyberware.
             string strDeviceRating = objXmlGear.SelectSingleNode("devicerating")?.Value ?? string.Empty;
             lblGearDeviceRating.Text = strDeviceRating;
@@ -943,6 +900,8 @@ namespace Chummer
                 nudRating.Enabled = false;
                 nudRating.Visible = false;
             }
+            tlpRight.Visible = true;
+            ResumeLayout();
         }
 
         private List<ListItem> RefreshList(string strCategory = "", bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)

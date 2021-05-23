@@ -9806,7 +9806,7 @@ namespace Chummer
                     lblWeaponSlots.Visible = true;
                     if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                     {
-                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                        if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         {
                             StringBuilder sbdSlotsText = new StringBuilder();
                             foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
@@ -9938,7 +9938,7 @@ namespace Chummer
                     lblWeaponSlotsLabel.Visible = true;
                     lblWeaponSlots.Visible = true;
                     StringBuilder sbdSlotsText = new StringBuilder(objSelectedAccessory.Mount);
-                    if (sbdSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (sbdSlotsText.Length > 0 && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         sbdSlotsText.Clear();
                         foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
@@ -11181,7 +11181,7 @@ namespace Chummer
 
                     bool blnMatchFound = false;
                     // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition")
+                    if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
                     {
                         foreach (Gear objCharacterGear in CharacterObject.Gear)
                         {
@@ -11634,7 +11634,7 @@ namespace Chummer
                 lblVehicleSlots.Visible = true;
                 if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                 {
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))

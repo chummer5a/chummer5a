@@ -82,8 +82,7 @@ namespace Chummer.Tests
                 frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
                 while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Thread.Sleep(Utils.DefaultSleepDuration);
-                    Application.DoEvents();
+                    Utils.SafeSleep(true);
                 }
                 frmTestForm.Close();
             }
@@ -205,8 +204,7 @@ namespace Chummer.Tests
                 frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
                 while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Thread.Sleep(Utils.DefaultSleepDuration);
-                    Application.DoEvents();
+                    Utils.SafeSleep(true);
                 }
                 foreach (FileInfo objFileInfo in TestFiles)
                 {

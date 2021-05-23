@@ -294,14 +294,11 @@ namespace Chummer
                     lblDrugNotes.Visible = false;
                     lblDrugNotesLabel.Visible = false;
                 }*/
+                tlpRight.Visible = true;
             }
             else
             {
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                nudRating.Minimum = 0;
-                nudRating.Value = 0;
-                nudRating.Visible = false;
+                tlpRight.Visible = false;
                 cboGrade.Enabled = !_blnLockGrade;
                 strForceGrade = string.Empty;
                 Grade objForcedGrade = null;
@@ -312,9 +309,6 @@ namespace Chummer
                 }
                 PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade);
                 chkBlackMarketDiscount.Checked = false;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
             }
             _blnLoading = false;
             UpdateDrugInfo();
@@ -507,12 +501,7 @@ namespace Chummer
             }
             if (objXmlDrug == null)
             {
-                lblCostLabel.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblAvail.Text = string.Empty;
-                lblTest.Text = string.Empty;
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -649,6 +638,7 @@ namespace Chummer
             // Test required to find the item.
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
+            tlpRight.Visible = true;
         }
 
         private bool _blnSkipListRefresh;

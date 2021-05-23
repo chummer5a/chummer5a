@@ -306,7 +306,7 @@ namespace Chummer
                         strNotes = CommonFunctions.GetTextFromPdf(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
 
                         if (string.IsNullOrEmpty(strNotes)
-                            && GlobalOptions.Language != GlobalOptions.DefaultLanguage
+                            && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                             && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
                                 || objEntry.Source.Page != objEntry.DisplaySource.Page))
                         {

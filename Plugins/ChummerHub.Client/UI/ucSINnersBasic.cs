@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
-using Microsoft.Rest;
-using System.Net;
 using ChummerHub.Client.Backend;
 using Chummer.Plugins;
 using NLog;
@@ -83,10 +81,7 @@ namespace ChummerHub.Client.UI
             {
                 if (myUC?.MyCE?.MySINnerFile?.Id == null || myUC.MyCE.MySINnerFile.Id == Guid.Empty)
                 {
-                    this.DoThreadSafe(() =>
-                    {
-                        bUpload.Text = "SINless Character/Error";
-                    });
+                    await bUpload.DoThreadSafeAsync(() => bUpload.Text = "SINless Character/Error" );
                     return false;
                 }
 
@@ -97,7 +92,7 @@ namespace ChummerHub.Client.UI
                     
                     SINnerGroup objMySiNnerGroup = response.MySINnerGroup;
                     
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         if (objMySiNnerGroup != null)
                         {
@@ -131,16 +126,13 @@ namespace ChummerHub.Client.UI
                         cbTagCustom.Enabled = false;
                         TagValueCustomName.Enabled = false;
                     });
-                    this.DoThreadSafe(UpdateTags);
+                    await this.DoThreadSafeAsync(UpdateTags);
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                this.DoThreadSafe(() =>
-                {
-                    bUpload.Text = "Unknown Status";
-                });
+                await bUpload.DoThreadSafeAsync(() => bUpload.Text = "Unknown Status");
                 return false;
             }
             return true;

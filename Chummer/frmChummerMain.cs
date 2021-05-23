@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -241,7 +240,7 @@ namespace Chummer
                                     Parallel.ForEach(s_astrPreloadFileNames, x =>
                                     {
                                         // Load default language data first for performance reasons
-                                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                        if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                                             XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
                                         XmlManager.Load(x);
                                         _frmProgressBar.PerformStep(Application.ProductName);
@@ -1711,6 +1710,7 @@ namespace Chummer
                         continue;
                 }
 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (i2 <= 9 && i2 >= 0)
                 {
                     string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);

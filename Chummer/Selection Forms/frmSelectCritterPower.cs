@@ -221,14 +221,18 @@ namespace Chummer
                         }
                     }
                 }
+                lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
+                lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
+                lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
+                lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
+                lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
+                lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+                tlpRight.Visible = true;
             }
-
-            lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
-            lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
-            lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
-            lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
-            lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
-            lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+            else
+            {
+                tlpRight.Visible = false;
+            }
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)

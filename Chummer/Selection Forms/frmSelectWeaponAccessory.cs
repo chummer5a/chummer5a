@@ -322,27 +322,7 @@ namespace Chummer
                 xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath() + "]");
             if (xmlAccessory == null)
             {
-                lblRC.Visible = false;
-                lblRCLabel.Visible = false;
-                nudRating.Enabled = false;
-                nudRating.Visible = false;
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                lblMountLabel.Visible = false;
-                cboMount.Visible = false;
-                cboMount.Items.Clear();
-                lblExtraMountLabel.Visible = false;
-                cboExtraMount.Visible = false;
-                cboExtraMount.Items.Clear();
-                lblAvailLabel.Visible = false;
-                lblAvail.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblTestLabel.Visible = false;
-                lblTest.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -551,6 +531,7 @@ namespace Chummer
             SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
         }
         /// <summary>
         /// Accept the selected item and close the form.
