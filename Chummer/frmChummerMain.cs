@@ -211,7 +211,7 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
-                        ConcurrentList<Character> lstCharactersToLoad = new ConcurrentList<Character>();
+                        ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
                         Task objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length))
                         {

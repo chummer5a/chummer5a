@@ -247,8 +247,8 @@
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
-    <Compile Include="Backend\Datastructures\ConcurrentList.cs" />
-    <Compile Include="Backend\Datastructures\ConcurrentStack.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
     <Compile Include="Backend\Datastructures\ObservableCollectionWithMaxSize.cs" />
