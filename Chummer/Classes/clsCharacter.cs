@@ -2425,8 +2425,8 @@ namespace Chummer
                                         (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
                                     HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
                                     setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                    intReturn -= (setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(2)
-                                                 * (objOptionsToCheck.Books.Count - setDummyBooks.Count).RaiseToPower(2)
+                                    intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(2)
+                                                  + (objOptionsToCheck.Books.Count - setDummyBooks.Count).RaiseToPower(2))
                                                  * intBookBaselineScore;
                                     return intReturn;
                                 }
