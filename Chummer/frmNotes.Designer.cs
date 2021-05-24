@@ -102,7 +102,6 @@ namespace Chummer
             this.bufferedTableLayoutPanel2.Name = "bufferedTableLayoutPanel2";
             this.bufferedTableLayoutPanel2.RowCount = 1;
             this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
             this.bufferedTableLayoutPanel2.Size = new System.Drawing.Size(144, 28);
             this.bufferedTableLayoutPanel2.TabIndex = 3;
             // 

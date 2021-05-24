@@ -388,9 +388,9 @@ namespace Chummer
             // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
             float fltHue = objColor.GetHue() / 360.0f;
             float fltBrightness = objColor.GetBrightness();
-            float fltLightness = objColor.GetSaturation();
-            fltLightness = Math.Min(fltLightness + 0.2f, 1);
-            return FromHsva(fltHue, fltBrightness, fltLightness, objColor.A);
+            float fltSaturation = objColor.GetSaturation();
+            fltSaturation = Math.Min(fltSaturation * 1.15f, 1);
+            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
         private static Color GetDimmedVersion(Color objColor)
@@ -398,9 +398,9 @@ namespace Chummer
             // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
             float fltHue = objColor.GetHue() / 360.0f;
             float fltBrightness = objColor.GetBrightness();
-            float fltLightness = objColor.GetSaturation();
-            fltLightness = Math.Max(0, fltLightness - 0.2f);
-            return FromHsva(fltHue, fltBrightness, fltLightness, objColor.A);
+            float fltSaturation = objColor.GetSaturation();
+            fltSaturation = Math.Max(0, fltSaturation * 0.85f);
+            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
         }
 
 

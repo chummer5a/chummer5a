@@ -112,14 +112,13 @@ namespace Chummer
             var resNewColor = colorDialog1.ShowDialog();
             if (resNewColor == DialogResult.OK)
             {
-                //_colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
-                _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode.
+                _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
                 updateColorRepresentation();
             }
         }
         private void txtNotes_TextChanged(object sender, EventArgs e)
         {
-            btnColorSelect.Enabled = txtNotes.Text.Length > 0;
+            btnColorSelect.Enabled = txtNotes.TextLength > 0;
         }
 
         #endregion

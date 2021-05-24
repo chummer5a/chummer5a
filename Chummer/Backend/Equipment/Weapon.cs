@@ -286,10 +286,6 @@ namespace Chummer.Backend.Equipment
             if (!objXmlWeapon.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlWeapon.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            objXmlWeapon.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            _colNotes = ColorTranslator.FromHtml(sNotesColor);
-
             _nodWirelessBonus = objXmlWeapon["wirelessbonus"];
             objXmlWeapon.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
             objXmlWeapon.TryGetStringFieldQuickly("ammocategory", ref _strAmmoCategory);
