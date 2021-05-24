@@ -46,6 +46,7 @@ Application Changes:
 - Skill groups now show when they have been disabled by an improvement such as Uncouth.
 - A crash that would sometimes occur when Chummer is restarted programmatically has been resolved.
 - Upgrading cyberware or bioware to have both a different rating and a different grade at the same time can no longer cause a character's special attributes to get decreased from Essence loss mid-upgrade unless the final essence cost of the 'ware is actually greater enough than the old cost.
+- Print method now ignores control characters when printing to the Sheet Export window.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
