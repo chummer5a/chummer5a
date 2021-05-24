@@ -575,6 +575,7 @@ namespace Chummer
                 _objCharacterOptions.RecalculateEnabledCustomDataDirectories();
                 _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             }
+            CheckForDependenciesAndExclusivities();
         }
 
         private void txtPriorities_KeyPress(object sender, KeyPressEventArgs e)
@@ -688,32 +689,51 @@ namespace Chummer
             {
                 gbpDirectoryInfo.SuspendLayout();
                 tboxDirectoryDescription.Text = objSelected.DisplayDescription;
-                lblDirectoryVersion.Text = objSelected.Version;
+                lblDirectoryVersion.Text = objSelected.Version.ToString();
                 lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
                 lblDirectoryName.Text = objSelected.Name;
-
 
                 flpDirectoryDependencies.Controls.Clear();
                 if (objSelected.DependenciesList.Count > 0)
                 {
-                    foreach (var (_, name, version) in objSelected.DependenciesList)
+                    foreach (var (_, name, version, isMinimumVersion) in objSelected.DependenciesList)
                     {
-                        var depLabel = new Label {Text = name + "(" + version + ")"};
+                        string labelText;
+                        if (isMinimumVersion)
+                        {
+                            labelText = string.Format(GlobalOptions.CultureInfo,
+                                name + LanguageManager.GetString("AddMinimumVersion"), version);
+                        }
+                        else
+                        {
+                            labelText = string.Format(GlobalOptions.CultureInfo,
+                                name + LanguageManager.GetString("AddVersion"), version);
+                        }
+
+                        var depLabel = new Label {Text = labelText, AutoSize = true };
                         flpDirectoryDependencies.Controls.Add(depLabel);
                     }
                 }
 
-
                 flpExclusivities.Controls.Clear();
                 if (objSelected.ExclusivitiesList.Count > 0)
                 {
-                    foreach (var (_, name, version) in objSelected.ExclusivitiesList)
+                    foreach (var (_, name, version, ignoreVersion) in objSelected.ExclusivitiesList)
                     {
-                        var depLabel = new Label { Text = name + "(" + version + ")" };
-                        flpExclusivities.Controls.Add(depLabel);
+                        string labelText;
+                        if (ignoreVersion)
+                        {
+                            labelText = name;
+                        }
+                        else
+                        {
+                            labelText = string.Format(GlobalOptions.CultureInfo,
+                                name + LanguageManager.GetString("AddVersion"), version);
+                        }
+                        var excLabel = new Label {Text = labelText, AutoSize = true};
+                        flpExclusivities.Controls.Add(excLabel);
                     }
                 }
-
 
                 gbpDirectoryInfo.ResumeLayout();
             }
@@ -777,23 +797,6 @@ namespace Chummer
                     if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
-
-                        string strMissingDependencies = objInfo.CheckDependency(_objCharacterOptions);
-
-                        if (strMissingDependencies != string.Empty)
-                        {
-                            objNode.BackColor = Color.Red;
-                            objNode.ToolTipText = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), strMissingDependencies);
-                        }
-
-                        string strForbiddenDataFiles = objInfo.CheckExclusivity(_objCharacterOptions);
-
-                        if (strForbiddenDataFiles != string.Empty)
-                        {
-                            objNode.BackColor = Color.Red;
-                            objNode.ToolTipText = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), strMissingDependencies);
-                        }
-
                     }
                     else
                     {
@@ -825,10 +828,41 @@ namespace Chummer
                 }
             }
 
-            if(objOldSelected != null)
+            //CheckForDependenciesAndExclusivities();
+
+            if (objOldSelected != null)
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
             treCustomDataDirectories.ShowNodeToolTips = true;
             treCustomDataDirectories.EndUpdate();
+        }
+
+        private void CheckForDependenciesAndExclusivities()
+        {
+            foreach (TreeNode directoryNode in treCustomDataDirectories.Nodes)
+            {
+                if (directoryNode.Tag is CustomDataDirectoryInfo customDataDirectory && directoryNode.Checked)
+                {
+                    string missingDirectories = customDataDirectory.CheckDependency(_objCharacterOptions);
+                    string prohibitedDirectories = customDataDirectory.CheckExclusivity(_objCharacterOptions);
+
+                    if (string.IsNullOrEmpty(missingDirectories) && string.IsNullOrEmpty(prohibitedDirectories))
+                    {
+                        directoryNode.ToolTipText = string.Empty;
+                        directoryNode.BackColor = Color.Empty;
+                        continue;
+                    }
+
+                    string tooltip = CustomDataDirectoryInfo.BuildExclusivityDependencyString(missingDirectories, prohibitedDirectories);
+
+                    directoryNode.ToolTipText = tooltip;
+                    directoryNode.BackColor = ColorManager.ErrorColor;
+                }
+                else if (directoryNode.Tag is CustomDataDirectoryInfo && directoryNode.Checked == false)
+                {
+                    directoryNode.ToolTipText = string.Empty;
+                    directoryNode.BackColor = Color.Empty;
+                }
+            }
         }
 
         /// <summary>
@@ -1253,17 +1287,5 @@ namespace Chummer
             }
         }
         #endregion
-
-        private void cmdManageDependencies_Click(object sender, EventArgs e)
-        {
-            if (treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo tag)
-            {
-                var dirToModify = tag;
-
-                frmSelectDependencies selectDependencies = new frmSelectDependencies(_objCharacterOptions, dirToModify, _lstCharacterCustomDataDirectoryInfos);
-                selectDependencies.ShowDialog();
-            }
-
-        }
     }
 }

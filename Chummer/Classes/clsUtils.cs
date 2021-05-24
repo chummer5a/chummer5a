@@ -39,8 +39,8 @@ namespace Chummer
         public static void BreakIfDebug()
         {
 #if DEBUG
-            if (Debugger.IsAttached && !IsUnitTest)
-                Debugger.Break();
+          if (Debugger.IsAttached && !IsUnitTest)
+            Debugger.Break();
 #endif
         }
 

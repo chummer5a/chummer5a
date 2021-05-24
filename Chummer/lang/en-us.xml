@@ -7918,8 +7918,8 @@
       <text>Missing dependencies: {0}</text>
     </string>
     <string>
-      <key>Tooltip_Dependency_Missing</key>
-      <text>Forbidden Dependencies: {0}</text>
+      <key>Tooltip_Exclusivity_Present</key>
+      <text>Mutual exclusive Dependencies: {0}</text>
     </string>
     <string>
       <key>IsMainAuthor</key>
@@ -7927,7 +7927,11 @@
     </string>
     <string>
       <key>AddVersion</key>
-      <text>(Version: {0})</text>
+      <text> (Version: {0})</text>
+    </string>
+    <string>
+      <key>AddMinimumVersion</key>
+      <text> (Version: {0} or greater)</text>
     </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->

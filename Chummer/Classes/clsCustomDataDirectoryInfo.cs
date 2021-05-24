@@ -13,16 +13,14 @@ namespace Chummer
     public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>
     {
         private bool _blnCreated;
-
-        private string _strVersion;
-
+        private int _version;
         private static readonly Logger s_Logger = LogManager.GetCurrentClassLogger();
 
-        private bool _blnIsSaving;
-
-        //Tuple<int Hash, string Version, string Name> (should this be Dictionary<int, KeyValuePair<string, string>>?)
-        private readonly List<Tuple<int, string, string>> _lstDependencies= new List<Tuple<int, string, string>>();
-        private readonly List<Tuple<int, string, string>> _lstExclusivities = new List<Tuple<int, string, string>>();
+        //Tuple<int Hash, string Name, int Version, bool isMinimumVersion>
+        private readonly List<Tuple<Guid, string, int, bool>> _lstDependencies= new List<Tuple<Guid, string, int, bool>>();
+        //Tuple<int Hash, string Name, int Version, bool ignoreVersion>
+        private readonly List<Tuple<Guid, string, int, bool>> _lstExclusivities = new List<Tuple<Guid, string, int, bool>>();
+        private Guid _guid;
 
         public CustomDataDirectoryInfo(string strName, string strPath)
         {
@@ -138,14 +136,16 @@ namespace Chummer
 
             foreach (XmlNode objXmlNode in xmlDependencies)
             {
+                Guid depGuid = Guid.Empty;
                 objXmlNode.TryGetField("name", out string newName);
-                objXmlNode.TryGetField("version", out string newVersion);
-                objXmlNode.TryGetField("hash", out int newHash);
+                objXmlNode.TryGetField("version", out int newVersion);
+                objXmlNode.TryGetGuidFieldQuickly("guid", ref depGuid);
+                objXmlNode.TryGetField("isminimumversion", out bool isMinimumVersion);
 
-                if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newVersion) || newHash == int.MinValue)
+                if (string.IsNullOrEmpty(newName) || newVersion == int.MinValue || depGuid == Guid.Empty)
                     continue;
 
-                _lstDependencies.Add(Tuple.Create(newHash, newName, newVersion));
+                _lstDependencies.Add(Tuple.Create(depGuid, newName, newVersion, isMinimumVersion));
             }
         }
 
@@ -162,14 +162,16 @@ namespace Chummer
 
             foreach (XmlNode objXmlNode in xmlExclusivities)
             {
+                Guid newGuid = Guid.Empty;
                 objXmlNode.TryGetField("name", out string newName);
-                objXmlNode.TryGetField("version", out string newVersion);
-                objXmlNode.TryGetField("hash", out int newHash);
+                objXmlNode.TryGetField("version", out int newVersion);
+                objXmlNode.TryGetGuidFieldQuickly("guid", ref newGuid);
+                objXmlNode.TryGetField("ignoreversion", out bool isMinimumVersion);
 
-                if (string.IsNullOrEmpty(newName) || string.IsNullOrEmpty(newVersion) || newHash == int.MinValue)
+                if (string.IsNullOrEmpty(newName) || newVersion == int.MinValue || newGuid == Guid.Empty)
                     continue;
 
-                _lstExclusivities.Add(Tuple.Create(newHash, newName, newVersion));
+                _lstExclusivities.Add(Tuple.Create(newGuid, newName, newVersion, isMinimumVersion));
             }
         }
 
@@ -230,7 +232,9 @@ namespace Chummer
                 xmlObjManifest.LoadStandard(strFullDirectory);
 
                 var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
-                xmlNode.TryGetStringFieldQuickly("version", ref _strVersion);
+                xmlNode.TryGetInt32FieldQuickly("version", ref _version);
+
+                xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
                 GetManifestDescriptions(xmlNode);
                 GetManifestAuthors(xmlNode);
@@ -252,204 +256,95 @@ namespace Chummer
                 _blnCreated = true;
             }
         }
-
-        public bool Save()
-        {
-            if (_blnIsSaving)
-                return false;
-
-            var pathToSave = System.IO.Path.Combine(Path, "manifest.xml");
-
-            bool blnErrorFree = true;
-            _blnIsSaving = true;
-            using (MemoryStream objStream = new MemoryStream())
-            {
-                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
-                {
-                    Formatting = Formatting.Indented,
-                    Indentation = 1,
-                    IndentChar = '\t'
-                })
-                {
-                    objWriter.WriteStartDocument();
-
-                    //<manifest>
-                    objWriter.WriteStartElement("manifest");
-
-                    objWriter.WriteElementString("name", Name);
-                    objWriter.WriteElementString("version", Version);
-
-                    //<authors>
-                    objWriter.WriteStartElement("authors");
-                    foreach (var kvp in AuthorDictionary)
-                    {
-                        objWriter.WriteElementString("name", kvp.Key);
-                        objWriter.WriteElementString("main", kvp.Value.ToString());
-                    }
-                    //</authors>
-                    objWriter.WriteEndElement();
-
-                    //<descriptions>
-                    objWriter.WriteStartElement("descriptions");
-                    foreach (var kvp in DescriptionDictionary)
-                    {
-                        objWriter.WriteStartElement("descriptions");
-                        objWriter.WriteElementString("name", kvp.Value);
-                        objWriter.WriteElementString("lang", kvp.Key);
-                        objWriter.WriteEndElement();
-                    }
-                    //</descriptions>
-                    objWriter.WriteEndElement();
-
-                    //<dependencies>
-                    objWriter.WriteStartElement("dependencies");
-                    foreach (var (hash, name, version) in DependenciesList)
-                    {
-                        objWriter.WriteStartElement("dependency");
-                        objWriter.WriteElementString("hash", hash.ToString());
-                        objWriter.WriteElementString("name", name);
-                        objWriter.WriteElementString("version", version);
-                        objWriter.WriteEndElement();
-                    }
-                    //</dependencies>
-                    objWriter.WriteEndElement();
-
-                    //<exclusivities>
-                    objWriter.WriteStartElement("exclusivities");
-                    foreach (var (hash, name, version) in ExclusivitiesList)
-                    {
-                        objWriter.WriteStartElement("exclusivity");
-                        objWriter.WriteElementString("hash", hash.ToString());
-                        objWriter.WriteElementString("name", name);
-                        objWriter.WriteElementString("version", version);
-                        objWriter.WriteEndElement();
-                    }
-                    //</exclusivities>
-                    objWriter.WriteEndElement();
-
-                    objWriter.WriteElementString("hash", Hash.ToString());
-
-                    //</manifest>
-                    objWriter.WriteEndElement();
-
-                    objWriter.WriteEndDocument();
-                    objWriter.Flush();
-                    objStream.Position = 0;
-
-                    try
-                    {
-                        XmlDocument objDoc = new XmlDocument {XmlResolver = null};
-                        using (XmlReader objXmlReader =
-                            XmlReader.Create(objStream, GlobalOptions.SafeXmlReaderSettings))
-                            objDoc.Load(objXmlReader);
-                        objDoc.Save(pathToSave);
-                    }
-                    catch (IOException e)
-                    {
-                        s_Logger.Error(e);
-                        if (Utils.IsUnitTest)
-                            throw;
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
-                        blnErrorFree = false;
-                    }
-                    catch (XmlException ex)
-                    {
-                        s_Logger.Warn(ex);
-                        if (Utils.IsUnitTest)
-                            throw;
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
-                        blnErrorFree = false;
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        if (Utils.IsUnitTest)
-                            throw;
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Save_Error_Warning"));
-                        blnErrorFree = false;
-                    }
-                    finally
-                    {
-                        _blnIsSaving = false;
-                    }
-                }
-            }
-            return blnErrorFree;
-        }
-
-        /// <summary>
-        /// Completely overrides all properties of an CustomDataDirectoryInfo object
-        /// </summary>
-        /// <param name="newVersion">The new Version</param>
-        /// <param name="newAuthorDictionary">IDictionary(name, isMain)</param>
-        /// <param name="newDescriptionDictionary">IDictionary(languageCode, text)</param>
-        /// <param name="newDependencyList">List(Tuple(Hash, name, version))</param>
-        /// <param name="newExclusivityList">List(Tuple(Hash, name, version))</param>
-        public void Override(string newVersion, IDictionary<string, bool> newAuthorDictionary,
-            IDictionary<string, string> newDescriptionDictionary, List<Tuple<int, string, string>> newDependencyList,
-            IEnumerable<Tuple<int, string, string>> newExclusivityList)
-        {
-            _strVersion = newVersion;
-
-            AuthorDictionary.Clear();
-            foreach (var author in newAuthorDictionary)
-            {
-                AuthorDictionary.Add(author);
-            }
-            GetDisplayAuthors();
-
-            DescriptionDictionary.Clear();
-            foreach (var description in newDescriptionDictionary)
-            {
-                DescriptionDictionary.Add(description);
-            }
-            GetDisplayDescription();
-
-            _lstDependencies.Clear();
-            foreach (var dependency in newDependencyList)
-            {
-                _lstDependencies.Add(dependency);
-            }
-
-            _lstExclusivities.Clear();
-            foreach (var exclusivity in newExclusivityList)
-            {
-                _lstExclusivities.Add(exclusivity);
-            }
-
-            Save();
-        }
         #endregion
 
-
         /// <summary>
-        /// Checks if all necessary dependencies are loaded in the passed Character Options
+        /// Checks if any custom data is activated, that matches name and version of the dependent upon directory
         /// </summary>
         /// <param name="objCharacterOptions"></param>
         /// <returns>List of the names of all missing dependencies as a single string</returns>
         public string CheckDependency(CharacterOptions objCharacterOptions)
         {
-            var strMissingDependencies = string.Join(", ", (from dependency in DependenciesList let intNeededHash = dependency.Item1
-                where objCharacterOptions.EnabledCustomDataDirectoryInfos.All(obj => obj.Hash != intNeededHash)
-                    select string.Format(dependency.Item2 + " (" + dependency.Item3 + ")")).ToArray());
+            var missingDependencyList = new List<string>();
+            foreach (var (depGuid, depName, depVersion, isMinimumVersion) in DependenciesList)
+            {
+                if (isMinimumVersion)
+                {
+                    if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(loadedFile =>
+                        depGuid != loadedFile.Guid && depVersion != loadedFile.Version))
+                        missingDependencyList.Add(string.Format(depName + LanguageManager.GetString("AddMinimumVersion"), depVersion));
+                }
+                else
+                {
+                    if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(loadedFile =>
+                        depGuid != loadedFile.Guid && depVersion >= loadedFile.Version))
+                        missingDependencyList.Add(string.Format(depName + LanguageManager.GetString("AddVersion"), depVersion));
+                }
 
-            return string.IsNullOrEmpty(strMissingDependencies)? string.Empty : strMissingDependencies;
+            }
+            var missingDependencies = string.Join(", ", missingDependencyList);
+            return string.IsNullOrEmpty(missingDependencies) ? string.Empty : missingDependencies;
         }
 
         /// <summary>
-        /// Checks if any prohibited custom data directories are activated
+        /// Checks if any custom data is activated, that matches name and version of the prohibited directories
         /// </summary>
         /// <param name="objCharacterOptions"></param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
         public string CheckExclusivity(CharacterOptions objCharacterOptions)
         {
-            var strExistingExclusivities = string.Join(", ", (from dependency in ExclusivitiesList let intProhibitedHash = dependency.Item1
-                where objCharacterOptions.EnabledCustomDataDirectoryInfos.Any(obj => obj.Hash == intProhibitedHash)
-                    select string.Format(dependency.Item2 + " (" + dependency.Item3 + ")")).ToArray());
 
+            var existingProhibitedDirectory = new List<string>();
+
+            foreach (var (forbiddenGuid, forbiddenName, forbiddenVersion, ignoreVersion) in ExclusivitiesList)
+            {
+                if (!ignoreVersion)
+                {
+                    if(objCharacterOptions.EnabledCustomDataDirectoryInfos.Any(enabledDirectory =>
+                        enabledDirectory.Guid == forbiddenGuid && enabledDirectory.Version == forbiddenVersion))
+                        existingProhibitedDirectory.Add(string.Format(forbiddenName + LanguageManager.GetString("AddVersion"), forbiddenVersion));
+                }
+                else
+                {
+                    if (objCharacterOptions.EnabledCustomDataDirectoryInfos.Any(enabledDirectory =>
+                        enabledDirectory.Guid == forbiddenGuid))
+                        existingProhibitedDirectory.Add(forbiddenName);
+                }
+            }
+
+            var strExistingExclusivities = string.Join(", ", existingProhibitedDirectory);
             return string.IsNullOrEmpty(strExistingExclusivities) ? string.Empty : strExistingExclusivities;
         }
 
-   
+        /// <summary>
+        /// Creates a string that displays which dependencies are missing or shouldn't be active to be displayed a tooltip.
+        /// </summary>
+        /// <param name="missingDependency">The string of all missing Dependencies</param>
+        /// <param name="presentExclusivities">The string of all exclusivities that are active</param>
+        /// <returns></returns>
+        public static string BuildExclusivityDependencyString(string missingDependency = "", string presentExclusivities = "")
+        {
+            //Funktioniert noch nicht???
+            string formedString = string.Empty;
+
+            if (!string.IsNullOrEmpty(missingDependency) && !string.IsNullOrEmpty(presentExclusivities))
+            {
+                formedString = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), missingDependency
+                    + Environment.NewLine + Environment.NewLine
+                    + string.Format(LanguageManager.GetString("Tooltip_Exclusivity_Present"), presentExclusivities));
+            }
+            else if (string.IsNullOrEmpty(missingDependency) && !string.IsNullOrEmpty(missingDependency))
+            {
+                formedString = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), missingDependency);
+            }
+            else if (!string.IsNullOrEmpty(missingDependency) && string.IsNullOrEmpty(missingDependency))
+            {
+                formedString = string.Format(LanguageManager.GetString("Tooltip_Exclusivity_Present"), presentExclusivities);
+            }
+            return formedString;
+        }
+
+
 
         #region Properties
 
@@ -466,7 +361,7 @@ namespace Chummer
         /// <summary>
         /// The version of the custom data directory
         /// </summary>
-        public string Version => _strVersion;
+        public int Version => _version;
 
         /// <summary>
         /// The Sha512 Hash of all non manifest.xml files in the directory
@@ -474,14 +369,14 @@ namespace Chummer
         public int Hash { get; private set; }
 
         /// <summary>
-        /// A list of all dependencies each formatted as Tuple(int Hash, str name, str version).
+        /// A list of all dependencies each formatted as Tuple(guid, str name, int version, bool isMinimumVersion).
         /// </summary>
-        public IReadOnlyList<Tuple<int, string, string>> DependenciesList => _lstDependencies;
+        public IReadOnlyList<Tuple<Guid, string, int, bool>> DependenciesList => _lstDependencies;
 
         /// <summary>
-        /// A list of all exclusivities each formatted as Tuple(int Hash, str name, str version).
+        /// A list of all exclusivities each formatted as Tuple(int guid, str name, int version, bool ignoreVersion).
         /// </summary>
-        public IReadOnlyList<Tuple<int, string, string>> ExclusivitiesList => _lstExclusivities;
+        public IReadOnlyList<Tuple<Guid, string, int, bool>> ExclusivitiesList => _lstExclusivities;
 
         /// <summary>
         /// A Dictionary containing all Descriptions, which uses the language code as key
@@ -502,10 +397,11 @@ namespace Chummer
         /// A string containing all Authors formatted as Author(main), Author2 
         /// </summary>
         public string DisplayAuthors { get; private set; }
+
+        public Guid Guid => _guid;
         #endregion
 
         #region Interface Implementations and Operators
-
         public int CompareTo(object obj)
         {
             if (obj == null)

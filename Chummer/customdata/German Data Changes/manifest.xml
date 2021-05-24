@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
-  <name>German Data Changes</name>
+  <guid>b422724d-42d5-4ef4-bbb3-9dfa3c40cb61</guid>
   <version>1.0</version>
   <authors>
     <author>
@@ -24,26 +24,18 @@
   </descriptions>
   <dependencies>
     <dependency>
-      <name>Dependency 1</name>
-      <version>1</version>
-      <hash>1000</hash>
-    </dependency>
-    <dependency>
-      <name>Dependency 2</name>
-      <version>2</version>
-      <hash>1234</hash>
+      <name>Bonelacing Dependency</name>
+      <version>0</version>
+      <guid>091a9694-4186-4c2d-96fc-d4dc2ae62505</guid>
+      <isminimumversion>true</isminimumversion>
     </dependency>
   </dependencies>
   <exclusivities>
     <exclusivity>
-      <name>Example Name 2</name>
+      <name>Bonelacing Exclusivity</name>
       <version>1</version>
-      <hash>1234</hash>
-    </exclusivity>
-    <exclusivity>
-      <name>Example Name 3</name>
-      <version>1999</version>
-      <hash>1234</hash>
+      <guid>091a9694-4186-4c2d-96fc-d4dc2ae62505</guid>
+      <ignoreversion>false</ignoreversion>
     </exclusivity>
   </exclusivities>
 </manifest>
