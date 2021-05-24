@@ -49,6 +49,8 @@ Application Changes:
 - Print method now ignores control characters when printing to the Sheet Export window.
 - The Control Device pool for a weapon is now properly AGI-based instead of LOG-based, as the core rulebook dictates.
 - Changing a vehicle-mounted weapon's firing mode now properly updates the selectable box for firing modes instead of keeping it blank.
+- Metatype selection screens now contain a label referencing the sourcebook location of the currently selected metatype. Implements #4357.
+- The priority selection screen can now properly deal with potential custom priority entries with spirits and/or sprites.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
