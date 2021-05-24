@@ -5350,7 +5350,7 @@
     </string>
     <string>
       <key>Enum_GunneryCommandDevice</key>
-      <text>Command Device - Gunnery[AGI]</text>
+      <text>Control Device - Gunnery[AGI]</text>
     </string>
     <string>
       <key>Enum_RemoteOperated</key>

@@ -576,7 +576,7 @@ namespace Chummer
                         {
                             if (mode == Weapon.FiringMode.NumFiringModes)
                                 continue;
-                            lstFireModes.Add(new ListItem(mode.ToString(),
+                            lstFireModes.Add(new ListItem(mode,
                                 LanguageManager.GetString("Enum_" + mode.ToString())));
                         }
 
@@ -17195,12 +17195,14 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
-            {
-                objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
+                return;
+            objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedIndex >= 0
+                ? (Weapon.FiringMode)cboVehicleWeaponFiringMode.SelectedValue
+                : Weapon.FiringMode.DogBrain;
+            RefreshSelectedVehicle();
 
-                IsDirty = true;
-            }
+            IsDirty = true;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

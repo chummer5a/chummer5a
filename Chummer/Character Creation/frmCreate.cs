@@ -802,7 +802,7 @@ namespace Chummer
                         {
                             if (mode == Weapon.FiringMode.NumFiringModes)
                                 continue;
-                            lstFireModes.Add(new ListItem(mode.ToString(),
+                            lstFireModes.Add(new ListItem(mode,
                                 LanguageManager.GetString("Enum_" + mode.ToString())));
                         }
 
@@ -11653,9 +11653,6 @@ namespace Chummer
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                 // gpbVehiclesWeapon
-                lblVehicleWeaponModeLabel.Visible = true;
-                cboVehicleWeaponFiringMode.Visible = true;
-                cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                 lblVehicleWeaponDamageLabel.Visible = true;
                 lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
                 lblVehicleWeaponAPLabel.Visible = true;
@@ -11673,6 +11670,7 @@ namespace Chummer
                     lblVehicleWeaponModeLabel.Visible = true;
                     lblVehicleWeaponMode.Visible = true;
                     lblVehicleWeaponMode.Text = objWeapon.DisplayMode;
+                    cboVehicleWeaponFiringMode.Visible = true;
                     cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
 
                     tlpVehiclesWeaponRanges.Visible = true;
@@ -11699,12 +11697,14 @@ namespace Chummer
                         lblVehicleWeaponAmmoLabel.Visible = true;
                         lblVehicleWeaponAmmo.Visible = true;
                         lblVehicleWeaponAmmo.Text = objWeapon.DisplayAmmo;
+                        cboVehicleWeaponFiringMode.Visible = true;
                         cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                     }
                     else
                     {
                         lblVehicleWeaponAmmoLabel.Visible = false;
                         lblVehicleWeaponAmmo.Visible = false;
+                        cboVehicleWeaponFiringMode.Visible = false;
                     }
                     lblVehicleWeaponModeLabel.Visible = false;
                     lblVehicleWeaponMode.Visible = false;
@@ -14822,8 +14822,8 @@ namespace Chummer
 
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
                 return;
-            objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedValue != null
-                ? Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString())
+            objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedIndex >= 0
+                ? (Weapon.FiringMode)cboVehicleWeaponFiringMode.SelectedValue
                 : Weapon.FiringMode.DogBrain;
             RefreshSelectedVehicle();
 
