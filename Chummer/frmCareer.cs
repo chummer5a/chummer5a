@@ -1197,7 +1197,6 @@ namespace Chummer
                 if (Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
             }
-            Dispose(true);
         }
 
         private void frmCareer_Activated(object sender, EventArgs e)

@@ -44,6 +44,7 @@ Application Changes:
 - Gear that can act as ammunition without being in the ammunition category is now properly treated as such when exporting character information, printing sheets, or buying more ammo. Fixes #4457.
 - Attempting to add a weapon to a weapon mount that cannot mount any weapons no longer crashes Chummer. Fixes #4448.
 - Skill groups now show when they have been disabled by an improvement such as Uncouth.
+- A crash that would sometimes occur when Chummer is restarted programmatically has been resolved.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

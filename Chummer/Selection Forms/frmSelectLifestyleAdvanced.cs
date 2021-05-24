@@ -49,7 +49,6 @@ namespace Chummer
         {
             _objLifestyle.LifestyleQualities.CollectionChanged -= LifestyleQualitiesOnCollectionChanged;
             _objLifestyle.FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
-            Dispose(true);
         }
 
         private void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
