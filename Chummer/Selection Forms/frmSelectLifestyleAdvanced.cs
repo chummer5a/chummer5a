@@ -702,9 +702,10 @@ namespace Chummer
                 string strPage = xmlAspect["altpage"]?.InnerText ?? xmlAspect["page"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                    SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                        GlobalOptions.CultureInfo, _objCharacter);
+                    lblSource.Text = objSource.ToString();
+                    lblSource.SetToolTip(objSource.LanguageBookTooltip);
                 }
                 else
                 {

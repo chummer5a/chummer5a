@@ -146,12 +146,10 @@ namespace Chummer
             string strPage = xmlComplexForm.SelectSingleNode("altpage")?.Value ??
                              xmlComplexForm.SelectSingleNode("page")?.Value ??
                              LanguageManager.GetString("String_Unknown");
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-
-            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
-                                 LanguageManager.GetString("String_Page") + strSpace + strPage);
-
+            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                GlobalOptions.CultureInfo, _objCharacter);
+            lblSource.Text = objSource.ToString();
+            lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblDurationLabel.Visible = !string.IsNullOrEmpty(lblDuration.Text);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblFVLabel.Visible = !string.IsNullOrEmpty(lblFV.Text);

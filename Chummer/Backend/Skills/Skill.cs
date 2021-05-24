@@ -1708,14 +1708,16 @@ namespace Chummer.Backend.Skills
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strReturn = !string.IsNullOrEmpty(Notes)
-                    ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine + Environment.NewLine
+                    ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine +
+                      Environment.NewLine
                     : string.Empty;
                 string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
-                    ? SkillGroupObject.CurrentDisplayName + strSpace + LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
+                    ? SkillGroupObject.CurrentDisplayName + strSpace +
+                      LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
                     : string.Empty;
-                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle
-                             + CharacterObject.LanguageBookLong(Source) + strSpace + LanguageManager.GetString("String_Page")
-                             + strSpace + DisplayPage(GlobalOptions.Language);
+                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle +
+                             new SourceString(Source, Page, GlobalOptions.Language, GlobalOptions.CultureInfo,
+                                 CharacterObject).LanguageBookTooltip;
                 return strReturn;
             }
         }
