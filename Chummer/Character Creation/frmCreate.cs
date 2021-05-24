@@ -9432,7 +9432,7 @@ namespace Chummer
             if (CharacterObject.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
                 // Cyberware/Bioware cost.
-                decDeductions       += CharacterObject.Cyberware.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decDeductions       += CharacterObject.Cyberware.Where(c => !c.Stolen).AsParallel().Sum(x => x.CurrentTotalCost);
                 decStolenDeductions += CharacterObject.Cyberware.Where(c =>  c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
 
                 // Initiation Grade cost.
@@ -9468,7 +9468,7 @@ namespace Chummer
             else
             {
                 // Cyberware/Bioware cost.
-                decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.TotalCost);
+                decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.CurrentTotalCost);
 
                 // Initiation Grade cost.
                 decDeductions += 10000 * CharacterObject.InitiationGrades.Count(x => x.Schooling);
@@ -9606,7 +9606,7 @@ namespace Chummer
                     }
 
                     lblCyberwareCapacity.Text = objCyberware.DisplayCapacity;
-                    lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblCyberwareCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal) || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                     {
                         lblCyberlimbAGILabel.Visible = true;
@@ -11895,7 +11895,7 @@ namespace Chummer
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
                 lblVehicleAvail.Text = objCyberware.DisplayTotalAvail;
-                lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 chkVehicleWeaponAccessoryInstalled.Visible = false;
                 chkVehicleIncludedInWeapon.Visible = false;

@@ -1791,7 +1791,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
                         decCost += objMod.Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost);
-                        decCost += objMod.Cyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
+                        decCost += objMod.Cyberware.AsParallel().Sum(objCyberware => objCyberware.CurrentTotalCost);
                     }
                 }
                 decCost += WeaponMounts.AsParallel().Sum(wm => wm.TotalCost);
