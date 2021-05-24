@@ -2392,7 +2392,7 @@ namespace Chummer
                                         decLegacyMaxNuyen.StandardRound() * decLegacyMaxNuyen.StandardRound() +
                                         intLegacyMaxKarma * intLegacyMaxKarma;
                                     intDummy = Math.Max(setSavedBooks.Count, 1) *
-                                               lstSavedCustomDataDirectoryNames.Count *
+                                               (lstSavedCustomDataDirectoryNames.Count + 1) *
                                                intBaseline;
                                     if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
                                     {
