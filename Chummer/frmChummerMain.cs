@@ -1359,7 +1359,7 @@ namespace Chummer
                         return;
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (_frmProgressBar = CreateAndShowProgressBar(
-                        string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen),
+                        string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
                         lstFilesToOpen.Count * 35))
                     {
                         Dictionary<int, string> dicIndexedStrings =
@@ -1539,7 +1539,7 @@ namespace Chummer
                 }
                 if (blnShowProgressBar && _frmProgressBar.IsNullOrDisposed())
                 {
-                    using (_frmProgressBar = CreateAndShowProgressBar(objCharacter.FileName, Character.NumLoadingSections))
+                    using (_frmProgressBar = CreateAndShowProgressBar(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
                     {
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");

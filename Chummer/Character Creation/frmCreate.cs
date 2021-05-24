@@ -9330,7 +9330,7 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(CharacterObject.FileName, Character.NumLoadingSections))
+                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));

@@ -2794,7 +2794,7 @@ namespace Chummer
                 {
                     using (Character objVessel = new Character { FileName = strFileName })
                     {
-                        using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(objVessel.FileName, Character.NumLoadingSections * 2 + 7))
+                        using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                         {
                             bool blnSuccess = objVessel.Load(frmLoadingForm);
                             if (!blnSuccess)
@@ -12976,7 +12976,7 @@ namespace Chummer
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(CharacterObject.FileName, Character.NumLoadingSections))
+                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));

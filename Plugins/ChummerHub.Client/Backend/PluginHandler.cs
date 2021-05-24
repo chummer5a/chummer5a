@@ -1197,7 +1197,7 @@ namespace Chummer.Plugins
                 {
                     FileName = fileToLoad
                 };
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(fileToLoad, Character.NumLoadingSections))
+                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
                 {
                     if (objCharacter.Load(frmLoadingForm, Settings.Default.IgnoreWarningsOnOpening))
                         MainForm.OpenCharacters.Add(objCharacter);
