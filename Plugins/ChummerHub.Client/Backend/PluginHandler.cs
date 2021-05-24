@@ -372,8 +372,6 @@ namespace Chummer.Plugins
             yield return page;
         }
 
-        private static bool _isSaving;
-
         public static SINner MySINnerLoading { get; internal set; }
         public NamedPipeManager PipeManager { get; private set; }
 
@@ -382,7 +380,7 @@ namespace Chummer.Plugins
             if (input == null)
                 throw new ArgumentNullException(nameof(input));
             string returnme = string.Empty;
-            using (CharacterExtended ce = GetMyCe(input).Result)
+            using (CharacterExtended ce = GetMyCe(input))
             {
                 var jsonResolver = new PropertyRenameAndIgnoreSerializerContractResolver();
                 JsonSerializerSettings settings = new JsonSerializerSettings
@@ -424,7 +422,7 @@ namespace Chummer.Plugins
                         {
                             using (new CursorWait(MainForm, true))
                             {
-                                using (var ce = await GetMyCe(input))
+                                using (var ce = await GetMyCeAsync(input))
                                 {
                                     //ce = new CharacterExtended(input, null);
                                     if (ce.MySINnerFile.SiNnerMetaData.Tags.Any(a =>
@@ -470,7 +468,6 @@ namespace Chummer.Plugins
                         finally
                         {
                             input.DoOnSaveCompleted.TryAdd(MyOnSaveUpload);
-                            _isSaving = false;
                         }
                     });
                 }
@@ -478,7 +475,17 @@ namespace Chummer.Plugins
             return true;
         }
 
-        private static async Task<CharacterExtended> GetMyCe(Character input)
+        private static CharacterExtended GetMyCe(Character input)
+        {
+            return GetMyCeCoreAsync(true, input).GetAwaiter().GetResult();
+        }
+
+        private static Task<CharacterExtended> GetMyCeAsync(Character input)
+        {
+            return GetMyCeCoreAsync(false, input);
+        }
+
+        private static async Task<CharacterExtended> GetMyCeCoreAsync(bool blnSync, Character input)
         {
             CharacterShared found = null;
             if (MainForm?.OpenCharacterForms != null)
@@ -510,19 +517,15 @@ namespace Chummer.Plugins
             }
             
             CharacterCache myCharacterCache = new CharacterCache();
-            CharacterExtended ce = await myCharacterCache.LoadFromFileAsync(input?.FileName).ContinueWith(x =>
-            {
-                if (sinnertab == null)
-                {
-                    return new CharacterExtended(input, null, myCharacterCache);
-                }
-                else
-                {
-                    ucSINnersUserControl myUcSIN = sinnertab.Controls.OfType<ucSINnersUserControl>().FirstOrDefault();
-                    return myUcSIN == null ? new CharacterExtended(input, null, myCharacterCache) : myUcSIN.MyCE;
-                }
-            });
-            return ce;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                myCharacterCache.LoadFromFile(input?.FileName);
+            else
+                await myCharacterCache.LoadFromFileAsync(input?.FileName);
+            if (sinnertab == null)
+                return new CharacterExtended(input, null, myCharacterCache);
+            ucSINnersUserControl myUcSIN = sinnertab.Controls.OfType<ucSINnersUserControl>().FirstOrDefault();
+            return myUcSIN == null ? new CharacterExtended(input, null, myCharacterCache) : myUcSIN.MyCE;
         }
 
         public void LoadFileElement(Character input, string strPluginFileElement)
