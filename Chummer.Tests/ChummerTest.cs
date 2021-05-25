@@ -63,7 +63,7 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("UI")]
+        [TestMethod]
         public void Test00_BasicStartup()
         {
             Debug.WriteLine("Unit test initialized for: Test00_BasicStartup()");
@@ -95,7 +95,7 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("I/O")]
+        [TestMethod]
         public void Test01_LoadThenSave()
         {
             Debug.WriteLine("Unit test initialized for: Test01_LoadThenSave()");
@@ -114,7 +114,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("I/O")]
+        [TestMethod]
         public void Test02_LoadThenSaveIsDeterministic()
         {
             Debug.WriteLine("Unit test initialized for: Test02_LoadThenSaveIsDeterministic()");
@@ -172,7 +172,7 @@ namespace Chummer.Tests
             }
         }
 
-        [TestMethod, TestCategory("I/O")]
+        [TestMethod]
         public void Test03_LoadThenPrint()
         {
             Debug.WriteLine("Unit test initialized for: Test03_LoadThenPrint()");
@@ -196,7 +196,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("UI")]
+        [TestMethod]
         public void Test04_LoadCharacterForms()
         {
             Debug.WriteLine("Unit test initialized for: Test04_LoadCharacterForms()");
