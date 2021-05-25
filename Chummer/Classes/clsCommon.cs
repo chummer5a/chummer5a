@@ -45,8 +45,8 @@ namespace Chummer
         private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
-        private static readonly ConcurrentDictionary<string, object> s_DicCompiledEvaluations =
-            new ConcurrentDictionary<string, object>();
+        private static readonly ConcurrentDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
+            new ConcurrentDictionary<string, Tuple<bool, object>>();
 
         private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
 
@@ -58,9 +58,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath)
         {
-            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out object objCachedEvaluation))
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
             {
-                return objCachedEvaluation;
+                return objCachedEvaluation.Item2;
             }
             if (string.IsNullOrWhiteSpace(strXPath))
             {
@@ -69,26 +69,30 @@ namespace Chummer
             }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, strXPath);
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
                 return strXPath;
             }
 
             object objReturn;
+            bool blnIsSuccess;
             try
             {
                 objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
+                blnIsSuccess = true;
             }
             catch (ArgumentException)
             {
                 Utils.BreakIfDebug();
                 objReturn = strXPath;
+                blnIsSuccess = false;
             }
             catch (XPathException)
             {
                 Utils.BreakIfDebug();
                 objReturn = strXPath;
+                blnIsSuccess = false;
             }
-            s_DicCompiledEvaluations.TryAdd(strXPath, objReturn is Nullable ? objReturn?.ToString() : objReturn); // don't want to store managed objects, only primitives
+            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
 
@@ -101,20 +105,20 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
         {
-            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out object objCachedEvaluation))
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
             {
-                blnIsSuccess = objCachedEvaluation != null && objCachedEvaluation.ToString() != strXPath;
-                return objCachedEvaluation;
+                blnIsSuccess = objCachedEvaluation.Item1;
+                return objCachedEvaluation.Item2;
             }
             if (string.IsNullOrWhiteSpace(strXPath))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, null);
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, null));
                 blnIsSuccess = false;
                 return null;
             }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, strXPath);
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
                 blnIsSuccess = false;
                 return strXPath;
             }
@@ -137,7 +141,7 @@ namespace Chummer
                 objReturn = strXPath;
                 blnIsSuccess = false;
             }
-            s_DicCompiledEvaluations.TryAdd(strXPath, objReturn is Nullable ? objReturn?.ToString() : objReturn); // don't want to store managed objects, only primitives
+            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
 
@@ -150,26 +154,30 @@ namespace Chummer
         public static object EvaluateInvariantXPath(XPathExpression objXPath)
         {
             string strExpression = objXPath.Expression;
-            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out object objCachedEvaluation))
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
             {
-                return objCachedEvaluation;
+                return objCachedEvaluation.Item2;
             }
             object objReturn;
+            bool blnIsSuccess;
             try
             {
                 objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                blnIsSuccess = true;
             }
             catch (ArgumentException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
+                blnIsSuccess = false;
             }
             catch (XPathException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
+                blnIsSuccess = false;
             }
-            s_DicCompiledEvaluations.TryAdd(strExpression, objReturn is Nullable ? objReturn?.ToString() : objReturn); // don't want to store managed objects, only primitives
+            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
 
@@ -183,10 +191,10 @@ namespace Chummer
         public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess)
         {
             string strExpression = objXPath.Expression;
-            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out object objCachedEvaluation))
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
             {
-                blnIsSuccess = objCachedEvaluation != null && objCachedEvaluation.ToString() != strExpression;
-                return objCachedEvaluation;
+                blnIsSuccess = objCachedEvaluation.Item1;
+                return objCachedEvaluation.Item2;
             }
             object objReturn;
             try
@@ -197,16 +205,16 @@ namespace Chummer
             catch (ArgumentException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
             }
             catch (XPathException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
             }
-            s_DicCompiledEvaluations.TryAdd(strExpression, objReturn is Nullable ? objReturn?.ToString() : objReturn); // don't want to store managed objects, only primitives
+            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
         #endregion
