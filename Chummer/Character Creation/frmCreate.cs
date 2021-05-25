@@ -6793,6 +6793,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treWeapons.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -6803,8 +6810,6 @@ namespace Chummer
                 intNewIndex = treWeapons.Nodes[treWeapons.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treWeapons.Nodes[treWeapons.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treWeapons.SelectedNode;
 
             // Put the weapon in the right location (or lack thereof)
             if (treWeapons.SelectedNode.Level == 1)
@@ -6867,6 +6872,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treArmor.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -6877,8 +6889,6 @@ namespace Chummer
                 intNewIndex = treArmor.Nodes[treArmor.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treArmor.SelectedNode;
 
             // Put the armor in the right location (or lack thereof)
             if (treArmor.SelectedNode.Level == 1)
@@ -7245,6 +7255,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treGear.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -7255,8 +7272,6 @@ namespace Chummer
                 intNewIndex = treGear.Nodes[treGear.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treGear.Nodes[treGear.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treGear.SelectedNode;
 
             switch (_eDragButton)
             {
@@ -7644,6 +7659,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treVehicles.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -7654,8 +7676,6 @@ namespace Chummer
                 intNewIndex = treVehicles.Nodes[treVehicles.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treVehicles.Nodes[treVehicles.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treVehicles.SelectedNode;
 
             if (!_blnDraggingGear)
             {
