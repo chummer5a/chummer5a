@@ -49,7 +49,7 @@ namespace Chummer
         private frmUpdate _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
-        private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
+        private readonly BackgroundWorker _workerVersionUpdateChecker;
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
@@ -77,6 +77,14 @@ namespace Chummer
             this.TranslateWinForm();
             _strCurrentVersion =
                 string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
+
+            _workerVersionUpdateChecker = new BackgroundWorker
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = true
+            };
+            _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
+            _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalOptions.HideMasterIndex || isUnitTest)
@@ -160,10 +168,6 @@ namespace Chummer
                     // If Automatic Updates are enabled, check for updates immediately.
 
 #if !DEBUG
-                    _workerVersionUpdateChecker.WorkerReportsProgress = false;
-                    _workerVersionUpdateChecker.WorkerSupportsCancellation = true;
-                    _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
-                    _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
                     Application.Idle += IdleUpdateCheck;
                     _workerVersionUpdateChecker.RunWorkerAsync();
 #endif
@@ -548,7 +552,7 @@ namespace Chummer
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 
-        private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
+        private async void DoCacheGitVersion(object sender, DoWorkEventArgs e)
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request;
@@ -581,7 +585,7 @@ namespace Chummer
             try
             {
                 // Get the response.
-                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                using (HttpWebResponse response = await request.GetResponseAsync() as HttpWebResponse)
                 {
                     if (response == null)
                     {
@@ -703,11 +707,10 @@ namespace Chummer
         private void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
-            if(_idleUpdateCheckStopWatch.ElapsedMilliseconds >= 3600000 && !_workerVersionUpdateChecker.IsBusy)
-            {
-                _idleUpdateCheckStopWatch.Restart();
-                _workerVersionUpdateChecker.RunWorkerAsync();
-            }
+            if (_idleUpdateCheckStopWatch.Elapsed < TimeSpan.FromHours(1) || _workerVersionUpdateChecker.IsBusy)
+                return;
+            _idleUpdateCheckStopWatch.Restart();
+            _workerVersionUpdateChecker.RunWorkerAsync();
         }
 
         /*

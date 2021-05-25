@@ -1294,8 +1294,7 @@ namespace ChummerHub.Client.Backend
                         {
                             using (WebClient wc = new WebClient())
                             {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                wc.DownloadFile(
+                                await wc.DownloadFileTaskAsync(
                                     // Param1 = Link of file
                                     new Uri(sinner.DownloadUrl),
                                     // Param2 = Path to save

@@ -25,17 +25,18 @@ namespace ChummerDataViewer.Model
 			_worker.RunWorkerAsync();
 		}
 
-		private void WorkerEntryPoint(object sender, DoWorkEventArgs e)
+		private async void WorkerEntryPoint(object sender, DoWorkEventArgs e)
 		{
 			try
 			{
                 using (WebClient client = new WebClient())
+                {
                     while (true)
                     {
                         if (_queue.TryTake(out DownloadTask task))
                         {
                             OnStatusChanged(new StatusChangedEventArgs("Downloading " + task.Url + Queue()));
-                            byte[] encrypted = client.DownloadData(task.Url);
+                            byte[] encrypted = await client.DownloadDataTaskAsync(task.Url);
                             byte[] buffer = Decrypt(task.Key, encrypted);
                             WriteAndForget(buffer, task.DestinationPath, task.ReportGuid);
                         }
@@ -46,7 +47,8 @@ namespace ChummerDataViewer.Model
                             resetEvent.WaitOne(15000);  //in case i fuck something up
                         }
                     }
-			}
+                }
+            }
 #if DEBUG
 			catch(StackOverflowException ex)
 #else
