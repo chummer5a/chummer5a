@@ -7979,14 +7979,44 @@ namespace Chummer
                         break;
                     }
                 case KarmaExpenseType.AddSkill:
+                    {
+                        // Locate the Skill that was affected.
+                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId);
+                        if (objSkill != null)
+                        {
+                            if (objSkill.AllowDelete)
+                                CharacterObject.SkillsSection.Skills.Remove(objSkill);
+                            else
+                            {
+                                objSkill.BasePoints = 0;
+                                objSkill.KarmaPoints = 0;
+                            }
+                        }
+                        else
+                        {
+                            KnowledgeSkill objKnowledgeSkill = CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId);
+                            if (objKnowledgeSkill != null)
+                            {
+                                if (objKnowledgeSkill.AllowDelete)
+                                    CharacterObject.SkillsSection.KnowledgeSkills.Remove(objKnowledgeSkill);
+                                else
+                                {
+                                    objKnowledgeSkill.BasePoints = 0;
+                                    objKnowledgeSkill.KarmaPoints = 0;
+                                }
+                            }
+                        }
+
+                        break;
+                    }
                 case KarmaExpenseType.ImproveSkill:
                     {
                         // Locate the Skill that was affected.
-                        Skill skill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId) ??
-                                      CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId);
+                        Skill objSkill = CharacterObject.SkillsSection.Skills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId) ??
+                                         CharacterObject.SkillsSection.KnowledgeSkills.FirstOrDefault(s => s.InternalId == objExpense.Undo.ObjectId);
 
-                        if (skill != null)
-                            skill.Karma -= 1;
+                        if (objSkill != null)
+                            objSkill.Karma -= 1;
 
                         break;
                     }

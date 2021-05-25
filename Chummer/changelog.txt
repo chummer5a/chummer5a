@@ -53,6 +53,7 @@ Application Changes:
 - The priority selection screen can now properly deal with potential custom priority entries with spirits and/or sprites.
 - Vehicle and Cyberware Condition Monitor controls now work properly. Fixes #4449.
 - Cyberware and vehicles now export the amount that their Matrix Condition Monitors are filled. Weapons now properly export all of their Matrix-related properties, including their Matrix attributes and their Matrix Condition Monitor status.
+- Deleting a skill by undoing the Karma expense for adding it now properly deletes the skill instead of lowering its rating by 1. Fixes #4323.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

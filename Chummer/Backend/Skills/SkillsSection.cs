@@ -46,6 +46,33 @@ namespace Chummer.Backend.Skills
             }
             KnowledgeSkills.BeforeRemove += KnowledgeSkillsOnBeforeRemove;
             KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
+            Skills.BeforeRemove += SkillsOnBeforeRemove;
+            Skills.ListChanged += SkillsOnListChanged;
+        }
+
+        private void SkillsOnListChanged(object sender, ListChangedEventArgs e)
+        {
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.Reset:
+                    SkillsDictionary.Clear();
+                    foreach (Skill objSkill in Skills)
+                    {
+                        if (!SkillsDictionary.ContainsKey(objSkill.DictionaryKey))
+                            SkillsDictionary.Add(objSkill.DictionaryKey, objSkill);
+                    }
+                    break;
+                case ListChangedType.ItemAdded:
+                    Skill objNewSkill = Skills[e.NewIndex];
+                    if (!SkillsDictionary.ContainsKey(objNewSkill.DictionaryKey))
+                        SkillsDictionary.Add(objNewSkill.DictionaryKey, objNewSkill);
+                    break;
+            }
+        }
+
+        private void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            SkillsDictionary.Remove(Skills[e.OldIndex].DictionaryKey);
         }
 
         private void KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -198,7 +225,6 @@ namespace Chummer.Backend.Skills
                     Skill skill = Skills[i];
                     _dicSkillBackups.Add(skill.SkillId, skill);
                     Skills.RemoveAt(i);
-                    SkillsDictionary.Remove(skill.DictionaryKey);
 
                     if (_objCharacter.Created && skill.TotalBaseRating > 0 && createKnowledge)
                     {
@@ -870,13 +896,13 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int MaxSkillRating { get; set; } = 0;
 
-        private readonly BindingList<Skill> _lstSkills = new BindingList<Skill>();
+        private readonly CachedBindingList<Skill> _lstSkills = new CachedBindingList<Skill>();
         private readonly Dictionary<string, Skill> _dicSkills = new Dictionary<string, Skill>();
 
         /// <summary>
         /// Active Skills
         /// </summary>
-        public BindingList<Skill> Skills
+        public CachedBindingList<Skill> Skills
         {
             get
             {
