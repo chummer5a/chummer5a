@@ -103,9 +103,12 @@ namespace Chummer.Tests
             {
                 string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
                 using (Character objCharacter = LoadCharacter(objFileInfo))
+                {
                     SaveCharacter(objCharacter, strDestination);
-                using (Character _ = LoadCharacter(new FileInfo(strDestination)))
-                { // Assert on failed load will already happen inside LoadCharacter
+                    using (Character _ = LoadCharacter(new FileInfo(strDestination)))
+                    {
+                        // Assert on failed load will already happen inside LoadCharacter
+                    }
                 }
             }
         }
@@ -119,42 +122,50 @@ namespace Chummer.Tests
             {
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + objBaseFileInfo.Name);
-                using (Character objCharacter = LoadCharacter(objBaseFileInfo))
-                    SaveCharacter(objCharacter, strDestinationControl);
-                // Second Load-Save cycle
-                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
-                using (Character objCharacter = LoadCharacter(new FileInfo(strDestinationControl)))
-                    SaveCharacter(objCharacter, strDestinationTest);
-                // Check to see that character after first load cycle is consistent with character after second
-                using (FileStream controlFileStream = File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                using (Character objCharacterControl = LoadCharacter(objBaseFileInfo))
                 {
-                    using (FileStream testFileStream = File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                    SaveCharacter(objCharacterControl, strDestinationControl);
+                    // Second Load-Save cycle
+                    string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
+                    using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
                     {
-                        try
+                        SaveCharacter(objCharacterTest, strDestinationTest);
+                        // Check to see that character after first load cycle is consistent with character after second
+                        using (FileStream controlFileStream =
+                            File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
                         {
-                            Diff myDiff = DiffBuilder
-                                .Compare(controlFileStream)
-                                .WithTest(testFileStream)
-                                .CheckForIdentical()
-                                .WithNodeFilter(x => x.Name != "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                                .WithNodeMatcher(
-                                    new DefaultNodeMatcher(
-                                        ElementSelectors.Or(
-                                            ElementSelectors.ByNameAndText,
-                                            ElementSelectors.ByName)))
-                                .IgnoreWhitespace()
-                                .Build();
-                            foreach (Difference diff in myDiff.Differences)
+                            using (FileStream testFileStream =
+                                File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
                             {
-                                Console.WriteLine(diff.Comparison);
-                                Console.WriteLine();
-                            }
+                                try
+                                {
+                                    Diff myDiff = DiffBuilder
+                                        .Compare(controlFileStream)
+                                        .WithTest(testFileStream)
+                                        .CheckForIdentical()
+                                        .WithNodeFilter(x =>
+                                            x.Name !=
+                                            "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                        .WithNodeMatcher(
+                                            new DefaultNodeMatcher(
+                                                ElementSelectors.Or(
+                                                    ElementSelectors.ByNameAndText,
+                                                    ElementSelectors.ByName)))
+                                        .IgnoreWhitespace()
+                                        .Build();
+                                    foreach (Difference diff in myDiff.Differences)
+                                    {
+                                        Console.WriteLine(diff.Comparison);
+                                        Console.WriteLine();
+                                    }
 
-                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
-                        }
-                        catch (XmlSchemaException e)
-                        {
-                            Assert.Fail("Unexpected validation failure: " + e.Message);
+                                    Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                                }
+                                catch (XmlSchemaException e)
+                                {
+                                    Assert.Fail("Unexpected validation failure: " + e.Message);
+                                }
+                            }
                         }
                     }
                 }

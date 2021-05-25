@@ -662,9 +662,12 @@ namespace Chummer
                         if (decMax == decimal.MaxValue)
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         else
+                        {
+                            string strSpace = LanguageManager.GetString("String_Space");
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)
                                            + strSpace + '-' + strSpace
                                            + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        }
 
                         decItemCost = decMin;
                     }
