@@ -195,6 +195,134 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static Task<T> StartSTATask<T>(Func<T> func)
+        {
+            var tcs = new TaskCompletionSource<T>();
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    tcs.SetResult(func());
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static Task<T> StartSTATask<T>(Task<T> func)
+        {
+            var tcs = new TaskCompletionSource<T>();
+            Thread thread = new Thread(async () =>
+            {
+                try
+                {
+                    tcs.SetResult(await func);
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Syntatic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// Because async functions don't lock threads, it does not need to manually call events anyway.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConfiguredTaskAwaitable SafeSleepAsync()
+        {
+            return SafeSleepAsync(DefaultSleepDuration);
+        }
+
+        /// <summary>
+        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// Because async functions don't lock threads, it does not need to manually call events anyway.
+        /// </summary>
+        /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ConfiguredTaskAwaitable SafeSleepAsync(int intDurationMilliseconds)
+        {
+            return Task.Delay(intDurationMilliseconds).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Syntatic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SafeSleep(bool blnForceDoEvents = false)
+        {
+            SafeSleep(DefaultSleepDuration, blnForceDoEvents);
+        }
+
+        /// <summary>
+        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
+        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SafeSleep(int intDurationMilliseconds, bool blnForceDoEvents = false)
+        {
+            for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
+            {
+                Thread.Sleep(intDurationMilliseconds);
+                if (!EverDoEvents)
+                    return;
+                bool blnDoEvents = blnForceDoEvents || s_blnIsOKToRunDoEvents;
+                try
+                {
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
+                }
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
+        /// </summary>
+        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
+        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void SafeSleep(TimeSpan objTimeSpan, bool blnForceDoEvents = false)
+        {
+            SafeSleep(objTimeSpan.Milliseconds, blnForceDoEvents);
+        }
+        
+
+        /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
         private static bool EverDoEvents => !IsDesignerMode && !IsRunningInVisualStudio;
@@ -225,21 +353,7 @@ namespace Chummer
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
         }
 
@@ -262,21 +376,7 @@ namespace Chummer
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
             while (aobjTasks.Any(objTask => !objTask.IsCompleted))
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
         }
 
@@ -295,21 +395,7 @@ namespace Chummer
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
             return objTask.Result;
         }
@@ -334,21 +420,7 @@ namespace Chummer
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
             while (aobjTasks.Any(objTask => !objTask.IsCompleted))
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
@@ -372,21 +444,7 @@ namespace Chummer
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
             return objTask.Result;
         }
@@ -415,21 +473,7 @@ namespace Chummer
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
             while (aobjTasks.Any(objTask => !objTask.IsCompleted))
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
@@ -453,21 +497,7 @@ namespace Chummer
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
         }
 
@@ -493,21 +523,7 @@ namespace Chummer
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
             while (aobjTasks.Any(objTask => !objTask.IsCompleted))
             {
-                bool blnDoEvents = s_blnIsOKToRunDoEvents;
-                try
-                {
-                    if (blnDoEvents)
-                    {
-                        s_blnIsOKToRunDoEvents = false;
-                        Application.DoEvents();
-                    }
-                    Thread.Sleep(DefaultSleepDuration);
-                }
-                finally
-                {
-                    if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
-                }
+                SafeSleep();
             }
         }
     }

@@ -581,7 +581,7 @@ namespace Chummer
                         {
                             if (mode == Weapon.FiringMode.NumFiringModes)
                                 continue;
-                            lstFireModes.Add(new ListItem(mode.ToString(),
+                            lstFireModes.Add(new ListItem(mode,
                                 LanguageManager.GetString("Enum_" + mode.ToString())));
                         }
 
@@ -1214,7 +1214,6 @@ namespace Chummer
                 if (Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
             }
-            Dispose(true);
         }
 
         private void frmCareer_Activated(object sender, EventArgs e)
@@ -2530,6 +2529,7 @@ namespace Chummer
 
                 // Refresh Metamagics and Echoes.
                 // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
+                // ReSharper disable once ForCanBeConvertedToForeach
                 for (int j = 0; j < CharacterObject.Metamagics.Count; j++)
                 {
                     Metamagic objMetamagic = CharacterObject.Metamagics[j];
@@ -2812,7 +2812,7 @@ namespace Chummer
                 {
                     using (Character objVessel = new Character { FileName = strFileName })
                     {
-                        using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(objVessel.FileName, Character.NumLoadingSections * 2 + 7))
+                        using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(objVessel.FileName), Character.NumLoadingSections * 2 + 7))
                         {
                             bool blnSuccess = objVessel.Load(frmLoadingForm);
                             if (!blnSuccess)
@@ -13024,7 +13024,7 @@ namespace Chummer
             // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(CharacterObject.FileName, Character.NumLoadingSections))
+                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
@@ -13178,7 +13178,7 @@ namespace Chummer
                 cmdCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 lblCyberwareRating.Text = objCyberware.Rating.ToString(GlobalOptions.CultureInfo);
                 lblCyberwareCapacity.Text = objCyberware.DisplayCapacity;
-                lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCyberwareCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal))
                 {
                     lblCyberlimbAGILabel.Visible = true;
@@ -13379,7 +13379,7 @@ namespace Chummer
                 lblWeaponSlots.Visible = true;
                 if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                 {
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
@@ -13606,7 +13606,7 @@ namespace Chummer
                 lblWeaponSlotsLabel.Visible = true;
                 lblWeaponSlots.Visible = true;
                 StringBuilder sbdSlotsText = new StringBuilder(objSelectedAccessory.Mount);
-                if (sbdSlotsText.Length > 0 && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (sbdSlotsText.Length > 0 && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     sbdSlotsText.Clear();
                     foreach (string strMount in objSelectedAccessory.Mount.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
@@ -14850,7 +14850,7 @@ namespace Chummer
 
                     Gear objMatchingGear = null;
                     // If this is Ammunition, see if the character already has it on them.
-                    if (objGear.Category == "Ammunition")
+                    if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
                     {
                         IEnumerable<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
                         objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
@@ -15358,7 +15358,7 @@ namespace Chummer
                 lblVehicleSlots.Visible = true;
                 if (!string.IsNullOrWhiteSpace(objWeapon.AccessoryMounts))
                 {
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         StringBuilder sbdSlotsText = new StringBuilder();
                         foreach (string strMount in objWeapon.AccessoryMounts.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
@@ -15719,7 +15719,7 @@ namespace Chummer
                 lblVehicleGearQty.Visible = false;
                 cmdVehicleGearReduceQty.Visible = false;
                 lblVehicleAvail.Text = objCyberware.DisplayTotalAvail;
-                lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 cmdVehicleMoveToInventory.Visible = false;
                 cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 chkVehicleWeaponAccessoryInstalled.Visible = false;
@@ -17498,12 +17498,14 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (treVehicles.SelectedNode?.Tag is Weapon objWeapon)
-            {
-                objWeapon.FireMode = Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString());
+            if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
+                return;
+            objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedIndex >= 0
+                ? (Weapon.FiringMode)cboVehicleWeaponFiringMode.SelectedValue
+                : Weapon.FiringMode.DogBrain;
+            RefreshSelectedVehicle();
 
-                IsDirty = true;
-            }
+            IsDirty = true;
         }
 
         private void OpenSourceFromLabel(object sender, EventArgs e)

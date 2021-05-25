@@ -172,7 +172,7 @@ namespace Chummer.Backend.Skills
 
         private string GetSkillNameFromData(string strInputSkillName)
         {
-            if (GlobalOptions.Language == GlobalOptions.DefaultLanguage)
+            if (GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 return strInputSkillName;
             }

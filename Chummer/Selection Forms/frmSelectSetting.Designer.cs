@@ -57,9 +57,9 @@ namespace Chummer
             // 
             // lblSetting
             // 
-            this.lblSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSetting.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSetting.AutoSize = true;
-            this.lblSetting.Location = new System.Drawing.Point(3, 73);
+            this.lblSetting.Location = new System.Drawing.Point(3, 74);
             this.lblSetting.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSetting.Name = "lblSetting";
             this.lblSetting.Size = new System.Drawing.Size(67, 13);
@@ -69,8 +69,7 @@ namespace Chummer
             // 
             // cboSetting
             // 
-            this.cboSetting.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSetting.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSetting.FormattingEnabled = true;
             this.cboSetting.Location = new System.Drawing.Point(76, 70);

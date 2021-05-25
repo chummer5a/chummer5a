@@ -453,7 +453,7 @@ namespace Chummer.Backend.Uniques
                             strFile = "streams.xml";
                             break;
                     }
-                    string strReturnEnglish = strLanguage == GlobalOptions.DefaultLanguage ? Name : _objCharacter.ReverseTranslateExtra(Name, GlobalOptions.DefaultLanguage, strFile);
+                    string strReturnEnglish = strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? Name : _objCharacter.ReverseTranslateExtra(Name, GlobalOptions.DefaultLanguage, strFile);
                     return _objCharacter.TranslateExtra(strReturnEnglish, strLanguage);
                 }
 
@@ -461,7 +461,7 @@ namespace Chummer.Backend.Uniques
             }
 
             // Get the translated name if applicable.
-            if(strLanguage == GlobalOptions.DefaultLanguage)
+            if(strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -898,7 +898,7 @@ namespace Chummer.Backend.Uniques
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;

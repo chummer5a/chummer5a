@@ -503,6 +503,7 @@ namespace ChummerHub.Controllers.V1
                 if (!System.IO.File.Exists(filename))
                 {
                     Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl ?? string.Empty);
+                    // ReSharper disable once MethodHasAsyncOverload
                     net.DownloadFile(downloadUri, filename);
                 }
 
@@ -537,7 +538,7 @@ namespace ChummerHub.Controllers.V1
                                         //now we need to get the value of the Childnode
                                         if (mugchild.FirstChild != null)
                                         {
-                                            byte[] bytes = Convert.FromBase64String(mugchild.FirstChild.Value);
+                                            byte[] bytes = Convert.FromBase64String(mugchild.FirstChild.Value ?? string.Empty);
                                             return File(bytes, "image/jpeg");
                                         }
                                         else
@@ -644,7 +645,7 @@ namespace ChummerHub.Controllers.V1
                     }
                 }
                 var returncode = HttpStatusCode.OK;
-                if ((User != null) && (User.Identity.IsAuthenticated))
+                if ((User != null) && (User.Identity?.IsAuthenticated == true))
                     user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
                 foreach (var tempsinner in uploadInfo.SINners)
                 {
@@ -1128,7 +1129,7 @@ namespace ChummerHub.Controllers.V1
                     res = new ResultSinnerDelete(e);
                     return NotFound(res);
                 }
-                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity.Name);
+                var user = await _signInManager.UserManager.FindByNameAsync(User.Identity?.Name ?? string.Empty);
                 var dbsinner = await CheckIfUpdateSINnerFile(id, user);
                 if (dbsinner == null)
                 {

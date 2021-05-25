@@ -48,14 +48,14 @@ namespace Chummer
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cboCity = new Chummer.ElasticComboBox();
-            this.cboDistrict = new Chummer.ElasticComboBox();
-            this.cboBorough = new Chummer.ElasticComboBox();
             this.chkTrustFund = new Chummer.ColorableCheckBox(this.components);
             this.lblBorough = new System.Windows.Forms.Label();
             this.lblDistrict = new System.Windows.Forms.Label();
             this.lblCity = new System.Windows.Forms.Label();
             this.chkPrimaryTenant = new Chummer.ColorableCheckBox(this.components);
+            this.cboCity = new Chummer.ElasticComboBox();
+            this.cboDistrict = new Chummer.ElasticComboBox();
+            this.cboBorough = new Chummer.ElasticComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercentage)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRoommates)).BeginInit();
             this.tlpMain.SuspendLayout();
@@ -163,13 +163,13 @@ namespace Chummer
             // 
             // lblCost
             // 
+            this.lblCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCost.AutoSize = true;
             this.tlpRight.SetColumnSpan(this.lblCost, 2);
-            this.lblCost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblCost.Location = new System.Drawing.Point(75, 111);
             this.lblCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCost.Name = "lblCost";
-            this.lblCost.Size = new System.Drawing.Size(225, 13);
+            this.lblCost.Size = new System.Drawing.Size(34, 13);
             this.lblCost.TabIndex = 19;
             this.lblCost.Text = "[Cost]";
             // 
@@ -236,6 +236,7 @@ namespace Chummer
             // 
             // lblSource
             // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblSource.Location = new System.Drawing.Point(75, 136);
@@ -380,49 +381,15 @@ namespace Chummer
             this.tlpRight.Size = new System.Drawing.Size(303, 236);
             this.tlpRight.TabIndex = 33;
             // 
-            // cboCity
-            // 
-            this.cboCity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpRight.SetColumnSpan(this.cboCity, 2);
-            this.cboCity.FormattingEnabled = true;
-            this.cboCity.Location = new System.Drawing.Point(75, 158);
-            this.cboCity.Name = "cboCity";
-            this.cboCity.Size = new System.Drawing.Size(225, 21);
-            this.cboCity.TabIndex = 30;
-            this.cboCity.TooltipText = "";
-            this.cboCity.SelectedIndexChanged += new System.EventHandler(this.cboCity_SelectedIndexChanged);
-            // 
-            // cboDistrict
-            // 
-            this.cboDistrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpRight.SetColumnSpan(this.cboDistrict, 2);
-            this.cboDistrict.FormattingEnabled = true;
-            this.cboDistrict.Location = new System.Drawing.Point(75, 185);
-            this.cboDistrict.Name = "cboDistrict";
-            this.cboDistrict.Size = new System.Drawing.Size(225, 21);
-            this.cboDistrict.TabIndex = 31;
-            this.cboDistrict.TooltipText = "";
-            this.cboDistrict.SelectedIndexChanged += new System.EventHandler(this.cboDistrict_SelectedIndexChanged);
-            // 
-            // cboBorough
-            // 
-            this.cboBorough.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpRight.SetColumnSpan(this.cboBorough, 2);
-            this.cboBorough.FormattingEnabled = true;
-            this.cboBorough.Location = new System.Drawing.Point(75, 212);
-            this.cboBorough.Name = "cboBorough";
-            this.cboBorough.Size = new System.Drawing.Size(225, 21);
-            this.cboBorough.TabIndex = 32;
-            this.cboBorough.TooltipText = "";
-            // 
             // chkTrustFund
             // 
+            this.chkTrustFund.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkTrustFund.AutoSize = true;
             this.chkTrustFund.DefaultColorScheme = true;
-            this.chkTrustFund.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkTrustFund.Location = new System.Drawing.Point(137, 82);
+            this.chkTrustFund.Location = new System.Drawing.Point(137, 83);
+            this.chkTrustFund.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkTrustFund.Name = "chkTrustFund";
-            this.chkTrustFund.Size = new System.Drawing.Size(163, 20);
+            this.chkTrustFund.Size = new System.Drawing.Size(77, 17);
             this.chkTrustFund.TabIndex = 55;
             this.chkTrustFund.Text = "Trust Fund";
             this.chkTrustFund.UseVisualStyleBackColor = true;
@@ -467,18 +434,54 @@ namespace Chummer
             // 
             // chkPrimaryTenant
             // 
+            this.chkPrimaryTenant.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrimaryTenant.AutoSize = true;
             this.chkPrimaryTenant.Checked = true;
             this.chkPrimaryTenant.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkPrimaryTenant.DefaultColorScheme = true;
-            this.chkPrimaryTenant.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chkPrimaryTenant.Location = new System.Drawing.Point(137, 56);
+            this.chkPrimaryTenant.Location = new System.Drawing.Point(137, 57);
+            this.chkPrimaryTenant.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrimaryTenant.Name = "chkPrimaryTenant";
-            this.chkPrimaryTenant.Size = new System.Drawing.Size(163, 20);
+            this.chkPrimaryTenant.Size = new System.Drawing.Size(97, 17);
             this.chkPrimaryTenant.TabIndex = 25;
             this.chkPrimaryTenant.Text = "Primary Tenant";
             this.chkPrimaryTenant.UseVisualStyleBackColor = true;
             this.chkPrimaryTenant.CheckedChanged += new System.EventHandler(this.RefreshValues);
+            // 
+            // cboCity
+            // 
+            this.cboCity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpRight.SetColumnSpan(this.cboCity, 2);
+            this.cboCity.FormattingEnabled = true;
+            this.cboCity.Location = new System.Drawing.Point(75, 158);
+            this.cboCity.Name = "cboCity";
+            this.cboCity.Size = new System.Drawing.Size(225, 21);
+            this.cboCity.TabIndex = 30;
+            this.cboCity.TooltipText = "";
+            this.cboCity.SelectedIndexChanged += new System.EventHandler(this.cboCity_SelectedIndexChanged);
+            // 
+            // cboDistrict
+            // 
+            this.cboDistrict.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpRight.SetColumnSpan(this.cboDistrict, 2);
+            this.cboDistrict.FormattingEnabled = true;
+            this.cboDistrict.Location = new System.Drawing.Point(75, 185);
+            this.cboDistrict.Name = "cboDistrict";
+            this.cboDistrict.Size = new System.Drawing.Size(225, 21);
+            this.cboDistrict.TabIndex = 31;
+            this.cboDistrict.TooltipText = "";
+            this.cboDistrict.SelectedIndexChanged += new System.EventHandler(this.cboDistrict_SelectedIndexChanged);
+            // 
+            // cboBorough
+            // 
+            this.cboBorough.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpRight.SetColumnSpan(this.cboBorough, 2);
+            this.cboBorough.FormattingEnabled = true;
+            this.cboBorough.Location = new System.Drawing.Point(75, 212);
+            this.cboBorough.Name = "cboBorough";
+            this.cboBorough.Size = new System.Drawing.Size(225, 21);
+            this.cboBorough.TabIndex = 32;
+            this.cboBorough.TooltipText = "";
             // 
             // frmSelectLifestyle
             // 

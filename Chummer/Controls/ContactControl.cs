@@ -135,62 +135,135 @@ namespace Chummer
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
+            if (_blnLoading)
+                return;
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
+            if (_blnLoading)
+                return;
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
+            if (_blnLoading)
+                return;
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
         }
 
-        private void cboMetatype_TextChanged(object sender, EventArgs e)
+        private void UpdateMetatype(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayMetatype == cboMetatype.Text)
+                return;
+            _objContact.DisplayMetatype = cboMetatype.Text;
+            if (_objContact.DisplayMetatype != cboMetatype.Text)
+            {
+                _blnLoading = true;
+                cboMetatype.Text = _objContact.DisplayMetatype;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
-        private void cboGender_TextChanged(object sender, EventArgs e)
+        private void UpdateGender(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayGender == cboGender.Text)
+                return;
+            _objContact.DisplayGender = cboGender.Text;
+            if (_objContact.DisplayGender != cboGender.Text)
+            {
+                _blnLoading = true;
+                cboGender.Text = _objContact.DisplayGender;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
         }
 
-        private void cboAge_TextChanged(object sender, EventArgs e)
+        private void UpdateAge(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayAge == cboAge.Text)
+                return;
+            _objContact.DisplayAge = cboAge.Text;
+            if (_objContact.DisplayAge != cboAge.Text)
+            {
+                _blnLoading = true;
+                cboAge.Text = _objContact.DisplayAge;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
         }
 
-        private void cboPersonalLife_TextChanged(object sender, EventArgs e)
+        private void UpdatePersonalLife(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayPersonalLife == cboPersonalLife.Text)
+                return;
+            _objContact.DisplayPersonalLife = cboPersonalLife.Text;
+            if (_objContact.DisplayPersonalLife != cboPersonalLife.Text)
+            {
+                _blnLoading = true;
+                cboPersonalLife.Text = _objContact.DisplayPersonalLife;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
         }
 
-        private void cboType_TextChanged(object sender, EventArgs e)
+        private void UpdateType(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayType == cboType.Text)
+                return;
+            _objContact.DisplayType = cboType.Text;
+            if (_objContact.DisplayType != cboType.Text)
+            {
+                _blnLoading = true;
+                cboType.Text = _objContact.DisplayType;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
         }
 
-        private void cboPreferredPayment_TextChanged(object sender, EventArgs e)
+        private void UpdatePreferredPayment(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayPreferredPayment == cboPreferredPayment.Text)
+                return;
+            _objContact.DisplayPreferredPayment = cboPreferredPayment.Text;
+            if (_objContact.DisplayPreferredPayment != cboPreferredPayment.Text)
+            {
+                _blnLoading = true;
+                cboPreferredPayment.Text = _objContact.DisplayPreferredPayment;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
         }
 
-        private void cboHobbiesVice_TextChanged(object sender, EventArgs e)
+        private void UpdateHobbiesVice(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayHobbiesVice == cboHobbiesVice.Text)
+                return;
+            _objContact.DisplayHobbiesVice = cboHobbiesVice.Text;
+            if (_objContact.DisplayHobbiesVice != cboHobbiesVice.Text)
+            {
+                _blnLoading = true;
+                cboHobbiesVice.Text = _objContact.DisplayHobbiesVice;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
+        }
+
+        private void UpdateContactRole(object sender, EventArgs e)
+        {
+            if (_blnLoading || _objContact.DisplayRole == cboContactRole.Text)
+                return;
+            _objContact.DisplayRole = cboContactRole.Text;
+            if (_objContact.DisplayRole != cboContactRole.Text)
+            {
+                _blnLoading = true;
+                cboContactRole.Text = _objContact.DisplayRole;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void imgLink_Click(object sender, EventArgs e)
@@ -396,6 +469,9 @@ namespace Chummer
 
             cboContactRole.BeginUpdate();
             cboContactRole.PopulateWithListItems(Contact.ContactArchetypes(_objContact.CharacterObject));
+            cboContactRole.SelectedValue = _objContact.Role;
+            if (cboContactRole.SelectedIndex < 0)
+                cboContactRole.Text = _objContact.DisplayRole;
             cboContactRole.EndUpdate();
         }
 
@@ -404,7 +480,6 @@ namespace Chummer
             lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
             txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
-            cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
             cmdDelete.DoDatabinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
@@ -528,7 +603,7 @@ namespace Chummer
                     chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
-                    chkFree.DoDatabinding("Visible", _objContact.CharacterObject, nameof(_objContact.CharacterObject.Created));
+                    chkFree.Visible = _objContact?.CharacterObject.Created == false;
                     chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
                     chkFamily.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
                     chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
@@ -605,26 +680,11 @@ namespace Chummer
 
                 if (_objContact != null)
                 {
-                    cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
-                    cboGender.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayGender));
-                    cboAge.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayAge));
-                    cboPersonalLife.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPersonalLife));
-                    cboType.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayType));
-                    cboPreferredPayment.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPreferredPayment));
-                    cboHobbiesVice.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayHobbiesVice));
                     // Properties controllable by the character themselves
                     cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                     cboGender.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                     cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                 }
-
-                cboMetatype.TextChanged += cboMetatype_TextChanged;
-                cboGender.TextChanged += cboGender_TextChanged;
-                cboAge.TextChanged += cboAge_TextChanged;
-                cboType.TextChanged += cboType_TextChanged;
-                cboPersonalLife.TextChanged += cboPersonalLife_TextChanged;
-                cboPreferredPayment.TextChanged += cboPreferredPayment_TextChanged;
-                cboHobbiesVice.TextChanged += cboHobbiesVice_TextChanged;
 
                 lblType = new Label
                 {
@@ -738,6 +798,48 @@ namespace Chummer
                 tlpMain.Controls.Add(tlpStatBlock, 0, 3);
                 tlpMain.ResumeLayout();
                 ResumeLayout();
+
+                // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
+
+                if (_objContact != null)
+                {
+                    cboMetatype.SelectedValue = _objContact.Metatype;
+                    cboGender.SelectedValue = _objContact.Gender;
+                    cboAge.SelectedValue = _objContact.Age;
+                    cboPersonalLife.SelectedValue = _objContact.PersonalLife;
+                    cboType.SelectedValue = _objContact.Type;
+                    cboPreferredPayment.SelectedValue = _objContact.PreferredPayment;
+                    cboHobbiesVice.SelectedValue = _objContact.HobbiesVice;
+                    if (cboMetatype.SelectedIndex < 0)
+                        cboMetatype.Text = _objContact.DisplayMetatype;
+                    if (cboGender.SelectedIndex < 0)
+                        cboGender.Text = _objContact.DisplayGender;
+                    if (cboAge.SelectedIndex < 0)
+                        cboAge.Text = _objContact.DisplayAge;
+                    if (cboPersonalLife.SelectedIndex < 0)
+                        cboPersonalLife.Text = _objContact.DisplayPersonalLife;
+                    if (cboType.SelectedIndex < 0)
+                        cboType.Text = _objContact.DisplayType;
+                    if (cboPreferredPayment.SelectedIndex < 0)
+                        cboPreferredPayment.Text = _objContact.DisplayPreferredPayment;
+                    if (cboHobbiesVice.SelectedIndex < 0)
+                        cboHobbiesVice.Text = _objContact.DisplayHobbiesVice;
+                }
+
+                cboMetatype.SelectedIndexChanged += UpdateMetatype;
+                cboGender.SelectedIndexChanged += UpdateGender;
+                cboAge.SelectedIndexChanged += UpdateAge;
+                cboType.SelectedIndexChanged += UpdateType;
+                cboPersonalLife.SelectedIndexChanged += UpdatePersonalLife;
+                cboPreferredPayment.SelectedIndexChanged += UpdatePreferredPayment;
+                cboHobbiesVice.SelectedIndexChanged += UpdateHobbiesVice;
+                cboMetatype.Leave += UpdateMetatype;
+                cboGender.Leave += UpdateGender;
+                cboAge.Leave += UpdateAge;
+                cboType.Leave += UpdateType;
+                cboPersonalLife.Leave += UpdatePersonalLife;
+                cboPreferredPayment.Leave += UpdatePreferredPayment;
+                cboHobbiesVice.Leave += UpdateHobbiesVice;
             }
         }
 
@@ -869,6 +971,5 @@ namespace Chummer
             cboHobbiesVice.EndUpdate();
         }
         #endregion
-
     }
 }

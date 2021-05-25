@@ -201,9 +201,10 @@ namespace Chummer
 
                     string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblCritterPowerSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblCritterPowerSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                    SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                        GlobalOptions.CultureInfo, _objCharacter);
+                    lblCritterPowerSource.Text = objSource.ToString();
+                    lblCritterPowerSource.SetToolTip(objSource.LanguageBookTooltip);
 
                     nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 
@@ -221,14 +222,18 @@ namespace Chummer
                         }
                     }
                 }
+                lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
+                lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
+                lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
+                lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
+                lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
+                lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+                tlpRight.Visible = true;
             }
-
-            lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
-            lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
-            lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
-            lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
-            lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
-            lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+            else
+            {
+                tlpRight.Visible = false;
+            }
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)

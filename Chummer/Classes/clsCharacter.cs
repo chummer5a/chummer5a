@@ -248,11 +248,14 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
         Version _verSavedVersion = new Version();
 
+        /// <summary>
+        /// Set of unique methods to run after the character's Save() method is otherwise finished.
+        /// Input is the character in question, output is if the code resolved without errors.
+        /// </summary>
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        [CanBeNull]
-        public EventHandler<Character> OnSaveCompleted { get; set; }
+        public ConcurrentHashSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new ConcurrentHashSet<Func<Character, bool>>();
 
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -2195,7 +2198,10 @@ namespace Chummer
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
             if (callOnSaveCallBack)
-                OnSaveCompleted?.Invoke(this, this);
+            {
+                foreach (Func<Character, bool> funcToRun in DoOnSaveCompleted)
+                    blnErrorFree = funcToRun(this) && blnErrorFree;
+            }
             return blnErrorFree;
         }
 
@@ -2268,7 +2274,7 @@ namespace Chummer
         /// <summary>
         /// Queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public Queue<Func<bool>> PostLoadMethods => new Queue<Func<bool>>();
+        public Queue<Func<bool>> PostLoadMethods { get; } = new Queue<Func<bool>>();
 
         /// <summary>
         /// Load the Character from an XML file synchronously.
@@ -2307,9 +2313,9 @@ namespace Chummer
             while (IsLoadMethodRunning)
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             IsLoadMethodRunning = true;
@@ -2533,24 +2539,23 @@ namespace Chummer
                                 {
                                     int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
                                     int intDummy = intLegacyMaxKarma - objOptionsToCheck.BuildKarma;
-                                    intReturn -= intDummy * intDummy;
+                                    intReturn -= intDummy.RaiseToPower(2);
                                     intDummy = decLegacyMaxNuyen.StandardRound() -
                                                objOptionsToCheck.NuyenMaximumBP.StandardRound();
-                                    intReturn -= intDummy * intDummy;
-                                    int intBaseline =
-                                        decLegacyMaxNuyen.StandardRound() * decLegacyMaxNuyen.StandardRound() +
-                                        intLegacyMaxKarma * intLegacyMaxKarma;
+                                    intReturn -= intDummy.RaiseToPower(2);
+                                    int intBaseline = decLegacyMaxNuyen.StandardRound().RaiseToPower(2) +
+                                                      intLegacyMaxKarma.RaiseToPower(2);
                                     intDummy = Math.Max(setSavedBooks.Count, 1) *
-                                               lstSavedCustomDataDirectoryNames.Count *
+                                               (lstSavedCustomDataDirectoryNames.Count + 1) *
                                                intBaseline;
                                     if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
                                     {
-                                        intReturn += int.MaxValue / 2 + intDummy * intDummy;
+                                        intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
                                     }
                                     else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
                                              eSavedBuildMethod.UsesPriorityTables())
                                     {
-                                        intReturn += int.MaxValue / 2 + intDummy * intDummy / 2;
+                                        intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2) / 2;
                                     }
 
                                     for (int i = 0; i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count; ++i)
@@ -2560,25 +2565,24 @@ namespace Chummer
                                         int intLoopIndex =
                                             lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
                                         if (intLoopIndex < 0)
-                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
-                                                         objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
+                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
                                                          intBaseline;
                                         else
-                                            intReturn -= (i - intLoopIndex) * (i - intLoopIndex) * intBaseline;
+                                            intReturn -= (i - intLoopIndex).RaiseToPower(2) * intBaseline;
                                     }
 
                                     foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
                                         if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x =>
                                             x.Name != strLoopCustomDataName))
-                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
-                                                         objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
+                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
                                                          intBaseline;
                                     int intBookBaselineScore =
                                         (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
                                     HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
                                     setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                    intReturn -= (setSavedBooks.Count - setDummyBooks.Count) *
-                                                 (setSavedBooks.Count - setDummyBooks.Count) * intBookBaselineScore;
+                                    intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(2)
+                                                  + (objOptionsToCheck.Books.Count - setDummyBooks.Count).RaiseToPower(2))
+                                                 * intBookBaselineScore;
                                     return intReturn;
                                 }
 
@@ -10158,6 +10162,7 @@ namespace Chummer
         /// </summary>
         public int Composure => WIL.TotalValue + CHA.TotalValue +
                                 ImprovementManager.ValueOf(this, Improvement.ImprovementType.Composure).StandardRound()
+                                + WoundModifier
                                 + SustainingPenalty;
 
         public string ComposureToolTip
@@ -10169,6 +10174,8 @@ namespace Chummer
                     .Append(strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + WIL.DisplayAbbrev)
                     .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
+                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
                     .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach (Improvement objLoopImprovement in Improvements)
@@ -10191,7 +10198,8 @@ namespace Chummer
         public int JudgeIntentions => INT.TotalValue + CHA.TotalValue +
                                       (ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentions)
                                        + ImprovementManager.ValueOf(this, Improvement.ImprovementType.JudgeIntentionsOffense)).StandardRound()
-                                      + SustainingPenalty;
+                                       + SustainingPenalty
+                                       + WoundModifier;
 
         public string JudgeIntentionsToolTip
         {
@@ -10202,6 +10210,8 @@ namespace Chummer
                     .Append(strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + INT.DisplayAbbrev)
                     .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
+                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
                     .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach (Improvement objLoopImprovement in Improvements)
@@ -10255,6 +10265,7 @@ namespace Chummer
         /// </summary>
         public int LiftAndCarry => STR.TotalValue + BOD.TotalValue +
                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.LiftAndCarry).StandardRound()
+                                   + WoundModifier
                                    + SustainingPenalty;
 
         public string LiftAndCarryToolTip
@@ -10266,6 +10277,8 @@ namespace Chummer
                     .Append(strSpace + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + STR.DisplayAbbrev)
                     .Append(strSpace + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
+                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
                     .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach (Improvement objLoopImprovement in Improvements)
@@ -10289,6 +10302,7 @@ namespace Chummer
         /// </summary>
         public int Memory => LOG.TotalValue + WIL.TotalValue +
                              ImprovementManager.ValueOf(this, Improvement.ImprovementType.Memory).StandardRound()
+                             + WoundModifier
                              + SustainingPenalty;
 
         public string MemoryToolTip
@@ -10300,6 +10314,8 @@ namespace Chummer
                     .Append(strSpace + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + WIL.DisplayAbbrev)
                     .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
+                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
                     .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
                 foreach (Improvement objLoopImprovement in Improvements)
@@ -11141,7 +11157,7 @@ namespace Chummer
             }
         }
         #region Dodge
-        public int Dodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating + SustainingPenalty;
+        public int Dodge => REA.TotalValue + INT.TotalValue + TotalBonusDodgeRating + WoundModifier + SustainingPenalty;
 
         public string DisplayDodge => Dodge.ToString(GlobalOptions.CultureInfo);
 
@@ -11154,6 +11170,8 @@ namespace Chummer
                     .Append(strSpace + '(' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + INT.DisplayAbbrev)
                     .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
+                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
                     .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
 
@@ -11733,7 +11751,10 @@ namespace Chummer
         #endregion
         #endregion
 
-        public int Surprise => REA.TotalValue + INT.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise).StandardRound() + SustainingPenalty;
+        public int Surprise => REA.TotalValue + INT.TotalValue
+                                              + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Surprise).StandardRound()
+                                              + WoundModifier
+                                              + SustainingPenalty;
 
         public string SurpriseToolTip
         {
@@ -11744,6 +11765,8 @@ namespace Chummer
                     .Append(strSpace + '(' + REA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + INT.DisplayAbbrev)
                     .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
+                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
+                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
                     .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
                     .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
 
@@ -12858,7 +12881,7 @@ namespace Chummer
         /// </summary>
         public string DisplayMetatype(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Metatype;
 
             return GetNode(true, strLanguage)?.SelectSingleNode("translate")?.Value ?? Metatype;
@@ -12891,7 +12914,7 @@ namespace Chummer
         /// </summary>
         public string DisplayMetavariant(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Metavariant;
 
             return GetNode(false, strLanguage)?.SelectSingleNode("translate")?.Value ?? Metavariant;
@@ -16176,8 +16199,10 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DodgeToolTip),
                         new DependencyGraphNode<string, Character>(nameof(Dodge),
-                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating)),
+                            new DependencyGraphNode<string, Character>(nameof(TotalBonusDodgeRating),
+                            new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
                             new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                            )
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(DisplaySpellDefenseIndirectDodge),
@@ -16381,16 +16406,19 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(ComposureToolTip),
                         new DependencyGraphNode<string, Character>(nameof(Composure),
-                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
+                            new DependencyGraphNode<string, Character>(nameof(SustainingPenalty)),
+                            new DependencyGraphNode<string, Character>(nameof(WoundModifier))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(SurpriseToolTip),
                         new DependencyGraphNode<string, Character>(nameof(Surprise),
+                            new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
                             new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(JudgeIntentionsToolTip),
                         new DependencyGraphNode<string, Character>(nameof(JudgeIntentions),
+                            new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
                             new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
                         )
                     ),
@@ -16399,11 +16427,13 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(LiftAndCarryToolTip),
                         new DependencyGraphNode<string, Character>(nameof(LiftAndCarry),
+                            new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
                             new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(MemoryToolTip),
                         new DependencyGraphNode<string, Character>(nameof(Memory),
+                            new DependencyGraphNode<string, Character>(nameof(WoundModifier)),
                             new DependencyGraphNode<string, Character>(nameof(SustainingPenalty))
                         )
                     ),
@@ -16914,9 +16944,9 @@ namespace Chummer
             while (IsLoadMethodRunning)
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
             IsLoadMethodRunning = true;
             try
@@ -19396,7 +19426,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode()?.SelectSingleNode("altpage")?.Value ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -19667,9 +19697,9 @@ namespace Chummer
             while (IsLoadMethodRunning)
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             IsLoadMethodRunning = true;

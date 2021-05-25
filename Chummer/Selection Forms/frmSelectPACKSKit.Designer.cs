@@ -93,9 +93,9 @@ namespace Chummer
             // 
             // lblCategory
             // 
-            this.lblCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCategory.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCategory.AutoSize = true;
-            this.lblCategory.Location = new System.Drawing.Point(3, 6);
+            this.lblCategory.Location = new System.Drawing.Point(3, 7);
             this.lblCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(52, 13);
@@ -105,8 +105,7 @@ namespace Chummer
             // 
             // cboCategory
             // 
-            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(61, 3);

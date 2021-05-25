@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -212,7 +211,7 @@ namespace Chummer
 
                     using (new CursorWait(this))
                     {
-                        ConcurrentList<Character> lstCharactersToLoad = new ConcurrentList<Character>();
+                        ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
                         Task objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length))
                         {
@@ -241,7 +240,7 @@ namespace Chummer
                                     Parallel.ForEach(s_astrPreloadFileNames, x =>
                                     {
                                         // Load default language data first for performance reasons
-                                        if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                                        if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                                             XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
                                         XmlManager.Load(x);
                                         _frmProgressBar.PerformStep(Application.ProductName);
@@ -1359,7 +1358,7 @@ namespace Chummer
                         return;
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (_frmProgressBar = CreateAndShowProgressBar(
-                        string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen),
+                        string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
                         lstFilesToOpen.Count * 35))
                     {
                         Dictionary<int, string> dicIndexedStrings =
@@ -1539,7 +1538,7 @@ namespace Chummer
                 }
                 if (blnShowProgressBar && _frmProgressBar.IsNullOrDisposed())
                 {
-                    using (_frmProgressBar = CreateAndShowProgressBar(objCharacter.FileName, Character.NumLoadingSections))
+                    using (_frmProgressBar = CreateAndShowProgressBar(Path.GetFileName(objCharacter.FileName), Character.NumLoadingSections))
                     {
                         OpenCharacters.Add(objCharacter);
                         //Timekeeper.Start("load_file");
@@ -1710,6 +1709,7 @@ namespace Chummer
                         continue;
                 }
 
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
                 if (i2 <= 9 && i2 >= 0)
                 {
                     string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);

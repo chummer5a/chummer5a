@@ -280,31 +280,7 @@ namespace Chummer
             }
             if (objXmlVehicle == null)
             {
-                lblVehicleHandlingLabel.Visible = false;
-                lblVehicleAccelLabel.Visible = false;
-                lblVehicleSpeedLabel.Visible = false;
-                lblVehiclePilotLabel.Visible = false;
-                lblVehicleBodyLabel.Visible = false;
-                lblVehicleArmorLabel.Visible = false;
-                lblVehicleSeatsLabel.Visible = false;
-                lblVehicleSensorLabel.Visible = false;
-                lblVehicleAvailLabel.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblVehicleCostLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblVehicleHandling.Text = string.Empty;
-                lblVehicleAccel.Text = string.Empty;
-                lblVehicleSpeed.Text = string.Empty;
-                lblVehiclePilot.Text = string.Empty;
-                lblVehicleBody.Text = string.Empty;
-                lblVehicleArmor.Text = string.Empty;
-                lblVehicleSeats.Text = string.Empty;
-                lblVehicleSensor.Text = string.Empty;
-                lblVehicleAvail.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblVehicleCost.Text = string.Empty;
-                lblTest.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -312,6 +288,7 @@ namespace Chummer
             if (chkUsedVehicle.Checked)
                 decCostModifier -= (nudUsedVehicleDiscount.Value / 100.0m);
 
+            SuspendLayout();
             lblVehicleHandling.Text = objXmlVehicle.SelectSingleNode("handling")?.Value;
             lblVehicleAccel.Text = objXmlVehicle.SelectSingleNode("accel")?.Value;
             lblVehicleSpeed.Text = objXmlVehicle.SelectSingleNode("speed")?.Value;
@@ -391,10 +368,13 @@ namespace Chummer
 
             string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                GlobalOptions.CultureInfo, _objCharacter);
+            lblSource.Text = objSource.ToString();
+            lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
+            ResumeLayout();
         }
 
         private void RefreshList()

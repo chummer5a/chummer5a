@@ -668,7 +668,7 @@ namespace Chummer
                     if (strCategory == "Weapon Mod")
                         lblCategory.Text = LanguageManager.GetString("String_WeaponModification");
                     // Translate the Category if possible.
-                    else if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    else if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         XPathNavigator objXmlCategoryTranslate = _xmlBaseVehicleDataNode.SelectSingleNode("modcategories/category[. = " + strCategory.CleanXPath() + "]/@translate");
                         lblCategory.Text = objXmlCategoryTranslate?.Value ?? strCategory;
@@ -688,7 +688,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strLimit))
                 {
                     // Translate the Limit if possible.
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         XPathNavigator objXmlLimit = _xmlBaseVehicleDataNode.SelectSingleNode("limits/limit[. = " + strLimit.CleanXPath() + "]/@translate");
                         lblLimit.Text = LanguageManager.GetString("String_Space") + '(' + objXmlLimit?.Value ?? strLimit + ')';
@@ -710,29 +710,11 @@ namespace Chummer
                 SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                 objSourceString.SetControl(lblSource);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                tlpRight.Visible = true;
             }
             else
             {
-                lblRatingNALabel.Visible = false;
-                lblRatingLabel.Text = string.Empty;
-                nudRating.Visible = false;
-                lblSlotsLabel.Visible = false;
-                lblSlots.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblAvailLabel.Visible = false;
-                lblAvail.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblTestLabel.Visible = false;
-                lblTest.Text = string.Empty;
-                lblCategoryLabel.Visible = false;
-                lblCategory.Text = string.Empty;
-                lblVehicleCapacityLabel.Visible = false;
-                lblVehicleCapacity.Visible = false;
-                lblLimit.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
             }
             _blnSkipUpdate = false;
         }

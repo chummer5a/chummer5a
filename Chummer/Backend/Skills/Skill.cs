@@ -1715,14 +1715,16 @@ namespace Chummer.Backend.Skills
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strReturn = !string.IsNullOrEmpty(Notes)
-                    ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine + Environment.NewLine
+                    ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine +
+                      Environment.NewLine
                     : string.Empty;
                 string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
-                    ? SkillGroupObject.CurrentDisplayName + strSpace + LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
+                    ? SkillGroupObject.CurrentDisplayName + strSpace +
+                      LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
                     : string.Empty;
-                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle
-                             + CharacterObject.LanguageBookLong(Source) + strSpace + LanguageManager.GetString("String_Page")
-                             + strSpace + DisplayPage(GlobalOptions.Language);
+                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle +
+                             new SourceString(Source, Page, GlobalOptions.Language, GlobalOptions.CultureInfo,
+                                 CharacterObject).LanguageBookTooltip;
                 return strReturn;
             }
         }
@@ -1755,7 +1757,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -1772,7 +1774,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -1782,7 +1784,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayCategory(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return SkillCategory;
 
             string strReturn = CharacterObject.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + SkillCategory.CleanXPath() + "]/@translate")?.Value;

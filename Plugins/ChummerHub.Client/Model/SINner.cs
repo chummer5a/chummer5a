@@ -40,13 +40,28 @@ namespace ChummerHub.Client.Sinners
             }
         }
 
-        public async Task<CharacterCache> GetCharacterCache()
+        public CharacterCache GetCharacterCache()
+        {
+            return GetCharacterCacheCoreAsync(true).GetAwaiter().GetResult();
+        }
+
+        public Task<CharacterCache> GetCharacterCacheAsync()
+        {
+            return GetCharacterCacheCoreAsync(false);
+        }
+
+        private async Task<CharacterCache> GetCharacterCacheCoreAsync(bool blnSync)
         {
             string strPath = FilePath;
             if (!string.IsNullOrEmpty(strPath))
             {
                 CharacterCache objReturn = new CharacterCache();
-                return await objReturn.LoadFromFileAsync(strPath).ContinueWith(x => objReturn);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objReturn.LoadFromFile(strPath);
+                else
+                    await objReturn.LoadFromFileAsync(strPath);
+                return objReturn;
             }
             return null;
         }

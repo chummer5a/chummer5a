@@ -49,7 +49,7 @@ namespace ChummerHub.Models.V1
                     Hash = $"{Id.ToString().GetHashCode():X}";
                 return Hash;
             }
-            set { Hash = value; }
+            set => Hash = value;
         }
 
         [MaxLength(6)]

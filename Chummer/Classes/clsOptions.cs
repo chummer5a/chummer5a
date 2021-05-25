@@ -914,10 +914,7 @@ namespace Chummer
         public static int UseLoggingResetCounter
         {
             get => _intResetLogging;
-            set
-            {
-                _intResetLogging = value;
-            }
+            set => _intResetLogging = value;
         }
 
         /// <summary>
@@ -957,10 +954,7 @@ namespace Chummer
 
                 return UseLoggingApplicationInsightsPreference;
             }
-            set
-            {
-                UseLoggingApplicationInsightsPreference = value;
-            }
+            set => UseLoggingApplicationInsightsPreference = value;
         }
 
         /// <summary>

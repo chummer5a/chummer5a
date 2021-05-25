@@ -528,29 +528,7 @@ namespace Chummer
             string strSelectedId = lstGear.SelectedValue?.ToString();
             if (_blnLoading || string.IsNullOrEmpty(strSelectedId))
             {
-                lblGearDeviceRatingLabel.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblCostLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblCapacityLabel.Visible = false;
-                lblRatingLabel.Visible = false;
-                nudRating.Visible = false;
-                lblRatingNALabel.Visible = false;
-                lblGearQtyLabel.Visible = false;
-                nudGearQty.Visible = false;
-                chkStack.Visible = false;
-                lblGearDeviceRating.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblAvail.Text = string.Empty;
-                lblCost.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblTest.Text = string.Empty;
-                lblCapacity.Text = string.Empty;
-                nudRating.Minimum = 0;
-                nudRating.Maximum = 0;
-                nudRating.Enabled = false;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -559,32 +537,11 @@ namespace Chummer
 
             if (objXmlGear == null)
             {
-                lblGearDeviceRatingLabel.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblCostLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblCapacityLabel.Visible = false;
-                lblRatingLabel.Visible = false;
-                nudRating.Visible = false;
-                lblRatingNALabel.Visible = false;
-                lblGearQtyLabel.Visible = false;
-                nudGearQty.Visible = false;
-                chkStack.Visible = false;
-                lblGearDeviceRating.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblAvail.Text = string.Empty;
-                lblCost.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblTest.Text = string.Empty;
-                lblCapacity.Text = string.Empty;
-                nudRating.Minimum = 0;
-                nudRating.Maximum = 0;
-                nudRating.Enabled = false;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
+            SuspendLayout();
             // Retrieve the information for the selected piece of Cyberware.
             string strDeviceRating = objXmlGear.SelectSingleNode("devicerating")?.Value ?? string.Empty;
             lblGearDeviceRating.Text = strDeviceRating;
@@ -592,9 +549,10 @@ namespace Chummer
 
             string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlGear.SelectSingleNode("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                GlobalOptions.CultureInfo, _objCharacter);
+            lblSource.Text = objSource.ToString();
+            lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
@@ -704,9 +662,12 @@ namespace Chummer
                         if (decMax == decimal.MaxValue)
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+";
                         else
+                        {
+                            string strSpace = LanguageManager.GetString("String_Space");
                             lblCost.Text = decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo)
                                            + strSpace + '-' + strSpace
                                            + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                        }
 
                         decItemCost = decMin;
                     }
@@ -943,6 +904,8 @@ namespace Chummer
                 nudRating.Enabled = false;
                 nudRating.Visible = false;
             }
+            tlpRight.Visible = true;
+            ResumeLayout();
         }
 
         private List<ListItem> RefreshList(string strCategory = "", bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)

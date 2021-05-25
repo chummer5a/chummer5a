@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ChummerHub.Client.Backend;
-using System.Net;
 using System.Text;
-using System.Threading;
 using Chummer;
 using ChummerHub.Client.Sinners;
 using Chummer.Plugins;
@@ -361,7 +359,7 @@ namespace ChummerHub.Client.UI
                 if (searchgroup.HasPassword)
                 {
                     SINnerGroup joinGroup = new SINnerGroup(searchgroup);
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         groupEdit = new frmSINnerGroupEdit(joinGroup, true);
                         result = groupEdit.ShowDialog(this);
