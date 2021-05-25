@@ -46,8 +46,8 @@ namespace Chummer.Backend.Skills
             }
             KnowledgeSkills.BeforeRemove += KnowledgeSkillsOnBeforeRemove;
             KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
-            Skills.BeforeRemove += SkillsOnBeforeRemove;
-            Skills.ListChanged += SkillsOnListChanged;
+            _lstSkills.BeforeRemove += SkillsOnBeforeRemove;
+            _lstSkills.ListChanged += SkillsOnListChanged;
         }
 
         private void SkillsOnListChanged(object sender, ListChangedEventArgs e)
@@ -55,24 +55,24 @@ namespace Chummer.Backend.Skills
             switch (e.ListChangedType)
             {
                 case ListChangedType.Reset:
-                    SkillsDictionary.Clear();
-                    foreach (Skill objSkill in Skills)
+                    _dicSkills.Clear();
+                    foreach (Skill objSkill in _lstSkills)
                     {
-                        if (!SkillsDictionary.ContainsKey(objSkill.DictionaryKey))
-                            SkillsDictionary.Add(objSkill.DictionaryKey, objSkill);
+                        if (!_dicSkills.ContainsKey(objSkill.DictionaryKey))
+                            _dicSkills.Add(objSkill.DictionaryKey, objSkill);
                     }
                     break;
                 case ListChangedType.ItemAdded:
-                    Skill objNewSkill = Skills[e.NewIndex];
-                    if (!SkillsDictionary.ContainsKey(objNewSkill.DictionaryKey))
-                        SkillsDictionary.Add(objNewSkill.DictionaryKey, objNewSkill);
+                    Skill objNewSkill = _lstSkills[e.NewIndex];
+                    if (!_dicSkills.ContainsKey(objNewSkill.DictionaryKey))
+                        _dicSkills.Add(objNewSkill.DictionaryKey, objNewSkill);
                     break;
             }
         }
 
         private void SkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            SkillsDictionary.Remove(Skills[e.OldIndex].DictionaryKey);
+            _dicSkills.Remove(_lstSkills[e.OldIndex].DictionaryKey);
         }
 
         private void KnowledgeSkillsOnBeforeRemove(object sender, RemovingOldEventArgs e)
@@ -170,12 +170,6 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Karma = objNewSkill.Karma;
                 objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
             });
-            foreach (Skill objSkill in lstExistingSkills)
-            {
-                string strKey = objSkill.DictionaryKey;
-                if (!_dicSkills.ContainsKey(strKey))
-                    _dicSkills.Add(strKey, objSkill);
-            }
         }
 
         internal void RemoveSkills(FilterOption skills, bool createKnowledge = true)
@@ -252,7 +246,7 @@ namespace Chummer.Backend.Skills
                 // zero out any skillgroups whose skills did not make the final cut
                 foreach (SkillGroup objSkillGroup in SkillGroups)
                 {
-                    if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                    if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
                     {
                         objSkillGroup.Base = 0;
                         objSkillGroup.Karma = 0;
@@ -327,11 +321,8 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstLoadingSkills)
                         {
-                            string strName = objSkill.DictionaryKey;
-                            bool blnDoAddToDictionary = true;
                             _lstSkills.AddWithSort(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                             {
-                                blnDoAddToDictionary = false;
                                 if (objNewSkill.Base > objExistSkill.Base)
                                     objExistSkill.Base = objNewSkill.Base;
                                 if (objNewSkill.Karma > objExistSkill.Karma)
@@ -342,8 +333,6 @@ namespace Chummer.Backend.Skills
                                             y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
                                         : (x.Free ? 1 : -1));
                             });
-                            if (blnDoAddToDictionary)
-                                _dicSkills.Add(strName, objSkill);
                         }
 
                         // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total basse rating will be zero. Call this here to force a refresh.
@@ -455,7 +444,6 @@ namespace Chummer.Backend.Skills
                         foreach (Skill objSkill in lstUnsortedSkills)
                         {
                             _lstSkills.Add(objSkill);
-                            _dicSkills.Add(objSkill.DictionaryKey, objSkill);
                         }
 
                         UpdateUndoList(xmlSkillNode.OwnerDocument);
@@ -493,7 +481,7 @@ namespace Chummer.Backend.Skills
                     // zero out any skillgroups whose skills did not make the final cut
                     foreach (SkillGroup objSkillGroup in SkillGroups)
                     {
-                        if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                        if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
                         {
                             objSkillGroup.Base = 0;
                             objSkillGroup.Karma = 0;
@@ -596,11 +584,8 @@ namespace Chummer.Backend.Skills
 
                 foreach (Skill objSkill in lstUnsortedSkills)
                 {
-                    string strName = objSkill.DictionaryKey;
-                    bool blnDoAddToDictionary = true;
                     _lstSkills.AddWithSort(objSkill, CompareSkills, (objExistSkill, objNewSkill) =>
                     {
-                        blnDoAddToDictionary = false;
                         if (objNewSkill.Base > objExistSkill.Base)
                             objExistSkill.Base = objNewSkill.Base;
                         if (objNewSkill.Karma > objExistSkill.Karma)
@@ -611,8 +596,6 @@ namespace Chummer.Backend.Skills
                                     y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
                                 : (x.Free ? 1 : -1));
                     });
-                    if (blnDoAddToDictionary)
-                        _dicSkills.Add(strName, objSkill);
                 }
 
                 //This might give subtle bugs in the future,
@@ -626,7 +609,7 @@ namespace Chummer.Backend.Skills
                     // zero out any skillgroups whose skills did not make the final cut
                     foreach (SkillGroup objSkillGroup in SkillGroups)
                     {
-                        if (!objSkillGroup.SkillList.Any(x => SkillsDictionary.ContainsKey(x.Name)))
+                        if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
                         {
                             objSkillGroup.Base = 0;
                             objSkillGroup.Karma = 0;
@@ -911,7 +894,6 @@ namespace Chummer.Backend.Skills
                     foreach (Skill objLoopSkill in GetSkillList(FilterOption.NonSpecial))
                     {
                         _lstSkills.Add(objLoopSkill);
-                        _dicSkills.Add(objLoopSkill.DictionaryKey, objLoopSkill);
                     }
                 }
                 return _lstSkills;
@@ -919,9 +901,14 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Active Skills Dictionary
+        /// Checks if the character has an active skill with a given name.
         /// </summary>
-        public Dictionary<string, Skill> SkillsDictionary => _dicSkills;
+        /// <param name="strSkillKey">Name of the skill. For exotic skills, this is slightly different, refer to a Skill's DictionaryKey property for more info.</param>
+        /// <returns></returns>
+        public bool HasActiveSkill(string strSkillKey)
+        {
+            return _dicSkills.ContainsKey(strSkillKey);
+        }
 
         /// <summary>
         /// Gets an active skill by its Name. Returns null if none found.
