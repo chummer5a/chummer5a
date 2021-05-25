@@ -51,6 +51,8 @@ Application Changes:
 - Changing a vehicle-mounted weapon's firing mode now properly updates the selectable box for firing modes instead of keeping it blank.
 - Metatype selection screens now contain a label referencing the sourcebook location of the currently selected metatype. Implements #4357.
 - The priority selection screen can now properly deal with potential custom priority entries with spirits and/or sprites.
+- Vehicle and Cyberware Condition Monitor controls now work properly. Fixes #4449.
+- Cyberware and vehicles now export the amount that their Matrix Condition Monitors are filled. Weapons now properly export all of their Matrix-related properties, including their Matrix attributes and their Matrix Condition Monitor status.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

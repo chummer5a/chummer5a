@@ -12869,16 +12869,8 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-
-            string strSelectedId = treCyberware.SelectedNode?.Tag?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId))
-                return;
-
-            // Locate the selected Cyberware.
-            IHasMatrixAttributes objItem = CharacterObject.Cyberware.DeepFindById(strSelectedId) ??
-                                           (IHasMatrixAttributes) CharacterObject.Cyberware.FindCyberwareGear(strSelectedId);
-
-            if (objItem != null && sender is CheckBox objBox)
+            
+            if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
@@ -12901,16 +12893,7 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            string strSelectedId = treCyberware.SelectedNode?.Tag?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId))
-                return;
-
-            // Locate the selected Weapon.
-            IHasMatrixAttributes objItem = CharacterObject.Weapons.FindWeaponGear(strSelectedId) ??
-                                           (IHasMatrixAttributes) (CharacterObject.Weapons.DeepFindById(strSelectedId) ??
-                                                                   CharacterObject.Weapons.FindWeaponAccessory(strSelectedId)?.Parent);
-
-            if (objItem != null && sender is CheckBox objBox)
+            if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
