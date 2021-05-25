@@ -54,6 +54,7 @@ Application Changes:
 - Vehicle and Cyberware Condition Monitor controls now work properly. Fixes #4449.
 - Cyberware and vehicles now export the amount that their Matrix Condition Monitors are filled. Weapons now properly export all of their Matrix-related properties, including their Matrix attributes and their Matrix Condition Monitor status.
 - Deleting a skill by undoing the Karma expense for adding it now properly deletes the skill instead of lowering its rating by 1. Fixes #4323.
+- Fixed an issue that prevented 'ware with a capacity of 0 from having any gear added to it, even ones that are explicitly allowed. Fixes #4228.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -75,6 +76,7 @@ Data Changes:
 - Fixed the German translations for some mentor spirits that were broken in an update a few years ago.
 - Fixed a typo in Baseline Reagents' availability. Fixes #4458.
 - All French translations that contain a shortened article (i.e. "d'" or "l'") now have zero-width spaces between the consonant and the apostrophe in order to prevent weirdness with the way they are sorted alphabetically. Searching without a zero-width space should still work, however.
+- Chemical Glands can now hold Chemicals and Custom Drugs.
 
 Changed/New Strings:
 - String_ContactPoints
