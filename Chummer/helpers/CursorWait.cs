@@ -30,7 +30,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private static readonly object _intApplicationWaitCursorsLock = new object();
         private static int _intApplicationWaitCursors;
-        private static readonly ConcurrentDictionary<Control, ConcurrentList<CursorWait>> s_dicWaitingControls = new ConcurrentDictionary<Control, ConcurrentList<CursorWait>>();
+        private static readonly ConcurrentDictionary<Control, ThreadSafeList<CursorWait>> s_dicWaitingControls = new ConcurrentDictionary<Control, ThreadSafeList<CursorWait>>();
         private readonly Control _objControl;
         private readonly Form _frmControlTopParent;
         private readonly Stopwatch objTimer = new Stopwatch();
@@ -52,7 +52,7 @@ namespace Chummer
             objTimer.Start();
             Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance.ToString() + "\".");
             _objControl = objControl;
-            Form frmControl = objControl as Form;
+            Form frmControl = _objControl as Form;
             CursorToUse = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
             if (frmControl?.IsMdiChild != false)
             {
@@ -76,10 +76,10 @@ namespace Chummer
                     }
                 }
             }
-            ConcurrentList<CursorWait> lstNew = new ConcurrentList<CursorWait>();
-            while (!s_dicWaitingControls.TryAdd(objControl, lstNew))
+            ThreadSafeList<CursorWait> lstNew = new ThreadSafeList<CursorWait>();
+            while (_objControl != null && !s_dicWaitingControls.TryAdd(_objControl, lstNew))
             {
-                if (!s_dicWaitingControls.TryGetValue(objControl, out ConcurrentList<CursorWait> lstExisting))
+                if (!s_dicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstExisting))
                     continue;
                 CursorWait objLastCursorWait = null;
                 // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
@@ -109,6 +109,19 @@ namespace Chummer
                 }
                 else if (objLastCursorWait == null || objLastCursorWait.CursorToUse == Cursors.AppStarting)
                     SetControlCursor(CursorToUse);
+                return;
+            }
+            // Here for safety purposes
+            if (_objControl.IsNullOrDisposed())
+            {
+                _objControl = null;
+                _frmControlTopParent = null;
+                lock (_intApplicationWaitCursorsLock)
+                {
+                    _intApplicationWaitCursors += 1;
+                    if (_intApplicationWaitCursors > 0)
+                        Application.UseWaitCursor = true;
+                }
                 return;
             }
             lstNew.Add(this);
@@ -150,7 +163,7 @@ namespace Chummer
             }
             Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + instance.ToString() + "\" after " + objTimer.ElapsedMilliseconds + "ms.");
             objTimer.Stop();
-            if (!s_dicWaitingControls.TryGetValue(_objControl, out ConcurrentList<CursorWait> lstCursorWaits) || lstCursorWaits == null || lstCursorWaits.Count <= 0)
+            if (!s_dicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstCursorWaits) || lstCursorWaits == null || lstCursorWaits.Count <= 0)
             {
                 Utils.BreakIfDebug();
                 Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance.ToString() + "\" somehow does not have a CursorWait list defined for it");
@@ -187,7 +200,7 @@ namespace Chummer
                 SetControlCursor(objPreviousCursorWait?.CursorToUse);
             }
             if (lstCursorWaits.Count == 0)
-                s_dicWaitingControls.TryRemove(_objControl, out ConcurrentList<CursorWait> _);
+                s_dicWaitingControls.TryRemove(_objControl, out ThreadSafeList<CursorWait> _);
         }
     }
 }

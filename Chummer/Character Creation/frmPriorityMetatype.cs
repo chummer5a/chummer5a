@@ -34,6 +34,7 @@ namespace Chummer
     public partial class frmPriorityMetatype : Form
     {
         private readonly Character _objCharacter;
+        private string _strCurrentPossessionMethod;
 
         private bool _blnLoading = true;
         private readonly Dictionary<string, int> _dicSumtoTenValues;
@@ -243,6 +244,32 @@ namespace Chummer
             {
                 SumToTen();
             }
+
+            // Set up possession boxes
+            // Add Possession and Inhabitation to the list of Critter Tradition variations.
+            chkPossessionBased.SetToolTip(LanguageManager.GetString("Tip_Metatype_PossessionTradition"));
+
+            List<ListItem> lstMethods = new List<ListItem>(2)
+            {
+                new ListItem("Possession", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Possession\"]/translate")?.InnerText ?? "Possession"),
+                new ListItem("Inhabitation", _xmlCritterPowerDocumentPowersNode?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")?.InnerText ?? "Inhabitation")
+            };
+
+            lstMethods.Sort(CompareListItems.CompareNames);
+
+            foreach (CritterPower objPower in _objCharacter.CritterPowers)
+            {
+                string strPowerName = objPower.Name;
+                if (lstMethods.Any(x => strPowerName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
+                {
+                    _strCurrentPossessionMethod = strPowerName;
+                    break;
+                }
+            }
+
+            cboPossessionMethod.BeginUpdate();
+            cboPossessionMethod.PopulateWithListItems(lstMethods);
+            cboPossessionMethod.EndUpdate();
 
             _blnLoading = false;
         }
@@ -576,6 +603,11 @@ namespace Chummer
             }
             ResumeLayout();
         }
+
+        private void chkPossessionBased_CheckedChanged(object sender, EventArgs e)
+        {
+            cboPossessionMethod.Enabled = chkPossessionBased.Checked;
+        }
         #endregion
 
         #region Custom Methods
@@ -679,7 +711,7 @@ namespace Chummer
                         }
                         _objCharacter.Create(strSelectedMetatypeCategory, objXmlMetatype["id"]?.InnerText,
                             strSelectedMetavariant, objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
-                            _xmlCritterPowerDocumentPowersNode);
+                            _xmlCritterPowerDocumentPowersNode, null, chkPossessionBased.Checked ? cboPossessionMethod.SelectedValue?.ToString() : string.Empty);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
                             if (objQuality.GetNode()?.CreateNavigator().RequirementsMet(_objCharacter) == false)
@@ -1205,10 +1237,32 @@ namespace Chummer
                     objXmlMetavariant.SelectSingleNode("logmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), objXmlMetavariant.SelectSingleNode("logaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
                 lblWIL.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
                     objXmlMetavariant.SelectSingleNode("wilmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), objXmlMetavariant.SelectSingleNode("wilaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
-                lblINI.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
-                    objXmlMetavariant.SelectSingleNode("inimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), objXmlMetavariant.SelectSingleNode("iniaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
 
                 lblMetavariantKarma.Text = objXmlMetavariantPriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+
+                string strSource = objXmlMetavariant.SelectSingleNode("source")?.Value;
+                if (!string.IsNullOrEmpty(strSource))
+                {
+                    string strPage = objXmlMetavariant.SelectSingleNode("altpage")?.Value ?? objXmlMetavariant.SelectSingleNode("page")?.Value;
+                    if (!string.IsNullOrEmpty(strPage))
+                    {
+                        SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                        lblSource.Text = objSource.ToString();
+                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                    }
+                    else
+                    {
+                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        lblSource.Text = strUnknown;
+                        lblSource.SetToolTip(strUnknown);
+                    }
+                }
+                else
+                {
+                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    lblSource.Text = strUnknown;
+                    lblSource.SetToolTip(strUnknown);
+                }
 
                 // Set the special attributes label.
                 if (!int.TryParse(objXmlMetavariantPriorityNode?.SelectSingleNode("value")?.Value, NumberStyles.Any,
@@ -1235,7 +1289,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlQuality in objXmlMetavariant.Select("qualities/*/quality"))
                 {
                     string strQuality;
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         strQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath() + "]/translate")?.Value ?? objXmlQuality.Value;
 
@@ -1298,15 +1352,13 @@ namespace Chummer
                     objXmlMetatype.SelectSingleNode("logmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), objXmlMetatype.SelectSingleNode("logaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
                 lblWIL.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
                     objXmlMetatype.SelectSingleNode("wilmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), objXmlMetatype.SelectSingleNode("wilaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
-                lblINI.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
-                    objXmlMetatype.SelectSingleNode("inimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), objXmlMetatype.SelectSingleNode("iniaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
 
                 Dictionary<string, int> dicQualities = new Dictionary<string, int>(5);
                 // Build a list of the Metatype's Qualities.
                 foreach (XPathNavigator xmlQuality in objXmlMetatype.Select("qualities/*/quality"))
                 {
                     string strQuality;
-                    if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                    if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         XPathNavigator objQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[name = " + xmlQuality.Value.CleanXPath() + "]");
                         strQuality = objQuality.SelectSingleNode("translate")?.Value ?? xmlQuality.Value;
@@ -1352,6 +1404,31 @@ namespace Chummer
                 }
 
                 lblMetavariantKarma.Text = objXmlMetatypePriorityNode.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+
+                string strSource = objXmlMetatype.SelectSingleNode("source")?.Value;
+                if (!string.IsNullOrEmpty(strSource))
+                {
+                    string strPage = objXmlMetatype.SelectSingleNode("altpage")?.Value ?? objXmlMetatype.SelectSingleNode("page")?.Value;
+                    if (!string.IsNullOrEmpty(strPage))
+                    {
+                        SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                        lblSource.Text = objSource.ToString();
+                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                    }
+                    else
+                    {
+                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        lblSource.Text = strUnknown;
+                        lblSource.SetToolTip(strUnknown);
+                    }
+                }
+                else
+                {
+                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    lblSource.Text = strUnknown;
+                    lblSource.SetToolTip(strUnknown);
+                }
+
                 // Set the special attributes label.
                 if (!int.TryParse(objXmlMetatypePriorityNode.SelectSingleNode("value")?.Value, NumberStyles.Any,
                     GlobalOptions.InvariantCultureInfo, out int intSpecialAttribPoints))
@@ -1382,7 +1459,6 @@ namespace Chummer
                 lblINT.Text = string.Empty;
                 lblLOG.Text = string.Empty;
                 lblWIL.Text = string.Empty;
-                lblINI.Text = string.Empty;
 
                 int intSpecialAttribPoints = 0;
                 XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + (cboTalent.SelectedValue?.ToString() ?? string.Empty).CleanXPath()
@@ -1402,6 +1478,7 @@ namespace Chummer
 
                 lblMetavariantQualities.Text = string.Empty;
                 lblMetavariantKarma.Text = string.Empty;
+                lblSource.Text = string.Empty;
                 cmdOK.Enabled = false;
             }
 
@@ -1413,10 +1490,10 @@ namespace Chummer
             lblINTLabel.Visible = !string.IsNullOrEmpty(lblINT.Text);
             lblLOGLabel.Visible = !string.IsNullOrEmpty(lblLOG.Text);
             lblWILLabel.Visible = !string.IsNullOrEmpty(lblWIL.Text);
-            lblINILabel.Visible = !string.IsNullOrEmpty(lblINI.Text);
             lblSpecialAttributesLabel.Visible = !string.IsNullOrEmpty(lblSpecialAttributes.Text);
             lblMetavariantQualitiesLabel.Visible = !string.IsNullOrEmpty(lblMetavariantQualities.Text);
             lblMetavariantKarmaLabel.Visible = !string.IsNullOrEmpty(lblMetavariantKarma.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void PopulateTalents()
@@ -1621,9 +1698,6 @@ namespace Chummer
                     int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
                     if (objXmlMetatype.SelectSingleNode("forcecreature") != null || intPos != -1)
                     {
-                        lblForceLabel.Visible = true;
-                        nudForce.Visible = true;
-
                         if (intPos != -1)
                         {
                             if (intPos > 0)
@@ -1640,9 +1714,18 @@ namespace Chummer
                         }
                         else
                         {
-                            lblForceLabel.Text = LanguageManager.GetString("String_Force");
+                            // TODO: Unhardcode whether Force is called "Force" or "Level"
+                            lblForceLabel.Text = LanguageManager.GetString(objXmlMetatype.SelectSingleNode("bodmax")?.Value == "0" &&
+                                                                           objXmlMetatype.SelectSingleNode("agimax")?.Value == "0" &&
+                                                                           objXmlMetatype.SelectSingleNode("reamax")?.Value == "0" &&
+                                                                           objXmlMetatype.SelectSingleNode("strmax")?.Value == "0" &&
+                                                                           objXmlMetatype.SelectSingleNode("magmin")?.Value.Contains('F') != true
+                                ? "String_Level"
+                                : "String_Force");
                             nudForce.Maximum = 100;
                         }
+                        lblForceLabel.Visible = true;
+                        nudForce.Visible = true;
                     }
                     else
                     {
@@ -1684,8 +1767,8 @@ namespace Chummer
         /// </summary>
         private void PopulateMetatypes()
         {
-            string strSelectedMetatypeCategory = cboCategory.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedMetatypeCategory))
+            string strSelectedCategory = cboCategory.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedCategory))
             {
                 List<ListItem> lstMetatype = new List<ListItem>(10);
 
@@ -1695,7 +1778,7 @@ namespace Chummer
                 {
                     if (xmlBaseMetatypePriorityList.Count == 1 || xmlBaseMetatypePriority.SelectSingleNode("prioritytable") != null)
                     {
-                        foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select("metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = " + strSelectedMetatypeCategory.CleanXPath() + "]"))
+                        foreach (XPathNavigator objXmlMetatype in _xmlBaseMetatypeDataNode.Select("metatypes/metatype[(" + _objCharacter.Options.BookXPath() + ") and category = " + strSelectedCategory.CleanXPath() + "]"))
                         {
                             string strName = objXmlMetatype.SelectSingleNode("name")?.Value;
                             if (!string.IsNullOrEmpty(strName) && null != xmlBaseMetatypePriority.SelectSingleNode("metatypes/metatype[name = " + strName.CleanXPath() + "]"))
@@ -1719,6 +1802,33 @@ namespace Chummer
                 if (lstMetatypes.SelectedIndex == -1 && lstMetatype.Count > 0)
                     lstMetatypes.SelectedIndex = 0;
                 lstMetatypes.EndUpdate();
+
+                if (strSelectedCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                {
+                    if (!chkPossessionBased.Visible && !string.IsNullOrEmpty(_strCurrentPossessionMethod))
+                    {
+                        chkPossessionBased.Checked = true;
+                        cboPossessionMethod.SelectedValue = _strCurrentPossessionMethod;
+                    }
+                    chkPossessionBased.Visible = true;
+                    cboPossessionMethod.Visible = true;
+                }
+                else
+                {
+                    chkPossessionBased.Visible = false;
+                    chkPossessionBased.Checked = false;
+                    cboPossessionMethod.Visible = false;
+                }
+            }
+            else
+            {
+                lstMetatypes.BeginUpdate();
+                lstMetatypes.DataSource = null;
+                lstMetatypes.EndUpdate();
+
+                chkPossessionBased.Visible = false;
+                chkPossessionBased.Checked = false;
+                cboPossessionMethod.Visible = false;
             }
         }
 
@@ -1832,6 +1942,11 @@ namespace Chummer
                 sbdGroups.Append(']');
             }
             return _xmlBaseSkillDataNode.Select(sbdGroups.ToString());
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPdfFromControl(sender, e);
         }
         #endregion
     }

@@ -4391,6 +4391,14 @@
       <text>Broken</text>
     </string>
     <string>
+      <key>Label_SkillGroup_Disabled</key>
+      <text>Disabled</text>
+    </string>
+    <string>
+      <key>Label_SkillGroup_DisabledBy</key>
+      <text>Disabled by:</text>
+    </string>
+    <string>
       <key>Label_ActiveSkills</key>
       <text>Active Skills</text>
     </string>
@@ -5342,7 +5350,7 @@
     </string>
     <string>
       <key>Enum_GunneryCommandDevice</key>
-      <text>Command Device - Gunnery[AGI]</text>
+      <text>Control Device - Gunnery[AGI]</text>
     </string>
     <string>
       <key>Enum_RemoteOperated</key>

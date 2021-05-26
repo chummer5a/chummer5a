@@ -121,7 +121,7 @@ namespace Chummer
 
             imgLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strSelectedLanguage.Substring(3, 2));
 
-            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && _strSelectedLanguage != GlobalOptions.DefaultLanguage;
+            bool isEnabled = !string.IsNullOrEmpty(_strSelectedLanguage) && !_strSelectedLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase);
             cmdVerify.Enabled = isEnabled;
             cmdVerifyData.Enabled = isEnabled;
 
@@ -571,7 +571,7 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void cmdUploadPastebin_Click(object sender, EventArgs e)
+        private async void cmdUploadPastebin_Click(object sender, EventArgs e)
         {
 #if DEBUG
             string strFilePath = "Insert local file here";
@@ -579,7 +579,7 @@ namespace Chummer
             string line;
             using (StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
             {
-                line = sr.ReadToEnd();
+                line = await sr.ReadToEndAsync();
             }
             data["api_paste_name"] = "Chummer";
             data["api_paste_expire_date"] = "N";
@@ -593,7 +593,7 @@ namespace Chummer
                 byte[] bytes;
                 try
                 {
-                    bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", data);
+                    bytes = await wb.UploadValuesTaskAsync("http://pastebin.com/api/api_post.php", data);
                 }
                 catch (WebException)
                 {
@@ -604,7 +604,7 @@ namespace Chummer
                 {
                     using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
                     {
-                        string response = reader.ReadToEnd();
+                        string response = await reader.ReadToEndAsync();
                         Clipboard.SetText(response);
                     }
                 }
@@ -615,7 +615,8 @@ namespace Chummer
         private void clbPlugins_VisibleChanged(object sender, EventArgs e)
         {
             clbPlugins.Items.Clear();
-            if (Program.PluginLoader.MyPlugins.Count == 0) return;
+            if (Program.PluginLoader.MyPlugins.Count == 0)
+                return;
             using (new CursorWait(this))
             {
                 foreach (var plugin in Program.PluginLoader.MyPlugins)
@@ -1170,7 +1171,10 @@ namespace Chummer
             foreach (XPathNavigator xmlSheet in XmlManager.LoadXPath("sheets.xml", null, strLanguage).Select("/chummer/sheets[@lang='" + strLanguage + "']/sheet[not(hide)]"))
             {
                 string strFile = xmlSheet.SelectSingleNode("filename")?.Value ?? string.Empty;
-                lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strLanguage, strFile) : strFile, xmlSheet.SelectSingleNode("name")?.Value ?? string.Empty));
+                lstSheets.Add(new ListItem(
+                    !strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? Path.Combine(strLanguage, strFile)
+                        : strFile, xmlSheet.SelectSingleNode("name")?.Value ?? string.Empty));
             }
 
             return lstSheets;
@@ -1193,11 +1197,20 @@ namespace Chummer
             cboXSLT.PopulateWithListItems(lstFiles);
             if (!string.IsNullOrEmpty(strOldSelected))
             {
-                cboXSLT.SelectedValue = !string.IsNullOrEmpty(strSelectedSheetLanguage) && strSelectedSheetLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strSelectedSheetLanguage, strOldSelected) : strOldSelected;
+                cboXSLT.SelectedValue =
+                    !string.IsNullOrEmpty(strSelectedSheetLanguage) &&
+                    !strSelectedSheetLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? Path.Combine(strSelectedSheetLanguage, strOldSelected)
+                        : strOldSelected;
                 // If the desired sheet was not found, fall back to the Shadowrun 5 sheet.
                 if(cboXSLT.SelectedIndex == -1 && lstFiles.Count > 0)
                 {
-                    cboXSLT.SelectedValue = !string.IsNullOrEmpty(strSelectedSheetLanguage) && strSelectedSheetLanguage != GlobalOptions.DefaultLanguage ? Path.Combine(strSelectedSheetLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue) : GlobalOptions.DefaultCharacterSheetDefaultValue;
+                    cboXSLT.SelectedValue =
+                        !string.IsNullOrEmpty(strSelectedSheetLanguage) &&
+                        !strSelectedSheetLanguage.Equals(GlobalOptions.DefaultLanguage,
+                            StringComparison.OrdinalIgnoreCase)
+                            ? Path.Combine(strSelectedSheetLanguage, GlobalOptions.DefaultCharacterSheetDefaultValue)
+                            : GlobalOptions.DefaultCharacterSheetDefaultValue;
                     if(cboXSLT.SelectedIndex == -1)
                     {
                         cboXSLT.SelectedIndex = 0;
@@ -1247,7 +1260,7 @@ namespace Chummer
             {
                 int intNameIndex;
                 string strLanguage = _strSelectedLanguage;
-                if(string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalOptions.DefaultLanguage)
+                if(string.IsNullOrEmpty(strLanguage) || strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet);
                 else
                     intNameIndex = cboXSLT.FindStringExact(GlobalOptions.DefaultCharacterSheet.Substring(GlobalOptions.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));

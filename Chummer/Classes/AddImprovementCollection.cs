@@ -6029,7 +6029,7 @@ namespace Chummer.Classes
             string strName = bonusNode.Attributes?["name"]?.InnerText;
             if (Enum.TryParse(final, out SkillsSection.FilterOption skills))
             {
-                if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(strName))
+                if (string.IsNullOrEmpty(strName) || !_objCharacter.SkillsSection.HasActiveSkill(strName))
                 {
                     _objCharacter.SkillsSection.AddSkills(skills, strName);
                     CreateImprovement(skills.ToString(), _objImprovementSource, SourceName,  Improvement.ImprovementType.SpecialSkills, _strUnique);

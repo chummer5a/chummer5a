@@ -1,10 +1,11 @@
-﻿@page
+@page
 @model ExternalLoginsModel
 @{
     ViewData["Title"] = "Manage your external logins";
 }
 
-@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+@await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 @if (Model.CurrentLogins?.Count > 0)
 {
     <h4>Registered Logins</h4>

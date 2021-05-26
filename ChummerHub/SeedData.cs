@@ -91,7 +91,8 @@ namespace ChummerHub
             try
             {
                 var userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
-
+                if (userManager == null)
+                    return Guid.Empty;
                 var u = await userManager.FindByNameAsync(user.UserName);
                 if (u == null)
                 {
@@ -118,13 +119,23 @@ namespace ChummerHub
             try
             {
                 if (roleManager == null)
+                {
                     roleManager = serviceProvider.GetService<RoleManager<ApplicationRole>>();
+                    if (roleManager == null)
+                        return null;
+                }
                 if (!await roleManager.RoleExistsAsync(role))
                 {
                     IR = await roleManager.CreateAsync(new ApplicationRole(role));
                 }
+
                 if (userManager == null)
+                {
                     userManager = serviceProvider.GetService<UserManager<ApplicationUser>>();
+                    if (userManager == null)
+                        return null;
+                }
+
                 var user = await userManager.FindByIdAsync(uid.ToString());
 
                 IR = await userManager.AddToRoleAsync(user, role);

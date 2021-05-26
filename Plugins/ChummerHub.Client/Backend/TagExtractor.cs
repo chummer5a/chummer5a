@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
 using Chummer;
 using ChummerHub.Client.Sinners;
 using PropertyInfo = System.Reflection.PropertyInfo;
@@ -110,7 +109,7 @@ namespace ChummerHub.Client.Backend
 
         private static IEnumerable<Tag> ExtractTagsFromExtraProperties(object objPropertyHaver, HubClassTagAttribute objPropertyFilterAttribute)
         {
-            System.Reflection.PropertyInfo[] aPropertyInfos = objPropertyHaver.GetType().GetProperties();
+            PropertyInfo[] aPropertyInfos = objPropertyHaver.GetType().GetProperties();
             foreach(string includeprop in objPropertyFilterAttribute.ListExtraProperties)
             {
                 var propfound = aPropertyInfos.FirstOrDefault(x => x.Name == includeprop);

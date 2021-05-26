@@ -137,7 +137,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
             return strLanguage != GlobalOptions.Language
-                ? LanguageManager.TranslateExtra(GlobalOptions.Language != GlobalOptions.DefaultLanguage
+                ? LanguageManager.TranslateExtra(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? LanguageManager.ReverseTranslateExtra(Name, GlobalOptions.Language, _objCharacter)
                     : Name, strLanguage, _objCharacter)
                 : Name;

@@ -40,6 +40,7 @@ namespace Chummer.UI.Table
         /// <param name="index"></param>
         /// <returns></returns>
         public TableColumn<T> this[int index] {
+            // ReSharper disable once ArrangeAccessorOwnerBody
             get => _lstColumns[index];
             //set => _lstColumns[index] = value;
         }

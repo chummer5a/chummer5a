@@ -34,5 +34,51 @@ namespace Chummer
         {
             return (intA + Math.Sign(intA) * (Math.Abs(intB) - 1)) / intB; // Adding 1 if modulo > 0 would require a separate modulo operation that is as slow as division
         }
+
+        /// <summary>
+        /// Exponentiates an integer by another integer, always staying within the realm of integers.
+        /// </summary>
+        /// <param name="intBase">Number to exponentiate.</param>
+        /// <param name="intPower">Power to which to raise <paramref name="intBase"/>.</param>
+        /// <returns><paramref name="intBase"/> to the power of <paramref name="intPower"/>.</returns>
+        internal static int RaiseToPower(this int intBase, int intPower)
+        {
+            switch (intPower)
+            {
+                case 2: // Extremely common case, so handle it explicitly
+                    return intBase * intBase;
+                case 1:
+                    return intBase;
+                case 0: // Yes, even 0^0 should return 1 per IEEE specifications
+                    return 1;
+            }
+            switch (intBase)
+            {
+                case 1:
+                    return 1;
+                case 0:
+                    if (intPower < 0)
+                        throw new DivideByZeroException();
+                    return 0;
+                case -1:
+                    return 1 - 2 * (Math.Abs(intPower) & 1);
+            }
+            // Integer division always rounds towards zero, so every base except the ones already handled ends up producing 0 after rounding
+            if (intPower < 0)
+                return 0;
+            int intReturn = 1;
+            int i;
+            // Dual loop structure looks funky, but cuts down on number of multiplication operations in worst case scenarios compared to a single loop
+            for (; intPower > 1; intPower -= i / 2)
+            {
+                int intLoopElement = intBase;
+                for (i = 2; i < intPower; i *= 2)
+                {
+                    intLoopElement *= intLoopElement;
+                }
+                intReturn *= intLoopElement;
+            }
+            return intReturn;
+        }
     }
 }

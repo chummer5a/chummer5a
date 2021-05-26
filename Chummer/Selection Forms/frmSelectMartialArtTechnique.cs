@@ -124,19 +124,16 @@ namespace Chummer
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    tlpRight.Visible = true;
                 }
                 else
                 {
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
-                    lblSourceLabel.Visible = false;
+                    tlpRight.Visible = false;
                 }
             }
             else
             {
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
-                lblSourceLabel.Visible = false;
+                tlpRight.Visible = false;
             }
         }
 

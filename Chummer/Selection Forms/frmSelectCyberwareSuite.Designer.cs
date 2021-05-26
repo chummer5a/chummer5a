@@ -95,7 +95,7 @@ namespace Chummer
             // 
             // lblGradeLabel
             // 
-            this.lblGradeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblGradeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblGradeLabel.AutoSize = true;
             this.lblGradeLabel.Location = new System.Drawing.Point(15, 6);
             this.lblGradeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -107,29 +107,29 @@ namespace Chummer
             // 
             // lblGrade
             // 
+            this.lblGrade.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblGrade.AutoSize = true;
-            this.lblGrade.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblGrade.Location = new System.Drawing.Point(60, 6);
             this.lblGrade.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGrade.Name = "lblGrade";
-            this.lblGrade.Size = new System.Drawing.Size(240, 13);
+            this.lblGrade.Size = new System.Drawing.Size(42, 13);
             this.lblGrade.TabIndex = 2;
             this.lblGrade.Text = "[Grade]";
             // 
             // lblEssence
             // 
+            this.lblEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblEssence.AutoSize = true;
-            this.lblEssence.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblEssence.Location = new System.Drawing.Point(60, 31);
             this.lblEssence.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssence.Name = "lblEssence";
-            this.lblEssence.Size = new System.Drawing.Size(240, 13);
+            this.lblEssence.Size = new System.Drawing.Size(54, 13);
             this.lblEssence.TabIndex = 4;
             this.lblEssence.Text = "[Essence]";
             // 
             // lblEssenceLabel
             // 
-            this.lblEssenceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblEssenceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssenceLabel.AutoSize = true;
             this.lblEssenceLabel.Location = new System.Drawing.Point(3, 31);
             this.lblEssenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -141,18 +141,18 @@ namespace Chummer
             // 
             // lblCost
             // 
+            this.lblCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCost.AutoSize = true;
-            this.lblCost.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblCost.Location = new System.Drawing.Point(60, 56);
             this.lblCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCost.Name = "lblCost";
-            this.lblCost.Size = new System.Drawing.Size(240, 13);
+            this.lblCost.Size = new System.Drawing.Size(34, 13);
             this.lblCost.TabIndex = 6;
             this.lblCost.Text = "[Cost]";
             // 
             // lblCostLabel
             // 
-            this.lblCostLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCostLabel.AutoSize = true;
             this.lblCostLabel.Location = new System.Drawing.Point(23, 56);
             this.lblCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);

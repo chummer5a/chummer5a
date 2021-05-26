@@ -89,7 +89,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-
+            
             string strSelectedId = lstMartialArts.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -114,7 +114,7 @@ namespace Chummer
                                 if (objTechniqueStringBuilder.Length > 0)
                                     objTechniqueStringBuilder.AppendLine(",");
 
-                                objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
+                                objTechniqueStringBuilder.Append(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
                             }
                         }
                     }
@@ -126,27 +126,18 @@ namespace Chummer
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    tlpRight.Visible = true;
                 }
                 else
                 {
-                    lblKarmaCostLabel.Visible = false;
-                    lblKarmaCost.Text = string.Empty;
+                    tlpRight.Visible = false;
                     gpbIncludedTechniques.Visible = false;
-                    lblIncludedTechniques.Text = string.Empty;
-                    lblSourceLabel.Visible = false;
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
                 }
             }
             else
             {
-                lblKarmaCostLabel.Visible = false;
-                lblKarmaCost.Text = string.Empty;
+                tlpRight.Visible = false;
                 gpbIncludedTechniques.Visible = false;
-                lblIncludedTechniques.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
             }
         }
 

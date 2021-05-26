@@ -49,7 +49,7 @@ namespace Chummer
             // 
             // lblYear
             // 
-            this.lblYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblYear.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblYear.AutoSize = true;
             this.lblYear.Location = new System.Drawing.Point(3, 34);
             this.lblYear.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -61,8 +61,7 @@ namespace Chummer
             // 
             // nudYear
             // 
-            this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudYear.AutoSize = true;
             this.nudYear.Location = new System.Drawing.Point(41, 31);
             this.nudYear.Maximum = new decimal(new int[] {
@@ -86,7 +85,7 @@ namespace Chummer
             // 
             // lblMonth
             // 
-            this.lblMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMonth.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMonth.AutoSize = true;
             this.lblMonth.Location = new System.Drawing.Point(106, 34);
             this.lblMonth.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -98,8 +97,7 @@ namespace Chummer
             // 
             // nudMonth
             // 
-            this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMonth.AutoSize = true;
             this.nudMonth.Location = new System.Drawing.Point(152, 31);
             this.nudMonth.Maximum = new decimal(new int[] {
@@ -124,7 +122,7 @@ namespace Chummer
             // 
             // lblWeek
             // 
-            this.lblWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblWeek.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblWeek.AutoSize = true;
             this.lblWeek.Location = new System.Drawing.Point(217, 34);
             this.lblWeek.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -136,8 +134,7 @@ namespace Chummer
             // 
             // nudWeek
             // 
-            this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudWeek.AutoSize = true;
             this.nudWeek.Location = new System.Drawing.Point(262, 31);
             this.nudWeek.Maximum = new decimal(new int[] {

@@ -599,12 +599,7 @@ namespace ChummerHub.Client.Sinners
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
-            bool readCallback = false;
-            if (MyCharacter.OnSaveCompleted != null)
-            {
-                readCallback = true;
-                MyCharacter.OnSaveCompleted = null;
-            }
+            bool readCallback = MyCharacter.DoOnSaveCompleted.Remove(PluginHandler.MyOnSaveUpload);
 
             if (!File.Exists(MyCharacter.FileName))
             {
@@ -616,7 +611,7 @@ namespace ChummerHub.Client.Sinners
             MyCharacter.Save(tempfile, false, false);
             MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
             if (readCallback)
-                MyCharacter.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+                MyCharacter.DoOnSaveCompleted.TryAdd(PluginHandler.MyOnSaveUpload);
 
             if (File.Exists(zipPath))
             {

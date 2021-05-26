@@ -477,7 +477,6 @@ namespace Chummer.UI.Skills
                     return;
                 _objSkill.UnbindSkill();
                 _objSkill.CharacterObject.SkillsSection.Skills.Remove(_objSkill);
-                _objSkill.CharacterObject.SkillsSection.SkillsDictionary.Remove(_objSkill.DictionaryKey);
             }
         }
 
