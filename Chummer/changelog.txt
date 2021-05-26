@@ -168,6 +168,7 @@ Changed/New Strings:
 - Label_SelectMentor_Bonus
 - String_Saving
 - String_Saving_Pattern
+- Button_ChooseCustomColor
 
 Build 214
 Application Fixes:
