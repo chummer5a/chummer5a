@@ -575,6 +575,7 @@ namespace Chummer
                 _objCharacterOptions.RecalculateEnabledCustomDataDirectories();
                 _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             }
+            //Each time one item is checked or unchecked, we need to see if any dependencies or exclusivities changed
             CheckForDependenciesAndExclusivities();
         }
 
@@ -685,58 +686,57 @@ namespace Chummer
 
         private void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo objSelected)
+            if (!(treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo objSelected)) return;
+
+            gbpDirectoryInfo.SuspendLayout();
+            tboxDirectoryDescription.Text = objSelected.DisplayDescription;
+            lblDirectoryVersion.Text = objSelected.Version.ToString();
+            lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
+            lblDirectoryName.Text = objSelected.Name;
+
+            flpDirectoryDependencies.Controls.Clear();
+            if (objSelected.DependenciesList.Count > 0)
             {
-                gbpDirectoryInfo.SuspendLayout();
-                tboxDirectoryDescription.Text = objSelected.DisplayDescription;
-                lblDirectoryVersion.Text = objSelected.Version.ToString();
-                lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
-                lblDirectoryName.Text = objSelected.Name;
-
-                flpDirectoryDependencies.Controls.Clear();
-                if (objSelected.DependenciesList.Count > 0)
+                foreach (var (_, name, version, isMinimumVersion) in objSelected.DependenciesList)
                 {
-                    foreach (var (_, name, version, isMinimumVersion) in objSelected.DependenciesList)
+                    string labelText;
+                    if (isMinimumVersion)
                     {
-                        string labelText;
-                        if (isMinimumVersion)
-                        {
-                            labelText = string.Format(GlobalOptions.CultureInfo,
-                                name + LanguageManager.GetString("AddMinimumVersion"), version);
-                        }
-                        else
-                        {
-                            labelText = string.Format(GlobalOptions.CultureInfo,
-                                name + LanguageManager.GetString("AddVersion"), version);
-                        }
-
-                        var depLabel = new Label {Text = labelText, AutoSize = true };
-                        flpDirectoryDependencies.Controls.Add(depLabel);
+                        labelText = string.Format(GlobalOptions.CultureInfo,
+                            name + LanguageManager.GetString("AddMinimumVersion"), version);
                     }
-                }
-
-                flpExclusivities.Controls.Clear();
-                if (objSelected.ExclusivitiesList.Count > 0)
-                {
-                    foreach (var (_, name, version, ignoreVersion) in objSelected.ExclusivitiesList)
+                    else
                     {
-                        string labelText;
-                        if (ignoreVersion)
-                        {
-                            labelText = name;
-                        }
-                        else
-                        {
-                            labelText = string.Format(GlobalOptions.CultureInfo,
-                                name + LanguageManager.GetString("AddVersion"), version);
-                        }
-                        var excLabel = new Label {Text = labelText, AutoSize = true};
-                        flpExclusivities.Controls.Add(excLabel);
+                        labelText = string.Format(GlobalOptions.CultureInfo,
+                            name + LanguageManager.GetString("AddVersion"), version);
                     }
-                }
 
-                gbpDirectoryInfo.ResumeLayout();
+                    var depLabel = new Label {Text = labelText, AutoSize = true };
+                    flpDirectoryDependencies.Controls.Add(depLabel);
+                }
             }
+
+            flpExclusivities.Controls.Clear();
+            if (objSelected.ExclusivitiesList.Count > 0)
+            {
+                foreach (var (_, name, version, ignoreVersion) in objSelected.ExclusivitiesList)
+                {
+                    string labelText;
+                    if (ignoreVersion)
+                    {
+                        labelText = name;
+                    }
+                    else
+                    {
+                        labelText = string.Format(GlobalOptions.CultureInfo,
+                            name + LanguageManager.GetString("AddVersion"), version);
+                    }
+                    var excLabel = new Label {Text = labelText, AutoSize = true};
+                    flpExclusivities.Controls.Add(excLabel);
+                }
+            }
+
+            gbpDirectoryInfo.ResumeLayout();
         }
         #endregion
 
@@ -848,19 +848,19 @@ namespace Chummer
                     if (string.IsNullOrEmpty(missingDirectories) && string.IsNullOrEmpty(prohibitedDirectories))
                     {
                         directoryNode.ToolTipText = string.Empty;
-                        directoryNode.BackColor = Color.Empty;
+                        directoryNode.ForeColor = Color.Empty;
                         continue;
                     }
 
                     string tooltip = CustomDataDirectoryInfo.BuildExclusivityDependencyString(missingDirectories, prohibitedDirectories);
 
                     directoryNode.ToolTipText = tooltip;
-                    directoryNode.BackColor = ColorManager.ErrorColor;
+                    directoryNode.ForeColor = ColorManager.ErrorColor;
                 }
                 else if (directoryNode.Tag is CustomDataDirectoryInfo && directoryNode.Checked == false)
                 {
                     directoryNode.ToolTipText = string.Empty;
-                    directoryNode.BackColor = Color.Empty;
+                    directoryNode.ForeColor = Color.Empty;
                 }
             }
         }

@@ -2,11 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer
 {
@@ -14,7 +11,6 @@ namespace Chummer
     {
         private bool _blnCreated;
         private int _version;
-        private static readonly Logger s_Logger = LogManager.GetCurrentClassLogger();
 
         //Tuple<int Hash, string Name, int Version, bool isMinimumVersion>
         private readonly List<Tuple<Guid, string, int, bool>> _lstDependencies= new List<Tuple<Guid, string, int, bool>>();
@@ -34,32 +30,6 @@ namespace Chummer
 
         #region Create() Helper Methods
         /// <summary>
-        /// Selects the description in the correct language and saves it to _strDisplayDescription
-        /// </summary>
-        private void GetDisplayDescription()
-        {
-            bool blnDefaultedToEng = false;
-
-            DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description);
-
-            if (description == null)
-            {
-                DescriptionDictionary.TryGetValue("en-us", out description);
-                blnDefaultedToEng = true;
-            }
-
-            if(description == null)
-                return;
-
-            if (blnDefaultedToEng)
-                description =
-                    LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
-                    Environment.NewLine + Environment.NewLine + description;
-
-            DisplayDescription = description;
-        }
-
-        /// <summary>
         /// Reads in all descriptions from an given loaded manifest.xml and adds them to _lstDescriptions
         /// </summary>
         /// <param name="xmlDocument"></param>
@@ -78,7 +48,36 @@ namespace Chummer
                 if(!string.IsNullOrEmpty(language))
                     DescriptionDictionary.Add(language, text);
             }
-            GetDisplayDescription();
+            SetDisplayDescription();
+        }
+
+        /// <summary>
+        /// Selects the description in the correct language and saves it to _strDisplayDescription
+        /// </summary>
+        private void SetDisplayDescription()
+        {
+            bool blnDefaultedToEng = false;
+
+            DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description);
+
+            if (description == null)
+            {
+                DescriptionDictionary.TryGetValue("en-us", out description);
+                blnDefaultedToEng = true;
+            }
+
+            if (description == null)
+            {
+                DisplayDescription = LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
+                return;
+            }
+
+            if (blnDefaultedToEng)
+                description =
+                    LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
+                    Environment.NewLine + Environment.NewLine + description;
+            
+            DisplayDescription = description;
         }
 
         /// <summary>
@@ -95,20 +94,20 @@ namespace Chummer
             foreach (XmlNode objXmlNode in xmlAuthorNodes)
             {
                 objXmlNode.TryGetField("name", out string authorName);
-                objXmlNode.TryGetField("name", out bool authorMain);
+                objXmlNode.TryGetField("main", out bool authorMain);
 
                 if(!string.IsNullOrEmpty(authorName))
                     //Maybe a stupid idea? But who would add two authors with the same name anyway?
                     AuthorDictionary.Add(authorName, authorMain);
             }
             //After the list is fully formed, set the display author
-            GetDisplayAuthors();
+            SetDisplayAuthors();
         }
 
         /// <summary>
         /// Sets the DisplayAuthors to be a sting of all authors separated with "," and marked with main-
         /// </summary>
-        private void GetDisplayAuthors()
+        private void SetDisplayAuthors()
         {
             List<string> authorsList = new List<string>();
             foreach ( KeyValuePair<string, bool> kvp in AuthorDictionary)
@@ -116,7 +115,7 @@ namespace Chummer
                 string formattedName = kvp.Key;
 
                 if (kvp.Value)
-                    formattedName = kvp.Key + LanguageManager.GetString("Main_Author");
+                    formattedName = kvp.Key + LanguageManager.GetString("IsMainAuthor");
 
                 authorsList.Add(formattedName);
             }
@@ -175,6 +174,7 @@ namespace Chummer
             }
         }
 
+        /* This is unused right now, but maybe we need it later for some reason.
         /// <summary>
         /// Calculates a combined SHA512 Hash from all files, that are not the manifest.xml and returns it as an int.
         /// </summary>
@@ -208,7 +208,7 @@ namespace Chummer
             int intHash = BitConverter.ToInt32(achrCombinedHashes, 0);
 
             return intHash;
-        }
+        }*/
         #endregion
 
         /// <summary>
@@ -224,7 +224,7 @@ namespace Chummer
                 XmlDocument xmlObjManifest = new XmlDocument();
                 string strFullDirectory = System.IO.Path.Combine(Path, "manifest.xml");
 
-                Hash = CalculateHash();
+                //Hash = CalculateHash();
 
                 if (!File.Exists(strFullDirectory))
                     return;
@@ -324,7 +324,6 @@ namespace Chummer
         /// <returns></returns>
         public static string BuildExclusivityDependencyString(string missingDependency = "", string presentExclusivities = "")
         {
-            //Funktioniert noch nicht???
             string formedString = string.Empty;
 
             if (!string.IsNullOrEmpty(missingDependency) && !string.IsNullOrEmpty(presentExclusivities))
@@ -333,21 +332,21 @@ namespace Chummer
                     + Environment.NewLine + Environment.NewLine
                     + string.Format(LanguageManager.GetString("Tooltip_Exclusivity_Present"), presentExclusivities));
             }
-            else if (string.IsNullOrEmpty(missingDependency) && !string.IsNullOrEmpty(missingDependency))
+            else if (!string.IsNullOrEmpty(missingDependency))
             {
                 formedString = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), missingDependency);
             }
-            else if (!string.IsNullOrEmpty(missingDependency) && string.IsNullOrEmpty(missingDependency))
+            else if (!string.IsNullOrEmpty(presentExclusivities))
             {
                 formedString = string.Format(LanguageManager.GetString("Tooltip_Exclusivity_Present"), presentExclusivities);
             }
-            return formedString;
+
+            return string.IsNullOrEmpty(formedString) ? string.Empty : formedString;
         }
 
 
 
         #region Properties
-
         /// <summary>
         /// The name of the custom data directory
         /// </summary>
@@ -363,10 +362,11 @@ namespace Chummer
         /// </summary>
         public int Version => _version;
 
-        /// <summary>
-        /// The Sha512 Hash of all non manifest.xml files in the directory
-        /// </summary>
-        public int Hash { get; private set; }
+
+        // /// <summary>
+        // /// The Sha512 Hash of all non manifest.xml files in the directory
+        // /// </summary>
+        // public int Hash { get; private set; }
 
         /// <summary>
         /// A list of all dependencies each formatted as Tuple(guid, str name, int version, bool isMinimumVersion).

@@ -7919,11 +7919,11 @@
     </string>
     <string>
       <key>Tooltip_Exclusivity_Present</key>
-      <text>Mutual exclusive Dependencies: {0}</text>
+      <text>Present exclusivities: {0}</text>
     </string>
     <string>
       <key>IsMainAuthor</key>
-      <text>(Main)</text>
+      <text> (Main)</text>
     </string>
     <string>
       <key>AddVersion</key>
