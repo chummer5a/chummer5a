@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <manifest>
   <guid>b422724d-42d5-4ef4-bbb3-9dfa3c40cb61</guid>
-  <version>1.0</version>
+  <version>1</version>
   <authors>
     <author>
-      <name>Author 1</name>
+      <name>Unknown</name>
       <main>true</main>
-    </author>
-    <author>
-      <name>Author 2</name>
-      <main>false</main>
     </author>
   </authors>
   <descriptions>
@@ -22,20 +18,4 @@
       <lang>en-us</lang>
     </description>
   </descriptions>
-  <dependencies>
-    <dependency>
-      <name>Bonelacing Dependency</name>
-      <version>0</version>
-      <guid>091a9694-4186-4c2d-96fc-d4dc2ae62505</guid>
-      <isminimumversion>true</isminimumversion>
-    </dependency>
-  </dependencies>
-  <exclusivities>
-    <exclusivity>
-      <name>Bonelacing Exclusivity</name>
-      <version>1</version>
-      <guid>091a9694-4186-4c2d-96fc-d4dc2ae62505</guid>
-      <ignoreversion>false</ignoreversion>
-    </exclusivity>
-  </exclusivities>
 </manifest>
