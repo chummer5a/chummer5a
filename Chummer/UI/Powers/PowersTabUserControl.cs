@@ -235,7 +235,7 @@ namespace Chummer.UI.Powers
         {
             _table = new TableView<Power>
             {
-                Dock = DockStyle.Fill,
+                Dock = DockStyle.Top,
                 ToolTip = _tipTooltip
             };
             // create columns
@@ -431,8 +431,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(deleteColumn);
             _table.UpdateLightDarkMode();
             _table.TranslateWinForm();
-            tlpMain.SetColumnSpan(_table, 4);
-            tlpMain.Controls.Add(_table, 0, 2);
+            pnlPowers.Controls.Add(_table);
         }
 
         private static Size GetImageSize(Image image)

@@ -45,7 +45,6 @@ namespace Chummer
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblEssence = new System.Windows.Forms.Label();
-            this.txtSearch = new System.Windows.Forms.TextBox();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
@@ -63,7 +62,6 @@ namespace Chummer
             this.chkPrototypeTranshuman = new Chummer.ColorableCheckBox(this.components);
             this.lblCostLabel = new System.Windows.Forms.Label();
             this.lblEssenceLabel = new System.Windows.Forms.Label();
-            this.lblSearchLabel = new System.Windows.Forms.Label();
             this.lblRatingLabel = new System.Windows.Forms.Label();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
             this.nudRating = new Chummer.NumericUpDownEx();
@@ -78,6 +76,9 @@ namespace Chummer
             this.lblAvail = new System.Windows.Forms.Label();
             this.lblMaximumCapacity = new System.Windows.Forms.Label();
             this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.lblSearchLabel = new System.Windows.Forms.Label();
+            this.pnlNotes = new System.Windows.Forms.Panel();
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -90,6 +91,7 @@ namespace Chummer
             this.flpDiscount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
             this.tlpTopRight.SuspendLayout();
+            this.pnlNotes.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -128,24 +130,24 @@ namespace Chummer
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 4);
-            this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 5);
+            this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 3);
+            this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 4);
             this.tlpMain.Controls.Add(this.tlpLeft, 0, 0);
-            this.tlpMain.Controls.Add(this.chkHideBannedGrades, 1, 3);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 6);
+            this.tlpMain.Controls.Add(this.chkHideBannedGrades, 1, 2);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 5);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 7;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowCount = 6;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 68;
             // 
@@ -194,7 +196,7 @@ namespace Chummer
             this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
             this.tlpLeft.Name = "tlpLeft";
             this.tlpLeft.RowCount = 3;
-            this.tlpMain.SetRowSpan(this.tlpLeft, 7);
+            this.tlpMain.SetRowSpan(this.tlpLeft, 6);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -324,7 +326,6 @@ namespace Chummer
             this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpRight.Controls.Add(this.lblEssence, 1, 2);
             this.tlpRight.Controls.Add(this.flpMarkup, 3, 6);
-            this.tlpRight.Controls.Add(this.lblCyberwareNotes, 1, 9);
             this.tlpRight.Controls.Add(this.lblCyberwareNotesLabel, 0, 9);
             this.tlpRight.Controls.Add(this.lblTest, 3, 5);
             this.tlpRight.Controls.Add(this.lblMarkupLabel, 2, 6);
@@ -343,6 +344,7 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblAvailLabel, 0, 5);
             this.tlpRight.Controls.Add(this.lblAvail, 1, 5);
             this.tlpRight.Controls.Add(this.lblMaximumCapacity, 0, 4);
+            this.tlpRight.Controls.Add(this.pnlNotes, 1, 9);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRight.Location = new System.Drawing.Point(306, 26);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
@@ -358,7 +360,7 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.Size = new System.Drawing.Size(460, 253);
+            this.tlpRight.Size = new System.Drawing.Size(460, 413);
             this.tlpRight.TabIndex = 79;
             // 
             // lblEssence
@@ -372,17 +374,6 @@ namespace Chummer
             this.lblEssence.TabIndex = 5;
             this.lblEssence.Text = "[0]";
             this.lblEssence.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(53, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(404, 20);
-            this.txtSearch.TabIndex = 1;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
-            this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
             // 
             // flpMarkup
             // 
@@ -434,12 +425,11 @@ namespace Chummer
             // lblCyberwareNotes
             // 
             this.lblCyberwareNotes.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.lblCyberwareNotes, 3);
-            this.lblCyberwareNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblCyberwareNotes.Location = new System.Drawing.Point(60, 209);
+            this.lblCyberwareNotes.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblCyberwareNotes.Location = new System.Drawing.Point(3, 6);
             this.lblCyberwareNotes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCyberwareNotes.Name = "lblCyberwareNotes";
-            this.lblCyberwareNotes.Size = new System.Drawing.Size(397, 38);
+            this.lblCyberwareNotes.Size = new System.Drawing.Size(41, 13);
             this.lblCyberwareNotes.TabIndex = 31;
             this.lblCyberwareNotes.Text = "[Notes]";
             this.lblCyberwareNotes.Visible = false;
@@ -621,18 +611,6 @@ namespace Chummer
             this.lblEssenceLabel.Tag = "Label_Essence";
             this.lblEssenceLabel.Text = "Essence:";
             this.lblEssenceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblSearchLabel
-            // 
-            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSearchLabel.Name = "lblSearchLabel";
-            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSearchLabel.TabIndex = 0;
-            this.lblSearchLabel.Tag = "Label_Search";
-            this.lblSearchLabel.Text = "&Search:";
             // 
             // lblRatingLabel
             // 
@@ -839,6 +817,42 @@ namespace Chummer
             this.tlpTopRight.Size = new System.Drawing.Size(460, 26);
             this.tlpTopRight.TabIndex = 80;
             // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(53, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(404, 20);
+            this.txtSearch.TabIndex = 1;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
+            this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
+            // 
+            // lblSearchLabel
+            // 
+            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSearchLabel.AutoSize = true;
+            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSearchLabel.Name = "lblSearchLabel";
+            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSearchLabel.TabIndex = 0;
+            this.lblSearchLabel.Tag = "Label_Search";
+            this.lblSearchLabel.Text = "&Search:";
+            // 
+            // pnlNotes
+            // 
+            this.pnlNotes.AutoScroll = true;
+            this.tlpRight.SetColumnSpan(this.pnlNotes, 3);
+            this.pnlNotes.Controls.Add(this.lblCyberwareNotes);
+            this.pnlNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlNotes.Location = new System.Drawing.Point(57, 203);
+            this.pnlNotes.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlNotes.Name = "pnlNotes";
+            this.pnlNotes.Padding = new System.Windows.Forms.Padding(3, 6, 13, 3);
+            this.pnlNotes.Size = new System.Drawing.Size(403, 210);
+            this.pnlNotes.TabIndex = 78;
+            // 
             // frmSelectCyberware
             // 
             this.AcceptButton = this.cmdOK;
@@ -881,6 +895,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).EndInit();
             this.tlpTopRight.ResumeLayout(false);
             this.tlpTopRight.PerformLayout();
+            this.pnlNotes.ResumeLayout(false);
+            this.pnlNotes.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -937,5 +953,6 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpRight;
         private BufferedTableLayoutPanel tlpLeft;
         private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.Panel pnlNotes;
     }
 }
