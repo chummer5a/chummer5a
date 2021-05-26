@@ -212,6 +212,9 @@ namespace Chummer
         public static Color ButtonShadow => IsLightMode ? ButtonShadowLight : ButtonShadowDark;
         private static Color ButtonShadowLight => SystemColors.ButtonShadow;
         private static Color ButtonShadowDark => GenerateDarkModeColor(ButtonShadowLight);
+        public static Color AppWorkspace => IsLightMode ? AppWorkspaceLight : AppWorkspaceDark;
+        private static Color AppWorkspaceLight => SystemColors.AppWorkspace;
+        private static Color AppWorkspaceDark => GenerateDarkModeColor(AppWorkspaceLight);
 
         public static Color SplitterColor => IsLightMode ? SplitterColorLight : SplitterColorDark;
         private static Color SplitterColorLight => SystemColors.InactiveCaption;
@@ -326,6 +329,7 @@ namespace Chummer
             switch (objControl)
             {
                 case DataGridView objDataGridView:
+                    objDataGridView.BackgroundColor = blnLightMode ? AppWorkspaceLight : AppWorkspaceDark;
                     objDataGridView.GridColor = blnLightMode ? ControlTextLight : ControlTextDark;
                     objDataGridView.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                     objDataGridView.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;
