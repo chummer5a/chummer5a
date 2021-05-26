@@ -60,13 +60,13 @@ namespace Chummer
 
             DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description);
 
-            if (description == null)
+            if (string.IsNullOrEmpty(description))
             {
                 DescriptionDictionary.TryGetValue("en-us", out description);
                 blnDefaultedToEng = true;
             }
 
-            if (description == null)
+            if (string.IsNullOrEmpty(description))
             {
                 DisplayDescription = LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
                 return;
