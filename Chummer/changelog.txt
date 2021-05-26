@@ -165,9 +165,6 @@ Changed/New Strings:
 - Label_Options_DpiScalingMode
 - Label_SelectMentor_ChooseOne
 - Label_SelectMentor_Bonus
-- Tooltip_CharacterOptions_ManifestMissing
-- Tooltip_CharacterOptions_LanguageSpecificManifestMissing
-- Tooltip_CharacterOptions_ManifestDescriptionMissing
 - String_Saving
 - String_Saving_Pattern
 - Label_SkillGroup_Disabled
