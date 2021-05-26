@@ -802,7 +802,7 @@ namespace Chummer
                         {
                             if (mode == Weapon.FiringMode.NumFiringModes)
                                 continue;
-                            lstFireModes.Add(new ListItem(mode.ToString(),
+                            lstFireModes.Add(new ListItem(mode,
                                 LanguageManager.GetString("Enum_" + mode.ToString())));
                         }
 
@@ -987,8 +987,6 @@ namespace Chummer
                 if (Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
             }
-
-            Dispose(true);
         }
 
         private void frmCreate_Activated(object sender, EventArgs e)
@@ -5799,7 +5797,9 @@ namespace Chummer
 
                     using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, sbdCategories.ToString(), sbdGearNames.ToString()))
                     {
-                        if (sbdCategories.Length > 0 && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                        if (sbdCategories.Length > 0 && !string.IsNullOrEmpty(objCyberware.Capacity) &&
+                            objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
+                                                             objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
                         frmPickGear.ShowDialog(this);
 
@@ -5876,7 +5876,9 @@ namespace Chummer
 
                     using (frmSelectGear frmPickGear = new frmSelectGear(CharacterObject, 0, 1, objCyberware, sbdCategories.ToString()))
                     {
-                        if (sbdCategories.Length > 0 && !string.IsNullOrEmpty(objCyberware.Capacity) && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                        if (sbdCategories.Length > 0 && !string.IsNullOrEmpty(objCyberware.Capacity) &&
+                            objCyberware.Capacity != "0" && (!objCyberware.Capacity.Contains('[') ||
+                                                             objCyberware.Capacity.Contains("/[")))
                             frmPickGear.ShowNegativeCapacityOnly = true;
                         frmPickGear.ShowDialog(this);
 
@@ -6795,6 +6797,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treWeapons.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -6805,8 +6814,6 @@ namespace Chummer
                 intNewIndex = treWeapons.Nodes[treWeapons.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treWeapons.Nodes[treWeapons.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treWeapons.SelectedNode;
 
             // Put the weapon in the right location (or lack thereof)
             if (treWeapons.SelectedNode.Level == 1)
@@ -6869,6 +6876,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treArmor.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -6879,8 +6893,6 @@ namespace Chummer
                 intNewIndex = treArmor.Nodes[treArmor.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treArmor.Nodes[treArmor.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treArmor.SelectedNode;
 
             // Put the armor in the right location (or lack thereof)
             if (treArmor.SelectedNode.Level == 1)
@@ -7247,6 +7259,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treGear.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -7257,8 +7276,6 @@ namespace Chummer
                 intNewIndex = treGear.Nodes[treGear.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treGear.Nodes[treGear.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treGear.SelectedNode;
 
             switch (_eDragButton)
             {
@@ -7646,6 +7663,13 @@ namespace Chummer
             Point pt = ((TreeView)sender).PointToClient(new Point(e.X, e.Y));
             TreeNode nodDestination = ((TreeView)sender).GetNodeAt(pt);
 
+            TreeNode objSelected = treVehicles.SelectedNode;
+            for (TreeNode nodLoop = nodDestination; nodLoop != null; nodLoop = nodLoop.Parent)
+            {
+                if (nodLoop == objSelected)
+                    return;
+            }
+
             int intNewIndex;
             if (nodDestination != null)
             {
@@ -7656,8 +7680,6 @@ namespace Chummer
                 intNewIndex = treVehicles.Nodes[treVehicles.Nodes.Count - 1].Nodes.Count;
                 nodDestination = treVehicles.Nodes[treVehicles.Nodes.Count - 1];
             }
-
-            TreeNode objSelected = treVehicles.SelectedNode;
 
             if (!_blnDraggingGear)
             {
@@ -9332,7 +9354,7 @@ namespace Chummer
             // Character is not dirty and their savefile was updated outside of Chummer5 while it is open, so reload them
             using (new CursorWait(this))
             {
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(CharacterObject.FileName, Character.NumLoadingSections))
+                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(CharacterObject.FileName), Character.NumLoadingSections))
                 {
                     CharacterObject.Load(frmLoadingForm);
                     frmLoadingForm.PerformStep(LanguageManager.GetString("String_UI"));
@@ -9434,7 +9456,7 @@ namespace Chummer
             if (CharacterObject.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.Nuyen && i.ImprovedName == "Stolen"))
             {
                 // Cyberware/Bioware cost.
-                decDeductions       += CharacterObject.Cyberware.Where(c => !c.Stolen).AsParallel().Sum(x => x.TotalCost);
+                decDeductions       += CharacterObject.Cyberware.Where(c => !c.Stolen).AsParallel().Sum(x => x.CurrentTotalCost);
                 decStolenDeductions += CharacterObject.Cyberware.Where(c =>  c.Stolen).AsParallel().Sum(x => x.StolenTotalCost);
 
                 // Initiation Grade cost.
@@ -9470,7 +9492,7 @@ namespace Chummer
             else
             {
                 // Cyberware/Bioware cost.
-                decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.TotalCost);
+                decDeductions += CharacterObject.Cyberware.AsParallel().Sum(x => x.CurrentTotalCost);
 
                 // Initiation Grade cost.
                 decDeductions += 10000 * CharacterObject.InitiationGrades.Count(x => x.Schooling);
@@ -9608,7 +9630,7 @@ namespace Chummer
                     }
 
                     lblCyberwareCapacity.Text = objCyberware.DisplayCapacity;
-                    lblCyberwareCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblCyberwareCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                     if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal) || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
                     {
                         lblCyberlimbAGILabel.Visible = true;
@@ -11655,9 +11677,6 @@ namespace Chummer
                 chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
 
                 // gpbVehiclesWeapon
-                lblVehicleWeaponModeLabel.Visible = true;
-                cboVehicleWeaponFiringMode.Visible = true;
-                cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                 lblVehicleWeaponDamageLabel.Visible = true;
                 lblVehicleWeaponDamage.Text = objWeapon.DisplayDamage;
                 lblVehicleWeaponAPLabel.Visible = true;
@@ -11675,6 +11694,7 @@ namespace Chummer
                     lblVehicleWeaponModeLabel.Visible = true;
                     lblVehicleWeaponMode.Visible = true;
                     lblVehicleWeaponMode.Text = objWeapon.DisplayMode;
+                    cboVehicleWeaponFiringMode.Visible = true;
                     cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
 
                     tlpVehiclesWeaponRanges.Visible = true;
@@ -11701,12 +11721,14 @@ namespace Chummer
                         lblVehicleWeaponAmmoLabel.Visible = true;
                         lblVehicleWeaponAmmo.Visible = true;
                         lblVehicleWeaponAmmo.Text = objWeapon.DisplayAmmo;
+                        cboVehicleWeaponFiringMode.Visible = true;
                         cboVehicleWeaponFiringMode.SelectedValue = objWeapon.FireMode;
                     }
                     else
                     {
                         lblVehicleWeaponAmmoLabel.Visible = false;
                         lblVehicleWeaponAmmo.Visible = false;
+                        cboVehicleWeaponFiringMode.Visible = false;
                     }
                     lblVehicleWeaponModeLabel.Visible = false;
                     lblVehicleWeaponMode.Visible = false;
@@ -11897,7 +11919,7 @@ namespace Chummer
                 lblVehicleGearQtyLabel.Visible = false;
                 nudVehicleGearQty.Visible = false;
                 lblVehicleAvail.Text = objCyberware.DisplayTotalAvail;
-                lblVehicleCost.Text = objCyberware.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblVehicleCost.Text = objCyberware.CurrentTotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 cmdVehicleCyberwareChangeMount.Visible = !string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount);
                 chkVehicleWeaponAccessoryInstalled.Visible = false;
                 chkVehicleIncludedInWeapon.Visible = false;
@@ -14824,8 +14846,8 @@ namespace Chummer
 
             if (!(treVehicles.SelectedNode?.Tag is Weapon objWeapon))
                 return;
-            objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedValue != null
-                ? Weapon.ConvertToFiringMode(cboVehicleWeaponFiringMode.SelectedValue.ToString())
+            objWeapon.FireMode = cboVehicleWeaponFiringMode.SelectedIndex >= 0
+                ? (Weapon.FiringMode)cboVehicleWeaponFiringMode.SelectedValue
                 : Weapon.FiringMode.DogBrain;
             RefreshSelectedVehicle();
 

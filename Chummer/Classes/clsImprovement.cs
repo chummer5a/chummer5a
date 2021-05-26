@@ -4580,7 +4580,7 @@ namespace Chummer
                             if (objCyberware != null)
                             {
                                 decReturn += objCyberware.DeleteCyberware();
-                                decReturn += objCyberware.TotalCost;
+                                decReturn += objCyberware.CurrentTotalCost;
                                 objCharacter.Cyberware.Remove(objCyberware);
                             }
                         }

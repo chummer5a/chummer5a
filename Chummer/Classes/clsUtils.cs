@@ -247,7 +247,7 @@ namespace Chummer
         /// <summary>
         /// Syntatic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// This async version works for both long and short waits, and because it is async, it does not need to manually call events anyway.
+        /// Because async functions don't lock threads, it does not need to manually call events anyway.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static ConfiguredTaskAwaitable SafeSleepAsync()
@@ -258,7 +258,7 @@ namespace Chummer
         /// <summary>
         /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// This async version works for both long and short waits, and because it is async, it does not need to manually call events anyway.
+        /// Because async functions don't lock threads, it does not need to manually call events anyway.
         /// </summary>
         /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -270,7 +270,6 @@ namespace Chummer
         /// <summary>
         /// Syntatic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// This method is intended for shorter durations. If you want to wait a long, pre-determined amount of time, use SafeSleepLong instead.
         /// </summary>
         /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -282,36 +281,37 @@ namespace Chummer
         /// <summary>
         /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// This method is intended for shorter durations. If you want to wait a long, pre-determined amount of time, use SafeSleepLong instead.
         /// </summary>
         /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
         /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, bool blnForceDoEvents = false)
         {
-            Thread.Sleep(intDurationMilliseconds);
-            if (!EverDoEvents)
-                return;
-            bool blnDoEvents = blnForceDoEvents || s_blnIsOKToRunDoEvents;
-            try
+            for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
             {
-                if (blnDoEvents)
+                Thread.Sleep(intDurationMilliseconds);
+                if (!EverDoEvents)
+                    return;
+                bool blnDoEvents = blnForceDoEvents || s_blnIsOKToRunDoEvents;
+                try
                 {
-                    s_blnIsOKToRunDoEvents = false;
-                    Application.DoEvents();
+                    if (blnDoEvents)
+                    {
+                        s_blnIsOKToRunDoEvents = false;
+                        Application.DoEvents();
+                    }
                 }
-            }
-            finally
-            {
-                if (blnDoEvents)
-                    s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
+                finally
+                {
+                    if (blnDoEvents)
+                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
+                }
             }
         }
 
         /// <summary>
         /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// This method is intended for shorter durations. If you want to wait a long, pre-determined amount of time, use SafeSleepLong instead.
         /// </summary>
         /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
         /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
@@ -320,35 +320,7 @@ namespace Chummer
         {
             SafeSleep(objTimeSpan.Milliseconds, blnForceDoEvents);
         }
-
-        /// <summary>
-        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
-        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// This method is intended for longer durations. If you want to wait a short amount of time, use SafeSleep instead.
-        /// </summary>
-        /// <param name="intDurationMilliseconds">Duration to wait in milliseconds. If 0 or less, DefaultSleepDuration is used instead.</param>
-        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SafeSleepLong(int intDurationMilliseconds, bool blnForceDoEvents = false)
-        {
-            for (; intDurationMilliseconds > 0; intDurationMilliseconds -= DefaultSleepDuration)
-            {
-                SafeSleep(Math.Min(intDurationMilliseconds, DefaultSleepDuration), blnForceDoEvents);
-            }
-        }
-
-        /// <summary>
-        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
-        /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
-        /// This method is intended for longer durations. If you want to wait a short amount of time, use SafeSleep instead.
-        /// </summary>
-        /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
-        /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void SafeSleepLong(TimeSpan objTimeSpan, bool blnForceDoEvents = false)
-        {
-            SafeSleepLong(objTimeSpan.Milliseconds, blnForceDoEvents);
-        }
+        
 
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread

@@ -11,7 +11,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -636,7 +635,7 @@ namespace ChummerHub.Client.Backend
                 try
                 {
                     //list.SiNner.DownloadedFromSINnersTime = DateTime.Now;
-                    objListNode = GetCharacterRosterTreeNodeRecursive(parentlist).Result;
+                    objListNode = GetCharacterRosterTreeNodeRecursive(parentlist);
                     if (objListNode.Nodes.Count > 0)
                     {
                         bFoundOneChummer = true;
@@ -707,7 +706,17 @@ namespace ChummerHub.Client.Backend
             return strReturn;
         }
 
-        private static async Task<TreeNode> GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg)
+        private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg)
+        {
+            return GetCharacterRosterTreeNodeRecursiveCoreAsync(true, ssg).GetAwaiter().GetResult();
+        }
+
+        private static Task<TreeNode> GetCharacterRosterTreeNodeRecursiveAsync(SINnerSearchGroup ssg)
+        {
+            return GetCharacterRosterTreeNodeRecursiveCoreAsync(false, ssg);
+        }
+
+        private static async Task<TreeNode> GetCharacterRosterTreeNodeRecursiveCoreAsync(bool blnSync, SINnerSearchGroup ssg)
         {
             TreeNode objListNode = new TreeNode
             {
@@ -719,7 +728,10 @@ namespace ChummerHub.Client.Backend
             {
                 var sinner = member.MySINner;
                 sinner.DownloadedFromSINnersTime = DateTime.Now.ToUniversalTime();
-                CharacterCache objCache = await sinner.GetCharacterCache()
+                CharacterCache objCache = (blnSync
+                                              // ReSharper disable once MethodHasAsyncOverload
+                                              ? sinner.GetCharacterCache()
+                                              : await sinner.GetCharacterCacheAsync())
                                           ?? new CharacterCache
                                           {
                                               CharacterName = "pending",
@@ -772,7 +784,10 @@ namespace ChummerHub.Client.Backend
             {
                 foreach (var childssg in ssg.MySINSearchGroups)
                 {
-                    var childnode = await GetCharacterRosterTreeNodeRecursive(childssg);
+                    var childnode = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? GetCharacterRosterTreeNodeRecursive(childssg)
+                        : await GetCharacterRosterTreeNodeRecursiveAsync(childssg);
                     if (childnode != null)
                     {
                         if (!objListNode.Nodes.ContainsKey(childnode.Name))
@@ -828,7 +843,7 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(fileName, Character.NumLoadingSections))
+                using (frmLoading frmLoadingForm = frmChummerMain.CreateAndShowProgressBar(Path.GetFileName(fileName), Character.NumLoadingSections))
                 {
                     if (!await objCharacter.LoadAsync(frmLoadingForm, false))
                         return null;
@@ -1279,8 +1294,7 @@ namespace ChummerHub.Client.Backend
                         {
                             using (WebClient wc = new WebClient())
                             {
-                                // ReSharper disable once MethodHasAsyncOverload
-                                wc.DownloadFile(
+                                await wc.DownloadFileTaskAsync(
                                     // Param1 = Link of file
                                     new Uri(sinner.DownloadUrl),
                                     // Param2 = Path to save

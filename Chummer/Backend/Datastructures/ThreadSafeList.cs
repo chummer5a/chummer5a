@@ -23,22 +23,22 @@ using System.Collections.ObjectModel;
 
 namespace Chummer
 {
-    public class ConcurrentList<T> : List<T>, IList<T>, IList
+    public class ThreadSafeList<T> : List<T>, IList<T>, IList
     {
         private readonly object _objLock = new object();
         private readonly List<T> _lstInternal;
 
-        public ConcurrentList()
+        public ThreadSafeList()
         {
             _lstInternal = new List<T>();
         }
 
-        public ConcurrentList(int capacity)
+        public ThreadSafeList(int capacity)
         {
             _lstInternal = new List<T>(capacity);
         }
 
-        public ConcurrentList(IEnumerable<T> collection)
+        public ThreadSafeList(IEnumerable<T> collection)
         {
             _lstInternal = new List<T>(collection);
         }

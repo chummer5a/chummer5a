@@ -328,6 +328,27 @@ namespace Chummer
         #endregion
 
         #region ComboBox Extensions
+        public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
+        {
+            if (ReferenceEquals(lsbThis.DataSource, lstItems))
+                return;
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = lstItems?.ToList();
+            if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+            {
+                lsbThis.ValueMember = nameof(ListItem.Value);
+                lsbThis.DisplayMember = nameof(ListItem.Name);
+            }
+            // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+            else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
+                return;
+            if (lsbThis.DataSource != null)
+                lsbThis.BindingContext = new BindingContext();
+            lsbThis.DataSource = lstItemsToSet;
+        }
+
         public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems)
         {
             if (ReferenceEquals(cboThis.DataSource, lstItems))
@@ -336,7 +357,7 @@ namespace Chummer
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
             List<ListItem> lstItemsToSet = lstItems?.ToList();
-            if (cboThis.DataSource == null || !(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+            if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
             {
                 cboThis.ValueMember = nameof(ListItem.Value);
                 cboThis.DisplayMember = nameof(ListItem.Name);
@@ -344,28 +365,30 @@ namespace Chummer
             // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
             else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                 return;
+            if (cboThis.DataSource != null)
+                cboThis.BindingContext = new BindingContext();
             cboThis.DataSource = lstItemsToSet;
         }
-        #endregion
 
-        #region ListBox Extensions
-        public static void PopulateWithListItems(this ListBox lstThis, IEnumerable<ListItem> lstItems)
+        public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems)
         {
-            if (ReferenceEquals(lstThis.DataSource, lstItems))
+            if (ReferenceEquals(cboThis.DataSource, lstItems))
                 return;
             // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
             // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
             // This means the code we use has to set the DataSources to new lists instead of the same one.
             List<ListItem> lstItemsToSet = lstItems?.ToList();
-            if (lstThis.DataSource == null || !(lstThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+            if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
             {
-                lstThis.ValueMember = nameof(ListItem.Value);
-                lstThis.DisplayMember = nameof(ListItem.Name);
+                cboThis.ValueMember = nameof(ListItem.Value);
+                cboThis.DisplayMember = nameof(ListItem.Name);
             }
             // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
             else if (lstItemsToSet != null && lstCurrentList.SequenceEqual(lstItemsToSet))
                 return;
-            lstThis.DataSource = lstItemsToSet;
+            if (cboThis.DataSource != null)
+                cboThis.BindingContext = new BindingContext();
+            cboThis.DataSource = lstItemsToSet;
         }
         #endregion
 

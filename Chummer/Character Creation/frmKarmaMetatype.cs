@@ -198,9 +198,7 @@ namespace Chummer
                     // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
                     _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.Heritage);
 
-                    int intForce = 0;
-                    if (nudForce.Visible)
-                        intForce = nudForce.ValueAsInt;
+                    int intForce = nudForce.Visible ? nudForce.ValueAsInt : 0;
 
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                     if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
@@ -316,8 +314,6 @@ namespace Chummer
                         objXmlMetavariant.SelectSingleNode("logmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), strSpace, objXmlMetavariant.SelectSingleNode("logaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
                     lblWIL.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
                         objXmlMetavariant.SelectSingleNode("wilmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), strSpace, objXmlMetavariant.SelectSingleNode("wilaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
-                    lblINI.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetavariant.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
-                        objXmlMetavariant.SelectSingleNode("inimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), strSpace, objXmlMetavariant.SelectSingleNode("iniaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
                 }
                 else
                 {
@@ -329,7 +325,6 @@ namespace Chummer
                     lblINT.Text = objXmlMetavariant.SelectSingleNode("intmin")?.Value ?? objXmlMetatype.SelectSingleNode("intmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                     lblLOG.Text = objXmlMetavariant.SelectSingleNode("logmin")?.Value ?? objXmlMetatype.SelectSingleNode("logmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                     lblWIL.Text = objXmlMetavariant.SelectSingleNode("wilmin")?.Value ?? objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
-                    lblINI.Text = objXmlMetavariant.SelectSingleNode("inimin")?.Value ?? objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 }
 
                 // ReSharper disable once IdentifierTypo
@@ -366,6 +361,30 @@ namespace Chummer
                 lblQualities.Text = sbdQualities.Length == 0 ? LanguageManager.GetString("String_None") : sbdQualities.ToString();
 
                 lblKarma.Text = objXmlMetavariant.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+
+                string strSource = objXmlMetavariant.SelectSingleNode("source")?.Value;
+                if (!string.IsNullOrEmpty(strSource))
+                {
+                    string strPage = objXmlMetavariant.SelectSingleNode("altpage")?.Value ?? objXmlMetavariant.SelectSingleNode("page")?.Value;
+                    if (!string.IsNullOrEmpty(strPage))
+                    {
+                        SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                        lblSource.Text = objSource.ToString();
+                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                    }
+                    else
+                    {
+                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        lblSource.Text = strUnknown;
+                        lblSource.SetToolTip(strUnknown);
+                    }
+                }
+                else
+                {
+                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    lblSource.Text = strUnknown;
+                    lblSource.SetToolTip(strUnknown);
+                }
             }
             else if (objXmlMetatype != null)
             {
@@ -388,8 +407,6 @@ namespace Chummer
                         objXmlMetatype.SelectSingleNode("logmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), strSpace, objXmlMetatype.SelectSingleNode("logaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
                     lblWIL.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
                         objXmlMetatype.SelectSingleNode("wilmax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), strSpace, objXmlMetatype.SelectSingleNode("wilaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
-                    lblINI.Text = string.Format(GlobalOptions.CultureInfo, strAttributeFormat, objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo),
-                        objXmlMetatype.SelectSingleNode("inimax")?.Value ?? 0.ToString(GlobalOptions.CultureInfo), strSpace, objXmlMetatype.SelectSingleNode("iniaug")?.Value ?? 0.ToString(GlobalOptions.CultureInfo));
                 }
                 else
                 {
@@ -401,7 +418,6 @@ namespace Chummer
                     lblINT.Text = objXmlMetatype.SelectSingleNode("intmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                     lblLOG.Text = objXmlMetatype.SelectSingleNode("logmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                     lblWIL.Text = objXmlMetatype.SelectSingleNode("wilmin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
-                    lblINI.Text = objXmlMetatype.SelectSingleNode("inimin")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
                 }
 
                 // ReSharper disable once IdentifierTypo
@@ -438,6 +454,30 @@ namespace Chummer
                 lblQualities.Text = sbdQualities.Length == 0 ? LanguageManager.GetString("String_None") : sbdQualities.ToString();
 
                 lblKarma.Text = objXmlMetatype.SelectSingleNode("karma")?.Value ?? 0.ToString(GlobalOptions.CultureInfo);
+
+                string strSource = objXmlMetatype.SelectSingleNode("source")?.Value;
+                if (!string.IsNullOrEmpty(strSource))
+                {
+                    string strPage = objXmlMetatype.SelectSingleNode("altpage")?.Value ?? objXmlMetatype.SelectSingleNode("page")?.Value;
+                    if (!string.IsNullOrEmpty(strPage))
+                    {
+                        SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                        lblSource.Text = objSource.ToString();
+                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                    }
+                    else
+                    {
+                        string strUnknown = LanguageManager.GetString("String_Unknown");
+                        lblSource.Text = strUnknown;
+                        lblSource.SetToolTip(strUnknown);
+                    }
+                }
+                else
+                {
+                    string strUnknown = LanguageManager.GetString("String_Unknown");
+                    lblSource.Text = strUnknown;
+                    lblSource.SetToolTip(strUnknown);
+                }
             }
             else
             {
@@ -449,11 +489,11 @@ namespace Chummer
                 lblINT.Text = string.Empty;
                 lblLOG.Text = string.Empty;
                 lblWIL.Text = string.Empty;
-                lblINI.Text = string.Empty;
 
                 lblQualities.Text = string.Empty;
 
                 lblKarma.Text = string.Empty;
+                lblSource.Text = string.Empty;
 
                 cmdOK.Enabled = false;
             }
@@ -465,9 +505,9 @@ namespace Chummer
             lblINTLabel.Visible = !string.IsNullOrEmpty(lblINT.Text);
             lblLOGLabel.Visible = !string.IsNullOrEmpty(lblLOG.Text);
             lblWILLabel.Visible = !string.IsNullOrEmpty(lblWIL.Text);
-            lblINILabel.Visible = !string.IsNullOrEmpty(lblINI.Text);
             lblQualitiesLabel.Visible = !string.IsNullOrEmpty(lblQualities.Text);
-            lblKarma.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+            lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void PopulateMetavariants()
@@ -520,9 +560,6 @@ namespace Chummer
                 int intPos = strEssMax.IndexOf("D6", StringComparison.Ordinal);
                 if (objXmlMetatype.SelectSingleNode("forcecreature") != null || intPos != -1)
                 {
-                    lblForceLabel.Visible = true;
-                    nudForce.Visible = true;
-
                     if (intPos != -1)
                     {
                         if (intPos > 0)
@@ -549,6 +586,8 @@ namespace Chummer
                             : "String_Force");
                         nudForce.Maximum = 100;
                     }
+                    lblForceLabel.Visible = true;
+                    nudForce.Visible = true;
                 }
                 else
                 {
@@ -655,6 +694,11 @@ namespace Chummer
                 chkPossessionBased.Checked = false;
                 cboPossessionMethod.Visible = false;
             }
+        }
+
+        private void OpenSourceFromLabel(object sender, EventArgs e)
+        {
+            CommonFunctions.OpenPdfFromControl(sender, e);
         }
         #endregion
     }

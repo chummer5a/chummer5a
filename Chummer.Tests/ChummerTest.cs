@@ -17,10 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Drawing;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -63,10 +63,26 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("UI")]
-        public void Test00_BasicStartup()
+        [TestMethod]
+        public void Test00_ColorTest()
         {
-            Debug.WriteLine("Unit test initialized for: Test00_BasicStartup()");
+            Debug.WriteLine("Unit test initialized for: Test00_ColorTest()");
+            Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
+            Assert.IsTrue(objColorLightGrayInDarkMode.GetBrightness() < Color.LightGray.GetBrightness());
+            Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
+            Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
+            Assert.IsTrue(Math.Abs(objColorRedInvertDark.GetHue() - Color.Red.GetHue()) < float.Epsilon);
+            Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
+            Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
+            Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
+        }
+
+
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
+        [TestMethod]
+        public void Test01_BasicStartup()
+        {
+            Debug.WriteLine("Unit test initialized for: Test01_BasicStartup()");
             frmChummerMain frmOldMainForm = Program.MainForm;
             frmChummerMain frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
@@ -95,76 +111,87 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("I/O")]
-        public void Test01_LoadThenSave()
+        [TestMethod]
+        public void Test02_LoadThenSave()
         {
-            Debug.WriteLine("Unit test initialized for: Test01_LoadThenSave()");
+            Debug.WriteLine("Unit test initialized for: Test02_LoadThenSave()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
                 using (Character objCharacter = LoadCharacter(objFileInfo))
+                {
                     SaveCharacter(objCharacter, strDestination);
-                using (Character _ = LoadCharacter(new FileInfo(strDestination)))
-                { // Assert on failed load will already happen inside LoadCharacter
+                    using (Character _ = LoadCharacter(new FileInfo(strDestination)))
+                    {
+                        // Assert on failed load will already happen inside LoadCharacter
+                    }
                 }
             }
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("I/O")]
-        public void Test02_LoadThenSaveIsDeterministic()
+        [TestMethod]
+        public void Test03_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Test02_LoadThenSaveIsDeterministic()");
+            Debug.WriteLine("Unit test initialized for: Test03_LoadThenSaveIsDeterministic()");
             foreach (FileInfo objBaseFileInfo in TestFiles)
             {
                 // First Load-Save cycle
                 string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + objBaseFileInfo.Name);
-                using (Character objCharacter = LoadCharacter(objBaseFileInfo))
-                    SaveCharacter(objCharacter, strDestinationControl);
-                // Second Load-Save cycle
-                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
-                using (Character objCharacter = LoadCharacter(new FileInfo(strDestinationControl)))
-                    SaveCharacter(objCharacter, strDestinationTest);
-                // Check to see that character after first load cycle is consistent with character after second
-                using (FileStream controlFileStream = File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                using (Character objCharacterControl = LoadCharacter(objBaseFileInfo))
                 {
-                    using (FileStream testFileStream = File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                    SaveCharacter(objCharacterControl, strDestinationControl);
+                    // Second Load-Save cycle
+                    string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
+                    using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
                     {
-                        try
+                        SaveCharacter(objCharacterTest, strDestinationTest);
+                        // Check to see that character after first load cycle is consistent with character after second
+                        using (FileStream controlFileStream =
+                            File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
                         {
-                            Diff myDiff = DiffBuilder
-                                .Compare(controlFileStream)
-                                .WithTest(testFileStream)
-                                .CheckForIdentical()
-                                .WithNodeFilter(x => x.Name != "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                                .WithNodeMatcher(
-                                    new DefaultNodeMatcher(
-                                        ElementSelectors.Or(
-                                            ElementSelectors.ByNameAndText,
-                                            ElementSelectors.ByName)))
-                                .IgnoreWhitespace()
-                                .Build();
-                            foreach (Difference diff in myDiff.Differences)
+                            using (FileStream testFileStream =
+                                File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
                             {
-                                Console.WriteLine(diff.Comparison);
-                                Console.WriteLine();
-                            }
+                                try
+                                {
+                                    Diff myDiff = DiffBuilder
+                                        .Compare(controlFileStream)
+                                        .WithTest(testFileStream)
+                                        .CheckForIdentical()
+                                        .WithNodeFilter(x =>
+                                            x.Name !=
+                                            "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                        .WithNodeMatcher(
+                                            new DefaultNodeMatcher(
+                                                ElementSelectors.Or(
+                                                    ElementSelectors.ByNameAndText,
+                                                    ElementSelectors.ByName)))
+                                        .IgnoreWhitespace()
+                                        .Build();
+                                    foreach (Difference diff in myDiff.Differences)
+                                    {
+                                        Console.WriteLine(diff.Comparison);
+                                        Console.WriteLine();
+                                    }
 
-                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
-                        }
-                        catch (XmlSchemaException e)
-                        {
-                            Assert.Fail("Unexpected validation failure: " + e.Message);
+                                    Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                                }
+                                catch (XmlSchemaException e)
+                                {
+                                    Assert.Fail("Unexpected validation failure: " + e.Message);
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        [TestMethod, TestCategory("I/O")]
-        public void Test03_LoadThenPrint()
+        [TestMethod]
+        public void Test04_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Test03_LoadThenPrint()");
+            Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 using (Character objCharacter = LoadCharacter(objFileInfo))
@@ -185,10 +212,10 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("UI")]
-        public void Test04_LoadCharacterForms()
+        [TestMethod]
+        public void Test05_LoadCharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_LoadCharacterForms()");
+            Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
             frmChummerMain frmOldMainForm = Program.MainForm;
             frmChummerMain frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren

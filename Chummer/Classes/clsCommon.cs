@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -44,7 +45,56 @@ namespace Chummer
         private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
+        private static readonly ConcurrentDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
+            new ConcurrentDictionary<string, Tuple<bool, object>>();
+
         private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(string strXPath)
+        {
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
+            {
+                return objCachedEvaluation.Item2;
+            }
+            if (string.IsNullOrWhiteSpace(strXPath))
+            {
+                s_DicCompiledEvaluations.TryAdd(strXPath, null);
+                return null;
+            }
+            if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
+            {
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
+                return strXPath;
+            }
+
+            object objReturn;
+            bool blnIsSuccess;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
+                blnIsSuccess = true;
+            }
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
+            return objReturn;
+        }
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
@@ -55,13 +105,20 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
         {
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
+            {
+                blnIsSuccess = objCachedEvaluation.Item1;
+                return objCachedEvaluation.Item2;
+            }
             if (string.IsNullOrWhiteSpace(strXPath))
             {
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, null));
                 blnIsSuccess = false;
                 return null;
             }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
                 blnIsSuccess = false;
                 return strXPath;
             }
@@ -84,6 +141,43 @@ namespace Chummer
                 objReturn = strXPath;
                 blnIsSuccess = false;
             }
+            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Evaluate an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        {
+            string strExpression = objXPath.Expression;
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
+            {
+                return objCachedEvaluation.Item2;
+            }
+            object objReturn;
+            bool blnIsSuccess;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                blnIsSuccess = true;
+            }
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strExpression;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strExpression;
+                blnIsSuccess = false;
+            }
+            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
 
@@ -96,6 +190,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess)
         {
+            string strExpression = objXPath.Expression;
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
+            {
+                blnIsSuccess = objCachedEvaluation.Item1;
+                return objCachedEvaluation.Item2;
+            }
             object objReturn;
             try
             {
@@ -105,15 +205,16 @@ namespace Chummer
             catch (ArgumentException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
             }
             catch (XPathException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
             }
+            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
         #endregion
@@ -984,7 +1085,7 @@ namespace Chummer
                 // Read the stream.
                 objStream.Position = 0;
                 using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.UnSafeXmlReaderSettings))
                     objReturn.Load(objXmlReader);
             }
             return objReturn;
@@ -1020,16 +1121,16 @@ namespace Chummer
         /// </summary>
         /// <param name="strSource">Book code and page number to open.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
-        /// <param name="strPdfParamaters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
+        /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PdfAppPath.</param>
-        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParamaters = "", string strPdfAppPath = "")
+        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "")
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
-            if (string.IsNullOrEmpty(strPdfParamaters))
-                strPdfParamaters = GlobalOptions.PDFParameters;
+            if (string.IsNullOrEmpty(strPdfParameters))
+                strPdfParameters = GlobalOptions.PDFParameters;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPdfParamaters))
+            if (string.IsNullOrWhiteSpace(strPdfParameters))
                 return;
 
             if (string.IsNullOrEmpty(strPdfAppPath))
@@ -1092,7 +1193,7 @@ namespace Chummer
                 return;
             intPage += objBookInfo.Offset;
 
-            string strParams = strPdfParamaters
+            string strParams = strPdfParameters
                 .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
                 .Replace("{localpath}", uriPath.LocalPath)
                 .Replace("{absolutepath}", uriPath.AbsolutePath);

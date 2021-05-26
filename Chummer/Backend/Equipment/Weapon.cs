@@ -112,7 +112,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodWirelessBonus;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
-        private FiringMode _eFiringMode;
+        private FiringMode _eFiringMode = FiringMode.DogBrain;
 
         private string _strDeviceRating = string.Empty;
         private string _strAttack = string.Empty;
@@ -1073,6 +1073,20 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("weaponname", CustomName);
             objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
+
+            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
+            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+
             if (_lstAccessories.Count > 0)
             {
                 objWriter.WriteStartElement("accessories");
@@ -4004,7 +4018,6 @@ namespace Chummer.Backend.Equipment
                             }
                             break;
                         }
-                    case FiringMode.GunneryCommandDevice:
                     case FiringMode.RemoteOperated:
                         {
                             intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
@@ -4017,6 +4030,7 @@ namespace Chummer.Backend.Equipment
                             decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
                             break;
                         }
+                    case FiringMode.GunneryCommandDevice:
                     case FiringMode.ManualOperation:
                         {
                             intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").Pool;
@@ -4254,17 +4268,15 @@ namespace Chummer.Backend.Equipment
                             if (objAutosoft != null)
                             {
                                 sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                    objAutosoft.CurrentDisplayName, strSpace, objAutosoft.Rating);
+                                    strSpace, objAutosoft.CurrentDisplayName, objAutosoft.Rating);
                             }
                             else
                             {
                                 sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                    LanguageManager.GetString("Tip_Skill_Defaulting"), strSpace, -1);
+                                    strSpace, LanguageManager.GetString("Tip_Skill_Defaulting"), -1);
                             }
                             break;
                         }
-                    case FiringMode.RemoteOperated:
-                        //TODO: how/why are these different?
                     case FiringMode.GunneryCommandDevice:
                         {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
@@ -4283,6 +4295,8 @@ namespace Chummer.Backend.Equipment
                             }
                             break;
                         }
+                    case FiringMode.RemoteOperated:
+                        //TODO: how/why are these different?
                     case FiringMode.ManualOperation:
                         {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");

@@ -241,15 +241,14 @@ namespace Chummer
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
         Version _verSavedVersion = new Version();
 
+        /// <summary>
+        /// Set of unique methods to run after the character's Save() method is otherwise finished.
+        /// Input is the character in question, output is if the code resolved without errors.
+        /// </summary>
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        [CanBeNull]
-        public EventHandler<Character> OnSaveCompleted
-        {
-            get;
-            set;
-        }
+        public ConcurrentHashSet<Func<Character, bool>> DoOnSaveCompleted { get; } = new ConcurrentHashSet<Func<Character, bool>>();
 
         #region Initialization, Save, Load, Print, and Reset Methods
 
@@ -2047,7 +2046,10 @@ namespace Chummer
             _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
             if (callOnSaveCallBack)
-                OnSaveCompleted?.Invoke(this, this);
+            {
+                foreach (Func<Character, bool> funcToRun in DoOnSaveCompleted)
+                    blnErrorFree = funcToRun(this) && blnErrorFree;
+            }
             return blnErrorFree;
         }
 
@@ -2118,7 +2120,7 @@ namespace Chummer
         /// <summary>
         /// Queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public Queue<Func<bool>> PostLoadMethods => new Queue<Func<bool>>();
+        public Queue<Func<bool>> PostLoadMethods { get; } = new Queue<Func<bool>>();
 
         /// <summary>
         /// Load the Character from an XML file synchronously.
@@ -2382,24 +2384,23 @@ namespace Chummer
                                 {
                                     int intReturn = objOptionsToCheck.BuiltInOption ? 0 : 1;
                                     int intDummy = intLegacyMaxKarma - objOptionsToCheck.BuildKarma;
-                                    intReturn -= intDummy * intDummy;
+                                    intReturn -= intDummy.RaiseToPower(2);
                                     intDummy = decLegacyMaxNuyen.StandardRound() -
                                                objOptionsToCheck.NuyenMaximumBP.StandardRound();
-                                    intReturn -= intDummy * intDummy;
-                                    int intBaseline =
-                                        decLegacyMaxNuyen.StandardRound() * decLegacyMaxNuyen.StandardRound() +
-                                        intLegacyMaxKarma * intLegacyMaxKarma;
+                                    intReturn -= intDummy.RaiseToPower(2);
+                                    int intBaseline = decLegacyMaxNuyen.StandardRound().RaiseToPower(2) +
+                                                      intLegacyMaxKarma.RaiseToPower(2);
                                     intDummy = Math.Max(setSavedBooks.Count, 1) *
-                                               lstSavedCustomDataDirectoryNames.Count *
+                                               (lstSavedCustomDataDirectoryNames.Count + 1) *
                                                intBaseline;
                                     if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
                                     {
-                                        intReturn += int.MaxValue / 2 + intDummy * intDummy;
+                                        intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
                                     }
                                     else if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
                                              eSavedBuildMethod.UsesPriorityTables())
                                     {
-                                        intReturn += int.MaxValue / 2 + intDummy * intDummy / 2;
+                                        intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2) / 2;
                                     }
 
                                     for (int i = 0; i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count; ++i)
@@ -2409,25 +2410,24 @@ namespace Chummer
                                         int intLoopIndex =
                                             lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
                                         if (intLoopIndex < 0)
-                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
-                                                         objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
+                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
                                                          intBaseline;
                                         else
-                                            intReturn -= (i - intLoopIndex) * (i - intLoopIndex) * intBaseline;
+                                            intReturn -= (i - intLoopIndex).RaiseToPower(2) * intBaseline;
                                     }
 
                                     foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
                                         if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x =>
                                             x.Name != strLoopCustomDataName))
-                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
-                                                         objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count *
+                                            intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
                                                          intBaseline;
                                     int intBookBaselineScore =
                                         (lstSavedCustomDataDirectoryNames.Count + 1) * intBaseline;
                                     HashSet<string> setDummyBooks = setSavedBooks.ToHashSet();
                                     setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                                    intReturn -= (setSavedBooks.Count - setDummyBooks.Count) *
-                                                 (setSavedBooks.Count - setDummyBooks.Count) * intBookBaselineScore;
+                                    intReturn -= ((setSavedBooks.Count - setDummyBooks.Count).RaiseToPower(2)
+                                                  + (objOptionsToCheck.Books.Count - setDummyBooks.Count).RaiseToPower(2))
+                                                 * intBookBaselineScore;
                                     return intReturn;
                                 }
 

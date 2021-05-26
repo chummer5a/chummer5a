@@ -47,14 +47,14 @@ namespace ChummerHub.Client.UI
                 "Assigning this SINner a new Id enables you to save multiple versions of this chummer on SINnersHub." +
                 Environment.NewLine;
             bGenerateNewId.SetToolTip(tip);
-            CheckSINnerStatus().ContinueWith(a =>
+            Task.Run(() => CheckSINnerStatus().ContinueWith(a =>
             {
                 if (!a.Result)
                 {
                     Log.Error("somehow I couldn't check the onlinestatus of " +
                                                         myUC.MyCE.MySINnerFile.Id);
                 }
-            });
+            }));
             foreach (var cb in gpTags.Controls)
             {
                 if (cb is Control cont)
@@ -76,7 +76,6 @@ namespace ChummerHub.Client.UI
 
         public async Task<bool> CheckSINnerStatus()
         {
-
             try
             {
                 if (myUC?.MyCE?.MySINnerFile?.Id == null || myUC.MyCE.MySINnerFile.Id == Guid.Empty)

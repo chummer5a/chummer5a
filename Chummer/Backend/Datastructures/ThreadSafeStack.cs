@@ -21,22 +21,22 @@ using System.Collections.Generic;
 
 namespace Chummer
 {
-    public class ConcurrentStack<T> : Stack<T>, ICollection
+    public class ThreadSafeStack<T> : Stack<T>, ICollection
     {
         private readonly object _objLock = new object();
         private readonly Stack<T> _stkInternal;
 
-        public ConcurrentStack()
+        public ThreadSafeStack()
         {
             _stkInternal = new Stack<T>();
         }
 
-        public ConcurrentStack(int capacity)
+        public ThreadSafeStack(int capacity)
         {
             _stkInternal = new Stack<T>(capacity);
         }
 
-        public ConcurrentStack(IEnumerable<T> collection)
+        public ThreadSafeStack(IEnumerable<T> collection)
         {
             _stkInternal = new Stack<T>(collection);
         }

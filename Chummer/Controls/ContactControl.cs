@@ -469,6 +469,9 @@ namespace Chummer
 
             cboContactRole.BeginUpdate();
             cboContactRole.PopulateWithListItems(Contact.ContactArchetypes(_objContact.CharacterObject));
+            cboContactRole.SelectedValue = _objContact.Role;
+            if (cboContactRole.SelectedIndex < 0)
+                cboContactRole.Text = _objContact.DisplayRole;
             cboContactRole.EndUpdate();
         }
 
@@ -600,7 +603,7 @@ namespace Chummer
                     chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
-                    chkFree.DoDatabinding("Visible", _objContact.CharacterObject, nameof(_objContact.CharacterObject.Created));
+                    chkFree.Visible = _objContact?.CharacterObject.Created == false;
                     chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
                     chkFamily.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
                     chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
@@ -682,22 +685,6 @@ namespace Chummer
                     cboGender.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                     cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                 }
-
-                // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
-                cboMetatype.SelectedIndexChanged += UpdateMetatype;
-                cboGender.SelectedIndexChanged += UpdateGender;
-                cboAge.SelectedIndexChanged += UpdateAge;
-                cboType.SelectedIndexChanged += UpdateType;
-                cboPersonalLife.SelectedIndexChanged += UpdatePersonalLife;
-                cboPreferredPayment.SelectedIndexChanged += UpdatePreferredPayment;
-                cboHobbiesVice.SelectedIndexChanged += UpdateHobbiesVice;
-                cboMetatype.Leave += UpdateMetatype;
-                cboGender.Leave += UpdateGender;
-                cboAge.Leave += UpdateAge;
-                cboType.Leave += UpdateType;
-                cboPersonalLife.Leave += UpdatePersonalLife;
-                cboPreferredPayment.Leave += UpdatePreferredPayment;
-                cboHobbiesVice.Leave += UpdateHobbiesVice;
 
                 lblType = new Label
                 {
@@ -811,6 +798,48 @@ namespace Chummer
                 tlpMain.Controls.Add(tlpStatBlock, 0, 3);
                 tlpMain.ResumeLayout();
                 ResumeLayout();
+
+                // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
+
+                if (_objContact != null)
+                {
+                    cboMetatype.SelectedValue = _objContact.Metatype;
+                    cboGender.SelectedValue = _objContact.Gender;
+                    cboAge.SelectedValue = _objContact.Age;
+                    cboPersonalLife.SelectedValue = _objContact.PersonalLife;
+                    cboType.SelectedValue = _objContact.Type;
+                    cboPreferredPayment.SelectedValue = _objContact.PreferredPayment;
+                    cboHobbiesVice.SelectedValue = _objContact.HobbiesVice;
+                    if (cboMetatype.SelectedIndex < 0)
+                        cboMetatype.Text = _objContact.DisplayMetatype;
+                    if (cboGender.SelectedIndex < 0)
+                        cboGender.Text = _objContact.DisplayGender;
+                    if (cboAge.SelectedIndex < 0)
+                        cboAge.Text = _objContact.DisplayAge;
+                    if (cboPersonalLife.SelectedIndex < 0)
+                        cboPersonalLife.Text = _objContact.DisplayPersonalLife;
+                    if (cboType.SelectedIndex < 0)
+                        cboType.Text = _objContact.DisplayType;
+                    if (cboPreferredPayment.SelectedIndex < 0)
+                        cboPreferredPayment.Text = _objContact.DisplayPreferredPayment;
+                    if (cboHobbiesVice.SelectedIndex < 0)
+                        cboHobbiesVice.Text = _objContact.DisplayHobbiesVice;
+                }
+
+                cboMetatype.SelectedIndexChanged += UpdateMetatype;
+                cboGender.SelectedIndexChanged += UpdateGender;
+                cboAge.SelectedIndexChanged += UpdateAge;
+                cboType.SelectedIndexChanged += UpdateType;
+                cboPersonalLife.SelectedIndexChanged += UpdatePersonalLife;
+                cboPreferredPayment.SelectedIndexChanged += UpdatePreferredPayment;
+                cboHobbiesVice.SelectedIndexChanged += UpdateHobbiesVice;
+                cboMetatype.Leave += UpdateMetatype;
+                cboGender.Leave += UpdateGender;
+                cboAge.Leave += UpdateAge;
+                cboType.Leave += UpdateType;
+                cboPersonalLife.Leave += UpdatePersonalLife;
+                cboPreferredPayment.Leave += UpdatePreferredPayment;
+                cboHobbiesVice.Leave += UpdateHobbiesVice;
             }
         }
 
