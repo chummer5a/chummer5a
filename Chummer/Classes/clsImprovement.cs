@@ -2313,7 +2313,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {CharacterObject, ImprovementType, ImprovementName}.GetHashCode();
+            return (CharacterObject, ImprovementType, ImprovementName).GetHashCode();
         }
 
         public bool Equals(ImprovementDictionaryKey other)

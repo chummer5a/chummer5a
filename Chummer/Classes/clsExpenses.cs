@@ -505,7 +505,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {_objCharacter, Date, Amount, Reason, Refund, ForceCareerVisible}.GetHashCode();
+            return (_objCharacter, Date, Amount, Reason, Refund, ForceCareerVisible).GetHashCode();
         }
 
         public static bool operator ==(ExpenseLogEntry left, ExpenseLogEntry right)

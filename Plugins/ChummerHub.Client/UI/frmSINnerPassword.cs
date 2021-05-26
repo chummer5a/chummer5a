@@ -57,7 +57,7 @@ namespace ChummerHub.Client.UI
 
             public override int GetHashCode()
             {
-                return new {cbSize, hIcon, iSysIconIndex, iIcon, szPath}.GetHashCode();
+                return (cbSize, hIcon, iSysIconIndex, iIcon, szPath).GetHashCode();
             }
 
             public static bool operator ==(SHSTOCKICONINFO left, SHSTOCKICONINFO right)
