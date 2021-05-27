@@ -60,6 +60,7 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strRelativeName = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Character _objLinkedCharacter;
 
         private readonly List<Image> _lstMugshots = new List<Image>(1);
@@ -111,6 +112,7 @@ namespace Chummer
             objWriter.WriteElementString("file", _strFileName);
             objWriter.WriteElementString("relative", _strRelativeName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             SaveMugshots(objWriter);
             objWriter.WriteEndElement();
 
@@ -144,6 +146,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             RefreshLinkedCharacter(false);
 
             LoadMugshots(objNode);
@@ -164,7 +170,7 @@ namespace Chummer
             // Translate the Critter name if applicable.
             string strName = Name;
             XmlNode objXmlCritterNode = GetNode(strLanguageToPrint);
-            if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
+            if (!strLanguageToPrint.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
             }
@@ -374,7 +380,7 @@ namespace Chummer
                         break;
                 }
 
-                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && strLanguageToPrint != GlobalOptions.DefaultLanguage)
+                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && !strLanguageToPrint.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strDisplayRange = strDisplayRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguageToPrint))
                         .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint))
@@ -600,6 +606,15 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         private bool _blnFettered;

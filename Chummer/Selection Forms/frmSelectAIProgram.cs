@@ -192,6 +192,8 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
+            SuspendLayout();
+            tlpRight.Visible = false;
             string strSelectedId = lstAIPrograms.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -217,9 +219,9 @@ namespace Chummer
                         string strPage = objXmlProgram.SelectSingleNode("altpage")?.Value ?? objXmlProgram.SelectSingleNode("page")?.Value;
                         if (!string.IsNullOrEmpty(strPage))
                         {
-                            string strSpace = LanguageManager.GetString("String_Space");
-                            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                            lblSource.Text = objSource.ToString();
+                            lblSource.SetToolTip(objSource.LanguageBookTooltip);
                         }
                         else
                         {
@@ -234,19 +236,8 @@ namespace Chummer
                         lblSource.Text = strUnknown;
                         lblSource.SetToolTip(strUnknown);
                     }
+                    tlpRight.Visible = true;
                 }
-                else
-                {
-                    lblRequiresProgram.Text = string.Empty;
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
-                }
-            }
-            else
-            {
-                lblRequiresProgram.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
             }
 
             lblRequiresProgramLabel.Visible = !string.IsNullOrEmpty(lblRequiresProgram.Text);

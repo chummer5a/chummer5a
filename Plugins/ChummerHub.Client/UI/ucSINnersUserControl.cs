@@ -48,8 +48,8 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    mySINner.CharacterObject.OnSaveCompleted = null;
-                    mySINner.CharacterObject.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+                    mySINner.CharacterObject.DoOnSaveCompleted.Remove(PluginHandler.MyOnSaveUpload);
+                    mySINner.CharacterObject.DoOnSaveCompleted.TryAdd(PluginHandler.MyOnSaveUpload);
                 }
                 catch (Exception e)
                 {

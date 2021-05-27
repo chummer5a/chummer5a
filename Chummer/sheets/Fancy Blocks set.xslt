@@ -961,7 +961,7 @@
     </xsl:variable>
 
     <xsl:variable name="sorted_ammunition">
-      <xsl:for-each select="gears/gear[category_english='Ammunition']">
+      <xsl:for-each select="gears/gear[isammo='True']">
         <xsl:sort select="name" />
 
         <xsl:if test="count(../../weapons/weapon[name=current()/name]) = 0">
@@ -2036,7 +2036,7 @@
 
   <xsl:template name="print_other_gear">
     <xsl:variable name="other_gears">
-      <xsl:for-each select="gears/gear[category_english!='ID/Credsticks' and category_english!='Ammunition' and category_english!='Foci' and category_english!='Commlinks' and category_english!='Commlink' and category_english!='Cyberdecks' and category_english!='Rigger Command Consoles']">
+      <xsl:for-each select="gears/gear[category_english!='ID/Credsticks' and isammo!='True' and category_english!='Foci' and category_english!='Commlinks' and category_english!='Commlink' and category_english!='Cyberdecks' and category_english!='Rigger Command Consoles']">
         <xsl:sort select="location" />
         <xsl:sort select="name" />
 

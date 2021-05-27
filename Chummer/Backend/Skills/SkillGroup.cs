@@ -489,7 +489,8 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, SkillGroup>(nameof(KarmaUnbroken), x => x._objCharacter.Options.UsePointsOnBrokenGroups)
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(ToolTip),
-                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList))
+                    new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
+                    new DependencyGraphNode<string, SkillGroup>(nameof(IsDisabled))
                 ),
                 new DependencyGraphNode<string, SkillGroup>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, SkillGroup>(nameof(DisplayName),
@@ -577,7 +578,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
             return _objCharacter.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value ?? Name;
         }
@@ -586,6 +587,10 @@ namespace Chummer.Backend.Skills
         {
             get
             {
+                if (IsDisabled)
+                {
+                    return LanguageManager.GetString("Label_SkillGroup_Disabled");
+                }
                 if (_objCharacter.Created && !CareerIncrease)
                     return LanguageManager.GetString("Label_SkillGroup_Broken");
                 List<Skill> lstEnabledSkills = SkillList.Where(x => x.Enabled).ToList();
@@ -600,10 +605,22 @@ namespace Chummer.Backend.Skills
         {
             get
             {
+                System.Text.StringBuilder s = new System.Text.StringBuilder();
                 if (string.IsNullOrEmpty(_strToolTip))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
-                    _strToolTip = LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpace + string.Join(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName));
+                    s.AppendLine(LanguageManager.GetString("Tip_SkillGroup_Skills") + strSpace + string.Join(',' + strSpace, _lstAffectedSkills.Select(x => x.CurrentDisplayName)));
+                }
+
+                if (IsDisabled){
+                    s.AppendLine(LanguageManager.GetString("Label_SkillGroup_DisabledBy"));
+                    foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
+                            ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
+                            (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName)))
+                            && x.Enabled))
+                    {
+                        s.AppendLine(CharacterObject.GetObjectName(objImprovement));
+                    }
                 }
                 return _strToolTip;
             }

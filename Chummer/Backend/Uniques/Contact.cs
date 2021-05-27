@@ -73,6 +73,7 @@ namespace Chummer
         private string _strRelativeName = string.Empty;
         private Character _objLinkedCharacter;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Color _objColour;
         private bool _blnIsGroup;
         private readonly Character _objCharacter;
@@ -289,6 +290,7 @@ namespace Chummer
             objWriter.WriteElementString("file", _strFileName);
             objWriter.WriteElementString("relative", _strRelativeName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("groupname", _strGroupName);
             objWriter.WriteElementString("colour", _objColour.ToArgb().ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("group", _blnIsGroup.ToString(GlobalOptions.InvariantCultureInfo));
@@ -339,6 +341,11 @@ namespace Chummer
                 _eContactType = ConvertToContactType(strTemp);
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
             objNode.TryGetBoolFieldQuickly("group", ref _blnIsGroup);
             objNode.TryGetStringFieldQuickly("guid", ref _strUnique);
@@ -455,7 +462,7 @@ namespace Chummer
 
         public string DisplayRoleMethod(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Role;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/contacts/contact[. = " + Role.CleanXPath() + "]/@translate")?.Value ?? Role;
@@ -604,7 +611,7 @@ namespace Chummer
 
         public string DisplayGenderMethod(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Gender;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/genders/gender[. = " + Gender.CleanXPath() + "]/@translate")?.Value ?? Gender;
@@ -639,7 +646,7 @@ namespace Chummer
 
         public string DisplayAgeMethod(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Age;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/ages/age[. = " + Age.CleanXPath() + "]/@translate")?.Value ?? Age;
@@ -674,7 +681,7 @@ namespace Chummer
 
         public string DisplayTypeMethod(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Type;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/types/type[. = " + Type.CleanXPath() + "]/@translate")?.Value ?? Type;
@@ -704,7 +711,7 @@ namespace Chummer
 
         public string DisplayPreferredPaymentMethod(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PreferredPayment;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage)
@@ -735,7 +742,7 @@ namespace Chummer
 
         public string DisplayHobbiesViceMethod(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return HobbiesVice;
 
             try
@@ -776,7 +783,7 @@ namespace Chummer
 
         public string DisplayPersonalLifeMethod(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return PersonalLife;
 
             return _objCharacter.LoadDataXPath("contacts.xml", strLanguage).SelectSingleNode("/chummer/personallives/personallife[. = " + PersonalLife.CleanXPath() + "]/@translate")?.Value
@@ -891,6 +898,15 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>

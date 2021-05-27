@@ -109,20 +109,18 @@ namespace Chummer
                     string strPage = objXmlMetamagic.SelectSingleNode("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value;
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    tlpRight.Visible = true;
                 }
                 else
                 {
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
+                    tlpRight.Visible = false;
                 }
             }
             else
             {
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
             }
-
-            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

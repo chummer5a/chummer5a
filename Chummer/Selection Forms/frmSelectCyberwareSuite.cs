@@ -136,7 +136,7 @@ namespace Chummer
             foreach (Cyberware objCyberware in lstSuiteCyberwares)
             {
                 WriteList(sbdCyberwareLabelString, objCyberware, 0);
-                decTotalCost += objCyberware.TotalCost;
+                decTotalCost += objCyberware.CurrentTotalCost;
                 decTotalESS += objCyberware.CalculatedESS;
             }
 

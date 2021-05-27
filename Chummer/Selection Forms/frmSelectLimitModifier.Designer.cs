@@ -63,8 +63,7 @@ namespace Chummer
             // 
             // txtName
             // 
-            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtName.Location = new System.Drawing.Point(63, 30);
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(260, 20);
@@ -87,6 +86,7 @@ namespace Chummer
             // 
             // nudBonus
             // 
+            this.nudBonus.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudBonus.AutoSize = true;
             this.nudBonus.Location = new System.Drawing.Point(63, 82);
             this.nudBonus.Maximum = new decimal(new int[] {
@@ -110,7 +110,7 @@ namespace Chummer
             // 
             // lblNameLabel
             // 
-            this.lblNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNameLabel.AutoSize = true;
             this.lblNameLabel.Location = new System.Drawing.Point(19, 33);
             this.lblNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -122,7 +122,7 @@ namespace Chummer
             // 
             // lblBonusLabel
             // 
-            this.lblBonusLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblBonusLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblBonusLabel.AutoSize = true;
             this.lblBonusLabel.Location = new System.Drawing.Point(17, 85);
             this.lblBonusLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -134,7 +134,7 @@ namespace Chummer
             // 
             // lblCondition
             // 
-            this.lblCondition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCondition.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCondition.AutoSize = true;
             this.lblCondition.Location = new System.Drawing.Point(3, 59);
             this.lblCondition.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -146,8 +146,7 @@ namespace Chummer
             // 
             // txtCondition
             // 
-            this.txtCondition.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCondition.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtCondition.Location = new System.Drawing.Point(63, 56);
             this.txtCondition.Name = "txtCondition";
             this.txtCondition.Size = new System.Drawing.Size(260, 20);
@@ -155,8 +154,7 @@ namespace Chummer
             // 
             // cboLimit
             // 
-            this.cboLimit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboLimit.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLimit.FormattingEnabled = true;
             this.cboLimit.Location = new System.Drawing.Point(63, 3);
@@ -168,9 +166,9 @@ namespace Chummer
             // 
             // lblLimit
             // 
-            this.lblLimit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblLimit.AutoSize = true;
-            this.lblLimit.Location = new System.Drawing.Point(26, 6);
+            this.lblLimit.Location = new System.Drawing.Point(26, 7);
             this.lblLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLimit.Name = "lblLimit";
             this.lblLimit.Size = new System.Drawing.Size(31, 13);

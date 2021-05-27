@@ -52,6 +52,12 @@ namespace Chummer
         private static PluginControl _objPluginLoader;
         public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();
 
+        /// <summary>
+        /// Check this to see if we are currently in the Main Thread.
+        /// </summary>
+        [ThreadStatic]
+        // ReSharper disable once ThreadStaticFieldHasInitializer
+        public static readonly bool IsMainThread = true;
 
         /// <summary>
         /// The main entry point for the application.
@@ -383,7 +389,7 @@ namespace Chummer
                     ChummerTelemetryClient.Flush();
                     //we have to wait a bit to give it time to upload the data
                     Console.WriteLine("Waiting a bit to flush logging data...");
-                    Thread.Sleep(2000);
+                    Utils.SafeSleep(TimeSpan.FromSeconds(2));
                 }
             }
         }

@@ -54,7 +54,7 @@ namespace Chummer
         {
             //TODO: should probably make sure Language don't change before restart
             //I feel that stuff could break in other cases
-            if (_strLanguage == GlobalOptions.DefaultLanguage)
+            if (_strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 return orginal;
             }
@@ -73,7 +73,7 @@ namespace Chummer
 
         public void Write(T value, ref T orginal, ref T translated)
         {
-            if (_strLanguage == GlobalOptions.DefaultLanguage)
+            if (_strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 if (orginal != null && value != null)
                 {

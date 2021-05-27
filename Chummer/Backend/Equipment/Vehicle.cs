@@ -72,6 +72,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
         private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnBlackMarketDiscount;
@@ -211,6 +212,10 @@ namespace Chummer.Backend.Equipment
             if (!objXmlVehicle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlVehicle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlVehicle.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (string.IsNullOrEmpty(Notes))
             {
                 string strEnglishNameOnPage = Name;
@@ -222,7 +227,7 @@ namespace Chummer.Backend.Equipment
 
                 string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
-                if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (string.IsNullOrEmpty(strGearNotes) && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     string strTranslatedNameOnPage = CurrentDisplayName;
 
@@ -610,6 +615,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
@@ -952,6 +958,11 @@ namespace Chummer.Backend.Equipment
                 _objLocation?.Children.Add(this);
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
@@ -1021,20 +1032,24 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
-            objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
             objWriter.WriteElementString("vehiclename", CustomName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
             objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
+
             objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
             objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
             objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
             objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
             objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
             objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
+            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in Mods)
                 objMod.Print(objWriter, objCulture, strLanguageToPrint);
@@ -1086,7 +1101,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayCategory(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
             return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
@@ -1336,7 +1351,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -1542,6 +1557,15 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// A custom name for the Vehicle assigned by the player.
         /// </summary>
         public string CustomName
@@ -1555,7 +1579,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -1791,7 +1815,7 @@ namespace Chummer.Backend.Equipment
                     {
                         // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
                         decCost += objMod.Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost);
-                        decCost += objMod.Cyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
+                        decCost += objMod.Cyberware.AsParallel().Sum(objCyberware => objCyberware.CurrentTotalCost);
                     }
                 }
                 decCost += WeaponMounts.AsParallel().Sum(wm => wm.TotalCost);
@@ -3289,8 +3313,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !string.IsNullOrEmpty(ParentID)
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText

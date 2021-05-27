@@ -158,8 +158,8 @@ namespace CrashHandler
 
                 _startSendEvent.WaitOne();
 
-                CrashLogWriter.WriteLine("Files collected");
-                CrashLogWriter.Flush();
+                await CrashLogWriter.WriteLineAsync("Files collected");
+                await CrashLogWriter.FlushAsync();
 
                 SetProgress(CrashDumperProgress.Compressing);
                 byte[] zip = GetZip();
@@ -170,8 +170,8 @@ namespace CrashHandler
                 SetProgress(CrashDumperProgress.Uploading);
                 string location = await Upload(encrypted);
 
-                CrashLogWriter.WriteLine("Files uploaded");
-                CrashLogWriter.Flush();
+                await CrashLogWriter.WriteLineAsync("Files uploaded");
+                await CrashLogWriter.FlushAsync();
 
                 SetProgress(CrashDumperProgress.Saving);
                 Attributes["visible-key"] = MakeStringKey(iv, key);
@@ -179,16 +179,16 @@ namespace CrashHandler
 
                 UploadToAws();
 
-                CrashLogWriter.WriteLine("Key saved");
-                CrashLogWriter.Flush();
+                await CrashLogWriter.WriteLineAsync("Key saved");
+                await CrashLogWriter.FlushAsync();
 
                 SetProgress(CrashDumperProgress.Cleanup);
                 if (DoCleanUp)
                 {
                     Clean();
 
-                    CrashLogWriter.WriteLine("Cleanup done");
-                    CrashLogWriter.Flush();
+                    await CrashLogWriter.WriteLineAsync("Cleanup done");
+                    await CrashLogWriter.FlushAsync();
                 }
 
                 SetProgress(CrashDumperProgress.FinishedSending);

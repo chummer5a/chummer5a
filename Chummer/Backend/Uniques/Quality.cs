@@ -93,6 +93,7 @@ namespace Chummer
         private string _strPage = string.Empty;
         private bool _blnMutant;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnImplemented = true;
         private bool _blnContributeToBP = true;
         private bool _blnContributeToLimit = true;
@@ -199,6 +200,11 @@ namespace Chummer
             }
             if (!objXmlQuality.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlQuality.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlQuality.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
             _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
             _eQualitySource = objQualitySource;
@@ -331,7 +337,7 @@ namespace Chummer
 
                 string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
-                if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (string.IsNullOrEmpty(strQualityNotes) && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     string strTranslatedNameOnPage = CurrentDisplayName;
 
@@ -395,6 +401,7 @@ namespace Chummer
             if (_nodDiscounts != null)
                 objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXml + "</costdiscount>");
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             if (_eQualityType == QualityType.LifeModule)
             {
                 objWriter.WriteElementString("stage", _strStage);
@@ -464,6 +471,10 @@ namespace Chummer
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (_eQualityType == QualityType.LifeModule)
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _strStage);
@@ -510,7 +521,7 @@ namespace Chummer
                 objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint) + strRatingString + strSourceName);
                 objWriter.WriteElementString("bp", BP.ToString(objCulture));
                 string strQualityType = Type.ToString();
-                if (strLanguageToPrint != GlobalOptions.DefaultLanguage)
+                if (!strLanguageToPrint.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strQualityType =
                         _objCharacter.LoadDataXPath("qualities.xml", strLanguageToPrint)
@@ -635,7 +646,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -763,7 +774,7 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -985,6 +996,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         private int _intCachedSuppressed = -1;
         public bool Suppressed
         {
@@ -1080,8 +1100,8 @@ namespace Chummer
                            || OriginSource == QualitySource.LifeModule
                            || OriginSource == QualitySource.Metatype
                            || OriginSource == QualitySource.Heritage
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return OriginSource == QualitySource.BuiltIn
                        || OriginSource == QualitySource.Improvement
@@ -1090,6 +1110,7 @@ namespace Chummer
                        || OriginSource == QualitySource.Heritage
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
+                
             }
         }
         #endregion

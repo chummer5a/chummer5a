@@ -242,12 +242,13 @@ namespace Chummer
         {
             if (objNotes == null)
                 return;
-            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 objNotes.Notes = frmItemNotes.Notes;
+                objNotes.NotesColor = frmItemNotes.NotesColor;
                 IsDirty = true;
                 if (treNode != null)
                 {
@@ -6469,7 +6470,7 @@ namespace Chummer
 
                         Gear objExistingGear = null;
                         // If this is Ammunition, see if the character already has it on them.
-                        if (objGear.Category == "Ammunition" && frmPickGear.Stack)
+                        if ((objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType)) && frmPickGear.Stack)
                         {
                             objExistingGear = objSelectedVehicle.Gear.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                         }

@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -114,11 +113,12 @@ namespace Chummer
             if (LoadLanguage(strIntoLanguage))
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
-                if (DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                string strKey = strIntoLanguage.ToUpperInvariant();
+                if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
                     eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft);
             }
-            else if (strIntoLanguage != GlobalOptions.DefaultLanguage)
+            else if (!strIntoLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 UpdateControls(objObject, GlobalOptions.DefaultLanguage, RightToLeft.No);
             if (blnDoResumeLayout)
                 objObject.ResumeLayout();
@@ -126,15 +126,16 @@ namespace Chummer
 
         public static bool LoadLanguage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return true;
-            s_DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objNewLanguage);
+            string strKey = strLanguage.ToUpperInvariant();
+            s_DictionaryLanguages.TryGetValue(strKey, out LanguageData objNewLanguage);
             if (objNewLanguage == null)
             {
-                if (s_DictionaryLanguages.ContainsKey(strLanguage))
-                    s_DictionaryLanguages.Remove(strLanguage);
+                if (s_DictionaryLanguages.ContainsKey(strKey))
+                    s_DictionaryLanguages.Remove(strKey);
                 objNewLanguage = new LanguageData(strLanguage);
-                s_DictionaryLanguages.Add(strLanguage, objNewLanguage);
+                s_DictionaryLanguages.Add(strKey, objNewLanguage);
             }
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
             {
@@ -300,9 +301,13 @@ namespace Chummer
                 strIntoLanguage = GlobalOptions.Language;
             if (eIntoRightToLeft == RightToLeft.Inherit)
             {
-                if (LoadLanguage(strIntoLanguage) && DictionaryLanguages.TryGetValue(strIntoLanguage, out LanguageData objLanguageData))
+                if (LoadLanguage(strIntoLanguage))
                 {
-                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    string strKey = strIntoLanguage.ToUpperInvariant();
+                    if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
+                    {
+                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                    }
                 }
             }
             tssItem.RightToLeft = eIntoRightToLeft;
@@ -344,7 +349,8 @@ namespace Chummer
             string strReturn;
             if (LoadLanguage(strLanguage))
             {
-                if (DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+                string strLanguageKey = strLanguage.ToUpperInvariant();
+                if (DictionaryLanguages.TryGetValue(strLanguageKey, out LanguageData objLanguageData))
                 {
                     if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                     {
@@ -469,9 +475,13 @@ namespace Chummer
         /// <param name="strLanguage">Language whose document should be retrieved.</param>
         public static XPathDocument GetDataDocument(string strLanguage)
         {
-            if (LoadLanguage(strLanguage) && DictionaryLanguages.TryGetValue(strLanguage, out LanguageData objLanguageData))
+            if (LoadLanguage(strLanguage))
             {
-                return objLanguageData.DataDocument;
+                string strKey = strLanguage.ToUpperInvariant();
+                if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
+                {
+                    return objLanguageData.DataDocument;
+                }
             }
             return null;
         }
@@ -700,7 +710,7 @@ namespace Chummer
             string strReturn = string.Empty;
 
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (strIntoLanguage != GlobalOptions.DefaultLanguage && !string.IsNullOrWhiteSpace(strExtra))
+            if (!strIntoLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrWhiteSpace(strExtra))
             {
                 // Attempt to translate CharacterAttribute names.
                 switch (strExtra)
@@ -885,7 +895,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strFromLanguage))
                 strFromLanguage = GlobalOptions.Language;
             // Only attempt to translate if we're not using English. Don't attempt to translate an empty string either.
-            if (strFromLanguage == GlobalOptions.DefaultLanguage || string.IsNullOrWhiteSpace(strExtra))
+            if (strFromLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) || string.IsNullOrWhiteSpace(strExtra))
                 return strExtra;
             // Attempt to translate CharacterAttribute names.
             if (strExtra == GetString("String_AttributeBODShort", strFromLanguage))
@@ -1081,6 +1091,8 @@ namespace Chummer
         public LanguageData(string strLanguage)
         {
             string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            if (!File.Exists(strFilePath))
+                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -1149,6 +1161,8 @@ namespace Chummer
 
             // Check to see if the data translation file for the selected language exists.
             string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            if (!File.Exists(strDataPath))
+                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
             if (File.Exists(strDataPath))
             {
                 try

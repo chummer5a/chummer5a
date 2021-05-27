@@ -1,10 +1,11 @@
-﻿@page
+@page
 @model TwoFactorAuthenticationModel
 @{
     ViewData["Title"] = "Two-factor authentication (2FA)";
 }
 
-@Html.Partial("_StatusMessage", Model.StatusMessage)
+
+@await Html.PartialAsync("_StatusMessage", Model.StatusMessage)
 <h4>@ViewData["Title"]</h4>
 @if (Model.Is2faEnabled)
 {

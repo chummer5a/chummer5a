@@ -54,7 +54,7 @@ namespace ChummerHub.Services
             httpClientHandler.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
             httpClientHandler.PreAuthenticate = true;
             httpClientHandler.SslProtocols = System.Security.Authentication.SslProtocols.Ssl3 | System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls;
-            httpClientHandler.ServerCertificateCustomValidationCallback = (message2, cert, chain, errors) => { return true; };
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message2, cert, chain, errors) => true;
             var httpClient = new HttpClient(httpClientHandler);
 
             var client = new SendGridClient(httpClient, apiKey);

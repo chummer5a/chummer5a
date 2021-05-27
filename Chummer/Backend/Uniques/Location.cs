@@ -36,6 +36,7 @@ namespace Chummer
         private Guid _guiID;
         private string _strName;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
         #region Constructor, Create, Save, Load, and Print Methods
@@ -61,6 +62,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
@@ -80,6 +82,10 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
             }
 
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -131,7 +137,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
             return strLanguage != GlobalOptions.Language
-                ? LanguageManager.TranslateExtra(GlobalOptions.Language != GlobalOptions.DefaultLanguage
+                ? LanguageManager.TranslateExtra(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? LanguageManager.ReverseTranslateExtra(Name, GlobalOptions.Language, _objCharacter)
                     : Name, strLanguage, _objCharacter)
                 : Name;
@@ -154,6 +160,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -189,7 +204,7 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
         #endregion
 

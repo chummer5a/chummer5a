@@ -24,7 +24,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -91,7 +90,8 @@ namespace Chummer
             public bool IsLoaded { get; set; }
         }
 
-        private static readonly ConcurrentDictionary<int, XmlReference> s_DicXmlDocuments = new ConcurrentDictionary<int, XmlReference>(); // Key is the HashCode for the complete combination of data used
+        private static readonly ConcurrentDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
+            new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is languge + array of all file paths for the complete combination of data used
         private static bool s_blnSetDataDirectoriesLoaded;
         private static readonly object s_SetDataDirectoriesLock = new object();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>();
@@ -175,9 +175,9 @@ namespace Chummer
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
             foreach (string strDirectory in s_SetDataDirectories)
             {
@@ -198,15 +198,15 @@ namespace Chummer
             
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
-            int intDataConfigHash = lstRelevantCustomDataPaths.Count > 0
-                ? (new[] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
-                : new { strLanguage, strPath }.GetHashCode();
+            List<string> lstKey = new List<string> {strLanguage, strPath};
+            lstKey.AddRange(lstRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             // Look to see if this XmlDocument is already loaded.
             XmlDocument xmlDocumentOfReturn = null;
             if (blnLoadFile
                 || (GlobalOptions.LiveCustomData && strFileName != "improvements.xml")
-                || !s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
+                || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 // The file was not found in the reference list, so it must be loaded.
                 xmlReferenceOfReturn = null;
@@ -215,7 +215,7 @@ namespace Chummer
                 {
                     // ReSharper disable once MethodHasAsyncOverload
                     xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
-                    blnLoadSuccess = s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                    blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                 }
                 else
                     blnLoadSuccess = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile)
@@ -223,7 +223,7 @@ namespace Chummer
                         x =>
                         {
                             xmlDocumentOfReturn = x.Result;
-                            return s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                            return s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                         });
                 if (!blnLoadSuccess)
                 {
@@ -245,9 +245,9 @@ namespace Chummer
             while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             return xmlReferenceOfReturn.XPathContent.CreateNavigator();
@@ -298,9 +298,9 @@ namespace Chummer
             while (!s_blnSetDataDirectoriesLoaded) // Wait to make sure our data directories are loaded before proceeding
             {
                 if (blnSync)
-                    Thread.Sleep(Utils.DefaultSleepDuration);
+                    Utils.SafeSleep();
                 else
-                    await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                    await Utils.SafeSleepAsync();
             }
 
             foreach (string strDirectory in s_SetDataDirectories)
@@ -323,28 +323,28 @@ namespace Chummer
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
             bool blnHasCustomData = lstRelevantCustomDataPaths.Count > 0;
-            int intDataConfigHash = blnHasCustomData
-                ? (new [] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
-                : new { strLanguage, strPath }.GetHashCode();
+            List<string> lstKey = new List<string> { strLanguage, strPath };
+            lstKey.AddRange(lstRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             XmlDocument xmlReturn = null;
             // Create a new document that everything will be merged into.
             XmlDocument xmlScratchpad = new XmlDocument { XmlResolver = null };
             // Look to see if this XmlDocument is already loaded.
-            if (!s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
+            if (!s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 int intEmergencyRelease = 0;
                 while (true) // Hacky as heck, but it works for now. We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     xmlReferenceOfReturn = new XmlReference();
-                    if (s_DicXmlDocuments.TryAdd(intDataConfigHash, xmlReferenceOfReturn))
+                    if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
                     {
                         blnLoadFile = true;
                         break;
                     }
                     // It somehow got added in the meantime, so let's fetch it again
-                    if (s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn))
+                    if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
                         break;
                     if (intEmergencyRelease > 1000) // Shouldn't every happen, but just in case it does, emergency exit out of the loading function
                     {
@@ -367,7 +367,7 @@ namespace Chummer
                         : await LoadAsync(strFileName, null, strLanguage).ConfigureAwait(false);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
-                else if (strLanguage != GlobalOptions.DefaultLanguage)
+                else if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
                     XmlDocument xmlBaseDocument = blnSync
@@ -420,7 +420,7 @@ namespace Chummer
                 }
 
                 // Load the translation file for the current base data file if the selected language is not en-us.
-                if (strLanguage != GlobalOptions.DefaultLanguage)
+                if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
                     // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
@@ -446,9 +446,9 @@ namespace Chummer
                 while (!xmlReferenceOfReturn.IsLoaded) // Wait for the reference to get loaded
                 {
                     if (blnSync)
-                        Thread.Sleep(Utils.DefaultSleepDuration);
+                        Utils.SafeSleep();
                     else
-                        await Task.Delay(Utils.DefaultSleepDuration).ConfigureAwait(false);
+                        await Utils.SafeSleepAsync();
                 }
                 // Make sure we do not override the cached document with our live data
                 if (GlobalOptions.LiveCustomData && blnHasCustomData)
@@ -1372,7 +1372,7 @@ namespace Chummer
                         string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                         if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                         {
-                            lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
+                            lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                                     ? Path.Combine(strLanguage, strSheetFileName)
                                     : strSheetFileName,
                                 xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
@@ -1389,7 +1389,7 @@ namespace Chummer
                     string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                     if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                     {
-                        lstSheets.Add(new ListItem(strLanguage != GlobalOptions.DefaultLanguage
+                        lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                                 ? Path.Combine(strLanguage, strSheetFileName)
                                 : strSheetFileName,
                             xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
@@ -1409,7 +1409,7 @@ namespace Chummer
         /// <param name="lstBooks">List of books.</param>
         public static void Verify(string strLanguage, ICollection<string> lstBooks)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return;
             XPathDocument objLanguageDoc;
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
@@ -1849,7 +1849,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new { Name, Path }.GetHashCode();
+            return (Name, Path).GetHashCode();
         }
 
         public bool Equals(CustomDataDirectoryInfo other)

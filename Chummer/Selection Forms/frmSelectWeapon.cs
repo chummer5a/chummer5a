@@ -104,10 +104,7 @@ namespace Chummer
 
             _lstCategory.Sort(CompareListItems.CompareNames);
 
-            if (_lstCategory.Count > 0)
-            {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
-            }
+            _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
 
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
@@ -115,9 +112,11 @@ namespace Chummer
             if (string.IsNullOrEmpty(s_StrSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
+            {
                 cboCategory.SelectedValue = s_StrSelectCategory;
-            if (cboCategory.SelectedIndex == -1)
-                cboCategory.SelectedIndex = 0;
+                if (cboCategory.SelectedIndex == -1)
+                    cboCategory.SelectedIndex = 0;
+            }
             cboCategory.EndUpdate();
 
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;

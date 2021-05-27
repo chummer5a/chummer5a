@@ -36,6 +36,7 @@ namespace Chummer
         private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private readonly Character _objCharacter;
@@ -61,6 +62,11 @@ namespace Chummer
             if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName))
                 if (!xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                     xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            xmlTechniqueDataNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -75,7 +81,7 @@ namespace Chummer
 
                 string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
-                if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (string.IsNullOrEmpty(strQualityNotes) && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     string strTranslatedNameOnPage = CurrentDisplayName;
 
@@ -119,6 +125,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteEndElement();
@@ -145,6 +152,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -208,7 +219,7 @@ namespace Chummer
         public string DisplayName(string strLanguage)
         {
             // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -223,6 +234,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -251,7 +271,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -323,7 +343,7 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
         #endregion
 

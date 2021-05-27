@@ -330,7 +330,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayCategory(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
             return _objCharacter.LoadDataXPath("gear.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
@@ -660,7 +660,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return _objCharacter.TranslateExtra(Name, strLanguage);
@@ -1248,7 +1248,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             XmlNode xmlGearDataNode = GetNode(strLanguage);
@@ -1283,7 +1283,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayCategory(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
             return _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
@@ -1325,7 +1325,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;

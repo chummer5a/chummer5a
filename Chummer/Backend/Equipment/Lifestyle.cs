@@ -88,6 +88,7 @@ namespace Chummer.Backend.Equipment
         private LifestyleIncrement _eIncrement = LifestyleIncrement.Month;
         private readonly ObservableCollection<LifestyleQuality> _lstFreeGrids = new ObservableCollection<LifestyleQuality>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
 
@@ -170,6 +171,11 @@ namespace Chummer.Backend.Equipment
             objXmlLifestyle.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
             if (!objXmlLifestyle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlLifestyle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlLifestyle.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             string strTemp = string.Empty;
             if (objXmlLifestyle.TryGetStringFieldQuickly("increment", ref strTemp))
                 _eIncrement = ConvertToLifestyleIncrement(strTemp);
@@ -287,6 +293,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
 
@@ -469,6 +476,10 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
@@ -660,7 +671,7 @@ namespace Chummer.Backend.Equipment
         public string DisplayNameShort(string strLanguage)
         {
             // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return BaseLifestyle;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? BaseLifestyle;
@@ -707,7 +718,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -972,6 +983,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -1335,8 +1355,9 @@ namespace Chummer.Backend.Equipment
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
+
         #endregion
         #endregion
 

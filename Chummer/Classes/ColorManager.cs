@@ -124,13 +124,15 @@ namespace Chummer
 
         private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicInverseDarkModeColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
         /// </summary>
         /// <param name="objColor">Color whose lightness and saturation should be adjusted for Dark Mode.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
-        private static Color GenerateDarkModeColor(Color objColor)
+        public static Color GenerateDarkModeColor(Color objColor)
         {
             if (!s_DicDarkModeColors.TryGetValue(objColor, out Color objDarkModeColor))
             {
@@ -145,7 +147,7 @@ namespace Chummer
         /// </summary>
         /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
-        private static Color GenerateInverseDarkModeColor(Color objColor)
+        public static Color GenerateInverseDarkModeColor(Color objColor)
         {
             if (!s_DicInverseDarkModeColors.TryGetValue(objColor, out Color objInverseDarkModeColor))
             {
@@ -153,6 +155,70 @@ namespace Chummer
                 s_DicInverseDarkModeColors.TryAdd(objColor, objInverseDarkModeColor);
             }
             return objInverseDarkModeColor;
+        }
+
+        /// <summary>
+        /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
+        /// </summary>
+        /// <param name="objColor">Color as it would be in Light mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
+        public static Color GenerateCurrentModeColor(Color objColor)
+        {
+            if (IsLightMode)
+            {
+                return objColor;
+            }
+            else
+            {
+                return GenerateDarkModeColor(objColor);
+            }
+        }
+
+        /// <summary>
+        /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
+        /// </summary>
+        /// <param name="objColor">Color as it is shown in current color mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
+        public static Color GenerateModeIndependentColor(Color objColor)
+        {
+            if (IsLightMode)
+            {
+                return objColor;
+            }
+            else
+            {
+                return GenerateInverseDarkModeColor(objColor);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// </summary>
+        /// <param name="objColor">Color whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        public static Color GenerateCurrentModeDimmedColor(Color objColor)
+        {
+            Color objRetColor;
+            if (IsLightMode)
+            {
+                if (!s_DicDimmedColors.TryGetValue(objColor, out objRetColor))
+                {
+                    objRetColor = GetDimmedVersion(objColor);
+                    s_DicDimmedColors.TryAdd(objColor, objRetColor);
+                }
+            }
+            else
+            {
+                if (!s_DicBrightenedColors.TryGetValue(objColor, out objRetColor))
+                {
+                    objRetColor = GetBrightenedVersion(objColor);
+                    s_DicBrightenedColors.TryAdd(objColor, objRetColor);
+                }
+            }
+
+            return objRetColor;
         }
 
         /// <summary>
@@ -166,6 +232,7 @@ namespace Chummer
         {
             return GenerateDarkModeColor(GenerateInverseDarkModeColor(objColor));
         }
+
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
         private static Color WindowTextLight => SystemColors.WindowText;
@@ -212,6 +279,9 @@ namespace Chummer
         public static Color ButtonShadow => IsLightMode ? ButtonShadowLight : ButtonShadowDark;
         private static Color ButtonShadowLight => SystemColors.ButtonShadow;
         private static Color ButtonShadowDark => GenerateDarkModeColor(ButtonShadowLight);
+        public static Color AppWorkspace => IsLightMode ? AppWorkspaceLight : AppWorkspaceDark;
+        private static Color AppWorkspaceLight => SystemColors.AppWorkspace;
+        private static Color AppWorkspaceDark => GenerateDarkModeColor(AppWorkspaceLight);
 
         public static Color SplitterColor => IsLightMode ? SplitterColorLight : SplitterColorDark;
         private static Color SplitterColorLight => SystemColors.InactiveCaption;
@@ -270,29 +340,21 @@ namespace Chummer
         /// <returns></returns>
         private static Color GetDarkModeVersion(Color objColor)
         {
-            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
             float fltHue = objColor.GetHue() / 360.0f;
-            float fltBrightness = objColor.GetBrightness();
-            float fltLightness = fltBrightness * (1 - objColor.GetSaturation() / 2);
-            float fltSaturationHsl = fltLightness > 0 && fltLightness < 1
-                ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
-                : 0;
+            float fltLightness = objColor.GetBrightness(); // It's called Brightness, but it's actually Lightness
             float fltNewLightness = 1.0f - fltLightness;
-            // Lighten dark colors a little (so that minimum lightness instead gets 0.25)
-            fltNewLightness += 0.25f * fltLightness * fltLightness;
-            fltNewLightness = Math.Min(fltNewLightness, 1.0f);
-            // Lightness affects saturation, so only set it after we have set up Lightness
-            Color objColorIntermediate = FromHsla(fltHue, fltSaturationHsl, fltNewLightness, objColor.A);
-            if (fltSaturationHsl == 0) // Shortcut, no desaturation step necessary
-                return objColorIntermediate;
-            fltBrightness = objColorIntermediate.GetBrightness();
-            fltNewLightness = fltBrightness * (1 - objColorIntermediate.GetSaturation() / 2);
-            float fltNewSaturationHsl = fltNewLightness > 0 && fltNewLightness < 1
-                ? (fltBrightness - fltNewLightness) / Math.Min(fltNewLightness, 1 - fltNewLightness)
-                : 0;
+            float fltNewValue = fltNewLightness + objColor.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
+            float fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
+            // Lighten dark colors a little by increasing value so that we don't warp colors that are highly saturated to begin with.
+            fltNewValue += 0.25f * fltNewValue * fltNewValue;
+            fltNewValue = Math.Min(fltNewValue, 1.0f);
+            Color objColorIntermediate = FromHsv(fltHue, fltSaturationHsv, fltNewValue);
+            fltNewLightness = objColorIntermediate.GetBrightness();
+            fltNewValue = fltNewLightness + objColorIntermediate.GetSaturation() * Math.Min(fltNewLightness, 1 - fltNewLightness);
+            fltSaturationHsv = fltNewValue == 0 ? 0 : 2 * (1 - fltNewLightness / fltNewValue);
             // Desaturate high saturation colors a little
-            fltNewSaturationHsl -= 0.1f * fltSaturationHsl * fltSaturationHsl;
-            return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
+            float fltNewSaturationHsv = fltSaturationHsv - 0.1f * fltSaturationHsv * fltSaturationHsv;
+            return FromHsva(fltHue, fltNewSaturationHsv, fltNewValue, objColor.A);
         }
 
         /// <summary>
@@ -305,32 +367,57 @@ namespace Chummer
         private static Color InverseGetDarkModeVersion(Color objColor)
         {
             float fltHue = objColor.GetHue() / 360.0f;
-            float fltBrightness = objColor.GetBrightness();
-            float fltLightness = fltBrightness * (1 - objColor.GetSaturation() / 2);
-            float fltSaturationHsl = fltLightness > 0 && fltLightness < 1
-                ? (fltBrightness - fltLightness) / Math.Min(fltLightness, 1 - fltLightness)
-                : 0;
-            float fltNewSaturationHsl = 0;
-            if (fltSaturationHsl != 0)
+            float fltLightness = objColor.GetBrightness(); // It's called Brightness, but it's actually Lightness
+            float fltValue = fltLightness + objColor.GetSaturation() * Math.Min(fltLightness, 1 - fltLightness);
+            float fltSaturationHsv = fltValue == 0 ? 0 : 2 * (1 - fltLightness / fltValue);
+            float fltNewSaturationHsv = 0;
+            if (fltSaturationHsv != 0)
             {
-                // x - 0.1x^2 = n is the regular transform where n is the Dark Mode saturation
+                // x - 0.1x^2 = n is the regular transform where x is the Light Mode saturation and n is the Dark Mode saturation
                 // To get it back, we need to solve for x knowing only n:
                 // x^2 - 10x + 10n = 0
                 // x = (10 +/- sqrt(100 - 40n))/2 = 5 +/- sqrt(25 - 10n)
                 // Because saturation cannot be greater than 1, positive result is unreal, therefore: x = 5 - sqrt(25 - 10n)
-                fltNewSaturationHsl = Math.Min((float) (5.0 - Math.Sqrt(25.0 - 10.0 * fltSaturationHsl)), 1.0f);
-                Color objColorIntermediate = FromHsla(fltHue, fltNewSaturationHsl, fltLightness, objColor.A);
-                fltBrightness = objColorIntermediate.GetBrightness();
-                fltLightness = fltBrightness * (1 - objColorIntermediate.GetSaturation() / 2);
+                fltNewSaturationHsv = Math.Min((float) (5.0 - Math.Sqrt(25.0 - 10.0 * fltSaturationHsv)), 1.0f);
+                Color objColorIntermediate = FromHsv(fltHue, fltNewSaturationHsv, fltValue);
+                fltLightness = objColorIntermediate.GetBrightness(); // It's called Brightness, but it's actually Lightness
+                fltValue = fltLightness + objColorIntermediate.GetSaturation() * Math.Min(fltLightness, 1 - fltLightness);
             }
-            // 1 - y + 0.25y^2 = m is the regular transform where m is the Dark Mode Lightness
+            // y + 0.25y^2 = m is the regular transform where y is the Dark Mode Value pre-adjustment and m is the Dark Mode Value post-adjustment
             // To get it back, we need to solve for y knowing only m:
-            // y^2 - 4y + 4 - 4m = 0
-            // y = (4 +/- sqrt(16 - 16 + 16m))/2 = (4 +/- sqrt(16m))/2 = 2 +/- 2*sqrt(m)
-            // Because lightness cannot be greater than 1, positive result is unreal, therefore: y = 2 - 2*sqrt(m)
-            float fltNewLightness = Math.Min((float) (2 - 2 * Math.Sqrt(fltLightness)), 1.0f);
+            // y^2 + 4y - 4m = 0
+            // y = (-4 +/- sqrt(16 + 16m))/2 = -2 +/- sqrt(4 + 4m) = -2 +/- 2*sqrt(1 + m)
+            // Because value cannot be greater than 1, negative result is unreal, therefore: y = -2 + 2*sqrt(1 + m)
+            float fltNewValue = Math.Min((float) (2 * Math.Sqrt(1 + fltValue) - 2), 1.0f);
+            // Now convert to Lightness so we can flip it
+            float fltNewLightness = fltNewValue * (1 - fltNewSaturationHsv / 2.0f);
+            float fltNewSaturationHsl = fltNewLightness == 0
+                ? 0
+                : (fltNewValue - fltNewLightness) / Math.Min(fltNewLightness, 1 - fltNewLightness);
+            fltNewLightness = 1 - fltNewLightness;
             return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
+
+        private static Color GetBrightenedVersion(Color objColor)
+        {
+            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
+            float fltHue = objColor.GetHue() / 360.0f;
+            float fltBrightness = objColor.GetBrightness();
+            float fltSaturation = objColor.GetSaturation();
+            fltSaturation = Math.Min(fltSaturation * 1.15f, 1);
+            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
+        }
+
+        private static Color GetDimmedVersion(Color objColor)
+        {
+            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
+            float fltHue = objColor.GetHue() / 360.0f;
+            float fltBrightness = objColor.GetBrightness();
+            float fltSaturation = objColor.GetSaturation();
+            fltSaturation = Math.Max(0, fltSaturation * 0.85f);
+            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
+        }
+
 
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
         {
@@ -342,6 +429,7 @@ namespace Chummer
             switch (objControl)
             {
                 case DataGridView objDataGridView:
+                    objDataGridView.BackgroundColor = blnLightMode ? AppWorkspaceLight : AppWorkspaceDark;
                     objDataGridView.GridColor = blnLightMode ? ControlTextLight : ControlTextDark;
                     objDataGridView.DefaultCellStyle.ForeColor = blnLightMode ? ControlTextLight : ControlTextDark;
                     objDataGridView.DefaultCellStyle.BackColor = blnLightMode ? ControlLight : ControlDark;

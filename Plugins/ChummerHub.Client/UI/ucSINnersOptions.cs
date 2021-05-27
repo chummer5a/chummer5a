@@ -75,25 +75,6 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        public static Task<T> StartSTATask<T>(Func<T> func)
-        {
-            var tcs = new TaskCompletionSource<T>();
-            Thread thread = new Thread(() =>
-            {
-                try
-                {
-                    tcs.SetResult(func());
-                }
-                catch (Exception e)
-                {
-                    tcs.SetException(e);
-                }
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
-        }
-
         private bool IsLoading;
 
         private void InitializeMe()
@@ -134,7 +115,7 @@ namespace ChummerHub.Client.UI
             cbVisibilityIsPublic.BindingContext = new BindingContext();
             if (StaticUtils.UserRoles?.Count == 0)
             {
-                _ = StartSTATask(
+                _ = Chummer.Utils.StartSTATask(
                     async () =>
                     {
                         var roles = await GetRolesStatus(this);
@@ -287,28 +268,28 @@ namespace ChummerHub.Client.UI
                 StaticUtils.AuthorizationCookieContainer = null;
                 LoginStatus = false;
                 bLogin.Text = "Login";
-                _ = StartSTATask(
-                      async () =>
-                      {
-                          try
-                          {
-                              var client = StaticUtils.GetClient();
-                              if (await client.LogoutAsync())
-                              {
-                                  StaticUtils.UserRoles.Clear();
-                              }
-                              else
-                              {
-                                  await GetRolesStatus(this);
-                              }
+                _ = Chummer.Utils.StartSTATask(
+                    async () =>
+                    {
+                        try
+                        {
+                            var client = StaticUtils.GetClient();
+                            if (await client.LogoutAsync())
+                            {
+                                StaticUtils.UserRoles.Clear();
+                            }
+                            else
+                            {
+                                await GetRolesStatus(this);
+                            }
 
-                              UpdateDisplay();
-                          }
-                          catch(Exception ex)
-                          {
-                              Log.Warn(ex);
-                          }
-                      });
+                            UpdateDisplay();
+                        }
+                        catch (Exception ex)
+                        {
+                            Log.Warn(ex);
+                        }
+                    });
             }
             else
             {
@@ -335,27 +316,27 @@ namespace ChummerHub.Client.UI
                 }
                 if(frmWebBrowser.InvokeRequired)
                 {
-                    Invoke((Action)(() =>
-                    {
-                        frmWebBrowser.ShowDialog(Program.MainForm);
-                        _ = StartSTATask(
-                        async () =>
+                    Invoke((Action) (() =>
                         {
-                            await GetRolesStatus(this);
-                            UpdateDisplay();
-                        });
-                    })
+                            frmWebBrowser.ShowDialog(Program.MainForm);
+                            _ = Chummer.Utils.StartSTATask(
+                                async () =>
+                                {
+                                    await GetRolesStatus(this);
+                                    UpdateDisplay();
+                                });
+                        })
                     );
                 }
                 else
                 {
                     frmWebBrowser.ShowDialog(Program.MainForm);
-                    _ = StartSTATask(
-                           async () =>
-                           {
-                               await GetRolesStatus(this);
-                               UpdateDisplay();
-                           });
+                    _ = Chummer.Utils.StartSTATask(
+                        async () =>
+                        {
+                            await GetRolesStatus(this);
+                            UpdateDisplay();
+                        });
                 }
 
                 ResumeLayout(false);
@@ -379,7 +360,7 @@ namespace ChummerHub.Client.UI
                     myresult = await client.GetRolesAsync();
                     await Utils.ShowErrorResponseFormAsync(myresult);
                     var myresultbody = myresult;
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         if (myresultbody?.CallSuccess == true)
                         {

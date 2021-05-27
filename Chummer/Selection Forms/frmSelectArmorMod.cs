@@ -213,24 +213,10 @@ namespace Chummer
                 objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = " + strSelectedId.CleanXPath() + "]");
             if (objXmlMod == null)
             {
-                lblALabel.Visible = false;
-                lblA.Text = string.Empty;
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                nudRating.Enabled = false;
-                nudRating.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblAvail.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblCapacityLabel.Visible = false;
-                lblCapacity.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
+            SuspendLayout();
             // Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
@@ -396,10 +382,13 @@ namespace Chummer
 
             string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                GlobalOptions.CultureInfo, _objCharacter);
+            lblSource.Text = objSource.ToString();
+            lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
+            ResumeLayout();
         }
 
         private void RefreshCurrentList(object sender, EventArgs e)

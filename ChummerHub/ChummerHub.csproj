@@ -53,10 +53,10 @@
   </PropertyGroup>-->
   
   <ItemGroup>
-    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.0.2" />
-    <PackageReference Include="Azure.Identity" Version="1.3.0" />
+    <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.1" />
+    <PackageReference Include="Azure.Identity" Version="1.4.0" />
     <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.1.1" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2300" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.51.0.2320" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.17.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.17.0" />
@@ -64,21 +64,21 @@
     <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer" Version="2.17.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel" Version="2.17.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApplicationInsights.HostingStartup" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="5.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="5.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="5.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
     <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.5" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="5.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
-    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="4.2.1" />
+    <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="4.4.0" />
 
     <!--PackageReference Include="Microsoft.AspNetCore.ApplicationInsights.HostingStartup" Version="5.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="5.0.5" />
@@ -97,15 +97,15 @@
     <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="5.0.5" />
     <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.0.5" /-->
     
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.5">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.5" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.6" />
   
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.5" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.6" PrivateAssets="All" />
   
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="5.0.5">
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="5.0.6">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -120,7 +120,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Sendgrid" Version="9.23.1" />
+    <PackageReference Include="Sendgrid" Version="9.23.2" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.1.4" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />

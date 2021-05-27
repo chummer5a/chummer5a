@@ -328,9 +328,10 @@ namespace Chummer
 
                 string strSource = xmlCyberware.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlCyberware.SelectSingleNode("altpage")?.Value ?? xmlCyberware.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                    GlobalOptions.CultureInfo, _objCharacter);
+                lblSource.Text = objSource.ToString();
+                lblSource.SetToolTip(objSource.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -380,14 +381,11 @@ namespace Chummer
                     lblCyberwareNotes.Visible = false;
                     lblCyberwareNotesLabel.Visible = false;
                 }
+                tlpRight.Visible = true;
             }
             else
             {
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                nudRating.Minimum = 0;
-                nudRating.Value = 0;
-                nudRating.Visible = false;
+                tlpRight.Visible = false;
                 cboGrade.Enabled = !_blnLockGrade;
                 strForceGrade = string.Empty;
                 Grade objForcedGrade = null;
@@ -398,11 +396,6 @@ namespace Chummer
                 }
                 PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade, chkHideBannedGrades.Checked);
                 chkBlackMarketDiscount.Checked = false;
-                lblCyberwareNotes.Visible = false;
-                lblCyberwareNotesLabel.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
             }
             _blnLoading = false;
             UpdateCyberwareInfo();
@@ -683,19 +676,7 @@ namespace Chummer
             }
             if (objXmlCyberware == null)
             {
-                lblCostLabel.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblEssenceLabel.Visible = false;
-                lblESSDiscountLabel.Visible = false;
-                lblESSDiscountPercentLabel.Visible = false;
-                nudESSDiscount.Visible = false;
-                lblCapacityLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblAvail.Text = string.Empty;
-                lblTest.Text = string.Empty;
-                lblEssence.Text = string.Empty;
-                lblCapacity.Text = string.Empty;
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -919,6 +900,7 @@ namespace Chummer
             }
 
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
+            tlpRight.Visible = true;
         }
 
         private bool _blnSkipListRefresh;

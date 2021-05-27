@@ -1,11 +1,9 @@
 using System;
 using System.Windows.Forms;
 using Chummer;
-using ChummerHub.Client;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using ChummerHub.Client.Sinners;
-using Newtonsoft.Json;
 using NLog;
 
 

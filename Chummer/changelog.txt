@@ -39,8 +39,24 @@ Application Changes:
 - Spell and Complex Form pool tooltips are no longer combine the contribution of their linked attribute and their linked skill.
 - Spells and Complex Forms with special damage amounts, targets, and/or ranges now have those translated properly when printing/exporting in a non-English language.
 - In order to prevent users from thinking Chummer has locked up when it is still working, Chummer now shows a visible loading progress bar when it is loading in a character's UI elements or when it is saving a character.
-- Fixes a crash in the dicetool if a user has more hits than initial dice (due to the rule of 6) and still does re-roll glitches.
-- Added colors to the dicetool to find hits and glitches faster.
+- The dice roller no longer crashes when a user re-rolls failures while having more hits than initial dice (due to enabling Rule of 6).
+- When using Chummer in a non-English language, contact controls will no longer attempt to immediately translate and then re-translate the contents of text fields after every single possible change. Fixes #4450.
+- Gear that can act as ammunition without being in the ammunition category is now properly treated as such when exporting character information, printing sheets, or buying more ammo. Fixes #4457.
+- Attempting to add a weapon to a weapon mount that cannot mount any weapons no longer crashes Chummer. Fixes #4448.
+- Skill groups now show when they have been disabled by an improvement such as Uncouth.
+- A crash that would sometimes occur when Chummer is restarted programmatically has been resolved.
+- Upgrading cyberware or bioware to have both a different rating and a different grade at the same time can no longer cause a character's special attributes to get decreased from Essence loss mid-upgrade unless the final essence cost of the 'ware is actually greater enough than the old cost.
+- Print method now ignores control characters when printing to the Sheet Export window.
+- The Control Device pool for a weapon is now properly AGI-based instead of LOG-based, as the core rulebook dictates.
+- Changing a vehicle-mounted weapon's firing mode now properly updates the selectable box for firing modes instead of keeping it blank.
+- Metatype selection screens now contain a label referencing the sourcebook location of the currently selected metatype. Implements #4357.
+- The priority selection screen can now properly deal with potential custom priority entries with spirits and/or sprites.
+- Vehicle and Cyberware Condition Monitor controls now work properly. Fixes #4449.
+- Cyberware and vehicles now export the amount that their Matrix Condition Monitors are filled. Weapons now properly export all of their Matrix-related properties, including their Matrix attributes and their Matrix Condition Monitor status.
+- Deleting a skill by undoing the Karma expense for adding it now properly deletes the skill instead of lowering its rating by 1. Fixes #4323.
+- Fixed an issue that prevented 'ware with a capacity of 0 from having any gear added to it, even ones that are explicitly allowed. Fixes #4228.
+- Fixed an issue that some specific skills were not shown for critters based on a Force selection
+- Added an option to assign a color to each note to allow a way to categorize notes.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -60,6 +76,10 @@ Data Changes:
 - Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
 - Unarmed Attack can no longer be bought as a weapon.
 - Fixed the German translations for some mentor spirits that were broken in an update a few years ago.
+- Fixed a typo in Baseline Reagents' availability. Fixes #4458.
+- All French translations that contain a shortened article (i.e. "d'" or "l'") now have zero-width spaces between the consonant and the apostrophe in order to prevent weirdness with the way they are sorted alphabetically. Searching without a zero-width space should still work, however.
+- Chemical Glands can now hold Chemicals and Custom Drugs.
+- Special Work Area can now be selected multiple times for Advanced Lifestyles and have some text specified for it each time.
 
 Changed/New Strings:
 - String_ContactPoints
@@ -149,6 +169,7 @@ Changed/New Strings:
 - Label_SelectMentor_Bonus
 - String_Saving
 - String_Saving_Pattern
+- Button_ChooseCustomColor
 
 Build 214
 Application Fixes:

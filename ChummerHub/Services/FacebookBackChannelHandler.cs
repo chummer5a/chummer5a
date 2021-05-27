@@ -14,9 +14,9 @@ namespace ChummerHub.Services
             System.Threading.CancellationToken cancellationToken)
         {
             // Replace the RequestUri so it's not malformed
-            if (!request.RequestUri.AbsolutePath.Contains("/oauth"))
+            if (request.RequestUri?.AbsolutePath.Contains("/oauth") != true)
             {
-                request.RequestUri = new Uri(request.RequestUri.AbsoluteUri.Replace("?access_token", "&access_token"));
+                request.RequestUri = new Uri(request.RequestUri?.AbsoluteUri.Replace("?access_token", "&access_token") ?? string.Empty);
             }
 
             return await base.SendAsync(request, cancellationToken);
