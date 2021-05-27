@@ -131,7 +131,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new { Value, Suffix, AddToParent, IncludedInParent }.GetHashCode();
+            return (Value, Suffix, AddToParent, IncludedInParent).GetHashCode();
         }
 
         public static bool operator ==(AvailabilityValue left, AvailabilityValue right)

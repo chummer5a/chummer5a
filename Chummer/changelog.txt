@@ -55,6 +55,8 @@ Application Changes:
 - Cyberware and vehicles now export the amount that their Matrix Condition Monitors are filled. Weapons now properly export all of their Matrix-related properties, including their Matrix attributes and their Matrix Condition Monitor status.
 - Deleting a skill by undoing the Karma expense for adding it now properly deletes the skill instead of lowering its rating by 1. Fixes #4323.
 - Fixed an issue that prevented 'ware with a capacity of 0 from having any gear added to it, even ones that are explicitly allowed. Fixes #4228.
+- Fixed an issue that some specific skills were not shown for critters based on a Force selection
+- Added an option to assign a color to each note to allow a way to categorize notes.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -77,8 +79,7 @@ Data Changes:
 - Fixed a typo in Baseline Reagents' availability. Fixes #4458.
 - All French translations that contain a shortened article (i.e. "d'" or "l'") now have zero-width spaces between the consonant and the apostrophe in order to prevent weirdness with the way they are sorted alphabetically. Searching without a zero-width space should still work, however.
 - Chemical Glands can now hold Chemicals and Custom Drugs.
-- Added an option to assign a color to each note to allow a way to categorize notes.
-- Added OK/Cancel buttons in the note field to align the user interface with other dialoges
+- Special Work Area can now be selected multiple times for Advanced Lifestyles and have some text specified for it each time.
 
 Changed/New Strings:
 - String_ContactPoints

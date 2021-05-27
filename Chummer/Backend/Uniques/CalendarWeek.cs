@@ -328,7 +328,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new { InternalId, Year, Week}.GetHashCode();
+            return (InternalId, Year, Week).GetHashCode();
         }
 
         public static bool operator ==(CalendarWeek left, CalendarWeek right)

@@ -325,7 +325,7 @@ namespace Chummer
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
-        private static bool EverDoEvents => !IsDesignerMode && !IsRunningInVisualStudio;
+        private static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
 
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.

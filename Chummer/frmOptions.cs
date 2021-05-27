@@ -876,9 +876,8 @@ namespace Chummer
             GlobalOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
             GlobalOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
             GlobalOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
-            GlobalOptions.DefaultCharacterOption = OptionsManager.LoadedCharacterOptions.Values.FirstOrDefault(x =>
-                                                       x.Name == cboDefaultCharacterOption.SelectedValue.ToString())?.Name
-                                                  ?? GlobalOptions.DefaultCharacterOptionDefaultValue;
+            GlobalOptions.DefaultCharacterOption = cboDefaultCharacterOption.SelectedValue?.ToString()
+                                                   ?? GlobalOptions.DefaultCharacterOptionDefaultValue;
             GlobalOptions.AllowEasterEggs = chkAllowEasterEggs.Checked;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Checked;
             GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;

@@ -68,10 +68,14 @@ namespace Chummer.Tests
         {
             Debug.WriteLine("Unit test initialized for: Test00_ColorTest()");
             Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
-            Assert.IsTrue(objColorLightGrayInDarkMode.GetBrightness() < Color.LightGray.GetBrightness());
+            float fltLightGrayLightness = Color.LightGray.GetBrightness();
+            float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
+            Assert.IsTrue(fltLightGrayDarkModeLightness < fltLightGrayLightness);
             Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
             Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
-            Assert.IsTrue(Math.Abs(objColorRedInvertDark.GetHue() - Color.Red.GetHue()) < float.Epsilon);
+            float fltRedHue = Color.Red.GetHue();
+            float fltRedInvertDarkHue = objColorRedInvertDark.GetHue();
+            Assert.IsTrue(Math.Abs(fltRedInvertDarkHue - fltRedHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
             Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
             Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
             Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
