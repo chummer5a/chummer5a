@@ -4991,12 +4991,13 @@ namespace Chummer
             {
                 case Gear objGear:
                 {
-                    using (frmNotes frmItemNotes = new frmNotes(objGear.Notes))
+                    using (frmNotes frmItemNotes = new frmNotes(objGear.Notes, objGear.NotesColor))
                     {
                         frmItemNotes.ShowDialog(this);
                         if (frmItemNotes.DialogResult != DialogResult.OK)
                             return;
                         objGear.Notes = frmItemNotes.Notes;
+                        objGear.NotesColor = frmItemNotes.NotesColor;
                         IsDirty = true;
 
                         treVehicles.SelectedNode.ForeColor = objGear.PreferredColor;

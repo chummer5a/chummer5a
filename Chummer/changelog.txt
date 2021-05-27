@@ -56,6 +56,7 @@ Application Changes:
 - Deleting a skill by undoing the Karma expense for adding it now properly deletes the skill instead of lowering its rating by 1. Fixes #4323.
 - Fixed an issue that prevented 'ware with a capacity of 0 from having any gear added to it, even ones that are explicitly allowed. Fixes #4228.
 - Fixed an issue that some specific skills were not shown for critters based on a Force selection
+- Added an option to assign a color to each note to allow a way to categorize notes.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -168,9 +169,7 @@ Changed/New Strings:
 - Label_SelectMentor_Bonus
 - String_Saving
 - String_Saving_Pattern
-- Label_SkillGroup_Disabled
-- Label_SkillGroup_DisabledBy
-- Enum_GunneryCommandDevice
+- Button_ChooseCustomColor
 
 Build 214
 Application Fixes:

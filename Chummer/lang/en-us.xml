@@ -6897,6 +6897,10 @@
       <key>Title_Notes</key>
       <text>Notes</text>
     </string>
+    <string>
+      <key>Button_ChooseCustomColor</key>
+      <text>Choose custom color for this note</text>
+    </string>
     <!-- End Region-->
     <!-- Region Options Window -->
     <string>
