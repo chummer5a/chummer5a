@@ -4002,7 +4002,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (objCharacterSkill.Name != strSkill)
                         continue;
-                    if (string.IsNullOrEmpty(strSpec) || objCharacterSkill.HasSpecialization(strSpec))
+                    if (string.IsNullOrEmpty(strSpec) || objCharacterSkill.HasSpecialization(strSpec) || objCharacterSkill.HasSpecialization(Name))
                     {
                         objSkill = objCharacterSkill;
                         break;
