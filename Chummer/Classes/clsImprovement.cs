@@ -3058,10 +3058,7 @@ namespace Chummer
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -3100,10 +3097,7 @@ namespace Chummer
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);

@@ -488,19 +488,8 @@ namespace Chummer
                         string strNodeAttributes = xmlNode.SelectSingleNode("attributes")?.Value ?? string.Empty;
                         int intNodeVal = Convert.ToInt32(xmlNode.SelectSingleNode("val")?.Value, GlobalOptions.InvariantCultureInfo);
                         // Check if the character's Attributes add up to a particular total.
-                        string strAttributes = strNodeAttributes;
                         string strValue = strNodeAttributes;
-                        foreach (string strAttribute in AttributeSection.AttributeStrings)
-                        {
-                            CharacterAttrib objLoopAttrib = objCharacter.GetAttribute(strAttribute);
-                            if (strNodeAttributes.Contains(objLoopAttrib.Abbrev))
-                            {
-                                strAttributes = strAttributes.Replace(strAttribute, objLoopAttrib.DisplayAbbrev);
-                                strValue = strValue.Replace(strAttribute, xmlNode.SelectSingleNode("natural") != null
-                                    ? objLoopAttrib.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                                    : objLoopAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                            }
-                        }
+                        strValue = objCharacter.AttributeSection.ProcessAttributesInXPath(strValue);
                         if (blnShowMessage)
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine, strSpace, strAttributes, intNodeVal);
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);

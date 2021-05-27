@@ -1102,6 +1102,14 @@
       <key>String_Legs</key>
       <text>Legs</text>
     </string>
+    <string>
+      <key>String_NaturalAttribute</key>
+      <text>Natural {0}</text>
+    </string>
+    <string>
+      <key>String_BaseAttribute</key>
+      <text>Base {0}</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
