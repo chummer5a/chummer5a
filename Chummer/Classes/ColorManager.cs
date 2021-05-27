@@ -295,20 +295,23 @@ namespace Chummer
         public static Color ErrorColor => Color.Red;
 
         public static Color DieGlitchFore => IsLightMode ? DieGlitchForeLight : DieGlitchForeDark;
-        public static Color DieGlitchBackground => IsLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
-        public static Color DieHitFore => IsLightMode ? DieHitForeLight : DieHitForeDark;
-        public static Color DieHitBackground => IsLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
-
-        private static Color DieGlitchForeLight => Color.White;
-        private static Color DieGlitchBackgroundLight => Color.Gray;
-        private static Color DieHitForeLight => Color.Black;
-        private static Color DieHitBackgroundLight => Color.LightGreen;
-
+        private static Color DieGlitchForeLight => WindowTextDark;
         private static Color DieGlitchForeDark => GenerateDarkModeColor(DieGlitchForeLight);
+        public static Color DieGlitchBackground => IsLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
+        private static Color DieGlitchBackgroundLight => ControlDarkerLight;
         private static Color DieGlitchBackgroundDark => GenerateDarkModeColor(DieGlitchBackgroundLight);
+        public static Color DieHitFore => IsLightMode ? DieHitForeLight : DieHitForeDark;
+        private static Color DieHitForeLight => ControlTextLight;
         private static Color DieHitForeDark => GenerateDarkModeColor(DieHitForeLight);
+        public static Color DieHitBackground => IsLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+        private static Color DieHitBackgroundLight => Color.LightGreen;
         private static Color DieHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
-
+        public static Color DieGlitchHitFore => IsLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
+        private static Color DieGlitchHitForeLight => ControlTextLight;
+        private static Color DieGlitchHitForeDark => GenerateDarkModeColor(DieHitForeLight);
+        public static Color DieGlitchHitBackground => IsLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
+        private static Color DieGlitchHitBackgroundLight => Color.DarkGreen;
+        private static Color DieGlitchHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
 
         public static void UpdateLightDarkMode(this Control objControl)
         {
@@ -466,7 +469,36 @@ namespace Chummer
                         ? blnLightMode ? ControlLight : ControlDark
                         : blnLightMode ? WindowLight : WindowDark;
                     break;
-                case ListView _:
+                case ListView objListView:
+                    objControl.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                    objControl.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    foreach (DiceRollerListViewItem objItem in objListView.Items)
+                    {
+                        if (objItem.IsHit)
+                        {
+                            if (objItem.IsGlitch)
+                            {
+                                objItem.ForeColor = blnLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
+                                objItem.BackColor = blnLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
+                            }
+                            else
+                            {
+                                objItem.ForeColor = blnLightMode ? DieHitForeLight : DieHitForeDark;
+                                objItem.BackColor = blnLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+                            }
+                        }
+                        else if (objItem.IsGlitch)
+                        {
+                            objItem.ForeColor = blnLightMode ? DieGlitchForeLight : DieGlitchForeDark;
+                            objItem.BackColor = blnLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
+                        }
+                        else
+                        {
+                            objItem.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                            objItem.BackColor = blnLightMode ? WindowLight : WindowDark;
+                        }
+                    }
+                    break;
                 case ListBox _:
                 case ComboBox _:
                 case TableCell _:
