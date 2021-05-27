@@ -27,7 +27,8 @@ namespace Chummer
     public partial class frmDiceRoller : Form
     {
         private readonly frmChummerMain _frmMain;
-        private readonly List<ListItem> _lstResults = new List<ListItem>(40);
+        private readonly List<ListViewItem> _lstResults = new List<ListViewItem>(40);
+        private bool hasBubbleDie = false;
 
         #region Control Events
         public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
@@ -62,6 +63,7 @@ namespace Chummer
 
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
+            hasBubbleDie = false;
             List<int> lstRandom = new List<int>(nudDice.ValueAsInt);
             int intHitCount = 0;
             int intGlitchCount = 0;
@@ -92,7 +94,7 @@ namespace Chummer
             _lstResults.Clear();
             foreach (int intResult in lstRandom)
             {
-                _lstResults.Add(new ListItem(intResult.ToString(GlobalOptions.InvariantCultureInfo), intResult.ToString(GlobalOptions.CultureInfo)));
+                ListViewItem lviCur=new ListViewItem(intResult.ToString(GlobalOptions.CultureInfo));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
@@ -102,21 +104,41 @@ namespace Chummer
                         intTarget = 4;
 
                     if (intResult >= intTarget)
+                    {
                         intHitCount++;
+                        lviCur.ForeColor = ColorManager.DieHitFore;
+                        lviCur.BackColor = ColorManager.DieHitBackground;
+                    }
                     if (intResult <= intGlitchMin)
+                    {
                         intGlitchCount++;
+                        lviCur.ForeColor = ColorManager.DieGlitchFore;
+                        lviCur.BackColor = ColorManager.DieGlitchBackground;
+                    }
                 }
                 else if (cboMethod.SelectedValue.ToString() == "Large")
                 {
                     if (intResult >= 3)
+                    {
                         intHitCount++;
+                        lviCur.ForeColor = ColorManager.DieHitFore;
+                        lviCur.BackColor = ColorManager.DieHitBackground;
+                    }
                     if (intResult <= intGlitchMin)
+                    {
                         intGlitchCount++;
+                        lviCur.ForeColor = ColorManager.DieGlitchFore;
+                        lviCur.BackColor = ColorManager.DieGlitchBackground;
+                    }
                 }
                 else if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 {
                     intHitCount += intResult;
+                    lviCur.ForeColor = ColorManager.DieHitFore;
+                    lviCur.BackColor = ColorManager.DieHitBackground;
                 }
+
+                _lstResults.Add(lviCur);
             }
 
             int intGlitchThreshold = chkVariableGlitch.Checked
@@ -135,14 +157,17 @@ namespace Chummer
                         && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
-                    LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
+                ListViewItem lviCur = new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo) + strSpace + LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
                 if ((cboMethod.SelectedValue.ToString() == "Standard"
                      || cboMethod.SelectedValue.ToString() == "Large")
                     && intBubbleDieResult <= intGlitchMin)
                 {
                     intGlitchCount++;
+                    lviCur.ForeColor = ColorManager.DieGlitchFore;
+                    lviCur.BackColor = ColorManager.DieGlitchBackground;
                 }
+                hasBubbleDie = true;
+                _lstResults.Add(lviCur);
             }
 
             lblResultsLabel.Visible = true;
@@ -174,7 +199,11 @@ namespace Chummer
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
-            lstResults.PopulateWithListItems(_lstResults);
+            lstResults.Items.Clear();
+            foreach (ListViewItem lviCur in _lstResults)
+            {
+                lstResults.Items.Add(lviCur);
+            }
             lstResults.EndUpdate();
         }
 
@@ -206,17 +235,31 @@ namespace Chummer
 
             int intKeepSum = 0;
             int intResult;
+
+            //Remove the BubbleDie (it is always at the end)
+            if(hasBubbleDie && _lstResults.Count>0)
+            {
+                _lstResults.RemoveAt(_lstResults.Count - 1);
+            }
+            hasBubbleDie = false;
+
             // Remove everything that is not a hit
             int intNewDicePool = 0;
             for (int i = _lstResults.Count - 1; i >= 0; --i)
             {
-                if (!int.TryParse(_lstResults[i].Value.ToString(), out intResult) || intResult < intKeepThreshold)
+                if (!int.TryParse(_lstResults[i].Text, out intResult) || intResult < intKeepThreshold)
                 {
                     _lstResults.RemoveAt(i);
                     intNewDicePool++;
                 }
                 else
                     intKeepSum += intResult;
+            }
+
+            if(intNewDicePool==0)
+            {
+                MessageBox.Show(LanguageManager.GetString("String_NoDiceLeft_Text"), LanguageManager.GetString("String_NoDiceLeft_Title"));
+                return;
             }
 
             int intHitCount = _lstResults.Count;
@@ -249,26 +292,45 @@ namespace Chummer
 
             foreach (int intLoopResult in lstRandom)
             {
-                _lstResults.Add(new ListItem(intLoopResult.ToString(GlobalOptions.InvariantCultureInfo), intLoopResult.ToString(GlobalOptions.CultureInfo)));
+                ListViewItem lviCur=new ListViewItem(intLoopResult.ToString(GlobalOptions.CultureInfo));
 
                 if (cboMethod.SelectedValue.ToString() == "Standard")
                 {
                     if (intLoopResult >= intKeepThreshold)
+                    {
                         intHitCount++;
+                        lviCur.ForeColor = ColorManager.DieHitFore;
+                        lviCur.BackColor = ColorManager.DieHitBackground;
+                    }
                     if (intLoopResult <= intGlitchMin)
+                    {
                         intGlitchCount++;
+                        lviCur.ForeColor = ColorManager.DieGlitchFore;
+                        lviCur.BackColor = ColorManager.DieGlitchBackground;
+                    }
                 }
                 else if (cboMethod.SelectedValue.ToString() == "Large")
                 {
                     if (intLoopResult >= 3)
+                    {
                         intHitCount++;
+                        lviCur.ForeColor = ColorManager.DieHitFore;
+                        lviCur.BackColor = ColorManager.DieHitBackground;
+                    }
                     if (intLoopResult <= intGlitchMin)
+                    {
                         intGlitchCount++;
+                        lviCur.ForeColor = ColorManager.DieGlitchFore;
+                        lviCur.BackColor = ColorManager.DieGlitchBackground;
+                    }
                 }
                 else if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
                 {
                     intHitCount += intLoopResult;
+                    lviCur.ForeColor = ColorManager.DieHitFore;
+                    lviCur.BackColor = ColorManager.DieHitBackground;
                 }
+                _lstResults.Add(lviCur);
             }
 
             int intGlitchThreshold = chkVariableGlitch.Checked
@@ -287,14 +349,18 @@ namespace Chummer
                         && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
-                    LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
+                ListViewItem lviCur=new ListViewItem(intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + strSpace +
+                    LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')');
                 if ((cboMethod.SelectedValue.ToString() == "Standard"
                      || cboMethod.SelectedValue.ToString() == "Large")
                     && intBubbleDieResult <= intGlitchMin)
                 {
                     intGlitchCount++;
+                    lviCur.ForeColor = ColorManager.DieGlitchFore;
+                    lviCur.BackColor = ColorManager.DieGlitchBackground;
+                    hasBubbleDie = true;
                 }
+                _lstResults.Add(lviCur);
             }
 
 
@@ -329,7 +395,9 @@ namespace Chummer
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
-            lstResults.PopulateWithListItems(_lstResults);
+            lstResults.Items.Clear();
+            foreach (ListViewItem lviCur in _lstResults)
+                lstResults.Items.Add(lviCur);
             lstResults.EndUpdate();
         }
         #endregion
@@ -365,5 +433,6 @@ namespace Chummer
             }
         }
         #endregion
+
     }
 }

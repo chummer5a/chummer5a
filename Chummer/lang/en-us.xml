@@ -6716,6 +6716,14 @@
       <text>Only for Glitching:</text>
     </string>
     <string>
+      <key>String_NoDiceLeft_Title</key>
+      <text>No dice to re-roll</text>
+    </string>
+    <string>
+      <key>String_NoDiceLeft_Text</key>
+      <text>There is nothing left that can be re-rolled</text>
+    </string>
+    <string>
       <key>Label_DiceRoller_Result</key>
       <text>Result:</text>
     </string>

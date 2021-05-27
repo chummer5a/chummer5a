@@ -8594,6 +8594,14 @@
             <text>Nur für Patzer:</text>
         </string>
         <string>
+          <key>String_NoDiceLeft_Title</key>
+          <text>Keine Würfel übrig</text>
+        </string>
+        <string>
+          <key>String_NoDiceLeft_Text</key>
+          <text>Du hast keine weiteren Würfel, die neu geworfen werden könnten.</text>
+        </string>
+        <string>
             <key>String_Pilot</key>
             <text>Pilot</text>
         </string>
