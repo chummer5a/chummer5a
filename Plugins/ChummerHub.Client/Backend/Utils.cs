@@ -1191,7 +1191,8 @@ namespace ChummerHub.Client.Backend
                                 if (blnSync)
                                 {
                                     var objPutTask = client.PutSINAsync(ce.MySINnerFile.Id.Value, fp);
-                                    objPutTask.RunSynchronously();
+                                    if (!objPutTask.IsCompleted)
+                                        objPutTask.RunSynchronously();
                                     res = objPutTask.Result;
                                 }
                                 else

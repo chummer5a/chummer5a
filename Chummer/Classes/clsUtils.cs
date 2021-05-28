@@ -438,7 +438,8 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 Task<T> objSyncTask = funcToRun.Invoke();
-                objSyncTask.RunSynchronously();
+                if (!objSyncTask.IsCompleted)
+                    objSyncTask.RunSynchronously();
                 return objSyncTask.Result;
             }
             Task<T> objTask = Task.Run(funcToRun);
@@ -463,7 +464,8 @@ namespace Chummer
                 for (int i = 0; i < afuncToRun.Length; ++i)
                 {
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
-                    objSyncTask.RunSynchronously();
+                    if (!objSyncTask.IsCompleted)
+                        objSyncTask.RunSynchronously();
                     aobjReturn[i] = objSyncTask.Result;
                 }
                 return aobjReturn;
@@ -491,7 +493,8 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 Task objSyncTask = funcToRun.Invoke();
-                objSyncTask.RunSynchronously();
+                if (!objSyncTask.IsCompleted)
+                    objSyncTask.RunSynchronously();
                 return;
             }
             Task objTask = Task.Run(funcToRun);
@@ -514,7 +517,8 @@ namespace Chummer
                 foreach (Func<Task> funcToRun in afuncToRun)
                 {
                     Task objSyncTask = funcToRun.Invoke();
-                    objSyncTask.RunSynchronously();
+                    if (!objSyncTask.IsCompleted)
+                        objSyncTask.RunSynchronously();
                 }
                 return;
             }
