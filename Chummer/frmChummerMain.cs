@@ -267,41 +267,53 @@ namespace Chummer
                                 {
                                     foreach (string strArg in strArgs)
                                     {
-                                        if (strArg == "/test")
+                                        switch (strArg)
                                         {
-                                            blnShowTest = true;
-                                        }
-                                        else if ((strArg == "/help")
-                                                 || (strArg == "?")
-                                                 || (strArg == "/?"))
-                                        {
-                                            string msg = "Commandline parameters are either " + Environment.NewLine;
-                                            msg += "\t/test" + Environment.NewLine;
-                                            msg += "\t/help" + Environment.NewLine;
-                                            msg += "\t(filename to open)" + Environment.NewLine;
-                                            msg +=
-                                                "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
-                                                Environment.NewLine;
-                                            Console.WriteLine(msg);
-                                        }
-                                        else if (strArg.Contains("/plugin"))
-                                        {
-                                            Log.Info(
-                                                "Encountered command line argument, that should already have been handled in one of the plugins: " +
-                                                strArg);
-                                        }
-                                        else if (!strArg.StartsWith('/'))
-                                        {
-                                            if (!File.Exists(strArg))
+                                            case "/test":
+                                                blnShowTest = true;
+                                                break;
+                                            case "/help":
+                                            case "?":
+                                            case "/?":
                                             {
-                                                throw new ArgumentException(
-                                                    "Chummer started with unknown command line arguments: " +
-                                                    strArgs.Aggregate((j, k) => j + " " + k));
+                                                string msg = "Commandline parameters are either " + Environment.NewLine;
+                                                msg += "\t/test" + Environment.NewLine;
+                                                msg += "\t/help" + Environment.NewLine;
+                                                msg += "\t(filename to open)" + Environment.NewLine;
+                                                msg +=
+                                                    "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
+                                                    Environment.NewLine;
+                                                Console.WriteLine(msg);
+                                                break;
                                             }
+                                            default:
+                                            {
+                                                if (strArg.Contains("/plugin"))
+                                                {
+                                                    Log.Info(
+                                                        "Encountered command line argument, that should already have been handled in one of the plugins: " +
+                                                        strArg);
+                                                }
+                                                else if (!strArg.StartsWith('/'))
+                                                {
+                                                    if (!File.Exists(strArg))
+                                                    {
+                                                        throw new ArgumentException(
+                                                            "Chummer started with unknown command line arguments: " +
+                                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                                    }
+                                                    if (Path.GetExtension(strArg) != ".chum5")
+                                                    {
+                                                        Utils.BreakIfDebug();
+                                                        continue;
+                                                    }
+                                                    if (setFilesToLoad.Contains(strArg))
+                                                        continue;
+                                                    setFilesToLoad.Add(strArg);
+                                                }
 
-                                            if (setFilesToLoad.Contains(strArg))
-                                                continue;
-                                            setFilesToLoad.Add(strArg);
+                                                break;
+                                            }
                                         }
                                     }
                                     

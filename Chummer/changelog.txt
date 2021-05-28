@@ -59,6 +59,7 @@ Application Changes:
 - Added an option to assign a color to each note to allow a way to categorize notes.
 - Data entries that directly use attribute values (e.g. for damage codes) now all require the abbreviations of those attributes to be enclosed in curly brackets, e.g. {STR}. They now also all support using unaugmented attribute values by adding "Unaug" after the attribute name but before the end of the curly brackets, as well as "base" attribute values (i.e. those given by priority entries only) by adding "Base" after the attribute abbreviation the same way.
 - When determining dice pools for weapons, having a specialization in the specific weapon name is now always enough to give the appropriate dice pool bonus. In the case of exotic skills, this means an exotic skill in the specific weapon is enough. Fixes #4467.
+- Chummer now ignores any files specified as arguments that do not have a .chum5 (i.e. a Chummer5 save file) extension.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
