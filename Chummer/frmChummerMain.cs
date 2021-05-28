@@ -267,6 +267,8 @@ namespace Chummer
                                 {
                                     foreach (string strArg in strArgs)
                                     {
+                                        if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath)))
+                                            continue;
                                         switch (strArg)
                                         {
                                             case "/test":
@@ -303,10 +305,7 @@ namespace Chummer
                                                             strArgs.Aggregate((j, k) => j + " " + k));
                                                     }
                                                     if (Path.GetExtension(strArg) != ".chum5")
-                                                    {
                                                         Utils.BreakIfDebug();
-                                                        continue;
-                                                    }
                                                     if (setFilesToLoad.Contains(strArg))
                                                         continue;
                                                     setFilesToLoad.Add(strArg);
