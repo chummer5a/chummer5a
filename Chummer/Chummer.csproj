@@ -2064,6 +2064,7 @@
     <Content Include="Resources\HeroLab.ico" />
     <Content Include="Resources\icons\defaulted.png" />
     <Content Include="Resources\icons\die.png" />
+    <Content Include="Resources\icons\discord_16px.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\32_bit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\3d_glasses.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\64_bit.png" />

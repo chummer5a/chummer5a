@@ -464,6 +464,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap discord_16px {
+            get {
+                object obj = ResourceManager.GetObject("discord_16px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap disk {
             get {
                 object obj = ResourceManager.GetObject("disk", resourceCulture);
@@ -3017,16 +3027,6 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap house_edit {
             get {
                 object obj = ResourceManager.GetObject("house_edit", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap icons8_discord_16 {
-            get {
-                object obj = ResourceManager.GetObject("icons8-discord-16", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

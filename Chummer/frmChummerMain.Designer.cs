@@ -473,7 +473,7 @@ namespace Chummer
             // 
             this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die;
             this.mnuToolsDiceRoller.Name = "mnuToolsDiceRoller";
-            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(180, 22);
+            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(171, 22);
             this.mnuToolsDiceRoller.Tag = "Menu_Main_DiceRoller";
             this.mnuToolsDiceRoller.Text = "&Dice Roller";
             this.mnuToolsDiceRoller.Click += new System.EventHandler(this.mnuToolsDiceRoller_Click);
@@ -481,13 +481,13 @@ namespace Chummer
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
             // 
             // mnuOptions
             // 
             this.mnuOptions.Image = global::Chummer.Properties.Resources.cog_edit;
             this.mnuOptions.Name = "mnuOptions";
-            this.mnuOptions.Size = new System.Drawing.Size(180, 22);
+            this.mnuOptions.Size = new System.Drawing.Size(171, 22);
             this.mnuOptions.Tag = "Menu_Main_Options";
             this.mnuOptions.Text = "&Global Options";
             this.mnuOptions.Click += new System.EventHandler(this.mnuOptions_Click);
@@ -496,7 +496,7 @@ namespace Chummer
             // 
             this.mnuCharacterOptions.Image = global::Chummer.Properties.Resources.group_gear;
             this.mnuCharacterOptions.Name = "mnuCharacterOptions";
-            this.mnuCharacterOptions.Size = new System.Drawing.Size(180, 22);
+            this.mnuCharacterOptions.Size = new System.Drawing.Size(171, 22);
             this.mnuCharacterOptions.Tag = "Menu_Main_Character_Options";
             this.mnuCharacterOptions.Text = "&Character Options";
             this.mnuCharacterOptions.Click += new System.EventHandler(this.mnuCharacterOptions_Click);
@@ -505,7 +505,7 @@ namespace Chummer
             // 
             this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.database_refresh;
             this.mnuToolsUpdate.Name = "mnuToolsUpdate";
-            this.mnuToolsUpdate.Size = new System.Drawing.Size(180, 22);
+            this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
             this.mnuToolsUpdate.Tag = "Menu_Main_Update";
             this.mnuToolsUpdate.Text = "Check for &Updates";
             this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
@@ -514,7 +514,7 @@ namespace Chummer
             // 
             this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
             this.mnuRestart.Name = "mnuRestart";
-            this.mnuRestart.Size = new System.Drawing.Size(180, 22);
+            this.mnuRestart.Size = new System.Drawing.Size(171, 22);
             this.mnuRestart.Tag = "Menu_Main_Restart";
             this.mnuRestart.Text = "&Restart Chummer";
             this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
@@ -522,13 +522,13 @@ namespace Chummer
             // toolStripSeparator6
             // 
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(177, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(168, 6);
             // 
             // mnuToolsTranslator
             // 
             this.mnuToolsTranslator.Image = global::Chummer.Properties.Resources.locate;
             this.mnuToolsTranslator.Name = "mnuToolsTranslator";
-            this.mnuToolsTranslator.Size = new System.Drawing.Size(180, 22);
+            this.mnuToolsTranslator.Size = new System.Drawing.Size(171, 22);
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "&Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
@@ -537,7 +537,7 @@ namespace Chummer
             // 
             this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.HeroLab_16;
             this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
-            this.mnuHeroLabImporter.Size = new System.Drawing.Size(180, 22);
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
             this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
             this.mnuHeroLabImporter.Text = "&Hero Lab Importer";
             this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
@@ -596,7 +596,7 @@ namespace Chummer
             // 
             // mnuChummerDiscord
             // 
-            this.mnuChummerDiscord.Image = global::Chummer.Properties.Resources.icons8_discord_16;
+            this.mnuChummerDiscord.Image = global::Chummer.Properties.Resources.discord_16px;
             this.mnuChummerDiscord.Name = "mnuChummerDiscord";
             this.mnuChummerDiscord.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
             this.mnuChummerDiscord.Size = new System.Drawing.Size(217, 22);
