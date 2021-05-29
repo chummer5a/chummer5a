@@ -1277,11 +1277,9 @@ namespace Chummer.Backend.Equipment
             get
             {
                 //TODO: Move to user-accessible options
-                if (IsDrone && Category == "Drones: Anthro")
-                    //Rigger 5: p145
-                    return 8;
                 if (IsDrone)
-                    return 6;
+                    //Rigger 5: p145
+                    return Category == "Drones: Anthro" ? 8 : 6;
                 return 12;
             }
         }

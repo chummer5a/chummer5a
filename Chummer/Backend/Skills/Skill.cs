@@ -434,7 +434,7 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-        protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();
+        protected static Dictionary<string, bool> SkillTypeCache { get; } = new Dictionary<string, bool>();
         //TODO CACHE INVALIDATE
 
         /// <summary>
@@ -461,7 +461,10 @@ namespace Chummer.Backend.Skills
                     return null;
                 if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
                 {
-                    blnIsKnowledgeSkill = character.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")?.Value != "active";
+                    blnIsKnowledgeSkill =
+                        character.LoadDataXPath("skills.xml")
+                            .SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")
+                            ?.Value != "active";
                     if (SkillTypeCache != null)
                         SkillTypeCache[category] = blnIsKnowledgeSkill;
                 }
