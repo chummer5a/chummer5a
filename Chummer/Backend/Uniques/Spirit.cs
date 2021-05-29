@@ -661,7 +661,7 @@ namespace Chummer
                     if (CharacterObject.Created)
                     {
                         // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
-                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
+                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * CharacterObject.Options.KarmaSpiritFettering : Force;
                         if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , Name
                             , fetteringCost.ToString(GlobalOptions.CultureInfo))))

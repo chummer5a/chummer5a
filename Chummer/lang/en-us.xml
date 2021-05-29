@@ -7244,6 +7244,10 @@
       <text>Spirit</text>
     </string>
     <string>
+      <key>Label_Options_SpiritFettering</key>
+      <text>Spirit Fettering</text>
+    </string>
+    <string>
       <key>Label_Options_MartialArtTechnique</key>
       <text>Martial Art Technique</text>
     </string>

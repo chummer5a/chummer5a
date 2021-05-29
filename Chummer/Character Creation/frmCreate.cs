@@ -9084,11 +9084,10 @@ namespace Chummer
                 {
                     intSpiritPointsUsed += intLoopKarma;
                     // Each Fettered Spirit costs 3 x Force.
-                    //TODO: Bind the 3 to an option.
                     if (objSpirit.Fettered)
                     {
-                        intKarmaPointsRemain -= objSpirit.Force * 3;
-                        intSpiritPointsUsed += objSpirit.Force * 3;
+                        intKarmaPointsRemain -= objSpirit.Force * CharacterObjectOptions.KarmaSpiritFettering;
+                        intSpiritPointsUsed += objSpirit.Force * CharacterObjectOptions.KarmaSpiritFettering;
                     }
                 }
                 else

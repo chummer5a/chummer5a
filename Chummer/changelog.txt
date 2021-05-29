@@ -60,6 +60,7 @@ Application Changes:
 - Data entries that directly use attribute values (e.g. for damage codes) now all require the abbreviations of those attributes to be enclosed in curly brackets, e.g. {STR}. They now also all support using unaugmented attribute values by adding "Unaug" after the attribute name but before the end of the curly brackets, as well as "base" attribute values (i.e. those given by priority entries only) by adding "Base" after the attribute abbreviation the same way.
 - When determining dice pools for weapons, having a specialization in the specific weapon name is now always enough to give the appropriate dice pool bonus. In the case of exotic skills, this means an exotic skill in the specific weapon is enough. Fixes #4467.
 - Fixed some weird behavior that might happen when trying to open a Chummer save file before opening Chummer first.
+- The karma cost of fettering a spirit is no longer hardcoded.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -175,6 +176,7 @@ Changed/New Strings:
 - Button_ChooseCustomColor
 - String_NaturalAttribute
 - String_BaseAttribute
+- Label_Options_SpiritFettering
 
 Build 214
 Application Fixes:
