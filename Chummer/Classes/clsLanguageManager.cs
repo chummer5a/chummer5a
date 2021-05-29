@@ -690,7 +690,7 @@ namespace Chummer
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
             // TODO: Do this overhaul.
-            return Utils.RunWithoutThreadLock(() => TranslateExtraAsync(strExtra, strIntoLanguage, objCharacter, strPreferFile));
+            return Utils.RunWithoutThreadLock(() => TranslateExtraAsync(strExtra, strIntoLanguage, objCharacter, strPreferFile).GetAwaiter().GetResult());
         }
 
         /// <summary>
@@ -879,7 +879,7 @@ namespace Chummer
             // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
             // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
             // TODO: Do this overhaul.
-            return Utils.RunWithoutThreadLock(() => ReverseTranslateExtraAsync(strExtra, strFromLanguage, objCharacter, strPreferFile));
+            return Utils.RunWithoutThreadLock(() => ReverseTranslateExtraAsync(strExtra, strFromLanguage, objCharacter, strPreferFile).GetAwaiter().GetResult());
         }
 
         /// <summary>

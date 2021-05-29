@@ -459,7 +459,7 @@ namespace ChummerHub.Client.Sinners
                             if (blnSync)
                             {
                                 var objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias);
-                                if (!objSearchTask.IsCompleted)
+                                if (objSearchTask.Status == TaskStatus.Created)
                                     objSearchTask.RunSynchronously();
                                 res = objSearchTask.Result;
                             }
