@@ -5505,7 +5505,7 @@ namespace Chummer
                         }
                         else
                         {
-                            frmPickCyberware.SetGrade = objCyberwareParent.Grade;
+                            frmPickCyberware.ForcedGrade = objCyberwareParent.Grade;
                             // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).
                             if (!objCyberwareParent.Capacity.Contains('[') || objCyberwareParent.Capacity.Contains("/["))
                             {
@@ -10822,7 +10822,7 @@ namespace Chummer
                 Dictionary<string, int> dicHasMounts = new Dictionary<string, int>();
                 if (objSelectedCyberware != null)
                 {
-                    frmPickCyberware.SetGrade = objSelectedCyberware.Grade;
+                    frmPickCyberware.ForcedGrade = objSelectedCyberware.Grade;
                     frmPickCyberware.LockGrade();
                     frmPickCyberware.Subsystems = objSelectedCyberware.AllowedSubsystems;
                     // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that conume Capacity).

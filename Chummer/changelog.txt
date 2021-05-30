@@ -61,6 +61,7 @@ Application Changes:
 - When determining dice pools for weapons, having a specialization in the specific weapon name is now always enough to give the appropriate dice pool bonus. In the case of exotic skills, this means an exotic skill in the specific weapon is enough. Fixes #4467.
 - Fixed some weird behavior that might happen when trying to open a Chummer save file before opening Chummer first.
 - The karma cost of fettering a spirit is no longer hardcoded.
+- Attempting to buy a cyberlimb accessory for a non-Adapsin, non-Standard grade cyberlimb after having bought Adapsin no longer causes the accessory's grade to be set to Standard (Adapsin).
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
