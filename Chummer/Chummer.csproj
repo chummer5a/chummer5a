@@ -416,6 +416,12 @@
     <Compile Include="helpers\CursorWait.cs" />
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
     <Compile Include="helpers\DiceRollerListViewItem.cs" />
+    <Compile Include="helpers\DpiFriendlyToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripButton.Designer.cs">
+      <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>

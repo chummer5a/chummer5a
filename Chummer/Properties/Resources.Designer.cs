@@ -403,6 +403,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap color_wheel1 {
+            get {
+                object obj = ResourceManager.GetObject("color_wheel1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap computer_add {
             get {
                 object obj = ResourceManager.GetObject("computer_add", resourceCulture);
@@ -487,6 +497,16 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap disk_multiple {
             get {
                 object obj = ResourceManager.GetObject("disk_multiple", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap disk1 {
+            get {
+                object obj = ResourceManager.GetObject("disk1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2934,9 +2954,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap folder_page1 {
+            get {
+                object obj = ResourceManager.GetObject("folder_page1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap font {
             get {
                 object obj = ResourceManager.GetObject("font", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap font1 {
+            get {
+                object obj = ResourceManager.GetObject("font1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3164,9 +3204,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap page_copy1 {
+            get {
+                object obj = ResourceManager.GetObject("page_copy1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap page_paste {
             get {
                 object obj = ResourceManager.GetObject("page_paste", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap page_paste1 {
+            get {
+                object obj = ResourceManager.GetObject("page_paste1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3197,6 +3257,16 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap paintcan {
             get {
                 object obj = ResourceManager.GetObject("paintcan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap paintcan1 {
+            get {
+                object obj = ResourceManager.GetObject("paintcan1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3277,6 +3347,16 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap printer_empty {
             get {
                 object obj = ResourceManager.GetObject("printer_empty", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap printer1 {
+            get {
+                object obj = ResourceManager.GetObject("printer1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3424,6 +3504,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_align_center1 {
+            get {
+                object obj = ResourceManager.GetObject("text_align_center1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_align_justify {
             get {
                 object obj = ResourceManager.GetObject("text_align_justify", resourceCulture);
@@ -3444,6 +3534,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_align_left1 {
+            get {
+                object obj = ResourceManager.GetObject("text_align_left1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_align_right {
             get {
                 object obj = ResourceManager.GetObject("text_align_right", resourceCulture);
@@ -3454,9 +3554,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_align_right1 {
+            get {
+                object obj = ResourceManager.GetObject("text_align_right1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_bold {
             get {
                 object obj = ResourceManager.GetObject("text_bold", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_bold1 {
+            get {
+                object obj = ResourceManager.GetObject("text_bold1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3484,6 +3604,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_indent_remove1 {
+            get {
+                object obj = ResourceManager.GetObject("text_indent_remove1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_indent1 {
+            get {
+                object obj = ResourceManager.GetObject("text_indent1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_italic {
             get {
                 object obj = ResourceManager.GetObject("text_italic", resourceCulture);
@@ -3494,9 +3634,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_italic1 {
+            get {
+                object obj = ResourceManager.GetObject("text_italic1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_list_bullets {
             get {
                 object obj = ResourceManager.GetObject("text_list_bullets", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_list_bullets1 {
+            get {
+                object obj = ResourceManager.GetObject("text_list_bullets1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3524,9 +3684,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_strikethrough1 {
+            get {
+                object obj = ResourceManager.GetObject("text_strikethrough1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_subscript {
             get {
                 object obj = ResourceManager.GetObject("text_subscript", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_subscript1 {
+            get {
+                object obj = ResourceManager.GetObject("text_subscript1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3544,9 +3724,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_superscript1 {
+            get {
+                object obj = ResourceManager.GetObject("text_superscript1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_underline {
             get {
                 object obj = ResourceManager.GetObject("text_underline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_underline1 {
+            get {
+                object obj = ResourceManager.GetObject("text_underline1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3577,6 +3777,16 @@ namespace Chummer.Properties {
         public static System.Drawing.Bitmap user_add {
             get {
                 object obj = ResourceManager.GetObject("user_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap user_add1 {
+            get {
+                object obj = ResourceManager.GetObject("user_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

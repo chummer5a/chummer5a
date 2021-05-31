@@ -90,8 +90,6 @@ namespace Chummer
             this.mnuHelpDumpshock = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.tsbNewCharacter = new System.Windows.Forms.ToolStripButton();
-            this.tsbOpen = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.tabForms = new System.Windows.Forms.TabControl();
@@ -101,6 +99,8 @@ namespace Chummer
             this.tsClose = new System.Windows.Forms.ToolStripMenuItem();
             this.tsPrint = new System.Windows.Forms.ToolStripMenuItem();
             this.tsExport = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsbNewCharacter = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbOpen = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.mnuProcessFile.SuspendLayout();
@@ -650,28 +650,6 @@ namespace Chummer
             this.toolStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemAdded);
             this.toolStrip.ItemRemoved += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemRemoved);
             // 
-            // tsbNewCharacter
-            // 
-            this.tsbNewCharacter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbNewCharacter.Image = global::Chummer.Properties.Resources.user_add;
-            this.tsbNewCharacter.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbNewCharacter.Name = "tsbNewCharacter";
-            this.tsbNewCharacter.Size = new System.Drawing.Size(23, 22);
-            this.tsbNewCharacter.Tag = "Menu_Main_NewCharacter";
-            this.tsbNewCharacter.Text = "New";
-            this.tsbNewCharacter.Click += new System.EventHandler(this.ShowNewForm);
-            // 
-            // tsbOpen
-            // 
-            this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbOpen.Image = global::Chummer.Properties.Resources.folder_page;
-            this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.tsbOpen.Name = "tsbOpen";
-            this.tsbOpen.Size = new System.Drawing.Size(23, 22);
-            this.tsbOpen.Tag = "Menu_Main_Open";
-            this.tsbOpen.Text = "Open";
-            this.tsbOpen.Click += new System.EventHandler(this.OpenFile);
-            // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
@@ -764,6 +742,40 @@ namespace Chummer
             this.tsExport.Name = "tsExport";
             this.tsExport.Size = new System.Drawing.Size(32, 19);
             // 
+            // tsbNewCharacter
+            // 
+            this.tsbNewCharacter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbNewCharacter.Image = global::Chummer.Properties.Resources.user_add;
+            this.tsbNewCharacter.ImageDpi120 = null;
+            this.tsbNewCharacter.ImageDpi144 = null;
+            this.tsbNewCharacter.ImageDpi192 = global::Chummer.Properties.Resources.user_add1;
+            this.tsbNewCharacter.ImageDpi288 = null;
+            this.tsbNewCharacter.ImageDpi384 = null;
+            this.tsbNewCharacter.ImageDpi96 = global::Chummer.Properties.Resources.user_add;
+            this.tsbNewCharacter.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbNewCharacter.Name = "tsbNewCharacter";
+            this.tsbNewCharacter.Size = new System.Drawing.Size(23, 22);
+            this.tsbNewCharacter.Tag = "Menu_Main_NewCharacter";
+            this.tsbNewCharacter.Text = "New";
+            this.tsbNewCharacter.Click += new System.EventHandler(this.ShowNewForm);
+            // 
+            // tsbOpen
+            // 
+            this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbOpen.Image = global::Chummer.Properties.Resources.folder_page;
+            this.tsbOpen.ImageDpi120 = null;
+            this.tsbOpen.ImageDpi144 = null;
+            this.tsbOpen.ImageDpi192 = global::Chummer.Properties.Resources.folder_page1;
+            this.tsbOpen.ImageDpi288 = null;
+            this.tsbOpen.ImageDpi384 = null;
+            this.tsbOpen.ImageDpi96 = global::Chummer.Properties.Resources.folder_page;
+            this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbOpen.Name = "tsbOpen";
+            this.tsbOpen.Size = new System.Drawing.Size(23, 22);
+            this.tsbOpen.Tag = "Menu_Main_Open";
+            this.tsbOpen.Text = "Open";
+            this.tsbOpen.Click += new System.EventHandler(this.OpenFile);
+            // 
             // frmChummerMain
             // 
             this.AllowDrop = true;
@@ -821,8 +833,6 @@ namespace Chummer
         private System.Windows.Forms.ToolStripMenuItem closeAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem helpMenu;
         private System.Windows.Forms.ToolStripMenuItem mnuChummerWiki;
-        private System.Windows.Forms.ToolStripButton tsbNewCharacter;
-        private System.Windows.Forms.ToolStripButton tsbOpen;
         private System.Windows.Forms.ToolStripMenuItem mnuToolsUpdate;
         private System.Windows.Forms.ToolStripMenuItem mnuHelpRevisionHistory;
         private System.Windows.Forms.ToolStripMenuItem mnuNewCritter;
@@ -864,6 +874,8 @@ namespace Chummer
         private ToolStripMenuItem tsPrint;
         private ToolStripMenuItem tsExport;
         private ToolStripMenuItem mnuCharacterOptions;
+        private DpiFriendlyToolStripButton tsbNewCharacter;
+        private DpiFriendlyToolStripButton tsbOpen;
     }
 }
 
