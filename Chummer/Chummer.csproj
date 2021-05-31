@@ -422,6 +422,12 @@
     <Compile Include="helpers\DpiFriendlyToolStripButton.Designer.cs">
       <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.Designer.cs">
+      <DependentUpon>DpiFriendlyToolStripMenuItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -2062,6 +2068,7 @@
     <Content Include="Resources\icons\defaulted.png" />
     <Content Include="Resources\icons\die.png" />
     <Content Include="Resources\icons\discord_16px.png" />
+    <Content Include="Resources\icons\discord_32px.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\32_bit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\3d_glasses.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\64_bit.png" />
@@ -12007,6 +12014,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\labels_page.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\label_link.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\ladybird.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\ladybird_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\landmarks.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\languange.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\laptop.png" />
@@ -17796,6 +17804,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\zoom_selection.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\zootool.ico" />
     <Content Include="Resources\icons\HeroLab_16.png" />
+    <Content Include="Resources\icons\Locate_48.png" />
+    <Content Include="Resources\icons\HeroLab_32.png" />
+    <Content Include="Resources\icons\HeroLab_48.png" />
     <Content Include="Resources\icons\noimagedots.png" />
     <Content Include="Resources\troll.ico" />
     <Content Include="Resources\troll.png" />

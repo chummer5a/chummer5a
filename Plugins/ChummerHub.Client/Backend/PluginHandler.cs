@@ -72,13 +72,14 @@ namespace Chummer.Plugins
             }
 
             ContextMenuStrip cmsRoster = new ContextMenuStrip();
-            ToolStripMenuItem tsShowMySINners = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsShowMySINners = new DpiFriendlyToolStripMenuItem
             {
                 Name = "tsShowMySINners",
                 Tag = "Menu_ShowMySINners",
                 Text = "Show all my SINners",
                 Size = new Size(177, 22),
-                Image = Resources.group
+                Image = Resources.group,
+                ImageDpi192 = Resources.group1,
             };
             tsShowMySINners.Click += ShowMySINnersOnClick;
             tsShowMySINners.UpdateLightDarkMode();
@@ -548,14 +549,15 @@ namespace Chummer.Plugins
 #if DEBUG
             if (Settings.Default.UserModeRegistered)
             {
-                ToolStripMenuItem mnuSINnerSearchs = new ToolStripMenuItem
+                DpiFriendlyToolStripMenuItem mnuSINnerSearchs = new DpiFriendlyToolStripMenuItem
                 {
                     Name = "mnuSINSearch",
                     Text = "&SINner Search",
-                    Image = ChummerHub.Client.Properties.Resources.group,
+                    Image = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
-                    Tag = "Menu_Tools_SINnerSearch"
+                    Tag = "Menu_Tools_SINnerSearch",
+                    ImageDpi192 = Resources.group1,
                 };
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
                 mnuSINnerSearchs.UpdateLightDarkMode();
@@ -563,14 +565,15 @@ namespace Chummer.Plugins
                 yield return mnuSINnerSearchs;
             }
 
-            ToolStripMenuItem mnuSINnersArchetypes = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem mnuSINnersArchetypes = new DpiFriendlyToolStripMenuItem
             {
                 Name = "mnuSINnersArchetypes",
                 Text = "&Archetypes",
-                Image = ChummerHub.Client.Properties.Resources.group,
+                Image = Resources.group,
                 ImageTransparentColor = Color.Black,
                 Size = new Size(148, 22),
-                Tag = "Menu_Tools_SINnersArchetypes"
+                Tag = "Menu_Tools_SINnersArchetypes",
+                ImageDpi192 = Resources.group1,
             };
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
             mnuSINnersArchetypes.UpdateLightDarkMode();
@@ -579,14 +582,15 @@ namespace Chummer.Plugins
 #endif
             if (Settings.Default.UserModeRegistered)
             {
-                ToolStripMenuItem mnuSINners = new ToolStripMenuItem
+                DpiFriendlyToolStripMenuItem mnuSINners = new DpiFriendlyToolStripMenuItem
                 {
                     Name = "mnuSINners",
                     Text = "&SINners",
-                    Image = ChummerHub.Client.Properties.Resources.group,
+                    Image = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
-                    Tag = "Menu_Tools_SINners"
+                    Tag = "Menu_Tools_SINners",
+                    ImageDpi192 = Resources.group1,
                 };
                 mnuSINners.Click += mnuSINners_Click;
                 mnuSINners.UpdateLightDarkMode();
