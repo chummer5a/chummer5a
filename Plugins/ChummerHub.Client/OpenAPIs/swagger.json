@@ -202,8 +202,7 @@
             "name": "email",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -281,32 +280,28 @@
             "name": "username",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "password",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "start_ip_address",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "end_ip_address",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -384,16 +379,14 @@
             "name": "email",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "userrole",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -830,16 +823,14 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "open",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -897,16 +888,14 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "open",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -964,8 +953,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -1065,7 +1053,6 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           },
@@ -1074,9 +1061,7 @@
             "in": "query",
             "description": "In case you want to rename the group",
             "schema": {
-              "type": "string",
-              "description": "In case you want to rename the group",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -1084,16 +1069,14 @@
             "in": "query",
             "schema": {
               "type": "string",
-              "format": "uuid",
-              "nullable": true
+              "format": "uuid"
             }
           },
           {
             "name": "adminIdentityRole",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -1182,7 +1165,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           }
@@ -1195,9 +1177,7 @@
                 "properties": {
                   "uploadedFile": {
                     "type": "string",
-                    "description": "",
-                    "format": "binary",
-                    "nullable": true
+                    "format": "binary"
                   }
                 }
               },
@@ -1306,9 +1286,7 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
-              "format": "uuid",
-              "nullable": true
+              "format": "uuid"
             }
           }
         ],
@@ -1417,9 +1395,7 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
-              "format": "uuid",
-              "nullable": true
+              "format": "uuid"
             }
           },
           {
@@ -1428,9 +1404,7 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
-              "format": "uuid",
-              "nullable": true
+              "format": "uuid"
             }
           },
           {
@@ -1438,9 +1412,7 @@
             "in": "query",
             "description": "",
             "schema": {
-              "type": "string",
-              "description": "",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -1495,7 +1467,6 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           }
@@ -1556,9 +1527,7 @@
             "in": "query",
             "description": "",
             "schema": {
-              "type": "string",
-              "description": "",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -1566,9 +1535,7 @@
             "in": "query",
             "description": "",
             "schema": {
-              "type": "string",
-              "description": "",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -1648,33 +1615,28 @@
             "in": "query",
             "description": "",
             "schema": {
-              "type": "string",
-              "description": "",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "Language",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "email",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "password",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -1754,9 +1716,7 @@
             "in": "query",
             "description": "",
             "schema": {
-              "type": "string",
-              "description": "",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -1764,9 +1724,7 @@
             "in": "query",
             "description": "",
             "schema": {
-              "type": "string",
-              "description": "",
-              "nullable": true
+              "type": "string"
             }
           },
           {
@@ -1774,17 +1732,14 @@
             "in": "query",
             "description": "",
             "schema": {
-              "type": "string",
-              "description": "",
-              "nullable": true
+              "type": "string"
             }
           },
           {
             "name": "Language",
             "in": "query",
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -1865,7 +1820,6 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           },
@@ -1875,7 +1829,6 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           }
@@ -1937,7 +1890,6 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           }
@@ -1999,7 +1951,6 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           }
@@ -2391,8 +2342,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "nullable": true
+              "type": "string"
             }
           }
         ],
@@ -2474,7 +2424,6 @@
             "required": true,
             "schema": {
               "type": "string",
-              "description": "",
               "format": "uuid"
             }
           }
@@ -2487,9 +2436,7 @@
                 "properties": {
                   "uploadedFile": {
                     "type": "string",
-                    "description": "",
-                    "format": "binary",
-                    "nullable": true
+                    "format": "binary"
                   }
                 }
               },
@@ -2598,9 +2545,7 @@
             "description": "",
             "schema": {
               "type": "string",
-              "description": "",
-              "format": "uuid",
-              "nullable": true
+              "format": "uuid"
             }
           },
           {
@@ -2609,9 +2554,7 @@
             "description": "",
             "schema": {
               "type": "integer",
-              "description": "",
-              "format": "int32",
-              "nullable": true
+              "format": "int32"
             }
           }
         ],
@@ -3027,100 +2970,6 @@
   },
   "components": {
     "schemas": {
-      "ResultAccountGetPossibleRoles": {
-        "type": "object",
-        "properties": {
-          "allRoles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ProblemDetails": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "type": "string",
-            "nullable": true
-          },
-          "title": {
-            "type": "string",
-            "nullable": true
-          },
-          "status": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "detail": {
-            "type": "string",
-            "nullable": true
-          },
-          "instance": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": { }
-      },
-      "ResultAccountGetRoles": {
-        "type": "object",
-        "properties": {
-          "roles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "possibleRoles": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "nullable": true
-          },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ApplicationUserFavoriteGroup": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "favoriteGuid": {
-            "type": "string",
-            "format": "uuid"
-          }
-        },
-        "additionalProperties": false
-      },
       "ApplicationUser": {
         "type": "object",
         "properties": {
@@ -3191,11 +3040,115 @@
         },
         "additionalProperties": false
       },
-      "ResultAccountGetUserByEmail": {
+      "ApplicationUserFavoriteGroup": {
         "type": "object",
         "properties": {
-          "myApplicationUser": {
-            "$ref": "#/components/schemas/ApplicationUser"
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "favoriteGuid": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "ChummerHubVersion": {
+        "type": "object",
+        "properties": {
+          "assemblyVersion": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "ResultAccountGetPossibleRoles": {
+        "type": "object",
+        "properties": {
+          "allRoles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultAccountGetRoles": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "possibleRoles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultAccountGetSinnersByAuthorization": {
+        "type": "object",
+        "properties": {
+          "mySINSearchGroupResult": {
+            "$ref": "#/components/schemas/SINSearchGroupResult"
           },
           "myException": {
             "nullable": true
@@ -3229,77 +3182,272 @@
         },
         "additionalProperties": false
       },
-      "ChummerHubVersion": {
+      "ResultAccountGetUserByEmail": {
         "type": "object",
         "properties": {
-          "assemblyVersion": {
+          "myApplicationUser": {
+            "$ref": "#/components/schemas/ApplicationUser"
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
             "type": "string",
             "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "SINnerUserRight": {
+      "ResultGroupGetGroupById": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
+          "myGroup": {
+            "$ref": "#/components/schemas/SINnerGroup"
+          },
+          "myException": {
             "nullable": true
           },
-          "eMail": {
-            "maxLength": 64,
-            "type": "string",
-            "nullable": true
-          },
-          "canEdit": {
+          "callSuccess": {
             "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "SINnerVisibility": {
+      "ResultGroupGetSearchGroups": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "string",
-            "format": "uuid",
+          "mySearchGroupResult": {
+            "$ref": "#/components/schemas/SINSearchGroupResult"
+          },
+          "myException": {
             "nullable": true
           },
-          "isPublic": {
+          "callSuccess": {
             "type": "boolean"
           },
-          "isGroupVisible": {
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultGroupPostGroup": {
+        "type": "object",
+        "properties": {
+          "myGroup": {
+            "$ref": "#/components/schemas/SINnerGroup"
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
             "type": "boolean"
           },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultGroupPutGroupInGroup": {
+        "type": "object",
+        "properties": {
+          "myGroup": {
+            "$ref": "#/components/schemas/SINnerGroup"
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultGroupPutSetting": {
+        "type": "object",
+        "properties": {
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultSinnerDelete": {
+        "type": "object",
+        "properties": {
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultSinnerGetOwnedSINByAlias": {
+        "type": "object",
+        "properties": {
+          "mySINners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SINner"
+            },
+            "nullable": true
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultSinnerGetSINById": {
+        "type": "object",
+        "properties": {
+          "mySINner": {
+            "$ref": "#/components/schemas/SINner"
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultSinnerGetSINnerGroupFromSINerById": {
+        "type": "object",
+        "properties": {
+          "mySINnerGroup": {
+            "$ref": "#/components/schemas/SINnerGroup"
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultSinnerGetSINnerVisibilityById": {
+        "type": "object",
+        "properties": {
           "userRights": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SINnerUserRight"
             },
             "nullable": true
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
       },
-      "TagValueEnum": {
-        "enum": [
-          "list",
-          "bool",
-          "int",
-          "Guid",
-          "string",
-          "double",
-          "binary",
-          "enum",
-          "other",
-          "unknown"
-        ],
-        "type": "string"
-      },
-      "Tag": {
+      "ResultSinnerPostSIN": {
         "type": "object",
         "properties": {
+          "mySINners": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SINner"
+            },
+            "nullable": true
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "ResultSINnerPut": {
+        "type": "object",
+        "properties": {
+          "mySINner": {
+            "$ref": "#/components/schemas/SINner"
+          },
+          "myException": {
+            "nullable": true
+          },
+          "callSuccess": {
+            "type": "boolean"
+          },
+          "errorText": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SearchTag": {
+        "type": "object",
+        "properties": {
+          "searchTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchTag"
+            },
+            "nullable": true
+          },
+          "searchOpterator": {
+            "$ref": "#/components/schemas/TagOperatorEnum"
+          },
           "id": {
             "type": "string",
             "format": "uuid"
@@ -3351,37 +3499,44 @@
         },
         "additionalProperties": false
       },
-      "SINnerMetaData": {
+      "SINner": {
         "type": "object",
         "properties": {
-          "id": {
+          "editionNumber": {
+            "maxLength": 2,
             "type": "string",
-            "format": "uuid"
-          },
-          "visibility": {
-            "$ref": "#/components/schemas/SINnerVisibility"
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Tag"
-            },
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "SINnerGroupSetting": {
-        "type": "object",
-        "properties": {
+          },
+          "myHash": {
+            "maxLength": 8,
+            "type": "string",
+            "nullable": true
+          },
+          "language": {
+            "maxLength": 6,
+            "type": "string",
+            "nullable": true
+          },
+          "siNnerMetaData": {
+            "$ref": "#/components/schemas/SINnerMetaData"
+          },
+          "lastDownload": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "myGroup": {
+            "$ref": "#/components/schemas/SINnerGroup"
+          },
+          "alias": {
+            "maxLength": 64,
+            "type": "string",
+            "nullable": true
+          },
           "id": {
             "type": "string",
             "format": "uuid",
             "nullable": true
-          },
-          "myGroupId": {
-            "type": "string",
-            "format": "uuid"
           },
           "downloadUrl": {
             "type": "string",
@@ -3469,44 +3624,17 @@
         },
         "additionalProperties": false
       },
-      "SINner": {
+      "SINnerGroupSetting": {
         "type": "object",
         "properties": {
-          "editionNumber": {
-            "maxLength": 2,
-            "type": "string",
-            "nullable": true
-          },
-          "myHash": {
-            "maxLength": 8,
-            "type": "string",
-            "nullable": true
-          },
-          "language": {
-            "maxLength": 6,
-            "type": "string",
-            "nullable": true
-          },
-          "siNnerMetaData": {
-            "$ref": "#/components/schemas/SINnerMetaData"
-          },
-          "lastDownload": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "myGroup": {
-            "$ref": "#/components/schemas/SINnerGroup"
-          },
-          "alias": {
-            "maxLength": 64,
-            "type": "string",
-            "nullable": true
-          },
           "id": {
             "type": "string",
             "format": "uuid",
             "nullable": true
+          },
+          "myGroupId": {
+            "type": "string",
+            "format": "uuid"
           },
           "downloadUrl": {
             "type": "string",
@@ -3529,18 +3657,22 @@
         },
         "additionalProperties": false
       },
-      "SINnerSearchGroupMember": {
+      "SINnerMetaData": {
         "type": "object",
         "properties": {
-          "mySINner": {
-            "$ref": "#/components/schemas/SINner"
-          },
-          "username": {
+          "id": {
             "type": "string",
-            "nullable": true
+            "format": "uuid"
           },
-          "isFavorite": {
-            "type": "boolean"
+          "visibility": {
+            "$ref": "#/components/schemas/SINnerVisibility"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            },
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -3631,6 +3763,65 @@
         },
         "additionalProperties": false
       },
+      "SINnerSearchGroupMember": {
+        "type": "object",
+        "properties": {
+          "mySINner": {
+            "$ref": "#/components/schemas/SINner"
+          },
+          "username": {
+            "type": "string",
+            "nullable": true
+          },
+          "isFavorite": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SINnerUserRight": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "eMail": {
+            "maxLength": 64,
+            "type": "string",
+            "nullable": true
+          },
+          "canEdit": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "SINnerVisibility": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "isGroupVisible": {
+            "type": "boolean"
+          },
+          "userRights": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SINnerUserRight"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "SINSearchGroupResult": {
         "type": "object",
         "properties": {
@@ -3658,219 +3849,85 @@
         },
         "additionalProperties": false
       },
-      "ResultAccountGetSinnersByAuthorization": {
+      "Tag": {
         "type": "object",
         "properties": {
-          "mySINSearchGroupResult": {
-            "$ref": "#/components/schemas/SINSearchGroupResult"
+          "id": {
+            "type": "string",
+            "format": "uuid"
           },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
+          "tagName": {
+            "maxLength": 64,
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultGroupGetSearchGroups": {
-        "type": "object",
-        "properties": {
-          "mySearchGroupResult": {
-            "$ref": "#/components/schemas/SINSearchGroupResult"
           },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
+          "tagValue": {
+            "maxLength": 64,
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultGroupPutGroupInGroup": {
-        "type": "object",
-        "properties": {
-          "myGroup": {
-            "$ref": "#/components/schemas/SINnerGroup"
           },
-          "myException": {
+          "tagValueFloat": {
+            "type": "number",
+            "format": "float",
             "nullable": true
           },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
+          "tagComment": {
+            "maxLength": 64,
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultGroupPutSetting": {
-        "type": "object",
-        "properties": {
-          "myException": {
+            "description": "This has NO FUNCTION and is only here for Debugging reasons.",
             "nullable": true
           },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
+          "parentTagId": {
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultGroupPostGroup": {
-        "type": "object",
-        "properties": {
-          "myGroup": {
-            "$ref": "#/components/schemas/SINnerGroup"
-          },
-          "myException": {
+            "format": "uuid",
             "nullable": true
           },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
+          "siNnerId": {
             "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultGroupGetGroupById": {
-        "type": "object",
-        "properties": {
-          "myGroup": {
-            "$ref": "#/components/schemas/SINnerGroup"
-          },
-          "myException": {
+            "format": "uuid",
             "nullable": true
           },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultSinnerGetSINnerGroupFromSINerById": {
-        "type": "object",
-        "properties": {
-          "mySINnerGroup": {
-            "$ref": "#/components/schemas/SINnerGroup"
-          },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultSinnerGetSINById": {
-        "type": "object",
-        "properties": {
-          "mySINner": {
-            "$ref": "#/components/schemas/SINner"
-          },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultSinnerGetSINnerVisibilityById": {
-        "type": "object",
-        "properties": {
-          "userRights": {
+          "tags": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SINnerUserRight"
+              "$ref": "#/components/schemas/Tag"
             },
             "nullable": true
           },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
+          "isUserGenerated": {
             "type": "boolean"
           },
-          "errorText": {
-            "type": "string",
-            "nullable": true
+          "tagType": {
+            "$ref": "#/components/schemas/TagValueEnum"
           }
         },
         "additionalProperties": false
       },
-      "ResultSinnerGetOwnedSINByAlias": {
-        "type": "object",
-        "properties": {
-          "mySINners": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SINner"
-            },
-            "nullable": true
-          },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
+      "TagOperatorEnum": {
+        "enum": [
+          "bigger",
+          "smaller",
+          "equal",
+          "contains",
+          "notnull",
+          "exists"
+        ],
+        "type": "string"
       },
-      "ResultSINnerPut": {
-        "type": "object",
-        "properties": {
-          "mySINner": {
-            "$ref": "#/components/schemas/SINner"
-          },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
+      "TagValueEnum": {
+        "enum": [
+          "list",
+          "bool",
+          "int",
+          "Guid",
+          "string",
+          "double",
+          "binary",
+          "enum",
+          "other",
+          "unknown"
+        ],
+        "type": "string"
       },
       "UploadClient": {
         "type": "object",
@@ -3920,120 +3977,6 @@
           "groupname": {
             "type": "string",
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultSinnerPostSIN": {
-        "type": "object",
-        "properties": {
-          "mySINners": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SINner"
-            },
-            "nullable": true
-          },
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "ResultSinnerDelete": {
-        "type": "object",
-        "properties": {
-          "myException": {
-            "nullable": true
-          },
-          "callSuccess": {
-            "type": "boolean"
-          },
-          "errorText": {
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "TagOperatorEnum": {
-        "enum": [
-          "bigger",
-          "smaller",
-          "equal",
-          "contains",
-          "notnull",
-          "exists"
-        ],
-        "type": "string"
-      },
-      "SearchTag": {
-        "type": "object",
-        "properties": {
-          "searchTags": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/SearchTag"
-            },
-            "nullable": true
-          },
-          "searchOpterator": {
-            "$ref": "#/components/schemas/TagOperatorEnum"
-          },
-          "id": {
-            "type": "string",
-            "format": "uuid"
-          },
-          "tagName": {
-            "maxLength": 64,
-            "type": "string",
-            "nullable": true
-          },
-          "tagValue": {
-            "maxLength": 64,
-            "type": "string",
-            "nullable": true
-          },
-          "tagValueFloat": {
-            "type": "number",
-            "format": "float",
-            "nullable": true
-          },
-          "tagComment": {
-            "maxLength": 64,
-            "type": "string",
-            "description": "This has NO FUNCTION and is only here for Debugging reasons.",
-            "nullable": true
-          },
-          "parentTagId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "siNnerId": {
-            "type": "string",
-            "format": "uuid",
-            "nullable": true
-          },
-          "tags": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Tag"
-            },
-            "nullable": true
-          },
-          "isUserGenerated": {
-            "type": "boolean"
-          },
-          "tagType": {
-            "$ref": "#/components/schemas/TagValueEnum"
           }
         },
         "additionalProperties": false

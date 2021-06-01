@@ -297,10 +297,9 @@ namespace ChummerHub.Client.Backend
 
         private static bool? _clientNOTworking;
 
-        private static MySinnersClient _clientTask;
-
-        private static MySinnersClient _client;
-        public static MySinnersClient GetClient(bool reset = false)
+        private static SinnersClient _clientTask;
+        private static SinnersClient _client;
+        public static SinnersClient GetClient(bool reset = false)
         {
             if (reset)
             {
@@ -320,9 +319,9 @@ namespace ChummerHub.Client.Backend
             return _client;
         }
 
-        private static MySinnersClient GetSINnersClient()
+        private static SinnersClient GetSINnersClient()
         {
-            MySinnersClient client = null;
+            SinnersClient client = null;
             try
             {
                 var assembly = Assembly.GetAssembly(typeof(frmChummerMain));
@@ -365,13 +364,13 @@ namespace ChummerHub.Client.Backend
                     Log.Error(e);
                 }
 
-                DelegatingHandler delegatingHandler = new MyMessageHandler();
-                HttpClientHandler httpClientHandler = new HttpClientHandler();
-                HttpClient httpClient = new HttpClient(delegatingHandler);
+                HttpClientHandler delegatingHandler = new MyMessageHandler();
+                //HttpClientHandler httpClientHandler = new HttpClientHandler();
                 var temp = AuthorizationCookieContainer;
                 if (temp != null)
-                    httpClientHandler.CookieContainer = temp;
-                client = new MySinnersClient(baseUri.ToString(), httpClient);
+                    delegatingHandler.CookieContainer = temp;
+                HttpClient httpClient = new HttpClient(delegatingHandler);
+                client = new SinnersClient(baseUri.ToString(), httpClient);
             }
             catch (Exception ex)
             {
@@ -1098,7 +1097,7 @@ namespace ChummerHub.Client.Backend
                     {
                         objUIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
                     });
-                MySinnersClient client = StaticUtils.GetClient();
+                SinnersClient client = StaticUtils.GetClient();
                 if (!StaticUtils.IsUnitTest)
                 {
                     if (blnSync)
@@ -1306,7 +1305,8 @@ namespace ChummerHub.Client.Backend
                         catch (Exception e)
                         {
                             rethrow = e;
-                            if (!File.Exists(zippedFile))
+                            FileInfo fi = new FileInfo(zippedFile);
+                            if (!File.Exists(zippedFile) || fi.Length == 0)
                             {
                                 var client = StaticUtils.GetClient();
                                 var filestream = await client.GetDownloadFileAsync(sinner.Id.Value);

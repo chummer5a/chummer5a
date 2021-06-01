@@ -739,7 +739,7 @@ namespace Chummer.Plugins
 
                         async Task<ResultAccountGetSinnersByAuthorization> getSINnersFunction()
                         {
-                            MySinnersClient client = null;
+                            SinnersClient client = null;
                             try
                             {
                                 client = StaticUtils.GetClient();
