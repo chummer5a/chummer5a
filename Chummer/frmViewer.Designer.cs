@@ -34,12 +34,9 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmViewer));
-            this.tsSaveAsHtml = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsSaveButton = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsSaveAsXml = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdSaveAsPdf = new SplitButton();
             this.cmsPrintButton = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsPrintPreview = new System.Windows.Forms.ToolStripMenuItem();
             this.cmdPrint = new SplitButton();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.cboXSLT = new Chummer.ElasticComboBox();
@@ -48,20 +45,14 @@ namespace Chummer
             this.cboLanguage = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
+            this.tsPrintPreview = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsSaveAsXml = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsSaveAsHtml = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmsSaveButton.SuspendLayout();
             this.cmsPrintButton.SuspendLayout();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).BeginInit();
             this.SuspendLayout();
-            // 
-            // tsSaveAsHtml
-            // 
-            this.tsSaveAsHtml.Enabled = false;
-            this.tsSaveAsHtml.Name = "tsSaveAsHtml";
-            this.tsSaveAsHtml.Size = new System.Drawing.Size(147, 22);
-            this.tsSaveAsHtml.Tag = "Button_Viewer_SaveAsHtml";
-            this.tsSaveAsHtml.Text = "Save as &HTML";
-            this.tsSaveAsHtml.Click += new System.EventHandler(this.tsSaveAsHTML_Click);
             // 
             // cmsSaveButton
             // 
@@ -69,16 +60,7 @@ namespace Chummer
             this.tsSaveAsXml,
             this.tsSaveAsHtml});
             this.cmsSaveButton.Name = "cmsPrintButton";
-            this.cmsSaveButton.Size = new System.Drawing.Size(148, 48);
-            // 
-            // tsSaveAsXml
-            // 
-            this.tsSaveAsXml.Enabled = false;
-            this.tsSaveAsXml.Name = "tsSaveAsXml";
-            this.tsSaveAsXml.Size = new System.Drawing.Size(147, 22);
-            this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
-            this.tsSaveAsXml.Text = "Save as XML";
-            this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
+            this.cmsSaveButton.Size = new System.Drawing.Size(181, 70);
             // 
             // cmdSaveAsPdf
             // 
@@ -104,15 +86,6 @@ namespace Chummer
             this.tsPrintPreview});
             this.cmsPrintButton.Name = "cmsPrintButton";
             this.cmsPrintButton.Size = new System.Drawing.Size(144, 26);
-            // 
-            // tsPrintPreview
-            // 
-            this.tsPrintPreview.Enabled = false;
-            this.tsPrintPreview.Name = "tsPrintPreview";
-            this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);
-            this.tsPrintPreview.Tag = "Menu_FilePrintPreview";
-            this.tsPrintPreview.Text = "&Print Preview";
-            this.tsPrintPreview.Click += new System.EventHandler(this.tsPrintPreview_Click);
             // 
             // cmdPrint
             // 
@@ -217,6 +190,54 @@ namespace Chummer
             this.imgSheetLanguageFlag.TabIndex = 105;
             this.imgSheetLanguageFlag.TabStop = false;
             // 
+            // tsPrintPreview
+            // 
+            this.tsPrintPreview.Enabled = false;
+            this.tsPrintPreview.Image = null;
+            this.tsPrintPreview.ImageDpi120 = null;
+            this.tsPrintPreview.ImageDpi144 = null;
+            this.tsPrintPreview.ImageDpi192 = null;
+            this.tsPrintPreview.ImageDpi288 = null;
+            this.tsPrintPreview.ImageDpi384 = null;
+            this.tsPrintPreview.ImageDpi96 = null;
+            this.tsPrintPreview.Name = "tsPrintPreview";
+            this.tsPrintPreview.Size = new System.Drawing.Size(143, 22);
+            this.tsPrintPreview.Tag = "Menu_FilePrintPreview";
+            this.tsPrintPreview.Text = "&Print Preview";
+            this.tsPrintPreview.Click += new System.EventHandler(this.tsPrintPreview_Click);
+            // 
+            // tsSaveAsXml
+            // 
+            this.tsSaveAsXml.Enabled = false;
+            this.tsSaveAsXml.Image = null;
+            this.tsSaveAsXml.ImageDpi120 = null;
+            this.tsSaveAsXml.ImageDpi144 = null;
+            this.tsSaveAsXml.ImageDpi192 = null;
+            this.tsSaveAsXml.ImageDpi288 = null;
+            this.tsSaveAsXml.ImageDpi384 = null;
+            this.tsSaveAsXml.ImageDpi96 = null;
+            this.tsSaveAsXml.Name = "tsSaveAsXml";
+            this.tsSaveAsXml.Size = new System.Drawing.Size(180, 22);
+            this.tsSaveAsXml.Tag = "Button_Viewer_SaveAsXml";
+            this.tsSaveAsXml.Text = "Save as XML";
+            this.tsSaveAsXml.Click += new System.EventHandler(this.tsSaveAsXml_Click);
+            // 
+            // tsSaveAsHtml
+            // 
+            this.tsSaveAsHtml.Enabled = false;
+            this.tsSaveAsHtml.Image = null;
+            this.tsSaveAsHtml.ImageDpi120 = null;
+            this.tsSaveAsHtml.ImageDpi144 = null;
+            this.tsSaveAsHtml.ImageDpi192 = null;
+            this.tsSaveAsHtml.ImageDpi288 = null;
+            this.tsSaveAsHtml.ImageDpi384 = null;
+            this.tsSaveAsHtml.ImageDpi96 = null;
+            this.tsSaveAsHtml.Name = "tsSaveAsHtml";
+            this.tsSaveAsHtml.Size = new System.Drawing.Size(180, 22);
+            this.tsSaveAsHtml.Tag = "Button_Viewer_SaveAsHtml";
+            this.tsSaveAsHtml.Text = "Save as &HTML";
+            this.tsSaveAsHtml.Click += new System.EventHandler(this.tsSaveAsHTML_Click);
+            // 
             // frmViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -247,18 +268,18 @@ namespace Chummer
         #endregion
         internal SplitButton cmdPrint;
         private System.Windows.Forms.ContextMenuStrip cmsPrintButton;
-        private System.Windows.Forms.ToolStripMenuItem tsPrintPreview;
         internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
         private ElasticComboBox cboXSLT;
         private System.Windows.Forms.Label lblCharacterSheet;
         private System.Windows.Forms.ContextMenuStrip cmsSaveButton;
-        internal System.Windows.Forms.ToolStripMenuItem tsSaveAsHtml;
-        private System.Windows.Forms.ToolStripMenuItem tsSaveAsXml;
         private SplitButton cmdSaveAsPdf;
         private System.Windows.Forms.WebBrowser webViewer;
         private ElasticComboBox cboLanguage;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
+        private DpiFriendlyToolStripMenuItem tsSaveAsXml;
+        internal DpiFriendlyToolStripMenuItem tsSaveAsHtml;
+        private DpiFriendlyToolStripMenuItem tsPrintPreview;
     }
 
 }

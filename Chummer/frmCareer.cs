@@ -129,7 +129,6 @@ namespace Chummer
                 cmsWeaponAccessory,
                 cmsWeaponAccessoryGear,
                 cmsWeaponLocation,
-                cmsWeaponMod,
                 cmsWeaponMount
             };
             // Update the text in the Menus so they can be merged with frmMain properly.
@@ -7707,65 +7706,6 @@ namespace Chummer
                     objNewLifestyle.StyleType = LifestyleType.Advanced;
 
                     CharacterObject.Lifestyles.Add(objNewLifestyle);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
-        }
-
-        private void tsBoltHole_Click(object sender, EventArgs e)
-        {
-            bool blnAddAgain;
-            do
-            {
-                using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject))
-                {
-                    StyleType = LifestyleType.BoltHole
-                })
-                {
-                    frmPickLifestyle.ShowDialog(this);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickLifestyle.AddAgain;
-
-                    Lifestyle objNewLifestyle = frmPickLifestyle.SelectedLifestyle;
-                    objNewLifestyle.Increments = 0;
-                    CharacterObject.Lifestyles.Add(objNewLifestyle);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
-            }
-            while (blnAddAgain);
-        }
-
-        private void tsSafehouse_Click(object sender, EventArgs e)
-        {
-            bool blnAddAgain;
-            do
-            {
-                using (frmSelectLifestyleAdvanced frmPickLifestyle = new frmSelectLifestyleAdvanced(CharacterObject, new Lifestyle(CharacterObject))
-                {
-                    StyleType = LifestyleType.Safehouse
-                })
-                {
-                    frmPickLifestyle.ShowDialog(this);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickLifestyle.DialogResult == DialogResult.Cancel)
-                        break;
-                    blnAddAgain = frmPickLifestyle.AddAgain;
-
-                    Lifestyle objLifestyle = frmPickLifestyle.SelectedLifestyle;
-                    objLifestyle.IncrementType = LifestyleIncrement.Week;
-                    objLifestyle.Increments = 0;
-                    CharacterObject.Lifestyles.Add(objLifestyle);
                 }
 
                 IsCharacterUpdateRequested = true;

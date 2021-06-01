@@ -87,17 +87,14 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode)
                 return;
-            int intWidth = Width;
             int intHeight = Height;
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in Images)
             {
-                int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) + (intWidth - objLoopImage.Width).RaiseToPower(2);
+                int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2);
                 // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
                 if (objLoopImage.Height >= intHeight)
-                    intLoopMetric -= 1;
-                if (objLoopImage.Width >= intWidth)
                     intLoopMetric -= 1;
                 if (objBestImage == null || intLoopMetric < intBestImageMetric)
                 {
@@ -113,7 +110,7 @@ namespace Chummer
             get => base.Image;
             set
             {
-                if (!Images.Any())
+                if (Utils.IsDesignerMode || !Images.Any())
                     ImageDpi96 = value;
                 base.Image = value;
             }
