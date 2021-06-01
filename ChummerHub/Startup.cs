@@ -205,6 +205,7 @@ namespace ChummerHub
                     x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                     x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
                     x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    x.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             
                 });
             // order is vital, this *must* be called *after* AddNewtonsoftJson()

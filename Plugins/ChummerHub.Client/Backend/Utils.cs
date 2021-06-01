@@ -568,8 +568,10 @@ namespace ChummerHub.Client.Backend
                     {
                         Log.Error(e, "Response from SINners WebService: ");
                     }
-
-                    frmSIN.ShowDialog(PluginHandler.MainForm);
+                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    {
+                        frmSIN.ShowDialog(PluginHandler.MainForm);
+                    });
                 }
             }
             return rb;
@@ -585,11 +587,31 @@ namespace ChummerHub.Client.Backend
             return ShowErrorResponseFormCoreAsync(false, objResultBase, e);
         }
 
+        public static object GetPropValue(object src, string propName)
+        {
+            return src.GetType().GetProperty(propName).GetValue(src, null);
+        }
+
         private static async Task<object> ShowErrorResponseFormCoreAsync(bool blnSync, object objResultBase, Exception e = null)
         {
             if (objResultBase == null)
                 return e;
-            ResultBase rb = (ResultBase)objResultBase;
+
+            ResultBase rb = null;
+            try
+            {
+                rb = new ResultBase();
+                rb.ErrorText = (string) GetPropValue(objResultBase, "ErrorText");
+                rb.MyException = (Exception)GetPropValue(objResultBase, "MyException");
+                rb.CallSuccess = (bool)GetPropValue(objResultBase, "CallSuccess");
+            }
+            catch(Exception ex)
+            {
+                rb = new ResultBase();
+                rb.ErrorText = "Could not cast " + objResultBase + " to Resultbase." + Environment.NewLine + Environment.NewLine + ex.Message;
+                rb.MyException = ex;
+                Log.Warn(ex);
+            }
             if (string.IsNullOrEmpty(rb.ErrorText) && rb.MyException == null)
                 return rb;
             Log.Warn("SINners WebService returned: " + rb.ErrorText);
