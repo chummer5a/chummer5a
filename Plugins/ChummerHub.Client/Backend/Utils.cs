@@ -1305,7 +1305,8 @@ namespace ChummerHub.Client.Backend
                         catch (Exception e)
                         {
                             rethrow = e;
-                            if (!File.Exists(zippedFile))
+                            FileInfo fi = new FileInfo(zippedFile);
+                            if (!File.Exists(zippedFile) || fi.Length == 0)
                             {
                                 var client = StaticUtils.GetClient();
                                 var filestream = await client.GetDownloadFileAsync(sinner.Id.Value);
