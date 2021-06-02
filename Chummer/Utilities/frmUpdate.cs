@@ -47,7 +47,7 @@ namespace Chummer
         private bool _blnIsConnected = true;
         private readonly bool _blnChangelogDownloaded = false;
         private Task _tskConnectionLoader;
-        private CancellationTokenSource _objConnectionLoaderCanceler;
+        private CancellationTokenSource _objConnectionLoaderCancellationTokenSource;
         private readonly WebClient _clientDownloader;
         private readonly WebClient _clientChangelogDownloader;
         private string _strExceptionString;
@@ -110,20 +110,20 @@ namespace Chummer
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             _blnIsClosing = true;
-            _objConnectionLoaderCanceler.Cancel();
+            _objConnectionLoaderCancellationTokenSource.Cancel();
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
         }
 
         private void DownloadChangelog()
         {
-            _objConnectionLoaderCanceler = new CancellationTokenSource();
+            _objConnectionLoaderCancellationTokenSource = new CancellationTokenSource();
             _tskConnectionLoader = Task.Run(async () =>
             {
                 await LoadConnection();
-                if (!_objConnectionLoaderCanceler.IsCancellationRequested)
+                if (!_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                     await PopulateChangelog();
-            }, _objConnectionLoaderCanceler.Token);
+            }, _objConnectionLoaderCancellationTokenSource.Token);
         }
 
         private async Task PopulateChangelog()
@@ -153,7 +153,7 @@ namespace Chummer
         {
             while (_clientChangelogDownloader.IsBusy)
                 await Utils.SafeSleepAsync();
-            if (_objConnectionLoaderCanceler.IsCancellationRequested)
+            if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                 return;
             bool blnChummerVersionGotten = true;
             string strError = LanguageManager.GetString("String_Error").Trim();
@@ -188,7 +188,7 @@ namespace Chummer
                 {
                     response = await request.GetResponseAsync() as HttpWebResponse;
 
-                    if (_objConnectionLoaderCanceler.IsCancellationRequested)
+                    if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                         return;
 
                     // Get the stream containing content returned by the server.
@@ -198,7 +198,7 @@ namespace Chummer
                             blnChummerVersionGotten = false;
                         if (blnChummerVersionGotten)
                         {
-                            if (_objConnectionLoaderCanceler.IsCancellationRequested)
+                            if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                                 return;
 
                             // Open the stream using a StreamReader for easy access.
@@ -206,14 +206,14 @@ namespace Chummer
                             using (StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true))
                                 responseFromServer = await reader.ReadToEndAsync();
 
-                            if (_objConnectionLoaderCanceler.IsCancellationRequested)
+                            if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                                 return;
 
                             bool blnFoundTag = false;
                             bool blnFoundArchive = false;
                             foreach (string line in responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
-                                if (_objConnectionLoaderCanceler.IsCancellationRequested)
+                                if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                                     return;
 
                                 if (!blnFoundTag && line.Contains("tag_name"))
@@ -283,7 +283,7 @@ namespace Chummer
                     if (File.Exists(_strTempUpdatePath + ".tmp"))
                         File.Delete(_strTempUpdatePath + ".tmp");
                     await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempUpdatePath + ".tmp");
-                    if (_objConnectionLoaderCanceler.IsCancellationRequested)
+                    if (_objConnectionLoaderCancellationTokenSource.IsCancellationRequested)
                         return;
                     File.Move(_strTempUpdatePath + ".tmp", _strTempUpdatePath);
                 }
