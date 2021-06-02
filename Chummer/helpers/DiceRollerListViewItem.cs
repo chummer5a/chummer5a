@@ -16,18 +16,17 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using System.Windows.Forms;
 
 namespace Chummer
 {
-    public class DiceRollerListViewItem : ListViewItem
+    public class DiceRollerListViewItem : ListViewItemWithValue
     {
         private int _intResult;
         private int _intTarget;
         private int _intGlitchMin;
         private bool _blnBubbleDie;
 
-        public DiceRollerListViewItem(int intResult, int intTarget = 5, int intGlitchMin = 1, bool blnBubbleDie = false)
+        public DiceRollerListViewItem(int intResult, int intTarget = 5, int intGlitchMin = 1, bool blnBubbleDie = false) : base(intResult)
         {
             _intResult = intResult;
             _intTarget = intTarget;
@@ -46,6 +45,7 @@ namespace Chummer
                 if (_intResult == value)
                     return;
                 _intResult = value;
+                Value = value;
                 UpdateText();
                 UpdateColor();
             }

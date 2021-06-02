@@ -7808,8 +7808,7 @@ namespace Chummer
             }
 
             // Find the selected Karma Expense.
-            string strNeedle = objItem.SubItems[3].Text;
-            ExpenseLogEntry objExpense = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.InternalId == strNeedle);
+            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
 
             if (objExpense?.Undo == null)
             {
@@ -8140,8 +8139,7 @@ namespace Chummer
             }
 
             // Find the selected Nuyen Expense.
-            string strNeedle = objItem.SubItems[3].Text;
-            ExpenseLogEntry objExpense = CharacterObject.ExpenseEntries.FirstOrDefault(x => x.InternalId == strNeedle);
+            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
 
             if (objExpense?.Undo == null)
             {
@@ -11986,17 +11984,9 @@ namespace Chummer
                 return;
             }
 
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-
             // Find the selected Karma Expense.
-            foreach (ExpenseLogEntry objCharacterEntry in CharacterObject.ExpenseEntries)
-            {
-                if (objCharacterEntry.InternalId == objItem.SubItems[3].Text)
-                {
-                    objExpense = objCharacterEntry;
-                    break;
-                }
-            }
+            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
+                                         ?? new ExpenseLogEntry(CharacterObject);
 
             // If this is a manual entry, let the player modify the amount.
             int intOldAmount = objExpense.Amount.ToInt32();
@@ -12048,17 +12038,9 @@ namespace Chummer
                 return;
             }
 
-            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-
             // Find the selected Nuyen Expense.
-            foreach (ExpenseLogEntry objCharacterEntry in CharacterObject.ExpenseEntries)
-            {
-                if (objCharacterEntry.InternalId == objItem.SubItems[3].Text)
-                {
-                    objExpense = objCharacterEntry;
-                    break;
-                }
-            }
+            ExpenseLogEntry objExpense = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
+                                         ?? new ExpenseLogEntry(CharacterObject);
 
             // If this is a manual entry, let the player modify the amount.
             decimal decOldAmount = objExpense.Amount;
@@ -15780,27 +15762,30 @@ namespace Chummer
                 {
                     if (objExpense.Amount == 0 && !chkShowFreeKarma.Checked)
                         continue;
-                    ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
+                    ListViewItemWithValue.ListViewSubItemWithValue objAmountItem = new ListViewItemWithValue.ListViewSubItemWithValue
                     {
+                        Value = objExpense.Amount,
                         Text = objExpense.Amount.ToString("#,0.##", GlobalOptions.CultureInfo)
                     };
-                    ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
+                    ListViewItemWithValue.ListViewSubItemWithValue objReasonItem = new ListViewItemWithValue.ListViewSubItemWithValue
                     {
+                        Value = objExpense.Reason,
                         Text = objExpense.DisplayReason(GlobalOptions.Language)
                     };
-                    ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                    ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem = new ListViewItemWithValue.ListViewSubItemWithValue
                     {
+                        Value = objExpense,
                         Text = objExpense.InternalId
                     };
 
-                    ListViewItem objItem = new ListViewItem
-                    {
-                        Text = objExpense.Date.ToString(GlobalOptions.CustomDateTimeFormats
-                            ? GlobalOptions.CustomDateFormat
-                              + ' ' + GlobalOptions.CustomTimeFormat
-                            : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
-                              + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
-                    };
+                    ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
+                        objExpense.Date.ToString(GlobalOptions.CustomDateTimeFormats
+                                ? GlobalOptions.CustomDateFormat
+                                  + ' ' + GlobalOptions.CustomTimeFormat
+                                : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
+                                  + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern,
+                            GlobalOptions.CultureInfo)
+                    );
                     objItem.SubItems.Add(objAmountItem);
                     objItem.SubItems.Add(objReasonItem);
                     objItem.SubItems.Add(objInternalIdItem);
@@ -15819,27 +15804,30 @@ namespace Chummer
                 }
                 else if (objExpense.Amount != 0 || chkShowFreeNuyen.Checked)
                 {
-                    ListViewItem.ListViewSubItem objAmountItem = new ListViewItem.ListViewSubItem
+                    ListViewItemWithValue.ListViewSubItemWithValue objAmountItem = new ListViewItemWithValue.ListViewSubItemWithValue
                     {
+                        Value = objExpense.Amount,
                         Text = objExpense.Amount.ToString(CharacterObjectOptions.NuyenFormat + '¥', GlobalOptions.CultureInfo)
                     };
-                    ListViewItem.ListViewSubItem objReasonItem = new ListViewItem.ListViewSubItem
+                    ListViewItemWithValue.ListViewSubItemWithValue objReasonItem = new ListViewItemWithValue.ListViewSubItemWithValue
                     {
+                        Value = objExpense.Reason,
                         Text = objExpense.DisplayReason(GlobalOptions.Language)
                     };
-                    ListViewItem.ListViewSubItem objInternalIdItem = new ListViewItem.ListViewSubItem
+                    ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem = new ListViewItemWithValue.ListViewSubItemWithValue
                     {
+                        Value = objExpense,
                         Text = objExpense.InternalId
                     };
 
-                    ListViewItem objItem = new ListViewItem
-                    {
-                        Text = objExpense.Date.ToString(GlobalOptions.CustomDateTimeFormats
+                    ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date, objExpense.Date.ToString(
+                        GlobalOptions.CustomDateTimeFormats
                             ? GlobalOptions.CustomDateFormat
                               + ' ' + GlobalOptions.CustomTimeFormat
                             : GlobalOptions.CultureInfo.DateTimeFormat.ShortDatePattern
-                              + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalOptions.CultureInfo)
-                    };
+                              + ' ' + GlobalOptions.CultureInfo.DateTimeFormat.ShortTimePattern,
+                        GlobalOptions.CultureInfo)
+                    );
                     objItem.SubItems.Add(objAmountItem);
                     objItem.SubItems.Add(objReasonItem);
                     objItem.SubItems.Add(objInternalIdItem);

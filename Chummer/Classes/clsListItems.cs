@@ -157,23 +157,51 @@ namespace Chummer
             int intCompareResult;
 
             // Cast the objects to be compared to ListViewItem objects
-            ListViewItem listviewX = (ListViewItem)x;
-            ListViewItem listviewY = (ListViewItem)y;
+            ListViewItem objListViewX = (ListViewItem)x;
+            ListViewItem objListViewY = (ListViewItem)y;
 
             // Compare the two items
             if (_intColumnToSort == 0)
             {
-                intCompareResult = CompareListViewItems.CompareTextAsDates(listviewX, listviewY);
+                if (objListViewX is ListViewItemWithValue objListViewItemWithValueX &&
+                    objListViewY is ListViewItemWithValue objListViewItemWithValueY &&
+                    (objListViewItemWithValueX.Value is IComparable ||
+                     objListViewItemWithValueY.Value is IComparable))
+                {
+                    if (objListViewItemWithValueX.Value is IComparable objXValue)
+                        intCompareResult = objXValue.CompareTo(objListViewItemWithValueY.Value);
+                    else
+                        intCompareResult = -(objListViewItemWithValueY.Value as IComparable)?.CompareTo(objListViewItemWithValueX.Value) ?? 0;
+                }
+                else
+                    intCompareResult = CompareListViewItems.CompareTextAsDates(objListViewX, objListViewY);
             }
             else
             {
-                string strX = listviewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                string strY = listviewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
-                    decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
-                    intCompareResult = decimal.Compare(decX, decY);
+                ListViewItem.ListViewSubItem objListViewSubItemX = objListViewX?.SubItems[_intColumnToSort];
+                ListViewItem.ListViewSubItem objListViewSubItemY = objListViewY?.SubItems[_intColumnToSort];
+                if (objListViewSubItemX is ListViewItemWithValue.ListViewSubItemWithValue objListViewSubItemWithValueX &&
+                    objListViewSubItemY is ListViewItemWithValue.ListViewSubItemWithValue objListViewSubItemWithValueY &&
+                    (objListViewSubItemWithValueX.Value is IComparable ||
+                     objListViewSubItemWithValueY.Value is IComparable))
+                {
+                    if (objListViewSubItemWithValueX.Value is IComparable objXValue)
+                        intCompareResult = objXValue.CompareTo(objListViewSubItemWithValueY.Value);
+                    else
+                        intCompareResult = -(objListViewSubItemWithValueY.Value as IComparable)?.CompareTo(objListViewSubItemWithValueX.Value) ?? 0;
+                }
                 else
-                    intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+                {
+                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                    if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo,
+                            out decimal decX) &&
+                        decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo,
+                            out decimal decY))
+                        intCompareResult = decimal.Compare(decX, decY);
+                    else
+                        intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+                }
             }
 
             // Calculate correct return value based on object comparison
