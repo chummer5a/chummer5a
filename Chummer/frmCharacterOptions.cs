@@ -52,8 +52,8 @@ namespace Chummer
         public frmCharacterOptions(CharacterOptions objExistingOptions = null)
         {
             InitializeComponent();
-            this.TranslateWinForm();
             this.UpdateLightDarkMode();
+            this.TranslateWinForm();
             _objReferenceCharacterOptions = objExistingOptions ?? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
             _objCharacterOptions = new CharacterOptions(_objReferenceCharacterOptions);
             RebuildCustomDataDirectoryInfos();
