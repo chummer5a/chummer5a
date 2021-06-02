@@ -313,8 +313,23 @@ namespace Chummer
                 //              /plugin:Name:Parameter:Argument
                 //              /plugin:SINners:RegisterUriScheme:0
                 bool showMainForm = !Utils.IsUnitTest;
-                // Make sure the default language has been loaded before attempting to open the Main Form.
-                LanguageManager.LoadLanguage(GlobalOptions.Language);
+                bool blnRestoreDefaultLanguage;
+                try
+                {
+                    // Make sure the default language has been loaded before attempting to open the Main Form.
+                    blnRestoreDefaultLanguage = !LanguageManager.LoadLanguage(GlobalOptions.Language);
+                }
+                // This to catch and handle an extremely strange issue where Chummer tries to load a language it shouldn't and ends up
+                // dereferencing a null value that should be impossible by static code analysis. This code here is a failsafe so that
+                // it at least keeps working in English instead of crashing.
+                catch (NullReferenceException)
+                {
+                    Utils.BreakIfDebug();
+                    blnRestoreDefaultLanguage = true;
+                }
+                // Restore Chummer's language to en-US if we failed to load the default one.
+                if (blnRestoreDefaultLanguage)
+                    GlobalOptions.Language = GlobalOptions.DefaultLanguage;
                 MainForm = new frmChummerMain();
                 try
                 {

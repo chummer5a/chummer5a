@@ -1057,7 +1057,7 @@ namespace Chummer
             get => _strLanguage;
             set
             {
-                if(value != _strLanguage)
+                if (value != _strLanguage)
                 {
                     _strLanguage = value;
                     try
