@@ -139,31 +139,33 @@ namespace Chummer
 
         private void cmdEditCharacterOption_Click(object sender, EventArgs e)
         {
-            Cursor = Cursors.WaitCursor;
-
-            using (frmCharacterOptions frmOptions = new frmCharacterOptions(cboCharacterOption.SelectedValue as CharacterOptions))
-                frmOptions.ShowDialog(this);
-
-            SuspendLayout();
-            // Populate the Gameplay Options list.
-            object objOldSelected = cboCharacterOption.SelectedValue;
-            List<ListItem> lstGameplayOptions = new List<ListItem>();
-            foreach (KeyValuePair<string, CharacterOptions> objLoopOptions in OptionsManager.LoadedCharacterOptions)
+            using (new CursorWait(this))
             {
-                lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
-            }
-            lstGameplayOptions.Sort(CompareListItems.CompareNames);
-            cboCharacterOption.BeginUpdate();
-            cboCharacterOption.PopulateWithListItems(lstGameplayOptions);
-            cboCharacterOption.SelectedValue = objOldSelected;
-            if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
-                cboCharacterOption.SelectedValue = OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
-            if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
-                cboCharacterOption.SelectedIndex = 0;
-            cboCharacterOption.EndUpdate();
-            ResumeLayout();
+                using (frmCharacterOptions frmOptions =
+                    new frmCharacterOptions(cboCharacterOption.SelectedValue as CharacterOptions))
+                    frmOptions.ShowDialog(this);
 
-            Cursor = Cursors.Default;
+                SuspendLayout();
+                // Populate the Gameplay Options list.
+                object objOldSelected = cboCharacterOption.SelectedValue;
+                List<ListItem> lstGameplayOptions = new List<ListItem>();
+                foreach (KeyValuePair<string, CharacterOptions> objLoopOptions in OptionsManager.LoadedCharacterOptions)
+                {
+                    lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
+                }
+
+                lstGameplayOptions.Sort(CompareListItems.CompareNames);
+                cboCharacterOption.BeginUpdate();
+                cboCharacterOption.PopulateWithListItems(lstGameplayOptions);
+                cboCharacterOption.SelectedValue = objOldSelected;
+                if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                    cboCharacterOption.SelectedValue =
+                        OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
+                if (cboCharacterOption.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                    cboCharacterOption.SelectedIndex = 0;
+                cboCharacterOption.EndUpdate();
+                ResumeLayout();
+            }
         }
 
         private void frmSelectBuildMethod_Load(object sender, EventArgs e)
