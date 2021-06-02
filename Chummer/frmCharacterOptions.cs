@@ -151,15 +151,8 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            try
-            {
-                File.Delete(Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterOptions.FileName));
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+            if (!Utils.SafeDeleteFile(Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterOptions.FileName), true))
                 return;
-            }
 
             using (new CursorWait(this))
             {

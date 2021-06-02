@@ -288,8 +288,8 @@ namespace Codaxy.WkHtmlToPdf
             }
             finally
             {
-                if (delete && File.Exists(outputPdfFilePath))
-                    File.Delete(outputPdfFilePath);
+                if (delete)
+                    Chummer.Utils.SafeDeleteFile(outputPdfFilePath, true);
             }
         }
 

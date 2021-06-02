@@ -8961,6 +8961,10 @@
       <text>Already Up-to-Date</text>
     </string>
     <string>
+      <key>Button_Reconnect</key>
+      <text>Reconnect</text>
+    </string>
+    <string>
       <key>Button_Install_Restart</key>
       <text>Install and Restart</text>
     </string>

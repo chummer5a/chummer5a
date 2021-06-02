@@ -168,38 +168,10 @@ namespace Chummer
 
                     GlobalOptions.MRUChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMRUToolstripMenu(senderInner, eInner));
 
-                    try
+                    // Delete the old executable if it exists (created by the update process).
+                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
                     {
-                        // Delete the old executable if it exists (created by the update process).
-                        string[] oldfiles =
-                            Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories);
-                        foreach (string strLoopOldFilePath in oldfiles)
-                        {
-                            try
-                            {
-                                if (File.Exists(strLoopOldFilePath))
-                                    File.Delete(strLoopOldFilePath);
-                            }
-                            catch (UnauthorizedAccessException ex)
-                            {
-                                //we will just delete it the next time
-                                //its probably the "used by another process"
-                                Log.Trace(ex,
-                                    "UnauthorizedAccessException can be ignored - probably used by another process.");
-                            }
-                        }
-                    }
-                    catch (UnauthorizedAccessException ex)
-                    {
-                        Log.Trace(ex,
-                            "UnauthorizedAccessException in " + Utils.GetStartupPath +
-                            "can be ignored - probably a weird path like Recycle.Bin or something...");
-                    }
-                    catch (IOException ex)
-                    {
-                        Log.Trace(ex,
-                            "IOException in " + Utils.GetStartupPath +
-                            "can be ignored - probably another instance blocking it...");
+                        Utils.SafeDeleteFile(strLoopOldFilePath);
                     }
 
                     // Populate the MRU list.
@@ -1750,7 +1722,7 @@ namespace Chummer
 
         private void mnuRestart_Click(object sender, EventArgs e)
         {
-            Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
+            Utils.RestartApplication(string.Empty, "Message_Options_Restart");
         }
 #endregion
 
