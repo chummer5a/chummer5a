@@ -36,6 +36,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
 
@@ -49,7 +50,8 @@ namespace Chummer
         private frmUpdate _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
-        private readonly BackgroundWorker _workerVersionUpdateChecker;
+        private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
+        private Task _tskVersionUpdate;
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
@@ -77,14 +79,6 @@ namespace Chummer
             this.TranslateWinForm();
             _strCurrentVersion =
                 string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}", _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
-
-            _workerVersionUpdateChecker = new BackgroundWorker
-            {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = true
-            };
-            _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
-            _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalOptions.HideMasterIndex || isUnitTest)
@@ -169,7 +163,7 @@ namespace Chummer
 
 #if !DEBUG
                     Application.Idle += IdleUpdateCheck;
-                    _workerVersionUpdateChecker.RunWorkerAsync();
+                    CheckForUpdate();
 #endif
 
                     GlobalOptions.MRUChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMRUToolstripMenu(senderInner, eInner));
@@ -563,7 +557,7 @@ namespace Chummer
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 
-        private async void DoCacheGitVersion(object sender, DoWorkEventArgs e)
+        private async Task DoCacheGitVersion()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request;
@@ -584,11 +578,8 @@ namespace Chummer
                 return;
             }
 
-            if(_workerVersionUpdateChecker.CancellationPending)
-            {
-                e.Cancel = true;
+            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                 return;
-            }
 
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             request.Accept = "application/json";
@@ -604,11 +595,8 @@ namespace Chummer
                         return;
                     }
 
-                    if (_workerVersionUpdateChecker.CancellationPending)
-                    {
-                        e.Cancel = true;
+                    if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                         return;
-                    }
 
                     // Get the stream containing content returned by the server.
                     using (Stream dataStream = response.GetResponseStream())
@@ -619,37 +607,22 @@ namespace Chummer
                             return;
                         }
 
-                        if (_workerVersionUpdateChecker.CancellationPending)
-                        {
-                            e.Cancel = true;
+                        if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                             return;
-                        }
 
                         // Open the stream using a StreamReader for easy access.
                         using (StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true))
                         {
-                            if (_workerVersionUpdateChecker.CancellationPending)
-                            {
-                                e.Cancel = true;
+                            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                 return;
-                            }
 
                             // Read the content.
-                            string responseFromServer = reader.ReadToEnd();
-
-                            if (_workerVersionUpdateChecker.CancellationPending)
-                            {
-                                e.Cancel = true;
-                                return;
-                            }
+                            string responseFromServer = await reader.ReadToEndAsync();
 
                             string line = responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
 
-                            if (_workerVersionUpdateChecker.CancellationPending)
-                            {
-                                e.Cancel = true;
+                            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                 return;
-                            }
 
                             Version verLatestVersion = null;
                             if (!string.IsNullOrEmpty(line))
@@ -666,20 +639,14 @@ namespace Chummer
                                     strVersion += ".0";
                                 }
 
-                                if (_workerVersionUpdateChecker.CancellationPending)
-                                {
-                                    e.Cancel = true;
+                                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                     return;
-                                }
 
                                 if (!Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion))
                                     verLatestVersion = null;
 
-                                if (_workerVersionUpdateChecker.CancellationPending)
-                                {
-                                    e.Cancel = true;
+                                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                     return;
-                                }
                             }
 
                             Utils.CachedGitVersion = verLatestVersion;
@@ -694,34 +661,45 @@ namespace Chummer
             }
         }
 
-        private void CheckForUpdate(object sender, RunWorkerCompletedEventArgs e)
+        private void CheckForUpdate()
         {
-            if(!e.Cancelled && Utils.GitUpdateAvailable > 0)
+            _objVersionUpdaterCancellationTokenSource = new CancellationTokenSource();
+            _tskVersionUpdate = Task.Run(async() =>
             {
-                if(GlobalOptions.AutomaticUpdate)
+                await DoCacheGitVersion();
+                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested ||
+                    Utils.GitUpdateAvailable <= 0)
+                    return;
+                await this.DoThreadSafeAsync(() =>
                 {
-                    if(_frmUpdate == null)
+                    if (GlobalOptions.AutomaticUpdate)
                     {
-                        _frmUpdate = new frmUpdate();
-                        _frmUpdate.FormClosed += ResetFrmUpdate;
-                        _frmUpdate.SilentMode = true;
+                        if (_frmUpdate == null)
+                        {
+                            _frmUpdate = new frmUpdate();
+                            _frmUpdate.FormClosed += ResetFrmUpdate;
+                            _frmUpdate.SilentMode = true;
+                        }
                     }
-                }
-                string strSpace = LanguageManager.GetString("String_Space");
-                Text = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version")
-                       + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
-                       + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
-            }
+
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    Text = Application.ProductName + strSpace + '-' + strSpace +
+                           LanguageManager.GetString("String_Version")
+                           + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
+                           + string.Format(GlobalOptions.CultureInfo,
+                               LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
+                });
+            }, _objVersionUpdaterCancellationTokenSource.Token);
         }
 
         private readonly Stopwatch _idleUpdateCheckStopWatch = Stopwatch.StartNew();
         private void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
-            if (_idleUpdateCheckStopWatch.Elapsed < TimeSpan.FromHours(1) || _workerVersionUpdateChecker.IsBusy)
+            if (_idleUpdateCheckStopWatch.Elapsed < TimeSpan.FromHours(1) || _tskVersionUpdate?.IsCompleted == false)
                 return;
             _idleUpdateCheckStopWatch.Restart();
-            _workerVersionUpdateChecker.RunWorkerAsync();
+            CheckForUpdate();
         }
 
         /*
@@ -1101,8 +1079,7 @@ namespace Chummer
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
-            if (_workerVersionUpdateChecker.IsBusy)
-                _workerVersionUpdateChecker.CancelAsync();
+            _objVersionUpdaterCancellationTokenSource?.Cancel();
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {
@@ -1725,7 +1702,9 @@ namespace Chummer
                 }
 
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (i2 <= 9 && i2 >= 0)
+                if (i2 <= 9
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    && i2 >= 0)
                 {
                     string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);
                     objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
