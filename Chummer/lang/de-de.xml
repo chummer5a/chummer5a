@@ -9657,5 +9657,23 @@
             <key>LimitCondition_SkillGroupStealthNaked</key>
             <text>Nur für die Fertigkeitsgruppe Heimlichkeit, muss vollständig unbekleidet sein</text>
         </string>
+        <!--Region Sustained Spells Control-->
+        <string>
+          <key>Label_SustainedSelf</key>
+          <text>Selbst</text>
+        </string>
+        <string>
+          <key>Label_SustainedForce</key>
+          <text>Kraft:</text>
+        </string>
+        <string>
+          <key>Label_NetHits</key>
+          <text>Net Erfolge:</text>
+        </string>
+        <!--End Region-->
+        <string>
+          <key>Button_SustainSpell</key>
+          <text>Aufrechterhalten</text>
+        </string>
     </strings>
 </chummer>

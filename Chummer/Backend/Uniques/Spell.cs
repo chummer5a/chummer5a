@@ -61,6 +61,7 @@ namespace Chummer
         private bool _blnFreeBonus;
         private bool _blnUsesUnarmed;
         private int _intGrade;
+
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -163,11 +164,13 @@ namespace Chummer
             objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
+            SaveDerived(objWriter);
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
                 _objCharacter.SourceProcess(_strSource);
         }
+        public virtual void SaveDerived(XmlTextWriter objWriter) { }
 
         /// <summary>
         /// Load the Spell from the XmlNode.
@@ -213,11 +216,14 @@ namespace Chummer
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+            LoadDerived(objNode);
 
             String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
+
+        public virtual void LoadDerived(XmlNode objNode) { }
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -253,11 +259,16 @@ namespace Chummer
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
+
                 objWriter.WriteElementString("notes", Notes);
+            PrintDerived(objWriter);
             objWriter.WriteEndElement();
         }
+
+        public virtual void PrintDerived(XmlTextWriter objWriter) { }
         #endregion
 
         #region Properties
