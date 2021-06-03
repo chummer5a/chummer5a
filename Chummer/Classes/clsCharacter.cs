@@ -7969,7 +7969,8 @@ namespace Chummer
         {
             if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
             {
-                PostLoadMethods.Enqueue(RefreshAstralReputationImprovements);
+                if (!PostLoadMethods.Contains(RefreshAstralReputationImprovements))
+                    PostLoadMethods.Enqueue(RefreshAstralReputationImprovements);
                 return true;
             }
             int intCurrentTotalAstralReputation = TotalAstralReputation;
@@ -14867,7 +14868,8 @@ namespace Chummer
         {
             if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
             {
-                PostLoadMethods.Enqueue(RefreshRedlinerImprovements);
+                if (!PostLoadMethods.Contains(RefreshRedlinerImprovementss))
+                    PostLoadMethods.Enqueue(RefreshRedlinerImprovements);
                 return true;
             }
             //Get attributes affected by redliner/cyber singularity seeker
@@ -15903,7 +15905,8 @@ namespace Chummer
         {
             if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
             {
-                PostLoadMethods.Enqueue(RefreshSustainingPenalties);
+                if (!PostLoadMethods.Contains(RefreshSustainingPenalties))
+                    PostLoadMethods.Enqueue(RefreshSustainingPenalties);
                 return true;
             }
 
