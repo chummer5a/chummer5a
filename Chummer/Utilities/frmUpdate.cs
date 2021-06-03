@@ -104,7 +104,7 @@ namespace Chummer
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             _blnFormClosing = true;
-            _objConnectionLoaderCancellationTokenSource.Cancel();
+            _objConnectionLoaderCancellationTokenSource?.Cancel();
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
         }
