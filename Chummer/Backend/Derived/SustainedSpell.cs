@@ -17,20 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Chummer.Backend.Skills;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows.Forms;
 using System.Xml;
-using NLog;
 
 namespace Chummer
 {
@@ -40,7 +32,7 @@ namespace Chummer
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
 
-    public class SustainedSpell : Spell, IHasInternalId, ISustainable, INotifyPropertyChanged
+    public class SustainedSpell : Spell, IHasInternalId, ISustainable
     {
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
@@ -49,17 +41,12 @@ namespace Chummer
         private int _intNetHits = 0;
         private readonly Character _objCharacter;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         #region Constructor, Create, Save, Load, and Print Methods
-
         public SustainedSpell(Character objCharacter) : base(objCharacter)
         {
             //Create the GUID for new sustained spells
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
-            PropertyChanged += OnSustainedChanged;
         }
 
         /// <summary>
@@ -75,11 +62,9 @@ namespace Chummer
 
             foreach (var propInfo in objPropertyInfo)
             {
-                if (propInfo.CanWrite)
-                {
-                    var value = propInfo.GetValue(spellRef);
-                    propInfo.SetValue(susSpellTarget, value, null);
-                }
+                if (!propInfo.CanWrite) continue;
+                var value = propInfo.GetValue(spellRef);
+                propInfo.SetValue(susSpellTarget, value, null);
             }
             _guiSourceID = spellRef.SourceID;
             return susSpellTarget;
@@ -136,7 +121,6 @@ namespace Chummer
             objWriter.WriteElementString("nethits", _intNetHits.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("self", _blnSelfSustained.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
-
         }
 
         #endregion
@@ -150,11 +134,9 @@ namespace Chummer
             get => _blnSelfSustained;
             set
             {
-                if (_blnSelfSustained != value)
-                {
-                    _blnSelfSustained = value;
-                    OnPropertyChanged();
-                }
+                if (_blnSelfSustained == value) return;
+                _blnSelfSustained = value;
+                _objCharacter.RefreshSustainingPenalties();
             }
         }
 
@@ -176,18 +158,6 @@ namespace Chummer
             set => _intNetHits = value;
         }
         public new string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
-        #endregion
-
-        #region Property Changed
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        private void OnSustainedChanged(object sender, PropertyChangedEventArgs e)
-        {
-            _objCharacter.RefreshSustainingPenalties();
-        }
         #endregion
     }
 }

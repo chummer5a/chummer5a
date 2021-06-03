@@ -16423,6 +16423,31 @@ namespace Chummer
             }
             else
             {
+                Panel DetermineRefreshingPanel(ISustainable objSustained, Panel flpSustainedSpellsParam, Panel flpSustainedComplexFormsParam, Panel flpSustainedCritterPowersParam)
+                {
+                    Panel refreshingPanel;
+
+                    //This C# Version doesn't support cases based on types so this roundabout way is necessary
+                    switch (objSustained.GetType().Name)
+                    {
+                        case nameof(SustainedSpell):
+                            refreshingPanel = flpSustainedSpellsParam;
+                            break;
+
+                        case nameof(SustainedComplexForm):
+                            refreshingPanel = flpSustainedComplexFormsParam;
+                            break;
+
+                        case nameof(SustainedCritterPower):
+                            refreshingPanel = flpSustainedCritterPowersParam;
+                            break;
+
+                        default:
+                            refreshingPanel = null;
+                            break;
+                    }
+                    return refreshingPanel;
+                }
                 switch (notifyCollectionChangedEventArgs.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
@@ -16591,41 +16616,6 @@ namespace Chummer
                 objSustained.CreateByMapping(objCritterPower, objSustained);
                 CharacterObject.SustainedCollection.Add(objSustained);
             }
-        }
-
-        /// <summary>
-        /// Takes in an ISustainable object and gives out the corresponding panel. Returns NULL if No sich panel exists.
-        /// </summary>
-        /// <param name="objSustained"></param>
-        /// <param name="flpSustainedSpells"></param>
-        /// <param name="flpSustainedComplexForms"></param>
-        /// <param name="flpSustainedCritterPowers"></param>
-        /// <returns></returns>
-        private Panel DetermineRefreshingPanel(ISustainable objSustained, Panel flpSustainedSpells, Panel flpSustainedComplexForms, Panel flpSustainedCritterPowers)
-        {
-            Panel refreshingPanel;
-
-            //This C# Version doesn't support cases based on types so this roundabout way is necessary
-            switch (objSustained.GetType().Name)
-            {
-                case nameof(SustainedSpell):
-                    refreshingPanel = flpSustainedSpells;
-                    break;
-
-                case nameof(SustainedComplexForm):
-                    refreshingPanel = flpSustainedComplexForms;
-                    break;
-
-                case nameof(SustainedCritterPower):
-                    refreshingPanel = flpSustainedCritterPowers;
-                    break;
-
-                default:
-                    refreshingPanel = null;
-                    break;
-            }
-
-            return refreshingPanel;
         }
         #endregion
 

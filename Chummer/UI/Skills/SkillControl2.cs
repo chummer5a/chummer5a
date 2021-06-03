@@ -576,15 +576,12 @@ namespace Chummer.UI.Skills
         private void SkillControl2_RefreshPoolTooltipAndDisplay()
         {
             //TODO: Run this async somehow, QueueThreadSafe maybe.
-            if (_blnLoading || lblModifiedRating.Text != 0.ToString(GlobalOptions.CultureInfo))
-            {
-                string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-                lblModifiedRating.DoThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
-            }
+
+            string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
+            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
 
             string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
             lblModifiedRating.DoThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
-
         }
     }
 }

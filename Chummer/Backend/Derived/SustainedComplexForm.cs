@@ -17,20 +17,13 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Chummer.Backend.Skills;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
-using System.Globalization;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows.Forms;
 using System.Xml;
-using NLog;
+
 
 namespace Chummer
 {
@@ -40,7 +33,7 @@ namespace Chummer
     
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class SustainedComplexForm : ComplexForm, ISustainable, INotifyPropertyChanged
+    public class SustainedComplexForm : ComplexForm, ISustainable
     {
         private Guid _guiID;
         private Guid _guiSourceID = Guid.Empty;
@@ -50,16 +43,12 @@ namespace Chummer
         private int _intNetHits = 0;
         private readonly Character _objCharacter;
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
         #region Constructor, Create, Save, Load, and Print Methods
         public SustainedComplexForm(Character objCharacter) : base(objCharacter)
         {
             //Create the GUID for new sustained Complex Forms
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
-            PropertyChanged += OnSustainedChanged;
         }
 
         /// <summary>
@@ -75,15 +64,13 @@ namespace Chummer
 
             foreach (var propInfo in objPropertyInfo)
             {
-                if (propInfo.CanWrite)
-                {
-                    var value = propInfo.GetValue(formRef);
-                    propInfo.SetValue(susFormTarget, value, null);
-                }
+                if (!propInfo.CanWrite) continue;
+                var value = propInfo.GetValue(formRef);
+                propInfo.SetValue(susFormTarget, value, null);
             }
             _guiSourceID = formRef.SourceID;
             return susFormTarget;
-        }
+            }
 
         /// <summary>
         ///  Saves all additional information needed for sustained derived objects xml to the XmlWriter.
@@ -160,25 +147,11 @@ namespace Chummer
                 if (_blnSelfSustained != value)
                 {
                     _blnSelfSustained = value;
-                    OnPropertyChanged();
+                    _objCharacter.RefreshSustainingPenalties();
                 }
-
             }
-
         }
         public new string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
-        #endregion
-
-        #region Property Changed
-        protected void OnPropertyChanged([CallerMemberName] string name = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-        }
-
-        private void OnSustainedChanged(object sender, PropertyChangedEventArgs e)
-        {
-            _objCharacter.RefreshSustainingPenalties();
-        }
         #endregion
     }
 }

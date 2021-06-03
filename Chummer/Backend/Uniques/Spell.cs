@@ -78,7 +78,7 @@ namespace Chummer
         /// <param name="blnExtended">Whether or not the Spell should be marked as Extended.</param>
         /// <param name="blnAlchemical">Whether or not the Spell is one for an alchemical preparation.</param>
         /// <param name="objSource">Enum representing the actual type of spell this object represents. Used for initiation benefits that would grant spells.</param>
-        public virtual void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
+        public void Create(XmlNode objXmlSpellNode, string strForcedValue = "", bool blnLimited = false, bool blnExtended = false, bool blnAlchemical = false, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Spell)
         {
             if (!objXmlSpellNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
