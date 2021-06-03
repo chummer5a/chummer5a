@@ -9420,11 +9420,6 @@ namespace Chummer
                 lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
             }
 
-            // If the Viewer window is open for this character, call its RefreshView method which updates it asynchronously
-            PrintWindow?.RefreshCharacters();
-            if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
-                Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
-
             UpdateInitiationCost();
             UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
 

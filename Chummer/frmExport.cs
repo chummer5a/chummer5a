@@ -36,8 +36,10 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private readonly ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>>();
-        private CancellationTokenSource _objXmlLoaderCancellationTokenSource;
+        private CancellationTokenSource _objCharacterXmlGeneratorCancellationTokenSource;
         private CancellationTokenSource _objXmlGeneratorCancellationTokenSource;
+        private Task _tskCharacterXmlGenerator;
+        private Task _tskXmlGenerator;
         private XmlDocument _objCharacterXml;
         private bool _blnSelected;
         private string _strXslt;
@@ -82,7 +84,7 @@ namespace Chummer
         private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objXmlGeneratorCancellationTokenSource?.Cancel();
-            _objXmlLoaderCancellationTokenSource?.Cancel();
+            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -142,8 +144,11 @@ namespace Chummer
                 return;
             if (_objCharacterXml == null)
             {
-                _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
-                await Task.Run(GenerateCharacterXml, _objXmlGeneratorCancellationTokenSource.Token);
+                _objCharacterXmlGeneratorCancellationTokenSource?.Cancel();
+                _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
+                if (_tskCharacterXmlGenerator?.IsCompleted == false)
+                    await _tskCharacterXmlGenerator;
+                _tskCharacterXmlGenerator = Task.Run(GenerateCharacterXml, _objCharacterXmlGeneratorCancellationTokenSource.Token);
                 return;
             }
             _strXslt = cboXSLT.Text;
@@ -152,31 +157,21 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false);
-                try
+                await txtText.DoThreadSafeAsync(() => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
+                if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
+                    out Tuple<string, string> tstrBoxText))
                 {
-                    await txtText.DoThreadSafeAsync(() => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
-                    if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                        out Tuple<string, string> tstrBoxText))
-                    {
-                        await txtText.DoThreadSafeAsync(() => txtText.Text = tstrBoxText.Item2);
-                    }
-                    else
-                    {
-                        _objXmlLoaderCancellationTokenSource = new CancellationTokenSource();
-                        if (_strXslt == "Export JSON")
-                        {
-                            await Task.Run(GenerateJson, _objXmlLoaderCancellationTokenSource.Token);
-                        }
-                        else
-                        {
-                            await Task.Run(GenerateXml, _objXmlLoaderCancellationTokenSource.Token);
-                        }
-                    }
+                    await txtText.DoThreadSafeAsync(() => txtText.Text = tstrBoxText.Item2);
                 }
-                finally
+                else
                 {
-                    await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = true);
+                    _objXmlGeneratorCancellationTokenSource?.Cancel();
+                    _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
+                    if (_tskXmlGenerator?.IsCompleted == false)
+                        await _tskXmlGenerator;
+                    _tskXmlGenerator = _strXslt == "Export JSON"
+                        ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
+                        : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
                 }
             }
         }
@@ -204,20 +199,13 @@ namespace Chummer
             using (new CursorWait(this))
             {
                 await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false);
-                try
-                {
-                    await txtText.DoThreadSafeAsync(() => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
-                    _objCharacterXml = _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
-                        _objXmlGeneratorCancellationTokenSource.Token);
-                    if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    if (_objCharacterXml != null)
-                        await DoXsltUpdate();
-                }
-                finally
-                {
-                    await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = true);
-                }
+                await txtText.DoThreadSafeAsync(() => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
+                _objCharacterXml = _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
+                    _objCharacterXmlGeneratorCancellationTokenSource.Token);
+                if (_objCharacterXmlGeneratorCancellationTokenSource.IsCancellationRequested)
+                    return;
+                if (_objCharacterXml != null)
+                    await DoXsltUpdate();
             }
         }
 
@@ -275,7 +263,7 @@ namespace Chummer
 
                     XslCompiledTransform objXSLTransform = new XslCompiledTransform();
                     objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.
-                    if (_objXmlLoaderCancellationTokenSource.IsCancellationRequested)
+                    if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
                         return;
                     XmlWriterSettings objSettings = objXSLTransform.OutputSettings.Clone();
                     objSettings.CheckCharacters = false;
@@ -286,7 +274,7 @@ namespace Chummer
                     {
                         using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
                             objXSLTransform.Transform(_objCharacterXml, null, objWriter);
-                        if (_objXmlLoaderCancellationTokenSource.IsCancellationRequested)
+                        if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
                             return;
                         objStream.Position = 0;
 
@@ -312,7 +300,7 @@ namespace Chummer
                 try
                 {
                     string strText = JsonConvert.SerializeXmlNode(_objCharacterXml, Formatting.Indented);
-                    if (_objXmlLoaderCancellationTokenSource.IsCancellationRequested)
+                    if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
                         return;
                     SetTextToWorkerResult(strText);
                 }

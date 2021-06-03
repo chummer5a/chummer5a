@@ -6371,9 +6371,6 @@ namespace Chummer
             {
                 _frmPrintView.Activate();
             }
-            _frmPrintView.RefreshCharacters();
-            if (Program.MainForm.PrintMultipleCharactersForm?.CharacterList?.Contains(CharacterObject) == true)
-                Program.MainForm.PrintMultipleCharactersForm.PrintViewForm?.RefreshCharacters();
         }
 
         /// <summary>

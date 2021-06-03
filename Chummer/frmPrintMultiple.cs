@@ -17,9 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
+ using System.Linq;
  using System.Threading;
  using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -28,8 +27,10 @@ namespace Chummer
 {
     public partial class frmPrintMultiple : Form
     {
-        private readonly BackgroundWorker _workerPrinter = new BackgroundWorker();
-        List<Character> _lstCharacters;
+        private CancellationTokenSource _objPrinterCancellationTokenSource;
+        private Task _tskPrinter;
+        private Character[] _aobjCharacters;
+        private frmViewer _frmPrintView;
 
         #region Control Events
         public frmPrintMultiple()
@@ -38,158 +39,155 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All");
-
-            _workerPrinter.WorkerReportsProgress = true;
-            _workerPrinter.WorkerSupportsCancellation = true;
-
-            _workerPrinter.DoWork += DoPrint;
-            _workerPrinter.RunWorkerCompleted += FinishPrint;
         }
 
-        private void cmdSelectCharacter_Click(object sender, EventArgs e)
+        private void frmPrintMultiple_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (_workerPrinter.IsBusy)
-            {
-                _workerPrinter.CancelAsync();
-                cmdPrint.Enabled = true;
-                prgProgress.Value = 0;
-            }
+            _objPrinterCancellationTokenSource?.Cancel();
+            CleanUpOldCharacters();
+        }
+
+        private async void cmdSelectCharacter_Click(object sender, EventArgs e)
+        {
             // Add the selected Files to the list of characters to print.
-            if (dlgOpenFile.ShowDialog(this) == DialogResult.OK)
+            if (dlgOpenFile.ShowDialog(this) != DialogResult.OK)
+                return;
+            await CancelPrint();
+            foreach (string strFileName in dlgOpenFile.FileNames)
             {
-                foreach (string strFileName in dlgOpenFile.FileNames)
+                TreeNode objNode = new TreeNode
                 {
-                    TreeNode objNode = new TreeNode
-                    {
-                        Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown"),
-                        Tag = strFileName
-                    };
-                    treCharacters.Nodes.Add(objNode);
-                }
-                if (_frmPrintView != null)
-                {
-                    cmdPrint_Click(sender, e);
-                }
-            }
-        }
-
-        private void cmdDelete_Click(object sender, EventArgs e)
-        {
-            if (treCharacters.SelectedNode != null)
-            {
-                if (_workerPrinter.IsBusy)
-                {
-                    _workerPrinter.CancelAsync();
-                    cmdPrint.Enabled = true;
-                    prgProgress.Value = 0;
-                }
-                treCharacters.SelectedNode.Remove();
-                if (_frmPrintView != null)
-                {
-                    cmdPrint_Click(sender, e);
-                }
-            }
-        }
-
-        private void cmdPrint_Click(object sender, EventArgs e)
-        {
-            cmdPrint.Enabled = false;
-            if (!_workerPrinter.IsBusy)
-            {
-                prgProgress.Value = 0;
-                prgProgress.Maximum = treCharacters.Nodes.Count;
-                _workerPrinter.RunWorkerAsync();
-            }
-        }
-
-        private void DoPrint(object sender, DoWorkEventArgs e)
-        {
-            void FuncIncreaseProgress()
-            {
-                prgProgress.Value += 1;
-            }
-
-            Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
-            for (int i = 0; i < lstCharacters.Length; ++i)
-            {
-                if (_workerPrinter.CancellationPending)
-                {
-                    e.Cancel = true;
-                    return;
-                }
-                lstCharacters[i] = new Character
-                {
-                    FileName = treCharacters.Nodes[i].Tag.ToString()
+                    Text = Path.GetFileName(strFileName) ?? LanguageManager.GetString("String_Unknown"),
+                    Tag = strFileName
                 };
+                treCharacters.Nodes.Add(objNode);
             }
+            if (_frmPrintView != null)
+                await StartPrint();
+        }
 
-            CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource();
+        private async void cmdDelete_Click(object sender, EventArgs e)
+        {
+            if (treCharacters.SelectedNode == null)
+                return;
+            await CancelPrint();
+            treCharacters.SelectedNode.Remove();
+            if (_frmPrintView != null)
+                await StartPrint();
+        }
 
-            // Because we're printing info from characters here and we don't have locker objects assigned to characters to prevent changes while a print method is running,
-            // we cannot make this method async, but we still do not want Parallel.ForEach to block UI events
-            Utils.RunWithoutThreadLock(() =>
+        private async void cmdPrint_Click(object sender, EventArgs e)
+        {
+            await StartPrint();
+        }
+
+        private async Task CancelPrint()
+        {
+            _objPrinterCancellationTokenSource?.Cancel();
+            await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true);
+            await prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0);
+            if (_tskPrinter?.IsCompleted == false)
+                await _tskPrinter;
+        }
+
+        private async Task StartPrint()
+        {
+            await CancelPrint();
+            _objPrinterCancellationTokenSource = new CancellationTokenSource();
+            _tskPrinter = Task.Run(DoPrint, _objPrinterCancellationTokenSource.Token);
+        }
+
+        private async Task DoPrint()
+        {
+            using (new CursorWait(this, true))
             {
-                // Parallelized load because this is one major bottleneck.
-                Parallel.ForEach(lstCharacters, (objCharacter, objState) =>
+                try
                 {
-                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration || objCancellationTokenSource.IsCancellationRequested)
+                    await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false);
+                    await prgProgress.DoThreadSafeAsync(() =>
                     {
-                        if (!objState.IsStopped)
-                            objState.Stop();
-                        objCancellationTokenSource.Cancel();
-                        return;
-                    }
-
-                    bool blnLoadSuccessful = objCharacter.Load();
-                    if (_workerPrinter.CancellationPending || objState.ShouldExitCurrentIteration || objCancellationTokenSource.IsCancellationRequested)
+                        prgProgress.Value = 0;
+                        prgProgress.Maximum = treCharacters.Nodes.Count;
+                    });
+                    Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
+                    // Parallelized load because this is one major bottleneck.
+                    Parallel.For(0, lstCharacters.Length, (i, objState) =>
                     {
-                        if (!objState.IsStopped)
-                            objState.Stop();
-                        objCancellationTokenSource.Cancel();
-                        return;
-                    }
+                        if (_objPrinterCancellationTokenSource.IsCancellationRequested ||
+                            objState.ShouldExitCurrentIteration)
+                        {
+                            if (!objState.IsStopped)
+                                objState.Stop();
+                            _objPrinterCancellationTokenSource?.Cancel();
+                            return;
+                        }
 
-                    if (blnLoadSuccessful)
-                        prgProgress.Invoke((Action) FuncIncreaseProgress);
-                });
-            });
-            if (_workerPrinter.CancellationPending)
-                e.Cancel = true;
-            else
-            {
-                if (_lstCharacters?.Count > 0)
-                    foreach (Character objCharacter in _lstCharacters)
-                        objCharacter.Dispose();
-                _lstCharacters = new List<Character>(lstCharacters);
+                        lstCharacters[i] = Program.MainForm.LoadCharacter(treCharacters.Nodes[i].Tag.ToString(), string.Empty, false, false, false);
+                        bool blnLoadSuccessful = lstCharacters[i] != null;
+                        if (_objPrinterCancellationTokenSource.IsCancellationRequested ||
+                            objState.ShouldExitCurrentIteration)
+                        {
+                            if (!objState.IsStopped)
+                                objState.Stop();
+                            _objPrinterCancellationTokenSource?.Cancel();
+                            return;
+                        }
+                        if (blnLoadSuccessful)
+                            prgProgress.DoThreadSafe(() => prgProgress.Value += 1);
+                    });
+                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
+                        return;
+                    CleanUpOldCharacters();
+                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
+                        return;
+                    _aobjCharacters = lstCharacters;
+
+                    if (_frmPrintView == null)
+                    {
+                        await this.DoThreadSafeAsync(() =>
+                        {
+                            _frmPrintView = new frmViewer();
+                            _frmPrintView.SetSelectedSheet("Game Master Summary");
+                            _frmPrintView.SetCharacters(_aobjCharacters);
+                            _frmPrintView.Show();
+                        });
+                    }
+                    else
+                    {
+                        await _frmPrintView.DoThreadSafeAsync(() =>
+                        {
+                            _frmPrintView.SetCharacters(_aobjCharacters);
+                            _frmPrintView.Activate();
+                        });
+                    }
+                }
+                finally
+                {
+                    await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false);
+                    await prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0);
+                }
             }
         }
 
-        private frmViewer _frmPrintView;
-
-        public frmViewer PrintViewForm => _frmPrintView;
-
-        public List<Character> CharacterList => _lstCharacters;
-
-        private void FinishPrint(object sender, RunWorkerCompletedEventArgs e)
+        private void CleanUpOldCharacters()
         {
-            cmdPrint.Enabled = true;
-            // Set the ProgressBar back to 0.
-            prgProgress.Value = 0;
-
-            if (!e.Cancelled)
+            if (!(_aobjCharacters?.Length > 0))
+                return;
+            // Dispose of any characters who were previous loaded but are no longer needed and don't have any linked characters
+            bool blnAnyChanges = true;
+            while (blnAnyChanges)
             {
-                if (_frmPrintView == null)
+                blnAnyChanges = false;
+                foreach (Character objCharacter in _aobjCharacters)
                 {
-                    _frmPrintView = new frmViewer();
-                    _frmPrintView.SetSelectedSheet("Game Master Summary");
-                    _frmPrintView.SetCharacters(_lstCharacters?.ToArray());
-                    _frmPrintView.Show();
+                    if (!Program.MainForm.OpenCharacters.Contains(objCharacter) ||
+                        Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == objCharacter) ||
+                        Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objCharacter)))
+                        continue;
+                    blnAnyChanges = true;
+                    Program.MainForm.OpenCharacters.Remove(objCharacter);
+                    objCharacter.Dispose();
                 }
-                else
-                {
-                    _frmPrintView.Activate();
-                }
-                _frmPrintView.RefreshCharacters();
             }
         }
         #endregion

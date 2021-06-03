@@ -1449,6 +1449,12 @@ namespace Chummer
                 //Timekeeper.Start("loading");
                 bool blnLoadAutosave = false;
                 string strAutosavesPath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
+                if (string.IsNullOrEmpty(strNewName) && !blnClearFileName)
+                {
+                    objCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFileName);
+                    if (objCharacter != null)
+                        return objCharacter;
+                }
                 objCharacter = new Character
                 {
                     FileName = strFileName

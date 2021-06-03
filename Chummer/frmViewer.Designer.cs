@@ -18,8 +18,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                _workerRefresher?.Dispose();
-                _workerOutputGenerator?.Dispose();
             }
             base.Dispose(disposing);
         }
