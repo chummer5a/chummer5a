@@ -72,6 +72,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
         private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnBlackMarketDiscount;
@@ -210,6 +211,10 @@ namespace Chummer.Backend.Equipment
             objXmlVehicle.TryGetStringFieldQuickly("avail", ref _strAvail);
             if (!objXmlVehicle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlVehicle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlVehicle.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -610,6 +615,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
@@ -952,6 +958,11 @@ namespace Chummer.Backend.Equipment
                 _objLocation?.Children.Add(this);
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
@@ -1021,20 +1032,24 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("physicalcm", PhysicalCM.ToString(objCulture));
-            objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("physicalcmfilled", PhysicalCMFilled.ToString(objCulture));
             objWriter.WriteElementString("vehiclename", CustomName);
             objWriter.WriteElementString("maneuver", Maneuver.ToString(objCulture));
             objWriter.WriteElementString("location", Location?.DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
+
             objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
             objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
             objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
             objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
             objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
             objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("matrixcm", MatrixCM.ToString(objCulture));
+            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+
             objWriter.WriteStartElement("mods");
             foreach (VehicleMod objMod in Mods)
                 objMod.Print(objWriter, objCulture, strLanguageToPrint);
@@ -1262,11 +1277,9 @@ namespace Chummer.Backend.Equipment
             get
             {
                 //TODO: Move to user-accessible options
-                if (IsDrone && Category == "Drones: Anthro")
-                    //Rigger 5: p145
-                    return 8;
                 if (IsDrone)
-                    return 6;
+                    //Rigger 5: p145
+                    return Category == "Drones: Anthro" ? 8 : 6;
                 return 12;
             }
         }
@@ -1539,6 +1552,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -3289,8 +3311,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !string.IsNullOrEmpty(ParentID)
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText

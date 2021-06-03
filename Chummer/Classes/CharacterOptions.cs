@@ -158,6 +158,7 @@ namespace Chummer
         private int _intKarmaNewAIProgram = 5;
         private int _intKarmaNewAIAdvancedProgram = 8;
         private int _intKarmaMysticAdeptPowerPoint = 5;
+        private int _intKarmaSpiritFettering = 3;
 
         // Karma Foci variables.
         // Enchanting
@@ -677,6 +678,8 @@ namespace Chummer
                     objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmaweaponfocus />
                     objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspiritfettering />
+                    objWriter.WriteElementString("karmaspiritfettering", _intKarmaSpiritFettering.ToString(GlobalOptions.InvariantCultureInfo));
                     // </karmacost>
                     objWriter.WriteEndElement();
 
@@ -1029,6 +1032,7 @@ namespace Chummer
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
 
                 // Attempt to load the Karma costs for Foci.
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
@@ -3674,6 +3678,21 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Karma cost for fetting a spirit (gets multiplied by Force).
+        /// </summary>
+        public int KarmaSpiritFettering
+        {
+            get => _intKarmaSpiritFettering;
+            set
+            {
+                if (_intKarmaSpiritFettering != value)
+                {
+                    _intKarmaSpiritFettering = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Default Build

@@ -661,10 +661,7 @@ namespace Chummer
                             case "attributetotal":
                                 // Check if the character's Attributes add up to a particular total.
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
-                                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                                {
-                                    strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString(GlobalOptions.InvariantCultureInfo));
-                                }
+                                strAttributes = _objCharacter.AttributeSection.ProcessAttributesInXPath(strAttributes);
 
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
                                 if ((blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
@@ -913,11 +910,7 @@ namespace Chummer
                             case "attributetotal":
                                 // Check if the character's Attributes add up to a particular total.
                                 string strAttributes = objXmlRequired["attributes"].InnerText;
-                                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                                {
-                                    strAttributes = strAttributes.CheapReplace(strAttribute, () => _objCharacter.GetAttribute(strAttribute).Value.ToString(GlobalOptions.InvariantCultureInfo));
-                                }
-
+                                strAttributes = _objCharacter.AttributeSection.ProcessAttributesInXPath(strAttributes);
                                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAttributes, out bool blnIsSuccess);
                                 if ((blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= Convert.ToInt32(objXmlRequired["val"].InnerText, GlobalOptions.InvariantCultureInfo))
                                     blnFound = true;

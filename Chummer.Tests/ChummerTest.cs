@@ -17,10 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Drawing;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -63,10 +63,30 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("UI")]
-        public void Test00_BasicStartup()
+        [TestMethod]
+        public void Test00_ColorTest()
         {
-            Debug.WriteLine("Unit test initialized for: Test00_BasicStartup()");
+            Debug.WriteLine("Unit test initialized for: Test00_ColorTest()");
+            Color objColorLightGrayInDarkMode = ColorManager.GenerateDarkModeColor(Color.LightGray);
+            float fltLightGrayLightness = Color.LightGray.GetBrightness();
+            float fltLightGrayDarkModeLightness = objColorLightGrayInDarkMode.GetBrightness();
+            Assert.IsTrue(fltLightGrayDarkModeLightness < fltLightGrayLightness);
+            Color objColorRedInvert = ColorManager.GenerateInverseDarkModeColor(Color.Red);
+            Color objColorRedInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvert);
+            float fltRedHue = Color.Red.GetHue();
+            float fltRedInvertDarkHue = objColorRedInvertDark.GetHue();
+            Assert.IsTrue(Math.Abs(fltRedInvertDarkHue - fltRedHue) < 0.1f / 360.0f); // Only care if we're off by more than 0.1 degrees
+            Color objColorRedInvertDarkInvert = ColorManager.GenerateInverseDarkModeColor(objColorRedInvertDark);
+            Color objColorRedInvertDarkInvertDark = ColorManager.GenerateDarkModeColor(objColorRedInvertDarkInvert);
+            Assert.IsTrue(objColorRedInvertDark == objColorRedInvertDarkInvertDark);
+        }
+
+
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
+        [TestMethod]
+        public void Test01_BasicStartup()
+        {
+            Debug.WriteLine("Unit test initialized for: Test01_BasicStartup()");
             frmChummerMain frmOldMainForm = Program.MainForm;
             frmChummerMain frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
@@ -95,10 +115,10 @@ namespace Chummer.Tests
 
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("I/O")]
-        public void Test01_LoadThenSave()
+        [TestMethod]
+        public void Test02_LoadThenSave()
         {
-            Debug.WriteLine("Unit test initialized for: Test01_LoadThenSave()");
+            Debug.WriteLine("Unit test initialized for: Test02_LoadThenSave()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
@@ -114,10 +134,10 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("I/O")]
-        public void Test02_LoadThenSaveIsDeterministic()
+        [TestMethod]
+        public void Test03_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Test02_LoadThenSaveIsDeterministic()");
+            Debug.WriteLine("Unit test initialized for: Test03_LoadThenSaveIsDeterministic()");
             foreach (FileInfo objBaseFileInfo in TestFiles)
             {
                 // First Load-Save cycle
@@ -172,10 +192,10 @@ namespace Chummer.Tests
             }
         }
 
-        [TestMethod, TestCategory("I/O")]
-        public void Test03_LoadThenPrint()
+        [TestMethod]
+        public void Test04_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Test03_LoadThenPrint()");
+            Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 using (Character objCharacter = LoadCharacter(objFileInfo))
@@ -196,10 +216,10 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod, TestCategory("UI")]
-        public void Test04_LoadCharacterForms()
+        [TestMethod]
+        public void Test05_LoadCharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_LoadCharacterForms()");
+            Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
             frmChummerMain frmOldMainForm = Program.MainForm;
             frmChummerMain frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren

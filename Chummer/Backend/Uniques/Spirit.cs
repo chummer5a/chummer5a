@@ -60,6 +60,7 @@ namespace Chummer
         private string _strFileName = string.Empty;
         private string _strRelativeName = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Character _objLinkedCharacter;
 
         private readonly List<Image> _lstMugshots = new List<Image>(1);
@@ -111,6 +112,7 @@ namespace Chummer
             objWriter.WriteElementString("file", _strFileName);
             objWriter.WriteElementString("relative", _strRelativeName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             SaveMugshots(objWriter);
             objWriter.WriteEndElement();
 
@@ -143,6 +145,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("file", ref _strFileName);
             objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             RefreshLinkedCharacter(false);
 
@@ -602,6 +608,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         private bool _blnFettered;
         private int _intCachedAllowFettering = int.MinValue;
 
@@ -646,7 +661,7 @@ namespace Chummer
                     if (CharacterObject.Created)
                     {
                         // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
-                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * 3 : Force;
+                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * CharacterObject.Options.KarmaSpiritFettering : Force;
                         if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , Name
                             , fetteringCost.ToString(GlobalOptions.CultureInfo))))

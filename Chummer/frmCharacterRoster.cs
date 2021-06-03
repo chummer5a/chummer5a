@@ -866,34 +866,37 @@ namespace Chummer
             // 
             // tsToggleFav
             //
-            ToolStripMenuItem tsToggleFav = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem
             {
                 Image = Properties.Resources.asterisk_orange,
                 Name = "tsToggleFav",
                 Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_ToggleFavorite"
+                Tag = "Menu_ToggleFavorite",
+                ImageDpi192 = Properties.Resources.asterisk_orange1
             };
             tsToggleFav.Click += tsToggleFav_Click;
             // 
             // tsSort
             //
-            ToolStripMenuItem tsSort = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem
             {
                 Image = Properties.Resources.page_refresh,
                 Name = "tsSort",
                 Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Sort"
+                Tag = "Menu_Sort",
+                ImageDpi192 = Properties.Resources.page_refresh1
             };
             tsSort.Click += tsSort_Click;
             // 
             // tsDelete
             //
-            ToolStripMenuItem tsDelete = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
             {
                 Image = Properties.Resources.delete,
                 Name = "tsDelete",
                 Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Delete"
+                Tag = "Menu_Delete",
+                ImageDpi192 = Properties.Resources.delete1
             };
             tsDelete.Click += tsDelete_Click;
             // 
@@ -920,12 +923,13 @@ namespace Chummer
                 // 
                 // tsCloseOpenCharacter
                 //
-                ToolStripMenuItem tsCloseOpenCharacter = new ToolStripMenuItem
+                DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem
                 {
                     Image = Properties.Resources.door_out,
                     Name = "tsCloseOpenCharacter",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Close"
+                    Tag = "Menu_Close",
+                    ImageDpi192 = Properties.Resources.door_out1
                 };
                 tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
                 cmsRoster.Items.Add(tsCloseOpenCharacter);

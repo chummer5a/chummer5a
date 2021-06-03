@@ -1157,7 +1157,7 @@ namespace Chummer
             foreach (XmlNode xmlSkill in charNode.SelectNodes("skills/skill"))
             {
                 string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
-
+                bool bImprovementAdded = false;
                 if (!string.IsNullOrEmpty(strRating))
                 {
                     ImprovementManager.CreateImprovement(this, xmlSkill.InnerText,
@@ -1165,16 +1165,28 @@ namespace Chummer
                         string.Empty,
                         CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
                     ImprovementManager.Commit(this);
+                    bImprovementAdded = true;
                 }
 
                 string strSkill = xmlSkill.InnerText;
                 Skill objSkill = SkillsSection.GetActiveSkill(strSkill);
-                if (objSkill == null) continue;
-                string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
-                ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype,
-                    string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization spec = new SkillSpecialization(this, strSpec, true);
-                objSkill.Specializations.Add(spec);
+                if (objSkill == null)
+                {
+                    if (!bImprovementAdded)
+                        continue;
+
+                    //This skill does not yet exist but the datafile asks to improve it.
+                    //We need to add it so it is not only improved but also shown on the skills tab.
+                    SkillsSection.AddSkills(SkillsSection.FilterOption.Name, strSkill);
+                    objSkill = SkillsSection.GetActiveSkill(strSkill);
+                }
+                if (objSkill != null) //More or less a safeguard only. Should not be empty at that point any longer.
+                {
+                    string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
+                    ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                    SkillSpecialization spec = new SkillSpecialization(this, strSpec, true);
+                    objSkill.Specializations.Add(spec);
+                }
             }
 
             //Set the Skill Group Ratings for the Critter.
@@ -1585,7 +1597,7 @@ namespace Chummer
                     objWriter.WriteElementString("name", _strName);
                     SaveMugshots(objWriter);
 
-                    // <sex />
+                    // <gender />
                     objWriter.WriteElementString("gender", _strGender);
                     // <age />
                     objWriter.WriteElementString("age", _strAge);

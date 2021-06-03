@@ -1102,6 +1102,14 @@
       <key>String_Legs</key>
       <text>Legs</text>
     </string>
+    <string>
+      <key>String_NaturalAttribute</key>
+      <text>Natural {0}</text>
+    </string>
+    <string>
+      <key>String_BaseAttribute</key>
+      <text>Base {0}</text>
+    </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
     <string>
@@ -6751,6 +6759,14 @@
       <text>Only for Glitching:</text>
     </string>
     <string>
+      <key>String_NoDiceLeft_Title</key>
+      <text>No dice to re-roll</text>
+    </string>
+    <string>
+      <key>String_NoDiceLeft_Text</key>
+      <text>There is nothing left that can be re-rolled</text>
+    </string>
+    <string>
       <key>Label_DiceRoller_Result</key>
       <text>Result:</text>
     </string>
@@ -6931,6 +6947,10 @@
     <string>
       <key>Title_Notes</key>
       <text>Notes</text>
+    </string>
+    <string>
+      <key>Button_ChooseCustomColor</key>
+      <text>Choose custom color for this note</text>
     </string>
     <!-- End Region-->
     <!-- Region Options Window -->
@@ -7257,6 +7277,10 @@
     <string>
       <key>Label_Options_Spirit</key>
       <text>Spirit</text>
+    </string>
+    <string>
+      <key>Label_Options_SpiritFettering</key>
+      <text>Spirit Fettering</text>
     </string>
     <string>
       <key>Label_Options_MartialArtTechnique</key>
@@ -8970,6 +8994,10 @@
     <string>
       <key>Button_Up_To_Date</key>
       <text>Already Up-to-Date</text>
+    </string>
+    <string>
+      <key>Button_Reconnect</key>
+      <text>Reconnect</text>
     </string>
     <string>
       <key>Button_Install_Restart</key>

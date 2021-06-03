@@ -36,6 +36,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Net;
 using System.Text;
+using System.Threading;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
 
@@ -49,7 +50,8 @@ namespace Chummer
         private frmUpdate _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
-        private readonly BackgroundWorker _workerVersionUpdateChecker = new BackgroundWorker();
+        private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
+        private Task _tskVersionUpdate;
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
@@ -160,48 +162,16 @@ namespace Chummer
                     // If Automatic Updates are enabled, check for updates immediately.
 
 #if !DEBUG
-                    _workerVersionUpdateChecker.WorkerReportsProgress = false;
-                    _workerVersionUpdateChecker.WorkerSupportsCancellation = true;
-                    _workerVersionUpdateChecker.DoWork += DoCacheGitVersion;
-                    _workerVersionUpdateChecker.RunWorkerCompleted += CheckForUpdate;
                     Application.Idle += IdleUpdateCheck;
-                    _workerVersionUpdateChecker.RunWorkerAsync();
+                    CheckForUpdate();
 #endif
 
                     GlobalOptions.MRUChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMRUToolstripMenu(senderInner, eInner));
 
-                    try
+                    // Delete the old executable if it exists (created by the update process).
+                    foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
                     {
-                        // Delete the old executable if it exists (created by the update process).
-                        string[] oldfiles =
-                            Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories);
-                        foreach (string strLoopOldFilePath in oldfiles)
-                        {
-                            try
-                            {
-                                if (File.Exists(strLoopOldFilePath))
-                                    File.Delete(strLoopOldFilePath);
-                            }
-                            catch (UnauthorizedAccessException ex)
-                            {
-                                //we will just delete it the next time
-                                //its probably the "used by another process"
-                                Log.Trace(ex,
-                                    "UnauthorizedAccessException can be ignored - probably used by another process.");
-                            }
-                        }
-                    }
-                    catch (UnauthorizedAccessException ex)
-                    {
-                        Log.Trace(ex,
-                            "UnauthorizedAccessException in " + Utils.GetStartupPath +
-                            "can be ignored - probably a weird path like Recycle.Bin or something...");
-                    }
-                    catch (IOException ex)
-                    {
-                        Log.Trace(ex,
-                            "IOException in " + Utils.GetStartupPath +
-                            "can be ignored - probably another instance blocking it...");
+                        Utils.SafeDeleteFile(strLoopOldFilePath);
                     }
 
                     // Populate the MRU list.
@@ -263,41 +233,52 @@ namespace Chummer
                                 {
                                     foreach (string strArg in strArgs)
                                     {
-                                        if (strArg == "/test")
+                                        if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath)))
+                                            continue;
+                                        switch (strArg)
                                         {
-                                            blnShowTest = true;
-                                        }
-                                        else if ((strArg == "/help")
-                                                 || (strArg == "?")
-                                                 || (strArg == "/?"))
-                                        {
-                                            string msg = "Commandline parameters are either " + Environment.NewLine;
-                                            msg += "\t/test" + Environment.NewLine;
-                                            msg += "\t/help" + Environment.NewLine;
-                                            msg += "\t(filename to open)" + Environment.NewLine;
-                                            msg +=
-                                                "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
-                                                Environment.NewLine;
-                                            Console.WriteLine(msg);
-                                        }
-                                        else if (strArg.Contains("/plugin"))
-                                        {
-                                            Log.Info(
-                                                "Encountered command line argument, that should already have been handled in one of the plugins: " +
-                                                strArg);
-                                        }
-                                        else if (!strArg.StartsWith('/'))
-                                        {
-                                            if (!File.Exists(strArg))
+                                            case "/test":
+                                                blnShowTest = true;
+                                                break;
+                                            case "/help":
+                                            case "?":
+                                            case "/?":
                                             {
-                                                throw new ArgumentException(
-                                                    "Chummer started with unknown command line arguments: " +
-                                                    strArgs.Aggregate((j, k) => j + " " + k));
+                                                string msg = "Commandline parameters are either " + Environment.NewLine;
+                                                msg += "\t/test" + Environment.NewLine;
+                                                msg += "\t/help" + Environment.NewLine;
+                                                msg += "\t(filename to open)" + Environment.NewLine;
+                                                msg +=
+                                                    "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
+                                                    Environment.NewLine;
+                                                Console.WriteLine(msg);
+                                                break;
                                             }
+                                            default:
+                                            {
+                                                if (strArg.Contains("/plugin"))
+                                                {
+                                                    Log.Info(
+                                                        "Encountered command line argument, that should already have been handled in one of the plugins: " +
+                                                        strArg);
+                                                }
+                                                else if (!strArg.StartsWith('/'))
+                                                {
+                                                    if (!File.Exists(strArg))
+                                                    {
+                                                        throw new ArgumentException(
+                                                            "Chummer started with unknown command line arguments: " +
+                                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                                    }
+                                                    if (Path.GetExtension(strArg) != ".chum5")
+                                                        Utils.BreakIfDebug();
+                                                    if (setFilesToLoad.Contains(strArg))
+                                                        continue;
+                                                    setFilesToLoad.Add(strArg);
+                                                }
 
-                                            if (setFilesToLoad.Contains(strArg))
-                                                continue;
-                                            setFilesToLoad.Add(strArg);
+                                                break;
+                                            }
                                         }
                                     }
                                     
@@ -547,7 +528,7 @@ namespace Chummer
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 
-        private void DoCacheGitVersion(object sender, DoWorkEventArgs e)
+        private async Task DoCacheGitVersion()
         {
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             HttpWebRequest request;
@@ -568,11 +549,8 @@ namespace Chummer
                 return;
             }
 
-            if(_workerVersionUpdateChecker.CancellationPending)
-            {
-                e.Cancel = true;
+            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                 return;
-            }
 
             request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
             request.Accept = "application/json";
@@ -580,7 +558,7 @@ namespace Chummer
             try
             {
                 // Get the response.
-                using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                using (HttpWebResponse response = await request.GetResponseAsync() as HttpWebResponse)
                 {
                     if (response == null)
                     {
@@ -588,11 +566,8 @@ namespace Chummer
                         return;
                     }
 
-                    if (_workerVersionUpdateChecker.CancellationPending)
-                    {
-                        e.Cancel = true;
+                    if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                         return;
-                    }
 
                     // Get the stream containing content returned by the server.
                     using (Stream dataStream = response.GetResponseStream())
@@ -603,37 +578,22 @@ namespace Chummer
                             return;
                         }
 
-                        if (_workerVersionUpdateChecker.CancellationPending)
-                        {
-                            e.Cancel = true;
+                        if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                             return;
-                        }
 
                         // Open the stream using a StreamReader for easy access.
                         using (StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true))
                         {
-                            if (_workerVersionUpdateChecker.CancellationPending)
-                            {
-                                e.Cancel = true;
+                            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                 return;
-                            }
 
                             // Read the content.
-                            string responseFromServer = reader.ReadToEnd();
-
-                            if (_workerVersionUpdateChecker.CancellationPending)
-                            {
-                                e.Cancel = true;
-                                return;
-                            }
+                            string responseFromServer = await reader.ReadToEndAsync();
 
                             string line = responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(x => x.Contains("tag_name"));
 
-                            if (_workerVersionUpdateChecker.CancellationPending)
-                            {
-                                e.Cancel = true;
+                            if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                 return;
-                            }
 
                             Version verLatestVersion = null;
                             if (!string.IsNullOrEmpty(line))
@@ -650,20 +610,14 @@ namespace Chummer
                                     strVersion += ".0";
                                 }
 
-                                if (_workerVersionUpdateChecker.CancellationPending)
-                                {
-                                    e.Cancel = true;
+                                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                     return;
-                                }
 
                                 if (!Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion))
                                     verLatestVersion = null;
 
-                                if (_workerVersionUpdateChecker.CancellationPending)
-                                {
-                                    e.Cancel = true;
+                                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                     return;
-                                }
                             }
 
                             Utils.CachedGitVersion = verLatestVersion;
@@ -678,35 +632,45 @@ namespace Chummer
             }
         }
 
-        private void CheckForUpdate(object sender, RunWorkerCompletedEventArgs e)
+        private void CheckForUpdate()
         {
-            if(!e.Cancelled && Utils.GitUpdateAvailable > 0)
+            _objVersionUpdaterCancellationTokenSource = new CancellationTokenSource();
+            _tskVersionUpdate = Task.Run(async() =>
             {
-                if(GlobalOptions.AutomaticUpdate)
+                await DoCacheGitVersion();
+                if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested ||
+                    Utils.GitUpdateAvailable <= 0)
+                    return;
+                await this.DoThreadSafeAsync(() =>
                 {
-                    if(_frmUpdate == null)
+                    if (GlobalOptions.AutomaticUpdate)
                     {
-                        _frmUpdate = new frmUpdate();
-                        _frmUpdate.FormClosed += ResetFrmUpdate;
-                        _frmUpdate.SilentMode = true;
+                        if (_frmUpdate == null)
+                        {
+                            _frmUpdate = new frmUpdate();
+                            _frmUpdate.FormClosed += ResetFrmUpdate;
+                            _frmUpdate.SilentMode = true;
+                        }
                     }
-                }
-                string strSpace = LanguageManager.GetString("String_Space");
-                Text = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version")
-                       + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
-                       + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
-            }
+
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    Text = Application.ProductName + strSpace + '-' + strSpace +
+                           LanguageManager.GetString("String_Version")
+                           + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
+                           + string.Format(GlobalOptions.CultureInfo,
+                               LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
+                });
+            }, _objVersionUpdaterCancellationTokenSource.Token);
         }
 
         private readonly Stopwatch _idleUpdateCheckStopWatch = Stopwatch.StartNew();
         private void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
-            if(_idleUpdateCheckStopWatch.ElapsedMilliseconds >= 3600000 && !_workerVersionUpdateChecker.IsBusy)
-            {
-                _idleUpdateCheckStopWatch.Restart();
-                _workerVersionUpdateChecker.RunWorkerAsync();
-            }
+            if (_idleUpdateCheckStopWatch.Elapsed < TimeSpan.FromHours(1) || _tskVersionUpdate?.IsCompleted == false)
+                return;
+            _idleUpdateCheckStopWatch.Restart();
+            CheckForUpdate();
         }
 
         /*
@@ -1086,8 +1050,7 @@ namespace Chummer
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
-            if (_workerVersionUpdateChecker.IsBusy)
-                _workerVersionUpdateChecker.CancelAsync();
+            _objVersionUpdaterCancellationTokenSource?.Cancel();
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {
@@ -1710,7 +1673,9 @@ namespace Chummer
                 }
 
                 // ReSharper disable once ConditionIsAlwaysTrueOrFalse
-                if (i2 <= 9 && i2 >= 0)
+                if (i2 <= 9
+                    // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                    && i2 >= 0)
                 {
                     string strNumAsString = (i2 + 1).ToString(GlobalOptions.CultureInfo);
                     objItem.Text = strNumAsString.Insert(strNumAsString.Length - 1, "&") + strSpace + strFile;
@@ -1756,7 +1721,7 @@ namespace Chummer
 
         private void mnuRestart_Click(object sender, EventArgs e)
         {
-            Utils.RestartApplication(GlobalOptions.Language, "Message_Options_Restart");
+            Utils.RestartApplication(string.Empty, "Message_Options_Restart");
         }
 #endregion
 

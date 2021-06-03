@@ -912,7 +912,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strCategory))
                 strCategory = cboCategory.SelectedValue?.ToString();
-            StringBuilder sbdFilter = new StringBuilder("(" + _objCharacter.Options.BookXPath() + ')');
+            StringBuilder sbdFilter = new StringBuilder(_objCharacter.Options.BookXPath());
             if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else if (_setAllowedCategories.Count > 0)
@@ -1010,6 +1010,7 @@ namespace Chummer
                 if (!blnDoUIUpdate && blnTerminateAfterFirst)
                 {
                     lstGears.Add(new ListItem(string.Empty, string.Empty));
+                    break;
                 }
 
                 decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;

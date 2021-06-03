@@ -49,7 +49,7 @@
     <tradition>
       <id>19320625-bc1a-492f-8904-da6a847e5700</id>
       <name>Hermetic</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SR5</source>
       <page>279</page>
       <spirits>
@@ -63,7 +63,7 @@
     <tradition>
       <id>8d185e0e-5f49-4992-babd-d1ac9c848f68</id>
       <name>Shamanic</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SR5</source>
       <page>279</page>
       <spirits>
@@ -77,7 +77,7 @@
     <tradition>
       <id>4fba452f-a240-4530-82b6-5ffd4bb83f28</id>
       <name>Aztec</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>41</page>
       <spirits>
@@ -91,7 +91,7 @@
     <tradition>
       <id>66ceefed-2cb1-4027-96ca-756ab4eed7ad</id>
       <name>Black Magic</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>41</page>
       <spirits>
@@ -105,7 +105,7 @@
     <tradition>
       <id>09843ed9-6fd1-4c43-9e9f-f6d66493ebdc</id>
       <name>Black Magic [Alt]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>61</page>
       <bonus>
@@ -125,7 +125,7 @@
     <tradition>
       <id>a283220f-2197-4526-b15a-331b9185b326</id>
       <name>Buddhism</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SG</source>
       <page>43</page>
       <spirits>
@@ -139,7 +139,7 @@
     <tradition>
       <id>20b8e39f-a956-49bd-b417-6e1bd4a14604</id>
       <name>Chaos Magic</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SG</source>
       <page>44</page>
       <spirits>
@@ -153,7 +153,7 @@
     <tradition>
       <id>5d98ea69-29b1-4fb4-b9f3-56396d1dce16</id>
       <name>Christian Theurgy</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>44</page>
       <spirits>
@@ -167,7 +167,7 @@
     <tradition>
       <id>fb6f9683-47bb-4b04-9d15-4b59a003bf69</id>
       <name>Druid</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SG</source>
       <page>45</page>
       <spirits>
@@ -181,7 +181,7 @@
     <tradition>
       <id>2c924aa1-2298-4b02-b28b-946d0769dbd3</id>
       <name>Hinduism</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SG</source>
       <page>46</page>
       <spirits>
@@ -195,7 +195,7 @@
     <tradition>
       <id>9acc0a3e-3209-4274-9c98-4cbc42c456a7</id>
       <name>Islam</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SG</source>
       <page>46</page>
       <spirits>
@@ -209,7 +209,7 @@
     <tradition>
       <id>7f6073fd-e7f3-41f5-a40f-2a5b1cde382e</id>
       <name>Path of the Wheel</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>47</page>
       <spirits>
@@ -223,7 +223,7 @@
     <tradition>
       <id>c3604051-9f2b-4cc3-9525-f3029c611926</id>
       <name>Qabbalism</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SG</source>
       <page>48</page>
       <spiritform>Possession</spiritform>
@@ -238,7 +238,7 @@
     <tradition>
       <id>93604cb7-2e12-47be-9c2d-4b227439f07b</id>
       <name>Quimbanda</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SFME</source>
       <page>13</page>
       <spirits>
@@ -252,7 +252,7 @@
     <tradition>
       <id>9abbebc1-48a3-4dde-960a-af565b163a3d</id>
       <name>Shinto</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>48</page>
       <spirits>
@@ -266,7 +266,7 @@
     <tradition>
       <id>e548b126-5df3-4da5-a603-c0b6b252e982</id>
       <name>Sioux</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SG</source>
       <page>49</page>
       <spirits>
@@ -314,7 +314,7 @@
     <tradition>
       <id>35ecfae9-0c2d-4084-a899-e91c230e209d</id>
       <name>Vodou</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>50</page>
       <spiritform>Possession</spiritform>
@@ -329,7 +329,7 @@
     <tradition>
       <id>24601762-ef67-44d8-b974-03f626db848a</id>
       <name>Wicca, Gardnerian</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SG</source>
       <page>50</page>
       <spirits>
@@ -343,7 +343,7 @@
     <tradition>
       <id>895b2dd2-f401-477e-9cb5-a5620598582e</id>
       <name>Wicca, Goddess</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SG</source>
       <page>50</page>
       <spirits>
@@ -357,7 +357,7 @@
     <tradition>
       <id>0cd0412c-cba4-4417-bc8f-f785fa5b821d</id>
       <name>Wuxing</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SG</source>
       <page>51</page>
       <spirits>
@@ -371,7 +371,7 @@
     <tradition>
       <id>9f4bae13-56fd-43ac-a6aa-8e2384018065</id>
       <name>Zoroastrianism</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SG</source>
       <page>52</page>
       <spirits>
@@ -385,7 +385,7 @@
     <tradition>
       <id>0d13bad3-9fa2-45fb-879c-068916944e1b</id>
       <name>Insect Shaman</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SG</source>
       <page>94</page>
       <spiritform>Inhabitation</spiritform>
@@ -400,7 +400,7 @@
     <tradition>
       <id>b8b6ba39-5f5e-4581-9145-6409bd59776c</id>
       <name>Aboriginal</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SSP</source>
       <page>3</page>
       <spirits>
@@ -414,7 +414,7 @@
     <tradition>
       <id>30109563-d9cb-4ced-b06b-6c3d0c4f5a34</id>
       <name>Egyptian</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SSP</source>
       <page>3</page>
       <spiritform>Possession</spiritform>
@@ -429,7 +429,7 @@
     <tradition>
       <id>43bc28ad-8818-4062-9b55-317f45d1e04e</id>
       <name>Norse</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SSP</source>
       <page>4</page>
       <spirits>
@@ -443,7 +443,7 @@
     <tradition>
       <id>cc9f9b43-ef41-4581-8f9c-e1000e5a1578</id>
       <name>Psionic</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SSP</source>
       <page>5</page>
       <spiritform>Possession</spiritform>
@@ -458,7 +458,7 @@
     <tradition>
       <id>acbf5a08-cd21-410d-8d04-4e12cca8a927</id>
       <name>Obeah</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>HT</source>
       <page>130</page>
       <spirits>
@@ -472,7 +472,7 @@
     <tradition>
       <id>81789f32-779d-488e-ac76-d1005b5a2d2a</id>
       <name>Santeria</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>HT</source>
       <page>130</page>
       <spirits>
@@ -488,7 +488,7 @@
     <tradition>
       <id>8b7a391e-8d4c-40e8-93a8-9dd031cce0f5</id>
       <name>Buddhism [Traditionalist]</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>FA</source>
       <page>62</page>
       <bonus>
@@ -510,7 +510,7 @@
     <tradition>
       <id>dd97bcc9-a731-41fb-a558-9175bc56b587</id>
       <name>Christian Theurgy [Traditional]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>64</page>
       <bonus>
@@ -529,7 +529,7 @@
     <tradition>
       <id>ca673acd-961e-4491-8a8d-ddf0c577441b</id>
       <name>Christian Theurgy [Vigila Evangelica]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>64</page>
       <bonus>
@@ -550,7 +550,7 @@
     <tradition>
       <id>3a7bf066-7b13-4a92-ae31-37a58f84bc8e</id>
       <name>Christian Theurgy [Westphalian]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>64</page>
       <bonus>
@@ -578,7 +578,7 @@
     <tradition>
       <id>54944188-d58b-4a45-859c-d62be9f966c2</id>
       <name>Cosmic</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>FA</source>
       <page>75</page>
       <spirits>
@@ -592,7 +592,7 @@
     <tradition>
       <id>9394d173-eee7-4e5a-b520-edfdfac3cf8b</id>
       <name>Draconic</name>
-      <drain>WIL + MAG</drain>
+      <drain>{WIL} + {MAG}</drain>
       <source>FA</source>
       <page>76</page>
       <spirits>
@@ -606,7 +606,7 @@
     <tradition>
       <id>a0c2d67d-158a-4fdf-9c45-7f420fbdce8e</id>
       <name>Druid [Alt]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>65</page>
       <spirits>
@@ -620,7 +620,7 @@
     <tradition>
       <id>77288f4d-e262-47b6-aad8-2edff23859cb</id>
       <name>Druid [Traditional]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>65</page>
       <bonus>
@@ -641,7 +641,7 @@
     <tradition>
       <id>4bbe470b-51a7-494b-8ccf-5c638e141049</id>
       <name>Elder God</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <bonus>
         <drainresist>-2</drainresist>
         <spellcategory>
@@ -662,7 +662,7 @@
     <tradition>
       <id>61819d3f-2ca6-4e1e-9d66-5d94c1560733</id>
       <name>Green Magic</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>80</page>
       <spirits>
@@ -676,7 +676,7 @@
     <tradition>
       <id>ad6f8984-f0c2-41e9-a2d1-73a719d21a06</id>
       <name>Islam [Islamic Alchemist]</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>FA</source>
       <page>69</page>
       <bonus>
@@ -700,7 +700,7 @@
     <tradition>
       <id>328d6c96-9e10-424f-bbed-b6e1d1035bd2</id>
       <name>Islam [Licit Qur'anic]</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>FA</source>
       <page>69</page>
       <bonus>
@@ -720,7 +720,7 @@
     <tradition>
       <id>b8b93cfb-5bdf-47c6-b773-45c59ef7bd34</id>
       <name>Missionist</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <bonus>
         <spellcategory>
           <name>Health</name>
@@ -744,7 +744,7 @@
     <tradition>
       <id>68a35424-6de8-4922-95ec-eb289838acb2</id>
       <name>Necro Magic</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>FA</source>
       <page>82</page>
       <spirits>
@@ -758,7 +758,7 @@
     <tradition>
       <id>9c211dbe-6a37-4872-80fa-37d845d76668</id>
       <name>Norse [Alt]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>68</page>
       <spirits>
@@ -772,7 +772,7 @@
     <tradition>
       <id>2ea02939-030b-407b-b569-c2f39f301999</id>
       <name>Norse [Godi/Runemaster]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>68</page>
       <spirits>
@@ -786,7 +786,7 @@
     <tradition>
       <id>fa341243-5134-42ad-9259-454bf18a26fd</id>
       <name>Norse [Cunning Woman]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>68</page>
       <spirits>
@@ -800,7 +800,7 @@
     <tradition>
       <id>52668f12-2895-48e1-8b84-2382ef0fcee0</id>
       <name>Norse [Berserker]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>68</page>
       <bonus>
@@ -823,7 +823,7 @@
     <tradition>
       <id>990cdff5-2fd1-48aa-b085-a7d0ff183d00</id>
       <name>Norse [Seidman]</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>FA</source>
       <page>68</page>
       <bonus>
@@ -843,7 +843,7 @@
     <tradition>
       <id>f87723cf-ed66-4372-8064-365151dd1089</id>
       <name>Olympianism</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>FA</source>
       <page>84</page>
       <spirits>
@@ -857,7 +857,7 @@
     <tradition>
       <id>52348ffc-2d9b-427b-a546-863a9670127e</id>
       <name>Pariah</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <bonus>
         <skilldisable>Summoning</skilldisable>
         <skilldisable>Binding</skilldisable>
@@ -885,7 +885,7 @@
     <tradition>
       <id>eca20088-da31-4b00-bf81-93db882f3575</id>
       <name>Planar Magic</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>FA</source>
       <page>87</page>
       <spirits>
@@ -899,7 +899,7 @@
     <tradition>
       <id>a5c6f673-bd53-4e70-a574-af2f5a1c2e60</id>
       <name>Red Magic</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>FA</source>
       <page>88</page>
       <spirits>
@@ -913,7 +913,7 @@
     <tradition>
       <id>bd5bb80f-d1be-4ec8-b972-af45dc05e0fb</id>
       <name>Romani</name>
-      <drain>WIL + WIL</drain>
+      <drain>{WIL} + {WIL}</drain>
       <source>FA</source>
       <page>90</page>
       <spirits>
@@ -927,7 +927,7 @@
     <tradition>
       <id>2cd90e8a-3674-470e-b95d-eb80c008fc4a</id>
       <name>Tarot</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>FA</source>
       <page>91</page>
       <spirits>
@@ -943,7 +943,7 @@
     <tradition>
       <id>9147b372-b55f-4b4b-8f24-04a4dd05aa1a</id>
       <name>Armanentradition</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SAG</source>
       <page>111</page>
       <spirits>
@@ -957,7 +957,7 @@
     <tradition>
       <id>7d2ee0fa-92ab-4fec-86c9-e2f3964456e7</id>
       <name>Dianism</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SAG</source>
       <page>112</page>
       <spirits>
@@ -971,7 +971,7 @@
     <tradition>
       <id>a8f9687a-0999-4509-87a2-4b122fb2187c</id>
       <name>Frisian Magic</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SAG</source>
       <page>113</page>
       <spirits>
@@ -985,7 +985,7 @@
     <tradition>
       <id>27109795-aead-463c-848c-fa63e5aa11cd</id>
       <name>Magic of Roma and Street Nomads</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SAG</source>
       <page>114</page>
       <spirits>
@@ -999,7 +999,7 @@
     <tradition>
       <id>4eaf37d8-1fa9-4ba3-898a-3130a62fe09e</id>
       <name>Svetoid</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SAG</source>
       <page>115</page>
       <spirits>
@@ -1013,7 +1013,7 @@
     <tradition>
       <id>232c8cfe-b70a-4fb8-9dc3-ecc993cf6203</id>
       <name>Troll Shamanism</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SAG</source>
       <page>115</page>
       <spirits>
@@ -1029,7 +1029,7 @@
     <tradition>
       <id>66826a89-61fb-4f4d-99d9-d96c0956b83f</id>
       <name>Dark Magic</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>DTR</source>
       <page>165</page>
       <spirits>
@@ -1045,7 +1045,7 @@
     <tradition>
       <id>c0405095-5304-4fbd-b955-203a11f88b73</id>
       <name>Dr.-Singer-School</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SHB3</source>
       <page>169</page>
       <spirits>
@@ -1059,7 +1059,7 @@
     <tradition>
       <id>53a919e6-739d-4418-aaff-79e9df17e3b6</id>
       <name>Storm Children</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SHB3</source>
       <page>169</page>
       <spirits>
@@ -1075,7 +1075,7 @@
     <tradition>
       <id>deea732f-5768-4d13-8796-c93d0000c5c6</id>
       <name>Storyteller</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>GE</source>
       <page>68</page>
       <bonus>
@@ -3299,23 +3299,23 @@
   <drainattributes>
     <drainattribute>
       <id>f10d9639-45c8-4c45-87b9-6af0fef73723</id>
-      <name>WIL + CHA</name>
+      <name>{WIL} + {CHA}</name>
     </drainattribute>
     <drainattribute>
       <id>06b8b7da-1301-4963-aba7-4862024559a8</id>
-      <name>WIL + INT</name>
+      <name>{WIL} + {INT}</name>
     </drainattribute>
     <drainattribute>
       <id>aca1fd74-0c25-41d5-b621-434c3892cfb3</id>
-      <name>WIL + LOG</name>
+      <name>{WIL} + {LOG}</name>
     </drainattribute>
     <drainattribute>
       <id>c8adb0ec-7592-4801-b560-94805ef1c13e</id>
-      <name>WIL + MAG</name>
+      <name>{WIL} + {MAG}</name>
     </drainattribute>
     <drainattribute>
       <id>f59248c7-7843-4b68-9a26-b966c32c8cae</id>
-      <name>WIL + WIL</name>
+      <name>{WIL} + {WIL}</name>
     </drainattribute>
   </drainattributes>
 </chummer>

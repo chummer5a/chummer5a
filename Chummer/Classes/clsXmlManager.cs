@@ -24,7 +24,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -91,7 +90,8 @@ namespace Chummer
             public bool IsLoaded { get; set; }
         }
 
-        private static readonly ConcurrentDictionary<int, XmlReference> s_DicXmlDocuments = new ConcurrentDictionary<int, XmlReference>(); // Key is the HashCode for the complete combination of data used
+        private static readonly ConcurrentDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
+            new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is languge + array of all file paths for the complete combination of data used
         private static bool s_blnSetDataDirectoriesLoaded;
         private static readonly object s_SetDataDirectoriesLock = new object();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>();
@@ -198,15 +198,15 @@ namespace Chummer
             
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
-            int intDataConfigHash = lstRelevantCustomDataPaths.Count > 0
-                ? (new[] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
-                : new { strLanguage, strPath }.GetHashCode();
+            List<string> lstKey = new List<string> {strLanguage, strPath};
+            lstKey.AddRange(lstRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             // Look to see if this XmlDocument is already loaded.
             XmlDocument xmlDocumentOfReturn = null;
             if (blnLoadFile
                 || (GlobalOptions.LiveCustomData && strFileName != "improvements.xml")
-                || !s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
+                || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 // The file was not found in the reference list, so it must be loaded.
                 xmlReferenceOfReturn = null;
@@ -215,7 +215,7 @@ namespace Chummer
                 {
                     // ReSharper disable once MethodHasAsyncOverload
                     xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
-                    blnLoadSuccess = s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                    blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                 }
                 else
                     blnLoadSuccess = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile)
@@ -223,7 +223,7 @@ namespace Chummer
                         x =>
                         {
                             xmlDocumentOfReturn = x.Result;
-                            return s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                            return s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                         });
                 if (!blnLoadSuccess)
                 {
@@ -323,28 +323,28 @@ namespace Chummer
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
             bool blnHasCustomData = lstRelevantCustomDataPaths.Count > 0;
-            int intDataConfigHash = blnHasCustomData
-                ? (new [] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
-                : new { strLanguage, strPath }.GetHashCode();
+            List<string> lstKey = new List<string> { strLanguage, strPath };
+            lstKey.AddRange(lstRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             XmlDocument xmlReturn = null;
             // Create a new document that everything will be merged into.
             XmlDocument xmlScratchpad = new XmlDocument { XmlResolver = null };
             // Look to see if this XmlDocument is already loaded.
-            if (!s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
+            if (!s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 int intEmergencyRelease = 0;
                 while (true) // Hacky as heck, but it works for now. We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     xmlReferenceOfReturn = new XmlReference();
-                    if (s_DicXmlDocuments.TryAdd(intDataConfigHash, xmlReferenceOfReturn))
+                    if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
                     {
                         blnLoadFile = true;
                         break;
                     }
                     // It somehow got added in the meantime, so let's fetch it again
-                    if (s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn))
+                    if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
                         break;
                     if (intEmergencyRelease > 1000) // Shouldn't every happen, but just in case it does, emergency exit out of the loading function
                     {
@@ -1849,7 +1849,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new { Name, Path }.GetHashCode();
+            return (Name, Path).GetHashCode();
         }
 
         public bool Equals(CustomDataDirectoryInfo other)

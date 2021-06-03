@@ -75,6 +75,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
@@ -181,6 +182,10 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetStringFieldQuickly("minrating", ref _strMinRating);
             if (!objXmlGear.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlGear.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlGear.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -830,6 +835,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
 
             objWriter.WriteElementString("programlimit", _strProgramLimit);
@@ -1005,6 +1011,10 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -1240,18 +1250,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
             objWriter.WriteElementString("category_english", Category);
-            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("ispersona", (Name == "Living Persona").ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("isammo", (Category == "Ammunition" || !string.IsNullOrEmpty(AmmoForWeaponType)).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("isos", bool.FalseString);
             objWriter.WriteElementString("issin", (Name == "Fake SIN" || Name == "Credstick, Fake (2050)" || Name == "Fake SIN").ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("capacity", Capacity);
             objWriter.WriteElementString("armorcapacity", ArmorCapacity);
             objWriter.WriteElementString("maxrating", MaxRating.ToString(objCulture));
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
-            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
-            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
             objWriter.WriteElementString("qty", Quantity.ToString(Name.StartsWith("Nuyen", StringComparison.Ordinal) ? _objCharacter.Options.NuyenFormat : Category == "Currency" ? "#,0.00" : "#,0.##", objCulture));
             objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("avail_english", TotalAvail(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage));
@@ -1265,6 +1270,20 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("gearname", GearName);
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+
+            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
+            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
+
             objWriter.WriteStartElement("children");
             foreach (Gear objGear in Children)
             {
@@ -1286,15 +1305,6 @@ namespace Chummer.Backend.Equipment
             }
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
-
-            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
-            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
-            objWriter.WriteElementString("dataprocessing", this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
-            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
-            objWriter.WriteElementString("devicerating", this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
-            objWriter.WriteElementString("programlimit", this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
-            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
         #endregion
@@ -1746,6 +1756,15 @@ namespace Chummer.Backend.Equipment
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -3144,8 +3163,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !string.IsNullOrEmpty(ParentID)
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText

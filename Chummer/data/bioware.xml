@@ -572,6 +572,8 @@
       <avail>12R or Gear</avail>
       <cost>20000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -596,6 +598,8 @@
       <avail>12R or Gear</avail>
       <cost>26000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -616,6 +620,8 @@
       <avail>12R or Gear</avail>
       <cost>26000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -641,6 +647,8 @@
       <avail>12F or Gear</avail>
       <cost>24000 + (99 * Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>
@@ -662,6 +670,8 @@
       <avail>12</avail>
       <cost>2000 + (4 * Parent Gear Cost)</cost>
       <allowgear>
+        <gearcategory>Chemicals</gearcategory>
+        <gearcategory>Custom Drug</gearcategory>
         <gearcategory>Drugs</gearcategory>
         <gearcategory>Toxins</gearcategory>
         <gearcategory>Custom</gearcategory>

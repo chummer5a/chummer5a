@@ -47,6 +47,7 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strExtra = string.Empty;
         private int _intGrade;
         private readonly Character _objCharacter;
@@ -79,6 +80,11 @@ namespace Chummer
             objXmlComplexFormNode.TryGetStringFieldQuickly("fv", ref _strFV);
             if (!objXmlComplexFormNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlComplexFormNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlComplexFormNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (objXmlComplexFormNode["bonus"] != null)
             {
                 ImprovementManager.ForcedValue = strExtra;
@@ -118,6 +124,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
             SaveDerived(objWriter);
             objWriter.WriteEndElement();
@@ -152,6 +159,11 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("fv", ref _strFV);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
 
             LoadDerived(objNode);
@@ -510,6 +522,15 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         public Skill Skill => _objCharacter.SkillsSection.GetActiveSkill("Software");
 
         /// <summary>
@@ -621,8 +642,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return Grade != 0
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return Grade != 0
                     ? ColorManager.GrayText

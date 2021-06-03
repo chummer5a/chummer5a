@@ -161,7 +161,8 @@ namespace Chummer
         public static T DoThreadSafeFunc<T>(this Control objControl, Func<T> funcToRun)
         {
             Task<T> objTask = objControl.DoThreadSafeFuncCoreAsync(true, funcToRun);
-            objTask.RunSynchronously();
+            if (objTask.Status == TaskStatus.Created)
+                objTask.RunSynchronously();
             return objTask.Result;
         }
 

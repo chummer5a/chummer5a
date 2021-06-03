@@ -423,6 +423,7 @@ namespace Chummer
         private string _strCustomId = string.Empty;
         private string _strCustomGroup = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnAddToRating;
         private bool _blnEnabled = true;
         private int _intOrder;
@@ -498,6 +499,7 @@ namespace Chummer
             objWriter.WriteElementString("enabled", _blnEnabled.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("order", _intOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
 
             Log.Trace("Save end");
@@ -546,6 +548,11 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("addtorating", ref _blnAddToRating);
             objNode.TryGetBoolFieldQuickly("enabled", ref _blnEnabled);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetInt32FieldQuickly("order", ref _intOrder);
 
             Log.Trace("Load exit");
@@ -598,6 +605,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -2271,8 +2287,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !Enabled
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !Enabled
                     ? ColorManager.GrayText
@@ -2313,7 +2329,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {CharacterObject, ImprovementType, ImprovementName}.GetHashCode();
+            return (CharacterObject, ImprovementType, ImprovementName).GetHashCode();
         }
 
         public bool Equals(ImprovementDictionaryKey other)
@@ -3042,10 +3058,7 @@ namespace Chummer
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -3084,10 +3097,7 @@ namespace Chummer
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    strReturn = strReturn.CheapReplace(strAttribute, () => objCharacter.GetAttribute(strAttribute).TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);

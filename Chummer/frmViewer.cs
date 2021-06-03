@@ -433,14 +433,7 @@ namespace Chummer
 
             if (GlobalOptions.PrintToFileFirst)
             {
-                try
-                {
-                    File.Delete(_strFilePathName);
-                }
-                catch (IOException)
-                {
-                    Utils.BreakIfDebug();
-                }
+                Utils.SafeDeleteFile(_strFilePathName);
             }
 
             Cursor = Cursors.Default;
@@ -492,22 +485,10 @@ namespace Chummer
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
                 return;
             }
-            if (File.Exists(strSaveFile))
+            if (!Utils.SafeDeleteFile(strSaveFile, true))
             {
-                try
-                {
-                    File.Delete(strSaveFile);
-                }
-                catch (IOException)
-                {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
-                    return;
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
-                    return;
-                }
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                return;
             }
 
             // No PDF printer found, let's use wkhtmltopdf

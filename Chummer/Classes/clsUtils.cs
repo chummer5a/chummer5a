@@ -130,12 +130,104 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Test if the file at a given path is accessible to write operations.
+        /// </summary>
+        /// <param name="strPath"></param>
+        /// <returns>File is locked if True.</returns>
+        public static bool IsFileLocked(string strPath)
+        {
+            try
+            {
+                using (File.Open(strPath, FileMode.Open))
+                    return false;
+            }
+            catch (FileNotFoundException)
+            {
+                // File doesn't exist.
+                return true;
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            catch (Exception)
+            {
+                BreakIfDebug();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Wait for an open file to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">File path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                return true;
+            int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
+            while (File.Exists(strPath))
+            {
+                try
+                {
+                    File.Delete(strPath);
+                }
+                catch (PathTooLongException)
+                {
+                    // File path is somehow too long? File is not deleted, so return false.
+                    return false;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // We do not have sufficient privileges to delete this file.
+                    if (blnShowUnauthorizedAccess)
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    return false;
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (FileNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (IOException)
+                {
+                    //the file is unavailable because it is:
+                    //still being written to
+                    //or being processed by another thread
+                    //or does not exist (has already been processed)
+                    SafeSleep(intWaitInterval);
+                    intTimeout -= intWaitInterval;
+                }
+                if (intTimeout < 0)
+                {
+                    BreakIfDebug();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Restarts Chummer5a.
         /// </summary>
-        /// <param name="strLanguage">Language in which to display any prompts or warnings.</param>
+        /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use Chummer's current language.</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
-        public static void RestartApplication(string strLanguage, string strText)
+        public static void RestartApplication(string strLanguage = "", string strText = "")
         {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             if (!string.IsNullOrEmpty(strText))
             {
                 string text = LanguageManager.GetString(strText, strLanguage);
@@ -325,7 +417,7 @@ namespace Chummer
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
-        private static bool EverDoEvents => !IsDesignerMode && !IsRunningInVisualStudio;
+        private static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
 
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
@@ -438,7 +530,8 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 Task<T> objSyncTask = funcToRun.Invoke();
-                objSyncTask.RunSynchronously();
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
                 return objSyncTask.Result;
             }
             Task<T> objTask = Task.Run(funcToRun);
@@ -463,7 +556,8 @@ namespace Chummer
                 for (int i = 0; i < afuncToRun.Length; ++i)
                 {
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
-                    objSyncTask.RunSynchronously();
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
                     aobjReturn[i] = objSyncTask.Result;
                 }
                 return aobjReturn;
@@ -491,7 +585,8 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 Task objSyncTask = funcToRun.Invoke();
-                objSyncTask.RunSynchronously();
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
                 return;
             }
             Task objTask = Task.Run(funcToRun);
@@ -514,7 +609,8 @@ namespace Chummer
                 foreach (Func<Task> funcToRun in afuncToRun)
                 {
                     Task objSyncTask = funcToRun.Invoke();
-                    objSyncTask.RunSynchronously();
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
                 }
                 return;
             }

@@ -152,7 +152,7 @@ namespace Chummer.UI.Skills
                 {
                     Dock = DockStyle.Fill
                 };
-                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)), true);
                 _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
                 RefreshSkillGroupLabels();
 
@@ -749,9 +749,6 @@ namespace Chummer.UI.Skills
             }
             objSkill.Upgrade();
             _objCharacter.SkillsSection.Skills.Add(objSkill);
-            string key = objSkill.DictionaryKey;
-            if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
-                _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
 
         private void btnKnowledge_Click(object sender, EventArgs e)

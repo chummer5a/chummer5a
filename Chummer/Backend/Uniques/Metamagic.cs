@@ -45,6 +45,7 @@ namespace Chummer
         private XmlNode _nodBonus;
         private Improvement.ImprovementSource _eImprovementSource = Improvement.ImprovementSource.Metamagic;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
 
         private readonly Character _objCharacter;
 
@@ -75,6 +76,11 @@ namespace Chummer
             objXmlMetamagicNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             if (!objXmlMetamagicNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMetamagicNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlMetamagicNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             _nodBonus = objXmlMetamagicNode["bonus"];
             if (_nodBonus != null)
             {
@@ -134,6 +140,7 @@ namespace Chummer
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
@@ -167,6 +174,10 @@ namespace Chummer
                 SourceType = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
 
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -339,6 +350,16 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
@@ -400,8 +421,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return Grade == -1
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return Grade == -1
                     ? ColorManager.GrayText

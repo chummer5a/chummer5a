@@ -576,12 +576,8 @@ namespace Chummer.Backend.Equipment
                     return _intCachedDuration = 0;
 
                 StringBuilder sbdDrain = new StringBuilder(_strDuration);
-                foreach (string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    sbdDrain.CheapReplace(_strDuration, objAttrib.Abbrev,
-                        () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDrain, _strDuration);
 
                 string strDuration = sbdDrain.ToString();
                 if (!decimal.TryParse(strDuration, out decimal decDuration))

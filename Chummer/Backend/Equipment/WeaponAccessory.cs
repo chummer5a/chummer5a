@@ -62,6 +62,7 @@ namespace Chummer.Backend.Equipment
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
         private int _intAccuracy;
@@ -185,6 +186,10 @@ namespace Chummer.Backend.Equipment
             _nodAllowGear = objXmlAccessory["allowgear"];
             if (!objXmlAccessory.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlAccessory.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlAccessory.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -366,6 +371,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ap", _strAP);
             objWriter.WriteElementString("apreplace", _strAPReplace);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("singleshot", _intSingleShot.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("shortburst", _intShortBurst.ToString(GlobalOptions.InvariantCultureInfo));
@@ -466,6 +472,11 @@ namespace Chummer.Backend.Equipment
                 }
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
@@ -947,6 +958,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -1481,8 +1501,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return IncludedInWeapon
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return IncludedInWeapon
                     ? ColorManager.GrayText

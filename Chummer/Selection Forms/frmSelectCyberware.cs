@@ -608,8 +608,9 @@ namespace Chummer
         /// <summary>
         /// Manually set the Grade of the piece of Cyberware.
         /// </summary>
-        public Grade SetGrade
+        public Grade ForcedGrade
         {
+            get => _objForcedGrade;
             set => _objForcedGrade = value;
         }
 
@@ -1296,31 +1297,42 @@ namespace Chummer
                 {
                     if (objWareGrade.SourceIDString == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
                         continue;
-                    if (_objCharacter.Improvements.Any(x => (WindowMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade || WindowMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)
-                                                                   && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                        continue;
-                    if (blnIgnoreSecondHand && objWareGrade.SecondHand)
-                        continue;
-                    if (_objCharacter.AdapsinEnabled && _objMode == Mode.Cyberware)
+                    if (string.IsNullOrEmpty(strForceGrade))
                     {
-                        if (!objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
-                        {
+                        if (_objCharacter.Improvements.Any(x =>
+                            (WindowMode == Mode.Bioware &&
+                             x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade ||
+                             WindowMode != Mode.Bioware &&
+                             x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)
+                            && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                             continue;
-                        }
-                    }
-                    else if (objWareGrade.Adapsin)
-                        continue;
-                    if (_objCharacter.BurnoutEnabled)
-                    {
-                        if (!objWareGrade.Burnout && _lstGrades.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
-                        {
+                        if (blnIgnoreSecondHand && objWareGrade.SecondHand)
                             continue;
+                        if (_objCharacter.AdapsinEnabled && _objMode == Mode.Cyberware)
+                        {
+                            if (!objWareGrade.Adapsin && _lstGrades.Any(x => objWareGrade.Name.Contains(x.Name)))
+                            {
+                                continue;
+                            }
                         }
+                        else if (objWareGrade.Adapsin)
+                            continue;
+
+                        if (_objCharacter.BurnoutEnabled)
+                        {
+                            if (!objWareGrade.Burnout && _lstGrades.Any(x =>
+                                objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
+                            {
+                                continue;
+                            }
+                        }
+                        else if (objWareGrade.Burnout)
+                            continue;
+                        if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules &&
+                            _objCharacter.Options.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                            continue;
                     }
-                    else if (objWareGrade.Burnout)
-                        continue;
-                    if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.Options.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
-                        continue;
+
                     if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.Options.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                     {
                         lstGrade.Add(new ListItem(objWareGrade.SourceIDString, '*' + objWareGrade.CurrentDisplayName));

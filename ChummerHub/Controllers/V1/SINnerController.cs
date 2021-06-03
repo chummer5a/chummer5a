@@ -503,8 +503,7 @@ namespace ChummerHub.Controllers.V1
                 if (!System.IO.File.Exists(filename))
                 {
                     Uri downloadUri = new Uri(sinnerseq.FirstOrDefault()?.DownloadUrl ?? string.Empty);
-                    // ReSharper disable once MethodHasAsyncOverload
-                    net.DownloadFile(downloadUri, filename);
+                    await net.DownloadFileTaskAsync(downloadUri, filename);
                 }
 
                 if (!System.IO.File.Exists(filename))

@@ -571,7 +571,7 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void cmdUploadPastebin_Click(object sender, EventArgs e)
+        private async void cmdUploadPastebin_Click(object sender, EventArgs e)
         {
 #if DEBUG
             string strFilePath = "Insert local file here";
@@ -579,7 +579,7 @@ namespace Chummer
             string line;
             using (StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
             {
-                line = sr.ReadToEnd();
+                line = await sr.ReadToEndAsync();
             }
             data["api_paste_name"] = "Chummer";
             data["api_paste_expire_date"] = "N";
@@ -593,7 +593,7 @@ namespace Chummer
                 byte[] bytes;
                 try
                 {
-                    bytes = wb.UploadValues("http://pastebin.com/api/api_post.php", data);
+                    bytes = await wb.UploadValuesTaskAsync("http://pastebin.com/api/api_post.php", data);
                 }
                 catch (WebException)
                 {
@@ -604,7 +604,7 @@ namespace Chummer
                 {
                     using (StreamReader reader = new StreamReader(ms, Encoding.UTF8, true))
                     {
-                        string response = reader.ReadToEnd();
+                        string response = await reader.ReadToEndAsync();
                         Clipboard.SetText(response);
                     }
                 }
@@ -876,9 +876,8 @@ namespace Chummer
             GlobalOptions.AllowHoverIncrement = chkAllowHoverIncrement.Checked;
             GlobalOptions.SearchInCategoryOnly = chkSearchInCategoryOnly.Checked;
             GlobalOptions.AllowSkillDiceRolling = chkAllowSkillDiceRolling.Checked;
-            GlobalOptions.DefaultCharacterOption = OptionsManager.LoadedCharacterOptions.Values.FirstOrDefault(x =>
-                                                       x.Name == cboDefaultCharacterOption.SelectedValue.ToString())?.Name
-                                                  ?? GlobalOptions.DefaultCharacterOptionDefaultValue;
+            GlobalOptions.DefaultCharacterOption = cboDefaultCharacterOption.SelectedValue?.ToString()
+                                                   ?? GlobalOptions.DefaultCharacterOptionDefaultValue;
             GlobalOptions.AllowEasterEggs = chkAllowEasterEggs.Checked;
             GlobalOptions.PluginsEnabled = chkEnablePlugins.Checked;
             GlobalOptions.SavedImageQuality = nudMugshotCompressionQuality.Enabled ? decimal.ToInt32(nudMugshotCompressionQuality.Value) : int.MaxValue;

@@ -3857,6 +3857,10 @@
             <text>Notizen</text>
         </string>
         <string>
+            <key>Button_ChooseCustomColor</key>
+          <text>Farbe für diese Notiz wählen</text>
+        </string>
+        <string>
             <key>Title_Options</key>
             <text>Optionen</text>
         </string>
@@ -8588,6 +8592,14 @@
         <string>
             <key>String_BubbleDie</key>
             <text>Nur für Patzer:</text>
+        </string>
+        <string>
+          <key>String_NoDiceLeft_Title</key>
+          <text>Keine Würfel übrig</text>
+        </string>
+        <string>
+          <key>String_NoDiceLeft_Text</key>
+          <text>Du hast keine weiteren Würfel, die neu geworfen werden könnten.</text>
         </string>
         <string>
             <key>String_Pilot</key>

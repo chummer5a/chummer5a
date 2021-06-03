@@ -100,7 +100,7 @@ namespace Chummer
             this.lblWeaponAP = new System.Windows.Forms.Label();
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).BeginInit();
             this.tabControl.SuspendLayout();
@@ -113,7 +113,7 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.flpCheckBoxes.SuspendLayout();
             this.tabBrowse.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -215,6 +215,8 @@ namespace Chummer
             this.dgvWeapons.AllowUserToDeleteRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvWeapons.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvWeapons.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -436,7 +438,7 @@ namespace Chummer
             // 
             // tabControl
             // 
-            this.tableLayoutPanel2.SetColumnSpan(this.tabControl, 4);
+            this.tlpMain.SetColumnSpan(this.tabControl, 4);
             this.tabControl.Controls.Add(this.tabListView);
             this.tabControl.Controls.Add(this.tabBrowse);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1044,30 +1046,30 @@ namespace Chummer
             // 
             this.tmrSearch.Interval = 250;
             // 
-            // tableLayoutPanel2
+            // tlpMain
             // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.ColumnCount = 4;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.tabControl, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.lblCategory, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cboCategory, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.txtSearch, 3, 0);
-            this.tableLayoutPanel2.Controls.Add(this.lblSearchLabel, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.tlpButtons, 0, 2);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 3;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(766, 543);
-            this.tableLayoutPanel2.TabIndex = 39;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 4;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.tabControl, 0, 1);
+            this.tlpMain.Controls.Add(this.lblCategory, 0, 0);
+            this.tlpMain.Controls.Add(this.cboCategory, 1, 0);
+            this.tlpMain.Controls.Add(this.txtSearch, 3, 0);
+            this.tlpMain.Controls.Add(this.lblSearchLabel, 2, 0);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 2);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(766, 543);
+            this.tlpMain.TabIndex = 39;
             // 
             // tlpButtons
             // 
@@ -1075,7 +1077,7 @@ namespace Chummer
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 3;
-            this.tableLayoutPanel2.SetColumnSpan(this.tlpButtons, 4);
+            this.tlpMain.SetColumnSpan(this.tlpButtons, 4);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
@@ -1099,7 +1101,7 @@ namespace Chummer
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.tableLayoutPanel2);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -1128,8 +1130,8 @@ namespace Chummer
             this.flpCheckBoxes.ResumeLayout(false);
             this.flpCheckBoxes.PerformLayout();
             this.tabBrowse.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
@@ -1182,7 +1184,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
         private Chummer.BufferedTableLayoutPanel tlpWeapon;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private System.Windows.Forms.GroupBox gpbIncludedAccessories;

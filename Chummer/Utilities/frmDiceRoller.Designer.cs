@@ -37,7 +37,6 @@ namespace Chummer
             this.cboMethod = new Chummer.ElasticComboBox();
             this.cmdReroll = new System.Windows.Forms.Button();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lstResults = new System.Windows.Forms.ListBox();
             this.lblResultsLabel = new System.Windows.Forms.Label();
             this.nudGremlins = new Chummer.NumericUpDownEx();
             this.lblGremlins = new System.Windows.Forms.Label();
@@ -50,10 +49,12 @@ namespace Chummer
             this.flpRollParameters = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRollControls = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblResults = new System.Windows.Forms.Label();
             this.chkVariableGlitch = new Chummer.ColorableCheckBox(this.components);
             this.chkBubbleDie = new Chummer.ColorableCheckBox(this.components);
             this.pnlResults = new System.Windows.Forms.Panel();
+            this.lblResults = new System.Windows.Forms.Label();
+            this.lstResults = new System.Windows.Forms.ListView();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).BeginInit();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudGremlins)).BeginInit();
@@ -157,10 +158,9 @@ namespace Chummer
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 3;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Controls.Add(this.lstResults, 0, 1);
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 80F));
             this.tlpMain.Controls.Add(this.lblResultsLabel, 1, 8);
             this.tlpMain.Controls.Add(this.nudGremlins, 2, 7);
             this.tlpMain.Controls.Add(this.lblGremlins, 1, 7);
@@ -173,6 +173,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.chkVariableGlitch, 1, 5);
             this.tlpMain.Controls.Add(this.chkBubbleDie, 1, 4);
             this.tlpMain.Controls.Add(this.pnlResults, 2, 8);
+            this.tlpMain.Controls.Add(this.lstResults, 0, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -189,21 +190,11 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 16;
             // 
-            // lstResults
-            // 
-            this.lstResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lstResults.FormattingEnabled = true;
-            this.lstResults.Location = new System.Drawing.Point(3, 32);
-            this.lstResults.Name = "lstResults";
-            this.tlpMain.SetRowSpan(this.lstResults, 8);
-            this.lstResults.Size = new System.Drawing.Size(145, 388);
-            this.lstResults.TabIndex = 9;
-            // 
             // lblResultsLabel
             // 
             this.lblResultsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblResultsLabel.AutoSize = true;
-            this.lblResultsLabel.Location = new System.Drawing.Point(166, 202);
+            this.lblResultsLabel.Location = new System.Drawing.Point(123, 202);
             this.lblResultsLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblResultsLabel.Name = "lblResultsLabel";
             this.lblResultsLabel.Size = new System.Drawing.Size(45, 13);
@@ -215,7 +206,7 @@ namespace Chummer
             // 
             this.nudGremlins.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudGremlins.AutoSize = true;
-            this.nudGremlins.Location = new System.Drawing.Point(217, 173);
+            this.nudGremlins.Location = new System.Drawing.Point(174, 173);
             this.nudGremlins.Maximum = new decimal(new int[] {
             100,
             0,
@@ -234,7 +225,7 @@ namespace Chummer
             // 
             this.lblGremlins.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblGremlins.AutoSize = true;
-            this.lblGremlins.Location = new System.Drawing.Point(161, 176);
+            this.lblGremlins.Location = new System.Drawing.Point(118, 176);
             this.lblGremlins.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblGremlins.Name = "lblGremlins";
             this.lblGremlins.Size = new System.Drawing.Size(50, 13);
@@ -246,7 +237,7 @@ namespace Chummer
             // 
             this.nudThreshold.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudThreshold.AutoSize = true;
-            this.nudThreshold.Location = new System.Drawing.Point(217, 147);
+            this.nudThreshold.Location = new System.Drawing.Point(174, 147);
             this.nudThreshold.Maximum = new decimal(new int[] {
             100,
             0,
@@ -267,7 +258,7 @@ namespace Chummer
             this.chkRuleOf6.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkRuleOf6, 2);
             this.chkRuleOf6.DefaultColorScheme = true;
-            this.chkRuleOf6.Location = new System.Drawing.Point(154, 32);
+            this.chkRuleOf6.Location = new System.Drawing.Point(111, 32);
             this.chkRuleOf6.Name = "chkRuleOf6";
             this.chkRuleOf6.Size = new System.Drawing.Size(97, 17);
             this.chkRuleOf6.TabIndex = 4;
@@ -279,7 +270,7 @@ namespace Chummer
             // 
             this.lblThreshold.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblThreshold.AutoSize = true;
-            this.lblThreshold.Location = new System.Drawing.Point(154, 150);
+            this.lblThreshold.Location = new System.Drawing.Point(111, 150);
             this.lblThreshold.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblThreshold.Name = "lblThreshold";
             this.lblThreshold.Size = new System.Drawing.Size(57, 13);
@@ -293,7 +284,7 @@ namespace Chummer
             this.chkCinematicGameplay.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkCinematicGameplay, 2);
             this.chkCinematicGameplay.DefaultColorScheme = true;
-            this.chkCinematicGameplay.Location = new System.Drawing.Point(154, 55);
+            this.chkCinematicGameplay.Location = new System.Drawing.Point(111, 55);
             this.chkCinematicGameplay.Name = "chkCinematicGameplay";
             this.chkCinematicGameplay.Size = new System.Drawing.Size(99, 17);
             this.chkCinematicGameplay.TabIndex = 5;
@@ -307,7 +298,7 @@ namespace Chummer
             this.chkRushJob.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkRushJob, 2);
             this.chkRushJob.DefaultColorScheme = true;
-            this.chkRushJob.Location = new System.Drawing.Point(154, 78);
+            this.chkRushJob.Location = new System.Drawing.Point(111, 78);
             this.chkRushJob.Name = "chkRushJob";
             this.chkRushJob.Size = new System.Drawing.Size(164, 17);
             this.chkRushJob.TabIndex = 12;
@@ -375,25 +366,13 @@ namespace Chummer
             this.flpRollControls.TabIndex = 14;
             this.flpRollControls.WrapContents = false;
             // 
-            // lblResults
-            // 
-            this.lblResults.AutoSize = true;
-            this.lblResults.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lblResults.Location = new System.Drawing.Point(3, 6);
-            this.lblResults.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblResults.Name = "lblResults";
-            this.lblResults.Size = new System.Drawing.Size(48, 13);
-            this.lblResults.TabIndex = 16;
-            this.lblResults.Tag = "";
-            this.lblResults.Text = "[Results]";
-            // 
             // chkVariableGlitch
             // 
             this.chkVariableGlitch.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkVariableGlitch.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkVariableGlitch, 2);
             this.chkVariableGlitch.DefaultColorScheme = true;
-            this.chkVariableGlitch.Location = new System.Drawing.Point(154, 124);
+            this.chkVariableGlitch.Location = new System.Drawing.Point(111, 124);
             this.chkVariableGlitch.Name = "chkVariableGlitch";
             this.chkVariableGlitch.Size = new System.Drawing.Size(246, 17);
             this.chkVariableGlitch.TabIndex = 18;
@@ -407,7 +386,7 @@ namespace Chummer
             this.chkBubbleDie.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkBubbleDie, 2);
             this.chkBubbleDie.DefaultColorScheme = true;
-            this.chkBubbleDie.Location = new System.Drawing.Point(154, 101);
+            this.chkBubbleDie.Location = new System.Drawing.Point(111, 101);
             this.chkBubbleDie.Name = "chkBubbleDie";
             this.chkBubbleDie.Size = new System.Drawing.Size(248, 17);
             this.chkBubbleDie.TabIndex = 15;
@@ -420,12 +399,46 @@ namespace Chummer
             this.pnlResults.AutoScroll = true;
             this.pnlResults.Controls.Add(this.lblResults);
             this.pnlResults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlResults.Location = new System.Drawing.Point(214, 196);
+            this.pnlResults.Location = new System.Drawing.Point(171, 196);
             this.pnlResults.Margin = new System.Windows.Forms.Padding(0);
             this.pnlResults.Name = "pnlResults";
             this.pnlResults.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
-            this.pnlResults.Size = new System.Drawing.Size(392, 227);
+            this.pnlResults.Size = new System.Drawing.Size(435, 227);
             this.pnlResults.TabIndex = 19;
+            // 
+            // lblResults
+            // 
+            this.lblResults.AutoSize = true;
+            this.lblResults.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblResults.Location = new System.Drawing.Point(3, 6);
+            this.lblResults.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblResults.Name = "lblResults";
+            this.lblResults.Size = new System.Drawing.Size(48, 13);
+            this.lblResults.TabIndex = 16;
+            this.lblResults.Tag = "";
+            this.lblResults.Text = "[Results]";
+            // 
+            // lstResults
+            // 
+            this.lstResults.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+            this.lstResults.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lstResults.FullRowSelect = true;
+            this.lstResults.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lstResults.HideSelection = false;
+            this.lstResults.Location = new System.Drawing.Point(3, 32);
+            this.lstResults.MultiSelect = false;
+            this.lstResults.Name = "lstResults";
+            this.tlpMain.SetRowSpan(this.lstResults, 8);
+            this.lstResults.Size = new System.Drawing.Size(102, 388);
+            this.lstResults.TabIndex = 20;
+            this.lstResults.UseCompatibleStateImageBehavior = false;
+            this.lstResults.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "Results";
+            this.columnHeader1.Width = 70;
             // 
             // frmDiceRoller
             // 
@@ -472,7 +485,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdReroll;
         private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblResults;
-        private System.Windows.Forms.ListBox lstResults;
         private System.Windows.Forms.Label lblResultsLabel;
         private Chummer.NumericUpDownEx nudGremlins;
         private System.Windows.Forms.Label lblGremlins;
@@ -488,5 +500,7 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpRollControls;
         private Chummer.ColorableCheckBox chkVariableGlitch;
         private System.Windows.Forms.Panel pnlResults;
+        private System.Windows.Forms.ListView lstResults;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
     }
 }

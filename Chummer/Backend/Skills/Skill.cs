@@ -81,6 +81,7 @@ namespace Chummer.Backend.Skills
 
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
+        private Color _colNotes = ColorManager.HasNotesColor;
         public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(10); //List of suggested specializations for this skill
         private bool _blnDefault;
 
@@ -99,6 +100,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(Notes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("name", Name);
             if (!CharacterObject.Created)
             {
@@ -257,6 +259,10 @@ namespace Chummer.Backend.Skills
 
             if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                 xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (!objLoadingSkill.IsNativeLanguage)
             {
@@ -428,7 +434,7 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-        protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();
+        protected static Dictionary<string, bool> SkillTypeCache { get; } = new Dictionary<string, bool>();
         //TODO CACHE INVALIDATE
 
         /// <summary>
@@ -455,7 +461,10 @@ namespace Chummer.Backend.Skills
                     return null;
                 if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
                 {
-                    blnIsKnowledgeSkill = character.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")?.Value != "active";
+                    blnIsKnowledgeSkill =
+                        character.LoadDataXPath("skills.xml")
+                            .SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")
+                            ?.Value != "active";
                     if (SkillTypeCache != null)
                         SkillTypeCache[category] = blnIsKnowledgeSkill;
                 }
@@ -1740,10 +1749,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.ControlText;
+
 
         public SkillGroup SkillGroupObject { get; }
 

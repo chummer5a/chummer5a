@@ -242,12 +242,13 @@ namespace Chummer
         {
             if (objNotes == null)
                 return;
-            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return;
                 objNotes.Notes = frmItemNotes.Notes;
+                objNotes.NotesColor = frmItemNotes.NotesColor;
                 IsDirty = true;
                 if (treNode != null)
                 {

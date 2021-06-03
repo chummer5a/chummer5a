@@ -14,14 +14,16 @@ namespace ChummerHub.Client.Sinners
 
         public SINnerGroup(SINnerSearchGroup searchGroup)
         {
-            if (searchGroup == null)
-                throw new ArgumentNullException(nameof(searchGroup));
-            Id = searchGroup.Id;
-            Groupname = searchGroup.Groupname;
-            IsPublic = searchGroup.IsPublic;
-            MyParentGroupId = searchGroup.MyParentGroupId;
-            Language = searchGroup.Language;
-            MyAdminIdentityRole = searchGroup.MyAdminIdentityRole;
+            if (searchGroup != null)
+            {
+
+                Id = searchGroup.Id;
+                Groupname = searchGroup.Groupname;
+                IsPublic = searchGroup.IsPublic;
+                MyParentGroupId = searchGroup.MyParentGroupId;
+                Language = searchGroup.Language;
+                MyAdminIdentityRole = searchGroup.MyAdminIdentityRole;
+            }
         }
         public static byte[] GetHash(string inputString)
         {

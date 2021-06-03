@@ -124,16 +124,16 @@
     <value>919, 17</value>
   </metadata>
   <metadata name="cmsMartialArts.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>975, 56</value>
+    <value>474, 56</value>
   </metadata>
   <metadata name="cmsSpellButton.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 173</value>
+    <value>1223, 95</value>
   </metadata>
   <metadata name="cmsComplexForm.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>155, 95</value>
+    <value>745, 56</value>
   </metadata>
   <metadata name="cmsCyberware.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>160, 56</value>
+    <value>1175, 17</value>
   </metadata>
   <metadata name="cmsVehicleCyberware.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>213, 17</value>
@@ -142,109 +142,109 @@
     <value>538, 17</value>
   </metadata>
   <metadata name="cmsArmor.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>410, 56</value>
+    <value>1425, 17</value>
   </metadata>
   <metadata name="cmsWeapon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>291, 56</value>
+    <value>1306, 17</value>
   </metadata>
   <metadata name="cmsGearButton.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>304, 95</value>
+    <value>894, 56</value>
   </metadata>
   <metadata name="cmsVehicle.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>705, 56</value>
+    <value>204, 56</value>
   </metadata>
   <metadata name="cmsWeaponMount.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>383, 17</value>
   </metadata>
   <metadata name="mnuCreateMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 56</value>
+    <value>1032, 17</value>
   </metadata>
   <metadata name="tsMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>518, 56</value>
+    <value>17, 56</value>
   </metadata>
   <metadata name="cmsGear.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>606, 56</value>
+    <value>105, 56</value>
   </metadata>
   <metadata name="cmsVehicleWeapon.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>817, 56</value>
+    <value>316, 56</value>
   </metadata>
   <metadata name="cmsVehicleGear.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 95</value>
+    <value>607, 56</value>
   </metadata>
   <metadata name="cmsArmorGear.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>439, 95</value>
+    <value>1029, 56</value>
   </metadata>
   <metadata name="cmsArmorMod.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>572, 95</value>
+    <value>1162, 56</value>
   </metadata>
   <metadata name="cmsQuality.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>705, 95</value>
+    <value>1295, 56</value>
   </metadata>
   <metadata name="cmsSpell.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>817, 95</value>
+    <value>1407, 56</value>
   </metadata>
   <metadata name="cmsCritterPowers.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>916, 95</value>
+    <value>17, 95</value>
   </metadata>
   <metadata name="cmsLifestyleNotes.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 134</value>
+    <value>163, 95</value>
   </metadata>
   <metadata name="cmsWeaponAccessory.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>166, 134</value>
+    <value>312, 95</value>
   </metadata>
   <metadata name="cmsGearPlugin.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>339, 134</value>
+    <value>485, 95</value>
   </metadata>
   <metadata name="cmsBioware.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>472, 134</value>
+    <value>618, 95</value>
   </metadata>
   <metadata name="cmsAdvancedLifestyle.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>761, 134</value>
+    <value>907, 95</value>
   </metadata>
   <metadata name="cmsGearLocation.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>932, 134</value>
+    <value>1078, 95</value>
   </metadata>
   <metadata name="cmsArmorLocation.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>327, 173</value>
+    <value>17, 134</value>
   </metadata>
   <metadata name="cmsCyberwareGear.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>414, 212</value>
+    <value>1074, 134</value>
   </metadata>
   <metadata name="cmsVehicleCyberwareGear.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
   <metadata name="cmsWeaponAccessoryGear.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>570, 212</value>
+    <value>1230, 134</value>
   </metadata>
   <metadata name="cmsVehicleLocation.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>255, 212</value>
+    <value>915, 134</value>
   </metadata>
   <metadata name="cmsVehicleWeaponAccessory.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>775, 173</value>
+    <value>465, 134</value>
   </metadata>
   <metadata name="cmsVehicleWeaponAccessoryGear.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 212</value>
+    <value>677, 134</value>
   </metadata>
   <metadata name="cmsWeaponLocation.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>481, 173</value>
+    <value>171, 134</value>
   </metadata>
   <metadata name="cmsMetamagic.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>768, 212</value>
+    <value>1428, 134</value>
   </metadata>
   <metadata name="cmsAddContact.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>902, 212</value>
+    <value>17, 173</value>
   </metadata>
   <metadata name="cmsInitiationNotes.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>655, 17</value>
   </metadata>
   <metadata name="cmsTechnique.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>646, 173</value>
+    <value>336, 134</value>
   </metadata>
   <metadata name="cmsAdvancedProgram.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>153, 173</value>
+    <value>1359, 95</value>
   </metadata>
   <metadata name="cmsGearAllowRename.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>588, 134</value>
+    <value>734, 95</value>
   </metadata>
   <metadata name="$this.TrayHeight" type="System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>217</value>

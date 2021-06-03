@@ -88,7 +88,7 @@ namespace Chummer
             this.tabCharacterText.Location = new System.Drawing.Point(3, 309);
             this.tabCharacterText.Name = "tabCharacterText";
             this.tabCharacterText.SelectedIndex = 0;
-            this.tabCharacterText.Size = new System.Drawing.Size(448, 225);
+            this.tabCharacterText.Size = new System.Drawing.Size(454, 231);
             this.tabCharacterText.TabIndex = 22;
             // 
             // panCharacterBio
@@ -97,7 +97,7 @@ namespace Chummer
             this.panCharacterBio.Location = new System.Drawing.Point(4, 22);
             this.panCharacterBio.Name = "panCharacterBio";
             this.panCharacterBio.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterBio.Size = new System.Drawing.Size(440, 199);
+            this.panCharacterBio.Size = new System.Drawing.Size(446, 205);
             this.panCharacterBio.TabIndex = 0;
             this.panCharacterBio.Tag = "Tab_Roster_Description";
             this.panCharacterBio.Text = "Description";
@@ -111,7 +111,7 @@ namespace Chummer
             this.txtCharacterBio.Multiline = true;
             this.txtCharacterBio.Name = "txtCharacterBio";
             this.txtCharacterBio.ReadOnly = true;
-            this.txtCharacterBio.Size = new System.Drawing.Size(434, 193);
+            this.txtCharacterBio.Size = new System.Drawing.Size(440, 199);
             this.txtCharacterBio.TabIndex = 0;
             // 
             // panCharacterConcept
@@ -120,7 +120,7 @@ namespace Chummer
             this.panCharacterConcept.Location = new System.Drawing.Point(4, 22);
             this.panCharacterConcept.Name = "panCharacterConcept";
             this.panCharacterConcept.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterConcept.Size = new System.Drawing.Size(451, 205);
+            this.panCharacterConcept.Size = new System.Drawing.Size(440, 199);
             this.panCharacterConcept.TabIndex = 1;
             this.panCharacterConcept.Tag = "Tab_Roster_Concept";
             this.panCharacterConcept.Text = "Concept";
@@ -134,7 +134,7 @@ namespace Chummer
             this.txtCharacterConcept.Multiline = true;
             this.txtCharacterConcept.Name = "txtCharacterConcept";
             this.txtCharacterConcept.ReadOnly = true;
-            this.txtCharacterConcept.Size = new System.Drawing.Size(445, 199);
+            this.txtCharacterConcept.Size = new System.Drawing.Size(434, 193);
             this.txtCharacterConcept.TabIndex = 0;
             // 
             // panCharacterBackground
@@ -143,7 +143,7 @@ namespace Chummer
             this.panCharacterBackground.Location = new System.Drawing.Point(4, 22);
             this.panCharacterBackground.Name = "panCharacterBackground";
             this.panCharacterBackground.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterBackground.Size = new System.Drawing.Size(451, 205);
+            this.panCharacterBackground.Size = new System.Drawing.Size(440, 199);
             this.panCharacterBackground.TabIndex = 2;
             this.panCharacterBackground.Tag = "Tab_Roster_Background";
             this.panCharacterBackground.Text = "Background";
@@ -157,7 +157,7 @@ namespace Chummer
             this.txtCharacterBackground.Multiline = true;
             this.txtCharacterBackground.Name = "txtCharacterBackground";
             this.txtCharacterBackground.ReadOnly = true;
-            this.txtCharacterBackground.Size = new System.Drawing.Size(445, 199);
+            this.txtCharacterBackground.Size = new System.Drawing.Size(434, 193);
             this.txtCharacterBackground.TabIndex = 0;
             // 
             // panCharacterNotes
@@ -166,7 +166,7 @@ namespace Chummer
             this.panCharacterNotes.Location = new System.Drawing.Point(4, 22);
             this.panCharacterNotes.Name = "panCharacterNotes";
             this.panCharacterNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterNotes.Size = new System.Drawing.Size(451, 205);
+            this.panCharacterNotes.Size = new System.Drawing.Size(440, 199);
             this.panCharacterNotes.TabIndex = 3;
             this.panCharacterNotes.Tag = "Tab_Roster_CharacterNotes";
             this.panCharacterNotes.Text = "Character Notes";
@@ -180,7 +180,7 @@ namespace Chummer
             this.txtCharacterNotes.Multiline = true;
             this.txtCharacterNotes.Name = "txtCharacterNotes";
             this.txtCharacterNotes.ReadOnly = true;
-            this.txtCharacterNotes.Size = new System.Drawing.Size(445, 199);
+            this.txtCharacterNotes.Size = new System.Drawing.Size(434, 193);
             this.txtCharacterNotes.TabIndex = 0;
             // 
             // panGameNotes
@@ -189,7 +189,7 @@ namespace Chummer
             this.panGameNotes.Location = new System.Drawing.Point(4, 22);
             this.panGameNotes.Name = "panGameNotes";
             this.panGameNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panGameNotes.Size = new System.Drawing.Size(451, 205);
+            this.panGameNotes.Size = new System.Drawing.Size(440, 199);
             this.panGameNotes.TabIndex = 4;
             this.panGameNotes.Tag = "Tab_Roster_GameNotes";
             this.panGameNotes.Text = "Game Notes";
@@ -203,7 +203,7 @@ namespace Chummer
             this.txtGameNotes.Multiline = true;
             this.txtGameNotes.Name = "txtGameNotes";
             this.txtGameNotes.ReadOnly = true;
-            this.txtGameNotes.Size = new System.Drawing.Size(445, 199);
+            this.txtGameNotes.Size = new System.Drawing.Size(434, 193);
             this.txtGameNotes.TabIndex = 0;
             // 
             // lblCharacterName
@@ -434,7 +434,8 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblCharacterNameLabel, 0, 0);
             this.tlpRight.Controls.Add(this.lblCharacterName, 1, 0);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(309, 3);
+            this.tlpRight.Location = new System.Drawing.Point(306, 0);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
             this.tlpRight.Name = "tlpRight";
             this.tlpRight.RowCount = 10;
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -447,13 +448,13 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Size = new System.Drawing.Size(454, 537);
+            this.tlpRight.Size = new System.Drawing.Size(460, 543);
             this.tlpRight.TabIndex = 41;
             // 
             // picMugshot
             // 
             this.picMugshot.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.picMugshot.Location = new System.Drawing.Point(151, 3);
+            this.picMugshot.Location = new System.Drawing.Point(157, 3);
             this.picMugshot.Name = "picMugshot";
             this.tlpRight.SetRowSpan(this.picMugshot, 9);
             this.picMugshot.Size = new System.Drawing.Size(300, 300);
@@ -476,15 +477,6 @@ namespace Chummer
             this.tlpCharacterRoster.Name = "tlpCharacterRoster";
             this.tlpCharacterRoster.RowCount = 1;
             this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpCharacterRoster.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpCharacterRoster.Size = new System.Drawing.Size(766, 543);
             this.tlpCharacterRoster.TabIndex = 42;
             // 
