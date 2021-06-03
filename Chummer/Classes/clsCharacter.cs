@@ -14868,7 +14868,7 @@ namespace Chummer
         {
             if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
             {
-                if (!PostLoadMethods.Contains(RefreshRedlinerImprovementss))
+                if (!PostLoadMethods.Contains(RefreshRedlinerImprovements))
                     PostLoadMethods.Enqueue(RefreshRedlinerImprovements);
                 return true;
             }
