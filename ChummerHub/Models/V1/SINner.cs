@@ -60,7 +60,7 @@ namespace ChummerHub.Models.V1
 
         public DateTime? LastDownload { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
         [DataMember(EmitDefaultValue = false)]
         public SINnerGroup MyGroup { get; set; }
 
