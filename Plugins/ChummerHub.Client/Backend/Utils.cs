@@ -780,7 +780,9 @@ namespace ChummerHub.Client.Backend
                                       Environment.NewLine + Environment.NewLine
                                       + "Open the character locally, make sure to have \"online mode\"" +
                                       Environment.NewLine
-                                      + "selected in option->plugins->sinner and press the \"save\" symbol.";
+                                      + "selected in option->plugins->sinner and press the \"save\" symbol." +
+                                      Environment.NewLine + Environment.NewLine
+                                      + "You can delete this entry by selecting it and pressing the \"del\" key.";
 
                     Log.Warn(objCache.ErrorText);
                 }

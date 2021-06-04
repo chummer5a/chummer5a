@@ -108,7 +108,8 @@ namespace ChummerHub.Client.UI
                 {
                     if (selectedItems[i] is SINnerUserRight userright)
                     {
-                        MyVisibility.UserRightsObservable.Remove(userright);
+                        MyVisibility.UserRights.Remove(userright);
+                        MyVisibility.UserRightsObservable = null;
                     }
                 }
                 FillVisibilityListBox();

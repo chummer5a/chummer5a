@@ -333,7 +333,8 @@ namespace ChummerHub
                 //});
                 // resolve the IApiVersionDescriptionProvider service
                 // note: that we have to build a temporary service provider here because one has not been created yet
-
+                options.UseAllOfToExtendReferenceSchemas();
+                
                 AddSwaggerApiVersionDescriptions(services, options);
                 
                 
@@ -365,6 +366,7 @@ namespace ChummerHub
                 //});
 
             });
+            services.AddAzureAppConfiguration();
 
 
             //services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
@@ -436,6 +438,7 @@ namespace ChummerHub
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAzureAppConfiguration();
             app.UseRouting();
             //app.UseCookiePolicy();
 

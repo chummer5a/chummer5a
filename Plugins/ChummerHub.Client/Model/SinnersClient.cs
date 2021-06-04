@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -8,10 +9,18 @@ namespace ChummerHub.Client.Sinners
 {
     public partial class SinnersClient
     {
-        
+        private List<string> errors = new List<string>();
+
         partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings)
         {
+            settings.NullValueHandling = NullValueHandling.Ignore;
             settings.DateParseHandling = DateParseHandling.None;
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            //settings.Error = delegate (object sender, ErrorEventArgs args)
+            //{
+            //    errors.Add(args.ErrorContext.Error.Message);
+            //    args.ErrorContext.Handled = true;
+            //};
             settings.Converters.Add(new FixedIsoDateTimeOffsetConverter());
             settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         }

@@ -186,7 +186,7 @@ namespace ChummerHub.Client.Sinners
                     {
                         try
                         {
-                            ResultSinnerGetSINById found;
+                            ResultSinnerGetSINById found = null;
                             using (_ = Timekeeper.StartSyncron(
                                 "Checking if already online Chummer", op_uploadChummer,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
@@ -212,8 +212,24 @@ namespace ChummerHub.Client.Sinners
                                 }
 
                                 var client = StaticUtils.GetClient();
-                                found = await client.GetSINByIdAsync(MySINnerFile.Id.GetValueOrDefault());
-                                await Utils.ShowErrorResponseFormAsync(found);
+                                try
+                                {
+
+
+                                    found = await client.GetSINByIdAsync(MySINnerFile.Id.GetValueOrDefault());
+                                    await Utils.ShowErrorResponseFormAsync(found);
+                                }
+                                catch(ApiException ae)
+                                {
+                                    if (ae.StatusCode == 404)
+                                        found = new ResultSinnerGetSINById()
+                                        {
+                                            CallSuccess = false,
+                                            MyException = ae,
+                                            MySINner = null,
+                                            ErrorText = "SINner not found online"
+                                        };
+                                }
                             }
 
                             if (myState != null)
@@ -401,8 +417,7 @@ namespace ChummerHub.Client.Sinners
                     child.Text += tag.TagName;
                     if (!string.IsNullOrEmpty(tag.TagValue))
                         child.Text += ": " + tag.TagValue;
-
-                    PopulateTree(ref child, tag.Tags.ToArray(), filtertags);
+                    PopulateTree(ref child, tag.Tags?.ToArray(), filtertags);
                     root.Nodes.Add(child);
                 }
             }
