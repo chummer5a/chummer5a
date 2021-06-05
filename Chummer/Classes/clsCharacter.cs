@@ -18864,6 +18864,7 @@ namespace Chummer
 
                                         XmlNode xmlLifestyleDataNode =
                                             (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 ? LoadData("lifestyles.xml")
                                                 : await LoadDataAsync("lifestyles.xml"))
                                             .SelectSingleNode("/chummer/lifestyles/lifestyle[name = " +

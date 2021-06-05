@@ -2157,6 +2157,7 @@ namespace Chummer
 
                 // Refresh Metamagics and Echoes.
                 // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
+                // ReSharper disable once ForCanBeConvertedToForeach
                 for (int j = 0; j < CharacterObject.Metamagics.Count; j++)
                 {
                     Metamagic objMetamagic = CharacterObject.Metamagics[j];
@@ -12800,7 +12801,7 @@ namespace Chummer
                     CharacterObject.Lifestyles.Add(objLifestyle);
                 }
 
-                decimal decStartingNuyen = 0;
+                decimal decStartingNuyen;
                 using (frmLifestyleNuyen frmStartingNuyen = new frmLifestyleNuyen(CharacterObject))
                 {
                     if (frmStartingNuyen.ShowDialog(this) != DialogResult.OK)
