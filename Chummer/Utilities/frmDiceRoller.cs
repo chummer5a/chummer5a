@@ -72,12 +72,12 @@ namespace Chummer
             int intTarget = 5;
             // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
             if (chkCinematicGameplay.Checked)
-                intTarget -= 4;
+                intTarget = 4;
             switch (cboMethod.SelectedValue.ToString())
             {
                 case "Large":
                 {
-                    intTarget -= 1;
+                    intTarget = 3;
                     break;
                 }
                 case "ReallyLarge":
@@ -207,12 +207,12 @@ namespace Chummer
             int intTarget = 5;
             // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
             if (chkCinematicGameplay.Checked)
-                intTarget -= 4;
+                intTarget = 4;
             switch (cboMethod.SelectedValue.ToString())
             {
                 case "Large":
                 {
-                    intTarget -= 1;
+                    intTarget = 3;
                     break;
                 }
                 case "ReallyLarge":
