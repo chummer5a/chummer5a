@@ -48,7 +48,6 @@ namespace Chummer
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
-            this.lblCyberwareNotes = new System.Windows.Forms.Label();
             this.lblCyberwareNotesLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
@@ -75,10 +74,11 @@ namespace Chummer
             this.lblAvailLabel = new System.Windows.Forms.Label();
             this.lblAvail = new System.Windows.Forms.Label();
             this.lblMaximumCapacity = new System.Windows.Forms.Label();
+            this.pnlNotes = new System.Windows.Forms.Panel();
+            this.lblCyberwareNotes = new System.Windows.Forms.Label();
             this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.pnlNotes = new System.Windows.Forms.Panel();
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -90,8 +90,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             this.flpDiscount.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).BeginInit();
-            this.tlpTopRight.SuspendLayout();
             this.pnlNotes.SuspendLayout();
+            this.tlpTopRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdOK
@@ -421,18 +421,6 @@ namespace Chummer
             this.lblMarkupPercentLabel.TabIndex = 42;
             this.lblMarkupPercentLabel.Text = "%";
             this.lblMarkupPercentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblCyberwareNotes
-            // 
-            this.lblCyberwareNotes.AutoSize = true;
-            this.lblCyberwareNotes.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lblCyberwareNotes.Location = new System.Drawing.Point(3, 6);
-            this.lblCyberwareNotes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblCyberwareNotes.Name = "lblCyberwareNotes";
-            this.lblCyberwareNotes.Size = new System.Drawing.Size(41, 13);
-            this.lblCyberwareNotes.TabIndex = 31;
-            this.lblCyberwareNotes.Text = "[Notes]";
-            this.lblCyberwareNotes.Visible = false;
             // 
             // lblCyberwareNotesLabel
             // 
@@ -799,6 +787,31 @@ namespace Chummer
             this.lblMaximumCapacity.TabIndex = 19;
             this.lblMaximumCapacity.Text = "[Maximum Capacity]";
             // 
+            // pnlNotes
+            // 
+            this.pnlNotes.AutoScroll = true;
+            this.tlpRight.SetColumnSpan(this.pnlNotes, 3);
+            this.pnlNotes.Controls.Add(this.lblCyberwareNotes);
+            this.pnlNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlNotes.Location = new System.Drawing.Point(57, 203);
+            this.pnlNotes.Margin = new System.Windows.Forms.Padding(0);
+            this.pnlNotes.Name = "pnlNotes";
+            this.pnlNotes.Padding = new System.Windows.Forms.Padding(3, 6, 13, 3);
+            this.pnlNotes.Size = new System.Drawing.Size(403, 210);
+            this.pnlNotes.TabIndex = 78;
+            // 
+            // lblCyberwareNotes
+            // 
+            this.lblCyberwareNotes.AutoSize = true;
+            this.lblCyberwareNotes.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lblCyberwareNotes.Location = new System.Drawing.Point(3, 6);
+            this.lblCyberwareNotes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblCyberwareNotes.Name = "lblCyberwareNotes";
+            this.lblCyberwareNotes.Size = new System.Drawing.Size(41, 13);
+            this.lblCyberwareNotes.TabIndex = 31;
+            this.lblCyberwareNotes.Text = "[Notes]";
+            this.lblCyberwareNotes.Visible = false;
+            // 
             // tlpTopRight
             // 
             this.tlpTopRight.AutoSize = true;
@@ -840,19 +853,6 @@ namespace Chummer
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
             // 
-            // pnlNotes
-            // 
-            this.pnlNotes.AutoScroll = true;
-            this.tlpRight.SetColumnSpan(this.pnlNotes, 3);
-            this.pnlNotes.Controls.Add(this.lblCyberwareNotes);
-            this.pnlNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlNotes.Location = new System.Drawing.Point(57, 203);
-            this.pnlNotes.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlNotes.Name = "pnlNotes";
-            this.pnlNotes.Padding = new System.Windows.Forms.Padding(3, 6, 13, 3);
-            this.pnlNotes.Size = new System.Drawing.Size(403, 210);
-            this.pnlNotes.TabIndex = 78;
-            // 
             // frmSelectCyberware
             // 
             this.AcceptButton = this.cmdOK;
@@ -893,10 +893,10 @@ namespace Chummer
             this.flpDiscount.ResumeLayout(false);
             this.flpDiscount.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudESSDiscount)).EndInit();
-            this.tlpTopRight.ResumeLayout(false);
-            this.tlpTopRight.PerformLayout();
             this.pnlNotes.ResumeLayout(false);
             this.pnlNotes.PerformLayout();
+            this.tlpTopRight.ResumeLayout(false);
+            this.tlpTopRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

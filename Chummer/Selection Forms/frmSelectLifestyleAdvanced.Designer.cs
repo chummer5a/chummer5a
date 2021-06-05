@@ -527,7 +527,6 @@ namespace Chummer
             this.lblQualityLPLabel.Tag = "Label_QualityLP";
             this.lblQualityLPLabel.Text = "Quality LP:";
             this.lblQualityLPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblQualityLPLabel.Visible = false;
             // 
             // lblQualitySource
             // 
@@ -555,7 +554,6 @@ namespace Chummer
             this.lblQualitySourceLabel.Tag = "Label_QualitySource";
             this.lblQualitySourceLabel.Text = "Quality Source:";
             this.lblQualitySourceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblQualitySourceLabel.Visible = false;
             // 
             // lblQualityCost
             // 
@@ -582,7 +580,6 @@ namespace Chummer
             this.lblQualityCostLabel.Tag = "Label_QualityCost";
             this.lblQualityCostLabel.Text = "Quality Cost:";
             this.lblQualityCostLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblQualityCostLabel.Visible = false;
             // 
             // chkPrimaryTenant
             // 
@@ -1004,6 +1001,7 @@ namespace Chummer
             this.tlpLifestyleQuality.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLifestyleQuality.Size = new System.Drawing.Size(460, 75);
             this.tlpLifestyleQuality.TabIndex = 98;
+            this.tlpLifestyleQuality.Visible = false;
             // 
             // frmSelectLifestyleAdvanced
             // 
