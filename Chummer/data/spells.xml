@@ -1288,39 +1288,39 @@
       <bonus>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Fragile)</spirit>
+          <spirit>Homunculus (Fragile)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Cheap Material)</spirit>
+          <spirit>Homunculus (Cheap Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Average Material)</spirit>
+          <spirit>Homunculus (Average Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Heavy Material)</spirit>
+          <spirit>Homunculus (Heavy Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Reinforced Material)</spirit>
+          <spirit>Homunculus (Reinforced Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Structural Material)</spirit>
+          <spirit>Homunculus (Structural Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Heavy Structural Material)</spirit>
+          <spirit>Homunculus (Heavy Structural Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Armored Material)</spirit>
+          <spirit>Homunculus (Armored Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Hardened Material)</spirit>
+          <spirit>Homunculus (Hardened Material)</spirit>
         </addspirit>
       </bonus>
     </spell>
