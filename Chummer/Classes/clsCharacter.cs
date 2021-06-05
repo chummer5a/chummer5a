@@ -2407,10 +2407,7 @@ namespace Chummer
                         XmlDocument objXmlDocument = new XmlDocument {XmlResolver = null};
                         XmlNode objXmlCharacter = null;
                         XPathNavigator xmlCharacterNavigator = null;
-                        XmlNodeList objXmlNodeList;
-                        XmlNodeList objXmlLocationList;
                         Quality objLivingPersonaQuality = null;
-                        XmlNode xmlRootQualitiesNode;
 
                         frmLoadingForm?.PerformStep("XML");
 
@@ -3004,6 +3001,10 @@ namespace Chummer
                                     ref _strGroupNotes);
                                 //end load_char_misc
                             }
+
+                            XmlNodeList objXmlNodeList;
+                            XmlNodeList objXmlLocationList;
+                            XmlNode xmlRootQualitiesNode;
 
                             frmLoadingForm?.PerformStep(LanguageManager.GetString("String_MentorSpirit"));
 
@@ -17188,12 +17189,12 @@ namespace Chummer
                             return false;
                         }
 
-                        XPathNavigator xmlStatBlockBaseNode;
-                        XPathNavigator xmlLeadsBaseNode;
-
                         IsLoading = true;
                         try
                         {
+                            XPathNavigator xmlStatBlockBaseNode;
+                            XPathNavigator xmlLeadsBaseNode;
+
                             using (_ = Timekeeper.StartSyncron("load_char_misc", op_load))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
