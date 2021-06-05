@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class SustainedSpellControl
+    partial class SustainedObjectControl
     {
         /// <summary> 
         /// Required designer variable.
@@ -208,9 +208,9 @@ namespace Chummer
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MaximumSize = new System.Drawing.Size(1000, 45);
             this.MinimumSize = new System.Drawing.Size(241, 2);
-            this.Name = "SustainedSpellControl";
+            this.Name = "SustainedObjectControl";
             this.Size = new System.Drawing.Size(268, 42);
-            this.Load += new System.EventHandler(this.SustainedSpellControl_Load);
+            this.Load += new System.EventHandler(this.SustainedObjectControl_Load);
             this.bufferedTableLayoutPanel1.ResumeLayout(false);
             this.bufferedTableLayoutPanel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudNetHits)).EndInit();

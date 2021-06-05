@@ -261,8 +261,6 @@
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
-    <Compile Include="Backend\Derived\SustainedCritterPower.cs" />
-    <Compile Include="Backend\Derived\SustainedComplexForm.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
@@ -319,7 +317,6 @@
     <Compile Include="Backend\Uniques\AIProgram.cs" />
     <Compile Include="Backend\Uniques\Art.cs" />
     <Compile Include="Backend\Uniques\CalendarWeek.cs" />
-    <Compile Include="Backend\Derived\SustainedSpell.cs" />
     <Compile Include="Backend\Uniques\ComplexForm.cs" />
     <Compile Include="Backend\Uniques\Contact.cs" />
     <Compile Include="Backend\Uniques\CritterPower.cs" />
@@ -336,6 +333,7 @@
     <Compile Include="Backend\Uniques\Spell.cs" />
     <Compile Include="Backend\Uniques\Spirit.cs" />
     <Compile Include="Backend\Uniques\StackedFocus.cs" />
+    <Compile Include="Backend\Uniques\SustainedObject.cs" />
     <Compile Include="Backend\Uniques\Tradition.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
@@ -374,11 +372,11 @@
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\TooltipFactory.cs" />
-    <Compile Include="Controls\SustainedSpellControl.cs">
+    <Compile Include="Controls\SustainedObjectControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\SustainedSpellControl.Designer.cs">
-      <DependentUpon>SustainedSpellControl.cs</DependentUpon>
+    <Compile Include="Controls\SustainedObjectControl.Designer.cs">
+      <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </Compile>
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
@@ -475,7 +473,6 @@
     <Compile Include="Interfaces\IHasSource.cs" />
     <Compile Include="Interfaces\IHasWirelessBonus.cs" />
     <Compile Include="Interfaces\INotifyMultiplePropertyChanged.cs" />
-    <Compile Include="Interfaces\ISustainable.cs" />
     <Compile Include="lang\language.cs">
       <DependentUpon>language.xsd</DependentUpon>
     </Compile>
@@ -1302,8 +1299,8 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\SustainedSpellControl.resx">
-      <DependentUpon>SustainedSpellControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\SustainedObjectControl.resx">
+      <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterRoster.resx">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>

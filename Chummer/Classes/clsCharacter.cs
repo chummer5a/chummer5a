@@ -195,7 +195,7 @@ namespace Chummer
         private readonly ObservableCollection<Spirit> _lstSpirits = new ObservableCollection<Spirit>();
         private readonly ObservableCollection<Spell> _lstSpells = new ObservableCollection<Spell>();
 
-        private readonly ObservableCollection<ISustainable> _lstSustained = new ObservableCollection<ISustainable>();
+        private readonly ObservableCollection<SustainedObject> _lstSustainedObjects = new ObservableCollection<SustainedObject>();
 
         private readonly List<Focus> _lstFoci = new List<Focus>(5);
         private readonly List<StackedFocus> _lstStackedFoci = new List<StackedFocus>(5);
@@ -282,8 +282,43 @@ namespace Chummer
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
             _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
             _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
-            _lstSustained.CollectionChanged += SustainedOnCollectionChanged;
+            _lstSpells.CollectionChanged += SustainableOnCollectionChanged;
+            _lstComplexForms.CollectionChanged += SustainableOnCollectionChanged;
+            _lstCritterPowers.CollectionChanged += SustainableOnCollectionChanged;
+            _lstSustainedObjects.CollectionChanged += SustainedObjectsOnCollectionChanged;
             _objTradition = new Tradition(this);
+        }
+
+        private void SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (SustainedCollection.Count == 0)
+                return;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (IHasInternalId objItem in e.OldItems)
+                    {
+                        SustainedCollection.RemoveAll(x => ReferenceEquals(x.LinkedObject, objItem));
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (IHasInternalId objItem in e.OldItems)
+                    {
+                        SustainedCollection.RemoveAll(x => ReferenceEquals(x.LinkedObject, objItem));
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    SustainedCollection.RemoveAll(x =>
+                        !Spells.Contains(x.LinkedObject) && !ComplexForms.Contains(x.LinkedObject) &&
+                        !CritterPowers.Contains(x.LinkedObject));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         public XPathNavigator GetNode(bool blnReturnMetatypeOnly = false, string strLanguage = "")
@@ -985,10 +1020,36 @@ namespace Chummer
             }
         }
 
-        private void SustainedOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void SustainedObjectsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshSustainingPenalties();
+            bool blnDoRefreshPenalties = false;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    blnDoRefreshPenalties =
+                        e.NewItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    blnDoRefreshPenalties =
+                        e.OldItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    blnDoRefreshPenalties =
+                        e.OldItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty) ||
+                        e.NewItems.Cast<SustainedObject>().Any(objItem => objItem.HasSustainingPenalty);
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    blnDoRefreshPenalties = true;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            if (blnDoRefreshPenalties)
+                RefreshSustainingPenalties();
         }
+
         [HubTag] public AttributeSection AttributeSection { get; }
 
         public bool IsSaving { get; set; }
@@ -1811,16 +1872,6 @@ namespace Chummer
                     // </spells>
                     objWriter.WriteEndElement();
 
-                    // <sustained>
-                    objWriter.WriteStartElement("sustained");
-                    foreach (ISustainable objSustained in _lstSustained)
-                    {
-                        objSustained.Save(objWriter);
-                    }
-
-                    // </sustained>
-                    objWriter.WriteEndElement();
-
                     // <foci>
                     objWriter.WriteStartElement("foci");
                     foreach (Focus objFocus in _lstFoci)
@@ -2029,6 +2080,16 @@ namespace Chummer
                     }
 
                     // </improvements>
+                    objWriter.WriteEndElement();
+
+                    // <sustained>
+                    objWriter.WriteStartElement("sustainedobjects");
+                    foreach (SustainedObject objSustained in _lstSustainedObjects)
+                    {
+                        objSustained.Save(objWriter);
+                    }
+
+                    // </sustained>
                     objWriter.WriteEndElement();
 
                     // <drugs>
@@ -3849,34 +3910,6 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
-                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tip_Skill_Sustain"));
-
-                            using (_ = Timekeeper.StartSyncron("load_char_SustainedAbilities", loadActivity))
-                            {
-                                objXmlNodeList = objXmlCharacter.SelectNodes("sustained/complexform");
-                                foreach (XmlNode objXmlSustained in objXmlNodeList)
-                                {
-                                    SustainedComplexForm objSustained = new SustainedComplexForm(this);
-                                    objSustained.Load(objXmlSustained);
-                                    _lstSustained.Add(objSustained);
-                                }
-                                objXmlNodeList = objXmlCharacter.SelectNodes("sustained/spell");
-                                foreach (XmlNode objXmlSustained in objXmlNodeList)
-                                {
-                                    SustainedSpell objSustained = new SustainedSpell(this);
-                                    objSustained.Load(objXmlSustained);
-                                    _lstSustained.Add(objSustained);
-                                }
-                                //TODO: Check if xml Node naming is correct
-                                objXmlNodeList = objXmlCharacter.SelectNodes("sustained/critterpower");
-                                foreach (XmlNode objXmlSustained in objXmlNodeList)
-                                {
-                                    SustainedCritterPower objSustained = new SustainedCritterPower(this);
-                                    objSustained.Load(objXmlSustained);
-                                    _lstSustained.Add(objSustained);
-                                }
-                            }
-
                             frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Adept"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
@@ -4249,6 +4282,21 @@ namespace Chummer
                                 }
                             }
 #endif
+                            frmLoadingForm?.PerformStep(LanguageManager.GetString("Tip_Skill_Sustain"));
+
+                            // Need to load these after everything else so that we can properly link them up during loading
+                            using (_ = Timekeeper.StartSyncron("load_char_SustainedAbilities", loadActivity))
+                            {
+                                objXmlNodeList = objXmlCharacter.SelectNodes("sustainedobjects");
+                                foreach (XmlNode objXmlSustained in objXmlNodeList)
+                                {
+                                    SustainedObject objSustained = new SustainedObject(this);
+                                    objSustained.Load(objXmlSustained);
+                                    if (objSustained.InternalId != Guid.Empty.ToString("D", GlobalOptions.InvariantCultureInfo))
+                                        _lstSustainedObjects.Add(objSustained);
+                                }
+                            }
+
                             frmLoadingForm?.PerformStep(LanguageManager.GetString("Tab_Improvements"));
 
                             using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
@@ -5140,32 +5188,6 @@ namespace Chummer
             // </spells>
             objWriter.WriteEndElement();
 
-            // <sustained>
-            objWriter.WriteStartElement("sustained");
-            foreach(ISustainable objSustained in SustainedCollection)
-            {
-               // objSustained.Print(objWriter, strLanguageToPrint);
-               switch (objSustained.GetType().Name)
-               {
-                    case nameof(SustainedSpell):
-                        SustainedSpell objSustainedSpell = (SustainedSpell) objSustained;
-                        objSustainedSpell.Print(objWriter, objCulture, strLanguageToPrint);
-                        break;
-                    case nameof(SustainedComplexForm):
-                        SustainedComplexForm objSustainedComplexForm = (SustainedComplexForm) objSustained;
-                        objSustainedComplexForm.Print(objWriter, strLanguageToPrint);
-                        break;
-                    case nameof(SustainedCritterPower):
-                        SustainedCritterPower objSustainedCritterPower = (SustainedCritterPower) objSustained;
-                        objSustainedCritterPower.Print(objWriter, strLanguageToPrint);
-                        break;
-               }
-            }
-
-            //</sustained>
-            objWriter.WriteEndElement();
-
-
             // <powers>
             objWriter.WriteStartElement("powers");
             foreach(Power objPower in Powers)
@@ -5400,6 +5422,16 @@ namespace Chummer
             // </critterpowers>
             objWriter.WriteEndElement();
 
+            // <sustained>
+            objWriter.WriteStartElement("sustainedobjects");
+            foreach (SustainedObject objSustained in SustainedCollection)
+            {
+                objSustained.Print(objWriter, objCulture, strLanguageToPrint);
+            }
+
+            //</sustained>
+            objWriter.WriteEndElement();
+
             // <calendar>
             objWriter.WriteStartElement("calendar");
             //Calendar.Sort();
@@ -5520,7 +5552,7 @@ namespace Chummer
             ImprovementManager.ClearCachedValues(this);
             _lstImprovements.Clear();
             _lstSpells.Clear();
-            _lstSustained.Clear();
+            _lstSustainedObjects.Clear();
             _lstFoci.Clear();
             _lstStackedFoci.Clear();
             _lstPowers.Clear();
@@ -7026,18 +7058,6 @@ namespace Chummer
                     {
                         Spirits.RemoveAt(i);
                     }
-                }
-            }
-
-            for(int i = SustainedCollection.Count -1; i>=0; --i)
-            {
-                if(i < SustainedCollection.Count)
-                {
-                    SustainedSpell objToRemove = (SustainedSpell)SustainedCollection[i];
-                    // Remove the Improvements created by the Spell.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
-                        objToRemove.InternalId);
-                    SustainedCollection.RemoveAt(i);
                 }
             }
         }
@@ -10823,7 +10843,7 @@ namespace Chummer
         /// <summary>
         /// Sustained Spells
         /// </summary>
-        public ObservableCollection<ISustainable> SustainedCollection => _lstSustained;
+        public ObservableCollection<SustainedObject> SustainedCollection => _lstSustainedObjects;
 
 
         /// <summary>
@@ -15914,7 +15934,7 @@ namespace Chummer
             int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
 
             //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
-            int intSustainedSpells = SustainedCollection.Count(objSustainedSpell => objSustainedSpell.SelfSustained && !(objSustainedSpell is SustainedCritterPower));
+            int intSustainedSpells = SustainedCollection.Count(x => x.HasSustainingPenalty);
             int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell;
                                                                                                                
             SustainingPenalty = intSustainedSpells * intModifierPerSpell;

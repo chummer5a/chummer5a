@@ -126,14 +126,11 @@ namespace Chummer
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
-            SaveDerived(objWriter);
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
                 _objCharacter.SourceProcess(_strSource);
         }
-
-        public virtual void SaveDerived(XmlTextWriter objWriter){}
 
         /// <summary>
         /// Load the Complex Form from the XmlNode.
@@ -165,11 +162,7 @@ namespace Chummer
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
-
-            LoadDerived(objNode);
         }
-
-        public virtual void LoadDerived(XmlNode objNode){}
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -192,14 +185,9 @@ namespace Chummer
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
-
                 objWriter.WriteElementString("notes", Notes);
-
-            PrintDerived(objWriter);
             objWriter.WriteEndElement();
         }
-
-        public virtual void PrintDerived(XmlTextWriter objWriter){}
         #endregion
 
         #region Properties
