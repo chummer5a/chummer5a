@@ -65,6 +65,7 @@ Application Changes:
 - Attempting to buy a cyberlimb accessory for a non-Adapsin, non-Standard grade cyberlimb after having bought Adapsin no longer causes the accessory's grade to be set to Standard (Adapsin).
 - Added the ability to re-attempt connecting to GitHub inside the Updater tool.
 - Using custom date formats no longer causes the Nuyen and Karma expenses lists to be sorted incorrectly. Fixes #4472.
+- Using and regaining Edge no longer affects modifiers to the value of the Edge attribute. Instead, spent Edge is tracked purely on its own and is printed/exported separately as `edgeused` and `edgeremaining` for spent Edge and remaining Edge respectively. Character sheets now properly display the amount of Edge remaining for a character in the attributes section.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

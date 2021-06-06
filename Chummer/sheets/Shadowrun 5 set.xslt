@@ -357,7 +357,7 @@
                   </p>
                 </td>
                 <td width="25%" class="attributecell">
-                  <p>  <xsl:value-of select="$lang.CurrentEdge"/>:
+                  <p> <xsl:value-of select="$lang.CurrentEdge"/>: <xsl:value-of select="edgeremaining"/>
                   </p>
                 </td>
                 <td width="25%" class="attributecell">

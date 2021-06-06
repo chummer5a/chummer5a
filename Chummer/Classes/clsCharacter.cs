@@ -86,6 +86,7 @@ namespace Chummer
         private int _intContactPointsUsed;
         private int _intCachedRedlinerBonus = int.MinValue;
         private int _intCurrentCounterspellingDice;
+        private int _intEdgeUsed;
 
         // General character info.
         private string _strName = string.Empty;
@@ -1712,6 +1713,8 @@ namespace Chummer
                     // <totalattributes />
                     objWriter.WriteElementString("totalattributes",
                         _intTotalAttributes.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <edgeused />
+                    objWriter.WriteElementString("edgeused", _intEdgeUsed.ToString(GlobalOptions.InvariantCultureInfo));
                     // <contactpoints />
                     objWriter.WriteElementString("contactpoints",
                         _intCachedContactPoints.ToString(GlobalOptions.InvariantCultureInfo));
@@ -2955,6 +2958,7 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("totalspecial", ref _intTotalSpecial);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("totalattributes",
                                     ref _intTotalAttributes);
+                                xmlCharacterNavigator.TryGetInt32FieldQuickly("edgeused", ref _intEdgeUsed);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpoints",
                                     ref _intCachedContactPoints);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("contactpointsused",
@@ -3039,6 +3043,15 @@ namespace Chummer
                                     // Do not load condition monitor improvements from older versions of Chummer
                                     if (strImprovementSource == "ConditionMonitor")
                                         continue;
+
+                                    // Load Edge use improvements from older versions of Chummer directly into Character's Edge Use property
+                                    if (strImprovementSource == "EdgeUse")
+                                    {
+                                        decimal decOldEdgeUsed = 0;
+                                        if (objXmlImprovement.TryGetDecFieldQuickly("aug", ref decOldEdgeUsed))
+                                            EdgeUsed = (-decOldEdgeUsed).StandardRound();
+                                        continue;
+                                    }
 
                                     // Do not load essence loss improvements if this character does not have any attributes affected by essence loss
                                     if (_decEssenceAtSpecialStart == decimal.MinValue &&
@@ -4769,6 +4782,10 @@ namespace Chummer
             objWriter.WriteElementString("attributes", Attributes.ToString(objCulture));
             // <totalattributes />
             objWriter.WriteElementString("totalattributes", TotalAttributes.ToString(objCulture));
+            // <edgeused />
+            objWriter.WriteElementString("edgeused", EdgeUsed.ToString(objCulture));
+            // <edgeremaining />
+            objWriter.WriteElementString("edgeremaining", EdgeRemaining.ToString(objCulture));
             // <streetcred />
             objWriter.WriteElementString("streetcred", StreetCred.ToString(objCulture));
             // <calculatedstreetcred />
@@ -5506,6 +5523,7 @@ namespace Chummer
             _intTotalSpecial = 0;
             _intAttributes = 0;
             _intTotalAttributes = 0;
+            _intEdgeUsed = 0;
 
             // Reset Metatype Information.
             _strMetatype = string.Empty;
@@ -8427,6 +8445,27 @@ namespace Chummer
 
         public string DisplayCareerNuyen =>
             CareerNuyen.ToString(Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+
+        /// <summary>
+        /// Special.
+        /// </summary>
+        public int EdgeUsed
+        {
+            get => _intEdgeUsed;
+            set
+            {
+                if (_intEdgeUsed != value)
+                {
+                    _intEdgeUsed = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public int EdgeRemaining => EDG.TotalValue - EdgeUsed;
+
+        public string EdgeRemainingString => EdgeRemaining.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Of")
+            + EDG.TotalValue.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining");
 
         /// <summary>
         /// Whether or not the character is a Critter.
@@ -15728,8 +15767,16 @@ namespace Chummer
         {
             if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
             {
-                if (Options.ContactPointsExpression.Contains("{EDG}"))
-                    OnPropertyChanged(nameof(ContactPoints));
+                if (EdgeUsed > EDG.TotalValue)
+                {
+                    EdgeUsed = EDG.TotalValue;
+                    if (Options.ContactPointsExpression.Contains("{EDG}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                }
+                else if (Options.ContactPointsExpression.Contains("{EDG}"))
+                    OnMultiplePropertyChanged(nameof(ContactPoints), nameof(EdgeRemaining));
+                else
+                    OnPropertyChanged(nameof(EdgeRemaining));
                 if (Options.KnowledgePointsExpression.Contains("{EDG}"))
                     SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
             }
@@ -16681,6 +16728,11 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(WildReputationTooltip),
                         new DependencyGraphNode<string, Character>(nameof(TotalWildReputation),
                             new DependencyGraphNode<string, Character>(nameof(WildReputation))
+                        )
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(EdgeRemainingString),
+                        new DependencyGraphNode<string, Character>(nameof(EdgeRemaining),
+                            new DependencyGraphNode<string, Character>(nameof(EdgeUsed))
                         )
                     )
                 );

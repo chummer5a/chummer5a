@@ -713,9 +713,6 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public string AugmentedMetatypeLimits => string.Format(GlobalOptions.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
             LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
-
-        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Of")
-            + Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining");
         #endregion
 
         #region Methods
@@ -1265,10 +1262,6 @@ namespace Chummer.Backend.Attributes
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(Karma)),
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(FreeBase)),
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum))
-                ),
-                new DependencyGraphNode<string, CharacterAttrib>(nameof(CareerRemainingString),
-                    new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue)),
-                    new DependencyGraphNode<string, CharacterAttrib>(nameof(Value))
                 )
             );
 

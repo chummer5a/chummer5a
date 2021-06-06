@@ -380,7 +380,6 @@ namespace Chummer
             EssenceLossChargen,
             CritterPower,
             ComplexForm,
-            EdgeUse,
             MutantCritter,
             Cyberzombie,
             StackedFocus,
