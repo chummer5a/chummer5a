@@ -65,7 +65,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Indirect</descriptor>
+      <descriptor>Indirect, Touch</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -234,7 +234,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Touch</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -1619,7 +1619,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Indirect, Area, Elemental</descriptor>
+      <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
       <range>LOS</range>
@@ -3778,7 +3778,7 @@
       <source>SSP</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>

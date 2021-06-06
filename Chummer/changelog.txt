@@ -89,6 +89,7 @@ Data Changes:
 - All French translations that contain a shortened article (i.e. "d'" or "l'") now have zero-width spaces between the consonant and the apostrophe in order to prevent weirdness with the way they are sorted alphabetically. Searching without a zero-width space should still work, however.
 - Chemical Glands can now hold Chemicals and Custom Drugs.
 - Special Work Area can now be selected multiple times for Advanced Lifestyles and have some text specified for it each time.
+- The spells Pollutant Stream, Knockout, Punch, and Frigid now have proper descriptors. Fixes #4479.
 
 Changed/New Strings:
 - String_ContactPoints
