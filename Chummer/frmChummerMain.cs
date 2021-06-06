@@ -206,15 +206,14 @@ namespace Chummer
                             // Attempt to cache all XML files that are used the most.
                             using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                             {
-                                await Task.Run(() =>
-                                    Parallel.ForEach(s_astrPreloadFileNames, x =>
-                                    {
-                                        // Load default language data first for performance reasons
-                                        if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                                            XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
-                                        XmlManager.Load(x);
-                                        _frmProgressBar.PerformStep(Application.ProductName);
-                                    }));
+                                await Task.WhenAll(s_astrPreloadFileNames.Select(x => Task.Run(() =>
+                                {
+                                    // Load default language data first for performance reasons
+                                    if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                                        XmlManager.Load(x, null, GlobalOptions.DefaultLanguage);
+                                    XmlManager.Load(x);
+                                    _frmProgressBar.PerformStep(Application.ProductName);
+                                })));
                                 //Timekeeper.Finish("cache_load");
                             }
 
@@ -641,6 +640,12 @@ namespace Chummer
                 if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested ||
                     Utils.GitUpdateAvailable <= 0)
                     return;
+                string strSpace = LanguageManager.GetString("String_Space");
+                string strNewText = Application.ProductName + strSpace + '-' + strSpace +
+                                    LanguageManager.GetString("String_Version")
+                                    + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
+                                    + string.Format(GlobalOptions.CultureInfo,
+                                        LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
                 await this.DoThreadSafeAsync(() =>
                 {
                     if (GlobalOptions.AutomaticUpdate)
@@ -652,13 +657,7 @@ namespace Chummer
                             _frmUpdate.SilentMode = true;
                         }
                     }
-
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    Text = Application.ProductName + strSpace + '-' + strSpace +
-                           LanguageManager.GetString("String_Version")
-                           + strSpace + _strCurrentVersion + strSpace + '-' + strSpace
-                           + string.Format(GlobalOptions.CultureInfo,
-                               LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
+                    Text = strNewText;
                 });
             }, _objVersionUpdaterCancellationTokenSource.Token);
         }
@@ -1030,7 +1029,8 @@ namespace Chummer
 
                 // Array with locker instead of concurrent bag because we want to preserve order
                 Character[] lstCharacters = new Character[s.Length];
-                await Task.Run(() => Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value)));
+                await Task.WhenAll(dicIndexedStrings.Select(x =>
+                    Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
                 OpenCharacterList(lstCharacters);
             }
         }
@@ -1331,7 +1331,8 @@ namespace Chummer
                             dicIndexedStrings.Add(i, lstFilesToOpen[i]);
                         }
 
-                        await Task.Run(() => Parallel.ForEach(dicIndexedStrings, x => lstCharacters[x.Key] = LoadCharacter(x.Value)));
+                        await Task.WhenAll(dicIndexedStrings.Select(x =>
+                            Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
                     }
                     OpenCharacterList(lstCharacters);
                 }

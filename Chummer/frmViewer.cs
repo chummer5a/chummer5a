@@ -391,18 +391,20 @@ namespace Chummer
         /// </summary>
         private async Task SetDocumentText(string strText)
         {
-            await this.DoThreadSafeAsync(() =>
-            {
-                tsPrintPreview.Enabled = false;
-                tsSaveAsHtml.Enabled = false;
-            });
-            await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false);
-            await cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false);
-            await webViewer.DoThreadSafeAsync(() => webViewer.DocumentText =
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
-                webViewer.Height.ToString(GlobalOptions.InvariantCultureInfo) +
-                ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
-                strText.CleanForHTML() + "</body></html>");
+            await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                {
+                    tsPrintPreview.Enabled = false;
+                    tsSaveAsHtml.Enabled = false;
+                }),
+                cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
+                cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false),
+                webViewer.DoThreadSafeFuncAsync(() => webViewer.Height)
+                    .ContinueWith(x =>
+                    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
+                    x.Result.ToString(GlobalOptions.InvariantCultureInfo) +
+                    ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
+                    strText.CleanForHTML() + "</body></html>")
+                    .ContinueWith(x => webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = x.Result)));
         }
 
         /// <summary>
@@ -531,13 +533,13 @@ namespace Chummer
                     }
                 }
 
-                await this.DoThreadSafeAsync(() =>
-                {
-                    tsPrintPreview.Enabled = true;
-                    tsSaveAsHtml.Enabled = true;
-                });
-                await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true);
-                await cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = true);
+                await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    {
+                        tsPrintPreview.Enabled = true;
+                        tsSaveAsHtml.Enabled = true;
+                    }),
+                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = true));
             }
         }
 

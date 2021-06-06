@@ -134,9 +134,9 @@ namespace Chummer
                 }
                 if (File.Exists(_strTempUpdatePath))
                 {
-                    string strUpdateLog = File.ReadAllText(_strTempUpdatePath);
+                    string strUpdateLog = File.ReadAllText(_strTempUpdatePath).CleanForHTML();
                     await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">"
-                        + strUpdateLog.CleanForHTML() + "</font>");
+                        + strUpdateLog + "</font>");
                 }
             }
             await this.DoThreadSafeAsync(DoVersionTextUpdate);
@@ -683,9 +683,9 @@ namespace Chummer
             if (!Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
                 return;
             Log.Debug("DownloadUpdates");
-            await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false);
-            await cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false);
-            await cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false);
+            await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
+                cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
+                cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
             if (File.Exists(_strTempPath))
                 File.Delete(_strTempPath);
             try

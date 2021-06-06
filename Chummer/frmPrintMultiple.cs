@@ -17,7 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
  using System;
-using System.IO;
+ using System.IO;
  using System.Linq;
  using System.Threading;
  using System.Threading.Tasks;
@@ -84,10 +84,12 @@ namespace Chummer
         private async Task CancelPrint()
         {
             _objPrinterCancellationTokenSource?.Cancel();
-            await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true);
-            await prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0);
             if (_tskPrinter?.IsCompleted == false)
-                await _tskPrinter;
+                await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                    prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+            else
+                await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                    prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
         }
 
         private async Task StartPrint()
@@ -103,12 +105,12 @@ namespace Chummer
             {
                 try
                 {
-                    await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false);
-                    await prgProgress.DoThreadSafeAsync(() =>
-                    {
-                        prgProgress.Value = 0;
-                        prgProgress.Maximum = treCharacters.Nodes.Count;
-                    });
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
+                        prgProgress.DoThreadSafeAsync(() =>
+                        {
+                            prgProgress.Value = 0;
+                            prgProgress.Maximum = treCharacters.Nodes.Count;
+                        }));
                     Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
                     // Parallelized load because this is one major bottleneck.
                     Parallel.For(0, lstCharacters.Length, (i, objState) =>
@@ -163,8 +165,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    await cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false);
-                    await prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0);
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                        prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
                 }
             }
         }

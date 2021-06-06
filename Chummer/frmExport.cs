@@ -77,8 +77,7 @@ namespace Chummer
                 cboXSLT.SelectedIndex = 0;
             cboXSLT.EndUpdate();
             _blnLoading = false;
-            await this.DoThreadSafeAsync(() => Text = Text + " " + _objCharacter?.Name);
-            await DoLanguageUpdate();
+            await Task.WhenAll(this.DoThreadSafeAsync(() => Text = Text + LanguageManager.GetString("String_Space") + _objCharacter?.Name), DoLanguageUpdate());
         }
 
         private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
@@ -125,7 +124,6 @@ namespace Chummer
             if (_blnLoading)
                 return;
             _strExportLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalOptions.Language;
-            await imgSheetLanguageFlag.DoThreadSafeAsync(() => imgSheetLanguageFlag.Image = FlagImageGetter.GetFlagFromCountryCode(_strExportLanguage.Substring(3, 2)));
             try
             {
                 _objExportCulture = CultureInfo.GetCultureInfo(_strExportLanguage);
@@ -133,9 +131,11 @@ namespace Chummer
             catch (CultureNotFoundException)
             {
             }
-
             _objCharacterXml = null;
-            await DoXsltUpdate();
+            await Task.WhenAll(
+                imgSheetLanguageFlag.DoThreadSafeAsync(() =>
+                    imgSheetLanguageFlag.Image =
+                        FlagImageGetter.GetFlagFromCountryCode(_strExportLanguage.Substring(3, 2))), DoXsltUpdate());
         }
 
         private async Task DoXsltUpdate()
@@ -198,8 +198,9 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                await cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false);
-                await txtText.DoThreadSafeAsync(() => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
+                await Task.WhenAll(cmdOK.DoThreadSafeAsync(() => cmdOK.Enabled = false),
+                    txtText.DoThreadSafeAsync(() =>
+                        txtText.Text = LanguageManager.GetString("String_Generating_Data")));
                 _objCharacterXml = _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                     _objCharacterXmlGeneratorCancellationTokenSource.Token);
                 if (_objCharacterXmlGeneratorCancellationTokenSource.IsCancellationRequested)

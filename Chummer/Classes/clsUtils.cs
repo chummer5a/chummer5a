@@ -444,9 +444,7 @@ namespace Chummer
             }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
         }
 
         /// <summary>
@@ -459,17 +457,12 @@ namespace Chummer
         {
             if (!EverDoEvents)
             {
-                foreach (Action funcToRun in afuncToRun)
-                    funcToRun.Invoke();
+                Parallel.Invoke(afuncToRun);
                 return;
             }
-            Task[] aobjTasks = new Task[afuncToRun.Length];
-            for (int i = 0; i < afuncToRun.Length; ++i)
-                aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task objTask = Task.Run(() => Parallel.Invoke(afuncToRun));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
         }
 
         /// <summary>
@@ -486,9 +479,7 @@ namespace Chummer
             }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
             return objTask.Result;
         }
 
@@ -503,17 +494,15 @@ namespace Chummer
             T[] aobjReturn = new T[afuncToRun.Length];
             if (!EverDoEvents)
             {
-                for (int i = 0; i < afuncToRun.Length; ++i)
-                    aobjReturn[i] = afuncToRun[i].Invoke();
+                Parallel.For(0, afuncToRun.Length, i => aobjReturn[i] = afuncToRun[i].Invoke());
                 return aobjReturn;
             }
             Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -536,9 +525,7 @@ namespace Chummer
             }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
             return objTask.Result;
         }
 
@@ -553,22 +540,21 @@ namespace Chummer
             T[] aobjReturn = new T[afuncToRun.Length];
             if (!EverDoEvents)
             {
-                for (int i = 0; i < afuncToRun.Length; ++i)
+                Parallel.For(0, afuncToRun.Length, i =>
                 {
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
                     aobjReturn[i] = objSyncTask.Result;
-                }
+                });
                 return aobjReturn;
             }
             Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -591,9 +577,7 @@ namespace Chummer
             }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
         }
 
         /// <summary>
@@ -606,21 +590,20 @@ namespace Chummer
         {
             if (!EverDoEvents)
             {
-                foreach (Func<Task> funcToRun in afuncToRun)
+                Parallel.ForEach(afuncToRun, funcToRun =>
                 {
                     Task objSyncTask = funcToRun.Invoke();
                     if (objSyncTask.Status == TaskStatus.Created)
                         objSyncTask.RunSynchronously();
-                }
+                });
                 return;
             }
             Task[] aobjTasks = new Task[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
         }
     }
 }
