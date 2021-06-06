@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -359,9 +360,7 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-
                     SkillControl2_RefreshPoolTooltipAndDisplay();
-
                     break;
             }
         }
@@ -573,13 +572,16 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void SkillControl2_RefreshPoolTooltipAndDisplay()
         {
-            //TODO: Run this async somehow, QueueThreadSafe maybe.
-
-            string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
-
-            string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
-            lblModifiedRating.DoThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
+            Task.Run(() =>
+            {
+                using (new CursorWait(this, true))
+                {
+                    string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
+                    lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
+                    string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+                    lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
+                }
+            });
         }
     }
 }
