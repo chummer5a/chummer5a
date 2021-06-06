@@ -942,7 +942,7 @@ namespace Chummer
                 {
                     if(objTabPage.Tag is CharacterShared objCharacterForm && objCharacterForm.CharacterObject == objCharacter)
                     {
-                        objTabPage.DoThreadSafe(() => objTabPage.Text = objCharacter.CharacterName.Trim());
+                        objTabPage.QueueThreadSafe(() => objTabPage.Text = objCharacter.CharacterName.Trim());
                         return;
                     }
                 }
@@ -1387,8 +1387,7 @@ namespace Chummer
                         frmNewCharacter.Show();
                         lstNewFormsToProcess.Add(frmNewCharacter);
                     });
-                    if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) &&
-                        File.Exists(objCharacter.FileName))
+                    if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
                         GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
                     UpdateCharacterTabTitle(objCharacter,
