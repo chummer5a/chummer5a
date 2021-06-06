@@ -403,6 +403,17 @@
       <page>398</page>
     </power>
     <power>
+      <id>c5ecc4fa-3f9d-49da-ad63-3ee35843ca17</id>
+      <name>Manifest</name>
+      <category>Paranormal</category>
+      <type>P</type>
+      <action>Complex</action>
+      <range>Self</range>
+      <duration>Special</duration>
+      <source>SR5</source>
+      <page>314</page>
+    </power>
+    <power>
       <id>153bc9aa-1a5e-41ac-877d-751470624bc7</id>
       <name>Mimicry</name>
       <category>Paranormal</category>
