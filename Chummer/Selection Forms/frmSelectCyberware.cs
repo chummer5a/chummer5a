@@ -1025,8 +1025,7 @@ namespace Chummer
                             continue;
                         }
                     }
-
-                    // TODO: Fix if someone has an amount of limbs different from the default amount
+                    
                     if (!string.IsNullOrEmpty(_strHasModularMounts))
                     {
                         string strBlocksMounts = xmlCyberware.SelectSingleNode("blocksmounts")?.Value;
@@ -1051,8 +1050,7 @@ namespace Chummer
                             }
                         }
                     }
-
-                    // TODO: Fix if someone has an amount of limbs different from the default amount
+                    
                     if (!string.IsNullOrEmpty(_strDisallowedMounts))
                     {
                         string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
