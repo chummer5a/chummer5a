@@ -566,7 +566,7 @@ namespace ChummerHub.Client.Backend
                     }
                     else
                     {
-                        Log.Error(e, "Response from SINners WebService: ");
+                        Log.Error(e, " Response from SINners WebService: ");
                     }
                     PluginHandler.MainForm.DoThreadSafe(() =>
                     {

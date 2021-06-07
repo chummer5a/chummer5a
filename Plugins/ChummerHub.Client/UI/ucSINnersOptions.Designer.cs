@@ -122,7 +122,7 @@ namespace ChummerHub.Client.UI
             radioButtonListItem2});
             this.rbListUserMode.Location = new System.Drawing.Point(3, 16);
             this.rbListUserMode.Name = "rbListUserMode";
-            this.rbListUserMode.Size = new System.Drawing.Size(338, 75);
+            this.rbListUserMode.Size = new System.Drawing.Size(338, 68);
             this.rbListUserMode.TabIndex = 0;
             // 
             // gbRegisteredMode
@@ -465,7 +465,6 @@ namespace ChummerHub.Client.UI
             // 
             // ucSINnersOptions
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.tlpAllOptions);
