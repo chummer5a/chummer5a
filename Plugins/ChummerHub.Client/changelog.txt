@@ -86,4 +86,5 @@ Application Changes:
 - added a ToolTip to the Online-Treenode in case something goes wrong with the ChummerHub-Query
 - reworked Multi-Upload Button in Options-Dialog
 - Fixed NullReferenceException when no spell was selected in the Sinner-Search dialog.
+
 - added Changelog ;)

@@ -135,17 +135,8 @@ namespace Chummer
                 Application.SetCompatibleTextRenderingDefault(false);
 
                 sw.TaskEnd("languagefreestartup");
-#if !DEBUG
-                AppDomain.CurrentDomain.UnhandledException += (o, e) =>
-                {
-                    if (e.ExceptionObject is Exception ex)
-                        CrashHandler.WebMiniDumpHandler(ex);
 
-                    //main.Hide();
-                    //main.ShowInTaskbar = false;
-                };
-#else
-                AppDomain.CurrentDomain.UnhandledException += (o, e) =>
+                UnhandledExceptionEventHandler crashhandler = (o, e) =>
                 {
                     try
                     {
@@ -162,16 +153,21 @@ namespace Chummer
                                 if (d.Key != null && d.Value != null)
                                     et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                             }
-                            ChummerTelemetryClient.TrackException(myException);
-                            ChummerTelemetryClient.Flush();
+                            ChummerTelemetryClient?.TrackException(myException);
+                            ChummerTelemetryClient?.Flush();
                         }
                     }
                     catch (Exception exception)
                     {
                         Console.WriteLine(exception);
                     }
-                };
+#if !DEBUG
+                    if (e.ExceptionObject is Exception ex)
+                        CrashHandler.WebMiniDumpHandler(ex);
 #endif
+                };
+
+                AppDomain.CurrentDomain.UnhandledException += crashhandler;
 
                 sw.TaskEnd("Startup");
 

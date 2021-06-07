@@ -12,6 +12,10 @@ namespace ChummerHub.Client.Sinners
 {
     public partial class SINnerVisibility
     {
+        public SINnerVisibility()
+        {
+            this.IsGroupVisible = true;
+        }
 
         private BindingList<SINnerUserRight> _UserRightsObservable;
 
@@ -48,7 +52,10 @@ namespace ChummerHub.Client.Sinners
                 Id = Guid.NewGuid()
             };
             if (!UserRightsObservable.Contains(ur))
-                UserRightsObservable.Add(ur);
+            {
+                UserRights.Add(ur);
+                UserRightsObservable = null;
+            }
         }
 
         private static bool IsValidEmail(string email)
