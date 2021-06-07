@@ -671,7 +671,9 @@ namespace Chummer.Plugins
                     {
                         TopMost = true
                     })
-                        frmSearch.Show();
+                    {
+                        frmSearch.ShowDialog();
+                    }
                 }
 
             }
@@ -937,16 +939,33 @@ namespace Chummer.Plugins
 
                     if (Guid.TryParse(sinneridstring, out Guid sinnerid))
                     {
+                        SINner res = null;
                         try
                         {
-                            var res = await client.PutSINerInGroupAsync(null, sinnerid, null);
-                            
+                            res = await client.PutSINerInGroupAsync(null, sinnerid, null);
+
                             var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                             if (res != null)
                             {
                                 await MainForm.CharacterRoster.LoadCharacters(false, false, false);
                             }
                             
+                        }
+                        catch(ApiException e1)
+                        {
+                            if (res != null)
+                            {
+                                var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                if (res != null)
+                                {
+                                    await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                                }
+                            }
+                            else
+                            {
+                                ChummerHub.Client.Backend.Utils.HandleError(e1);
+                            }
+
                         }
                         catch (Exception exception)
                         {

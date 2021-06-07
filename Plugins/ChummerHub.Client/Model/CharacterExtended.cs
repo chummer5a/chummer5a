@@ -301,8 +301,27 @@ namespace ChummerHub.Client.Sinners
                                 "Posting SINner", op_uploadChummer,
                                 CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                             {
-                                res = await Utils.PostSINnerAsync(this);
-                                await Utils.ShowErrorResponseFormAsync(res);
+                                res = null;
+                                try
+                                {
+                                    res = await Utils.PostSINnerAsync(this);
+                                    await Utils.ShowErrorResponseFormAsync(res);
+                                }
+                                catch(ApiException ae)
+                                {
+                                    //202 is kind of a special case (and probably wrongly handled in swagger.cs)
+                                    if (ae.StatusCode == 202)
+                                    {
+                                        Log.Trace("SINner posted, next step: uploading the file!");
+                                        res = new ResultSinnerPostSIN() { CallSuccess = true };
+                                    }
+                                    else
+                                    {
+                                        throw;    
+                                    }
+                                    
+                                }
+
                             }
 
                             if (myState != null)
@@ -574,6 +593,25 @@ namespace ChummerHub.Client.Sinners
                         UserRights = ucSINnersOptions.SINnerVisibility.UserRights
                     };
             }
+            if (!String.IsNullOrEmpty(Settings.Default.UserEmail))
+            {
+                if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any(a => a.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail"))
+                {
+                    var found = MySINnerFile.SiNnerMetaData.Visibility.UserRights.Where(a => a.EMail.ToLowerInvariant() == "delete.this.and.add@your.mail").ToList();
+                    foreach (var one in found)
+                        MySINnerFile.SiNnerMetaData.Visibility.UserRights.Remove(one);
+                }
+            }
+            if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count() == 0)
+            {
+                MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(new SINnerUserRight()
+                {
+                    Id = Guid.NewGuid(),
+                    CanEdit = true,
+                    EMail = Settings.Default.UserEmail
+                });
+            }
+
 
             if (MySINnerFile.SiNnerMetaData.Visibility.Id == ucSINnersOptions.SINnerVisibility.Id)
             {
