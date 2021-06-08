@@ -5685,11 +5685,11 @@ namespace Chummer
                     }
 
                     foreach(Weapon objWeapon in Weapons.DeepWhere(x => x.Children,
-                        x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                        x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                     {
                         foreach(WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
-                            objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children,
+                            objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
                                 x => x.InternalId == objImprovement.SourceName);
                             if(objReturnGear != null)
                             {
@@ -5708,7 +5708,7 @@ namespace Chummer
 
                     foreach(Armor objArmor in Armor)
                     {
-                        objReturnGear = objArmor.Gear.DeepFirstOrDefault(x => x.Children,
+                        objReturnGear = objArmor.GearChildren.DeepFirstOrDefault(x => x.Children,
                             x => x.InternalId == objImprovement.SourceName);
                         if(objReturnGear != null)
                         {
@@ -5724,9 +5724,9 @@ namespace Chummer
                         }
                     }
 
-                    foreach(Cyberware objCyberware in Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+                    foreach(Cyberware objCyberware in Cyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
                     {
-                        objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children,
+                        objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
                             x => x.InternalId == objImprovement.SourceName);
                         if(objReturnGear != null)
                         {
@@ -5744,7 +5744,7 @@ namespace Chummer
 
                     foreach(Vehicle objVehicle in Vehicles)
                     {
-                        objReturnGear = objVehicle.Gear.DeepFirstOrDefault(x => x.Children,
+                        objReturnGear = objVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
                             x => x.InternalId == objImprovement.SourceName);
                         if(objReturnGear != null)
                         {
@@ -5760,11 +5760,11 @@ namespace Chummer
                         }
 
                         foreach(Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children,
-                            x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                            x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                         {
                             foreach(WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
-                                objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children,
+                                objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
                                     x => x.InternalId == objImprovement.SourceName);
                                 if(objReturnGear != null)
                                 {
@@ -5786,11 +5786,11 @@ namespace Chummer
                         foreach(VehicleMod objVehicleMod in objVehicle.Mods)
                         {
                             foreach(Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children,
-                                x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                                x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                             {
                                 foreach(WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    objReturnGear = objAccessory.Gear.DeepFirstOrDefault(x => x.Children,
+                                    objReturnGear = objAccessory.GearChildren.DeepFirstOrDefault(x => x.Children,
                                         x => x.InternalId == objImprovement.SourceName);
                                     if(objReturnGear != null)
                                     {
@@ -5810,9 +5810,9 @@ namespace Chummer
                             }
 
                             foreach(Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children,
-                                x => x.Gear.Count > 0))
+                                x => x.GearChildren.Count > 0))
                             {
-                                objReturnGear = objCyberware.Gear.DeepFirstOrDefault(x => x.Children,
+                                objReturnGear = objCyberware.GearChildren.DeepFirstOrDefault(x => x.Children,
                                     x => x.InternalId == objImprovement.SourceName);
                                 if(objReturnGear != null)
                                 {
@@ -6943,11 +6943,11 @@ namespace Chummer
                 if(objGear.Parent is IHasChildren<Gear> parent)
                     parent.Children.Remove(objGear);
                 else if(objOldCyberware != null)
-                    objOldCyberware.Gear.Remove(objGear);
+                    objOldCyberware.GearChildren.Remove(objGear);
                 else if(objOldWeaponAccessory != null)
-                    objOldWeaponAccessory.Gear.Remove(objGear);
+                    objOldWeaponAccessory.GearChildren.Remove(objGear);
                 else
-                    objOldVehicle.Gear.Remove(objGear);
+                    objOldVehicle.GearChildren.Remove(objGear);
 
                 // Add the Gear to its new parent.
                 objGear.Location = null;
@@ -6974,15 +6974,15 @@ namespace Chummer
                     if(objGear.Parent is IHasChildren<Gear> parent)
                         parent.Children.Remove(objGear);
                     else if(objOldCyberware != null)
-                        objOldCyberware.Gear.Remove(objGear);
+                        objOldCyberware.GearChildren.Remove(objGear);
                     else if(objOldWeaponAccessory != null)
-                        objOldWeaponAccessory.Gear.Remove(objGear);
+                        objOldWeaponAccessory.GearChildren.Remove(objGear);
                     else
-                        objOldVehicle.Gear.Remove(objGear);
+                        objOldVehicle.GearChildren.Remove(objGear);
 
                     // Add the Gear to the Vehicle and set its Location.
                     objGear.Parent = objNewVehicle;
-                    objNewVehicle.Gear.Add(objGear);
+                    objNewVehicle.GearChildren.Add(objGear);
                     objLocation?.Children.Add(objGear);
                 }
             }
@@ -18162,7 +18162,7 @@ namespace Chummer
                                                                     if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                         xmlArmorModData,
                                                                         lstWeapons))
-                                                                        objArmorMod.Gear.Add(objPlugin);
+                                                                        objArmorMod.GearChildren.Add(objPlugin);
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -18175,7 +18175,7 @@ namespace Chummer
                                                                     if (!string.IsNullOrEmpty(strGearName))
                                                                     {
                                                                         Gear objPlugin =
-                                                                            objArmorMod.Gear.FirstOrDefault(
+                                                                            objArmorMod.GearChildren.FirstOrDefault(
                                                                                 x =>
                                                                                     x.IncludedInParent &&
                                                                                     (x.Name.Contains(strGearName) ||
@@ -18201,7 +18201,7 @@ namespace Chummer
                                                             if (objPlugin.ImportHeroLabGear(xmlArmorModToImport,
                                                                 xmlArmorData,
                                                                 lstWeapons))
-                                                                objArmor.Gear.Add(objPlugin);
+                                                                objArmor.GearChildren.Add(objPlugin);
                                                         }
                                                     }
                                                 }
@@ -18231,7 +18231,7 @@ namespace Chummer
                                                                     Gear objPlugin = new Gear(this);
                                                                     if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                         objArmorMod.GetNode(), lstWeapons))
-                                                                        objArmorMod.Gear.Add(objPlugin);
+                                                                        objArmorMod.GearChildren.Add(objPlugin);
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -18244,7 +18244,7 @@ namespace Chummer
                                                                     if (!string.IsNullOrEmpty(strGearName))
                                                                     {
                                                                         Gear objPlugin =
-                                                                            objArmorMod.Gear.FirstOrDefault(
+                                                                            objArmorMod.GearChildren.FirstOrDefault(
                                                                                 x =>
                                                                                     x.IncludedInParent &&
                                                                                     (x.Name.Contains(strGearName) ||
@@ -18266,7 +18266,7 @@ namespace Chummer
                                                         }
                                                         else
                                                         {
-                                                            Gear objPlugin = objArmor.Gear.FirstOrDefault(x =>
+                                                            Gear objPlugin = objArmor.GearChildren.FirstOrDefault(x =>
                                                                 x.IncludedInParent &&
                                                                 (x.Name.Contains(strArmorModName) ||
                                                                  strArmorModName.Contains(x.Name)));

@@ -352,8 +352,8 @@ namespace Chummer
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
-                            objWeaponAccessory.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                             intNewIndex += 1;
                         }
@@ -363,8 +363,8 @@ namespace Chummer
                     {
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(treWeapons);
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.RemoveTaggedCollectionChanged(treWeapons);
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
@@ -375,8 +375,8 @@ namespace Chummer
                         string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(treWeapons);
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.RemoveTaggedCollectionChanged(treWeapons);
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
@@ -386,8 +386,8 @@ namespace Chummer
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
-                            objWeaponAccessory.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                             intNewIndex += 1;
                         }

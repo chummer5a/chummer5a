@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -484,7 +484,7 @@ namespace Chummer.Backend.Equipment
                     }
                     objGear.Parent = this;
                     objGear.ParentID = InternalId;
-                    Gear.Add(objGear);
+                    GearChildren.Add(objGear);
                 }
                 lstWeapons?.AddRange(lstChildWeapons);
             }
@@ -764,7 +764,7 @@ namespace Chummer.Backend.Equipment
             }
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
             {
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             }
@@ -923,9 +923,9 @@ namespace Chummer.Backend.Equipment
                             _objCharacter?.RefreshEncumbrance();
                         }
                     }
-                    if (Gear.Count > 0)
+                    if (GearChildren.Count > 0)
                     {
-                        foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                        foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                         {
                             // This will update a child's rating if it would become out of bounds due to its parent's rating changing
                             objChild.Rating = objChild.Rating;
@@ -1138,7 +1138,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 ImprovementManager.EnableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                                 // Add the Improvements from any Gear in the Armor.
-                                foreach (Gear objGear in objMod.Gear)
+                                foreach (Gear objGear in objMod.GearChildren)
                                 {
                                     if (objGear.Equipped)
                                     {
@@ -1148,7 +1148,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                         // Add the Improvements from any Gear in the Armor.
-                        foreach (Gear objGear in Gear)
+                        foreach (Gear objGear in GearChildren)
                         {
                             if (objGear.Equipped)
                             {
@@ -1165,13 +1165,13 @@ namespace Chummer.Backend.Equipment
                         {
                             ImprovementManager.DisableImprovements(_objCharacter, _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.ArmorMod && x.SourceName == InternalId).ToArray());
                             // Add the Improvements from any Gear in the Armor.
-                            foreach (Gear objGear in objMod.Gear)
+                            foreach (Gear objGear in objMod.GearChildren)
                             {
                                 objGear.ChangeEquippedStatus(false);
                             }
                         }
                         // Add the Improvements from any Gear in the Armor.
-                        foreach (Gear objGear in Gear)
+                        foreach (Gear objGear in GearChildren)
                         {
                             objGear.ChangeEquippedStatus(false);
                         }
@@ -1264,7 +1264,7 @@ namespace Chummer.Backend.Equipment
                 decTotalCost += ArmorMods.Where(mod => mod.Stolen).AsParallel().Sum(mod => mod.StolenTotalCost);
 
                 // Go through all of the Gear for this piece of Armor and add the Cost value.
-                decTotalCost += Gear.Where(g => g.Stolen).AsParallel().Sum(g => g.StolenTotalCost);
+                decTotalCost += GearChildren.Where(g => g.Stolen).AsParallel().Sum(g => g.StolenTotalCost);
 
                 return decTotalCost;
             }
@@ -1284,7 +1284,7 @@ namespace Chummer.Backend.Equipment
                     decTotalCost += objMod.TotalCost;
 
                 // Go through all of the Gear for this piece of Armor and add the Cost value.
-                foreach (Gear objGear in Gear)
+                foreach (Gear objGear in GearChildren)
                     decTotalCost += objGear.TotalCost;
 
                 return decTotalCost;
@@ -1333,7 +1333,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Gear currently applied to the Armor.
         /// </summary>
-        public TaggedObservableCollection<Gear> Gear => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
         /// <summary>
         /// Location.
@@ -1390,7 +1390,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        public TaggedObservableCollection<Gear> Children => Gear;
+        public TaggedObservableCollection<Gear> Children => GearChildren;
 
         public bool Stolen
         {
@@ -1470,7 +1470,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                foreach (Gear objChild in Gear)
+                foreach (Gear objChild in GearChildren)
                 {
                     if (objChild.ParentID != InternalId)
                     {
@@ -1556,8 +1556,8 @@ namespace Chummer.Backend.Equipment
                     if (ArmorMods.Count > 0)
                         decCapacity -= ArmorMods.Where(x => !x.IncludedInArmor).AsParallel().Sum(x => Math.Max(x.TotalCapacity, 0));
                     // Run through its Gear and deduct the Armor Capacity costs.
-                    if (Gear.Count > 0)
-                        decCapacity -= Gear.Where(x => !x.IncludedInParent).AsParallel().Sum(x => x.PluginArmorCapacity * x.Quantity);
+                    if (GearChildren.Count > 0)
+                        decCapacity -= GearChildren.Where(x => !x.IncludedInParent).AsParallel().Sum(x => x.PluginArmorCapacity * x.Quantity);
                 }
                 // Calculate the remaining Capacity for a standard piece of Armor using the Maximum Armor Modifications rules.
                 else // if (_objCharacter.Options.MaximumArmorModifications)
@@ -1570,7 +1570,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Run through its Gear and deduct the Rating (or 1 if it has no Rating).
-                    foreach (Gear objGear in Gear)
+                    foreach (Gear objGear in GearChildren)
                     {
                         if (!objGear.IncludedInParent)
                             decCapacity -= objGear.Rating > 0 ? objGear.Rating : 1;
@@ -1681,7 +1681,7 @@ namespace Chummer.Backend.Equipment
             foreach (ArmorMod objMod in ArmorMods)
                 decReturn += objMod.DeleteArmorMod();
             // Remove any Improvements created by the Armor's Gear.
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
                 decReturn += objGear.DeleteGear();
 
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId);
@@ -1785,7 +1785,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (ArmorMod objArmorMod in ArmorMods)
                 objArmorMod.RefreshWirelessBonuses();
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
                 objGear.RefreshWirelessBonuses();
         }
 
@@ -1818,7 +1818,7 @@ namespace Chummer.Backend.Equipment
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
             {
                 TreeNode objLoopNode = objGear.CreateTreeNode(cmsArmorGear);
                 if (objLoopNode != null)

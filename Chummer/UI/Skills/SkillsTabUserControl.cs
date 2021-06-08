@@ -766,14 +766,14 @@ namespace Chummer.UI.Skills
                         return;
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
                     {
-                        WriteableName = form.SelectedItem
+                        WritableName = form.SelectedItem
                     };
 
                     if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
                     {
                         DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
                             string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NewNativeLanguageSkill"),
-                                1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WriteableName),
+                                1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WritableName),
                             LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
                         if (eDialogResult == DialogResult.Cancel)
                             return;

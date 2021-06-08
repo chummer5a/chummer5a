@@ -111,7 +111,7 @@ namespace Chummer
                         {
                             lstItems.Add(new ListItem(objCyberware.InternalId, objCyberware.CurrentDisplayName));
                         }
-                        foreach (Gear objGear in objCyberware.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                        foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                         {
                             lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                         }
@@ -130,12 +130,12 @@ namespace Chummer
                             {
                                 lstItems.Add(new ListItem(objMod.InternalId, objMod.CurrentDisplayName));
                             }
-                            foreach (Gear objGear in objMod.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            foreach (Gear objGear in objMod.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                             {
                                 lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                             }
                         }
-                        foreach (Gear objGear in objArmor.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                        foreach (Gear objGear in objArmor.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                         {
                             lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                         }
@@ -154,7 +154,7 @@ namespace Chummer
                             {
                                 lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
                             }
-                            foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                             {
                                 lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                             }
@@ -192,7 +192,7 @@ namespace Chummer
                                     {
                                         lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
                                     }
-                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                    foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                                     {
                                         lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                                     }
@@ -217,14 +217,14 @@ namespace Chummer
                                     {
                                         lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
                                     }
-                                    foreach (Gear objGear in objAccessory.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                    foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                                     {
                                         lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                                     }
                                 }
                             }
                         }
-                        foreach (Gear objGear in objVehicle.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                        foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                         {
                             lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                         }

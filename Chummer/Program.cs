@@ -136,23 +136,20 @@ namespace Chummer
 
                 sw.TaskEnd("languagefreestartup");
 
-                UnhandledExceptionEventHandler crashhandler = (o, e) =>
+                void HandleCrash(object o, UnhandledExceptionEventArgs e)
                 {
                     try
                     {
                         if (e.ExceptionObject is Exception myException)
                         {
                             myException.Data.Add("IsCrash", bool.TrueString);
-                            ExceptionTelemetry et = new ExceptionTelemetry(myException)
-                            {
-                                SeverityLevel = SeverityLevel.Critical
-                            };
+                            ExceptionTelemetry et = new ExceptionTelemetry(myException) {SeverityLevel = SeverityLevel.Critical};
                             //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                             foreach (DictionaryEntry d in myException.Data)
                             {
-                                if (d.Key != null && d.Value != null)
-                                    et.Properties.Add(d.Key.ToString(), d.Value.ToString());
+                                if (d.Key != null && d.Value != null) et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                             }
+
                             ChummerTelemetryClient?.TrackException(myException);
                             ChummerTelemetryClient?.Flush();
                         }
@@ -165,9 +162,9 @@ namespace Chummer
                     if (e.ExceptionObject is Exception ex)
                         CrashHandler.WebMiniDumpHandler(ex);
 #endif
-                };
+                }
 
-                AppDomain.CurrentDomain.UnhandledException += crashhandler;
+                AppDomain.CurrentDomain.UnhandledException += HandleCrash;
 
                 sw.TaskEnd("Startup");
 

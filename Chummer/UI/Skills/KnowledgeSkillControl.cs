@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -67,13 +68,13 @@ namespace Chummer.UI.Skills
                 cboType.EndUpdate();
 
                 lblName.DoOneWayNegatableDatabinding("Visible", _skill, nameof(Skill.AllowNameChange));
-                lblName.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.WriteableName));
+                lblName.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.WritableName));
                 lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
 
                 cboName.BeginUpdate();
                 cboName.PopulateWithListItems(_skill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills);
                 cboName.SelectedIndex = -1;
-                cboName.Text = _skill.WriteableName;
+                cboName.Text = _skill.WritableName;
                 cboName.DoDatabinding("Visible", _skill, nameof(Skill.AllowNameChange));
                 cboName.EndUpdate();
                 _blnUpdatingName = false;
@@ -287,31 +288,43 @@ namespace Chummer.UI.Skills
                     if (cboSpec != null)
                     {
                         string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
-                        cboSpec.BeginUpdate();
-                        cboSpec.PopulateWithListItems(_skill.CGLSpecializations);
-                        cboSpec.MaxDropDownItems = Math.Max(1, _skill.CGLSpecializations.Count);
-                        if (string.IsNullOrEmpty(strOldSpec))
-                            cboSpec.SelectedIndex = -1;
-                        else
+                        IReadOnlyList<ListItem> lstSpecializations = _skill.CGLSpecializations;
+                        cboSpec.QueueThreadSafe(() =>
                         {
-                            cboSpec.SelectedValue = strOldSpec;
-                            if (cboSpec.SelectedIndex == -1)
-                                cboSpec.Text = strOldSpec;
-                        }
-                        cboSpec.EndUpdate();
+                            cboSpec.BeginUpdate();
+                            cboSpec.PopulateWithListItems(lstSpecializations);
+                            cboSpec.MaxDropDownItems = Math.Max(1, lstSpecializations.Count);
+                            if (string.IsNullOrEmpty(strOldSpec))
+                                cboSpec.SelectedIndex = -1;
+                            else
+                            {
+                                cboSpec.SelectedValue = strOldSpec;
+                                if (cboSpec.SelectedIndex == -1)
+                                    cboSpec.Text = strOldSpec;
+                            }
+
+                            cboSpec.EndUpdate();
+                        });
                     }
                     if (blnAll)
-                        goto case nameof(KnowledgeSkill.WriteableName);
+                        goto case nameof(KnowledgeSkill.WritableName);
                     break;
-                case nameof(KnowledgeSkill.WriteableName):
+                case nameof(KnowledgeSkill.WritableName):
                     if (!_blnUpdatingName)
-                        cboName.Text = _skill.WriteableName;
+                    {
+                        string strWritableName = _skill.WritableName;
+                        cboName.QueueThreadSafe(() => cboName.Text = strWritableName);
+                    }
                     if (blnAll)
                         goto case nameof(Skill.IsNativeLanguage);
                     break;
                 case nameof(Skill.IsNativeLanguage):
                     if (chkNativeLanguage != null)
-                        chkNativeLanguage.Enabled = _skill.IsNativeLanguage || _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
+                    {
+                        bool blnEnabled = _skill.IsNativeLanguage ||
+                                          _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
+                        chkNativeLanguage.QueueThreadSafe(() => chkNativeLanguage.Enabled = blnEnabled);
+                    }
                     break;
             }
         }
@@ -473,7 +486,7 @@ namespace Chummer.UI.Skills
         {
             _tmrNameChangeTimer.Stop();
             _blnUpdatingName = true;
-            _skill.WriteableName = cboName.Text;
+            _skill.WritableName = cboName.Text;
             _blnUpdatingName = false;
         }
     }

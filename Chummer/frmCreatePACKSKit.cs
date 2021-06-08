@@ -420,8 +420,8 @@ namespace Chummer
                                                 if (objChildCyberware.Rating > 0)
                                                     objWriter.WriteElementString("rating", objChildCyberware.Rating.ToString(GlobalOptions.InvariantCultureInfo));
 
-                                                if (objChildCyberware.Gear.Count > 0)
-                                                    WriteGear(objWriter, objChildCyberware.Gear);
+                                                if (objChildCyberware.GearChildren.Count > 0)
+                                                    WriteGear(objWriter, objChildCyberware.GearChildren);
                                                 // </cyberware>
                                                 objWriter.WriteEndElement();
                                             }
@@ -431,8 +431,8 @@ namespace Chummer
                                         objWriter.WriteEndElement();
                                     }
 
-                                    if (objCyberware.Gear.Count > 0)
-                                        WriteGear(objWriter, objCyberware.Gear);
+                                    if (objCyberware.GearChildren.Count > 0)
+                                        WriteGear(objWriter, objCyberware.GearChildren);
 
                                     // </cyberware>
                                     objWriter.WriteEndElement();
@@ -458,8 +458,8 @@ namespace Chummer
                                         objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalOptions.InvariantCultureInfo));
                                     objWriter.WriteElementString("grade", objCyberware.Grade.ToString());
 
-                                    if (objCyberware.Gear.Count > 0)
-                                        WriteGear(objWriter, objCyberware.Gear);
+                                    if (objCyberware.GearChildren.Count > 0)
+                                        WriteGear(objWriter, objCyberware.GearChildren);
                                     // </bioware>
                                     objWriter.WriteEndElement();
                                 }
@@ -536,8 +536,8 @@ namespace Chummer
                                 objWriter.WriteEndElement();
                             }
 
-                            if (objArmor.Gear.Count > 0)
-                                WriteGear(objWriter, objArmor.Gear);
+                            if (objArmor.GearChildren.Count > 0)
+                                WriteGear(objWriter, objArmor.GearChildren);
 
                             // </armor>
                             objWriter.WriteEndElement();
@@ -577,8 +577,8 @@ namespace Chummer
                                             objWriter.WriteElementString("mount", objAccessory.Mount);
                                             objWriter.WriteElementString("extramount", objAccessory.ExtraMount);
 
-                                            if (objAccessory.Gear.Count > 0)
-                                                WriteGear(objWriter, objAccessory.Gear);
+                                            if (objAccessory.GearChildren.Count > 0)
+                                                WriteGear(objWriter, objAccessory.GearChildren);
 
                                             // </accessory>
                                             objWriter.WriteEndElement();
@@ -712,9 +712,9 @@ namespace Chummer
                             }
 
                             // Gear.
-                            if (objVehicle.Gear.Count > 0)
+                            if (objVehicle.GearChildren.Count > 0)
                             {
-                                WriteGear(objWriter, objVehicle.Gear);
+                                WriteGear(objWriter, objVehicle.GearChildren);
                             }
 
                             // </vehicle>

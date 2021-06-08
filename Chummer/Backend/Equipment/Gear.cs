@@ -42,7 +42,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste, IHasWirelessBonus
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -3595,7 +3595,7 @@ namespace Chummer.Backend.Equipment
             {
                 case IHasGear objHasChildren:
                     DeleteGear();
-                    objHasChildren.Gear.Remove(this);
+                    objHasChildren.GearChildren.Remove(this);
                     break;
                 case IHasChildren<Gear> objHasChildren:
                     DeleteGear();
@@ -3698,5 +3698,7 @@ namespace Chummer.Backend.Equipment
         {
             throw new NotImplementedException();
         }
+
+        public TaggedObservableCollection<Gear> GearChildren => Children;
     }
 }

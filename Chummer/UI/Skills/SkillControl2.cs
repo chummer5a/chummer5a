@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -334,17 +333,22 @@ namespace Chummer.UI.Skills
                     if (cboSpec?.Visible == true)
                     {
                         string strOldSpec = cboSpec.Text;
-                        cboSpec.BeginUpdate();
-                        cboSpec.PopulateWithListItems(_objSkill.CGLSpecializations);
-                        if (string.IsNullOrEmpty(strOldSpec))
-                            cboSpec.SelectedIndex = -1;
-                        else
+                        IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
+                        cboSpec.QueueThreadSafe(() =>
                         {
-                            cboSpec.SelectedValue = strOldSpec;
-                            if (cboSpec.SelectedIndex == -1)
-                                cboSpec.Text = strOldSpec;
-                        }
-                        cboSpec.EndUpdate();
+                            cboSpec.BeginUpdate();
+                            cboSpec.PopulateWithListItems(lstSpecializations);
+                            if (string.IsNullOrEmpty(strOldSpec))
+                                cboSpec.SelectedIndex = -1;
+                            else
+                            {
+                                cboSpec.SelectedValue = strOldSpec;
+                                if (cboSpec.SelectedIndex == -1)
+                                    cboSpec.Text = strOldSpec;
+                            }
+
+                            cboSpec.EndUpdate();
+                        });
                     }
                     break;
             }

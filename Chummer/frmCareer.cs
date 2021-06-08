@@ -2603,7 +2603,7 @@ namespace Chummer
                         }
                     }
 
-                    foreach (Gear objGear in objCyberware.Gear)
+                    foreach (Gear objGear in objCyberware.GearChildren)
                     {
                         objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter);
                     }
@@ -2718,13 +2718,13 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Gear objGear in objMod.Gear)
+                        foreach (Gear objGear in objMod.GearChildren)
                         {
                             objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                         }
                     }
 
-                    foreach (Gear objGear in objArmor.Gear)
+                    foreach (Gear objGear in objArmor.GearChildren)
                     {
                         objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                     }
@@ -2743,7 +2743,7 @@ namespace Chummer
                 {
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        foreach (Gear objGear in objAccessory.Gear)
+                        foreach (Gear objGear in objAccessory.GearChildren)
                         {
                             objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter);
                         }
@@ -3479,7 +3479,7 @@ namespace Chummer
                 else
                 {
                     CharacterObject.Cyberware.FindCyberwareGear(objGear.InternalId, out objCyberware);
-                    objCyberware.Gear.Remove(objGear);
+                    objCyberware.GearChildren.Remove(objGear);
                 }
             }
 
@@ -3919,11 +3919,11 @@ namespace Chummer
                 {
                     objGear = CharacterObject.Vehicles.FindVehicleGear(objGear.InternalId, out Vehicle objVehicle, out WeaponAccessory objWeaponAccessory, out objCyberware);
                     if (objCyberware != null)
-                        objCyberware.Gear.Remove(objGear);
+                        objCyberware.GearChildren.Remove(objGear);
                     else if (objWeaponAccessory != null)
-                        objWeaponAccessory.Gear.Remove(objGear);
+                        objWeaponAccessory.GearChildren.Remove(objGear);
                     else
-                        objVehicle.Gear.Remove(objGear);
+                        objVehicle.GearChildren.Remove(objGear);
                 }
 
                 objGear.DeleteGear();
@@ -4786,7 +4786,7 @@ namespace Chummer
             }
 
             // See if the Vehicle already has a matching piece of Gear.
-            Gear objFoundGear = objVehicle.Gear.FirstOrDefault(x => x.IsIdenticalToOtherGear(objSelectedGear));
+            Gear objFoundGear = objVehicle.GearChildren.FirstOrDefault(x => x.IsIdenticalToOtherGear(objSelectedGear));
 
             if (objFoundGear == null)
             {
@@ -4799,7 +4799,7 @@ namespace Chummer
                 objGear.Location = null;
 
                 objGear.Parent = objVehicle;
-                objVehicle.Gear.Add(objGear);
+                objVehicle.GearChildren.Add(objGear);
             }
             else
             {
@@ -4927,11 +4927,11 @@ namespace Chummer
                         if (objSelectedGear.Parent is Gear objParent)
                             objParent.Children.Remove(objSelectedGear);
                         else if (objWeaponAccessory != null)
-                            objWeaponAccessory.Gear.Remove(objSelectedGear);
+                            objWeaponAccessory.GearChildren.Remove(objSelectedGear);
                         else if (objCyberware != null)
-                            objCyberware.Gear.Remove(objSelectedGear);
+                            objCyberware.GearChildren.Remove(objSelectedGear);
                         else
-                            objVehicle?.Gear.Remove(objSelectedGear);
+                            objVehicle?.GearChildren.Remove(objSelectedGear);
 
                         objSelectedGear.DeleteGear();
                     }
@@ -5008,11 +5008,11 @@ namespace Chummer
                 if (objGear.Parent is Gear objParent)
                     objParent.Children.Remove(objGear);
                 else if (objWeaponAccessory != null)
-                    objWeaponAccessory.Gear.Remove(objGear);
+                    objWeaponAccessory.GearChildren.Remove(objGear);
                 else if (objCyberware != null)
-                    objCyberware.Gear.Remove(objGear);
+                    objCyberware.GearChildren.Remove(objGear);
                 else
-                    objVehicle.Gear.Remove(objGear);
+                    objVehicle.GearChildren.Remove(objGear);
                 objGear.DeleteGear();
             }
 
@@ -8268,11 +8268,11 @@ namespace Chummer
                             if (objGear.Parent is Gear objParent)
                                 objParent.Children.Remove(objGear);
                             else if (objWeaponAccessory != null)
-                                objWeaponAccessory.Gear.Remove(objGear);
+                                objWeaponAccessory.GearChildren.Remove(objGear);
                             else if (objCyberware != null)
-                                objCyberware.Gear.Remove(objGear);
+                                objCyberware.GearChildren.Remove(objGear);
                             else if (objVehicle != null)
-                                objVehicle.Gear.Remove(objGear);
+                                objVehicle.GearChildren.Remove(objGear);
                             else
                                 CharacterObject.Gear.Remove(objGear);
 
@@ -8356,11 +8356,11 @@ namespace Chummer
                                 if (objGear.Parent is Gear objParent)
                                     objParent.Children.Remove(objGear);
                                 else if (objWeaponAccessory != null)
-                                    objWeaponAccessory.Gear.Remove(objGear);
+                                    objWeaponAccessory.GearChildren.Remove(objGear);
                                 else if (objCyberware != null)
-                                    objCyberware.Gear.Remove(objGear);
+                                    objCyberware.GearChildren.Remove(objGear);
                                 else if (objVehicle != null)
-                                    objVehicle.Gear.Remove(objGear);
+                                    objVehicle.GearChildren.Remove(objGear);
                                 else
                                     CharacterObject.Gear.Remove(objGear);
 
@@ -8524,9 +8524,9 @@ namespace Chummer
                                 if (objGear.Parent is Gear objParent)
                                     objParent.Children.Remove(objGear);
                                 else if (objArmorMod != null)
-                                    objArmorMod.Gear.Remove(objGear);
+                                    objArmorMod.GearChildren.Remove(objGear);
                                 else
-                                    objArmor?.Gear.Remove(objGear);
+                                    objArmor?.GearChildren.Remove(objGear);
                             }
                             else
                             {
@@ -8571,11 +8571,11 @@ namespace Chummer
                             if (objGear.Parent is Gear objParent)
                                 objParent.Children.Remove(objGear);
                             else if (objWeaponAccessory != null)
-                                objWeaponAccessory.Gear.Remove(objGear);
+                                objWeaponAccessory.GearChildren.Remove(objGear);
                             else if (objCyberware != null)
-                                objCyberware.Gear.Remove(objGear);
+                                objCyberware.GearChildren.Remove(objGear);
                             else if (objVehicle != null)
-                                objVehicle.Gear.Remove(objGear);
+                                objVehicle.GearChildren.Remove(objGear);
                             else
                                 CharacterObject.Gear.Remove(objGear);
                         }
@@ -8596,11 +8596,11 @@ namespace Chummer
                             if (objGear.Parent is Gear objParent)
                                 objParent.Children.Remove(objGear);
                             else if (objWeaponAccessory != null)
-                                objWeaponAccessory.Gear.Remove(objGear);
+                                objWeaponAccessory.GearChildren.Remove(objGear);
                             else if (objCyberware != null)
-                                objCyberware.Gear.Remove(objGear);
+                                objCyberware.GearChildren.Remove(objGear);
                             else if (objVehicle != null)
-                                objVehicle.Gear.Remove(objGear);
+                                objVehicle.GearChildren.Remove(objGear);
                             else
                                 CharacterObject.Gear.Remove(objGear);
                         }
@@ -9314,7 +9314,7 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 
-                        objCyberware.Gear.Add(objGear);
+                        objCyberware.GearChildren.Add(objGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -9421,7 +9421,7 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 
-                        objCyberware.Gear.Add(objGear);
+                        objCyberware.GearChildren.Add(objGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -9741,7 +9741,7 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 
-                        objAccessory.Gear.Add(objGear);
+                        objAccessory.GearChildren.Add(objGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -10089,7 +10089,7 @@ namespace Chummer
                             objExpense.Undo = objUndo;
                         }
 
-                        objAccessory.Gear.Add(objGear);
+                        objAccessory.GearChildren.Add(objGear);
 
                         foreach (Weapon objWeapon in lstWeapons)
                         {
@@ -10795,7 +10795,7 @@ namespace Chummer
             // Remove any Improvements from the Character.
             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
             {
-                foreach (Gear objGear in objAccessory.Gear)
+                foreach (Gear objGear in objAccessory.GearChildren)
                     objGear.ChangeEquippedStatus(false);
             }
             if (objWeapon.UnderbarrelWeapons.Count > 0)
@@ -10804,7 +10804,7 @@ namespace Chummer
                 {
                     foreach (WeaponAccessory objAccessory in objUnderbarrelWeapon.WeaponAccessories)
                     {
-                        foreach (Gear objGear in objAccessory.Gear)
+                        foreach (Gear objGear in objAccessory.GearChildren)
                             objGear.ChangeEquippedStatus(false);
                     }
                 }
@@ -11290,7 +11290,7 @@ namespace Chummer
         private void cmdReloadVehicleWeapon_Click(object sender, EventArgs e)
         {
             if (!(treVehicles?.SelectedNode?.Tag is Weapon objWeapon)) return;
-            objWeapon.Reload(objWeapon.ParentVehicle.Gear, treVehicles);
+            objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles);
             lblVehicleWeaponAmmoRemaining.Text = objWeapon.AmmoRemaining.ToString(GlobalOptions.CultureInfo);
 
             IsCharacterUpdateRequested = true;
@@ -14777,7 +14777,7 @@ namespace Chummer
                     // If this is Ammunition, see if the character already has it on them.
                     if (objGear.Category == "Ammunition" || !string.IsNullOrEmpty(objGear.AmmoForWeaponType))
                     {
-                        IEnumerable<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.Gear : objSelectedGear.Children;
+                        IEnumerable<Gear> lstToSearch = string.IsNullOrEmpty(objSelectedGear?.Name) ? objSelectedArmor.GearChildren : objSelectedGear.Children;
                         objMatchingGear = lstToSearch.FirstOrDefault(x => objGear.IsIdenticalToOtherGear(x));
                     }
 
@@ -14810,10 +14810,10 @@ namespace Chummer
                     }
                     else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                     {
-                        objSelectedMod.Gear.Add(objGear);
+                        objSelectedMod.GearChildren.Add(objGear);
                         if (CharacterObjectOptions.EnforceCapacity && objSelectedMod.GearCapacityRemaining < 0)
                         {
-                            objSelectedMod.Gear.Remove(objGear);
+                            objSelectedMod.GearChildren.Remove(objGear);
                             Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             objGear.DeleteGear();
                             return frmPickGear.AddAgain;
@@ -14821,10 +14821,10 @@ namespace Chummer
                     }
                     else
                     {
-                        objSelectedArmor.Gear.Add(objGear);
+                        objSelectedArmor.GearChildren.Add(objGear);
                         if (CharacterObjectOptions.EnforceCapacity && objSelectedArmor.CapacityRemaining < 0)
                         {
-                            objSelectedArmor.Gear.Remove(objGear);
+                            objSelectedArmor.GearChildren.Remove(objGear);
                             Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"), LanguageManager.GetString("MessageTitle_CapacityReached"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                             objGear.DeleteGear();
                             return frmPickGear.AddAgain;
@@ -14848,11 +14848,11 @@ namespace Chummer
                             }
                             else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                             {
-                                objSelectedMod.Gear.Remove(objGear);
+                                objSelectedMod.GearChildren.Remove(objGear);
                             }
                             else
                             {
-                                objSelectedArmor.Gear.Remove(objGear);
+                                objSelectedArmor.GearChildren.Remove(objGear);
                             }
                             // Remove any Improvements created by the Gear.
                             objGear.DeleteGear();
@@ -15425,13 +15425,13 @@ namespace Chummer
                     for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                     {
                         objWeapon.ActiveAmmoSlot = i;
-                        Gear objVehicleGear = objWeapon.ParentVehicle.Gear.DeepFindById(objWeapon.AmmoLoaded);
+                        Gear objVehicleGear = objWeapon.ParentVehicle.GearChildren.DeepFindById(objWeapon.AmmoLoaded);
                         string strAmmoName = objVehicleGear?.DisplayNameShort(GlobalOptions.Language) ?? LanguageManager.GetString(objWeapon.AmmoRemaining == 0 ? "String_Empty" : "String_ExternalSource");
                         if (objWeapon.AmmoSlots > 1)
                             strAmmoName += strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SlotNumber"), i.ToString(GlobalOptions.CultureInfo)) + ')';
 
                         StringBuilder sbdPlugins = new StringBuilder();
-                        foreach (Gear objCurrentAmmo in objWeapon.ParentVehicle.Gear)
+                        foreach (Gear objCurrentAmmo in objWeapon.ParentVehicle.GearChildren)
                         {
                             if (objCurrentAmmo.InternalId != objWeapon.AmmoLoaded)
                                 continue;
@@ -16023,7 +16023,7 @@ namespace Chummer
         /// <param name="objVehicle">Vehicle to modify.</param>
         private void UpdateSensor(Vehicle objVehicle)
         {
-            foreach (Gear objGear in objVehicle.Gear)
+            foreach (Gear objGear in objVehicle.GearChildren)
             {
                 if (objGear.Category == "Sensors" && objGear.Name == "Sensor Array" && objGear.IncludedInParent)
                 {
@@ -16060,11 +16060,11 @@ namespace Chummer
                     }
                 }
                 // Look through any children and add their Improvements as well.
-                foreach (Gear objChild in objMod.Gear)
+                foreach (Gear objChild in objMod.GearChildren)
                     CopyGearImprovements(objSource, objDestination, objChild);
             }
             // Look through any children and add their Improvements as well.
-            foreach (Gear objChild in objArmor.Gear)
+            foreach (Gear objChild in objArmor.GearChildren)
                 CopyGearImprovements(objSource, objDestination, objChild);
         }
 

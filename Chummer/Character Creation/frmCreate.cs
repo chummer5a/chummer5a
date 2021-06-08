@@ -2230,7 +2230,7 @@ namespace Chummer
                         }
                     }
 
-                    foreach (Gear objGear in objCyberware.Gear)
+                    foreach (Gear objGear in objCyberware.GearChildren)
                     {
                         objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter);
                     }
@@ -2344,13 +2344,13 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Gear objGear in objMod.Gear)
+                        foreach (Gear objGear in objMod.GearChildren)
                         {
                             objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                         }
                     }
 
-                    foreach (Gear objGear in objArmor.Gear)
+                    foreach (Gear objGear in objArmor.GearChildren)
                     {
                         objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter);
                     }
@@ -2369,7 +2369,7 @@ namespace Chummer
                 {
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        foreach (Gear objGear in objAccessory.Gear)
+                        foreach (Gear objGear in objAccessory.GearChildren)
                         {
                             objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter);
                         }
@@ -2576,7 +2576,7 @@ namespace Chummer
                     if (objSelectedObject is ICanPaste selected && selected.AllowPasteXml &&
                         objSelectedObject is IHasGear gear)
                     {
-                        gear.Gear.Add(objGear);
+                        gear.GearChildren.Add(objGear);
                         if (gear is ICanEquip selectedEquip && !selectedEquip.Equipped)
                             objGear.ChangeEquippedStatus(false);
                     }
@@ -5839,7 +5839,7 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 
-                        objCyberware.Gear.Add(objNewGear);
+                        objCyberware.GearChildren.Add(objNewGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -5918,7 +5918,7 @@ namespace Chummer
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 
-                        objCyberware.Gear.Add(objNewGear);
+                        objCyberware.GearChildren.Add(objNewGear);
                     }
 
                     IsCharacterUpdateRequested = true;
@@ -6155,7 +6155,7 @@ namespace Chummer
                             objGear.Cost = "0";
                         }
 
-                        objAccessory.Gear.Add(objGear);
+                        objAccessory.GearChildren.Add(objGear);
 
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objWeapon in lstWeapons)
@@ -6429,7 +6429,7 @@ namespace Chummer
                             objNewGear.Cost = "0";
                         }
 
-                        objAccessory.Gear.Add(objNewGear);
+                        objAccessory.GearChildren.Add(objNewGear);
 
                         // Create any Weapons that came with this Gear.
                         foreach (Weapon objLoopWeapon in lstWeapons)
@@ -11222,11 +11222,11 @@ namespace Chummer
                         }
                         else if (!string.IsNullOrEmpty(objSelectedMod?.Name))
                         {
-                            objSelectedMod.Gear.Add(objGear);
+                            objSelectedMod.GearChildren.Add(objGear);
                         }
                         else
                         {
-                            objSelectedArmor.Gear.Add(objGear);
+                            objSelectedArmor.GearChildren.Add(objGear);
                         }
                     }
 
@@ -12576,7 +12576,7 @@ namespace Chummer
                         }
 
                         // Check Vehicle Gear.
-                        foreach (Gear objGear in objVehicle.Gear)
+                        foreach (Gear objGear in objVehicle.GearChildren)
                         {
                             if (objGear.CapacityRemaining < 0)
                             {
@@ -13433,7 +13433,7 @@ namespace Chummer
                     CharacterObject.Vehicles.Add(objVehicle);
 
                     // Grab the default Sensor that comes with the Vehicle.
-                    foreach (Gear objSensorGear in objVehicle.Gear)
+                    foreach (Gear objSensorGear in objVehicle.GearChildren)
                     {
                         if (objSensorGear.Category == "Sensors" && objSensorGear.Cost == "0" && objSensorGear.Rating == 0)
                         {
@@ -13467,7 +13467,7 @@ namespace Chummer
                         // If this is a Sensor, it will replace the Vehicle's base sensor, so remove it.
                         if (objGear != null && objGear.Category == "Sensors" && objGear.Cost == "0" && objGear.Rating == 0)
                         {
-                            objVehicle.Gear.Remove(objDefaultSensor);
+                            objVehicle.GearChildren.Remove(objDefaultSensor);
                         }
                     }
 
@@ -13750,7 +13750,7 @@ namespace Chummer
         /// <param name="objVehicle">Vehicle to modify.</param>
         private void UpdateSensor(Vehicle objVehicle)
         {
-            foreach (Gear objGear in objVehicle.Gear)
+            foreach (Gear objGear in objVehicle.GearChildren)
             {
                 if (objGear.Category != "Sensors" || objGear.Name != "Sensor Array" || !objGear.IncludedInParent)
                     continue;
@@ -13942,20 +13942,20 @@ namespace Chummer
                     objParentGear.Children.Add(objNewGear);
                     break;
                 case Armor objParentArmor:
-                    objParentArmor.Gear.Add(objNewGear);
+                    objParentArmor.GearChildren.Add(objNewGear);
                     break;
                 case ArmorMod objParentArmorMod:
-                    objParentArmorMod.Gear.Add(objNewGear);
+                    objParentArmorMod.GearChildren.Add(objNewGear);
                     break;
                 case WeaponAccessory objParentWeaponAccessory:
-                    objParentWeaponAccessory.Gear.Add(objNewGear);
+                    objParentWeaponAccessory.GearChildren.Add(objNewGear);
                     break;
                 case Cyberware objParentCyberware:
-                    objParentCyberware.Gear.Add(objNewGear);
+                    objParentCyberware.GearChildren.Add(objNewGear);
                     break;
                 case Vehicle objParentVehicle:
                     objNewGear.Parent = objParentVehicle;
-                    objParentVehicle.Gear.Add(objNewGear);
+                    objParentVehicle.GearChildren.Add(objNewGear);
                     break;
             }
 

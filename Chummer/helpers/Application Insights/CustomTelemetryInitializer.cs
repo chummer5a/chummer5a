@@ -42,7 +42,7 @@ namespace Chummer
             }
             else
                 telemetry.Context.GlobalProperties["Milestone"] = IsMilestone.ToString(GlobalOptions.InvariantCultureInfo);
-             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
+            telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
             {
                 //sometimes, there are odd values stored in the UploadClientId.

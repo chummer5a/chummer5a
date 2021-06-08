@@ -509,7 +509,7 @@ namespace Chummer.Backend.Equipment
                                     objGear.Source = strChildForceSource;
                                 if (!string.IsNullOrEmpty(strChildForcePage))
                                     objGear.Page = strChildForcePage;
-                                objAccessory.Gear.Add(objGear);
+                                objAccessory.GearChildren.Add(objGear);
 
                                 // Change the Capacity of the child if necessary.
                                 if (objXmlAccessoryGear["capacity"] != null)
@@ -1008,42 +1008,42 @@ namespace Chummer.Backend.Equipment
         {
             // Find the piece of Gear that created this item if applicable
             List<Gear> lstGearToSearch = new List<Gear>(_objCharacter.Gear);
-            foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+            foreach (Cyberware objCyberware in _objCharacter.Cyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
             {
-                lstGearToSearch.AddRange(objCyberware.Gear);
+                lstGearToSearch.AddRange(objCyberware.GearChildren);
             }
-            foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+            foreach (Weapon objWeapon in _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
             {
                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                 {
-                    lstGearToSearch.AddRange(objAccessory.Gear);
+                    lstGearToSearch.AddRange(objAccessory.GearChildren);
                 }
             }
             foreach (Armor objArmor in _objCharacter.Armor)
             {
-                lstGearToSearch.AddRange(objArmor.Gear);
+                lstGearToSearch.AddRange(objArmor.GearChildren);
             }
             foreach (Vehicle objVehicle in _objCharacter.Vehicles)
             {
-                lstGearToSearch.AddRange(objVehicle.Gear);
-                foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                lstGearToSearch.AddRange(objVehicle.GearChildren);
+                foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                 {
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        lstGearToSearch.AddRange(objAccessory.Gear);
+                        lstGearToSearch.AddRange(objAccessory.GearChildren);
                     }
                 }
                 foreach (VehicleMod objVehicleMod in objVehicle.Mods.Where(x => x.Cyberware.Count > 0 || x.Weapons.Count > 0))
                 {
-                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+                    foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
                     {
-                        lstGearToSearch.AddRange(objCyberware.Gear);
+                        lstGearToSearch.AddRange(objCyberware.GearChildren);
                     }
-                    foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                    foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                     {
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
-                            lstGearToSearch.AddRange(objAccessory.Gear);
+                            lstGearToSearch.AddRange(objAccessory.GearChildren);
                         }
                     }
                 }
@@ -1221,7 +1221,7 @@ namespace Chummer.Backend.Equipment
                 {
                     return 0;
                 }
-                IList<Gear> lstGear = ParentVehicle == null ? _objCharacter.Gear : ParentVehicle.Gear;
+                IList<Gear> lstGear = ParentVehicle == null ? _objCharacter.Gear : ParentVehicle.GearChildren;
                 if (AmmoCategory == "Gear")
                     return lstGear.DeepWhere(x => x.Children, x =>
                         x.Quantity > 0
@@ -1265,7 +1265,7 @@ namespace Chummer.Backend.Equipment
                             objNewGear.Copy(objAmmo);
                             objNewGear.Quantity = objClip.Ammo;
                             if (ParentVehicle != null)
-                                ParentVehicle.Gear.Add(objNewGear);
+                                ParentVehicle.GearChildren.Add(objNewGear);
                             else
                                 _objCharacter.Gear.Add(objNewGear);
                         }
@@ -1843,7 +1843,7 @@ namespace Chummer.Backend.Equipment
                     _objMountedVehicle = value;
                     foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
-                        foreach (Gear objGear in objAccessory.Gear)
+                        foreach (Gear objGear in objAccessory.GearChildren)
                         {
                             if (value != null)
                                 objGear.ChangeEquippedStatus(false);
@@ -3843,12 +3843,12 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.DogBrain:
                     {
                             intDicePool = ParentVehicle.Pilot;
-                            Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == CurrentDisplayName));
+                            Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == CurrentDisplayName));
 
                             intDicePool += objAutosoft?.Rating ?? -1;
 
                             if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn)
-                                           && ParentVehicle.Gear.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped && x.WirelessOn))
+                                           && ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped && x.WirelessOn))
                             {
                                 ++decDicePoolModifier;
                             }
@@ -4097,7 +4097,7 @@ namespace Chummer.Backend.Equipment
                     {
                             sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}({2})",
                                 strSpace, LanguageManager.GetString("String_Pilot"), ParentVehicle.Pilot);
-                            Gear objAutosoft = ParentVehicle.Gear.DeepFirstOrDefault(x => x.Children,
+                            Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
                                 x => x.Name == "[Weapon] Targeting Autosoft" &&
                                      (x.Extra == Name || x.Extra == CurrentDisplayName));
 
@@ -4231,7 +4231,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
                 {
-                    if (ParentVehicle.Gear.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
+                    if (ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
                     {
                         sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
                             strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
@@ -5314,8 +5314,8 @@ namespace Chummer.Backend.Equipment
 
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    objChild.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
-                    foreach (Gear objGear in objChild.Gear)
+                    objChild.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objChild.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
+                    foreach (Gear objGear in objChild.GearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                 }
             }
@@ -5329,8 +5329,8 @@ namespace Chummer.Backend.Equipment
                 }
                 foreach (WeaponAccessory objChild in WeaponAccessories)
                 {
-                    objChild.Gear.RemoveTaggedCollectionChanged(treWeapons);
-                    foreach (Gear objGear in objChild.Gear)
+                    objChild.GearChildren.RemoveTaggedCollectionChanged(treWeapons);
+                    foreach (Gear objGear in objChild.GearChildren)
                         objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                 }
             }
@@ -5480,14 +5480,14 @@ namespace Chummer.Backend.Equipment
                                     {
                                         Gear objPlugin = new Gear(_objCharacter);
                                         if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, xmlWeaponAccessoryData, lstWeapons))
-                                            objWeaponAccessory.Gear.Add(objPlugin);
+                                            objWeaponAccessory.GearChildren.Add(objPlugin);
                                     }
                                     foreach (XPathNavigator xmlPluginToAdd in xmlWeaponAccessoryToImport.Select(strPluginName + "/item[@useradded = \"no\"]"))
                                     {
                                         string strGearName = xmlPluginToAdd.SelectSingleNode("@name")?.Value;
                                         if (!string.IsNullOrEmpty(strGearName))
                                         {
-                                            Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
+                                            Gear objPlugin = objWeaponAccessory.GearChildren.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
                                             if (objPlugin != null)
                                             {
                                                 objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
@@ -5531,14 +5531,14 @@ namespace Chummer.Backend.Equipment
                                     {
                                         Gear objPlugin = new Gear(_objCharacter);
                                         if (objPlugin.ImportHeroLabGear(xmlSubPluginToAdd, objWeaponAccessory.GetNode(), lstWeapons))
-                                            objWeaponAccessory.Gear.Add(objPlugin);
+                                            objWeaponAccessory.GearChildren.Add(objPlugin);
                                     }
                                     foreach (XPathNavigator xmlSubPluginToAdd in xmlPluginToAdd.Select(strPluginNodeName + "/item[@useradded = \"no\"]"))
                                     {
                                         string strGearName = xmlSubPluginToAdd.SelectSingleNode("@name")?.Value;
                                         if (!string.IsNullOrEmpty(strGearName))
                                         {
-                                            Gear objPlugin = objWeaponAccessory.Gear.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
+                                            Gear objPlugin = objWeaponAccessory.GearChildren.FirstOrDefault(x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strGearName) || strGearName.Contains(x.Name)));
                                             if (objPlugin != null)
                                             {
                                                 objPlugin.Quantity = xmlSubPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;
@@ -5553,7 +5553,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (WeaponAccessory objLoopAccessory in WeaponAccessories)
                                 {
-                                    Gear objPlugin = objLoopAccessory.Gear.DeepFirstOrDefault(x => x.Children, x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
+                                    Gear objPlugin = objLoopAccessory.GearChildren.DeepFirstOrDefault(x => x.Children, x => x.IncludedInParent && !string.IsNullOrEmpty(x.Name) && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                     if (objPlugin != null)
                                     {
                                         objPlugin.Quantity = xmlPluginToAdd.SelectSingleNode("@quantity")?.ValueAsInt ?? 1;

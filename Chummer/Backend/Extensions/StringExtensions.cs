@@ -1263,11 +1263,12 @@ namespace Chummer
                 return string.Empty;
             if (strInput.IsRtf())
                 return strInput;
+            strInput = strInput.NormalizeWhiteSpace();
             lock (rtbRtfManipulatorLock)
             {
                 if (!rtbRtfManipulator.IsHandleCreated)
                     rtbRtfManipulator.CreateControl();
-                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput.NormalizeWhiteSpace());
+                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput);
                 return rtbRtfManipulator.Rtf;
             }
         }

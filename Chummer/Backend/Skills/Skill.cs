@@ -307,7 +307,7 @@ namespace Chummer.Backend.Skills
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = strName,
+                    WritableName = strName,
                     Base = intBaseRating,
                     Karma = intKarmaRating,
 
@@ -381,7 +381,7 @@ namespace Chummer.Backend.Skills
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = strName,
+                    WritableName = strName,
                     Karma = intKarmaRating,
                     Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic"),
                     IsNativeLanguage = blnIsNativeLanguage

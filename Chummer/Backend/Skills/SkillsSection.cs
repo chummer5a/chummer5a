@@ -225,7 +225,7 @@ namespace Chummer.Backend.Skills
                         KnowledgeSkill kno = new KnowledgeSkill(_objCharacter)
                         {
                             Type = skill.Name == "Arcana" ? "Academic" : "Professional",
-                            WriteableName = skill.Name,
+                            WritableName = skill.Name,
                             Base = skill.Base,
                             Karma = skill.Karma
                         };
@@ -363,7 +363,7 @@ namespace Chummer.Backend.Skills
                         {
                             KnowledgeSkill objEnglishSkill = new KnowledgeSkill(_objCharacter)
                             {
-                                WriteableName = "English",
+                                WritableName = "English",
                                 IsNativeLanguage = true
                             };
                             KnowledgeSkills.Add(objEnglishSkill);

@@ -426,7 +426,7 @@ namespace Chummer
                             {
                                 strAccessories.AppendLine(objMod.CurrentDisplayName);
                             }
-                            foreach (Gear objGear in objArmor.Gear)
+                            foreach (Gear objGear in objArmor.GearChildren)
                             {
                                 strAccessories.AppendLine(objGear.CurrentDisplayName);
                             }

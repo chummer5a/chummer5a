@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
     /// Weapon Accessory.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste
+    public class WeaponAccessory : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -544,10 +544,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture));
-            if (Gear.Count > 0)
+            if (GearChildren.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
-                foreach (Gear objGear in Gear)
+                foreach (Gear objGear in GearChildren)
                 {
                     objGear.Print(objWriter, objCulture, strLanguageToPrint);
                 }
@@ -821,9 +821,9 @@ namespace Chummer.Backend.Equipment
             set
             {
                 _intRating = value;
-                if (Gear.Count > 0)
+                if (GearChildren.Count > 0)
                 {
-                    foreach (Gear objChild in Gear.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
                         objChild.Rating = objChild.Rating;
@@ -934,7 +934,7 @@ namespace Chummer.Backend.Equipment
                     _blnEquipped = value;
                     if (Parent?.ParentVehicle == null)
                     {
-                        foreach (Gear objGear in Gear)
+                        foreach (Gear objGear in GearChildren)
                         {
                             if (objGear.Equipped)
                                 objGear.ChangeEquippedStatus(true);
@@ -942,7 +942,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        foreach (Gear objGear in Gear)
+                        foreach (Gear objGear in GearChildren)
                         {
                             objGear.ChangeEquippedStatus(false);
                         }
@@ -1024,7 +1024,7 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                foreach (Gear objChild in Gear)
+                foreach (Gear objChild in GearChildren)
                 {
                     if (objChild.ParentID != InternalId)
                     {
@@ -1058,7 +1058,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public TaggedObservableCollection<Gear> Gear => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
         /// <summary>
         /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
@@ -1084,14 +1084,14 @@ namespace Chummer.Backend.Equipment
                     {
                         if (Parent.ParentVehicle != null)
                         {
-                            foreach (Gear objGear in Gear)
+                            foreach (Gear objGear in GearChildren)
                             {
                                 objGear.ChangeEquippedStatus(false);
                             }
                         }
                         else if (Equipped)
                         {
-                            foreach (Gear objGear in Gear)
+                            foreach (Gear objGear in GearChildren)
                             {
                                 objGear.ChangeEquippedStatus(true);
                             }
@@ -1111,7 +1111,7 @@ namespace Chummer.Backend.Equipment
                 decimal decReturn = OwnCost;
 
                 // Add in the cost of any Gear the Weapon Accessory has attached to it.
-                foreach (Gear objGear in Gear)
+                foreach (Gear objGear in GearChildren)
                     decReturn += objGear.TotalCost;
 
                 return decReturn;
@@ -1130,7 +1130,7 @@ namespace Chummer.Backend.Equipment
                     decReturn = OwnCost;
 
                 // Add in the cost of any Gear the Weapon Accessory has attached to it.
-                decReturn += Gear.Sum(g => g.StolenTotalCost);
+                decReturn += GearChildren.Sum(g => g.StolenTotalCost);
 
                 return decReturn;
             }
@@ -1403,7 +1403,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
                 objGear.RefreshWirelessBonuses();
         }
 
@@ -1445,7 +1445,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objChild in Gear)
+            foreach (Gear objChild in GearChildren)
             {
                 objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
@@ -1458,7 +1458,7 @@ namespace Chummer.Backend.Equipment
         {
             decimal decReturn = 0;
             // Remove any children the Gear may have.
-            foreach (Gear objLoopGear in Gear)
+            foreach (Gear objLoopGear in GearChildren)
                 decReturn += objLoopGear.DeleteGear();
 
             return decReturn;
@@ -1481,7 +1481,7 @@ namespace Chummer.Backend.Equipment
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
             {
                 TreeNode objLoopNode = objGear.CreateTreeNode(cmsWeaponAccessoryGear);
                 if (objLoopNode != null)

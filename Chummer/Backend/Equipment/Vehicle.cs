@@ -442,7 +442,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     objGear.Parent = this;
                                     objGear.ParentID = InternalId;
-                                    Gear.Add(objGear);
+                                    GearChildren.Add(objGear);
                                     foreach (Weapon objWeapon in lstWeapons)
                                     {
                                         objWeapon.ParentVehicle = this;
@@ -1057,7 +1057,7 @@ namespace Chummer.Backend.Equipment
                 objMount.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weapons");
@@ -1381,7 +1381,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<Gear> Gear => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
@@ -1473,7 +1473,7 @@ namespace Chummer.Backend.Equipment
                         chrLastAvailChar = 'R';
                 }
 
-                foreach (Gear objChild in Gear)
+                foreach (Gear objChild in GearChildren)
                 {
                     if (objChild.ParentID == InternalId) continue;
                     AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
@@ -1537,7 +1537,7 @@ namespace Chummer.Backend.Equipment
 
                 // Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
                 // The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
-                Gear objGear = Gear.FirstOrDefault(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                Gear objGear = GearChildren.FirstOrDefault(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
                 if (objGear != null)
                     objGear.Rating = Math.Max(intSensor, 0);
 
@@ -1817,7 +1817,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 decCost += WeaponMounts.AsParallel().Sum(wm => wm.TotalCost);
-                decCost += Gear.AsParallel().Sum(objGear => objGear.TotalCost);
+                decCost += GearChildren.AsParallel().Sum(objGear => objGear.TotalCost);
 
                 return decCost;
             }
@@ -1849,7 +1849,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 decCost += WeaponMounts.AsParallel().Where(objGear => objGear.Stolen).Sum(wm => wm.StolenTotalCost);
-                decCost += Gear.AsParallel().Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
+                decCost += GearChildren.AsParallel().Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
 
                 return decCost;
             }
@@ -2838,7 +2838,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                Gear objGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
+                Gear objGear = GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
                 if (objGear != null)
                 {
                     return objGear.Rating;
@@ -2984,7 +2984,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CanFormPersona { get => string.Empty; set { } }
 
-        public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
+        public bool IsCommlink => GearChildren.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
 
         /// <summary>
         /// 0 for Vehicles.
@@ -2996,7 +2996,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 0;
-                foreach (Gear objGear in Gear)
+                foreach (Gear objGear in GearChildren)
                 {
                     if (objGear.Equipped)
                     {
@@ -3042,7 +3042,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Gear.Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
+        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
 
         #endregion
 
@@ -3110,7 +3110,7 @@ namespace Chummer.Backend.Equipment
         {
             decimal decReturn = 0;
 
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
             {
                 decReturn += objGear.DeleteGear();
             }
@@ -3171,7 +3171,7 @@ namespace Chummer.Backend.Equipment
             {
                 objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem, out strCyberwareGrade);
             }
-            foreach (Gear objChild in Gear)
+            foreach (Gear objChild in GearChildren)
             {
                 objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
@@ -3277,7 +3277,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Vehicle Gear.
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
             {
                 TreeNode objLoopNode = objGear.CreateTreeNode(cmsVehicleGear);
                 if (objLoopNode != null)
@@ -3398,7 +3398,7 @@ namespace Chummer.Backend.Equipment
             Gear objNewSensor = new Gear(_objCharacter);
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
-            foreach (Gear objCurrentGear in Gear)
+            foreach (Gear objCurrentGear in GearChildren)
             {
                 if (objCurrentGear.Name == "Microdrone Sensor")
                 {
@@ -3573,7 +3573,7 @@ namespace Chummer.Backend.Equipment
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                 strAttributeName = "Mod " + strAttributeName;
 
-            foreach (Gear loopGear in Gear)
+            foreach (Gear loopGear in GearChildren)
             {
                 if (loopGear.Equipped)
                 {
