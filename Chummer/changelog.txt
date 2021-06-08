@@ -91,6 +91,7 @@ Data Changes:
 - Chemical Glands can now hold Chemicals and Custom Drugs.
 - Special Work Area can now be selected multiple times for Advanced Lifestyles and have some text specified for it each time.
 - The spells Pollutant Stream, Knockout, Punch, and Frigid now have proper descriptors. Fixes #4479.
+- Added a Bodyware entry for Additional Eye Mount that can only be placed inside of cyberlimbs. This is a crude but effective way of allowing Additional Eye Mount to be put anywhere on a character's body, including in cyberlimbs. Fixes #4482.
 
 Changed/New Strings:
 - String_ContactPoints
