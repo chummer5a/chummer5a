@@ -182,13 +182,6 @@ namespace Chummer.Backend
         {
             try
             {
-                DumpData dump = new DumpData(ex);
-                dump.AddFile(Path.Combine(Utils.GetStartupPath, "settings", "default.xml"));
-                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
-
-                byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
-                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
-
                 if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
                 {
                     if (Program.ChummerTelemetryClient != null)
@@ -209,6 +202,24 @@ namespace Chummer.Backend
                         Program.ChummerTelemetryClient.Flush();
                     }
                 }
+            }
+            catch(Exception e)
+            {
+                Log.Exception(e);
+            }
+
+            try
+            {
+                
+
+                DumpData dump = new DumpData(ex);
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "settings", "default.xml"));
+                dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+
+                byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
+                File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
+
+                
 
                 //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
                 Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
@@ -218,7 +229,8 @@ namespace Chummer.Backend
             catch (Exception nex)
             {
                 Program.MainForm.ShowMessageBox(
-                    "Failed to create crash report." + Environment.NewLine +
+                    "Failed to create crash report." + Environment.NewLine + 
+                    "Chummer crashed with version: " + Assembly.GetAssembly(typeof(Chummer.Program))?.GetName()?.Version?.ToString() + Environment.NewLine +
                     "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +
                     Environment.NewLine + "Crash information:" + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
