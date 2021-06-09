@@ -29,6 +29,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Newtonsoft.Json.Converters;
+using Microsoft.Data.SqlClient;
 
 namespace ChummerHub
 {
@@ -438,7 +439,14 @@ namespace ChummerHub
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            app.UseAzureAppConfiguration();
+            try
+            {
+                app.UseAzureAppConfiguration();
+            }
+            catch(Exception e)
+            {
+                _logger?.LogWarning(e, e.Message);
+            }
             app.UseRouting();
             //app.UseCookiePolicy();
 
@@ -484,8 +492,18 @@ namespace ChummerHub
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 if (dbContext != null)
                 {
-                    //dbContext.Database.EnsureDeleted();
-                    dbContext.Database.EnsureCreated();
+                    try
+                    {
+                        dbContext.Database.EnsureCreated();
+                    }
+                    catch(SqlException e)
+                    {
+                        if(!e.Message?.Contains("already exists") == true)
+                        {
+                            throw;
+                        }
+                    }
+                    
                 }
             }
 
@@ -506,6 +524,12 @@ namespace ChummerHub
                 try
                 {
                     context.Database.Migrate();
+                }
+                catch(SqlException e)
+                {
+                    if (!e.Message.Contains("already exists") == true)
+                        throw;
+                    logger.LogWarning(e, e.Message);
                 }
                 catch (Exception e)
                 {

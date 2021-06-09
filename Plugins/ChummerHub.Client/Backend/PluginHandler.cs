@@ -813,20 +813,67 @@ namespace Chummer.Plugins
                     }
                 };
             }
+            catch(ApiException e)
+            {
+                TreeNode node = null;
+                Log.Error(e);
+                if (e.StatusCode == 500)
+                {
+                    node = new TreeNode("SINers seems to be down (Error 500)")
+                    {
+                        ToolTipText = e.Message,
+                        Tag = e
+
+                    };
+                }
+                else
+                {
+                    node = new TreeNode("SINers encounterd an error: " + e.StatusCode)
+                    {
+                        ToolTipText = e.Message,
+                        Tag = e
+                    };
+                }
+                return new List<TreeNode>
+                    {
+                        node
+                    };
+            }
             catch(Exception e)
             {
-                Log.Error(e);
+                Log.Info(e);
+                var node = new TreeNode("SINers: please log in")
+                {
+                    ToolTipText = e.Message,
+                    Tag = e
+
+                };
+                //if (node.ContextMenuStrip == null)
+                //    node.ContextMenuStrip = new ContextMenuStrip();
+                //ToolStripMenuItem login = new ToolStripMenuItem("Login")
+                //{
+                //    Name = "tsLogin",
+                //    Tag = "Menu_LoginChummerHub",
+                //    Text = "Log in/register",
+                //    Size = new Size(177, 22),
+                //    Image = Resources.page_refresh
+                //};
+                //login.Click += LoginOnClick;
+                //login.UpdateLightDarkMode();
+                //login.TranslateToolStripItemsRecursively();
+                //node.ContextMenuStrip.Items.Add(login);
                 return new List<TreeNode>
                 {
-                    new TreeNode("SINners Error: please log in")
-                    {
-                        ToolTipText = e.ToString(),
-                        Tag = e
-                    }
+                    node
                 };
             }
         }
 
+        //private void LoginOnClick(object sender, EventArgs e)
+        //{
+        //    frmOptions options = new frmOptions();
+        //    options.ShowDialog();
+        //}
 
         private async void ShowMySINnersOnClick(object sender, EventArgs e)
         {
