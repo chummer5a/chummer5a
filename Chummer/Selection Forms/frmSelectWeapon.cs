@@ -223,39 +223,14 @@ namespace Chummer
                     strAccessories.Length -= Environment.NewLine.Length;
 
                 lblIncludedAccessories.Text = strAccessories.Length == 0 ? LanguageManager.GetString("String_None") : strAccessories.ToString();
+                tlpRight.Visible = true;
                 gpbIncludedAccessories.Visible = !string.IsNullOrEmpty(lblIncludedAccessories.Text);
             }
             else
             {
                 chkBlackMarketDiscount.Checked = false;
-                lblWeaponReach.Text = string.Empty;
-                lblWeaponReachLabel.Visible = false;
-                lblWeaponDamage.Text = string.Empty;
-                lblWeaponDamageLabel.Visible = false;
-                lblWeaponAP.Text = string.Empty;
-                lblWeaponAPLabel.Visible = false;
-                lblWeaponMode.Text = string.Empty;
-                lblWeaponModeLabel.Visible = false;
-                lblWeaponRC.Text = string.Empty;
-                lblWeaponRC.SetToolTip(string.Empty);
-                lblWeaponRCLabel.Visible = false;
-                lblWeaponAmmo.Text = string.Empty;
-                lblWeaponAmmoLabel.Visible = false;
-                lblWeaponAccuracy.Text = string.Empty;
-                lblWeaponAccuracyLabel.Visible = false;
-                lblWeaponConceal.Text = string.Empty;
-                lblWeaponConcealLabel.Visible = false;
-                lblWeaponCost.Text = string.Empty;
-                lblWeaponCostLabel.Visible = false;
-                lblWeaponAvail.Text = string.Empty;
-                lblWeaponAvailLabel.Visible = false;
-                lblTest.Text = string.Empty;
-                lblTestLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblIncludedAccessories.Text = string.Empty;
+                tlpRight.Visible = false;
                 gpbIncludedAccessories.Visible = false;
-                lblSource.SetToolTip(string.Empty);
             }
             ResumeLayout();
             _blnSkipUpdate = false;
