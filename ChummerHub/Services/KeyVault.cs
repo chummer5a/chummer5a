@@ -39,6 +39,11 @@ namespace ChummerHub.Services
                 return null;
             }
 #endif
+            catch(Azure.RequestFailedException e)
+            {
+                _logger?.LogWarning(e, e.Message);
+                return null;
+            }
             catch (Exception e)
             {
                 _logger?.LogError(e, e.Message);
