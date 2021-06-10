@@ -1894,14 +1894,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not the Gear qualifies as a Program in the printout XML.
         /// </summary>
-        public bool IsProgram => Category == "ARE Programs" ||
-                                 Category.StartsWith("Autosofts", StringComparison.Ordinal) ||
-                                 Category == "Data Software" ||
-                                 Category == "Malware" ||
-                                 Category == "Matrix Programs" ||
-                                 Category == "Tactical AR Software" ||
-                                 Category == "Telematics Infrastructure Software" ||
-                                 Category == "Sensor Software";
+        public bool IsProgram => Category.EndsWith("Programs", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.EndsWith("Apps", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.StartsWith("Autosofts", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.StartsWith("Software", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.StartsWith("Skillsofts", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Cost multiplier for Children attached to this Gear.

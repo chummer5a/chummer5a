@@ -69,6 +69,7 @@ Application Changes:
 - Using and regaining Edge no longer affects modifiers to the value of the Edge attribute. Instead, spent Edge is tracked purely on its own and is printed/exported separately as `edgeused` and `edgeremaining` for spent Edge and remaining Edge respectively. Character sheets now properly display the amount of Edge remaining for a character in the attributes section.
 - Weapons added to a vehicle mount no longer disappear after editing said vehicle mount.
 - First-time Chummer users who download a Nightly version now have their "Prefer Nightly Version" option set to True by default instead of False. Only completely new users (i.e. people who do not have a Chummer registry key) are affected.
+- Cyberprograms, Software, Autosofts, et al. are now properly recognized as programs and printed as such.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
