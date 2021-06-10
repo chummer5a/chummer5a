@@ -51832,7 +51832,7 @@
         <skill>Astral Combat</skill>
         <skill>Gymnastics</skill>
         <skill>Perception</skill>
-        <skill rating="Ritual Spellcasting"></skill>
+        <skill>Ritual Spellcasting</skill>
         <skill>Spellcasting</skill>
       </skills>
       <powers>
