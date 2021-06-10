@@ -139,7 +139,7 @@
       <specs>
         <spec>Arcane Lore</spec>
         <spec>Artificing</spec>
-        <spec>Disrupt Ritual</spec>
+        <spec>Disenchanting</spec>
       </specs>
       <source>SR5</source>
       <page>142</page>
@@ -715,13 +715,14 @@
     </skill>
     <skill>
       <id>a6287e62-6a3b-43ce-b6e0-20f3655910e2</id>
-      <name>Ritual Spellcasting</name>
+      <name>Ceremony</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
       <default>True</default>
       <skillgroup>Aetherology</skillgroup>
       <specs>
         <spec>[Specific Ritual]</spec>
+        <spec>Disrupt Ritual</spec>
       </specs>
       <source>SR5</source>
       <page>142</page>

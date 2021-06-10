@@ -31,7 +31,7 @@
           <skillchoices amendoperation="replace" >
             <skill>Arcana</skill>
             <skill>Astral</skill>
-            <skill>Ritual Spellcasting</skill>
+            <skill>Ceremony</skill>
           </skillchoices>
         </talent>
         <talent xpathfilter="value = 'A.I.'" >
