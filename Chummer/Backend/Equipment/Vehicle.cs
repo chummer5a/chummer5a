@@ -3642,5 +3642,7 @@ namespace Chummer.Backend.Equipment
         {
             throw new NotImplementedException();
         }
+
+        public const int MaxWheels = 50;
     }
 }

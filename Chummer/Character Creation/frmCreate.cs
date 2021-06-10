@@ -11576,13 +11576,13 @@ namespace Chummer
                 lblVehicleName.Text = objMod.CurrentDisplayName;
                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification");
                 lblVehicleRatingLabel.Text = LanguageManager.GetString(objMod.RatingLabel);
-                if (objMod.MaxRating != "qty")
+                if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (objMod.MaxRating == "Seats")
+                    if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                     {
                         objMod.MaxRating = objMod.Parent.TotalSeats.ToString(GlobalOptions.CultureInfo);
                     }
-                    if (objMod.MaxRating == "body")
+                    else if (objMod.MaxRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                     {
                         objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalOptions.CultureInfo);
                     }
@@ -11612,7 +11612,7 @@ namespace Chummer
                     lblVehicleRatingLabel.Visible = true;
                     nudVehicleRating.Visible = true;
                     nudVehicleRating.Minimum = 1;
-                    nudVehicleRating.Maximum = 20;
+                    nudVehicleRating.Maximum = Vehicle.MaxWheels;
                     nudVehicleRating.Value = objMod.Rating;
                     nudVehicleRating.Increment = 1;
                     nudVehicleRating.Enabled = !objMod.IncludedInVehicle;

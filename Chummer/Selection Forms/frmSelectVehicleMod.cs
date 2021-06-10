@@ -504,7 +504,7 @@ namespace Chummer
                 else if (strRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                 {
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Qty");
-                    nudRating.Maximum = 20;
+                    nudRating.Maximum = Vehicle.MaxWheels;
                     nudRating.Visible = true;
                     lblRatingNALabel.Visible = false;
                 }
@@ -542,7 +542,7 @@ namespace Chummer
                         nudRating.Visible = false;
                     }
                 }
-                if (nudRating.Visible)
+                if (nudRating.Maximum != 0)
                 {
                     if (chkHideOverAvailLimit.Checked)
                     {
@@ -699,11 +699,10 @@ namespace Chummer
                 else
                     lblLimit.Text = string.Empty;
 
-
-                lblRatingLabel.Text = xmlVehicleMod.SelectSingleNode("ratinglabel") != null
-                    ? string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value))
-                    : LanguageManager.GetString("Label_Rating");
+                if (xmlVehicleMod.SelectSingleNode("ratinglabel") != null)
+                    lblRatingLabel.Text = string.Format(GlobalOptions.CultureInfo,
+                        LanguageManager.GetString("Label_RatingFormat"),
+                        LanguageManager.GetString(xmlVehicleMod.SelectSingleNode("ratinglabel").Value));
 
                 string strSource = xmlVehicleMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlVehicleMod.SelectSingleNode("altpage")?.Value ?? xmlVehicleMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
