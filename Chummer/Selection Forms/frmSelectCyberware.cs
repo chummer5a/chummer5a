@@ -681,6 +681,10 @@ namespace Chummer
                 return;
             }
 
+            SuspendLayout();
+            tlpRight.Visible = true;
+            tlpRight.SuspendLayout();
+
             string strSelectCategory = objXmlCyberware.SelectSingleNode("category")?.Value ?? string.Empty;
             bool blnForceNoESSModifier = objXmlCyberware.SelectSingleNode("forcegrade")?.Value == "None";
 
@@ -901,7 +905,8 @@ namespace Chummer
             }
 
             lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
-            tlpRight.Visible = true;
+            tlpRight.ResumeLayout();
+            ResumeLayout();
         }
 
         private bool _blnSkipListRefresh;

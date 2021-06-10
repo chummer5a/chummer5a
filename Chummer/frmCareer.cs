@@ -3297,19 +3297,21 @@ namespace Chummer
 
             do
             {
+                Tuple<bool, bool> tupAllowFreeSpells = CharacterObject.AllowFreeSpells;
                 int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
                 // Make sure the character has enough Karma before letting them select a Spell.
-                if (CharacterObject.Karma < intSpellKarmaCost && !(CharacterObject.AllowFreeSpells.Item1 || CharacterObject.AllowFreeSpells.Item2))
+                if (CharacterObject.Karma < intSpellKarmaCost && !(tupAllowFreeSpells.Item1 || tupAllowFreeSpells.Item2))
                 {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"),
+                        LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Information);
                     break;
                 }
 
                 using (frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject)
                 {
                     FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
-                               (CharacterObject.AllowFreeSpells.Item1 ||
-                                CharacterObject.AllowFreeSpells.Item2)
+                               (tupAllowFreeSpells.Item1 || tupAllowFreeSpells.Item2)
                 })
                 {
                     frmPickSpell.ShowDialog(this);
@@ -13215,7 +13217,7 @@ namespace Chummer
 
             if (tabCyberwareCM.Visible)
             {
-                if (treCyberware.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
+                if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
                 {
                     ProcessEquipmentConditionMonitorBoxDisplays(panCyberwareMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }
@@ -13704,7 +13706,7 @@ namespace Chummer
                 cmdDeleteWeapon.Enabled = false;
             }
 
-            if (treWeapons.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
+            if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
             {
                 tabWeaponMatrixCM.Visible = true;
                 ProcessEquipmentConditionMonitorBoxDisplays(panWeaponMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
@@ -15722,7 +15724,7 @@ namespace Chummer
             }
 
             panVehicleCM.Visible = treVehicles.SelectedNode?.Tag is IHasPhysicalConditionMonitor ||
-                                   treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor;
+                                   treVehicles.SelectedNode?.Tag is IHasMatrixAttributes;
 
             gpbVehiclesMatrix.Visible = treVehicles.SelectedNode.Tag is IHasMatrixAttributes ||
                                         treVehicles.SelectedNode.Tag is IHasWirelessBonus;
@@ -15734,7 +15736,7 @@ namespace Chummer
                     ProcessEquipmentConditionMonitorBoxDisplays(panVehiclePhysicalCM, objCM.PhysicalCM, objCM.PhysicalCMFilled);
                 }
 
-                if (treVehicles.SelectedNode?.Tag is IHasMatrixConditionMonitor objMatrixCM)
+                if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objMatrixCM)
                 {
                     ProcessEquipmentConditionMonitorBoxDisplays(panVehicleMatrixCM, objMatrixCM.MatrixCM, objMatrixCM.MatrixCMFilled);
                 }

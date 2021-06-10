@@ -23,7 +23,7 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public interface IHasMatrixAttributes : IHasMatrixConditionMonitor
+    public interface IHasMatrixAttributes
     {
         int GetBaseMatrixAttribute(string strAttributeName);
         int GetBonusMatrixAttribute(string strAttributeName);
@@ -46,15 +46,15 @@ namespace Chummer
         int BaseMatrixBoxes { get; }
         int BonusMatrixBoxes { get; set; }
         int TotalBonusMatrixBoxes { get; }
-        new int MatrixCM { get; }
-        new int MatrixCMFilled { get; set; }
+        int MatrixCM { get; }
+        int MatrixCMFilled { get; set; }
         string ProgramLimit { get; set; }
 
         bool CanSwapAttributes { get; set; }
         string AttributeArray { get; set; }
         string ModAttributeArray { get; set; }
 
-        List<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
+        IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
     }
 
     public static class MatrixAttributes

@@ -3042,7 +3042,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
 
         #endregion
 
@@ -3505,7 +3505,7 @@ namespace Chummer.Backend.Equipment
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
-                List<IHasMatrixAttributes> lstChildrenWithMatrixAttributes = ChildrenWithMatrixAttributes;
+                IList<IHasMatrixAttributes> lstChildrenWithMatrixAttributes = ChildrenWithMatrixAttributes;
                 foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                 {
                     if (lstChildrenWithMatrixAttributes.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))

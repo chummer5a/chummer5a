@@ -4302,7 +4302,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
             GearChildren.Concat(Children.Cast<IHasMatrixAttributes>()).ToList();
 
         #endregion

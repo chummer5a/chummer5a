@@ -4769,14 +4769,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes
         {
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
                 if (objThis != null)
                     return objThis.ChildrenWithMatrixAttributes;
-                return Children.Cast<IHasMatrixAttributes>().ToList();
+                return (IList<IHasMatrixAttributes>)Children;
             }
         }
 
