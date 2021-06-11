@@ -2034,7 +2034,7 @@ namespace Chummer.Backend.Equipment
             set => _strModAttributeArray = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.ToList<IHasMatrixAttributes>();
+        public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children;
 
         /// <summary>
         /// Commlink's Limit for how many Programs they can run.

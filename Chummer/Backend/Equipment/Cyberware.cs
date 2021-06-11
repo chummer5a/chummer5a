@@ -4302,8 +4302,8 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
-            GearChildren.Concat(Children.Cast<IHasMatrixAttributes>()).ToList();
+        public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes =>
+            GearChildren.Concat(Children.Cast<IHasMatrixAttributes>());
 
         #endregion
 

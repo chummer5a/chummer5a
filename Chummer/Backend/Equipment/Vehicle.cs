@@ -3042,7 +3042,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
+        public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat(Weapons.Cast<IHasMatrixAttributes>());
 
         #endregion
 
@@ -3505,22 +3505,28 @@ namespace Chummer.Backend.Equipment
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
-                IList<IHasMatrixAttributes> lstChildrenWithMatrixAttributes = ChildrenWithMatrixAttributes;
-                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                if (ChildrenWithMatrixAttributes.Any())
                 {
-                    if (lstChildrenWithMatrixAttributes.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
+                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
-                        int intTotalChildrenValue = 0;
-                        foreach (IHasMatrixAttributes objChild in lstChildrenWithMatrixAttributes)
+                        if (strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                         {
-                            if (objChild is Gear objGear && objGear.Equipped || objChild is Weapon objWeapon && objWeapon.Equipped)
+                            int intTotalChildrenValue = 0;
+                            foreach (IHasMatrixAttributes objChild in ChildrenWithMatrixAttributes)
                             {
-                                intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
+                                if (objChild is Gear objGear && objGear.Equipped ||
+                                    objChild is Weapon objWeapon && objWeapon.Equipped)
+                                {
+                                    intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
+                                }
                             }
+
+                            objValue.Replace("{Children " + strMatrixAttribute + "}",
+                                intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
                         }
-                        objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
                     }
                 }
+
                 _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
