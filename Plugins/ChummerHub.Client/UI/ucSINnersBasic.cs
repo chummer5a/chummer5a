@@ -327,7 +327,7 @@ namespace ChummerHub.Client.UI
                                 await client.GetSINnerVisibilityByIdAsync(
                                     myUC.MyCE.MySINnerFile.Id.Value);
                             await Backend.Utils.ShowErrorResponseFormAsync(res);
-                            if (res.CallSuccess == true)
+                            if (res.CallSuccess)
                             {
                                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.UserRights;
                             }

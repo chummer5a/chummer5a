@@ -551,28 +551,29 @@ namespace ChummerHub.Client.Backend
             };
             if (!string.IsNullOrEmpty(rb.ErrorText) || rb.MyException != null)
             {
-                using (var frmSIN = new frmSINnerResponse
+                PluginHandler.MainForm.DoThreadSafe(() =>
                 {
-                    TopMost = true
-                })
-                {
-                    frmSIN.SINnerResponseUI.Result = rb;
-                    if (rb.MyException != null)
+                    using (var frmSIN = new frmSINnerResponse
                     {
-                        Log.Info(rb.MyException, "The SINners WebService had a problem. This was it's response: ");
-                        frmSIN.SINnerResponseUI.Result.ErrorText =
-                            "This is NOT an exception from Chummer itself, but from the SINners WebService. This error happend \"in the cloud\": " +
-                            rb.ErrorText;
-                    }
-                    else
+                        TopMost = true
+                    })
                     {
-                        Log.Error(e, " Response from SINners WebService: ");
-                    }
-                    PluginHandler.MainForm.DoThreadSafe(() =>
-                    {
+                        frmSIN.SINnerResponseUI.Result = rb;
+                        if (rb.MyException != null)
+                        {
+                            Log.Info(rb.MyException, "The SINners WebService had a problem. This was it's response: ");
+                            frmSIN.SINnerResponseUI.Result.ErrorText =
+                                "This is NOT an exception from Chummer itself, but from the SINners WebService. This error happend \"in the cloud\": " +
+                                rb.ErrorText;
+                        }
+                        else
+                        {
+                            Log.Error(e, " Response from SINners WebService: ");
+                        }
+
                         frmSIN.ShowDialog(PluginHandler.MainForm);
-                    });
-                }
+                    }
+                });
             }
             return rb;
         }
@@ -589,7 +590,7 @@ namespace ChummerHub.Client.Backend
 
         public static object GetPropValue(object src, string propName)
         {
-            return src.GetType().GetProperty(propName).GetValue(src, null);
+            return src.GetType().GetProperty(propName)?.GetValue(src, null);
         }
 
         private static async Task<object> ShowErrorResponseFormCoreAsync(bool blnSync, object objResultBase, Exception e = null)
@@ -600,16 +601,21 @@ namespace ChummerHub.Client.Backend
             ResultBase rb = null;
             try
             {
-                rb = new ResultBase();
-                rb.ErrorText = (string) GetPropValue(objResultBase, "ErrorText");
-                rb.MyException = (Exception)GetPropValue(objResultBase, "MyException");
-                rb.CallSuccess = (bool)GetPropValue(objResultBase, "CallSuccess");
+                rb = new ResultBase
+                {
+                    ErrorText = (string) GetPropValue(objResultBase, "ErrorText"),
+                    MyException = (Exception) GetPropValue(objResultBase, "MyException"),
+                    CallSuccess = (bool) GetPropValue(objResultBase, "CallSuccess")
+                };
             }
             catch(Exception ex)
             {
-                rb = new ResultBase();
-                rb.ErrorText = "Could not cast " + objResultBase + " to Resultbase." + Environment.NewLine + Environment.NewLine + ex.Message;
-                rb.MyException = ex;
+                rb = new ResultBase
+                {
+                    ErrorText = "Could not cast " + objResultBase + " to Resultbase." + Environment.NewLine +
+                                Environment.NewLine + ex.Message,
+                    MyException = ex
+                };
                 Log.Warn(ex);
             }
             if (string.IsNullOrEmpty(rb.ErrorText) && rb.MyException == null)

@@ -34,7 +34,7 @@ namespace ChummerHub.Models.V1
         [MaxLength(64)]
         public string EMail
         {
-            get { return _email; }
+            get => _email;
             set
             {
                 _email = null;

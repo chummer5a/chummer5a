@@ -1,9 +1,5 @@
 using Newtonsoft.Json.Converters;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Client.Sinners
 {
@@ -14,9 +10,9 @@ namespace ChummerHub.Client.Sinners
             return objectType == typeof(DateTimeOffset) || objectType == typeof(DateTimeOffset?);
         }
 
-        public FixedIsoDateTimeOffsetConverter() : base()
+        public FixedIsoDateTimeOffsetConverter()
         {
-            this.DateTimeStyles = System.Globalization.DateTimeStyles.AssumeUniversal;
+            DateTimeStyles = System.Globalization.DateTimeStyles.AssumeUniversal;
         }
     }
 }

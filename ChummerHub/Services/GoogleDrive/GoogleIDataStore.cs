@@ -72,7 +72,7 @@ namespace ChummerHub.Services.GoogleDrive
             // check type
             AssertCorrectType<T>();
             if (_store.ContainsKey(key))
-                return await Task.Run(() => { return (T)(object)_store[key]; });
+                return await Task.Run(() => (T)(object)_store[key]);
             // key not found
             return default;
         }

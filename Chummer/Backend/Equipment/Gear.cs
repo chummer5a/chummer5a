@@ -27,7 +27,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -2035,7 +2034,7 @@ namespace Chummer.Backend.Equipment
             set => _strModAttributeArray = value;
         }
 
-        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => (IList<IHasMatrixAttributes>)Children;
+        public IList<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.ToList<IHasMatrixAttributes>();
 
         /// <summary>
         /// Commlink's Limit for how many Programs they can run.

@@ -241,7 +241,7 @@ namespace ChummerHub.Client.Sinners
                             {
                                 if (found?.CallSuccess == true)
                                 {
-                                    if (found.MySINner.LastChange >= MyCharacter.FileLastWriteTime)
+                                    if (found.MySINner != null && found.MySINner.LastChange >= MyCharacter.FileLastWriteTime)
                                     {
                                         if (myState != null)
                                         {
@@ -602,7 +602,7 @@ namespace ChummerHub.Client.Sinners
                         MySINnerFile.SiNnerMetaData.Visibility.UserRights.Remove(one);
                 }
             }
-            if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count() == 0)
+            if (!MySINnerFile.SiNnerMetaData.Visibility.UserRights.Any())
             {
                 MySINnerFile.SiNnerMetaData.Visibility.UserRights.Add(new SINnerUserRight()
                 {
