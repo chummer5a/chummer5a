@@ -366,7 +366,7 @@ namespace Chummer.Plugins
                 dCatalog.Refresh();
         }
 
-        internal void LoadPlugins(CustomActivity parentActivity)
+        internal void LoadPlugins(CustomActivity parentActivity = null)
         {
             try
             {

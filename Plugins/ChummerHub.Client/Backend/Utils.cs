@@ -901,9 +901,9 @@ namespace ChummerHub.Client.Backend
                 throw new ArgumentNullException(nameof(objCache));
             objCache.MyPluginDataDic.Add("SINnerId", sinner.Id);
             objCache.OnMyDoubleClick = null;
-            objCache.OnMyDoubleClick += (sender, e) => OnMyDoubleClick(sinner, objCache);
+            objCache.OnMyDoubleClick += async (sender, e) => await OnMyDoubleClick(sinner, objCache);
             objCache.OnMyAfterSelect = null;
-            objCache.OnMyAfterSelect += (sender, treeViewEventArgs) => OnMyAfterSelect(sinner, objCache, treeViewEventArgs);
+            objCache.OnMyAfterSelect += async (sender, treeViewEventArgs) => await OnMyAfterSelect(sinner, objCache, treeViewEventArgs);
             objCache.OnMyKeyDown = null;
             objCache.OnMyKeyDown += async (sender, args) =>
             {
@@ -971,7 +971,7 @@ namespace ChummerHub.Client.Backend
             };
         }
 
-        private static async void OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
+        private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
         {
             using (new CursorWait(PluginHandler.MainForm, true))
             {
@@ -1013,7 +1013,7 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        private static async void OnMyDoubleClick(SINner sinner, CharacterCache objCache)
+        private static async Task OnMyDoubleClick(SINner sinner, CharacterCache objCache)
         {
             string filepath = await DownloadFileTask(sinner, objCache);
             PluginHandler.MySINnerLoading = sinner;

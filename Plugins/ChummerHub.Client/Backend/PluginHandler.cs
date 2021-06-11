@@ -1155,14 +1155,13 @@ namespace Chummer.Plugins
                 }
 
                 Log.Info("Only one instance, starting NamedPipe-Server...");
-                PipeManager.StartServer();
-                PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                Task.Run(() => PipeManager.StartServer().ContinueWith(x => PipeManager.ReceiveString += y => HandleNamedPipe_OpenRequest(y).GetAwaiter().GetResult()));
             }
         }
 
         private static string fileNameToLoad = string.Empty;
 
-        public static async void HandleNamedPipe_OpenRequest(string argument)
+        public static async Task HandleNamedPipe_OpenRequest(string argument)
         {
             Log.Trace("Pipeserver receiced a request: " + argument);
             if (!string.IsNullOrEmpty(argument))

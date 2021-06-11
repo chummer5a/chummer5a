@@ -326,7 +326,7 @@ namespace Chummer
                 MainForm = new frmChummerMain();
                 try
                 {
-                    PluginLoader.LoadPlugins(null);
+                    PluginLoader.LoadPlugins();
                 }
                 catch (ApplicationException)
                 {
