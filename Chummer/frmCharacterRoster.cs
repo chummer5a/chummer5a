@@ -582,7 +582,8 @@ namespace Chummer
             if (objSelectedNode == null)
                 return;
             CharacterCache objCache = objSelectedNode.Tag as CharacterCache;
-            objCache?.OnMyAfterSelect(sender, e);
+            if (objCache?.OnMyAfterSelect != null)
+                objCache.OnMyAfterSelect(sender, e);
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
