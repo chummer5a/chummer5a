@@ -1028,7 +1028,7 @@ namespace Chummer.Backend.Equipment
             return _objCachedMyXmlNode;
         }
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteDrug")))
             {

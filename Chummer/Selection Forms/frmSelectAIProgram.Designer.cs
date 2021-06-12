@@ -90,7 +90,7 @@ namespace Chummer
             this.lstAIPrograms.Size = new System.Drawing.Size(297, 390);
             this.lstAIPrograms.TabIndex = 37;
             this.lstAIPrograms.SelectedIndexChanged += new System.EventHandler(this.lstAIPrograms_SelectedIndexChanged);
-            this.lstAIPrograms.DoubleClick += new System.EventHandler(this.trePrograms_DoubleClick);
+            this.lstAIPrograms.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // tlpMain
             // 
@@ -367,7 +367,6 @@ namespace Chummer
         private ElasticComboBox cboCategory;
         private System.Windows.Forms.ListBox lstAIPrograms;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private BufferedTableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOKAdd;

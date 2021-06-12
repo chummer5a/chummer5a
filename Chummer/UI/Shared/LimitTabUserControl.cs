@@ -106,10 +106,13 @@ namespace Chummer.UI.Shared
 
         private void cmdDeleteLimitModifier_Click(object sender, EventArgs e)
         {
-            if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject)) return;
-            if (!selectedObject.Remove(GlobalOptions.ConfirmDelete)) return;
+            if (!(treLimit.SelectedNode?.Tag is ICanRemove selectedObject))
+                return;
+            if (!selectedObject.Remove(GlobalOptions.ConfirmDelete))
+                return;
             MakeDirtyWithCharacterUpdate?.Invoke(null, null);
         }
+
         private void treLimit_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete)

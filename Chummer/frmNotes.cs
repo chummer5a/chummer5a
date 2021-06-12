@@ -71,11 +71,17 @@ namespace Chummer
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
-                Close();
-            if (e.KeyCode == Keys.Enter && e.Control)
+            switch (e.KeyCode)
             {
-                btnOK_Click(sender, e);
+                case Keys.Escape:
+                    Close();
+                    break;
+                case Keys.Enter:
+                {
+                    if (e.Control)
+                        btnOK_Click(sender, e);
+                    break;
+                }
             }
         }
 

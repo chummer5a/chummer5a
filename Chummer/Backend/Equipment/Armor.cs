@@ -339,10 +339,7 @@ namespace Chummer.Backend.Equipment
                         _strExtra = ImprovementManager.SelectedValue;
                     }
                 }
-            }
 
-            if (!blnSkipSelectForms)
-            {
                 XmlNode xmlSelectModesFromCategory = objXmlArmorNode["selectmodsfromcategory"];
                 if (xmlSelectModesFromCategory != null)
                 {
@@ -892,13 +889,10 @@ namespace Chummer.Backend.Equipment
                 if (_intDamage > intTotalArmor)
                     _intDamage = intTotalArmor;
 
-                if (_intDamage != intOldValue)
+                if (_intDamage != intOldValue && Equipped && _objCharacter != null)
                 {
-                    if (Equipped)
-                    {
-                        _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
-                        _objCharacter?.RefreshEncumbrance();
-                    }
+                    _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
+                    _objCharacter.RefreshEncumbrance();
                 }
             }
         }
@@ -915,13 +909,10 @@ namespace Chummer.Backend.Equipment
                 if (_intRating != intNewValue)
                 {
                     _intRating = intNewValue;
-                    if (Equipped)
+                    if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
                     {
-                        if (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating"))
-                        {
-                            _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
-                            _objCharacter?.RefreshEncumbrance();
-                        }
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
+                        _objCharacter.RefreshEncumbrance();
                     }
                     if (GearChildren.Count > 0)
                     {
@@ -1069,7 +1060,18 @@ namespace Chummer.Backend.Equipment
 
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Armor's Sourcebook.
@@ -1747,15 +1749,12 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped)
                 {
-                    if (WirelessBonus.Attributes?.Count > 0)
+                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes["mode"].InnerText == "replace")
                     {
-                        if (WirelessBonus.Attributes["mode"].InnerText == "replace")
-                        {
-                            ImprovementManager.DisableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.Armor &&
-                                    x.SourceName == InternalId).ToArray());
-                        }
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                            _objCharacter.Improvements.Where(x =>
+                                x.ImproveSource == Improvement.ImprovementSource.Armor &&
+                                x.SourceName == InternalId).ToArray());
                     }
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor, InternalId + "Wireless", WirelessBonus, Rating, DisplayNameShort(GlobalOptions.Language));
@@ -1765,15 +1764,12 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus.Attributes?.Count > 0)
+                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes?["mode"].InnerText == "replace")
                     {
-                        if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
-                        {
-                            ImprovementManager.EnableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.Armor &&
-                                    x.SourceName == InternalId).ToArray());
-                        }
+                        ImprovementManager.EnableImprovements(_objCharacter,
+                            _objCharacter.Improvements.Where(x =>
+                                x.ImproveSource == Improvement.ImprovementSource.Armor &&
+                                x.SourceName == InternalId).ToArray());
                     }
 
                     ImprovementManager.RemoveImprovements(_objCharacter,
@@ -1840,11 +1836,8 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArmor")))
+                return false;
             DeleteArmor();
             return _objCharacter.Armor.Remove(this);
         }
@@ -1868,8 +1861,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
 
@@ -1941,7 +1934,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool AllowPasteObject(object input = null)
+        public bool AllowPasteObject(object input)
         {
             throw new NotImplementedException();
         }

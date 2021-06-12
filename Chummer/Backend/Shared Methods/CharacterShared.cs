@@ -63,19 +63,18 @@ namespace Chummer
             PageViewTelemetry pvt = new PageViewTelemetry(name)
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = name
+                Name = name,
+                Timestamp = DateTimeOffset.UtcNow
             };
             pvt.Context.Operation.Name = "Operation CharacterShared.Constructor()";
             pvt.Properties.Add("Name", objCharacter?.Name);
             pvt.Properties.Add("Path", objCharacter?.FileName);
-            pvt.Timestamp = DateTimeOffset.UtcNow;
             Shown += delegate
             {
                 pvt.Duration = DateTimeOffset.UtcNow-pvt.Timestamp;
-                if (objCharacter != null)
+                if (objCharacter != null && Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri Uriresult))
                 {
-                    if (Uri.TryCreate(objCharacter.FileName, UriKind.Absolute, out Uri Uriresult))
-                        pvt.Url = Uriresult;
+                    pvt.Url = Uriresult;
                 }
                 TelemetryClient.TrackPageView(pvt);
             };
@@ -2733,12 +2732,9 @@ namespace Chummer
                         for (int i = nodArmor.Nodes.Count - 1; i >= 0; --i)
                         {
                             TreeNode objNode = nodArmor.Nodes[i];
-                            if (objNode.Tag is ArmorMod objNodeMod)
+                            if (objNode.Tag is ArmorMod objNodeMod && !ReferenceEquals(objNodeMod.Parent, objArmor))
                             {
-                                if (!ReferenceEquals(objNodeMod.Parent, objArmor))
-                                {
-                                    objNode.Remove();
-                                }
+                                objNode.Remove();
                             }
                         }
                     }
@@ -6180,21 +6176,18 @@ namespace Chummer
                 return;
             //TODO: Global option to switch behaviour on/off, method to emulate clicking the scroll buttons instead of changing the selected index,
             //allow wrapping back to first/last tab item based on scroll direction
-            if (sender is TabControl tabControl)
+            if (sender is TabControl tabControl && e.Location.Y <= tabControl.ItemSize.Height)
             {
-                if (e.Location.Y <= tabControl.ItemSize.Height)
-                {
-                    int intScrollAmount = e.Delta;
-                    int intSelectedTabIndex = tabControl.SelectedIndex;
+                int intScrollAmount = e.Delta;
+                int intSelectedTabIndex = tabControl.SelectedIndex;
 
-                    if (intScrollAmount < 0)
-                    {
-                        if (intSelectedTabIndex < tabControl.TabCount - 1)
-                            tabControl.SelectedIndex = intSelectedTabIndex + 1;
-                    }
-                    else if (intSelectedTabIndex > 0)
-                        tabControl.SelectedIndex = intSelectedTabIndex - 1;
+                if (intScrollAmount < 0)
+                {
+                    if (intSelectedTabIndex < tabControl.TabCount - 1)
+                        tabControl.SelectedIndex = intSelectedTabIndex + 1;
                 }
+                else if (intSelectedTabIndex > 0)
+                    tabControl.SelectedIndex = intSelectedTabIndex - 1;
             }
         }
 

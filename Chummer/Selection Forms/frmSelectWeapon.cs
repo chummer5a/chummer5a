@@ -270,22 +270,16 @@ namespace Chummer
                         continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                     xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && !xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (!xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                     if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
                         continue;
@@ -372,22 +366,16 @@ namespace Chummer
                         continue;
 
                     XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                     xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && !xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (!xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                     if (objXmlWeapon["cyberware"]?.InnerText == bool.TrueString)
                         continue;
@@ -503,42 +491,49 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstWeapon.SelectedIndex + 1 < lstWeapon.Items.Count)
+                case Keys.Down:
                 {
-                    lstWeapon.SelectedIndex++;
+                    if (lstWeapon.SelectedIndex + 1 < lstWeapon.Items.Count)
+                    {
+                        lstWeapon.SelectedIndex++;
+                    }
+                    else if (lstWeapon.Items.Count > 0)
+                    {
+                        lstWeapon.SelectedIndex = 0;
+                    }
+                    if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index + 1)
+                    {
+                        dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index + 1].Selected = true;
+                    }
+                    else if (dgvWeapons.Rows.Count > 0)
+                    {
+                        dgvWeapons.Rows[0].Selected = true;
+                    }
+
+                    break;
                 }
-                else if (lstWeapon.Items.Count > 0)
+                case Keys.Up:
                 {
-                    lstWeapon.SelectedIndex = 0;
-                }
-                if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index + 1)
-                {
-                    dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index + 1].Selected = true;
-                }
-                else if (dgvWeapons.Rows.Count > 0)
-                {
-                    dgvWeapons.Rows[0].Selected = true;
-                }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstWeapon.SelectedIndex - 1 >= 0)
-                {
-                    lstWeapon.SelectedIndex--;
-                }
-                else if (lstWeapon.Items.Count > 0)
-                {
-                    lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
-                }
-                if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index - 1)
-                {
-                    dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index - 1].Selected = true;
-                }
-                else if (dgvWeapons.Rows.Count > 0)
-                {
-                    dgvWeapons.Rows[0].Selected = true;
+                    if (lstWeapon.SelectedIndex - 1 >= 0)
+                    {
+                        lstWeapon.SelectedIndex--;
+                    }
+                    else if (lstWeapon.Items.Count > 0)
+                    {
+                        lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
+                    }
+                    if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index - 1)
+                    {
+                        dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index - 1].Selected = true;
+                    }
+                    else if (dgvWeapons.Rows.Count > 0)
+                    {
+                        dgvWeapons.Rows[0].Selected = true;
+                    }
+
+                    break;
                 }
             }
         }
@@ -694,12 +689,6 @@ namespace Chummer
             tmrSearch.Enabled = false;
 
             RefreshList();
-        }
-
-        private void dgvWeapons_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
         }
         #endregion
     }

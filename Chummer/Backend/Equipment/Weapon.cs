@@ -558,7 +558,17 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source, DisplayPage(GlobalOptions.Language),
+                        GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -2183,28 +2193,28 @@ namespace Chummer.Backend.Equipment
                                     || objImprovement.ImprovedName == strExoticRanged))
                             || "Cyberware " + objImprovement.ImprovedName == strCategory))
                     .Sum(objImprovement => objImprovement.Value);
-            }
 
-            // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
-            // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
-            if (Name == "Unarmed Attack")
-            {
-                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                // If this is the Unarmed Attack Weapon and the character has the UnarmedDVPhysical Improvement, change the type to Physical.
+                // This should also add any UnarmedDV bonus which only applies to Unarmed Combat, not Unarmed Weapons.
+                if (Name == "Unarmed Attack")
                 {
-                    if (strDamageType == "S" && objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDVPhysical && objImprovement.Enabled)
-                        strDamageType = "P";
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDV && objImprovement.Enabled)
-                        decImprove += objImprovement.Value;
+                    foreach (Improvement objImprovement in _objCharacter.Improvements)
+                    {
+                        if (strDamageType == "S" && objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDVPhysical && objImprovement.Enabled)
+                            strDamageType = "P";
+                        if (objImprovement.ImproveType == Improvement.ImprovementType.UnarmedDV && objImprovement.Enabled)
+                            decImprove += objImprovement.Value;
+                    }
                 }
-            }
 
-            // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-            else if (Skill?.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
-            {
-                decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
+                else if (Skill?.Name == "Unarmed Combat" && _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
+                {
+                    decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV);
+                }
+                if (_objCharacter.Options.MoreLethalGameplay)
+                    decImprove += 2;
             }
-            if (_objCharacter.Options.MoreLethalGameplay)
-                decImprove += 2;
 
             bool blnDamageReplaced = false;
             StringBuilder sbdBonusDamage = new StringBuilder();
@@ -2484,7 +2494,6 @@ namespace Chummer.Backend.Equipment
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
         {
             IEnumerable<string> lstAmmos = Ammo.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries);
-            string strReturn = string.Empty;
             int intAmmoBonus = 0;
 
             if (WeaponAccessories.Count != 0)
@@ -2521,6 +2530,8 @@ namespace Chummer.Backend.Equipment
                     }
                 }
             }
+
+            StringBuilder sbdReturn = new StringBuilder();
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             foreach (string strAmmo in lstAmmos)
             {
@@ -2576,9 +2587,9 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strPrepend))
                         strThisAmmo = strPrepend + strThisAmmo;
                 }
-                strReturn += strThisAmmo + strSpace;
+                sbdReturn.Append(strThisAmmo + strSpace);
             }
-            strReturn = strReturn.Trim();
+            string strReturn = sbdReturn.ToString().Trim();
 
             if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
@@ -2992,14 +3003,11 @@ namespace Chummer.Backend.Equipment
                         sbdBonusAP.Append(" + " + strAPAdd);
                 }
 
-                if (_objCharacter != null)
+                if (_objCharacter != null && (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
+                    _objCharacter.Options.UnarmedImprovementsApplyToWeapons))
                 {
                     // Add any UnarmedAP bonus for the Unarmed Attack item.
-                    if (Name == "Unarmed Attack" || Skill?.Name == "Unarmed Combat" &&
-                        _objCharacter.Options.UnarmedImprovementsApplyToWeapons)
-                    {
-                        intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP).StandardRound();
-                    }
+                    intImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedAP).StandardRound();
                 }
             }
 
@@ -3917,8 +3925,6 @@ namespace Chummer.Backend.Equipment
                             }
                             break;
                         }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(FireMode));
                 }
 
                 if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
@@ -4183,8 +4189,6 @@ namespace Chummer.Backend.Equipment
 
                             break;
                         }
-                    default:
-                        throw new ArgumentOutOfRangeException(nameof(FireMode));
                 }
 
                 foreach (WeaponAccessory wa in WeaponAccessories.Where(a => a.Equipped && a.DicePool != 0))
@@ -4229,13 +4233,13 @@ namespace Chummer.Backend.Equipment
                             strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                     }
                 }
-                else if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
+                else if (WirelessOn &&
+                         WeaponAccessories.Any(x =>
+                             x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn) &&
+                         ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
                 {
-                    if (ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
-                    {
-                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                            strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
-                    }
+                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                        strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
                 }
 
                 return sbdReturn.ToString();
@@ -4877,30 +4881,24 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && Parent?.WirelessOn != false)
                 {
-                    if (WirelessBonus?.Attributes?.Count > 0)
+                    if (WirelessBonus?.Attributes?.Count > 0 && WirelessBonus.Attributes["mode"].InnerText == "replace")
                     {
-                        if (WirelessBonus.Attributes["mode"].InnerText == "replace")
-                        {
-                            ImprovementManager.DisableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.Weapon &&
-                                    x.SourceName == InternalId).ToArray());
-                        }
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                            _objCharacter.Improvements.Where(x =>
+                                x.ImproveSource == Improvement.ImprovementSource.Weapon &&
+                                x.SourceName == InternalId).ToArray());
                     }
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ArmorMod, InternalId + "Wireless", WirelessBonus, 1, DisplayNameShort(GlobalOptions.Language));
                 }
                 else
                 {
-                    if (WirelessBonus.Attributes?.Count > 0)
+                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes?["mode"].InnerText == "replace")
                     {
-                        if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
-                        {
-                            ImprovementManager.EnableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                    x.ImproveSource == Improvement.ImprovementSource.Weapon &&
-                                    x.SourceName == InternalId).ToArray());
-                        }
+                        ImprovementManager.EnableImprovements(_objCharacter,
+                            _objCharacter.Improvements.Where(x =>
+                                x.ImproveSource == Improvement.ImprovementSource.Weapon &&
+                                x.SourceName == InternalId).ToArray());
                     }
 
                     ImprovementManager.RemoveImprovements(_objCharacter,
@@ -5141,7 +5139,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    EndLoop: ;
+                    EndLoop:;
                 }
 
                 Gear objSelectedAmmo;
@@ -5354,13 +5352,10 @@ namespace Chummer.Backend.Equipment
                         string strName = strOriginalName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
                         xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + "]");
                     }
-                    if (xmlWeaponDataNode == null)
+                    if (xmlWeaponDataNode == null && strOriginalName.IndexOf(',') >= 0)
                     {
-                        if (strOriginalName.IndexOf(',') >= 0)
-                        {
-                            string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
-                            xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + "]");
-                        }
+                        string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
+                        xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + "]");
                     }
                 }
                 if (xmlWeaponDataNode != null)
@@ -5405,22 +5400,16 @@ namespace Chummer.Backend.Equipment
                             foreach (XmlNode xmlLoopNode in xmlWeaponDocument.SelectNodes("chummer/accessories/accessory[contains(name, " + strWeaponAccessoryName.CleanXPath() + ")]"))
                             {
                                 XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/weapondetails");
-                                if (xmlTestNode != null)
+                                if (xmlTestNode != null && xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
-                                    if (xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                    {
-                                        continue;
-                                    }
+                                    continue;
                                 }
                                 xmlTestNode = xmlLoopNode.SelectSingleNode("required/weapondetails");
-                                if (xmlTestNode != null)
+                                if (xmlTestNode != null && !xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
-                                    if (!xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                    {
-                                        continue;
-                                    }
+                                    continue;
                                 }
 
                                 xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/oneof");
@@ -5775,11 +5764,8 @@ namespace Chummer.Backend.Equipment
         {
             if (!CanBeRemoved)
                 return false;
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
+                return false;
 
             DeleteWeapon();
             if (_objCharacter.Weapons.Contains(this))
@@ -5857,8 +5843,8 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
 
@@ -5908,23 +5894,17 @@ namespace Chummer.Backend.Equipment
             if (!objXmlAccessory.RequirementsMet(_objCharacter, this, string.Empty, string.Empty)) return false;
 
             XPathNavigator xmlTestNode = objXmlAccessory.SelectSingleNode("forbidden/weapondetails");
-            if (xmlTestNode != null)
+            if (xmlTestNode != null && GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
             {
                 // Assumes topmost parent is an AND node
-                if (GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
-                {
-                    return false;
-                }
+                return false;
             }
 
             xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
-            if (xmlTestNode != null)
+            if (xmlTestNode != null && !GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
             {
                 // Assumes topmost parent is an AND node
-                if (!GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
-                {
-                    return false;
-                }
+                return false;
             }
 
             return true;

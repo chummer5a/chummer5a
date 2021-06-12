@@ -198,7 +198,7 @@ namespace Chummer
             this.lstAccessory.Size = new System.Drawing.Size(297, 417);
             this.lstAccessory.TabIndex = 0;
             this.lstAccessory.SelectedIndexChanged += new System.EventHandler(this.lstAccessory_SelectedIndexChanged);
-            this.lstAccessory.DoubleClick += new System.EventHandler(this.lstAccessory_DoubleClick);
+            this.lstAccessory.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // cmdOKAdd
             // 

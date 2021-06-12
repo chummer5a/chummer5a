@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -337,6 +338,13 @@ namespace Chummer
             lstStatsArray.Reverse();
 
             string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
+            StringBuilder[] asbdCyberdeckArray =
+            {
+                new StringBuilder(strCyberdeckArray[0]),
+                new StringBuilder(strCyberdeckArray[1]),
+                new StringBuilder(strCyberdeckArray[2]),
+                new StringBuilder(strCyberdeckArray[3])
+            };
             foreach (IHasMatrixAttributes objChild in objThis.ChildrenWithMatrixAttributes)
             {
                 string strLoopArrayText = objChild.ModAttributeArray;
@@ -345,7 +353,7 @@ namespace Chummer
                     string[] strLoopArray = strLoopArrayText.Split(',');
                     for (int i = 0; i < 4; ++i)
                     {
-                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ')';
+                        asbdCyberdeckArray[i].Append("+(" + strLoopArray[i] + ')');
                     }
                 }
             }
@@ -353,7 +361,7 @@ namespace Chummer
             {
                 if (intBaseAttack == lstStatsArray[i])
                 {
-                    objThis.Attack = strCyberdeckArray[i];
+                    objThis.Attack = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -362,7 +370,7 @@ namespace Chummer
             {
                 if (intBaseSleaze == lstStatsArray[i])
                 {
-                    objThis.Sleaze = strCyberdeckArray[i];
+                    objThis.Sleaze = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -371,7 +379,7 @@ namespace Chummer
             {
                 if (intBaseDP == lstStatsArray[i])
                 {
-                    objThis.DataProcessing = strCyberdeckArray[i];
+                    objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -380,7 +388,7 @@ namespace Chummer
             {
                 if (intBaseFirewall == lstStatsArray[i])
                 {
-                    objThis.Firewall = strCyberdeckArray[i];
+                    objThis.Firewall = asbdCyberdeckArray[i].ToString();
                     break;
                 }
             }

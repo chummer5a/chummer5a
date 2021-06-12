@@ -398,7 +398,7 @@ namespace Chummer
             this.lstArmor.Size = new System.Drawing.Size(294, 449);
             this.lstArmor.TabIndex = 58;
             this.lstArmor.SelectedIndexChanged += new System.EventHandler(this.lstArmor_SelectedIndexChanged);
-            this.lstArmor.DoubleClick += new System.EventHandler(this.lstArmor_DoubleClick);
+            this.lstArmor.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // chkHideOverAvailLimit
             // 

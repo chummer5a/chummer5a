@@ -107,12 +107,9 @@ namespace Chummer
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
                         {
                             TreeNode objNode = nodParent.Nodes[i];
-                            if (objNode.Tag is Gear objNodeGear)
+                            if (objNode.Tag is Gear objNodeGear && !ReferenceEquals(objNodeGear.Parent, objParent))
                             {
-                                if (!ReferenceEquals(objNodeGear.Parent, objParent))
-                                {
-                                    objNode.Remove();
-                                }
+                                objNode.Remove();
                             }
                         }
                     }
@@ -235,13 +232,9 @@ namespace Chummer
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
                         {
                             TreeNode objNode = nodParent.Nodes[i];
-                            if (objNode.Tag is Cyberware objNodeCyberware)
+                            if (objNode.Tag is Cyberware objNodeCyberware && !ReferenceEquals(objNodeCyberware.Parent, objParent) && !ReferenceEquals(objNodeCyberware.ParentVehicle, objParent) && objParentAsVehicleMod?.Cyberware.Contains(objNodeCyberware) != true)
                             {
-                                if (!ReferenceEquals(objNodeCyberware.Parent, objParent) && !ReferenceEquals(objNodeCyberware.ParentVehicle, objParent)
-                                    && objParentAsVehicleMod?.Cyberware.Contains(objNodeCyberware) != true)
-                                {
-                                    objNode.Remove();
-                                }
+                                objNode.Remove();
                             }
                         }
                     }
@@ -339,15 +332,9 @@ namespace Chummer
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
                         {
                             TreeNode objNode = nodParent.Nodes[i];
-                            if (objNode.Tag is Weapon objNodeWeapon)
+                            if (objNode.Tag is Weapon objNodeWeapon && !ReferenceEquals(objNodeWeapon.Parent, objParent) && !ReferenceEquals(objNodeWeapon.ParentMount, objParent) && !ReferenceEquals(objNodeWeapon.ParentVehicle, objParent) && !ReferenceEquals(objNodeWeapon.ParentVehicleMod, objParent))
                             {
-                                if (!ReferenceEquals(objNodeWeapon.Parent, objParent)
-                                    && !ReferenceEquals(objNodeWeapon.ParentMount, objParent)
-                                    && !ReferenceEquals(objNodeWeapon.ParentVehicle, objParent)
-                                    && !ReferenceEquals(objNodeWeapon.ParentVehicleMod, objParent))
-                                {
-                                    objNode.Remove();
-                                }
+                                objNode.Remove();
                             }
                         }
                     }
@@ -453,12 +440,9 @@ namespace Chummer
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
                         {
                             TreeNode objNode = nodParent.Nodes[i];
-                            if (objNode.Tag is WeaponAccessory objNodeAccessory)
+                            if (objNode.Tag is WeaponAccessory objNodeAccessory && !ReferenceEquals(objNodeAccessory.Parent, objParent))
                             {
-                                if (!ReferenceEquals(objNodeAccessory.Parent, objParent))
-                                {
-                                    objNode.Remove();
-                                }
+                                objNode.Remove();
                             }
                         }
                     }
@@ -576,12 +560,9 @@ namespace Chummer
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
                         {
                             TreeNode objNode = nodParent.Nodes[i];
-                            if (objNode.Tag is VehicleMod objNodeMod)
+                            if (objNode.Tag is VehicleMod objNodeMod && !ReferenceEquals(objNodeMod.Parent, objParent) && !ReferenceEquals(objNodeMod.WeaponMountParent, objParent))
                             {
-                                if (!ReferenceEquals(objNodeMod.Parent, objParent) && !ReferenceEquals(objNodeMod.WeaponMountParent, objParent))
-                                {
-                                    objNode.Remove();
-                                }
+                                objNode.Remove();
                             }
                         }
                     }
@@ -732,12 +713,9 @@ namespace Chummer
                             for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
                             {
                                 TreeNode objNode = nodParent.Nodes[i];
-                                if (objNode.Tag is WeaponMount objNodeWeaponMount)
+                                if (objNode.Tag is WeaponMount objNodeWeaponMount && !ReferenceEquals(objNodeWeaponMount.Parent, objParent))
                                 {
-                                    if (!ReferenceEquals(objNodeWeaponMount.Parent, objParent))
-                                    {
-                                        objNode.Remove();
-                                    }
+                                    objNode.Remove();
                                 }
                             }
                         }

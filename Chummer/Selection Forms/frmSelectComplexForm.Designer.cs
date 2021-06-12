@@ -62,7 +62,7 @@ namespace Chummer
             this.lstComplexForms.Size = new System.Drawing.Size(297, 417);
             this.lstComplexForms.TabIndex = 6;
             this.lstComplexForms.SelectedIndexChanged += new System.EventHandler(this.lstComplexForms_SelectedIndexChanged);
-            this.lstComplexForms.DoubleClick += new System.EventHandler(this.lstComplexForms_DoubleClick);
+            this.lstComplexForms.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // cmdOK
             // 

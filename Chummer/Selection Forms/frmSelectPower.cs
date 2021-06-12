@@ -60,12 +60,6 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void lstPowers_DoubleClick(object sender, EventArgs e)
-        {
-            AddAgain = false;
-            AcceptForm();
-        }
-
         private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
@@ -126,26 +120,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstPowers.SelectedIndex + 1 < lstPowers.Items.Count)
-                {
+                case Keys.Down when lstPowers.SelectedIndex + 1 < lstPowers.Items.Count:
                     lstPowers.SelectedIndex += 1;
-                }
-                else if (lstPowers.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstPowers.SelectedIndex = 0;
+                    if (lstPowers.Items.Count > 0)
+                    {
+                        lstPowers.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstPowers.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstPowers.SelectedIndex - 1 >= 0:
                     lstPowers.SelectedIndex -= 1;
-                }
-                else if (lstPowers.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
+                    if (lstPowers.Items.Count > 0)
+                    {
+                        lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -225,11 +224,10 @@ namespace Chummer
                 decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.InvariantCultureInfo);
                 string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
                 string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                if (!string.IsNullOrEmpty(strExtraPointCost))
+                if (!string.IsNullOrEmpty(strExtraPointCost) && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
-                    if (!_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
-                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
+                    decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
                 }
                 if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
                 {

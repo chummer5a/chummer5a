@@ -291,7 +291,7 @@ namespace Chummer
             this.trePowers.Size = new System.Drawing.Size(295, 390);
             this.trePowers.TabIndex = 0;
             this.trePowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trePowers_AfterSelect);
-            this.trePowers.DoubleClick += new System.EventHandler(this.trePowers_DoubleClick);
+            this.trePowers.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // lblCategory
             // 

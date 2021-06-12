@@ -584,35 +584,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
-            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
+                                                // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
+                                                && (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
-                // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                if (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal))
-                {
-                    int intTrimLength = strToTrim.Length;
-                    return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
-                }
-            }
-            return strInput;
-        }
-
-        /// <summary>
-        /// Trims a substring out of a string if the string ends with it.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="strToTrim">Substring to trim</param>
-        /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
-        /// <returns>Trimmed String</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
-        {
-            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
-            {
-                // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                if (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal))
-                {
-                    return strInput.Substring(0, strInput.Length - strToTrim.Length);
-                }
+                int intTrimLength = strToTrim.Length;
+                return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
             }
             return strInput;
         }
@@ -649,6 +626,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Escapes a char once out of a string if the string begins with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim">Char to escape</param>
+        /// <returns>String with <paramref name="chrToTrim"/> escaped out once from the beginning of it.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim)
+        {
+            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
+            {
+                return strInput.Substring(1, strInput.Length - 1);
+            }
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="achrToTrim">Chars to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
+        {
+            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
+                return strInput.Substring(1, strInput.Length - 1);
+            return strInput;
+        }
+
+        /// <summary>
+        /// Trims a substring out of a string if the string ends with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim">Substring to trim</param>
+        /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
+        {
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
+                                                // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
+                                                && (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
+            {
+                return strInput.Substring(0, strInput.Length - strToTrim.Length);
+            }
+            return strInput;
+        }
+
+        /// <summary>
         /// If a string ends with any substrings, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -680,22 +706,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Escapes a char once out of a string if the string begins with it.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="chrToTrim">Char to escape</param>
-        /// <returns>String with <paramref name="chrToTrim"/> escaped out once from the beginning of it.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStartOnce(this string strInput, char chrToTrim)
-        {
-            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
-            {
-                return strInput.Substring(1, strInput.Length - 1);
-            }
-            return strInput;
-        }
-
-        /// <summary>
         /// Trims a char out of a string if the string ends with it.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -710,20 +720,6 @@ namespace Chummer
                 if (strInput[intLength - 1] == chrToTrim)
                     return strInput.Substring(0, intLength - 1);
             }
-            return strInput;
-        }
-
-        /// <summary>
-        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="achrToTrim">Chars to trim</param>
-        /// <returns>Trimmed String</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
-        {
-            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
-                return strInput.Substring(1, strInput.Length - 1);
             return strInput;
         }
 

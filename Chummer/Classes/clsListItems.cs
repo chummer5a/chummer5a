@@ -47,6 +47,11 @@ namespace Chummer
         /// </summary>
         public string Name { get; }
 
+        public bool Equals(ListItem other)
+        {
+            return Name == other.Name && Value == other.Value;
+        }
+
         public override bool Equals(object obj)
         {
             return Value.Equals(obj);
@@ -80,11 +85,6 @@ namespace Chummer
         public static bool operator !=(object x, ListItem y)
         {
             return !(x?.Equals(y) ?? y == null);
-        }
-
-        public bool Equals(ListItem other)
-        {
-            return Name == other.Name && Value == other.Value;
         }
     }
 

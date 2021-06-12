@@ -264,7 +264,7 @@ namespace Chummer.Plugins
             return true;
         }
 
-        void IPlugin.Dispose()
+        public void Dispose()
         {
             if (PipeManager != null)
             {

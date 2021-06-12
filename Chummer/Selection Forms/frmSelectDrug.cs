@@ -357,12 +357,6 @@ namespace Chummer
             PopulateGrades();
         }
 
-        private void lstDrug_DoubleClick(object sender, EventArgs e)
-        {
-            AddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
@@ -394,26 +388,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstDrug.SelectedIndex + 1 < lstDrug.Items.Count)
-                {
+                case Keys.Down when lstDrug.SelectedIndex + 1 < lstDrug.Items.Count:
                     lstDrug.SelectedIndex++;
-                }
-                else if (lstDrug.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstDrug.SelectedIndex = 0;
+                    if (lstDrug.Items.Count > 0)
+                    {
+                        lstDrug.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstDrug.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstDrug.SelectedIndex - 1 >= 0:
                     lstDrug.SelectedIndex--;
-                }
-                else if (lstDrug.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstDrug.SelectedIndex = lstDrug.Items.Count - 1;
+                    if (lstDrug.Items.Count > 0)
+                    {
+                        lstDrug.SelectedIndex = lstDrug.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -646,7 +645,7 @@ namespace Chummer
         private List<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
-                return null;
+                return new List<ListItem>();
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
@@ -665,7 +664,7 @@ namespace Chummer
         private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
-                return null;
+                return new List<ListItem>();
 
             List<ListItem> lstDrugs = new List<ListItem>();
             int intOverLimit = 0;
@@ -674,11 +673,8 @@ namespace Chummer
             foreach (XPathNavigator xmlDrug in objXmlDrugList)
             {
                 bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
-                if (objCurrentGrade != null && blnIsForceGrade)
-                {
-                    if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                        continue;
-                }
+                if (objCurrentGrade != null && blnIsForceGrade && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                    continue;
 
                 string strMaxRating = xmlDrug.SelectSingleNode("rating")?.Value;
                 string strMinRating = xmlDrug.SelectSingleNode("minrating")?.Value;

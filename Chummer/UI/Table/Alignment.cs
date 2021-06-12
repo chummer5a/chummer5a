@@ -20,7 +20,7 @@ using System;
 
 namespace Chummer.UI.Table {
 
-    [FlagsAttribute()]
+    [FlagsAttribute]
     public enum Alignment : byte
     {
         Center = 0, Left = 1, Right = 2, Top = 4, Bottom = 8

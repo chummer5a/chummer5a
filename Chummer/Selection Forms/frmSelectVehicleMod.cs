@@ -148,12 +148,6 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void lstMod_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
@@ -176,26 +170,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstMod.SelectedIndex + 1 < lstMod.Items.Count)
-                {
+                case Keys.Down when lstMod.SelectedIndex + 1 < lstMod.Items.Count:
                     lstMod.SelectedIndex++;
-                }
-                else if (lstMod.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstMod.SelectedIndex = 0;
+                    if (lstMod.Items.Count > 0)
+                    {
+                        lstMod.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstMod.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstMod.SelectedIndex - 1 >= 0:
                     lstMod.SelectedIndex--;
-                }
-                else if (lstMod.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstMod.SelectedIndex = lstMod.Items.Count - 1;
+                    if (lstMod.Items.Count > 0)
+                    {
+                        lstMod.SelectedIndex = lstMod.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -294,22 +293,16 @@ namespace Chummer
             foreach (XPathNavigator objXmlMod in objXmlModList)
             {
                 XPathNavigator xmlTestNode = objXmlMod.SelectSingleNode("forbidden/vehicledetails");
-                if (xmlTestNode != null)
+                if (xmlTestNode != null && objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
-                    if (objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
                 xmlTestNode = objXmlMod.SelectSingleNode("required/vehicledetails");
-                if (xmlTestNode != null)
+                if (xmlTestNode != null && !objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
-                    if (!objXmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 xmlTestNode = objXmlMod.SelectSingleNode("forbidden/oneof");
@@ -347,12 +340,9 @@ namespace Chummer
                 }
 
                 xmlTestNode = objXmlMod.SelectSingleNode("requires");
-                if (xmlTestNode != null)
+                if (xmlTestNode != null && _objVehicle.Seats < Convert.ToInt32(xmlTestNode.SelectSingleNode("seats")?.Value, GlobalOptions.InvariantCultureInfo))
                 {
-                    if (_objVehicle.Seats < Convert.ToInt32(xmlTestNode.SelectSingleNode("seats")?.Value, GlobalOptions.InvariantCultureInfo))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 int intMinRating = 1;

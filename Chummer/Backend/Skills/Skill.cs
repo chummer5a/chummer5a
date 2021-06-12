@@ -2187,28 +2187,31 @@ namespace Chummer.Backend.Skills
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Skills.SkillGroup.Base))
+            switch (e.PropertyName)
             {
-                if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
+                case nameof(Skills.SkillGroup.Base) when CharacterObject.EffectiveBuildMethodUsesPriorityTables:
                     OnMultiplePropertyChanged(nameof(Base),
-                                              nameof(BaseUnlocked),
-                                              nameof(ForcedBuyWithKarma));
-                else
+                        nameof(BaseUnlocked),
+                        nameof(ForcedBuyWithKarma));
+                    break;
+                case nameof(Skills.SkillGroup.Base):
                     OnMultiplePropertyChanged(nameof(Base),
-                                              nameof(ForcedBuyWithKarma));
-            }
-            else if (e.PropertyName == nameof(Skills.SkillGroup.Karma))
-            {
-                OnMultiplePropertyChanged(nameof(Karma),
-                                          nameof(CurrentKarmaCost),
-                                          nameof(ForcedBuyWithKarma),
-                                          nameof(ForcedNotBuyWithKarma));
-            }
-            else if (e.PropertyName == nameof(Skills.SkillGroup.Rating))
-            {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        nameof(ForcedBuyWithKarma));
+                    break;
+                case nameof(Skills.SkillGroup.Karma):
+                    OnMultiplePropertyChanged(nameof(Karma),
+                        nameof(CurrentKarmaCost),
+                        nameof(ForcedBuyWithKarma),
+                        nameof(ForcedNotBuyWithKarma));
+                    break;
+                case nameof(Skills.SkillGroup.Rating):
                 {
-                    OnPropertyChanged(nameof(KarmaUnlocked));
+                    if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                    {
+                        OnPropertyChanged(nameof(KarmaUnlocked));
+                    }
+
+                    break;
                 }
             }
         }

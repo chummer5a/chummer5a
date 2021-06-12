@@ -2313,6 +2313,11 @@ namespace Chummer
             _objTupleKey = new Tuple<Character, Improvement.ImprovementType, string>(objCharacter, eImprovementType, strImprovementName);
         }
 
+        public override int GetHashCode()
+        {
+            return (CharacterObject, ImprovementType, ImprovementName).GetHashCode();
+        }
+
         public override bool Equals(object obj)
         {
             if (obj is ImprovementDictionaryKey objOtherImprovementDictionaryKey)
@@ -2324,11 +2329,6 @@ namespace Chummer
                 return Equals(objOtherTuple);
             }
             return false;
-        }
-
-        public override int GetHashCode()
-        {
-            return (CharacterObject, ImprovementType, ImprovementName).GetHashCode();
         }
 
         public bool Equals(ImprovementDictionaryKey other)

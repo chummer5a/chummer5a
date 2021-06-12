@@ -27,6 +27,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
@@ -92,22 +93,12 @@ namespace Chummer
 
         private static readonly ConcurrentDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
             new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is languge + array of all file paths for the complete combination of data used
-        private static bool s_blnSetDataDirectoriesLoaded;
+        private static bool s_blnSetDataDirectoriesLoaded = true;
         private static readonly object s_SetDataDirectoriesLock = new object();
-        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>();
-
-        #region Constructor
-        static XmlManager()
-        {
-            s_SetDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfos)
-            {
-                s_SetDataDirectories.Add(objCustomDataDirectory.Path);
-            }
-
-            s_blnSetDataDirectoriesLoaded = true;
-        }
-        #endregion
+        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
+            .Combine(Utils.GetStartupPath, "data").Yield()
+            .Concat(GlobalOptions.CustomDataDirectoryInfos.Select(x => x.Path)));
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         #region Methods
         public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> customDirectories)
@@ -402,11 +393,15 @@ namespace Chummer
                             }
                         }
                     }
-                    catch (IOException)
+                    catch (IOException e)
                     {
+                        Log.Info(e);
+                        Utils.BreakIfDebug();
                     }
-                    catch (XmlException)
+                    catch (XmlException e)
                     {
+                        Log.Warn(e);
+                        Utils.BreakIfDebug();
                     }
                 }
 
@@ -947,12 +942,11 @@ namespace Chummer
                     else
                     {
                         objAmendingNodeId = xmlAmendingNode["name"];
-                        if (objAmendingNodeId != null)
+                        if (objAmendingNodeId != null && (strOperation == "remove" || xmlAmendingNode.SelectSingleNode("child::*[not(self::name)]") != null))
                         {
                             // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node
                             // if there are other nodes present in the amending node or if a remove operation is specified (since that only requires an id node).
-                            if (strOperation == "remove" || xmlAmendingNode.SelectSingleNode("child::*[not(self::name)]") != null)
-                                sbdFilter.Append("name = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
+                            sbdFilter.Append("name = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                         }
                     }
                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -1149,15 +1143,12 @@ namespace Chummer
                                                     {
                                                         foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                         {
-                                                            if (objChildToEdit.NodeType == eChildNodeType)
+                                                            if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
+                                                                objChildToEdit.Name == xmlChild.Name))
                                                             {
-                                                                if (eChildNodeType != XmlNodeType.Attribute ||
-                                                                    objChildToEdit.Name == xmlChild.Name)
-                                                                {
-                                                                    objChildToEdit.Value += xmlChild.Value;
-                                                                    blnItemFound = true;
-                                                                    break;
-                                                                }
+                                                                objChildToEdit.Value += xmlChild.Value;
+                                                                blnItemFound = true;
+                                                                break;
                                                             }
                                                         }
                                                     }
@@ -1200,38 +1191,32 @@ namespace Chummer
                                                 XmlNodeType eChildNodeType = xmlChild.NodeType;
 
                                                 // Text, Attributes, and CDATA are subject to the RegexReplace
-                                                if (eChildNodeType == XmlNodeType.Text ||
-                                                    eChildNodeType == XmlNodeType.Attribute ||
-                                                    eChildNodeType == XmlNodeType.CDATA)
+                                                if ((eChildNodeType == XmlNodeType.Text ||
+                                                     eChildNodeType == XmlNodeType.Attribute ||
+                                                     eChildNodeType == XmlNodeType.CDATA) && objNodeToEdit.HasChildNodes)
                                                 {
-                                                    if (objNodeToEdit.HasChildNodes)
+                                                    foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                     {
-                                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                        if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
+                                                            objChildToEdit.Name == xmlChild.Name))
                                                         {
-                                                            if (objChildToEdit.NodeType == eChildNodeType)
+                                                            // Try-Catch just in case initial RegEx pattern validity check overlooked something
+                                                            try
                                                             {
-                                                                if (eChildNodeType != XmlNodeType.Attribute ||
-                                                                    objChildToEdit.Name == xmlChild.Name)
-                                                                {
-                                                                    // Try-Catch just in case initial RegEx pattern validity check overlooked something
-                                                                    try
-                                                                    {
-                                                                        objChildToEdit.Value =
-                                                                            Regex.Replace(objChildToEdit.Value,
-                                                                                strRegexPattern, xmlChild.Value);
-                                                                    }
-                                                                    catch (ArgumentException ex)
-                                                                    {
-                                                                        Program.MainForm?.ShowMessageBox(ex.ToString());
-                                                                        // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
-                                                                        // So just exit out early instead of spamming the user with a bunch of error messages
-                                                                        if (!blnReturn)
-                                                                            return blnReturn;
-                                                                    }
-
-                                                                    break;
-                                                                }
+                                                                objChildToEdit.Value =
+                                                                    Regex.Replace(objChildToEdit.Value,
+                                                                        strRegexPattern, xmlChild.Value);
                                                             }
+                                                            catch (ArgumentException ex)
+                                                            {
+                                                                Program.MainForm?.ShowMessageBox(ex.ToString());
+                                                                // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
+                                                                // So just exit out early instead of spamming the user with a bunch of error messages
+                                                                if (!blnReturn)
+                                                                    return blnReturn;
+                                                            }
+
+                                                            break;
                                                         }
                                                     }
                                                 }
@@ -1801,7 +1786,7 @@ namespace Chummer
         #endregion
     }
 
-    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>
+    public readonly struct CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>
     {
         #region Properties
 
@@ -1819,32 +1804,29 @@ namespace Chummer
 
         public int CompareTo(object obj)
         {
-            if (obj == null)
-                return 1;
             if (obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
-            {
-                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
-                if (intReturn == 0)
-                {
-                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
-                }
+                return CompareTo(objOtherDirectoryInfo);
+            return 1;
+        }
 
-                return intReturn;
-            }
-
-            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
+        public int CompareTo(CustomDataDirectoryInfo other)
+        {
+            int intReturn = string.Compare(Name, other.Name, StringComparison.Ordinal);
+            if (intReturn == 0)
+                intReturn = string.Compare(Path, other.Path, StringComparison.Ordinal);
+            return intReturn;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
             if (obj is CustomDataDirectoryInfo objOther)
                 return Equals(objOther);
             return false;
+        }
+
+        public bool Equals(CustomDataDirectoryInfo other)
+        {
+            return Name == other.Name && Path == other.Path;
         }
 
         public override int GetHashCode()
@@ -1852,18 +1834,8 @@ namespace Chummer
             return (Name, Path).GetHashCode();
         }
 
-        public bool Equals(CustomDataDirectoryInfo other)
-        {
-            return other != null && Name == other.Name && Path == other.Path;
-        }
-
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
         {
-            if (left is null)
-            {
-                return right is null;
-            }
-
             return left.Equals(right);
         }
 
@@ -1874,22 +1846,22 @@ namespace Chummer
 
         public static bool operator <(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
         {
-            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+            return left.CompareTo(right) < 0;
         }
 
         public static bool operator <=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
         {
-            return left is null || left.CompareTo(right) <= 0;
+            return left.CompareTo(right) <= 0;
         }
 
         public static bool operator >(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
         {
-            return !(left is null) && left.CompareTo(right) > 0;
+            return left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
         {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
+            return left.CompareTo(right) >= 0;
         }
     }
 }

@@ -278,29 +278,26 @@ namespace Chummer
                         lstPowerWhitelist.Add(objXmlCritterPower.Value);
 
                         // If Manifestation is one of the Powers, also include Inhabitation and Possess if they're not already in the list.
-                        if (!blnPhysicalPresence)
+                        if (!blnPhysicalPresence && objXmlCritterPower.Value == "Materialization")
                         {
-                            if (objXmlCritterPower.Value == "Materialization")
+                            bool blnFoundPossession = false;
+                            bool blnFoundInhabitation = false;
+                            foreach (string strCheckPower in lstPowerWhitelist)
                             {
-                                bool blnFoundPossession = false;
-                                bool blnFoundInhabitation = false;
-                                foreach (string strCheckPower in lstPowerWhitelist)
-                                {
-                                    if (strCheckPower == "Possession")
-                                        blnFoundPossession = true;
-                                    else if (strCheckPower == "Inhabitation")
-                                        blnFoundInhabitation = true;
-                                    if (blnFoundInhabitation && blnFoundPossession)
-                                        break;
-                                }
-                                if (!blnFoundPossession)
-                                {
-                                    lstPowerWhitelist.Add("Possession");
-                                }
-                                if (!blnFoundInhabitation)
-                                {
-                                    lstPowerWhitelist.Add("Inhabitation");
-                                }
+                                if (strCheckPower == "Possession")
+                                    blnFoundPossession = true;
+                                else if (strCheckPower == "Inhabitation")
+                                    blnFoundInhabitation = true;
+                                if (blnFoundInhabitation && blnFoundPossession)
+                                    break;
+                            }
+                            if (!blnFoundPossession)
+                            {
+                                lstPowerWhitelist.Add("Possession");
+                            }
+                            if (!blnFoundInhabitation)
+                            {
+                                lstPowerWhitelist.Add("Inhabitation");
                             }
                         }
                     }
@@ -351,12 +348,6 @@ namespace Chummer
                 trePowers.Nodes.Add(objNode);
             }
             trePowers.Sort();
-        }
-
-        private void trePowers_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)

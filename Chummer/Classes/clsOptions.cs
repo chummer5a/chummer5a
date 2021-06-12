@@ -403,33 +403,30 @@ namespace Chummer
                 _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
             }
 
-            if (LoadInt32FromRegistry(ref _intResetLogging, "useloggingApplicationInsightsResetCounter"))
+            if (LoadInt32FromRegistry(ref _intResetLogging, "useloggingApplicationInsightsResetCounter") && _intResetLogging != 0)
             {
-                if (_intResetLogging != 0)
+                _intResetLogging--;
+                try
                 {
-                    _intResetLogging--;
-                    try
+                    using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
                     {
-                        using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
-                        {
-                            if (objRegistry == null)
-                                return;
-                            objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
-                        }
-
-                    }
-                    catch (System.Security.SecurityException)
-                    {
-                        Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        Program.MainForm.ShowMessageBox(
-                            LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                        if (objRegistry == null)
+                            return;
+                        objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
                     }
 
                 }
+                catch (System.Security.SecurityException)
+                {
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                }
+
             }
 
             string strColorMode = string.Empty;
@@ -945,12 +942,10 @@ namespace Chummer
                 if (UseLoggingResetCounter > 0)
                     return UseLoggingApplicationInsightsPreference;
 
-                if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build == 0)
-                {
+                if (System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Build == 0
                     //stable builds should not log more than metrics
-                    if (UseLoggingApplicationInsightsPreference > UseAILogging.OnlyMetric)
-                        return UseAILogging.OnlyMetric;
-                }
+                    && UseLoggingApplicationInsightsPreference > UseAILogging.OnlyMetric)
+                    return UseAILogging.OnlyMetric;
 
                 return UseLoggingApplicationInsightsPreference;
             }
@@ -1118,7 +1113,7 @@ namespace Chummer
         /// <summary>
         /// Regex that indicates whether a given string is a match for text that cannot be saved in XML. Match == true.
         /// </summary>
-        public static string InvalidXmlCharacterRegex = "[\u0000-\u0008\u000B\u000C\u000E-\u001F]";
+        public const string InvalidXmlCharacterRegex = "[\u0000-\u0008\u000B\u000C\u000E-\u001F]";
 
         /// <summary>
         /// Clipboard.

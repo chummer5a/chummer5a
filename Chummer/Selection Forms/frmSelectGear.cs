@@ -305,12 +305,6 @@ namespace Chummer
             RefreshList();
         }
 
-        private void lstGear_DoubleClick(object sender, EventArgs e)
-        {
-            AddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
@@ -356,26 +350,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstGear.SelectedIndex + 1 < lstGear.Items.Count)
-                {
+                case Keys.Down when lstGear.SelectedIndex + 1 < lstGear.Items.Count:
                     lstGear.SelectedIndex += 1;
-                }
-                else if (lstGear.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstGear.SelectedIndex = 0;
+                    if (lstGear.Items.Count > 0)
+                    {
+                        lstGear.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstGear.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstGear.SelectedIndex - 1 >= 0:
                     lstGear.SelectedIndex -= 1;
-                }
-                else if (lstGear.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstGear.SelectedIndex = lstGear.Items.Count - 1;
+                    if (lstGear.Items.Count > 0)
+                    {
+                        lstGear.SelectedIndex = lstGear.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -968,40 +967,28 @@ namespace Chummer
             foreach (XPathNavigator objXmlGear in objXmlGearList)
             {
                 XPathNavigator xmlTestNode = objXmlGear.SelectSingleNode("forbidden/parentdetails");
-                if (xmlTestNode != null)
+                if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
-                    if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
                 xmlTestNode = objXmlGear.SelectSingleNode("required/parentdetails");
-                if (xmlTestNode != null)
+                if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
-                    if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
                 xmlTestNode = objXmlGear.SelectSingleNode("forbidden/geardetails");
-                if (xmlTestNode != null)
+                if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
-                    if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
                 xmlTestNode = objXmlGear.SelectSingleNode("required/geardetails");
-                if (xmlTestNode != null)
+                if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                 {
                     // Assumes topmost parent is an AND node
-                    if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                    {
-                        continue;
-                    }
+                    continue;
                 }
 
                 if (!objXmlGear.RequirementsMet(_objCharacter))

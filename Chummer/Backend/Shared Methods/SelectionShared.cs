@@ -131,25 +131,22 @@ namespace Chummer
                     }
                     return false;
                 }
-                if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                if (objCharacter.EffectiveBuildMethodUsesPriorityTables && xmlNode.SelectSingleNode("onlyprioritygiven") != null)
                 {
-                    if (xmlNode.SelectSingleNode("onlyprioritygiven") != null)
+                    if (blnShowMessage)
                     {
-                        if (blnShowMessage)
-                        {
-                            Program.MainForm.ShowMessageBox(
-                                string.Format(
-                                    GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction"),
-                                    strLocalName),
-                                string.Format(
-                                    GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction"),
-                                    strLocalName),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        return false;
+                        Program.MainForm.ShowMessageBox(
+                            string.Format(
+                                GlobalOptions.CultureInfo,
+                                LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction"),
+                                strLocalName),
+                            string.Format(
+                                GlobalOptions.CultureInfo,
+                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction"),
+                                strLocalName),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
+                    return false;
                 }
             }
             if (!blnIgnoreLimit)

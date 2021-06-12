@@ -460,13 +460,10 @@ namespace Chummer
                             foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
                             {
                                 string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
-                                if (!string.IsNullOrEmpty(strSpiritName))
+                                if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                 {
-                                    if (limit.Count == 0 || limit.Contains(strSpiritName))
-                                    {
-                                        lstSpirit.Add(new ListItem(strSpiritName,
-                                            xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
-                                    }
+                                    lstSpirit.Add(new ListItem(strSpiritName,
+                                        xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
                                 }
                             }
                         }
@@ -1643,13 +1640,10 @@ namespace Chummer
                             foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
                             {
                                 string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
-                                if (!string.IsNullOrEmpty(strSpiritName))
+                                if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                 {
-                                    if (limit.Count == 0 || limit.Contains(strSpiritName))
-                                    {
-                                        lstSpirit.Add(new ListItem(strSpiritName,
-                                            xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
-                                    }
+                                    lstSpirit.Add(new ListItem(strSpiritName,
+                                        xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
                                 }
                             }
                         }
@@ -2696,11 +2690,11 @@ namespace Chummer
                     break;
             }
 
-            bool AddChildWeapons(string parentId)
+            void AddChildWeapons(string parentId)
             {
                 XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/weapons/weapon");
                 if (!(objXmlNodeList?.Count > 0))
-                    return false;
+                    return;
                 foreach (XmlNode objLoopNode in objXmlNodeList)
                 {
                     Weapon objWeapon = new Weapon(CharacterObject);
@@ -2708,14 +2702,13 @@ namespace Chummer
                     CharacterObject.Weapons.Add(objWeapon);
                     objWeapon.ParentID = parentId;
                 }
-                return true;
             }
-            bool AddChildVehicles(string parentId)
+            void AddChildVehicles(string parentId)
             {
                 // Add any Vehicles that come with the Cyberware.
                 XmlNodeList objXmlNodeList = GlobalOptions.Clipboard.SelectNodes("/character/vehicles/vehicle");
                 if (!(objXmlNodeList?.Count > 0))
-                    return false;
+                    return;
                 foreach (XmlNode objLoopNode in objXmlNodeList)
                 {
                     Vehicle objVehicle = new Vehicle(CharacterObject);
@@ -2723,8 +2716,6 @@ namespace Chummer
                     CharacterObject.Vehicles.Add(objVehicle);
                     objVehicle.ParentID = parentId;
                 }
-
-                return true;
             }
         }
 
@@ -4174,7 +4165,7 @@ namespace Chummer
                 return;
             foreach (Armor objArmor in objLocation.Children.OfType<Armor>())
             {
-                objArmor.Equipped = true;
+                objArmor.Equipped = false;
             }
             IsCharacterUpdateRequested = true;
 
@@ -4552,12 +4543,9 @@ namespace Chummer
                                 objMod.Rating = objVehicle.MaxSensor;
                             }
                         }
-                        else if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal))
+                        else if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal) && objMod.Rating > objVehicle.MaxPilot)
                         {
-                            if (objMod.Rating > objVehicle.MaxPilot)
-                            {
-                                objMod.Rating = objVehicle.MaxPilot;
-                            }
+                            objMod.Rating = objVehicle.MaxPilot;
                         }
 
                         // Check the item's Cost and make sure the character can afford it.
@@ -7106,13 +7094,7 @@ namespace Chummer
                 {
                     ImprovementManager.ForcedValue = objGear.Extra.TrimEndOnce(", Hacked");
                 }
-                bool blnAddBonus = true;
-                if (objGear.Category == "Foci" || objGear.Category == "Metamagic Foci" || objGear.Category == "Stacked Focus")
-                {
-                    if (!objGear.Bonded)
-                        blnAddBonus = false;
-                }
-                if (blnAddBonus)
+                if (objGear.Bonded || (objGear.Category != "Foci" && objGear.Category != "Metamagic Foci" && objGear.Category != "Stacked Focus"))
                 {
                     if (objGear.Bonus != null)
                         ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objGear.InternalId, objGear.Bonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language));
@@ -10847,9 +10829,9 @@ namespace Chummer
                             if (!dicDisallowedMounts.ContainsKey(strKey))
                                 dicDisallowedMounts.Add(strKey, int.MaxValue);
                         }
-                        strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                        if (objSelectedCyberware.Location != objLoopCyberware.Location)
-                            strLoopHasModularMount += objLoopCyberware.Location;
+                        strLoopHasModularMount = objSelectedCyberware.Location != objLoopCyberware.Location
+                            ? objLoopCyberware.HasModularMount + objLoopCyberware.Location
+                            : objLoopCyberware.HasModularMount;
                         if (!string.IsNullOrEmpty(strLoopHasModularMount) && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                             dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
                     }
@@ -12062,11 +12044,12 @@ namespace Chummer
                 lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalOptions.CultureInfo);
                 lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalOptions.CultureInfo);
                 lblDrugEffect.Text = objDrug.EffectDescription;
-                lblDrugComponents.Text = string.Empty;
+                StringBuilder sbdComponents = new StringBuilder();
                 foreach (DrugComponent objComponent in objDrug.Components)
                 {
-                    lblDrugComponents.Text += objComponent.CurrentDisplayName + Environment.NewLine;
+                    sbdComponents.AppendLine(objComponent.CurrentDisplayName);
                 }
+                lblDrugComponents.Text = sbdComponents.ToString();
             }
             else
             {
@@ -12649,17 +12632,14 @@ namespace Chummer
 
                 i = CharacterObject.Attributes - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList);
                 // Check if the character has gone over on Primary Attributes
-                if (blnValid && i > 0)
+                if (blnValid && i > 0 && Program.MainForm.ShowMessageBox(this,
+                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
+                        , i.ToString(GlobalOptions.CultureInfo)
+                        , LanguageManager.GetString("Label_SummaryPrimaryAttributes")),
+                    LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Warning) == DialogResult.No)
                 {
-                    if (Program.MainForm.ShowMessageBox(this,
-                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ExtraPoints")
-                            , i.ToString(GlobalOptions.CultureInfo)
-                            , LanguageManager.GetString("Label_SummaryPrimaryAttributes")),
-                        LanguageManager.GetString("MessageTitle_ExtraPoints"), MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Warning) == DialogResult.No)
-                    {
-                        blnValid = false;
-                    }
+                    blnValid = false;
                 }
 
                 i = CharacterObject.Special - CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList);

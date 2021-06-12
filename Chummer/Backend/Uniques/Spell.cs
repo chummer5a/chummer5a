@@ -131,7 +131,18 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -633,20 +644,24 @@ namespace Chummer
                     }
                 }
 
-                foreach (var improvement in RelevantImprovements(i =>
+                StringBuilder sbdDV = new StringBuilder(strDV);
+                foreach (Improvement objImprovement in RelevantImprovements(i =>
                     i.ImproveType == Improvement.ImprovementType.DrainValue
                     || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
-                    strDV += string.Format(GlobalOptions.CultureInfo, " + {0:0;-0;0}", improvement.Value);
+                {
+                    sbdDV.AppendFormat(GlobalOptions.InvariantCultureInfo, "{0:+0;-0;+0}", objImprovement.Value);
+                }
+
                 if (Limited)
                 {
-                    strDV += " + -2";
+                    sbdDV.Append("-2");
                 }
                 if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
                 {
-                    strDV += " + 2";
+                    sbdDV.Append("+2");
                 }
-                object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
+                object xprResult = CommonFunctions.EvaluateInvariantXPath(sbdDV.ToString(), out bool blnIsSuccess);
                 if (!blnIsSuccess)
                     return strReturn;
                 if (force)
@@ -857,13 +872,13 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                string strReturn = string.Empty;
+                StringBuilder sbdReturn = new StringBuilder();
                 string strFormat = strSpace + "{0}" + strSpace + "({1})";
                 Skill objSkill = Skill;
                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(UsesUnarmed ? "MAG" : (objSkill?.Attribute ?? "MAG"));
                 if (objAttrib != null)
                 {
-                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, strFormat,
                         objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
                 }
                 if (objSkill != null)
@@ -871,22 +886,21 @@ namespace Chummer
                     int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                     if (objAttrib != null)
                         intPool -= objAttrib.TotalValue;
-                    if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += strSpace + '+' + strSpace;
-                    strReturn += objSkill.FormattedDicePool(intPool, Category);
+                    if (sbdReturn.Length > 0)
+                        sbdReturn.Append(strSpace + '+' + strSpace);
+                    sbdReturn.Append(objSkill.FormattedDicePool(intPool, Category));
                 }
 
                 // Include any Improvements to the Spell Category or Spell Name.
-                string result = strReturn;
                 foreach (Improvement objImprovement in RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.SpellCategory || x.ImproveType == Improvement.ImprovementType.SpellDicePool))
                 {
-                    if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += strSpace + '+' + strSpace;
-                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                    if (sbdReturn.Length > 0)
+                        sbdReturn.Append(strSpace + '+' + strSpace);
+                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, strFormat,
                         _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                 }
 
-                return result;
+                return sbdReturn.ToString();
             }
         }
 
@@ -1098,8 +1112,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

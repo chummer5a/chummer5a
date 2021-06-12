@@ -95,12 +95,6 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void lstTechniques_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;

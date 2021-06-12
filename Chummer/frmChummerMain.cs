@@ -648,14 +648,11 @@ namespace Chummer
                                         LanguageManager.GetString("String_Update_Available"), Utils.CachedGitVersion);
                 await this.DoThreadSafeAsync(() =>
                 {
-                    if (GlobalOptions.AutomaticUpdate)
+                    if (GlobalOptions.AutomaticUpdate && _frmUpdate == null)
                     {
-                        if (_frmUpdate == null)
-                        {
-                            _frmUpdate = new frmUpdate();
-                            _frmUpdate.FormClosed += ResetFrmUpdate;
-                            _frmUpdate.SilentMode = true;
-                        }
+                        _frmUpdate = new frmUpdate();
+                        _frmUpdate.FormClosed += ResetFrmUpdate;
+                        _frmUpdate.SilentMode = true;
                     }
                     Text = strNewText;
                 });
@@ -1090,13 +1087,10 @@ namespace Chummer
                 for (int i = 0; i < tabForms.TabCount; ++i)
                 {
                     if (!tabForms.GetTabRect(i).Contains(e.Location)) continue;
-                    if (tabForms.SelectedTab.Tag is CharacterShared)
+                    if (tabForms.SelectedTab.Tag is CharacterShared && tabForms.SelectedIndex == i)
                     {
-                        if (tabForms.SelectedIndex == i)
-                        {
-                            mnuProcessFile.Show(this, e.Location);
-                            break;
-                        }
+                        mnuProcessFile.Show(this, e.Location);
+                        break;
                     }
                 }
             }

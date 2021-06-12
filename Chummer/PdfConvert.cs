@@ -56,7 +56,7 @@ namespace Codaxy.WkHtmlToPdf
 
     public class PdfConvert
     {
-        static PdfConvertEnvironment _e;
+        private static PdfConvertEnvironment _e;
 
         public static PdfConvertEnvironment Environment =>
             _e ?? (_e = new PdfConvertEnvironment

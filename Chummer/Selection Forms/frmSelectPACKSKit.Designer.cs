@@ -125,7 +125,7 @@ namespace Chummer
             this.lstKits.Size = new System.Drawing.Size(297, 361);
             this.lstKits.TabIndex = 2;
             this.lstKits.SelectedIndexChanged += new System.EventHandler(this.lstKits_SelectedIndexChanged);
-            this.lstKits.DoubleClick += new System.EventHandler(this.lstKits_DoubleClick);
+            this.lstKits.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // label1
             // 

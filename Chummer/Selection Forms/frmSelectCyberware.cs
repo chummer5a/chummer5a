@@ -443,12 +443,6 @@ namespace Chummer
             PopulateGrades(false, false, string.Empty, chkHideBannedGrades.Checked);
         }
 
-        private void lstCyberware_DoubleClick(object sender, EventArgs e)
-        {
-            AddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
@@ -487,26 +481,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstCyberware.SelectedIndex + 1 < lstCyberware.Items.Count)
-                {
+                case Keys.Down when lstCyberware.SelectedIndex + 1 < lstCyberware.Items.Count:
                     lstCyberware.SelectedIndex++;
-                }
-                else if (lstCyberware.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstCyberware.SelectedIndex = 0;
+                    if (lstCyberware.Items.Count > 0)
+                    {
+                        lstCyberware.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstCyberware.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstCyberware.SelectedIndex - 1 >= 0:
                     lstCyberware.SelectedIndex--;
-                }
-                else if (lstCyberware.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstCyberware.SelectedIndex = lstCyberware.Items.Count - 1;
+                    if (lstCyberware.Items.Count > 0)
+                    {
+                        lstCyberware.SelectedIndex = lstCyberware.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -913,7 +912,7 @@ namespace Chummer
         private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
-                return null;
+                return new List<ListItem>();
             if (string.IsNullOrEmpty(strCategory))
             {
                 if (blnDoUIUpdate)
@@ -922,7 +921,7 @@ namespace Chummer
                     lstCyberware.PopulateWithListItems(new List<ListItem>());
                     lstCyberware.EndUpdate();
                 }
-                return null;
+                return new List<ListItem>();
             }
 
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() +')');
@@ -977,7 +976,7 @@ namespace Chummer
         private List<ListItem> BuildCyberwareList(XPathNodeIterator objXmlCyberwareList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
-                return null;
+                return new List<ListItem>();
 
             List<ListItem> lstCyberwares = new List<ListItem>();
 
@@ -993,13 +992,10 @@ namespace Chummer
                 foreach (XPathNavigator xmlCyberware in objXmlCyberwareList)
                 {
                     bool blnIsForceGrade = xmlCyberware.SelectSingleNode("forcegrade") != null;
-                    if (objCurrentGrade != null && blnIsForceGrade)
-                    {
-                        if (_objCharacter.Improvements.Any(x =>
-                            ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) &&
-                            objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                            continue;
-                    }
+                    if (objCurrentGrade != null && blnIsForceGrade && _objCharacter.Improvements.Any(x =>
+                        ((_objMode == Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableBiowareGrade) || (_objMode != Mode.Bioware && x.ImproveType == Improvement.ImprovementType.DisableCyberwareGrade)) &&
+                        objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                        continue;
 
                     if (blnCyberwareDisabled && xmlCyberware.SelectSingleNode("subsystems/cyberware") != null)
                     {
@@ -1012,23 +1008,17 @@ namespace Chummer
                     }
 
                     XPathNavigator xmlTestNode = xmlCyberware.SelectSingleNode("forbidden/parentdetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     xmlTestNode = xmlCyberware.SelectSingleNode("required/parentdetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
                     
                     if (!string.IsNullOrEmpty(_strHasModularMounts))
@@ -1390,7 +1380,7 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
             {
                 // Make sure the category contains items that we can actually display
-                if (RefreshList(objXmlCategory.Value, false, true)?.Count > 0)
+                if (RefreshList(objXmlCategory.Value, false, true).Count > 0)
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));

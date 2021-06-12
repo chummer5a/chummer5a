@@ -281,13 +281,10 @@ namespace Chummer
         public static bool TryGetBoolFieldQuickly(this XPathNavigator node, string field, ref bool read)
         {
             XPathNavigator objField = node?.SelectSingleNode(field);
-            if (objField != null)
+            if (objField != null && bool.TryParse(objField.Value, out bool blnTmp))
             {
-                if (bool.TryParse(objField.Value, out bool blnTmp))
-                {
-                    read = blnTmp;
-                    return true;
-                }
+                read = blnTmp;
+                return true;
             }
             return false;
         }

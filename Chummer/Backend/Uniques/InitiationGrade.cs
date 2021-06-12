@@ -334,11 +334,8 @@ namespace Chummer
                     return false;
                 }
 
-                if (blnConfirmDelete)
-                {
-                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
-                        return false;
-                }
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
+                    return false;
             }
             else if (_objCharacter.RESEnabled)
             {
@@ -348,11 +345,8 @@ namespace Chummer
                     return false;
                 }
 
-                if (blnConfirmDelete)
-                {
-                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
-                        return false;
-                }
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
+                    return false;
 
                 ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             }

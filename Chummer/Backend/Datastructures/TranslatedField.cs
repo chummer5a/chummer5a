@@ -75,12 +75,9 @@ namespace Chummer
         {
             if (_strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                if (orginal != null && value != null)
+                if (orginal != null && value != null && _translate.TryGetValue(orginal, out T objTmp) && objTmp == translated)
                 {
-                    if (_translate.TryGetValue(orginal, out T objTmp) && objTmp == translated)
-                    {
-                        _translate.TryGetValue(value, out translated);
-                    }
+                    _translate.TryGetValue(value, out translated);
                 }
                 orginal = value;
             }

@@ -57,7 +57,7 @@ namespace Chummer
             this.lstTechniques.Size = new System.Drawing.Size(297, 417);
             this.lstTechniques.TabIndex = 0;
             this.lstTechniques.SelectedIndexChanged += new System.EventHandler(this.lstTechniques_SelectedIndexChanged);
-            this.lstTechniques.DoubleClick += new System.EventHandler(this.lstTechniques_DoubleClick);
+            this.lstTechniques.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // tlpMain
             // 

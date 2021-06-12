@@ -311,13 +311,10 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (_objCharacter.LimitModifiers.Contains(this))
+            if (_objCharacter.LimitModifiers.Contains(this) && blnConfirmDelete)
             {
-                if (blnConfirmDelete)
-                {
-                    return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier"))
-                           && _objCharacter.LimitModifiers.Remove(this);
-                }
+                return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier"))
+                       && _objCharacter.LimitModifiers.Remove(this);
             }
 
             // No character-created limits found, which means it comes from an improvement.

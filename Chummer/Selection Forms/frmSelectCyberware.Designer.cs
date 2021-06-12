@@ -261,7 +261,7 @@ namespace Chummer
             this.lstCyberware.Size = new System.Drawing.Size(300, 483);
             this.lstCyberware.TabIndex = 26;
             this.lstCyberware.SelectedIndexChanged += new System.EventHandler(this.lstCyberware_SelectedIndexChanged);
-            this.lstCyberware.DoubleClick += new System.EventHandler(this.lstCyberware_DoubleClick);
+            this.lstCyberware.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // chkHideBannedGrades
             // 

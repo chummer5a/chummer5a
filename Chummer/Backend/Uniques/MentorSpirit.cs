@@ -56,10 +56,9 @@ namespace Chummer
             if(namenode != null)
                 Name = namenode.InnerText;
             XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
-            if (typenode != null)
+            if (typenode != null && Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
             {
-                if(Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
-                    _eMentorType = outEnum;
+                _eMentorType = outEnum;
             }
         }
 
@@ -173,7 +172,18 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -304,10 +314,9 @@ namespace Chummer
         {
             get
             {
-                if (string.IsNullOrEmpty(_strName))
+                if (string.IsNullOrEmpty(_strName) && _objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
                 {
-                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                        _strName = _objCharacter.MentorSpirits[0].Name;
+                    _strName = _objCharacter.MentorSpirits[0].Name;
                 }
                 return _strName;
             }
@@ -476,8 +485,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

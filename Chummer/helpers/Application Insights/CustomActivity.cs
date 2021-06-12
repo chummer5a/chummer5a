@@ -65,9 +65,8 @@ namespace Chummer
                     MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                     MyRequestTelemetry.Context.Operation.Id = Id;
                     tc.Context.Operation.Id = MyRequestTelemetry.Context.Operation.Id;
-                    if (!string.IsNullOrEmpty(MyTelemetryTarget))
-                        if (Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
-                            MyRequestTelemetry.Url = Uriresult;
+                    if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
+                        MyRequestTelemetry.Url = Uriresult;
                     break;
                 default:
                     throw new NotImplementedException("Implement OperationType " + operationType);
@@ -91,9 +90,8 @@ namespace Chummer
                     case OperationType.RequestOperation:
                         MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                         MyRequestTelemetry.Context.Operation.ParentId = ParentId;
-                        if (!string.IsNullOrEmpty(MyTelemetryTarget))
-                            if (Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
-                                MyRequestTelemetry.Url = Uriresult;
+                        if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
+                            MyRequestTelemetry.Url = Uriresult;
                         break;
                     default:
                         throw new NotImplementedException("Implement OperationType " + parentActivity.MyOperationType);

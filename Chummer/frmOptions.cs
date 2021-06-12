@@ -299,18 +299,15 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            if (chkUseLogging.Checked && !GlobalOptions.UseLogging)
+            if (chkUseLogging.Checked && !GlobalOptions.UseLogging && DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
+                LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(),
+                LanguageManager.GetString("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
+                MessageBoxButtons.YesNo))
             {
-                if (DialogResult.Yes != Program.MainForm.ShowMessageBox(this,
-                    LanguageManager.GetString("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage).WordWrap(),
-                    LanguageManager.GetString("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage),
-                    MessageBoxButtons.YesNo))
-                {
-                    _blnLoading = true;
-                    chkUseLogging.Checked = false;
-                    _blnLoading = false;
-                    return;
-                }
+                _blnLoading = true;
+                chkUseLogging.Checked = false;
+                _blnLoading = false;
+                return;
             }
             cboUseLoggingApplicationInsights.Enabled = chkUseLogging.Checked;
             OptionsChanged(sender, e);
@@ -522,8 +519,8 @@ namespace Chummer
             if (lsbCustomDataDirectories.SelectedIndex == -1)
                 return;
             ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
-            CustomDataDirectoryInfo objInfoToRemove = objSelected.Value as CustomDataDirectoryInfo;
-            if (objInfoToRemove == null || !_setCustomDataDirectoryInfos.Contains(objInfoToRemove))
+            CustomDataDirectoryInfo objInfoToRemove = (CustomDataDirectoryInfo)objSelected.Value;
+            if (!_setCustomDataDirectoryInfos.Contains(objInfoToRemove))
                 return;
             OptionsChanged(sender, e);
             _setCustomDataDirectoryInfos.Remove(objInfoToRemove);
@@ -535,9 +532,7 @@ namespace Chummer
             if (lsbCustomDataDirectories.SelectedIndex == -1)
                 return;
             ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
-            CustomDataDirectoryInfo objInfoToRename = objSelected.Value as CustomDataDirectoryInfo;
-            if (objInfoToRename == null)
-                return;
+            CustomDataDirectoryInfo objInfoToRename = (CustomDataDirectoryInfo)objSelected.Value;
             using (frmSelectText frmSelectCustomDirectoryName = new frmSelectText
             {
                 Description = LanguageManager.GetString("String_CustomItem_SelectText", _strSelectedLanguage)
@@ -742,9 +737,9 @@ namespace Chummer
                 HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
                 for (int iI = lsbCustomDataDirectories.Items.Count - 1; iI >= 0; --iI)
                 {
-                    ListItem objExistingItem = (ListItem) lsbCustomDataDirectories.Items[iI];
-                    CustomDataDirectoryInfo objExistingInfo = objExistingItem.Value as CustomDataDirectoryInfo;
-                    if (objExistingInfo == null || !_setCustomDataDirectoryInfos.Contains(objExistingInfo))
+                    ListItem objExistingItem = (ListItem)lsbCustomDataDirectories.Items[iI];
+                    CustomDataDirectoryInfo objExistingInfo = (CustomDataDirectoryInfo)objExistingItem.Value;
+                    if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
                         lsbCustomDataDirectories.Items.RemoveAt(iI);
                     else
                         setListedInfos.Add(objExistingInfo);
@@ -999,11 +994,8 @@ namespace Chummer
             foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
             {
                 //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
-                if(Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !System.Diagnostics.Debugger.IsAttached)
-                {
-                    if (eOption > UseAILogging.NotSet)
-                        continue;
-                }
+                if(Assembly.GetAssembly(typeof(Program)).GetName().Version.Build == 0 && !System.Diagnostics.Debugger.IsAttached && eOption > UseAILogging.NotSet)
+                    continue;
                 lstUseAIOptions.Add(new ListItem(eOption, LanguageManager.GetString("String_ApplicationInsights_" + eOption, _strSelectedLanguage)));
             }
 

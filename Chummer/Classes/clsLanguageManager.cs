@@ -299,15 +299,12 @@ namespace Chummer
                 return;
             if (string.IsNullOrEmpty(strIntoLanguage))
                 strIntoLanguage = GlobalOptions.Language;
-            if (eIntoRightToLeft == RightToLeft.Inherit)
+            if (eIntoRightToLeft == RightToLeft.Inherit && LoadLanguage(strIntoLanguage))
             {
-                if (LoadLanguage(strIntoLanguage))
+                string strKey = strIntoLanguage.ToUpperInvariant();
+                if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
                 {
-                    string strKey = strIntoLanguage.ToUpperInvariant();
-                    if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
-                    {
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                    }
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 }
             }
             tssItem.RightToLeft = eIntoRightToLeft;
@@ -350,12 +347,9 @@ namespace Chummer
             if (LoadLanguage(strLanguage))
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (DictionaryLanguages.TryGetValue(strLanguageKey, out LanguageData objLanguageData))
+                if (DictionaryLanguages.TryGetValue(strLanguageKey, out LanguageData objLanguageData) && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                 {
-                    if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
+                    return strReturn;
                 }
             }
             if (s_DictionaryEnglishStrings.TryGetValue(strKey, out strReturn))

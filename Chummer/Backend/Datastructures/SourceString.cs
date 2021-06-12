@@ -23,10 +23,9 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public class SourceString : IComparable, IEquatable<SourceString>
+    public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
         private static readonly ConcurrentDictionary<string, Tuple<string, string>> _dicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
-        private readonly int _intPage;
         private readonly int _intHashCode;
 
         public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
@@ -34,12 +33,16 @@ namespace Chummer
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
             string strCode = strSourceString ?? string.Empty;
+            Page = 0;
             int intWhitespaceIndex = strCode.IndexOf(' ');
             if (intWhitespaceIndex != -1)
             {
                 strCode = strCode.Substring(0, intWhitespaceIndex);
                 if (intWhitespaceIndex + 1 < strCode.Length)
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
+                {
+                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intPage);
+                    Page = intPage;
+                }
             }
 
             Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
@@ -49,14 +52,15 @@ namespace Chummer
                         LanguageManager.GetString("String_Space", Language),
                         LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + _intPage.ToString(CultureInfo);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
-            int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out _intPage);
+            int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intPage);
+            Page = intPage;
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
@@ -65,14 +69,14 @@ namespace Chummer
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + _intPage.ToString(CultureInfo);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
             CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
-            _intPage = intPage;
+            Page = intPage;
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
@@ -81,7 +85,7 @@ namespace Chummer
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + _intPage.ToString(CultureInfo);
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public override string ToString()
@@ -107,7 +111,7 @@ namespace Chummer
         /// <summary>
         /// Page of the source info, possibly modified from English by the language of the source info
         /// </summary>
-        public int Page => _intPage;
+        public int Page { get; }
 
         /// <summary>
         /// Provides the long-form name of the object's sourcebook and page reference.
@@ -119,17 +123,15 @@ namespace Chummer
             return CompareTo((SourceString)obj);
         }
 
-        public int CompareTo(SourceString strOther)
+        public int CompareTo(SourceString other)
         {
-            if (strOther == null)
-                return 1;
-            int intCompareResult = string.Compare(Language, strOther.Language, false, GlobalOptions.CultureInfo);
+            int intCompareResult = string.Compare(Language, other.Language, false, GlobalOptions.CultureInfo);
             if (intCompareResult == 0)
             {
-                intCompareResult = string.Compare(Code, strOther.Code, false, GlobalOptions.CultureInfo);
+                intCompareResult = string.Compare(Code, other.Code, false, GlobalOptions.CultureInfo);
                 if (intCompareResult == 0)
                 {
-                    intCompareResult = _intPage.CompareTo(strOther.Page);
+                    intCompareResult = Page.CompareTo(other.Page);
                 }
             }
             return intCompareResult;
@@ -149,13 +151,11 @@ namespace Chummer
 
         public bool Equals(SourceString other)
         {
-            return other != null && Language == other.Language && Code == other.Code && Page == other.Page;
+            return Language == other.Language && Code == other.Code && Page == other.Page;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj))
-                return true;
             if (obj is SourceString objOther)
                 return Equals(objOther);
             return false;
@@ -168,11 +168,6 @@ namespace Chummer
 
         public static bool operator ==(SourceString left, SourceString right)
         {
-            if (left is null)
-            {
-                return right is null;
-            }
-
             return left.Equals(right);
         }
 
@@ -183,22 +178,22 @@ namespace Chummer
 
         public static bool operator <(SourceString left, SourceString right)
         {
-            return left is null ? !(right is null) : left.CompareTo(right) < 0;
+            return left.CompareTo(right) < 0;
         }
 
         public static bool operator <=(SourceString left, SourceString right)
         {
-            return left is null || left.CompareTo(right) <= 0;
+            return left.CompareTo(right) <= 0;
         }
 
         public static bool operator >(SourceString left, SourceString right)
         {
-            return !(left is null) && left.CompareTo(right) > 0;
+            return left.CompareTo(right) > 0;
         }
 
         public static bool operator >=(SourceString left, SourceString right)
         {
-            return left is null ? right is null : left.CompareTo(right) >= 0;
+            return left.CompareTo(right) >= 0;
         }
     }
 }

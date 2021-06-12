@@ -30,7 +30,7 @@ using System.Xml.XPath;
 namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strGroupName} {_intSkillFromSp} {_intSkillFromKarma}")]
-    public class SkillGroup : INotifyMultiplePropertyChanged, IHasInternalId, IHasName
+    public sealed class SkillGroup : INotifyMultiplePropertyChanged, IHasInternalId, IHasName, IEquatable<SkillGroup>
     {
         #region Core calculations
         private int _intSkillFromSp;
@@ -222,42 +222,39 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (_intCachedCareerIncrease < 0)
+                if (_intCachedCareerIncrease < 0 && _objCharacter.Created)
                 {
-                    if (_objCharacter.Created)
+                    if (IsDisabled || _lstAffectedSkills.Count == 0)
+                        _intCachedCareerIncrease = 0;
+                    else
                     {
-                        if (IsDisabled || _lstAffectedSkills.Count == 0)
-                            _intCachedCareerIncrease = 0;
-                        else
+                        var firstOrDefault = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                        if (firstOrDefault != null)
                         {
-                            var firstOrDefault = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
-                            if (firstOrDefault != null)
-                            {
-                                int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;
-                                if (_lstAffectedSkills.Any(x => x.Specializations.Count != 0 || x.TotalBaseRating != intFirstSkillTotalBaseRating && x.Enabled))
-                                    _intCachedCareerIncrease = 0;
-                                else if (_objCharacter.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
-                                                                              (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
-                                    _intCachedCareerIncrease = 0;
-                                else if (_lstAffectedSkills.Count == 0)
-                                    _intCachedCareerIncrease = RatingMaximum > 0 ? 1 : 0;
-                                else
-                                    _intCachedCareerIncrease = _lstAffectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
-                            }
+                            int intFirstSkillTotalBaseRating = firstOrDefault.TotalBaseRating;
+                            if (_lstAffectedSkills.Any(x => x.Specializations.Count != 0 || x.TotalBaseRating != intFirstSkillTotalBaseRating && x.Enabled))
+                                _intCachedCareerIncrease = 0;
+                            else if (_objCharacter.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.SkillGroupDisable && x.ImprovedName == Name) ||
+                                                                          (x.ImproveType == Improvement.ImprovementType.SkillGroupCategoryDisable && GetRelevantSkillCategories.Contains(x.ImprovedName))) && x.Enabled))
+                                _intCachedCareerIncrease = 0;
+                            else if (_lstAffectedSkills.Count == 0)
+                                _intCachedCareerIncrease = RatingMaximum > 0 ? 1 : 0;
+                            else
+                                _intCachedCareerIncrease = _lstAffectedSkills.Max(x => x.TotalBaseRating) < RatingMaximum ? 1 : 0;
                         }
+                    }
 
-                        if (_intCachedCareerIncrease > 0)
+                    if (_intCachedCareerIncrease > 0)
+                    {
+                        Skill objSkill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
+                        if (objSkill != null)
                         {
-                            Skill objSkill = _lstAffectedSkills.FirstOrDefault(x => x.Enabled);
-                            if (objSkill != null)
+                            foreach (Skill objDisabledSkill in _lstAffectedSkills)
                             {
-                                foreach (Skill objDisabledSkill in _lstAffectedSkills)
+                                if (!objDisabledSkill.Enabled)
                                 {
-                                    if (!objDisabledSkill.Enabled)
-                                    {
-                                        objDisabledSkill.Karma = objSkill.Karma;
-                                        objDisabledSkill.Base = objSkill.Base;
-                                    }
+                                    objDisabledSkill.Karma = objSkill.Karma;
+                                    objDisabledSkill.Base = objSkill.Base;
                                 }
                             }
                         }
@@ -917,6 +914,22 @@ namespace Chummer.Backend.Skills
         public override int GetHashCode()
         {
             return InternalId.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(obj, this))
+                return true;
+            return obj is SkillGroup objOther && Equals(objOther);
+        }
+
+        public bool Equals(SkillGroup other)
+        {
+            if (other == null)
+                return false;
+            if (ReferenceEquals(other, this))
+                return true;
+            return InternalId == other.InternalId;
         }
 
         /// <summary>

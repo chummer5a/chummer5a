@@ -82,7 +82,7 @@ namespace Chummer
             this.lstQualities.Size = new System.Drawing.Size(297, 390);
             this.lstQualities.TabIndex = 9;
             this.lstQualities.SelectedIndexChanged += new System.EventHandler(this.lstQualities_SelectedIndexChanged);
-            this.lstQualities.DoubleClick += new System.EventHandler(this.lstQualities_DoubleClick);
+            this.lstQualities.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // lblCategory
             // 

@@ -30,11 +30,14 @@ using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Win32;
+using NLog;
 
 namespace Chummer.Backend
 {
     public static class CrashHandler
     {
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         private sealed class DumpData : ISerializable
         {
             public DumpData(Exception ex)
@@ -182,30 +185,27 @@ namespace Chummer.Backend
         {
             try
             {
-                if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
+                if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes && Program.ChummerTelemetryClient != null)
                 {
-                    if (Program.ChummerTelemetryClient != null)
+                    ex.Data.Add("IsCrash", bool.TrueString);
+                    ExceptionTelemetry et = new ExceptionTelemetry(ex)
                     {
-                        ex.Data.Add("IsCrash", bool.TrueString);
-                        ExceptionTelemetry et = new ExceptionTelemetry(ex)
-                        {
-                            SeverityLevel = SeverityLevel.Critical
+                        SeverityLevel = SeverityLevel.Critical
 
-                        };
-                        //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
-                        foreach (DictionaryEntry d in ex.Data)
-                        {
-                            if ((d.Key != null) && (d.Value != null))
-                                et.Properties.Add(d.Key.ToString(), d.Value.ToString());
-                        }
-                        Program.ChummerTelemetryClient.TrackException(et);
-                        Program.ChummerTelemetryClient.Flush();
+                    };
+                    //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
+                    foreach (DictionaryEntry d in ex.Data)
+                    {
+                        if ((d.Key != null) && (d.Value != null))
+                            et.Properties.Add(d.Key.ToString(), d.Value.ToString());
                     }
+                    Program.ChummerTelemetryClient.TrackException(et);
+                    Program.ChummerTelemetryClient.Flush();
                 }
             }
             catch(Exception e)
             {
-                Log.Exception(e);
+                Log.Error(e);
             }
 
             try

@@ -887,16 +887,13 @@ namespace Chummer
                         Program.PluginLoader.CallPlugins(this, op_load_frm_career_finishingStuff);
                     }
 
-                    if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
+                    if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest && Program.MainForm.ShowMessageBox(this,
+                        LanguageManager.GetString("Message_ImprovementLoadError"),
+                        LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        if (Program.MainForm.ShowMessageBox(this,
-                            LanguageManager.GetString("Message_ImprovementLoadError"),
-                            LanguageManager.GetString("MessageTitle_ImprovementLoadError"),
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
-                        {
-                            DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
-                            CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
-                        }
+                        DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                        CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
                     op_load_frm_career.SetSuccess(true);
@@ -1986,13 +1983,10 @@ namespace Chummer
                             foreach (XPathNavigator xmlSpirit in xmlTraditionsBaseChummerNode.Select("spirits/spirit"))
                             {
                                 string strSpiritName = xmlSpirit.SelectSingleNode("name")?.Value;
-                                if (!string.IsNullOrEmpty(strSpiritName))
+                                if (!string.IsNullOrEmpty(strSpiritName) && (limit.Count == 0 || limit.Contains(strSpiritName)))
                                 {
-                                    if (limit.Count == 0 || limit.Contains(strSpiritName))
-                                    {
-                                        lstSpirit.Add(new ListItem(strSpiritName,
-                                            xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
-                                    }
+                                    lstSpirit.Add(new ListItem(strSpiritName,
+                                        xmlSpirit.SelectSingleNode("translate")?.Value ?? strSpiritName));
                                 }
                             }
                         }
@@ -4833,7 +4827,9 @@ namespace Chummer
         private void cmdVehicleMoveToInventory_Click(object sender, EventArgs e)
         {
             TreeNode objSelectedNode = treVehicles.SelectedNode;
-            switch (objSelectedNode?.Tag)
+            if (objSelectedNode == null)
+                return;
+            switch (objSelectedNode.Tag)
             {
                 // Locate the selected Weapon.
                 case Weapon objWeapon:
@@ -6655,12 +6651,9 @@ namespace Chummer
                             objMod.Rating = objVehicle.MaxSensor;
                         }
                     }
-                    else if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal))
+                    else if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal) && objMod.Rating > objVehicle.MaxPilot)
                     {
-                        if (objMod.Rating > objVehicle.MaxPilot)
-                        {
-                            objMod.Rating = objVehicle.MaxPilot;
-                        }
+                        objMod.Rating = objVehicle.MaxPilot;
                     }
 
                     // Check the item's Cost and make sure the character can afford it.
@@ -11464,17 +11457,14 @@ namespace Chummer
                         }
                         objSelectedFocus.Extra = ImprovementManager.SelectedValue;
                     }
-                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null)
+                    if (objSelectedFocus.WirelessOn && objSelectedFocus.WirelessBonus != null && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
                     {
-                        if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Gear, objSelectedFocus.InternalId, objSelectedFocus.WirelessBonus, objSelectedFocus.Rating, objSelectedFocus.DisplayNameShort(GlobalOptions.Language)))
-                        {
-                            // Clear created improvements
-                            objSelectedFocus.ChangeEquippedStatus(false);
-                            if (blnOldEquipped)
-                                objSelectedFocus.ChangeEquippedStatus(true);
-                            e.Cancel = true;
-                            return;
-                        }
+                        // Clear created improvements
+                        objSelectedFocus.ChangeEquippedStatus(false);
+                        if (blnOldEquipped)
+                            objSelectedFocus.ChangeEquippedStatus(true);
+                        e.Cancel = true;
+                        return;
                     }
                 }
 
@@ -11552,13 +11542,10 @@ namespace Chummer
                             }
                             objGear.Extra = ImprovementManager.SelectedValue;
                         }
-                        if (objGear.WirelessOn && objGear.WirelessBonus != null)
+                        if (objGear.WirelessOn && objGear.WirelessBonus != null && !ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
                         {
-                            if (!ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.StackedFocus, objStackedFocus.InternalId, objGear.WirelessBonus, objGear.Rating, objGear.DisplayNameShort(GlobalOptions.Language)))
-                            {
-                                e.Cancel = true;
-                                break;
-                            }
+                            e.Cancel = true;
+                            break;
                         }
                     }
                 }
@@ -12029,12 +12016,9 @@ namespace Chummer
 
             // If this is a manual entry, let the player modify the amount.
             int intOldAmount = objExpense.Amount.ToInt32();
-            bool blnAllowEdit = false;
-            if (objExpense.Undo != null)
-            {
-                if (objExpense.Undo.KarmaType == KarmaExpenseType.ManualAdd || objExpense.Undo.KarmaType == KarmaExpenseType.ManualSubtract)
-                    blnAllowEdit = true;
-            }
+            bool blnAllowEdit = objExpense.Undo != null && (objExpense.Undo.KarmaType == KarmaExpenseType.ManualAdd ||
+                                                            objExpense.Undo.KarmaType ==
+                                                            KarmaExpenseType.ManualSubtract);
 
             using (frmExpense frmEditExpense = new frmExpense(CharacterObjectOptions)
             {
@@ -12083,12 +12067,9 @@ namespace Chummer
 
             // If this is a manual entry, let the player modify the amount.
             decimal decOldAmount = objExpense.Amount;
-            bool blnAllowEdit = false;
-            if (objExpense.Undo != null)
-            {
-                if (objExpense.Undo.NuyenType == NuyenExpenseType.ManualAdd || objExpense.Undo.NuyenType == NuyenExpenseType.ManualSubtract)
-                    blnAllowEdit = true;
-            }
+            bool blnAllowEdit = objExpense.Undo != null && (objExpense.Undo.NuyenType == NuyenExpenseType.ManualAdd ||
+                                                            objExpense.Undo.NuyenType ==
+                                                            NuyenExpenseType.ManualSubtract);
 
             using (frmExpense frmEditExpense = new frmExpense(CharacterObjectOptions)
             {
@@ -12450,23 +12431,17 @@ namespace Chummer
         #region Splitter Resize Events
         private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
         {
-            if (lstKarma.Columns.Count >= 2)
+            if (lstKarma.Columns.Count >= 2 && lstKarma.Width > 409)
             {
-                if (lstKarma.Width > 409)
-                {
-                    lstKarma.Columns[2].Width = lstKarma.Width - 195;
-                }
+                lstKarma.Columns[2].Width = lstKarma.Width - 195;
             }
         }
 
         private void splitKarmaNuyen_Panel2_Resize(object sender, EventArgs e)
         {
-            if (lstNuyen.Columns.Count >= 2)
+            if (lstNuyen.Columns.Count >= 2 && lstNuyen.Width > 409)
             {
-                if (lstNuyen.Width > 409)
-                {
-                    lstNuyen.Columns[2].Width = lstNuyen.Width - 195;
-                }
+                lstNuyen.Columns[2].Width = lstNuyen.Width - 195;
             }
         }
 #endregion
@@ -12865,7 +12840,7 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
+            if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
@@ -12920,12 +12895,12 @@ namespace Chummer
                 lblDrugAddictionRating.Text = objDrug.AddictionRating.ToString(GlobalOptions.CultureInfo);
                 lblDrugAddictionThreshold.Text = objDrug.AddictionThreshold.ToString(GlobalOptions.CultureInfo);
                 lblDrugEffect.Text = objDrug.EffectDescription;
-                lblDrugComponents.Text = string.Empty;
+                StringBuilder sbdComponents = new StringBuilder();
                 foreach (DrugComponent objComponent in objDrug.Components)
                 {
-                    lblDrugComponents.Text += objComponent.CurrentDisplayName + Environment.NewLine;
+                    sbdComponents.AppendLine(objComponent.CurrentDisplayName);
                 }
-
+                lblDrugComponents.Text = sbdComponents.ToString();
                 btnIncreaseDrugQty.Enabled = objDrug.Cost <= CharacterObject.Nuyen;
                 btnDecreaseDrugQty.Enabled = objDrug.Quantity != 0;
             }
@@ -12970,14 +12945,11 @@ namespace Chummer
                 }
             }
 
-            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest)
+            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
+                LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
             {
-                if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ImprovementLoadError"),
-                    LanguageManager.GetString("MessageTitle_ImprovementLoadError"), MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
-                {
-                    DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
-                    CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
-                }
+                DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements);
+                CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
             }
         }
 
@@ -13470,12 +13442,14 @@ namespace Chummer
                             strAmmoName += strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SlotNumber"), i.ToString(GlobalOptions.CultureInfo)) + ')';
 
                         string strPlugins = string.Empty;
-                        if (objGear != null)
+                        if (objGear != null && objGear.Children.Count > 0)
                         {
+                            StringBuilder sbdPlugins = new StringBuilder();
                             foreach (Gear objChild in objGear.Children)
                             {
-                                strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
+                                sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace);
                             }
+                            strPlugins = sbdPlugins.ToString();
                         }
                         // Remove the trailing comma.
                         if (!string.IsNullOrEmpty(strPlugins))
@@ -14324,9 +14298,9 @@ namespace Chummer
                             if (!dicDisallowedMounts.ContainsKey(strKey))
                                 dicDisallowedMounts.Add(strKey, int.MaxValue);
                         }
-                        strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                        if (objSelectedCyberware.Location != objLoopCyberware.Location)
-                            strLoopHasModularMount += objLoopCyberware.Location;
+                        strLoopHasModularMount = objSelectedCyberware.Location != objLoopCyberware.Location
+                            ? objLoopCyberware.HasModularMount + objLoopCyberware.Location
+                            : objLoopCyberware.HasModularMount;
                         if (!string.IsNullOrEmpty(strLoopHasModularMount) && !dicHasMounts.ContainsKey(strLoopHasModularMount))
                             dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
                     }
@@ -16691,7 +16665,8 @@ namespace Chummer
 
         private void tsInitiationNotes_Click(object sender, EventArgs e)
         {
-            if (!(treMetamagic.SelectedNode?.Tag is IHasNotes selectedObject)) return;
+            if (!(treMetamagic.SelectedNode?.Tag is IHasNotes selectedObject))
+                return;
             WriteNotes(selectedObject, treMetamagic.SelectedNode);
 
             IsDirty = true;

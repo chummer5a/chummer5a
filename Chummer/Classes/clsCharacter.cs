@@ -317,8 +317,6 @@ namespace Chummer
                         !Spells.Contains(x.LinkedObject) && !ComplexForms.Contains(x.LinkedObject) &&
                         !CritterPowers.Contains(x.LinkedObject));
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
         }
 
@@ -1044,8 +1042,6 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Reset:
                     blnDoRefreshPenalties = true;
                     break;
-                default:
-                    throw new ArgumentOutOfRangeException();
             }
             if (blnDoRefreshPenalties)
                 RefreshSustainingPenalties();
@@ -2557,17 +2553,14 @@ namespace Chummer
                                             return false;
                                         }
                                     }
-                                    if (_verSavedVersion > Program.MainForm.CurrentVersion)
+                                    if (_verSavedVersion > Program.MainForm.CurrentVersion && DialogResult.Yes != Program.MainForm.ShowMessageBox(
+                                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
+                                            _verSavedVersion, Program.MainForm.CurrentVersion),
+                                        LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
+                                        MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Warning))
                                     {
-                                        if (DialogResult.Yes != Program.MainForm.ShowMessageBox(
-                                            string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutdatedChummerSave"),
-                                                _verSavedVersion, Program.MainForm.CurrentVersion),
-                                            LanguageManager.GetString("MessageTitle_OutdatedChummerSave"),
-                                            MessageBoxButtons.YesNo,
-                                            MessageBoxIcon.Warning))
-                                        {
-                                            return false;
-                                        }
+                                        return false;
                                     }
                                 }
 #endif
@@ -2812,11 +2805,10 @@ namespace Chummer
                                 }
 
                                 if (xmlCharacterNavigator.TryGetDecFieldQuickly("essenceatspecialstart",
-                                    ref _decEssenceAtSpecialStart))
+                                    ref _decEssenceAtSpecialStart) && _decEssenceAtSpecialStart > ESS.MetatypeMaximum)
                                 {
                                     // fix to work around a mistake made when saving decimal values in previous versions.
-                                    if (_decEssenceAtSpecialStart > ESS.MetatypeMaximum)
-                                        _decEssenceAtSpecialStart /= 10;
+                                    _decEssenceAtSpecialStart /= 10;
                                 }
 
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("createdversion",
@@ -4458,38 +4450,13 @@ namespace Chummer
                             using (_ = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
                             {
                                 Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
-                                if (objMentorQuality != null)
+                                // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
+                                if (objMentorQuality != null && !Improvements.Any(imp =>
+                                    imp.ImproveType == Improvement.ImprovementType.MentorSpirit &&
+                                    !string.IsNullOrEmpty(imp.ImprovedName)))
                                 {
-                                    // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
-                                    if (!Improvements.Any(imp =>
-                                        imp.ImproveType == Improvement.ImprovementType.MentorSpirit &&
-                                        !string.IsNullOrEmpty(imp.ImprovedName)))
-                                    {
-                                        /* This gets confusing when selecting a mentor spirit mid-load, so just show the error and let the player manually re-apply
-                                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId);
-                                        string strSelected = objMentorQuality.Extra;
-        
-                                        XmlNode objNode = objMentorQuality.MyXmlNode;
-                                        if (objNode != null)
-                                        {
-                                            if (objNode["bonus"] != null)
-                                            {
-                                                objMentorQuality.Bonus = objNode["bonus"];
-                                                ImprovementManager.ForcedValue = strSelected;
-                                                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Quality, objMentorQuality.InternalId, objNode["bonus"], false, 1, objMentorQuality.DisplayNameShort);
-                                                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                {
-                                                    objMentorQuality.Extra = ImprovementManager.SelectedValue;
-                                                }
-                                            }
-                                        }
-                                        else
-                                        */
-                                        {
-                                            // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                                            _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
-                                        }
-                                    }
+                                    // Selecting bonuses for a mentor spirit mid-load is confusing, so just show the error and let the player manually re-apply
+                                    _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
                                 }
 
                                 //Timekeeper.Finish("load_char_mentorspiritfix");
@@ -6212,16 +6179,14 @@ namespace Chummer
                    && (objLoopCyberware.Location == objModularCyberware.Location
                        || string.IsNullOrEmpty(objModularCyberware.Location))
                    && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
-                   && objLoopCyberware != objModularCyberware)
+                   && objLoopCyberware != objModularCyberware
+                   // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                   && objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                 {
-                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                    if(objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
-                    {
-                        string strName = objLoopCyberware.Parent?.CurrentDisplayName
-                                         ?? objLoopCyberware.CurrentDisplayName;
-                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                        blnMountChangeAllowed = true;
-                    }
+                    string strName = objLoopCyberware.Parent?.CurrentDisplayName
+                                     ?? objLoopCyberware.CurrentDisplayName;
+                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                    blnMountChangeAllowed = true;
                 }
             }
 
@@ -6235,17 +6200,15 @@ namespace Chummer
                         if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                            && objLoopCyberware.Location == objModularCyberware.Location
                            && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
-                           && objLoopCyberware != objModularCyberware)
+                           && objLoopCyberware != objModularCyberware
+                           // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                           && objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                         {
-                            // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                            if(objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
-                            {
-                                string strName = objLoopVehicle.CurrentDisplayName
-                                                 + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
-                                                               ?? objLoopVehicleMod.CurrentDisplayName);
-                                lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                blnMountChangeAllowed = true;
-                            }
+                            string strName = objLoopVehicle.CurrentDisplayName
+                                             + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
+                                                           ?? objLoopVehicleMod.CurrentDisplayName);
+                            lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                            blnMountChangeAllowed = true;
                         }
                     }
                 }
@@ -6260,17 +6223,15 @@ namespace Chummer
                             if(objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
                                && objLoopCyberware.Location == objModularCyberware.Location
                                && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
-                               && objLoopCyberware != objModularCyberware)
+                               && objLoopCyberware != objModularCyberware
+                               // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                               && objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
                             {
-                                // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                if(objLoopCyberware.Children.All(x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
-                                {
-                                    string strName = objLoopVehicle.CurrentDisplayName
-                                                     + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
-                                                                   ?? objLoopVehicleMod.CurrentDisplayName);
-                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                    blnMountChangeAllowed = true;
-                                }
+                                string strName = objLoopVehicle.CurrentDisplayName
+                                                 + strSpace + (objLoopCyberware.Parent?.CurrentDisplayName
+                                                               ?? objLoopVehicleMod.CurrentDisplayName);
+                                lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                blnMountChangeAllowed = true;
                             }
                         }
                     }
@@ -9647,11 +9608,6 @@ namespace Chummer
             IncreaseEssenceHole((decEssence * 100).StandardRound(), blnOverflowIntoHole);
         }
 
-        public void DecreaseEssenceHole(decimal decEssence, bool blnOverflowIntoHole = true)
-        {
-            DecreaseEssenceHole((decEssence * 100).StandardRound(), blnOverflowIntoHole);
-        }
-
         public void IncreaseEssenceHole(int intCentiessence, bool blnOverflowIntoHole = true)
         {
             Cyberware objAntiHole = Cyberware.FirstOrDefault(x => x.SourceID == Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
@@ -9704,6 +9660,12 @@ namespace Chummer
             if(objAntiHole?.Rating == 0 && Cyberware.Contains(objAntiHole))
                 Cyberware.Remove(objAntiHole);
         }
+
+        public void DecreaseEssenceHole(decimal decEssence, bool blnOverflowIntoHole = true)
+        {
+            DecreaseEssenceHole((decEssence * 100).StandardRound(), blnOverflowIntoHole);
+        }
+
         /// <summary>
         /// Decrease or create an Essence Hole, if required.
         /// </summary>
@@ -10731,20 +10693,14 @@ namespace Chummer
 
                 foreach(Improvement objImprovement in _lstImprovements)
                 {
-                    if(objImprovement.ImproveType == Improvement.ImprovementType.Notoriety && objImprovement.Enabled)
-                        sbdReturn.Append(strSpace + '+' + strSpace + GetObjectName(objImprovement))
-                            .Append(strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Notoriety && objImprovement.Enabled)
+                        sbdReturn.Append(strSpace + '+' + strSpace + GetObjectName(objImprovement) + strSpace + '(' +
+                                         objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
-                /*
-                int intEnemies = Contacts.Count(x => x.EntityType == ContactType.Enemy);
-                if (intEnemies > 0)
-                    sbdReturn.Append(strSpace + '+' + strSpace + LanguageManager.GetString("Label_SummaryEnemies") + strSpace + '(' + intEnemies.ToString(GlobalOptions.CultureInfo) + ')');
-                    */
-
                 if (BurntStreetCred > 0)
-                    sbdReturn.Append(strSpace + '-' + strSpace + LanguageManager.GetString("String_BurntStreetCred"))
-                        .Append(strSpace + '(' + (BurntStreetCred / 2).ToString(GlobalOptions.CultureInfo) + ')');
+                    sbdReturn.Append(strSpace + '-' + strSpace + LanguageManager.GetString("String_BurntStreetCred") +
+                                     strSpace + '(' + (BurntStreetCred / 2).ToString(GlobalOptions.CultureInfo) + ')');
 
                 return sbdReturn.ToString();
             }
@@ -15506,325 +15462,376 @@ namespace Chummer
 
         public void RefreshBODDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(16)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(LimitPhysical),
-                    nameof(DamageResistancePool),
-                    nameof(LiftAndCarry),
-                    nameof(FatigueResist),
-                    nameof(RadiationResist),
-                    nameof(PhysiologicalAddictionResistFirstTime),
-                    nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                    nameof(StunCMNaturalRecovery),
-                    nameof(PhysicalCMNaturalRecovery),
-                    nameof(PhysicalCM),
-                    nameof(CMOverflow),
-                    nameof(SpellDefenseIndirectSoak),
-                    nameof(SpellDefenseDirectSoakPhysical),
-                    nameof(SpellDefenseDecreaseBOD),
-                    nameof(SpellDefenseManipulationPhysical)
-                };
-                if (Options.ContactPointsExpression.Contains("{BOD}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{BOD}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{BODUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
-            {
-                if(DEPEnabled)
-                    OnPropertyChanged(nameof(IsAI));
+                    List<string> lstProperties = new List<string>(16)
+                    {
+                        nameof(LimitPhysical),
+                        nameof(DamageResistancePool),
+                        nameof(LiftAndCarry),
+                        nameof(FatigueResist),
+                        nameof(RadiationResist),
+                        nameof(PhysiologicalAddictionResistFirstTime),
+                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
+                        nameof(StunCMNaturalRecovery),
+                        nameof(PhysicalCMNaturalRecovery),
+                        nameof(PhysicalCM),
+                        nameof(CMOverflow),
+                        nameof(SpellDefenseIndirectSoak),
+                        nameof(SpellDefenseDirectSoakPhysical),
+                        nameof(SpellDefenseDecreaseBOD),
+                        nameof(SpellDefenseManipulationPhysical)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{BOD}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{BOD}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{BODUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.MetatypeMaximum):
+                {
+                    if(DEPEnabled)
+                        OnPropertyChanged(nameof(IsAI));
+                    break;
+                }
             }
         }
 
         public void RefreshAGIDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(2)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(SpellDefenseDecreaseAGI)
-                };
-                if (Options.ContactPointsExpression.Contains("{AGI}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{AGI}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{AGIUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(2)
+                    {
+                        nameof(SpellDefenseDecreaseAGI)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{AGI}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{AGI}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{AGIUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshREADependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(6)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(LimitPhysical),
-                    nameof(InitiativeValue),
-                    nameof(Dodge),
-                    nameof(SpellDefenseDecreaseREA),
-                    nameof(Surprise)
-                };
-                if (Options.ContactPointsExpression.Contains("{REA}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{REA}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{REAUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(6)
+                    {
+                        nameof(LimitPhysical),
+                        nameof(InitiativeValue),
+                        nameof(Dodge),
+                        nameof(SpellDefenseDecreaseREA),
+                        nameof(Surprise)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{REA}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{REA}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{REAUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshSTRDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                // Encumbrance is only affected by STR.TotalValue when it comes to attributes
-                RefreshEncumbrance();
-                List<string> lstProperties = new List<string>(5)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(LimitPhysical),
-                    nameof(LiftAndCarry),
-                    nameof(SpellDefenseDecreaseSTR),
-                    nameof(SpellDefenseManipulationPhysical)
-                };
-                if (Options.ContactPointsExpression.Contains("{STR}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{STR}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{STRUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    // Encumbrance is only affected by STR.TotalValue when it comes to attributes
+                    RefreshEncumbrance();
+                    List<string> lstProperties = new List<string>(5)
+                    {
+                        nameof(LimitPhysical),
+                        nameof(LiftAndCarry),
+                        nameof(SpellDefenseDecreaseSTR),
+                        nameof(SpellDefenseManipulationPhysical)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{STR}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{STR}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{STRUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshCHADependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(6)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(LimitSocial),
-                    nameof(Composure),
-                    nameof(JudgeIntentions),
-                    nameof(JudgeIntentionsResist),
-                    nameof(SpellDefenseDecreaseCHA)
-                };
-                if (Options.ContactPointsExpression.Contains("{CHA}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{CHA}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if(e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{CHAUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(6)
+                    {
+                        nameof(LimitSocial),
+                        nameof(Composure),
+                        nameof(JudgeIntentions),
+                        nameof(JudgeIntentionsResist),
+                        nameof(SpellDefenseDecreaseCHA)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{CHA}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{CHA}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{CHAUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshINTDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(12)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(LimitMental),
-                    nameof(JudgeIntentions),
-                    nameof(InitiativeValue),
-                    nameof(AstralInitiativeValue),
-                    nameof(MatrixInitiativeValue),
-                    nameof(MatrixInitiativeColdValue),
-                    nameof(MatrixInitiativeHotValue),
-                    nameof(Dodge),
-                    nameof(SpellDefenseDecreaseINT),
-                    nameof(SpellDefenseIllusionPhysical),
-                    nameof(Surprise)
-                };
-                if (Options.ContactPointsExpression.Contains("{INT}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{INT}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{INTUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(12)
+                    {
+                        nameof(LimitMental),
+                        nameof(JudgeIntentions),
+                        nameof(InitiativeValue),
+                        nameof(AstralInitiativeValue),
+                        nameof(MatrixInitiativeValue),
+                        nameof(MatrixInitiativeColdValue),
+                        nameof(MatrixInitiativeHotValue),
+                        nameof(Dodge),
+                        nameof(SpellDefenseDecreaseINT),
+                        nameof(SpellDefenseIllusionPhysical),
+                        nameof(Surprise)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{INT}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{INT}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{INTUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshLOGDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(10)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(LimitMental),
-                    nameof(Memory),
-                    nameof(PsychologicalAddictionResistFirstTime),
-                    nameof(PsychologicalAddictionResistAlreadyAddicted),
-                    nameof(SpellDefenseDetection),
-                    nameof(SpellDefenseDecreaseLOG),
-                    nameof(SpellDefenseIllusionMana),
-                    nameof(SpellDefenseIllusionPhysical),
-                    nameof(SpellDefenseManipulationMental)
-                };
-                if (Options.ContactPointsExpression.Contains("{LOG}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{LOG}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{LOGUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(10)
+                    {
+                        nameof(LimitMental),
+                        nameof(Memory),
+                        nameof(PsychologicalAddictionResistFirstTime),
+                        nameof(PsychologicalAddictionResistAlreadyAddicted),
+                        nameof(SpellDefenseDetection),
+                        nameof(SpellDefenseDecreaseLOG),
+                        nameof(SpellDefenseIllusionMana),
+                        nameof(SpellDefenseIllusionPhysical),
+                        nameof(SpellDefenseManipulationMental)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{LOG}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{LOG}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{LOGUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshWILDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(27)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(LimitSocial),
-                    nameof(LimitMental),
-                    nameof(Composure),
-                    nameof(Memory),
-                    nameof(JudgeIntentionsResist),
-                    nameof(FatigueResist),
-                    nameof(SonicResist),
-                    nameof(RadiationResist),
-                    nameof(PhysiologicalAddictionResistFirstTime),
-                    nameof(PhysiologicalAddictionResistAlreadyAddicted),
-                    nameof(PsychologicalAddictionResistFirstTime),
-                    nameof(PsychologicalAddictionResistAlreadyAddicted),
-                    nameof(StunCMNaturalRecovery),
-                    nameof(StunCM),
-                    nameof(SpellDefenseDirectSoakMana),
-                    nameof(SpellDefenseDetection),
-                    nameof(SpellDefenseDecreaseBOD),
-                    nameof(SpellDefenseDecreaseAGI),
-                    nameof(SpellDefenseDecreaseREA),
-                    nameof(SpellDefenseDecreaseSTR),
-                    nameof(SpellDefenseDecreaseCHA),
-                    nameof(SpellDefenseDecreaseINT),
-                    nameof(SpellDefenseDecreaseLOG),
-                    nameof(SpellDefenseDecreaseWIL),
-                    nameof(SpellDefenseIllusionMana),
-                    nameof(SpellDefenseManipulationMental)
-                };
-                if (Options.ContactPointsExpression.Contains("{WIL}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{WIL}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{WILUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(27)
+                    {
+                        nameof(LimitSocial),
+                        nameof(LimitMental),
+                        nameof(Composure),
+                        nameof(Memory),
+                        nameof(JudgeIntentionsResist),
+                        nameof(FatigueResist),
+                        nameof(SonicResist),
+                        nameof(RadiationResist),
+                        nameof(PhysiologicalAddictionResistFirstTime),
+                        nameof(PhysiologicalAddictionResistAlreadyAddicted),
+                        nameof(PsychologicalAddictionResistFirstTime),
+                        nameof(PsychologicalAddictionResistAlreadyAddicted),
+                        nameof(StunCMNaturalRecovery),
+                        nameof(StunCM),
+                        nameof(SpellDefenseDirectSoakMana),
+                        nameof(SpellDefenseDetection),
+                        nameof(SpellDefenseDecreaseBOD),
+                        nameof(SpellDefenseDecreaseAGI),
+                        nameof(SpellDefenseDecreaseREA),
+                        nameof(SpellDefenseDecreaseSTR),
+                        nameof(SpellDefenseDecreaseCHA),
+                        nameof(SpellDefenseDecreaseINT),
+                        nameof(SpellDefenseDecreaseLOG),
+                        nameof(SpellDefenseDecreaseWIL),
+                        nameof(SpellDefenseIllusionMana),
+                        nameof(SpellDefenseManipulationMental)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{WIL}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{WIL}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{WILUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshEDGDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                if (EdgeUsed > EDG.TotalValue)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    EdgeUsed = EDG.TotalValue;
-                    if (Options.ContactPointsExpression.Contains("{EDG}"))
-                        OnPropertyChanged(nameof(ContactPoints));
+                    if (EdgeUsed > EDG.TotalValue)
+                    {
+                        EdgeUsed = EDG.TotalValue;
+                        if (Options.ContactPointsExpression.Contains("{EDG}"))
+                            OnPropertyChanged(nameof(ContactPoints));
+                    }
+                    else if (Options.ContactPointsExpression.Contains("{EDG}"))
+                        OnMultiplePropertyChanged(nameof(ContactPoints), nameof(EdgeRemaining));
+                    else
+                        OnPropertyChanged(nameof(EdgeRemaining));
+                    if (Options.KnowledgePointsExpression.Contains("{EDG}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
                 }
-                else if (Options.ContactPointsExpression.Contains("{EDG}"))
-                    OnMultiplePropertyChanged(nameof(ContactPoints), nameof(EdgeRemaining));
-                else
-                    OnPropertyChanged(nameof(EdgeRemaining));
-                if (Options.KnowledgePointsExpression.Contains("{EDG}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{EDGUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{EDGUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshMAGDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                if(!IsLoading && MysticAdeptPowerPoints > 0)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    int intMAGTotalValue = MAG.TotalValue;
-                    if(MysticAdeptPowerPoints > intMAGTotalValue)
-                        MysticAdeptPowerPoints = intMAGTotalValue;
-                }
+                    if(!IsLoading && MysticAdeptPowerPoints > 0)
+                    {
+                        int intMAGTotalValue = MAG.TotalValue;
+                        if(MysticAdeptPowerPoints > intMAGTotalValue)
+                            MysticAdeptPowerPoints = intMAGTotalValue;
+                    }
 
-                List<string> lstProperties = new List<string>(5);
-                if(Options.SpiritForceBasedOnTotalMAG)
-                    lstProperties.Add(nameof(MaxSpiritForce));
-                if(MysAdeptAllowPPCareer)
-                    lstProperties.Add(nameof(CanAffordCareerPP));
-                if(!UseMysticAdeptPPs && MAG == MAGAdept)
-                    lstProperties.Add(nameof(PowerPointsTotal));
-                if (AnyPowerAdeptWayDiscountEnabled)
-                    lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
-                if (Options.ContactPointsExpression.Contains("{MAG}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{MAG}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if(e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                List<string> lstProperties = new List<string>(2);
-                if (!Options.SpiritForceBasedOnTotalMAG)
-                    lstProperties.Add(nameof(MaxSpiritForce));
-                if (Options.ContactPointsExpression.Contains("{MAGUnaug}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(5);
+                    if(Options.SpiritForceBasedOnTotalMAG)
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                    if(MysAdeptAllowPPCareer)
+                        lstProperties.Add(nameof(CanAffordCareerPP));
+                    if(!UseMysticAdeptPPs && MAG == MAGAdept)
+                        lstProperties.Add(nameof(PowerPointsTotal));
+                    if (AnyPowerAdeptWayDiscountEnabled)
+                        lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
+                    if (Options.ContactPointsExpression.Contains("{MAG}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{MAG}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    List<string> lstProperties = new List<string>(2);
+                    if (!Options.SpiritForceBasedOnTotalMAG)
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                    if (Options.ContactPointsExpression.Contains("{MAGUnaug}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
@@ -15833,89 +15840,108 @@ namespace Chummer
             if(MAG == MAGAdept)
                 return;
 
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(2);
-                if (!UseMysticAdeptPPs)
-                    lstProperties.Add(nameof(MaxSpiritForce));
-                if (Options.ContactPointsExpression.Contains("{MAGAdept}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                case nameof(CharacterAttrib.TotalValue):
+                {
+                    List<string> lstProperties = new List<string>(2);
+                    if (!UseMysticAdeptPPs)
+                        lstProperties.Add(nameof(MaxSpiritForce));
+                    if (Options.ContactPointsExpression.Contains("{MAGAdept}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshRESDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                List<string> lstProperties = new List<string>(2)
+                case nameof(CharacterAttrib.TotalValue):
                 {
-                    nameof(MaxSpriteLevel)
-                };
-                if (Options.ContactPointsExpression.Contains("{RES}"))
-                    lstProperties.Add(nameof(ContactPoints));
-                OnMultiplePropertyChanged(lstProperties.ToArray());
-                if (Options.KnowledgePointsExpression.Contains("{RES}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{RESUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{RESUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    List<string> lstProperties = new List<string>(2)
+                    {
+                        nameof(MaxSpriteLevel)
+                    };
+                    if (Options.ContactPointsExpression.Contains("{RES}"))
+                        lstProperties.Add(nameof(ContactPoints));
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (Options.KnowledgePointsExpression.Contains("{RES}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{RESUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshDEPDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(IsAI && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
-                EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
-            else if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            switch (e?.PropertyName)
             {
-                if (Options.ContactPointsExpression.Contains("{DEP}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{DEP}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{DEPUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{DEPUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                case nameof(CharacterAttrib.TotalValue):
+                {
+                    if (IsAI)
+                        EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
+                    if (Options.ContactPointsExpression.Contains("{DEP}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{DEP}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{DEPUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
         public void RefreshESSDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
-            if(e?.PropertyName == nameof(CharacterAttrib.MetatypeMaximum))
+            switch (e?.PropertyName)
             {
-                OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.TotalValue))
-            {
-                if (Options.ContactPointsExpression.Contains("{ESS}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{ESS}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-            }
-            else if (e?.PropertyName == nameof(CharacterAttrib.Value))
-            {
-                if (Options.ContactPointsExpression.Contains("{ESSUnaug}"))
-                    OnPropertyChanged(nameof(ContactPoints));
-                if (Options.KnowledgePointsExpression.Contains("{ESSUnaug}"))
-                    SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                // Only ESS.MetatypeMaximum is used for the Essence method/property when it comes to attributes
+                case nameof(CharacterAttrib.MetatypeMaximum):
+                    OnMultiplePropertyChanged(nameof(PrototypeTranshumanEssenceUsed), nameof(BiowareEssence), nameof(CyberwareEssence), nameof(EssenceHole));
+                    break;
+                case nameof(CharacterAttrib.TotalValue):
+                {
+                    if (Options.ContactPointsExpression.Contains("{ESS}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{ESS}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
+                case nameof(CharacterAttrib.Value):
+                {
+                    if (Options.ContactPointsExpression.Contains("{ESSUnaug}"))
+                        OnPropertyChanged(nameof(ContactPoints));
+                    if (Options.KnowledgePointsExpression.Contains("{ESSUnaug}"))
+                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    break;
+                }
             }
         }
 
@@ -17099,11 +17125,15 @@ namespace Chummer
                                                 }
                                             }
                                             // If we run into any problems loading the character xml files, fail out early.
-                                            catch (IOException)
+                                            catch (IOException e)
                                             {
+                                                Log.Info(e);
+                                                Utils.BreakIfDebug();
                                             }
-                                            catch (XmlException)
+                                            catch (XmlException e)
                                             {
+                                                Log.Info(e);
+                                                Utils.BreakIfDebug();
                                             }
                                         }
                                         else if (strEntryFullName.EndsWith(".txt",
@@ -19464,7 +19494,18 @@ namespace Chummer
         #region Source
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, this);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        this);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Character's Sourcebook.
@@ -19527,8 +19568,8 @@ namespace Chummer
         /// <param name="sourceControl"></param>
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
         #endregion
@@ -19718,7 +19759,6 @@ namespace Chummer
         private void SetDefaultEventHandlers()
         {
             OnMyDoubleClick += OnDefaultDoubleClick;
-            OnMyAfterSelect += OnDefaultAfterSelect;
             OnMyKeyDown += OnDefaultKeyDown;
             OnMyContextMenuDeleteClick += OnDefaultContextMenuDeleteClick;
         }
@@ -19934,10 +19974,6 @@ namespace Chummer
             if (blnAddMarkerIfOpen && Program.MainForm?.OpenCharacterForms.Any(x => x.CharacterObject.FileName == FilePath) == true)
                 strReturn = "* " + strReturn;
             return strReturn;
-        }
-
-        public void OnDefaultAfterSelect(object sender, TreeViewEventArgs e)
-        {
         }
 
         public void OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
