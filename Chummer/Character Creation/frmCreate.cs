@@ -1059,13 +1059,13 @@ namespace Chummer
                             cmdAddMetamagic.Text = LanguageManager.GetString("Button_AddInitiateGrade");
                             cmdDeleteMetamagic.Text = LanguageManager.GetString("Button_RemoveInitiateGrade");
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal")
-                                .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
+                                .Replace("{0}", CharacterObjectOptions.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
                             gpbInitiationType.Text = LanguageManager.GetString("String_InitiationType");
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_InitiationGroup");
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_InitiationGroup")
-                                .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
+                                .Replace("{0}", CharacterObjectOptions.KarmaMAGInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
                             chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
-                                .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
+                                .Replace("{0}", CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
 
                             chkInitiationSchooling.Enabled = true;
                             tsMetamagicAddArt.Visible = true;
@@ -1134,11 +1134,11 @@ namespace Chummer
                             gpbInitiationType.Text = LanguageManager.GetString("String_SubmersionType");
                             gpbInitiationGroup.Text = LanguageManager.GetString("String_SubmersionNetwork");
                             chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask")
-                                .CheapReplace("{0}", () => CharacterObjectOptions.KarmaRESInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
+                                .Replace("{0}", CharacterObjectOptions.KarmaRESInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
                             chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion")
-                                .CheapReplace("{0}", () => CharacterObjectOptions.KarmaRESInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
+                                .Replace("{0}", CharacterObjectOptions.KarmaRESInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
                             chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
-                                .CheapReplace("{0}", () => CharacterObjectOptions.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
+                                .Replace("{0}", CharacterObjectOptions.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
                             chkInitiationSchooling.Enabled = CharacterObjectOptions.AllowTechnomancerSchooling;
                             tsMetamagicAddArt.Visible = false;
                             tsMetamagicAddEnchantment.Visible = false;

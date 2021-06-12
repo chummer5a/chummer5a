@@ -1317,11 +1317,11 @@ namespace Chummer
                         chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedGroup");
 
                         chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_InitiationOrdeal")
-                            .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
+                            .Replace("{0}", CharacterObjectOptions.KarmaMAGInitiationOrdealPercent.ToString("P", GlobalOptions.CultureInfo));
                         chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_InitiationGroup")
-                            .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
+                            .Replace("{0}", CharacterObjectOptions.KarmaMAGInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
                         chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
-                            .CheapReplace("{0}", () => CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
+                            .Replace("{0}", CharacterObjectOptions.KarmaMAGInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
                         if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.MAG))
                         {
                             CharacterObject.AttributeSection.Attributes.Add(CharacterObject.MAG);
@@ -1383,11 +1383,11 @@ namespace Chummer
                         cmdAddMetamagic.SetToolTip(strInitTip);
                         chkJoinGroup.Text = LanguageManager.GetString("Checkbox_JoinedNetwork");
                         chkInitiationOrdeal.Text = LanguageManager.GetString("Checkbox_SubmersionTask")
-                            .CheapReplace("{0}", () => CharacterObjectOptions.KarmaRESInitiationOrdealPercent.ToString("P",GlobalOptions.CultureInfo));
+                            .Replace("{0}", CharacterObjectOptions.KarmaRESInitiationOrdealPercent.ToString("P",GlobalOptions.CultureInfo));
                         chkInitiationGroup.Text = LanguageManager.GetString("Checkbox_NetworkSubmersion")
-                            .CheapReplace("{0}", () => CharacterObjectOptions.KarmaRESInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
+                            .Replace("{0}", CharacterObjectOptions.KarmaRESInitiationGroupPercent.ToString("P", GlobalOptions.CultureInfo));
                         chkInitiationSchooling.Text = LanguageManager.GetString("Checkbox_InitiationSchooling")
-                            .CheapReplace("{0}", () => CharacterObjectOptions.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
+                            .Replace("{0}", CharacterObjectOptions.KarmaRESInitiationSchoolingPercent.ToString("P", GlobalOptions.CultureInfo));
                             if (!CharacterObject.AttributeSection.Attributes.Contains(CharacterObject.RES))
                         {
                             CharacterObject.AttributeSection.Attributes.Add(CharacterObject.RES);
