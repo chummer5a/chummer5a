@@ -46,6 +46,7 @@ namespace Chummer.UI.Shared
         private bool _blnAllRendered;
         private Predicate<TType> _visibleFilter = x => true;
         private IComparer<TType> _comparison;
+        private bool _blnPerformLayouts;
 
         public BindingListDisplay(BindingList<TType> contents, Func<TType, Control> funcCreateControl, bool blnLoadVisibleOnly = true)
         {
@@ -53,33 +54,31 @@ namespace Chummer.UI.Shared
             Contents = contents ?? throw new ArgumentNullException(nameof(contents));
             _funcCreateControl = funcCreateControl;
             _blnLoadVisibleOnly = blnLoadVisibleOnly;
+            int intMaxControlHeight = 0;
+            foreach (TType objLoopTType in Contents)
+            {
+                ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false);
+                intMaxControlHeight = Math.Max(objNewControl.Control.PreferredSize.Height, intMaxControlHeight);
+                _lstContentList.Add(objNewControl);
+            }
+
+            if (intMaxControlHeight > 0)
+                ListItemControlHeight = intMaxControlHeight;
+            SuspendLayout();
             DisplayPanel.SuspendLayout();
-            try
-            {
-                int intMaxControlHeight = 0;
-                foreach (TType objLoopTType in Contents)
-                {
-                    ControlWithMetaData objNewControl = new ControlWithMetaData(objLoopTType, this, false);
-                    intMaxControlHeight = Math.Max(objNewControl.Control.PreferredSize.Height, intMaxControlHeight);
-                    _lstContentList.Add(objNewControl);
-                }
-
-                if (intMaxControlHeight > 0)
-                    ListItemControlHeight = intMaxControlHeight;
-
-                DisplayPanel.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
-                _indexComparer = new IndexComparer(Contents);
-                _comparison = _comparison ?? _indexComparer;
-                Contents.ListChanged += ContentsChanged;
-                ComptuteDisplayIndex();
-                LoadScreenContent();
-                BindingListDisplay_SizeChanged(null, null);
-            }
-            finally
-            {
-                _blnIsTopmostSuspendLayout = true;
-                DisplayPanel.ResumeLayout();
-            }
+            DisplayPanel.Controls.AddRange(_lstContentList.Select(x => x.Control).ToArray());
+            _indexComparer = new IndexComparer(Contents);
+            _comparison = _comparison ?? _indexComparer;
+            Contents.ListChanged += ContentsChanged;
+            ComptuteDisplayIndex();
+            LoadScreenContent();
+            BindingListDisplay_SizeChanged(null, null);
+            _blnIsTopmostSuspendLayout = true;
+            _blnPerformLayouts = true;
+            foreach (Control objControl in DisplayPanel.Controls)
+                objControl.ResumeLayout();
+            DisplayPanel.ResumeLayout();
+            ResumeLayout();
         }
 
         private void BindingListDisplay_Load(object sender, EventArgs e)
@@ -138,7 +137,8 @@ namespace Chummer.UI.Shared
                 if (blnIsTopmostSuspendLayout)
                 {
                     _blnIsTopmostSuspendLayout = true;
-                    DisplayPanel.ResumeLayout();
+                    if (_blnPerformLayouts)
+                        DisplayPanel.ResumeLayout();
                 }
             }
         }
@@ -254,7 +254,8 @@ namespace Chummer.UI.Shared
                 if (blnIsTopmostSuspendLayout)
                 {
                     _blnIsTopmostSuspendLayout = true;
-                    DisplayPanel.ResumeLayout();
+                    if (_blnPerformLayouts)
+                        DisplayPanel.ResumeLayout();
                 }
             }
 
@@ -293,7 +294,8 @@ namespace Chummer.UI.Shared
                 if (blnIsTopmostSuspendLayout)
                 {
                     _blnIsTopmostSuspendLayout = true;
-                    DisplayPanel.ResumeLayout();
+                    if (_blnPerformLayouts)
+                        DisplayPanel.ResumeLayout();
                 }
             }
         }
@@ -316,7 +318,8 @@ namespace Chummer.UI.Shared
                 if (blnIsTopmostSuspendLayout)
                 {
                     _blnIsTopmostSuspendLayout = true;
-                    DisplayPanel.ResumeLayout();
+                    if (_blnPerformLayouts)
+                        DisplayPanel.ResumeLayout();
                 }
             }
         }
@@ -352,7 +355,8 @@ namespace Chummer.UI.Shared
                         if (blnIsTopmostSuspendLayout)
                         {
                             _blnIsTopmostSuspendLayout = true;
-                            DisplayPanel.ResumeLayout();
+                            if (_blnPerformLayouts)
+                                DisplayPanel.ResumeLayout();
                         }
                     }
                     _indexComparer.Reset(Contents);
@@ -429,7 +433,8 @@ namespace Chummer.UI.Shared
                     if (blnIsTopmostSuspendLayout)
                     {
                         _blnIsTopmostSuspendLayout = true;
-                        DisplayPanel.ResumeLayout();
+                        if (_blnPerformLayouts)
+                            DisplayPanel.ResumeLayout();
                     }
                 }
             }
@@ -450,7 +455,8 @@ namespace Chummer.UI.Shared
                 if (blnIsTopmostSuspendLayout)
                 {
                     _blnIsTopmostSuspendLayout = true;
-                    DisplayPanel.ResumeLayout();
+                    if (_blnPerformLayouts)
+                        DisplayPanel.ResumeLayout();
                 }
             }
         }
@@ -463,6 +469,8 @@ namespace Chummer.UI.Shared
             try
             {
                 DisplayPanel.SuspendLayout();
+                foreach (Control objControl in DisplayPanel.Controls)
+                    objControl.SuspendLayout();
                 DisplayPanel.Width = Width - SystemInformation.VerticalScrollBarWidth;
                 ResetDisplayPanelHeight();
                 foreach (Control control in DisplayPanel.Controls)
@@ -489,7 +497,12 @@ namespace Chummer.UI.Shared
                 if (blnIsTopmostSuspendLayout)
                 {
                     _blnIsTopmostSuspendLayout = true;
-                    DisplayPanel.ResumeLayout();
+                    if (_blnPerformLayouts)
+                    {
+                        foreach (Control objControl in DisplayPanel.Controls)
+                            objControl.ResumeLayout();
+                        DisplayPanel.ResumeLayout();
+                    }
                 }
             }
         }
@@ -616,7 +629,8 @@ namespace Chummer.UI.Shared
                     _control.Width = _parent.DisplayPanel.Width;
                     _control.Height = _parent.ListItemControlHeight;
                 }
-                _control.ResumeLayout();
+                if (_parent._blnPerformLayouts)
+                    _control.ResumeLayout();
                 if (blnAddControlAfterCreation)
                     _parent.DisplayPanel.Controls.Add(_control);
             }

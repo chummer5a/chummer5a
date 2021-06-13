@@ -109,6 +109,15 @@ namespace Chummer.UI.Skills
 
             //Visible = false;
             SuspendLayout();
+            splitSkills.SuspendLayout();
+            splitSkills.Panel1.SuspendLayout();
+            splitSkills.Panel2.SuspendLayout();
+            tlpTopPanel.SuspendLayout();
+            tlpSkillGroups.SuspendLayout();
+            tlpActiveSkillsButtons.SuspendLayout();
+            tlpActiveSkills.SuspendLayout();
+            tlpBottomPanel.SuspendLayout();
+            tlpKnowledgeSkillsHeader.SuspendLayout();
 
             Stopwatch swDisplays = Stopwatch.StartNew();
 
@@ -193,29 +202,20 @@ namespace Chummer.UI.Skills
             parts.TaskEnd("_ddl databind");
 
             cboSort.BeginUpdate();
-            cboSort.DataSource = null;
             cboSort.ValueMember = "Item2";
             cboSort.DisplayMember = "Item1";
             cboSort.DataSource = _sortList;
             cboSort.SelectedIndex = 0;
-            cboSort.MaxDropDownItems = _sortList.Count;
             cboSort.EndUpdate();
 
             cboSortKnowledge.BeginUpdate();
-            cboSortKnowledge.DataSource = null;
             cboSortKnowledge.ValueMember = "Item2";
             cboSortKnowledge.DisplayMember = "Item1";
             cboSortKnowledge.DataSource = _lstSortKnowledgeList;
             cboSortKnowledge.SelectedIndex = 0;
-            cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
             cboSortKnowledge.EndUpdate();
 
             parts.TaskEnd("_sort databind");
-
-            if (_lstSkillGroups != null)
-                _lstSkillGroups.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
-            _lstActiveSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
-            _lstKnowledgeSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
 
             if (!_objCharacter.Created)
             {
@@ -243,10 +243,23 @@ namespace Chummer.UI.Skills
 
             btnExotic.Visible = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/skills/skill[exotic = \"True\"]") != null;
 
+            if (_lstSkillGroups != null)
+                _lstSkillGroups.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
+            _lstActiveSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
+            _lstKnowledgeSkills.ChildPropertyChanged += MakeDirtyWithCharacterUpdate;
             _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
             _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
             _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
             _objCharacter.SkillsSection.PropertyChanged += SkillsSectionOnPropertyChanged;
+            tlpKnowledgeSkillsHeader.ResumeLayout();
+            tlpBottomPanel.ResumeLayout();
+            tlpActiveSkills.ResumeLayout();
+            tlpActiveSkillsButtons.ResumeLayout();
+            tlpSkillGroups.ResumeLayout();
+            tlpTopPanel.ResumeLayout();
+            splitSkills.Panel2.ResumeLayout();
+            splitSkills.Panel1.ResumeLayout();
+            splitSkills.ResumeLayout();
             ResumeLayout(true);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
@@ -268,15 +281,19 @@ namespace Chummer.UI.Skills
             if (_lstSkillGroups != null)
             {
                 int intNameLabelWidth = lblSkillGroups.PreferredWidth;
-                foreach (SkillGroupControl sg in _lstSkillGroups.DisplayPanel.Controls)
+                foreach (SkillGroupControl objSkillGroupControl in _lstSkillGroups.DisplayPanel.Controls)
                 {
-                    intNameLabelWidth = Math.Max(sg.NameWidth, intNameLabelWidth);
+                    intNameLabelWidth = Math.Max(objSkillGroupControl.NameWidth, intNameLabelWidth);
                 }
                 lblSkillGroups.MinimumSize = new Size(intNameLabelWidth, lblSkillGroups.MinimumSize.Height);
-                foreach (SkillGroupControl s in _lstSkillGroups.DisplayPanel.Controls)
-                {
-                    s.MoveControls(intNameLabelWidth);
-                }
+                _lstSkillGroups.DisplayPanel.SuspendLayout();
+                foreach (SkillGroupControl objSkillGroupControl in _lstSkillGroups.DisplayPanel.Controls)
+                    objSkillGroupControl.SuspendLayout();
+                foreach (SkillGroupControl objSkillGroupControl in _lstSkillGroups.DisplayPanel.Controls)
+                    objSkillGroupControl.MoveControls(intNameLabelWidth);
+                foreach (SkillGroupControl objSkillGroupControl in _lstSkillGroups.DisplayPanel.Controls)
+                    objSkillGroupControl.ResumeLayout();
+                _lstSkillGroups.DisplayPanel.ResumeLayout();
             }
         }
 
@@ -297,10 +314,14 @@ namespace Chummer.UI.Skills
                     lblActiveKarma.Margin.Top,
                     lblActiveKarma.Margin.Right,
                     lblActiveKarma.Margin.Bottom);
+                _lstActiveSkills.DisplayPanel.SuspendLayout();
                 foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
-                {
+                    objSkillControl.SuspendLayout();
+                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
                     objSkillControl.MoveControls(intNameLabelWidth);
-                }
+                foreach (SkillControl2 objSkillControl in _lstActiveSkills.DisplayPanel.Controls)
+                    objSkillControl.ResumeLayout();
+                _lstActiveSkills.DisplayPanel.ResumeLayout();
             }
         }
 

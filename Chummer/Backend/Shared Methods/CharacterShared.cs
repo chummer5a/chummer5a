@@ -272,6 +272,7 @@ namespace Chummer
                     for (int i = 0; i < CharacterObject.AttributeSection.Attributes.Count; ++i)
                     {
                         AttributeControl objControl = new AttributeControl(CharacterObject.AttributeSection.Attributes[i]);
+                        objControl.SuspendLayout();
                         objControl.MinimumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MinimumSize.Height);
                         objControl.MaximumSize = new Size(pnlAttributes.ClientSize.Width, objControl.MaximumSize.Height);
                         objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
@@ -283,8 +284,10 @@ namespace Chummer
                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                         objControl.UpdateWidths(intNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
                     pnlAttributes.Controls.AddRange(aobjControls);
+                    foreach (Control objControl in aobjControls)
+                        objControl.ResumeLayout(false);
                 }
-                pnlAttributes.ResumeLayout();
+                pnlAttributes.ResumeLayout(true);
             }
             else
             {
