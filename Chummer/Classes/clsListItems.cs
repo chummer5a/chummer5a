@@ -27,7 +27,7 @@ namespace Chummer
     /// ListItem class to make populating a DropDownList from a DataSource easier.
     /// </summary>
     [DebuggerDisplay("{Name} {Value?.ToString() ?? \"\"}")]
-    public readonly struct ListItem : IEquatable<ListItem>
+    public readonly struct ListItem : IEquatable<ListItem>, IComparable, IComparable<ListItem>
     {
         public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 
@@ -62,6 +62,18 @@ namespace Chummer
             return Value.GetHashCode();
         }
 
+        public int CompareTo(object obj)
+        {
+            if (obj is ListItem objItem)
+                return CompareTo(objItem);
+            return string.Compare(ToString(), obj?.ToString() ?? string.Empty, StringComparison.Ordinal);
+        }
+
+        public int CompareTo(ListItem other)
+        {
+            return CompareListItems.CompareNames(this, other);
+        }
+
         public override string ToString()
         {
             return Value.ToString();
@@ -85,6 +97,26 @@ namespace Chummer
         public static bool operator !=(object x, ListItem y)
         {
             return !(x?.Equals(y) ?? y == null);
+        }
+
+        public static bool operator <(ListItem left, ListItem right)
+        {
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(ListItem left, ListItem right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(ListItem left, ListItem right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(ListItem left, ListItem right)
+        {
+            return left.CompareTo(right) >= 0;
         }
     }
 
