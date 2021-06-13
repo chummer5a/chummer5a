@@ -50,6 +50,7 @@ namespace Chummer
         private bool _blnSkipToolStripRevert;
         private bool _blnReapplyImprovements;
         private bool _blnFreestyle;
+        private bool _blnIsReopenQueued;
         private int _intDragLevel;
         private MouseButtons _eDragButton = MouseButtons.None;
         private bool _blnDraggingGear;
@@ -981,7 +982,7 @@ namespace Chummer
                 }
 
                 // Trash the global variables and dispose of the Form.
-                if (Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
+                if (!_blnIsReopenQueued && Program.MainForm.OpenCharacters.All(x => x == CharacterObject || !x.LinkedCharacters.Contains(CharacterObject)))
                     Program.MainForm.OpenCharacters.Remove(CharacterObject);
             }
         }
@@ -992,9 +993,15 @@ namespace Chummer
             ToolStripManager.RevertMerge("toolStrip");
             ToolStripManager.Merge(tsMain, "toolStrip");
         }
-#endregion
 
-#region Character Events
+        private void ReopenCharacter(object sender, FormClosedEventArgs e)
+        {
+            Program.MainForm.OpenCharacter(CharacterObject);
+            FormClosed -= ReopenCharacter;
+        }
+        #endregion
+
+        #region Character Events
         private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (_blnReapplyImprovements)
@@ -10635,8 +10642,8 @@ namespace Chummer
                     IsDirty = false;
                 }
 
-                Character objOpenCharacter = Program.MainForm.LoadCharacter(CharacterObject.FileName);
-                Program.MainForm.OpenCharacter(objOpenCharacter);
+                _blnIsReopenQueued = true;
+                FormClosed += ReopenCharacter;
                 Close();
             }
             return true;
