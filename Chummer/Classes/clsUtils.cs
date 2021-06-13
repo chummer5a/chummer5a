@@ -288,6 +288,36 @@ namespace Chummer
         /// <summary>
         /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
         /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static Task StartSTATask(Action func)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    tcs.SetResult(DummyFunction());
+                    // This is needed because SetResult always needs a return type
+                    bool DummyFunction()
+                    {
+                        func.Invoke();
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
@@ -299,6 +329,36 @@ namespace Chummer
                 try
                 {
                     tcs.SetResult(func());
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static Task StartSTATask(Task func)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            Thread thread = new Thread(async () =>
+            {
+                try
+                {
+                    tcs.SetResult(await DummyFunction());
+                    // This is needed because SetResult always needs a return type
+                    async Task<bool> DummyFunction()
+                    {
+                        await func;
+                        return true;
+                    }
                 }
                 catch (Exception e)
                 {
