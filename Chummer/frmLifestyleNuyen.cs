@@ -103,7 +103,7 @@ namespace Chummer
                         objPreferredLifestyle = objLifestyle;
                     }
                 }
-                lstLifestyleItems.Sort();
+                lstLifestyleItems.Sort(CompareListItems.CompareNames);
 
                 cboSelectLifestyle.BeginUpdate();
                 cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
