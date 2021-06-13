@@ -1420,11 +1420,6 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (TotalBaseRating == 0)
-                {
-                    return string.Empty; //Unlevelled skills cannot have a specialization;
-                }
-
                 if (IsExoticSkill)
                 {
                     return ((ExoticSkill) this).Specific;
