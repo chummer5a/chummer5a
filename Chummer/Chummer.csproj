@@ -18567,7 +18567,7 @@
     <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
   </Target>
   <PropertyGroup>
-    <PreBuildEvent>copy /y $(SolutionDir)git\hooks\*.* $(SolutionDir).git\hooks</PreBuildEvent>
+    <PreBuildEvent>copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
