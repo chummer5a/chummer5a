@@ -175,7 +175,7 @@ namespace Chummer
         private static bool _blnPrintToFileFirst;
         private static int _intEmulatedBrowserVersion = 8;
         private static bool _lifeModuleEnabled;
-        private static bool _blnPreferNightlyUpdates;
+        private static bool _blnPreferNightlyUpdates = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision != 0;
         private static bool _blnLiveUpdateCleanCharacterFiles;
         private static bool _blnHideMasterIndex;
         private static bool _blnHideCharacterRoster;

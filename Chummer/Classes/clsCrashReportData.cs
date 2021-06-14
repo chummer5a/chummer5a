@@ -57,18 +57,20 @@ namespace Chummer
             //And reflection to all savefiles
             //here
 
-            //try to include default settings file
-            try
+            //try to include all settings files
+            foreach (string strSettingFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
             {
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
-                using (StreamReader objStream = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    report.AddData("default.xml", objStream.BaseStream);
+                string strName = Path.GetFileName(strSettingFile);
+                try
+                {
+                    using (StreamReader objStream = new StreamReader(strSettingFile, Encoding.UTF8, true))
+                        report.AddData(strName, objStream.BaseStream);
+                }
+                catch (Exception ex)
+                {
+                    report.AddData(strName, ex.ToString());
+                }
             }
-            catch (Exception ex)
-            {
-                report.AddData("default.xml", ex.ToString());
-            }
-
 
             report.Send();
             Program.MainForm.ShowMessageBox("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);

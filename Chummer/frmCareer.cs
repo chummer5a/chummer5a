@@ -15214,18 +15214,16 @@ namespace Chummer
                 // gpbVehiclesCommon
                 lblVehicleName.Text = objMod.CurrentDisplayName;
                 lblVehicleCategory.Text = LanguageManager.GetString("String_VehicleModification");
-                if (objMod.MaxRating != "qty")
+                if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                 {
-                    if (objMod.MaxRating == "Seats")
+                    if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
                     {
-                        objMod.MaxRating = objMod.Parent.Seats.ToString(GlobalOptions.InvariantCultureInfo);
+                        objMod.MaxRating = objMod.Parent.TotalSeats.ToString(GlobalOptions.CultureInfo);
                     }
-
-                    if (objMod.MaxRating == "body")
+                    else if (objMod.MaxRating.Equals("body", StringComparison.OrdinalIgnoreCase))
                     {
-                        objMod.MaxRating = objMod.Parent.Body.ToString(GlobalOptions.InvariantCultureInfo);
+                        objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalOptions.CultureInfo);
                     }
-
                     if (Convert.ToInt32(objMod.MaxRating, GlobalOptions.InvariantCultureInfo) > 0)
                     {
                         lblVehicleRatingLabel.Visible = true;

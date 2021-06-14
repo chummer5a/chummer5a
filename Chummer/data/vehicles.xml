@@ -12633,7 +12633,7 @@
       <avail>6</avail>
       <category>All</category>
       <cost>Rating * 400</cost>
-      <rating>50</rating>
+      <rating>qty</rating>
       <slots>0</slots>
       <bonus>
         <handling>-1</handling>
@@ -12648,7 +12648,7 @@
       <avail>6</avail>
       <category>All</category>
       <cost>Rating * 250</cost>
-      <rating>50</rating>
+      <rating>qty</rating>
       <slots>0</slots>
       <bonus>
         <handling>+1</handling>
@@ -12663,7 +12663,7 @@
       <avail>4</avail>
       <category>All</category>
       <cost>Rating * 250</cost>
-      <rating>50</rating>
+      <rating>qty</rating>
       <slots>0</slots>
     </mod>
     <mod>
