@@ -62,7 +62,7 @@ namespace Chummer.Plugins
 
         public bool SetCharacterRosterNode(TreeNode objNode)
         {
-            if (objNode == null || objNode.Tag == null)
+             if (objNode == null || objNode.Tag == null)
                 return false;
             if (objNode.ContextMenuStrip == null)
             {
@@ -85,8 +85,23 @@ namespace Chummer.Plugins
             tsShowMySINners.UpdateLightDarkMode();
             tsShowMySINners.TranslateToolStripItemsRecursively();
             cmsRoster.Items.Add(tsShowMySINners);
+            
+            DpiFriendlyToolStripMenuItem tsSINnersCreateGroup = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsSINnersCreateGroup",
+                Tag = "Menu_SINnersCreateGroup",
+                Text = "Create Group",
+                Size = new Size(177, 22),
+                Image = Resources.group,
+                ImageDpi192 = Resources.group1,
+            };
+            tsSINnersCreateGroup.Click += SINnersCreateGroupOnClick;
+            tsSINnersCreateGroup.UpdateLightDarkMode();
+            tsSINnersCreateGroup.TranslateToolStripItemsRecursively();
+            cmsRoster.Items.Add(tsSINnersCreateGroup);
             cmsRoster.UpdateLightDarkMode();
             cmsRoster.TranslateWinForm();
+
             objNode.ContextMenuStrip = cmsRoster;
             if (objNode.Tag is CharacterCache member)
             {
@@ -857,20 +872,7 @@ namespace Chummer.Plugins
                     Tag = e
 
                 };
-                //if (node.ContextMenuStrip == null)
-                //    node.ContextMenuStrip = new ContextMenuStrip();
-                //ToolStripMenuItem login = new ToolStripMenuItem("Login")
-                //{
-                //    Name = "tsLogin",
-                //    Tag = "Menu_LoginChummerHub",
-                //    Text = "Log in/register",
-                //    Size = new Size(177, 22),
-                //    Image = Resources.page_refresh
-                //};
-                //login.Click += LoginOnClick;
-                //login.UpdateLightDarkMode();
-                //login.TranslateToolStripItemsRecursively();
-                //node.ContextMenuStrip.Items.Add(login);
+                
                 return new List<TreeNode>
                 {
                     node
@@ -878,15 +880,25 @@ namespace Chummer.Plugins
             }
         }
 
-        //private void LoginOnClick(object sender, EventArgs e)
-        //{
-        //    frmOptions options = new frmOptions();
-        //    options.ShowDialog();
-        //}
+
+        
+
+        private async void SINnersCreateGroupOnClick(object sender, EventArgs e)
+        {
+            try
+            {
+                var g = await ChummerHub.Client.Backend.Utils.CreateGroupOnClickAsync();
+                ShowMySINnersOnClick(sender, e);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                Program.MainForm.ShowMessageBox(ex.Message);
+            }
+        }
 
         private async void ShowMySINnersOnClick(object sender, EventArgs e)
         {
-            //TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
             try
             {
                 using (new CursorWait(MainForm.CharacterRoster, true))

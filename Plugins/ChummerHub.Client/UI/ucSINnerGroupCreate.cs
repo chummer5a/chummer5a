@@ -85,6 +85,10 @@ namespace ChummerHub.Client.UI
             }
             if (ParentForm != null)
                 ParentForm.AcceptButton = bOk;
+            string admintooltip = "This field allowes an GroupAdmin (a global role assigned only by one of " + Environment.NewLine;
+            admintooltip +=  " the chummer devs) to chose other users/roles for this group to be a local \"groupadmin\"";
+
+            tbAdminRole.SetToolTip(admintooltip);
         }
 
         private void BOk_Click(object sender, EventArgs e)
