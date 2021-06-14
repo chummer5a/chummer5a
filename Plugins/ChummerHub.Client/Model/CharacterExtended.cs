@@ -636,6 +636,12 @@ namespace ChummerHub.Client.Sinners
                 }
             }
 
+            if (MySINnerFile.MyGroup == null)
+                MySINnerFile.MyGroup = new SINnerGroup(null)
+                {
+                    Id = Guid.Empty
+                };
+
             var tempDir = Path.Combine(Path.GetTempPath(), "SINner", MySINnerFile.Id.Value.ToString());
             if (!Directory.Exists(tempDir))
                 Directory.CreateDirectory(tempDir);

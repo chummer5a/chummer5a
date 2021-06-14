@@ -676,13 +676,13 @@ namespace ChummerHub.Client.Backend
                 TreeNode objListNode;
                 try
                 {
-                    //list.SiNner.DownloadedFromSINnersTime = DateTime.Now;
                     objListNode = GetCharacterRosterTreeNodeRecursive(parentlist);
                     if (objListNode.Nodes.Count > 0)
                     {
                         bFoundOneChummer = true;
                         objListNode.Tag = PluginHandler.MyPluginHandlerInstance;
                     }
+
                 }
                 catch (Exception e)
                 {
@@ -697,7 +697,6 @@ namespace ChummerHub.Client.Backend
                     };
                     bBreak = true;
                 }
-
                 if (bBreak || objListNode.Nodes.Count > 0)
                 {
                     yield return objListNode;
@@ -766,6 +765,15 @@ namespace ChummerHub.Client.Backend
                 Name = ssg.Groupname,
                 Tag = ssg
             };
+            if (ssg.MyMembers.Count == 0 && ssg.MySINSearchGroups.Count == 0)
+            {
+                string emptystring = LanguageManager.GetString("String_Empty", GlobalOptions.Language);
+                TreeNode empty = new TreeNode()
+                {
+                    Text = emptystring
+                };
+                objListNode.Nodes.Add(empty);
+            }
             foreach (var member in ssg.MyMembers.OrderBy(a => a.Display))
             {
                 var sinner = member.MySINner;
@@ -862,6 +870,66 @@ namespace ChummerHub.Client.Backend
             return objListNode;
         }
 
+        private static async Task<SINnerGroup> CreateGroup(SINnerGroup mygroup)
+        {
+            try
+            {
+                var client = StaticUtils.GetClient();
+                await client.PostGroupAsync(null,mygroup);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                Program.MainForm.ShowMessageBox(ex.Message);
+                throw;
+            }
+            return null;
+        }
+
+        internal static async Task<SINnerGroup> CreateGroupOnClickAsync(SINnerGroup group = null, string groupname = "")
+        {
+            try
+            {
+                if (group == null)
+                {
+                    group = new SINnerGroup(null)
+                    {
+                        Groupname = groupname,
+                        IsPublic = false
+                    };
+                }
+
+               
+
+                using (frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false))
+                {
+                    var result = ge.ShowDialog(Program.MainForm);
+                    if (result == DialogResult.OK)
+                    {
+                        group = ge.MySINnerGroupCreate.MyGroup;
+                        try
+                        {
+                            using (new CursorWait(Program.MainForm))
+                            {
+                                var a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
+                                return a;
+                                
+                            }
+                        }
+                        catch (Exception exception)
+                        {
+                            Program.MainForm.ShowMessageBox(exception.Message);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                Program.MainForm.ShowMessageBox(ex.ToString());
+            }
+            return null;
+        }
 
         public static byte[] ReadFully(Stream input)
         {

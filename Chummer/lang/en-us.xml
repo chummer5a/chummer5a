@@ -9930,6 +9930,10 @@
       <text>Show all my data</text>
     </string>
     <string>
+      <key>Menu_SINnersCreateGroup</key>
+      <text>Create a group</text>
+    </string>
+    <string>
       <key>Menu_RemovePinnedChummer</key>
       <text>Remove Chummer from pinned</text>
     </string>

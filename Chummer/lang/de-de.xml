@@ -9097,6 +9097,10 @@
             <key>Menu_ShowMySINners</key>
             <text>Alle Daten anzeigen</text>
         </string>
+      <string>
+        <key>Menu_SINnersCreateGroup</key>
+        <text>Lege eine neue Gruppe an</text>
+      </string>
         <string>
             <key>Menu_RemovePinnedChummer</key>
             <text>Charakter un-pinnen</text>

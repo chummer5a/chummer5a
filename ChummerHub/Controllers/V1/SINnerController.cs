@@ -646,6 +646,9 @@ namespace ChummerHub.Controllers.V1
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
+                    if (sinner.MyGroup?.Id == Guid.Empty)
+                        sinner.MyGroup = null;
+
                     if (sinner.LastChange == null)
                     {
                         var e = new ArgumentException("Sinner  " + sinner.Id + ": LastChange not set!");
