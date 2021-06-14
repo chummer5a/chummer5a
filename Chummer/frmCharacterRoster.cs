@@ -64,6 +64,7 @@ namespace Chummer
                 treCharacterList.DragEnter += treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop += treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver += treCharacterList_OnDefaultDragOver;
+                treCharacterList.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (watcherCharacterRosterFolder != null)
                 {
@@ -80,6 +81,7 @@ namespace Chummer
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver -= treCharacterList_OnDefaultDragOver;
+                treCharacterList.NodeMouseDoubleClick -= treCharacterList_OnDefaultDoubleClick;
                 OnMyMouseDown = null;
 
                 if(watcherCharacterRosterFolder != null)
@@ -637,6 +639,23 @@ namespace Chummer
 
             // Clear the background color for all other Nodes.
             treCharacterList.ClearNodeBackground(objNode);
+        }
+
+        
+
+        private void treCharacterList_OnDefaultDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (!(sender is TreeView treSenderView) || e == null)
+                return;
+            //Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
+            TreeNode objNode = e.Node;
+            if (objNode != null)
+            {
+                if (objNode.Tag is Action act)
+                {
+                    act.Invoke();
+                }
+            }
         }
 
         private void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)

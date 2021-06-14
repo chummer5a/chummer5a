@@ -461,38 +461,13 @@ namespace ChummerHub.Client.Backend
                 {
                     response = await myGetSINnersFunction();
                 }
-                catch(SerializationException e)
+                catch(ArgumentException e)
                 {
-                    if (e.Content.Contains("Log in - ChummerHub"))
-                    {
-                        TreeNode node = new TreeNode("Online, not logged in")
-                        {
-                            ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login"
-                        };
-                        Log.Warn(e, "Online, not logged in");
-                        await PluginHandler.MainForm.DoThreadSafeAsync(() =>
-                        {
-                            MyTreeNodeList.Add(node);
-                        });
-                    }
-                    else
-                    {
-                        string msg = "Could not load response from SINners:" + Environment.NewLine;
-                        msg += e.Message;
-                        if (e.InnerException != null)
-                        {
-                            msg += Environment.NewLine + e.InnerException.Message;
-                        }
-                        Log.Error(e, msg);
-                        await PluginHandler.MainForm.DoThreadSafeAsync(() =>
-                        {
-                            MyTreeNodeList.Add(new TreeNode
-                            {
-                                ToolTipText = msg
-                            });
-                        });
-                    }
-                    return MyTreeNodeList;
+                    return await ApiExceptionHandling(e, e.Message);
+                }
+                catch(SerializationException apie)
+                {
+                    return await ApiExceptionHandling(apie, apie.Content);
                 }
                 if (response == null || response.CallSuccess == false)
                 {
@@ -538,6 +513,46 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Error(ex);
                 throw;
+            }
+
+            async Task<ICollection<TreeNode>> ApiExceptionHandling(Exception se, string content)
+            {
+                if (content.Contains("Log in - ChummerHub") || content == "User not logged in.")
+                {
+                    TreeNode node = new TreeNode("Online, not logged in")
+                    {
+                        ToolTipText = "Please log in (Options -> Plugins -> Sinners (Cloud) -> Login",
+                        Tag = new Action(() =>
+                        {
+                            using (new CursorWait(Program.MainForm))
+                                using (frmOptions frmOptions = new frmOptions("tabPlugins"))
+                                    frmOptions.ShowDialog(Program.MainForm);
+                        })
+                    };
+                    Log.Warn(se, "Online, not logged in");
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
+                    {
+                        MyTreeNodeList.Add(node);
+                    });
+                }
+                else
+                {
+                    string msg = "Could not load response from SINners:" + Environment.NewLine;
+                    msg += se.Message;
+                    if (se.InnerException != null)
+                    {
+                        msg += Environment.NewLine + se.InnerException.Message;
+                    }
+                    Log.Error(se, msg);
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
+                    {
+                        MyTreeNodeList.Add(new TreeNode
+                        {
+                            ToolTipText = msg
+                        });
+                    });
+                }
+                return MyTreeNodeList;
             }
         }
 
