@@ -762,6 +762,7 @@ namespace Chummer.Plugins
                                     if (e1.Response?.Contains("<li><a href=\"/Identity/Account/Login\">Login</a></li>") == true)
                                     {
                                         Log.Info(e1, "User is not logged in.");
+                                        throw new ArgumentException("User not logged in.");
                                     }
                                     else {
                                         Log.Error(e1);
@@ -824,6 +825,14 @@ namespace Chummer.Plugins
                         ToolTipText = e.Message,
                         Tag = e
 
+                    };
+                }
+                else if (e.StatusCode == 200)
+                {
+                    node = new TreeNode("SINersplugin encounterd an error: " + e.StatusCode)
+                    {
+                        ToolTipText = e.Message,
+                        Tag = e
                     };
                 }
                 else
