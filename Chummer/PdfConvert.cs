@@ -134,6 +134,7 @@ namespace Codaxy.WkHtmlToPdf
 
             StringBuilder paramsBuilder = new StringBuilder();
             paramsBuilder.Append("--page-size A4 ");
+            paramsBuilder.Append("--disable-smart-shrinking ");
 
             if (!string.IsNullOrEmpty(document.HeaderUrl))
             {
