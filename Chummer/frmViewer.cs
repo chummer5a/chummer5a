@@ -149,11 +149,10 @@ namespace Chummer
         private async void cboXSLT_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Re-generate the output when a new sheet is selected.
-            if (!_blnLoading)
-            {
-                _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
-                await RefreshSheet();
-            }
+            if (_blnLoading)
+                return;
+            _strSelectedSheet = cboXSLT.SelectedValue?.ToString() ?? string.Empty;
+            await RefreshSheet();
         }
 
         private void cmdPrint_Click(object sender, EventArgs e)
@@ -381,6 +380,30 @@ namespace Chummer
             _blnLoading = false;
             await RefreshCharacters();
         }
+
+        private async void frmViewer_CursorChanged(object sender, EventArgs e)
+        {
+            if (Cursor == Cursors.WaitCursor)
+            {
+                await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    {
+                        tsPrintPreview.Enabled = false;
+                        tsSaveAsHtml.Enabled = false;
+                    }),
+                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
+                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false));
+            }
+            else
+            {
+                await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    {
+                        tsPrintPreview.Enabled = true;
+                        tsSaveAsHtml.Enabled = true;
+                    }),
+                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = true));
+            }
+        }
         #endregion
 
         #region Methods
@@ -389,20 +412,13 @@ namespace Chummer
         /// </summary>
         private async Task SetDocumentText(string strText)
         {
-            await Task.WhenAll(this.DoThreadSafeAsync(() =>
-                {
-                    tsPrintPreview.Enabled = false;
-                    tsSaveAsHtml.Enabled = false;
-                }),
-                cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
-                cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false),
-                webViewer.DoThreadSafeFuncAsync(() => webViewer.Height)
-                    .ContinueWith(x =>
+            await webViewer.DoThreadSafeFuncAsync(() => webViewer.Height)
+                .ContinueWith(x =>
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
                     x.Result.ToString(GlobalOptions.InvariantCultureInfo) +
                     ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
                     strText.CleanForHTML() + "</body></html>")
-                    .ContinueWith(x => webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = x.Result)));
+                .ContinueWith(x => webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = x.Result));
         }
 
         /// <summary>
@@ -437,6 +453,13 @@ namespace Chummer
         {
             using (new CursorWait(this, true))
             {
+                await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    {
+                        tsPrintPreview.Enabled = false;
+                        tsSaveAsHtml.Enabled = false;
+                    }),
+                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
+                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false));
                 _objCharacterXml = _lstCharacters.Count > 0
                     ? CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
                         _objRefresherCancellationTokenSource.Token, _lstCharacters.ToArray())
@@ -455,6 +478,13 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
+                await Task.WhenAll(this.DoThreadSafeAsync(() =>
+                    {
+                        tsPrintPreview.Enabled = false;
+                        tsSaveAsHtml.Enabled = false;
+                    }),
+                    cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
+                    cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = false));
                 await SetDocumentText(LanguageManager.GetString("String_Generating_Sheet"));
                 string strXslPath = Path.Combine(Utils.GetStartupPath, "sheets", _strSelectedSheet + ".xsl");
                 if (!File.Exists(strXslPath))
@@ -507,6 +537,7 @@ namespace Chummer
                             using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                             {
                                 string strOutput = await objReader.ReadToEndAsync();
+                                await this.DoThreadSafeAsync(() => UseWaitCursor = true);
                                 await webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = strOutput);
                             }
                         }
@@ -521,6 +552,7 @@ namespace Chummer
                                 File.WriteAllText(_strFilePathName, strOutput);
                             }
 
+                            await this.DoThreadSafeAsync(() => UseWaitCursor = true);
                             await webViewer.DoThreadSafeAsync(() => webViewer.Url = new Uri("file:///" + _strFilePathName));
 
                             if (GlobalOptions.PrintToFileFirst)
@@ -530,7 +562,14 @@ namespace Chummer
                         }
                     }
                 }
+            }
+        }
 
+        private async void webViewer_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
+        {
+            await this.DoThreadSafeAsync(() => UseWaitCursor = false);
+            if (_tskOutputGenerator?.IsCompleted == true && _tskRefresher?.IsCompleted == true)
+            {
                 await Task.WhenAll(this.DoThreadSafeAsync(() =>
                     {
                         tsPrintPreview.Enabled = true;
@@ -683,7 +722,6 @@ namespace Chummer
         {
             Task.Run(RefreshCharacters);
         }
-
         #endregion
     }
 }
