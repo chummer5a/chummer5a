@@ -16403,10 +16403,7 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <OR>
-            <name>Enfield AS-7</name>
-            <name>Enfield AS-7 (2050)</name>
-          </OR>
+          <name operation="contains">Enfield AS-7</name>
         </weapondetails>
       </required>
     </accessory>
@@ -16423,9 +16420,7 @@
       <rating>0</rating>
       <required>
         <weapondetails>
-          <OR>
-            <name>Auto-Assault 16</name>
-          </OR>
+          <name>Auto-Assault 16</name>
         </weapondetails>
       </required>
     </accessory>
@@ -17212,18 +17207,8 @@
       <rating>0</rating>
       <required>
         <oneof>
-          <group>
-            <weapondetails>
-              <OR>
-                <name>Enfield AS-7</name>
-                <name>Enfield AS-7 (2050)</name>
-              </OR>
-            </weapondetails>
-            <grouponeof>
-              <accessory>Drum Magazine, 24-round</accessory>
-              <accessory>Drum Magazine, 32-round</accessory>
-            </grouponeof>
-          </group>
+          <accessory>Drum Magazine, 24-round</accessory>
+          <accessory>Drum Magazine, 32-round</accessory>
           <weapondetails>
             <OR>
               <ammo operation="contains">(cy)</ammo>
