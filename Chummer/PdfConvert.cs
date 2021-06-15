@@ -5,12 +5,13 @@ using System.IO;
 using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 
 namespace Codaxy.WkHtmlToPdf
 {
     public class PdfConvertException : Exception
     {
-        public PdfConvertException(String msg) : base(msg) { }
+        public PdfConvertException(string msg) : base(msg) { }
     }
 
     public class PdfConvertTimeoutException : PdfConvertException
@@ -20,37 +21,37 @@ namespace Codaxy.WkHtmlToPdf
 
     public class PdfOutput
     {
-        public String OutputFilePath { get; set; }
+        public string OutputFilePath { get; set; }
         public Stream OutputStream { get; set; }
         public Action<PdfDocument, byte[]> OutputCallback { get; set; }
     }
 
     public class PdfDocument
     {
-        public String Url { get; set; }
-        public String Html { get; set; }
-        public String HeaderUrl { get; set; }
-        public String FooterUrl { get; set; }
-        public String HeaderLeft { get; set; }
-        public String HeaderCenter { get; set; }
-        public String HeaderRight { get; set; }
-        public String FooterLeft { get; set; }
-        public String FooterCenter { get; set; }
-        public String FooterRight { get; set; }
+        public string Url { get; set; }
+        public string Html { get; set; }
+        public string HeaderUrl { get; set; }
+        public string FooterUrl { get; set; }
+        public string HeaderLeft { get; set; }
+        public string HeaderCenter { get; set; }
+        public string HeaderRight { get; set; }
+        public string FooterLeft { get; set; }
+        public string FooterCenter { get; set; }
+        public string FooterRight { get; set; }
         public object State { get; set; }
-        public Dictionary<String, String> Cookies { get; set; }
-        public Dictionary<String, String> ExtraParams { get; set; }
-        public String HeaderFontSize { get; set; }
-        public String FooterFontSize { get; set; }
-        public String HeaderFontName { get; set; }
-        public String FooterFontName { get; set; }
+        public Dictionary<string, string> Cookies { get; set; }
+        public Dictionary<string, string> ExtraParams { get; set; }
+        public string HeaderFontSize { get; set; }
+        public string FooterFontSize { get; set; }
+        public string HeaderFontName { get; set; }
+        public string FooterFontName { get; set; }
     }
 
     public class PdfConvertEnvironment
     {
-        public String TempFolderPath { get; set; }
-        public String WkHtmlToPdfPath { get; set; }
-        public int Timeout { get; set; }
+        public string TempFolderPath { get; set; } = Path.GetTempPath();
+        public string WkHtmlToPdfPath { get; set; }
+        public int Timeout { get; set; } = 60000;
         public bool Debug { get; set; }
     }
 
@@ -58,13 +59,8 @@ namespace Codaxy.WkHtmlToPdf
     {
         private static PdfConvertEnvironment _e;
 
-        public static PdfConvertEnvironment Environment =>
-            _e ?? (_e = new PdfConvertEnvironment
-            {
-                TempFolderPath = Path.GetTempPath(),
-                WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation(),
-                Timeout = 60000
-            });
+        public static PdfConvertEnvironment Environment => _e ?? (_e = new PdfConvertEnvironment
+            {WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation()});
 
         private static string GetWkhtmlToPdfExeLocation()
         {
@@ -104,13 +100,23 @@ namespace Codaxy.WkHtmlToPdf
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput)
         {
+            ConvertHtmlToPdfCoreAsync(true, document, environment, woutput).GetAwaiter().GetResult();
+        }
+
+        public static Task ConvertHtmlToPdfAsync(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput)
+        {
+            return ConvertHtmlToPdfCoreAsync(false, document, environment, woutput);
+        }
+
+        private static async Task ConvertHtmlToPdfCoreAsync(bool blnSync, PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput)
+        {
             if (environment == null)
                 environment = Environment;
 
             if (document.Html != null)
                 document.Url = "-";
 
-            String outputPdfFilePath;
+            string outputPdfFilePath;
             bool delete;
             if (woutput.OutputFilePath != null)
             {
@@ -187,7 +193,7 @@ namespace Codaxy.WkHtmlToPdf
                 StringBuilder output = new StringBuilder();
                 StringBuilder error = new StringBuilder();
 
-                using (Process process = new Process())
+                using (Process process = new Process { EnableRaisingEvents = true })
                 {
                     process.StartInfo.FileName = environment.WkHtmlToPdfPath;
                     process.StartInfo.Arguments = paramsBuilder.ToString();
@@ -223,6 +229,13 @@ namespace Codaxy.WkHtmlToPdf
                             }
                         }
 
+                        TaskCompletionSource<int> objTaskCompletionSource = null;
+                        if (!blnSync)
+                        {
+                            objTaskCompletionSource = new TaskCompletionSource<int>();
+                            process.Exited += (sender, args) => { objTaskCompletionSource.SetResult(process.ExitCode); };
+                        }
+
                         process.OutputDataReceived += OutputHandler;
                         process.ErrorDataReceived += ErrorHandler;
 
@@ -238,24 +251,59 @@ namespace Codaxy.WkHtmlToPdf
                                 using (var stream = process.StandardInput)
                                 {
                                     byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
-                                    stream.BaseStream.Write(buffer, 0, buffer.Length);
-                                    stream.WriteLine();
+                                    if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        stream.BaseStream.Write(buffer, 0, buffer.Length);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        stream.WriteLine();
+                                    }
+                                    else
+                                    {
+                                        await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length);
+                                        await stream.WriteLineAsync();
+                                    }
                                 }
                             }
 
-                            if (process.WaitForExit(environment.Timeout) && outputWaitHandle.WaitOne(environment.Timeout) && errorWaitHandle.WaitOne(environment.Timeout))
+                            if (blnSync)
                             {
-                                if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
+                                if (process.WaitForExit(environment.Timeout) &&
+                                    outputWaitHandle.WaitOne(environment.Timeout) &&
+                                    errorWaitHandle.WaitOne(environment.Timeout))
                                 {
-                                    throw new PdfConvertException($"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                    if (process.ExitCode != 0 && !File.Exists(outputPdfFilePath))
+                                    {
+                                        throw new PdfConvertException(
+                                            $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                    }
+                                }
+                                else
+                                {
+                                    if (!process.HasExited)
+                                        process.Kill();
+
+                                    throw new PdfConvertTimeoutException();
                                 }
                             }
                             else
                             {
-                                if (!process.HasExited)
-                                    process.Kill();
+                                await Task.WhenAny(objTaskCompletionSource.Task, Task.Delay(environment.Timeout));
+                                if (objTaskCompletionSource.Task.IsCompleted)
+                                {
+                                    if (objTaskCompletionSource.Task.Result != 0 && !File.Exists(outputPdfFilePath))
+                                    {
+                                        throw new PdfConvertException(
+                                            $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
+                                    }
+                                }
+                                else
+                                {
+                                    if (!process.HasExited)
+                                        process.Kill();
 
-                                throw new PdfConvertTimeoutException();
+                                    throw new PdfConvertTimeoutException();
+                                }
                             }
                         }
                         finally
@@ -274,8 +322,18 @@ namespace Codaxy.WkHtmlToPdf
                         byte[] buffer = new byte[32 * 1024];
                         int read;
 
-                        while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
-                            woutput.OutputStream.Write(buffer, 0, read);
+                        if (blnSync)
+                        {
+                            // ReSharper disable once MethodHasAsyncOverload
+                            while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                woutput.OutputStream.Write(buffer, 0, read);
+                        }
+                        else
+                        {
+                            while ((read = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                                await woutput.OutputStream.WriteAsync(buffer, 0, read);
+                        }
                     }
                 }
 

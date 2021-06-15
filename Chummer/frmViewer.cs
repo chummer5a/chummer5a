@@ -237,7 +237,7 @@ namespace Chummer
                     objCharacterShared.PrintWindow = null;
         }
 
-        private void cmdSaveAsPdf_Click(object sender, EventArgs e)
+        private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
             // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
             string strPdfPrinter = string.Empty;
@@ -291,30 +291,28 @@ namespace Chummer
 
             // No PDF printer found, let's use wkhtmltopdf
 
-            PdfDocument objPdfDocument = new PdfDocument
-            {
-                Html = webViewer.DocumentText
-            };
-            objPdfDocument.ExtraParams.Add("encoding", "UTF-8");
-            objPdfDocument.ExtraParams.Add("dpi", "300");
-            objPdfDocument.ExtraParams.Add("margin-top", "13");
-            objPdfDocument.ExtraParams.Add("margin-bottom", "19");
-            objPdfDocument.ExtraParams.Add("margin-left", "13");
-            objPdfDocument.ExtraParams.Add("margin-right", "13");
-            objPdfDocument.ExtraParams.Add("image-quality", "100");
-            objPdfDocument.ExtraParams.Add("print-media-type", string.Empty);
-
             try
             {
-                PdfConvert.ConvertHtmlToPdf(objPdfDocument, new PdfConvertEnvironment
+                PdfDocument objPdfDocument = new PdfDocument
                 {
-                    WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe"),
-                    Timeout = 60000,
-                    TempFolderPath = Path.GetTempPath()
-                }, new PdfOutput
-                {
-                    OutputFilePath = strSaveFile
-                });
+                    Html = webViewer.DocumentText,
+                    ExtraParams = new Dictionary<string, string>
+                    {
+                        {"encoding", "UTF-8"},
+                        {"dpi", "300"},
+                        {"margin-top", "13"},
+                        {"margin-bottom", "19"},
+                        {"margin-left", "13"},
+                        {"margin-right", "13"},
+                        {"image-quality", "100"},
+                        {"print-media-type", string.Empty}
+                    }
+                };
+                PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
+                    {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
+                PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
+                using (new CursorWait(this))
+                    await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
 
                 if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
                 {
