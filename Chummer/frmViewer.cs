@@ -238,100 +238,109 @@ namespace Chummer
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
         {
-            // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
-            string strPdfPrinter = string.Empty;
-            foreach (string strPrinter in PrinterSettings.InstalledPrinters)
+            using (new CursorWait(this))
             {
-                if (strPrinter == "Microsoft Print to PDF" || strPrinter == "Foxit Reader PDF Printer" || strPrinter == "Adobe PDF")
+                // Check to see if we have any "Print to PDF" printers, as they will be a lot more reliable than wkhtmltopdf
+                string strPdfPrinter = string.Empty;
+                foreach (string strPrinter in PrinterSettings.InstalledPrinters)
                 {
-                    strPdfPrinter = strPrinter;
-                    break;
-                }
-            }
-
-            if (!string.IsNullOrEmpty(strPdfPrinter))
-            {
-                DialogResult ePdfPrinterDialogResult = Program.MainForm.ShowMessageBox(this,
-                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_Viewer_FoundPDFPrinter"), strPdfPrinter),
-                    LanguageManager.GetString("MessageTitle_Viewer_FoundPDFPrinter"),
-                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
-                if (ePdfPrinterDialogResult == DialogResult.Cancel)
-                    return;
-                if (ePdfPrinterDialogResult == DialogResult.Yes)
-                {
-                    if (DoPdfPrinterShortcut(strPdfPrinter))
-                        return;
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
-                }
-            }
-
-            // Save the generated output as PDF.
-            SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' + LanguageManager.GetString("DialogFilter_All");
-            SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsPdf");
-            SaveFileDialog1.ShowDialog();
-            string strSaveFile = SaveFileDialog1.FileName;
-
-            if (string.IsNullOrEmpty(strSaveFile))
-                return;
-
-            if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
-                strSaveFile += ".pdf";
-
-            if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
-                return;
-            }
-            if (!Utils.SafeDeleteFile(strSaveFile, true))
-            {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
-                return;
-            }
-
-            // No PDF printer found, let's use wkhtmltopdf
-
-            try
-            {
-                PdfDocument objPdfDocument = new PdfDocument
-                {
-                    Html = webViewer.DocumentText,
-                    ExtraParams = new Dictionary<string, string>
+                    if (strPrinter == "Microsoft Print to PDF" || strPrinter == "Foxit Reader PDF Printer" ||
+                        strPrinter == "Adobe PDF")
                     {
-                        {"encoding", "UTF-8"},
-                        {"dpi", "300"},
-                        {"margin-top", "13"},
-                        {"margin-bottom", "19"},
-                        {"margin-left", "13"},
-                        {"margin-right", "13"},
-                        {"image-quality", "100"},
-                        {"print-media-type", string.Empty}
+                        strPdfPrinter = strPrinter;
+                        break;
                     }
-                };
-                PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
-                    {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
-                PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
-                using (new CursorWait(this))
+                }
+
+                if (!string.IsNullOrEmpty(strPdfPrinter))
+                {
+                    DialogResult ePdfPrinterDialogResult = Program.MainForm.ShowMessageBox(this,
+                        string.Format(GlobalOptions.CultureInfo,
+                            LanguageManager.GetString("Message_Viewer_FoundPDFPrinter"), strPdfPrinter),
+                        LanguageManager.GetString("MessageTitle_Viewer_FoundPDFPrinter"),
+                        MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                    if (ePdfPrinterDialogResult == DialogResult.Cancel)
+                        return;
+                    if (ePdfPrinterDialogResult == DialogResult.Yes)
+                    {
+                        if (DoPdfPrinterShortcut(strPdfPrinter))
+                            return;
+                        Program.MainForm.ShowMessageBox(this,
+                            LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
+                    }
+                }
+
+                // Save the generated output as PDF.
+                SaveFileDialog1.Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' +
+                                         LanguageManager.GetString("DialogFilter_All");
+                SaveFileDialog1.Title = LanguageManager.GetString("Button_Viewer_SaveAsPdf");
+                SaveFileDialog1.ShowDialog();
+                string strSaveFile = SaveFileDialog1.FileName;
+
+                if (string.IsNullOrEmpty(strSaveFile))
+                    return;
+
+                if (!strSaveFile.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase))
+                    strSaveFile += ".pdf";
+
+                if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
+                {
+                    Program.MainForm.ShowMessageBox(this,
+                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    return;
+                }
+
+                if (!Utils.SafeDeleteFile(strSaveFile, true))
+                {
+                    Program.MainForm.ShowMessageBox(this,
+                        LanguageManager.GetString("Message_File_Cannot_Be_Accessed"));
+                    return;
+                }
+
+                // No PDF printer found, let's use wkhtmltopdf
+
+                try
+                {
+                    PdfDocument objPdfDocument = new PdfDocument
+                    {
+                        Html = webViewer.DocumentText,
+                        ExtraParams = new Dictionary<string, string>
+                        {
+                            {"encoding", "UTF-8"},
+                            {"dpi", "300"},
+                            {"margin-top", "13"},
+                            {"margin-bottom", "19"},
+                            {"margin-left", "13"},
+                            {"margin-right", "13"},
+                            {"image-quality", "100"},
+                            {"print-media-type", string.Empty}
+                        }
+                    };
+                    PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
+                        {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
+                    PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
                     await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
 
-                if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
-                {
-                    Uri uriPath = new Uri(strSaveFile);
-                    string strParams = GlobalOptions.PDFParameters
-                        .Replace("{page}", "1")
-                        .Replace("{localpath}", uriPath.LocalPath)
-                        .Replace("{absolutepath}", uriPath.AbsolutePath);
-                    ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
+                    if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
                     {
-                        FileName = GlobalOptions.PDFAppPath,
-                        Arguments = strParams,
-                        WindowStyle = ProcessWindowStyle.Hidden
-                    };
-                    Process.Start(objPdfProgramProcess);
+                        Uri uriPath = new Uri(strSaveFile);
+                        string strParams = GlobalOptions.PDFParameters
+                            .Replace("{page}", "1")
+                            .Replace("{localpath}", uriPath.LocalPath)
+                            .Replace("{absolutepath}", uriPath.AbsolutePath);
+                        ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
+                        {
+                            FileName = GlobalOptions.PDFAppPath,
+                            Arguments = strParams,
+                            WindowStyle = ProcessWindowStyle.Hidden
+                        };
+                        Process.Start(objPdfProgramProcess);
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Program.MainForm.ShowMessageBox(this, ex.ToString());
+                catch (Exception ex)
+                {
+                    Program.MainForm.ShowMessageBox(this, ex.ToString());
+                }
             }
         }
 
