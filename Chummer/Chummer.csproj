@@ -271,6 +271,7 @@
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />

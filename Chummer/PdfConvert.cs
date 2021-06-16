@@ -6,6 +6,7 @@ using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
+using Chummer;
 
 namespace Codaxy.WkHtmlToPdf
 {
@@ -230,19 +231,20 @@ namespace Codaxy.WkHtmlToPdf
                             }
                         }
 
-                        TaskCompletionSource<int> objTaskCompletionSource = null;
-                        if (!blnSync)
-                        {
-                            objTaskCompletionSource = new TaskCompletionSource<int>();
-                            process.Exited += (sender, args) => { objTaskCompletionSource.SetResult(process.ExitCode); };
-                        }
-
                         process.OutputDataReceived += OutputHandler;
                         process.ErrorDataReceived += ErrorHandler;
 
                         try
                         {
-                            process.Start();
+                            CancellationTokenSource objCancellationTokenSource = null;
+                            Task<int> tskAsyncProcess = null;
+                            if (blnSync)
+                                process.Start();
+                            else
+                            {
+                                objCancellationTokenSource = new CancellationTokenSource(environment.Timeout);
+                                tskAsyncProcess = process.StartAsync(objCancellationTokenSource.Token);
+                            }
 
                             process.BeginOutputReadLine();
                             process.BeginErrorReadLine();
@@ -289,10 +291,10 @@ namespace Codaxy.WkHtmlToPdf
                             }
                             else
                             {
-                                await Task.WhenAny(objTaskCompletionSource.Task, Task.Delay(environment.Timeout));
-                                if (objTaskCompletionSource.Task.IsCompleted)
+                                await tskAsyncProcess;
+                                if (tskAsyncProcess.IsCompleted && objCancellationTokenSource?.IsCancellationRequested != true)
                                 {
-                                    if (objTaskCompletionSource.Task.Result != 0 && !File.Exists(outputPdfFilePath))
+                                    if (tskAsyncProcess.Result != 0 && !File.Exists(outputPdfFilePath))
                                     {
                                         throw new PdfConvertException(
                                             $"Html to PDF conversion of '{document.Url}' failed. Wkhtmltopdf output: \r\n{error}");
@@ -348,7 +350,7 @@ namespace Codaxy.WkHtmlToPdf
             finally
             {
                 if (delete)
-                    Chummer.Utils.SafeDeleteFile(outputPdfFilePath, true);
+                    Utils.SafeDeleteFile(outputPdfFilePath, true);
             }
         }
 
