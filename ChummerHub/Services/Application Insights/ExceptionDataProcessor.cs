@@ -39,7 +39,7 @@ namespace ChummerHub.Services.Application_Insights
         }
 
         // Example: replace with your own modifiers.
-        private void ModifyItem(ITelemetry item)
+        private static void ModifyItem(ITelemetry item)
         {
             if (item is ExceptionTelemetry exception)
             {

@@ -39,7 +39,7 @@ namespace ChummerHub.Services
 
         public Task Execute(string apiKey, string subject, string message, string email)
         {
-            if (String.IsNullOrEmpty(apiKey))
+            if (string.IsNullOrEmpty(apiKey))
             {
                 throw new ArgumentNullException("EmailSender.cs: apiKey is null!");
             }

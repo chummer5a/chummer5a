@@ -72,7 +72,7 @@ namespace ChummerHub.Controllers.V1
         /// <summary>
         /// Returns the Chummer-Save-File
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="sinnerid"></param>
         /// <returns></returns>
         [HttpGet("{sinnerid}")]
         [AllowAnonymous]
@@ -649,7 +649,7 @@ namespace ChummerHub.Controllers.V1
                     if (sinner.MyGroup?.Id == Guid.Empty)
                         sinner.MyGroup = null;
 
-                    if (sinner.LastChange == null)
+                    if (sinner.LastChange == default)
                     {
                         var e = new ArgumentException("Sinner  " + sinner.Id + ": LastChange not set!");
                         res = new ResultSinnerPostSIN(e);

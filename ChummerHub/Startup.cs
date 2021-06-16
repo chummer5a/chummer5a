@@ -386,7 +386,7 @@ namespace ChummerHub
 
         }
 
-        private void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
+        private static void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
         {
             var provider = services.BuildServiceProvider()
                 .GetRequiredService<IApiVersionDescriptionProvider>();

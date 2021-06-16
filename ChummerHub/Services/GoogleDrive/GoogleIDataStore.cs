@@ -99,7 +99,7 @@ namespace ChummerHub.Services.GoogleDrive
         /// Validate we can store this type
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        private void AssertCorrectType<T>()
+        private static void AssertCorrectType<T>()
         {
             if (typeof(T) != typeof(TokenResponse))
                 throw new NotImplementedException(typeof(T).ToString());

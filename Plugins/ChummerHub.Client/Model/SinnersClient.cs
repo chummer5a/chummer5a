@@ -5,7 +5,7 @@ namespace ChummerHub.Client.Sinners
 {
     public partial class SinnersClient
     {
-        private List<string> errors = new List<string>();
+        private readonly List<string> errors = new List<string>();
 
         partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings)
         {

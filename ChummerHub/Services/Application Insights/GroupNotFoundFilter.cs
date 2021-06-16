@@ -45,7 +45,7 @@ namespace ChummerHub.Services.Application_Insights
         }
 
         // Example: replace with your own criteria.
-        private bool OKtoSend(ITelemetry item)
+        private static bool OKtoSend(ITelemetry item)
         {
             if (item is RequestTelemetry requestTelemetry && int.Parse(requestTelemetry.ResponseCode) == (int)HttpStatusCode.NotFound)
             {
