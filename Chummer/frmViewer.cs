@@ -334,7 +334,7 @@ namespace Chummer
                             Arguments = strParams,
                             WindowStyle = ProcessWindowStyle.Hidden
                         };
-                        Process.Start(objPdfProgramProcess);
+                        objPdfProgramProcess.Start();
                     }
                 }
                 catch (Exception ex)

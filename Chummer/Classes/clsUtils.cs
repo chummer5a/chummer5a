@@ -252,7 +252,7 @@ namespace Chummer
                             return;
                         // We saved a character as created, which closed the current form and added a new one
                         // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                        else if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                        if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
                             i -= 1;
                     }
                     else if (objResult == DialogResult.Cancel)
@@ -276,13 +276,13 @@ namespace Chummer
             {
                 objForm.Close();
             }
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            ProcessStartInfo objStartInfo = new ProcessStartInfo
             {
                 FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = sbdArguments.ToString()
             };
             Application.Exit();
-            Process.Start(startInfo);
+            objStartInfo.Start();
         }
 
         /// <summary>

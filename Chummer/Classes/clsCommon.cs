@@ -1202,7 +1202,7 @@ namespace Chummer
                 FileName = strPdfAppPath,
                 Arguments = strParams
             };
-            Process.Start(objProgress);
+            objProgress.Start();
         }
 
         /// <summary>
