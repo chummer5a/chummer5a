@@ -481,15 +481,40 @@ namespace Chummer
             get => _intServicesOwed;
             set
             {
-                if (!CharacterObject.Created && !CharacterObject.IgnoreRules)
+                if (_intServicesOwed == value)
+                    return;
+                if (CharacterObject.Created)
+                {
+                    if (value > 0 && _intServicesOwed <= 0 && !Bound && !Fettered && CharacterObject.Spirits.Any(x =>
+                        !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0 && !x.Bound &&
+                        !x.Fettered))
+                    {
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.MainForm.ShowMessageBox(null,
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit"),
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+                else if (!CharacterObject.IgnoreRules)
                 {
                     // Retrieve the character's Summoning Skill Rating.
                     int intSkillValue = CharacterObject.SkillsSection.GetActiveSkill(EntityType == SpiritType.Spirit ? "Summoning" : "Compiling")?.Rating ?? 0;
 
                     if (value > intSkillValue)
                     {
-                        Program.MainForm.ShowMessageBox(LanguageManager.GetString(EntityType == SpiritType.Spirit ? "Message_SpiritServices" : "Message_SpriteServices"),
-                            LanguageManager.GetString(EntityType == SpiritType.Spirit ? "MessageTitle_SpiritServices" : "MessageTitle_SpriteServices"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.MainForm.ShowMessageBox(
+                            LanguageManager.GetString(EntityType == SpiritType.Spirit
+                                ? "Message_SpiritServices"
+                                : "Message_SpriteServices"),
+                            LanguageManager.GetString(EntityType == SpiritType.Spirit
+                                ? "MessageTitle_SpiritServices"
+                                : "MessageTitle_SpriteServices"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         value = intSkillValue;
                     }
                 }
@@ -533,11 +558,25 @@ namespace Chummer
             get => _blnBound;
             set
             {
-                if (_blnBound != value)
+                if (_blnBound == value)
+                    return;
+                if (CharacterObject.Created && !value && ServicesOwed > 0 && !Fettered && CharacterObject.Spirits.Any(x =>
+                    !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0 && !x.Bound &&
+                    !x.Fettered))
                 {
-                    _blnBound = value;
-                    OnPropertyChanged();
+                    // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                    Program.MainForm.ShowMessageBox(null,
+                        LanguageManager.GetString(EntityType == SpiritType.Sprite
+                            ? "Message_UnregisteredSpriteLimit"
+                            : "Message_UnboundSpiritLimit"),
+                        LanguageManager.GetString(EntityType == SpiritType.Sprite
+                            ? "MessageTitle_UnregisteredSpriteLimit"
+                            : "MessageTitle_UnboundSpiritLimit"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
+                _blnBound = value;
+                OnPropertyChanged();
             }
         }
 
@@ -649,7 +688,8 @@ namespace Chummer
 
             set
             {
-                if (_blnFettered == value) return;
+                if (_blnFettered == value)
+                    return;
                 if (value)
                 {
                     //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
@@ -692,6 +732,21 @@ namespace Chummer
                 }
                 else
                 {
+                    if (CharacterObject.Created && !Bound && ServicesOwed > 0 && CharacterObject.Spirits.Any(x =>
+                        !ReferenceEquals(x, this) && x.EntityType == EntityType && x.ServicesOwed > 0 && !x.Bound &&
+                        !x.Fettered))
+                    {
+                        // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
+                        Program.MainForm.ShowMessageBox(null,
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "Message_UnregisteredSpriteLimit"
+                                : "Message_UnboundSpiritLimit"),
+                            LanguageManager.GetString(EntityType == SpiritType.Sprite
+                                ? "MessageTitle_UnregisteredSpriteLimit"
+                                : "MessageTitle_UnboundSpiritLimit"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
                     ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.SpiritFettering);
                 }
                 _blnFettered = value;

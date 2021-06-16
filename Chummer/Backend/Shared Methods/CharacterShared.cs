@@ -5917,12 +5917,13 @@ namespace Chummer
         protected void AddSpirit()
         {
             // The number of bound Spirits cannot exceed the character's CHA.
-            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound) >= CharacterObject.CHA.Value)
+            if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.CHA.Value)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_BoundSpiritLimit"), LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_BoundSpiritLimit"),
+                    LanguageManager.GetString("MessageTitle_BoundSpiritLimit"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
-
             Spirit objSpirit = new Spirit(CharacterObject)
             {
                 EntityType = SpiritType.Spirit,
@@ -5937,28 +5938,16 @@ namespace Chummer
 
         protected void AddSprite()
         {
-            if (CharacterObject.Created && CharacterObject.Spirits.Any(x => x.EntityType == SpiritType.Sprite && !x.Bound && !x.Fettered))
+            // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
+            if (!CharacterObject.IgnoreRules &&
+                CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
+                CharacterObject.LOG.TotalValue)
             {
-                // Once created, new sprites are added as Unbound first. We're not permitted to have more than 1 at a time.
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_UnregisteredSpriteLimit"),
-                    LanguageManager.GetString("MessageTitle_UnregisteredSpriteLimit"),
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_RegisteredSpriteLimit"),
+                    LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            else
-            {
-                // In create, all sprites are added as Bound/Registered. The number of registered Sprites cannot exceed the character's LOG.
-                if (!CharacterObject.IgnoreRules &&
-                    CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
-                    CharacterObject.LOG.TotalValue)
-                {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_RegisteredSpriteLimit"),
-                        LanguageManager.GetString("MessageTitle_RegisteredSpriteLimit"),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    return;
-                }
-            }
-
             Spirit objSprite = new Spirit(CharacterObject)
             {
                 EntityType = SpiritType.Sprite,

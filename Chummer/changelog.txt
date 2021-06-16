@@ -72,6 +72,7 @@ Application Changes:
 - First-time Chummer users who download a Nightly version now have their "Prefer Nightly Version" option set to True by default instead of False. Only completely new users (i.e. people who do not have a Chummer registry key) are affected.
 - Cyberprograms, Software, Autosofts, et al. are now properly recognized as programs and printed as such.
 - A vehicle weapon mount that comes pre-installed with a vehicle but whose size is from a splatbook that the character does not have enabled now still show up as weapon mounts. However, their sizes are shown as one of the core rulebook weapon mount sizes: Heavy if it can fit heavy weapons, Standard otherwise. Fixes #4477.
+- Chummer no longer allows more than one unbound spirit or sprite on a character at a time, but now also only cares about unbound and unfettered spirits and sprites that have at least one service in their entry.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -206,6 +207,8 @@ Changed/New Strings:
 - String_BaseAttribute
 - Label_Options_SpiritFettering
 - Button_Reconnect
+- Message_UnboundSpiritLimit
+- MessageTitle_UnboundSpiritLimit
 
 Build 214
 Application Fixes:
