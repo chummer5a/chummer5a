@@ -10445,13 +10445,13 @@
         <weaponmount>
           <control>Remote</control>
           <flexibility>Turret</flexibility>
-          <size>Heavy [SR5]</size>
+          <size>Heavy</size>
           <visibility>External</visibility>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
           <flexibility>Turret</flexibility>
-          <size>Standard [SR5]</size>
+          <size>Standard</size>
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
@@ -12919,9 +12919,9 @@
       <required>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
-          <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <visibility>External</visibility>
+          <control>Remote [SR5]</control>
+          <flexibility>Fixed [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
         </weaponmountdetails>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Sporting Rifles</weaponcategories>
@@ -12938,9 +12938,9 @@
       <required>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
-          <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <visibility>External</visibility>
+          <control>Remote [SR5]</control>
+          <flexibility>Fixed [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
         </weaponmountdetails>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles,Exotic Ranged Weapons</weaponcategories>
@@ -12957,6 +12957,9 @@
       <forbidden>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
+          <control>Remote [SR5]</control>
+          <flexibility>Fixed [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
           <visibility>None</visibility>
@@ -12976,6 +12979,9 @@
       <forbidden>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
+          <control>Remote [SR5]</control>
+          <flexibility>Fixed [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
           <visibility>None</visibility>
@@ -12995,6 +13001,9 @@
       <forbidden>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
+          <control>Remote [SR5]</control>
+          <flexibility>Fixed [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
           <visibility>None</visibility>
@@ -13004,6 +13013,16 @@
     </weaponmount>
     <!-- End Region -->
     <!-- Region Visibility -->
+    <weaponmount>
+      <id>582c31e0-1374-4ebb-b201-a20cb815d6dd</id>
+      <name>External [SR5]</name>
+      <page>461</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Visibility</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>20e7d5d5-da20-4466-99b7-977a578155e4</id>
       <name>External</name>
@@ -13036,6 +13055,16 @@
     </weaponmount>
     <!-- End Region -->
     <!-- Region Flexibility -->
+    <weaponmount>
+      <id>4a020775-9258-486a-a03f-7a48dd5c3bf9</id>
+      <name>Fixed [SR5]</name>
+      <page>461</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Flexibility</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>5d53c232-c18d-4546-bb50-5325f57eb422</id>
       <name>Fixed</name>
@@ -13073,6 +13102,16 @@
       <name>Remote</name>
       <page>163</page>
       <source>R5</source>
+      <avail>0</avail>
+      <category>Control</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
+    <weaponmount>
+      <id>70f99fae-470f-442c-a607-ef3465e27f37</id>
+      <name>Remote [SR5]</name>
+      <page>461</page>
+      <source>SR5</source>
       <avail>0</avail>
       <category>Control</category>
       <cost>0</cost>

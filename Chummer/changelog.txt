@@ -101,6 +101,8 @@ Data Changes:
 - The Morgan Cutlass' weapon mounts now properly use the newer system of dedicated weapon mount types instead of vehicle mods.
 - Vestigial remains of the old, vehicle mod-based weapon mount system have been purged.
 - Vehicles and drones in the core rulebook that come with weapon mounts now use the weapon mount settings written for them in Rigger 5.0 instead of the default core rulebook settings. Players playing without Rigger 5.0 will still see them as their core rulebook weapon sizes however.
+- The Krime Euskaldunak Tankette now uses Rigger 5.0 weapon mounts if Rigger 5.0 is enabled.
+- There are now dedicated options for weapon mount options that are for the weapon mounts that are statted out in the core rulebook. Fixes #4493.
 
 Changed/New Strings:
 - String_ContactPoints
