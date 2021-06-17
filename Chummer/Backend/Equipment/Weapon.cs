@@ -767,11 +767,11 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
             objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
             objNode.TryGetStringFieldQuickly("damage", ref _strDamage);
-            // Legacy catch for if a drain expression is not empty but has no attributes associated with it.
-            if (_objCharacter.LastSavedVersion < new Version(5, 214, 77) && !string.IsNullOrEmpty(_strDamage) &&
+            // Legacy catch for if a damage expression is not empty but has no attributes associated with it.
+            if (_objCharacter.LastSavedVersion < new Version(5, 214, 98) && !string.IsNullOrEmpty(_strDamage) &&
                 !_strDamage.Contains('{') && AttributeSection.AttributeStrings.Any(x => _strDamage.Contains(x)))
             {
-                GetNode()?.TryGetStringFieldQuickly("drain", ref _strDamage);
+                GetNode()?.TryGetStringFieldQuickly("damage", ref _strDamage);
             }
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
