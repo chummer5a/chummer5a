@@ -30,7 +30,7 @@
             <summary>
             Returns the Chummer-Save-File
             </summary>
-            <param name="sinnerid"></param>
+            <param name="id"></param>
             <returns></returns>
         </member>
         <member name="M:ChummerHub.Controllers.V1.SINnerController.PutSIN(System.Guid,Microsoft.AspNetCore.Http.IFormFile)">
