@@ -126,7 +126,7 @@ namespace Chummer
             this.lstGear.Size = new System.Drawing.Size(300, 510);
             this.lstGear.TabIndex = 35;
             this.lstGear.SelectedIndexChanged += new System.EventHandler(this.lstGear_SelectedIndexChanged);
-            this.lstGear.DoubleClick += new System.EventHandler(this.lstGear_DoubleClick);
+            this.lstGear.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // lblCategory
             // 

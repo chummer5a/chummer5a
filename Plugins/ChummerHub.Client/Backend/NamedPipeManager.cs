@@ -29,7 +29,7 @@ namespace ChummerHub.Client.Backend
         /// <summary>
         /// Starts a new Pipe server on a new thread
         /// </summary>
-        public async void StartServer()
+        public async Task StartServer()
         {
             StopServer();
             if (_objRunningTask?.IsCompleted == false) // Wait for existing thread to shut down

@@ -25,7 +25,7 @@ using System.Xml;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>
+    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyPropertyChanged, IEquatable<CalendarWeek>, IComparable<CalendarWeek>
     {
         private Guid _guiID;
         private int _intYear = 2072;
@@ -274,18 +274,6 @@ namespace Chummer
             return strReturn;
         }
 
-        public int CompareTo(object obj)
-        {
-            if (obj is CalendarWeek objWeek)
-            {
-                int intReturn = Year.CompareTo(objWeek.Year);
-                if (intReturn == 0)
-                    intReturn = Week.CompareTo(objWeek.Week);
-                return -intReturn;
-            }
-            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
-        }
-
         /// <summary>
         /// Week.
         /// </summary>
@@ -318,17 +306,40 @@ namespace Chummer
             }
         }
 
+        public int CompareTo(object obj)
+        {
+            if (obj is CalendarWeek objWeek)
+                return CompareTo(objWeek);
+            return -string.Compare(CurrentDisplayName, obj?.ToString() ?? string.Empty, false, GlobalOptions.CultureInfo);
+        }
+
+        public int CompareTo(CalendarWeek other)
+        {
+            int intReturn = Year.CompareTo(other.Year);
+            if (intReturn == 0)
+                intReturn = Week.CompareTo(other.Week);
+            return -intReturn;
+        }
+
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((CalendarWeek) obj);
+            if (ReferenceEquals(this, obj))
+                return true;
+            return obj is CalendarWeek objOther && Equals(objOther);
+        }
+
+        public bool Equals(CalendarWeek other)
+        {
+            if (other is null)
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
+            return Year == other.Year && Week == other.Week;
         }
 
         public override int GetHashCode()
         {
-            return new { InternalId, Year, Week}.GetHashCode();
+            return (InternalId, Year, Week).GetHashCode();
         }
 
         public static bool operator ==(CalendarWeek left, CalendarWeek right)
@@ -366,12 +377,5 @@ namespace Chummer
             return left is null ? right is null : left.CompareTo(right) >= 0;
         }
         #endregion
-
-        public bool Equals(CalendarWeek other)
-        {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
-            return Year == other.Year && Week == other.Week;
-        }
     }
 }

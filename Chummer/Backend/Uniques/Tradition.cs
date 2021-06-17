@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Windows.Forms;
@@ -90,7 +91,7 @@ namespace Chummer.Backend.Uniques
             SpiritForm = "Materialization";
             _lstAvailableSpirits.Clear();
             Type = TraditionType.None;
-            _objCachedSourceDetail = null;
+            _objCachedSourceDetail = default;
         }
 
         /// Create a Tradition from an XmlNode.
@@ -259,6 +260,21 @@ namespace Chummer.Backend.Uniques
             xmlNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             xmlNode.TryGetStringFieldQuickly("spiritform", ref _strSpiritForm);
             xmlNode.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+            // Legacy catch for if a drain expression is not empty but has no attributes associated with it.
+            if (_objCharacter.LastSavedVersion < new Version(5, 214, 77) &&
+                !string.IsNullOrEmpty(_strDrainExpression) && !_strDrainExpression.Contains('{') &&
+                AttributeSection.AttributeStrings.Any(x => _strDrainExpression.Contains(x)))
+            {
+                if (IsCustomTradition)
+                {
+                    foreach (string strAttribute in AttributeSection.AttributeStrings)
+                        _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+                    _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
+                }
+                else
+                    GetNode()?.TryGetStringFieldQuickly("drain", ref _strDrainExpression);
+            }
+
             xmlNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlNode.TryGetStringFieldQuickly("page", ref _strPage);
             xmlNode.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
@@ -305,6 +321,9 @@ namespace Chummer.Backend.Uniques
                     xpathCharacterNode.TryGetStringFieldQuickly("tradition", ref _strName);
                 xpathCharacterNode.TryGetStringFieldQuickly("traditiondrain", ref _strDrainExpression);
             }
+            foreach (string strAttribute in AttributeSection.AttributeStrings)
+                _strDrainExpression = _strDrainExpression.Replace(strAttribute, '{' + strAttribute + '}');
+            _strDrainExpression = _strDrainExpression.Replace("{MAG}Adept", "{MAGAdept}");
         }
 
         public void LoadFromHeroLab(XPathNavigator xmlHeroLabNode)
@@ -358,7 +377,7 @@ namespace Chummer.Backend.Uniques
                 objWriter.WriteElementString("spiritmanipulation", DisplaySpiritManipulationMethod(strLanguageToPrint));
                 objWriter.WriteElementString("spiritform", DisplaySpiritForm(strLanguageToPrint));
             }
-            objWriter.WriteElementString("drainattributes", DisplayDrainExpressionMethod(strLanguageToPrint));
+            objWriter.WriteElementString("drainattributes", DisplayDrainExpressionMethod(objCulture, strLanguageToPrint));
             objWriter.WriteElementString("drainvalue", DrainValue.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
@@ -385,7 +404,18 @@ namespace Chummer.Backend.Uniques
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -517,55 +547,44 @@ namespace Chummer.Backend.Uniques
             {
                 if(_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                 {
-                    return "BOD + WIL";
+                    return "{BOD} + {WIL}";
                 }
 
                 return _strDrainExpression;
             }
             set
             {
-                if(_strDrainExpression != value)
+                if (_strDrainExpression == value)
+                    return;
+                foreach(string strOldDrainAttribute in AttributeSection.AttributeStrings)
                 {
-                    foreach(string strOldDrainAttribute in AttributeSection.AttributeStrings)
-                    {
-                        if(_strDrainExpression.Contains(strOldDrainAttribute))
-                            _objCharacter.GetAttribute(strOldDrainAttribute).PropertyChanged -= RefreshDrainValue;
-                    }
-
-                    _strDrainExpression = value;
-                    foreach(string strNewDrainAttribute in AttributeSection.AttributeStrings)
-                    {
-                        if(value.Contains(strNewDrainAttribute))
-                            _objCharacter.GetAttribute(strNewDrainAttribute).PropertyChanged += RefreshDrainValue;
-                    }
-
-                    OnPropertyChanged();
+                    if(_strDrainExpression.Contains(strOldDrainAttribute))
+                        _objCharacter.GetAttribute(strOldDrainAttribute).PropertyChanged -= RefreshDrainValue;
                 }
+
+                _strDrainExpression = value;
+                foreach(string strNewDrainAttribute in AttributeSection.AttributeStrings)
+                {
+                    if(value.Contains(strNewDrainAttribute))
+                        _objCharacter.GetAttribute(strNewDrainAttribute).PropertyChanged += RefreshDrainValue;
+                }
+
+                OnPropertyChanged();
             }
         }
 
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
-        public string DisplayDrainExpression => DisplayDrainExpressionMethod(GlobalOptions.Language);
+        public string DisplayDrainExpression => DisplayDrainExpressionMethod(GlobalOptions.CultureInfo, GlobalOptions.Language);
 
         /// <summary>
         /// Magician's Tradition Drain Attributes for display purposes.
         /// </summary>
-        public string DisplayDrainExpressionMethod(string strLanguage)
+        public string DisplayDrainExpressionMethod(CultureInfo objCultureInfo, string strLanguage)
         {
             string strDrain = DrainExpression;
-            foreach(string strAttribute in AttributeSection.AttributeStrings)
-            {
-                strDrain = strDrain.CheapReplace(strAttribute, () =>
-                {
-                    if(strAttribute == "MAGAdept")
-                        return LanguageManager.MAGAdeptString(strLanguage);
-
-                    return LanguageManager.GetString("String_Attribute" + strAttribute + "Short", strLanguage);
-                });
-            }
-
+            _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(strDrain, objCultureInfo, strLanguage, false);
             return strDrain;
         }
 
@@ -580,11 +599,7 @@ namespace Chummer.Backend.Uniques
                     return 0;
                 string strDrainAttributes = DrainExpression;
                 StringBuilder sbdDrain = new StringBuilder(strDrainAttributes);
-                foreach(string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                    sbdDrain.CheapReplace(strDrainAttributes, objAttrib.Abbrev, () => objAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDrain, strDrainAttributes);
 
                 string strDrain = sbdDrain.ToString();
                 if(!decimal.TryParse(strDrain, out decimal decDrain))
@@ -612,16 +627,8 @@ namespace Chummer.Backend.Uniques
                     return string.Empty;
                 string strSpace = LanguageManager.GetString("String_Space");
                 StringBuilder sbdToolTip = new StringBuilder(DrainExpression);
-
                 // Update the Fading CharacterAttribute Value.
-                foreach(string strAttribute in AttributeSection.AttributeStrings)
-                {
-                    sbdToolTip.CheapReplace(strAttribute, () =>
-                    {
-                        CharacterAttrib objAttrib = _objCharacter.GetAttribute(strAttribute);
-                        return objAttrib.DisplayAbbrev + strSpace + '(' + objAttrib.TotalValue.ToString(GlobalOptions.CultureInfo) + ')';
-                    });
-                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
 
                 foreach(Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
@@ -1015,8 +1022,8 @@ namespace Chummer.Backend.Uniques
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if(_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if(_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
 

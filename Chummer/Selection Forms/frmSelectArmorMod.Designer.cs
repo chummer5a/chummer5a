@@ -198,7 +198,7 @@ namespace Chummer
             this.lstMod.Size = new System.Drawing.Size(297, 417);
             this.lstMod.TabIndex = 0;
             this.lstMod.SelectedIndexChanged += new System.EventHandler(this.lstMod_SelectedIndexChanged);
-            this.lstMod.DoubleClick += new System.EventHandler(this.lstMod_DoubleClick);
+            this.lstMod.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // nudRating
             // 

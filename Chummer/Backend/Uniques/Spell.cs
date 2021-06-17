@@ -55,11 +55,13 @@ namespace Chummer
         private bool _blnLimited;
         private bool _blnExtended;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
         private bool _blnAlchemical;
         private bool _blnFreeBonus;
         private bool _blnUsesUnarmed;
         private int _intGrade;
+
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -102,6 +104,11 @@ namespace Chummer
             }
             if (!objXmlSpellNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlSpellNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlSpellNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors);
             objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
@@ -124,7 +131,18 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -152,6 +170,7 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
@@ -206,6 +225,10 @@ namespace Chummer
 
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -221,14 +244,8 @@ namespace Chummer
             objWriter.WriteStartElement("spell");
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("sourceid", SourceIDString);
-            if (Limited)
-                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
-                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellLimited", strLanguageToPrint)));
-            else if (Alchemical)
-                objWriter.WriteElementString("name", string.Format(objCulture, "{0}{1}({2})",
-                    DisplayNameShort(strLanguageToPrint), LanguageManager.GetString("String_Space", strLanguageToPrint), LanguageManager.GetString("String_SpellAlchemical", strLanguageToPrint)));
-            else
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("descriptors", DisplayDescriptors(strLanguageToPrint));
             objWriter.WriteElementString("category", DisplayCategory(strLanguageToPrint));
@@ -242,6 +259,7 @@ namespace Chummer
             objWriter.WriteElementString("dicepool", DicePool.ToString(objCulture));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
+
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -626,20 +644,24 @@ namespace Chummer
                     }
                 }
 
-                foreach (var improvement in RelevantImprovements(i =>
+                StringBuilder sbdDV = new StringBuilder(strDV);
+                foreach (Improvement objImprovement in RelevantImprovements(i =>
                     i.ImproveType == Improvement.ImprovementType.DrainValue
                     || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                     || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
-                    strDV += string.Format(GlobalOptions.CultureInfo, " + {0:0;-0;0}", improvement.Value);
+                {
+                    sbdDV.AppendFormat(GlobalOptions.InvariantCultureInfo, "{0:+0;-0;+0}", objImprovement.Value);
+                }
+
                 if (Limited)
                 {
-                    strDV += " + -2";
+                    sbdDV.Append("-2");
                 }
                 if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
                 {
-                    strDV += " + 2";
+                    sbdDV.Append("+2");
                 }
-                object xprResult = CommonFunctions.EvaluateInvariantXPath(strDV.TrimStart('+'), out bool blnIsSuccess);
+                object xprResult = CommonFunctions.EvaluateInvariantXPath(sbdDV.ToString(), out bool blnIsSuccess);
                 if (!blnIsSuccess)
                     return strReturn;
                 if (force)
@@ -730,6 +752,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -841,13 +872,13 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                string strReturn = string.Empty;
+                StringBuilder sbdReturn = new StringBuilder();
                 string strFormat = strSpace + "{0}" + strSpace + "({1})";
                 Skill objSkill = Skill;
                 CharacterAttrib objAttrib = _objCharacter.GetAttribute(UsesUnarmed ? "MAG" : (objSkill?.Attribute ?? "MAG"));
                 if (objAttrib != null)
                 {
-                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, strFormat,
                         objAttrib.DisplayNameFormatted, objAttrib.DisplayValue);
                 }
                 if (objSkill != null)
@@ -855,22 +886,21 @@ namespace Chummer
                     int intPool = UsesUnarmed ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                     if (objAttrib != null)
                         intPool -= objAttrib.TotalValue;
-                    if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += strSpace + '+' + strSpace;
-                    strReturn += objSkill.FormattedDicePool(intPool, Category);
+                    if (sbdReturn.Length > 0)
+                        sbdReturn.Append(strSpace + '+' + strSpace);
+                    sbdReturn.Append(objSkill.FormattedDicePool(intPool, Category));
                 }
 
                 // Include any Improvements to the Spell Category or Spell Name.
-                string result = strReturn;
                 foreach (Improvement objImprovement in RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.SpellCategory || x.ImproveType == Improvement.ImprovementType.SpellDicePool))
                 {
-                    if (!string.IsNullOrEmpty(strReturn))
-                        strReturn += strSpace + '+' + strSpace;
-                    strReturn += string.Format(GlobalOptions.CultureInfo, strFormat,
+                    if (sbdReturn.Length > 0)
+                        sbdReturn.Append(strSpace + '+' + strSpace);
+                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, strFormat,
                         _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
                 }
 
-                return result;
+                return sbdReturn.ToString();
             }
         }
 
@@ -1056,8 +1086,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return Grade != 0
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return Grade != 0
                     ? ColorManager.GrayText
@@ -1082,8 +1112,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

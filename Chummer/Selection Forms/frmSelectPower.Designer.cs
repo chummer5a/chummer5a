@@ -73,7 +73,7 @@ namespace Chummer
             this.lstPowers.Size = new System.Drawing.Size(297, 417);
             this.lstPowers.TabIndex = 6;
             this.lstPowers.SelectedIndexChanged += new System.EventHandler(this.lstPowers_SelectedIndexChanged);
-            this.lstPowers.DoubleClick += new System.EventHandler(this.lstPowers_DoubleClick);
+            this.lstPowers.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // lblPowerPointsLabel
             // 

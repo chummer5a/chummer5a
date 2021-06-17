@@ -3865,6 +3865,10 @@
             <text>Notizen</text>
         </string>
         <string>
+            <key>Button_ChooseCustomColor</key>
+          <text>Farbe für diese Notiz wählen</text>
+        </string>
+        <string>
             <key>Title_Options</key>
             <text>Optionen</text>
         </string>
@@ -8598,6 +8602,14 @@
             <text>Nur für Patzer:</text>
         </string>
         <string>
+          <key>String_NoDiceLeft_Title</key>
+          <text>Keine Würfel übrig</text>
+        </string>
+        <string>
+          <key>String_NoDiceLeft_Text</key>
+          <text>Du hast keine weiteren Würfel, die neu geworfen werden könnten.</text>
+        </string>
+        <string>
             <key>String_Pilot</key>
             <text>Pilot</text>
         </string>
@@ -9093,6 +9105,10 @@
             <key>Menu_ShowMySINners</key>
             <text>Alle Daten anzeigen</text>
         </string>
+      <string>
+        <key>Menu_SINnersCreateGroup</key>
+        <text>Lege eine neue Gruppe an</text>
+      </string>
         <string>
             <key>Menu_RemovePinnedChummer</key>
             <text>Charakter un-pinnen</text>
@@ -9652,6 +9668,24 @@
         <string>
             <key>LimitCondition_SkillGroupStealthNaked</key>
             <text>Nur für die Fertigkeitsgruppe Heimlichkeit, muss vollständig unbekleidet sein</text>
+        </string>
+        <!--Region Sustained Spells Control-->
+        <string>
+          <key>Label_SustainedSelf</key>
+          <text>Selbst</text>
+        </string>
+        <string>
+          <key>Label_SustainedForce</key>
+          <text>Kraft:</text>
+        </string>
+        <string>
+          <key>Label_NetHits</key>
+          <text>Net Erfolge:</text>
+        </string>
+        <!--End Region-->
+        <string>
+          <key>Button_SustainSpell</key>
+          <text>Aufrechterhalten</text>
         </string>
     </strings>
 </chummer>

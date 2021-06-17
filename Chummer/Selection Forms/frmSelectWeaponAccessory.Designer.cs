@@ -59,21 +59,21 @@ namespace Chummer
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.txtSearch = new System.Windows.Forms.TextBox();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
-            this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblSearchLabel = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.flpCheckBoxes.SuspendLayout();
-            this.flpRating.SuspendLayout();
             this.flpMarkup.SuspendLayout();
+            this.flpRating.SuspendLayout();
             this.tlpTopRight.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -198,7 +198,7 @@ namespace Chummer
             this.lstAccessory.Size = new System.Drawing.Size(297, 417);
             this.lstAccessory.TabIndex = 0;
             this.lstAccessory.SelectedIndexChanged += new System.EventHandler(this.lstAccessory_SelectedIndexChanged);
-            this.lstAccessory.DoubleClick += new System.EventHandler(this.lstAccessory_DoubleClick);
+            this.lstAccessory.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // cmdOKAdd
             // 
@@ -534,15 +534,6 @@ namespace Chummer
             this.tlpRight.Size = new System.Drawing.Size(303, 206);
             this.tlpRight.TabIndex = 78;
             // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(53, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(247, 20);
-            this.txtSearch.TabIndex = 69;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
             // flpCheckBoxes
             // 
             this.flpCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
@@ -556,6 +547,20 @@ namespace Chummer
             this.flpCheckBoxes.Name = "flpCheckBoxes";
             this.flpCheckBoxes.Size = new System.Drawing.Size(225, 25);
             this.flpCheckBoxes.TabIndex = 75;
+            // 
+            // flpMarkup
+            // 
+            this.flpMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpMarkup.AutoSize = true;
+            this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpMarkup.Controls.Add(this.nudMarkup);
+            this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
+            this.flpMarkup.Location = new System.Drawing.Point(214, 130);
+            this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
+            this.flpMarkup.Name = "flpMarkup";
+            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
+            this.flpMarkup.TabIndex = 76;
+            this.flpMarkup.WrapContents = false;
             // 
             // flpRating
             // 
@@ -585,32 +590,6 @@ namespace Chummer
             this.lblRatingNALabel.Text = "N/A";
             this.lblRatingNALabel.Visible = false;
             // 
-            // lblSearchLabel
-            // 
-            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSearchLabel.Name = "lblSearchLabel";
-            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSearchLabel.TabIndex = 68;
-            this.lblSearchLabel.Tag = "Label_Search";
-            this.lblSearchLabel.Text = "&Search:";
-            // 
-            // flpMarkup
-            // 
-            this.flpMarkup.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flpMarkup.AutoSize = true;
-            this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpMarkup.Controls.Add(this.nudMarkup);
-            this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Location = new System.Drawing.Point(214, 130);
-            this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
-            this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
-            this.flpMarkup.TabIndex = 76;
-            this.flpMarkup.WrapContents = false;
-            // 
             // tlpTopRight
             // 
             this.tlpTopRight.AutoSize = true;
@@ -629,13 +608,32 @@ namespace Chummer
             this.tlpTopRight.Size = new System.Drawing.Size(303, 26);
             this.tlpTopRight.TabIndex = 79;
             // 
+            // lblSearchLabel
+            // 
+            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSearchLabel.AutoSize = true;
+            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSearchLabel.Name = "lblSearchLabel";
+            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSearchLabel.TabIndex = 68;
+            this.lblSearchLabel.Tag = "Label_Search";
+            this.lblSearchLabel.Text = "&Search:";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(53, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(247, 20);
+            this.txtSearch.TabIndex = 69;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
             // frmSelectWeaponAccessory
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
@@ -659,10 +657,10 @@ namespace Chummer
             this.tlpRight.PerformLayout();
             this.flpCheckBoxes.ResumeLayout(false);
             this.flpCheckBoxes.PerformLayout();
-            this.flpRating.ResumeLayout(false);
-            this.flpRating.PerformLayout();
             this.flpMarkup.ResumeLayout(false);
             this.flpMarkup.PerformLayout();
+            this.flpRating.ResumeLayout(false);
+            this.flpRating.PerformLayout();
             this.tlpTopRight.ResumeLayout(false);
             this.tlpTopRight.PerformLayout();
             this.ResumeLayout(false);

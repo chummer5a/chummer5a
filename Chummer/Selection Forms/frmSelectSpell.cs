@@ -65,9 +65,9 @@ namespace Chummer
                 _strSelectedSpell = _strForceSpell;
                 DialogResult = DialogResult.OK;
             }
-
-            _blnCanGenericSpellBeFree = _objCharacter.AllowFreeSpells.Item2;
-            _blnCanTouchOnlySpellBeFree = _objCharacter.AllowFreeSpells.Item1;
+            Tuple<bool, bool> tupAllowFreeSpells = _objCharacter.AllowFreeSpells;
+            _blnCanGenericSpellBeFree = tupAllowFreeSpells.Item2;
+            _blnCanTouchOnlySpellBeFree = tupAllowFreeSpells.Item1;
             txtSearch.Text = string.Empty;
             // Populate the Category list.
             HashSet<string> limit = new HashSet<string>();
@@ -169,21 +169,26 @@ namespace Chummer
             {
                 lstSpells.SelectedIndex = 0;
             }
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                int intNewIndex = lstSpells.SelectedIndex + 1;
-                if (intNewIndex >= lstSpells.Items.Count)
-                    intNewIndex = 0;
-                if (lstSpells.Items.Count > 0)
-                    lstSpells.SelectedIndex = intNewIndex;
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                int intNewIndex = lstSpells.SelectedIndex - 1;
-                if (intNewIndex <= 0)
-                    intNewIndex = lstSpells.Items.Count - 1;
-                if (lstSpells.Items.Count > 0)
-                    lstSpells.SelectedIndex = intNewIndex;
+                case Keys.Down:
+                {
+                    int intNewIndex = lstSpells.SelectedIndex + 1;
+                    if (intNewIndex >= lstSpells.Items.Count)
+                        intNewIndex = 0;
+                    if (lstSpells.Items.Count > 0)
+                        lstSpells.SelectedIndex = intNewIndex;
+                    break;
+                }
+                case Keys.Up:
+                {
+                    int intNewIndex = lstSpells.SelectedIndex - 1;
+                    if (intNewIndex <= 0)
+                        intNewIndex = lstSpells.Items.Count - 1;
+                    if (lstSpells.Items.Count > 0)
+                        lstSpells.SelectedIndex = intNewIndex;
+                    break;
+                }
             }
         }
 

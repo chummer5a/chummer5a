@@ -51,7 +51,7 @@ namespace Chummer
         }
     }
 
-    public class CharacterOptions : INotifyPropertyChanged, IEquatable<CharacterOptions>
+    public sealed class CharacterOptions : INotifyPropertyChanged, IEquatable<CharacterOptions>
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -158,6 +158,7 @@ namespace Chummer
         private int _intKarmaNewAIProgram = 5;
         private int _intKarmaNewAIAdvancedProgram = 8;
         private int _intKarmaMysticAdeptPowerPoint = 5;
+        private int _intKarmaSpiritFettering = 3;
 
         // Karma Foci variables.
         // Enchanting
@@ -183,6 +184,9 @@ namespace Chummer
         private int _intKarmaSummoningFocus = 2;
         // Weapon
         private int _intKarmaWeaponFocus = 3;
+
+        //Sustaining
+        private int _intDicePenaltySustaining = 2;
 
         // Build settings.
         private CharacterBuildMethod _eBuildMethod = CharacterBuildMethod.Priority;
@@ -225,7 +229,7 @@ namespace Chummer
                 }
             }
 
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             if (lstNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
@@ -350,21 +354,21 @@ namespace Chummer
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
         }
 
-        public bool Equals(CharacterOptions objOther)
+        public bool Equals(CharacterOptions other)
         {
-            if (objOther == null)
+            if (other == null)
                 return false;
-            if (_guiSourceId != objOther._guiSourceId)
+            if (_guiSourceId != other._guiSourceId)
                 return false;
-            if (_strFileName != objOther._strFileName)
+            if (_strFileName != other._strFileName)
                 return false;
 
             PropertyInfo[] aobjProperties = GetType().GetProperties();
-            PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
+            PropertyInfo[] aobjOtherProperties = other.GetType().GetProperties();
             foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
             {
                 PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
-                if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(objOther))
+                if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(other))
                 {
                     return false;
                 }
@@ -372,7 +376,7 @@ namespace Chummer
             if (aobjOtherProperties.Any(x => x.PropertyType.IsValueType && aobjProperties.All(y => y.Name != x.Name)))
                 return false;
 
-            foreach (var kvpOther in objOther.CustomDataDirectoryNames)
+            foreach (var kvpOther in other.CustomDataDirectoryNames)
             {
                 if (_dicCustomDataDirectoryNames.TryGetValue(kvpOther.Key, out Tuple<int, bool> objMyValue))
                 {
@@ -385,13 +389,13 @@ namespace Chummer
                 }
             }
 
-            if (_dicCustomDataDirectoryNames.Any(x => x.Value.Item2 && !objOther.CustomDataDirectoryNames.ContainsKey(x.Key)))
+            if (_dicCustomDataDirectoryNames.Any(x => x.Value.Item2 && !other.CustomDataDirectoryNames.ContainsKey(x.Key)))
                 return false;
 
-            if (!_lstBooks.SequenceEqual(objOther._lstBooks))
+            if (!_lstBooks.SequenceEqual(other._lstBooks))
                 return false;
 
-            if (!BannedWareGrades.SequenceEqual(objOther.BannedWareGrades))
+            if (!BannedWareGrades.SequenceEqual(other.BannedWareGrades))
                 return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
@@ -585,6 +589,9 @@ namespace Chummer
                     // <dronemodsmaximumpilot />
                     objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalOptions.InvariantCultureInfo));
 
+                    // <DicePenaltySustaining />
+                    objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalOptions.InvariantCultureInfo));
+
                     // <karmacost>
                     objWriter.WriteStartElement("karmacost");
                     // <karmaattribute />
@@ -671,6 +678,8 @@ namespace Chummer
                     objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmaweaponfocus />
                     objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspiritfettering />
+                    objWriter.WriteElementString("karmaspiritfettering", _intKarmaSpiritFettering.ToString(GlobalOptions.InvariantCultureInfo));
                     // </karmacost>
                     objWriter.WriteEndElement();
 
@@ -932,8 +941,10 @@ namespace Chummer
                         _strEssenceFormat += ".00";
                     else
                     {
+                        StringBuilder sbdZeros = new StringBuilder();
                         for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
-                            _strEssenceFormat += '0';
+                            sbdZeros.Append('0');
+                        _strEssenceFormat += sbdZeros.ToString();
                     }
                 }
             }
@@ -989,6 +1000,9 @@ namespace Chummer
             if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
                 GlobalOptions.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
 
+            //House Rule: The DicePenalty per sustained spell or form
+            objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
+
             XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNode("karmacost");
             // Attempt to populate the Karma values.
             if (xmlKarmaCostNode != null)
@@ -1020,6 +1034,7 @@ namespace Chummer
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
 
                 // Attempt to load the Karma costs for Foci.
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
@@ -1652,7 +1667,7 @@ namespace Chummer
             foreach (string strEnabledCustomDataDirectoryName in _dicCustomDataDirectoryNames.Where(x => x.Value.Item2).OrderBy(x => x.Value.Item1).Select(x => x.Key))
             {
                 CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == strEnabledCustomDataDirectoryName);
-                if (objInfoToAdd != null)
+                if (objInfoToAdd != default)
                 {
                     _lstEnabledCustomDataDirectories.Add(objInfoToAdd);
                     _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.Path);
@@ -2495,8 +2510,10 @@ namespace Chummer
                         strNewValue += ".00";
                     else
                     {
+                        StringBuilder sbdZeros = new StringBuilder(strNewValue);
                         for (int i = strNewValue.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
-                            strNewValue += '0';
+                            sbdZeros.Append('0');
+                        strNewValue = sbdZeros.ToString();
                     }
                 }
                 if (_strEssenceFormat != strNewValue)
@@ -2970,6 +2987,23 @@ namespace Chummer
                 {
                     _intCyberlimbAttributeBonusCap = value;
                     OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The Dice Penalty per Spell
+        /// </summary>
+        public int DicePenaltySustaining
+        {
+            get => _intDicePenaltySustaining;
+            set
+            {
+                if (_intDicePenaltySustaining != value)
+                {
+                    _intDicePenaltySustaining = value;
+                    OnPropertyChanged();
+                    
                 }
             }
         }
@@ -3648,6 +3682,21 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Karma cost for fetting a spirit (gets multiplied by Force).
+        /// </summary>
+        public int KarmaSpiritFettering
+        {
+            get => _intKarmaSpiritFettering;
+            set
+            {
+                if (_intKarmaSpiritFettering != value)
+                {
+                    _intKarmaSpiritFettering = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         #endregion
 
         #region Default Build

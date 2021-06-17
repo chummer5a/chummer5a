@@ -61,9 +61,7 @@ namespace ChummerHub.Controllers.V1
 
         private System.Net.Http.HttpClient MyHttpClient { get; } = new System.Net.Http.HttpClient();
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.~SINnerController()'
         ~SINnerController()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.~SINnerController()'
         {
             MyHttpClient?.Dispose();
         }
@@ -71,14 +69,12 @@ namespace ChummerHub.Controllers.V1
         // GET: api/ChummerFiles/5
         //[Route("download")]
         //[SwaggerResponseExample((int)HttpStatusCode.OK, typeof(SINnerExample))]
-#pragma warning disable CS1572 // XML comment has a param tag for 'id', but there is no parameter by that name
         /// <summary>
         /// Returns the Chummer-Save-File
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="sinnerid"></param>
         /// <returns></returns>
         [HttpGet("{sinnerid}")]
-#pragma warning restore CS1572 // XML comment has a param tag for 'id', but there is no parameter by that name
         [AllowAnonymous]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDownloadFile")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
@@ -86,9 +82,7 @@ namespace ChummerHub.Controllers.V1
         [ProducesResponseType(typeof(FileStreamResult), (int)HttpStatusCode.OK)]
         [EnableCors("AllowAllOrigins")]
         [Produces(@"application/json", @"application/octet-stream")]
-#pragma warning disable CS1573 // Parameter 'sinnerid' has no matching param tag in the XML comment for 'SINnerController.GetDownloadFile(Guid)' (but other parameters do)
         public async Task<FileResult> GetDownloadFile([FromRoute] Guid sinnerid)
-#pragma warning restore CS1573 // Parameter 'sinnerid' has no matching param tag in the XML comment for 'SINnerController.GetDownloadFile(Guid)' (but other parameters do)
         {
             try
             {
@@ -652,7 +646,10 @@ namespace ChummerHub.Controllers.V1
                     if (sinner.Id.ToString() == "string")
                         sinner.Id = Guid.Empty;
 
-                    if (sinner.LastChange == null)
+                    if (sinner.MyGroup?.Id == Guid.Empty)
+                        sinner.MyGroup = null;
+
+                    if (sinner.LastChange == default)
                     {
                         var e = new ArgumentException("Sinner  " + sinner.Id + ": LastChange not set!");
                         res = new ResultSinnerPostSIN(e);
@@ -841,6 +838,19 @@ namespace ChummerHub.Controllers.V1
 
                         try
                         {
+                            if (sinner.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == "delete.this.and.add@your.mail"))
+                            {
+                                sinner.SINnerMetaData.Visibility.UserRights.RemoveAll(a => a.EMail == "delete.this.and.add@your.mail");
+                            }
+                            if (!sinner.SINnerMetaData.Visibility.UserRights.Any(a => a.EMail == user.Email.ToUpperInvariant()))
+                            {
+                                sinner.SINnerMetaData.Visibility.UserRights.Add(new SINnerUserRight()
+                                {
+                                    EMail = user.Email.ToLowerInvariant(),
+                                    CanEdit = true
+                                });
+                            }
+                            
                             await _context.SINners.AddAsync(sinner);
                         }
                         catch(InvalidOperationException e)
@@ -1025,7 +1035,7 @@ namespace ChummerHub.Controllers.V1
                 switch (returncode)
                 {
                     case HttpStatusCode.OK:
-                        return Accepted(res);
+                        return Ok(res);
                     case HttpStatusCode.Created:
                         return Created("SINnerPostSIN", res);
                     default:

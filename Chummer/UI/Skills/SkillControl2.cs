@@ -78,8 +78,7 @@ namespace Chummer.UI.Skills
 
                 btnAttribute.DoOneWayDataBinding("Text", objSkill, nameof(Skill.DisplayAttribute));
 
-                lblModifiedRating.Text = objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-                lblModifiedRating.ToolTipText = objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+                SkillControl2_RefreshPoolTooltipAndDisplay();
 
                 // Creating controls outside of the designer saves on handles if the controls would be invisible anyway
                 if (objSkill.AllowDelete) // For active skills, can only change by going from Create to Career mode, so no databinding necessary
@@ -321,8 +320,7 @@ namespace Chummer.UI.Skills
                     blnUpdateAll = true;
                     goto case nameof(Skill.DisplayPool);
                 case nameof(Skill.DisplayPool):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-                    lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+                    SkillControl2_RefreshPoolTooltipAndDisplay();
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
                     break;
@@ -335,17 +333,22 @@ namespace Chummer.UI.Skills
                     if (cboSpec?.Visible == true)
                     {
                         string strOldSpec = cboSpec.Text;
-                        cboSpec.BeginUpdate();
-                        cboSpec.PopulateWithListItems(_objSkill.CGLSpecializations);
-                        if (string.IsNullOrEmpty(strOldSpec))
-                            cboSpec.SelectedIndex = -1;
-                        else
+                        IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
+                        cboSpec.QueueThreadSafe(() =>
                         {
-                            cboSpec.SelectedValue = strOldSpec;
-                            if (cboSpec.SelectedIndex == -1)
-                                cboSpec.Text = strOldSpec;
-                        }
-                        cboSpec.EndUpdate();
+                            cboSpec.BeginUpdate();
+                            cboSpec.PopulateWithListItems(lstSpecializations);
+                            if (string.IsNullOrEmpty(strOldSpec))
+                                cboSpec.SelectedIndex = -1;
+                            else
+                            {
+                                cboSpec.SelectedValue = strOldSpec;
+                                if (cboSpec.SelectedIndex == -1)
+                                    cboSpec.Text = strOldSpec;
+                            }
+
+                            cboSpec.EndUpdate();
+                        });
                     }
                     break;
             }
@@ -361,8 +364,7 @@ namespace Chummer.UI.Skills
                 case null:
                 case nameof(CharacterAttrib.Abbrev):
                 case nameof(CharacterAttrib.TotalValue):
-                    lblModifiedRating.Text = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
-                    lblModifiedRating.ToolTipText = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+                    SkillControl2_RefreshPoolTooltipAndDisplay();
                     break;
             }
         }
@@ -482,7 +484,7 @@ namespace Chummer.UI.Skills
 
         private void tsSkillLabelNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmItemNotes = new frmNotes(_objSkill.Notes))
+            using (frmNotes frmItemNotes = new frmNotes(_objSkill.Notes, _objSkill.NotesColor))
             {
                 frmItemNotes.ShowDialog(this);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
@@ -566,6 +568,18 @@ namespace Chummer.UI.Skills
                     lblCareerRating.MinimumSize = new Size((int) (25 * g.DpiX / 96.0f), 0);
                 lblModifiedRating.MinimumSize = new Size((int) (50 * g.DpiX / 96.0f), 0);
             }
+        }
+
+
+        /// <summary>
+        /// Refreshes the Tooltip and Displayed Dice Pool. Can be used in another Thread
+        /// </summary>
+        private void SkillControl2_RefreshPoolTooltipAndDisplay()
+        {
+            string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
+            lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
+            string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+            lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
         }
     }
 }

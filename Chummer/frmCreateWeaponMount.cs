@@ -65,23 +65,17 @@ namespace Chummer
                             continue;
 
                         XmlNode xmlTestNode = xmlSizeNode.SelectSingleNode("forbidden/vehicledetails");
-                        if (xmlTestNode != null)
+                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
-                            if (xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                            {
-                                continue;
-                            }
+                            continue;
                         }
 
                         xmlTestNode = xmlSizeNode.SelectSingleNode("required/vehicledetails");
-                        if (xmlTestNode != null)
+                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
                         {
                             // Assumes topmost parent is an AND node
-                            if (!xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
-                            {
-                                continue;
-                            }
+                            continue;
                         }
 
                         lstSize.Add(new ListItem(strId, xmlSizeNode["translate"]?.InnerText ?? xmlSizeNode["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown")));
@@ -290,21 +284,29 @@ namespace Chummer
             }
 
             WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
-            WeaponMountOption objFlexibilityOption = new WeaponMountOption(_objCharacter);
-            WeaponMountOption objVisibilityOption = new WeaponMountOption(_objCharacter);
-            if (objControlOption.Create(xmlSelectedControl) &&
-                objFlexibilityOption.Create(xmlSelectedFlexibility) &&
-                objVisibilityOption.Create(xmlSelectedVisibility))
+            if (objControlOption.Create(xmlSelectedControl))
             {
-                _objMount.WeaponMountOptions.Clear();
+                _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Control");
                 _objMount.WeaponMountOptions.Add(objControlOption);
+            }
+            WeaponMountOption objFlexibilityOption = new WeaponMountOption(_objCharacter);
+            if (objFlexibilityOption.Create(xmlSelectedFlexibility))
+            {
+                _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Flexibility");
                 _objMount.WeaponMountOptions.Add(objFlexibilityOption);
+            }
+            WeaponMountOption objVisibilityOption = new WeaponMountOption(_objCharacter);
+            if (objVisibilityOption.Create(xmlSelectedVisibility))
+            {
+                _objMount.WeaponMountOptions.RemoveAll(x => x.Category == "Visibilty");
                 _objMount.WeaponMountOptions.Add(objVisibilityOption);
             }
 
-            _objMount.Mods.Clear();
+            _objMount.Mods.RemoveAll(x => !_lstMods.Contains(x));
             foreach (VehicleMod objMod in _lstMods)
-		    {
+            {
+                if (_objMount.Mods.Contains(objMod))
+                    continue;
                 objMod.WeaponMountParent = _objMount;
                 _objMount.Mods.Add(objMod);
 		    }

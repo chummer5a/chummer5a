@@ -19,11 +19,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public interface IHasMatrixAttributes : IHasMatrixConditionMonitor
+    public interface IHasMatrixAttributes
     {
         int GetBaseMatrixAttribute(string strAttributeName);
         int GetBonusMatrixAttribute(string strAttributeName);
@@ -46,15 +47,15 @@ namespace Chummer
         int BaseMatrixBoxes { get; }
         int BonusMatrixBoxes { get; set; }
         int TotalBonusMatrixBoxes { get; }
-        new int MatrixCM { get; }
-        new int MatrixCMFilled { get; set; }
+        int MatrixCM { get; }
+        int MatrixCMFilled { get; set; }
         string ProgramLimit { get; set; }
 
         bool CanSwapAttributes { get; set; }
         string AttributeArray { get; set; }
         string ModAttributeArray { get; set; }
 
-        List<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
+        IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
     }
 
     public static class MatrixAttributes
@@ -337,6 +338,13 @@ namespace Chummer
             lstStatsArray.Reverse();
 
             string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
+            StringBuilder[] asbdCyberdeckArray =
+            {
+                new StringBuilder(strCyberdeckArray[0]),
+                new StringBuilder(strCyberdeckArray[1]),
+                new StringBuilder(strCyberdeckArray[2]),
+                new StringBuilder(strCyberdeckArray[3])
+            };
             foreach (IHasMatrixAttributes objChild in objThis.ChildrenWithMatrixAttributes)
             {
                 string strLoopArrayText = objChild.ModAttributeArray;
@@ -345,7 +353,7 @@ namespace Chummer
                     string[] strLoopArray = strLoopArrayText.Split(',');
                     for (int i = 0; i < 4; ++i)
                     {
-                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ')';
+                        asbdCyberdeckArray[i].Append("+(" + strLoopArray[i] + ')');
                     }
                 }
             }
@@ -353,7 +361,7 @@ namespace Chummer
             {
                 if (intBaseAttack == lstStatsArray[i])
                 {
-                    objThis.Attack = strCyberdeckArray[i];
+                    objThis.Attack = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -362,7 +370,7 @@ namespace Chummer
             {
                 if (intBaseSleaze == lstStatsArray[i])
                 {
-                    objThis.Sleaze = strCyberdeckArray[i];
+                    objThis.Sleaze = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -371,7 +379,7 @@ namespace Chummer
             {
                 if (intBaseDP == lstStatsArray[i])
                 {
-                    objThis.DataProcessing = strCyberdeckArray[i];
+                    objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -380,7 +388,7 @@ namespace Chummer
             {
                 if (intBaseFirewall == lstStatsArray[i])
                 {
-                    objThis.Firewall = strCyberdeckArray[i];
+                    objThis.Firewall = asbdCyberdeckArray[i].ToString();
                     break;
                 }
             }

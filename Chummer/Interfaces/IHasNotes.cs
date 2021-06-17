@@ -25,6 +25,8 @@ namespace Chummer
     {
         string Notes { get; set; }
 
+        Color NotesColor { get; set; }
+
         Color PreferredColor { get; }
     }
 
@@ -39,13 +41,14 @@ namespace Chummer
         {
             if (objNotes == null || treNode == null)
                 return false;
-            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes))
+            using (frmNotes frmItemNotes = new frmNotes(objNotes.Notes, objNotes.NotesColor))
             {
                 frmItemNotes.ShowDialog(Program.MainForm);
                 if (frmItemNotes.DialogResult != DialogResult.OK)
                     return false;
 
                 objNotes.Notes = frmItemNotes.Notes;
+                objNotes.NotesColor = frmItemNotes.NotesColor;
             }
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap();

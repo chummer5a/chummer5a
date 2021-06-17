@@ -81,6 +81,7 @@ namespace Chummer.Backend.Skills
 
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
+        private Color _colNotes = ColorManager.HasNotesColor;
         public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(10); //List of suggested specializations for this skill
         private bool _blnDefault;
 
@@ -99,6 +100,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(Notes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("name", Name);
             if (!CharacterObject.Created)
             {
@@ -258,6 +260,10 @@ namespace Chummer.Backend.Skills
             if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                 xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (!objLoadingSkill.IsNativeLanguage)
             {
                 xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
@@ -301,7 +307,7 @@ namespace Chummer.Backend.Skills
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = strName,
+                    WritableName = strName,
                     Base = intBaseRating,
                     Karma = intKarmaRating,
 
@@ -375,7 +381,7 @@ namespace Chummer.Backend.Skills
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = strName,
+                    WritableName = strName,
                     Karma = intKarmaRating,
                     Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic"),
                     IsNativeLanguage = blnIsNativeLanguage
@@ -428,7 +434,7 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-        protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();
+        protected static Dictionary<string, bool> SkillTypeCache { get; } = new Dictionary<string, bool>();
         //TODO CACHE INVALIDATE
 
         /// <summary>
@@ -455,7 +461,10 @@ namespace Chummer.Backend.Skills
                     return null;
                 if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
                 {
-                    blnIsKnowledgeSkill = character.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")?.Value != "active";
+                    blnIsKnowledgeSkill =
+                        character.LoadDataXPath("skills.xml")
+                            .SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")
+                            ?.Value != "active";
                     if (SkillTypeCache != null)
                         SkillTypeCache[category] = blnIsKnowledgeSkill;
                 }
@@ -848,9 +857,9 @@ namespace Chummer.Backend.Skills
             if (intValue <= 0)
                 return 0;
             if (intRating > 0)
-                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier);
+                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
             if (Default)
-                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier);
+                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
             return 0;
         }
 
@@ -1411,11 +1420,6 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (TotalBaseRating == 0)
-                {
-                    return string.Empty; //Unlevelled skills cannot have a specialization;
-                }
-
                 if (IsExoticSkill)
                 {
                     return ((ExoticSkill) this).Specific;
@@ -1564,6 +1568,13 @@ namespace Chummer.Backend.Skills
             if (wound != 0)
             {
                 s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds") + strSpace + '(' + wound.ToString(GlobalOptions.CultureInfo) + ')');
+            }
+
+            int sustains = CharacterObject.SustainingPenalty;
+            if (sustains != 0)
+            {
+                s.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Sustain"))
+                    .Append(strSpace).Append('(').Append(sustains.ToString(GlobalOptions.CultureInfo)).Append(')');
             }
 
             if (att.Abbrev == "STR" || att.Abbrev == "AGI")
@@ -1733,10 +1744,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.ControlText;
+
 
         public SkillGroup SkillGroupObject { get; }
 
@@ -1789,6 +1810,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayOtherAttribute(string strAttribute)
         {
+
             int intPool = PoolOtherAttribute(strAttribute);
             if ((IsExoticSkill || string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x =>
                      x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
@@ -2160,28 +2182,31 @@ namespace Chummer.Backend.Skills
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Skills.SkillGroup.Base))
+            switch (e.PropertyName)
             {
-                if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
+                case nameof(Skills.SkillGroup.Base) when CharacterObject.EffectiveBuildMethodUsesPriorityTables:
                     OnMultiplePropertyChanged(nameof(Base),
-                                              nameof(BaseUnlocked),
-                                              nameof(ForcedBuyWithKarma));
-                else
+                        nameof(BaseUnlocked),
+                        nameof(ForcedBuyWithKarma));
+                    break;
+                case nameof(Skills.SkillGroup.Base):
                     OnMultiplePropertyChanged(nameof(Base),
-                                              nameof(ForcedBuyWithKarma));
-            }
-            else if (e.PropertyName == nameof(Skills.SkillGroup.Karma))
-            {
-                OnMultiplePropertyChanged(nameof(Karma),
-                                          nameof(CurrentKarmaCost),
-                                          nameof(ForcedBuyWithKarma),
-                                          nameof(ForcedNotBuyWithKarma));
-            }
-            else if (e.PropertyName == nameof(Skills.SkillGroup.Rating))
-            {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        nameof(ForcedBuyWithKarma));
+                    break;
+                case nameof(Skills.SkillGroup.Karma):
+                    OnMultiplePropertyChanged(nameof(Karma),
+                        nameof(CurrentKarmaCost),
+                        nameof(ForcedBuyWithKarma),
+                        nameof(ForcedNotBuyWithKarma));
+                    break;
+                case nameof(Skills.SkillGroup.Rating):
                 {
-                    OnPropertyChanged(nameof(KarmaUnlocked));
+                    if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                    {
+                        OnPropertyChanged(nameof(KarmaUnlocked));
+                    }
+
+                    break;
                 }
             }
         }
@@ -2194,6 +2219,9 @@ namespace Chummer.Backend.Skills
                     OnMultiplePropertyChanged(nameof(CanUpgradeCareer), nameof(CanAffordSpecialization));
                     break;
                 case nameof(Character.WoundModifier):
+                    OnPropertyChanged(nameof(PoolOtherAttribute));
+                    break;
+                case nameof(Character.SustainingPenalty):
                     OnPropertyChanged(nameof(PoolOtherAttribute));
                     break;
                 case nameof(Character.PrimaryArm):

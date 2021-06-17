@@ -141,12 +141,6 @@ namespace Chummer
             RefreshList();
         }
 
-        private void lstVehicle_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
@@ -188,26 +182,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstVehicle.SelectedIndex + 1 < lstVehicle.Items.Count)
-                {
+                case Keys.Down when lstVehicle.SelectedIndex + 1 < lstVehicle.Items.Count:
                     lstVehicle.SelectedIndex++;
-                }
-                else if (lstVehicle.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstVehicle.SelectedIndex = 0;
+                    if (lstVehicle.Items.Count > 0)
+                    {
+                        lstVehicle.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstVehicle.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstVehicle.SelectedIndex - 1 >= 0:
                     lstVehicle.SelectedIndex--;
-                }
-                else if (lstVehicle.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
+                    if (lstVehicle.Items.Count > 0)
+                    {
+                        lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -350,12 +349,9 @@ namespace Chummer
                     {
                         decCost *= 0.9m;
                     }
-                    if (_setDealerConnectionMaps != null)
+                    if (_setDealerConnectionMaps != null && _setDealerConnectionMaps.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true))
                     {
-                        if (_setDealerConnectionMaps.Any(set => objXmlVehicle.SelectSingleNode("category")?.Value.StartsWith(set, StringComparison.Ordinal) == true))
-                        {
-                            decCost *= 0.9m;
-                        }
+                        decCost *= 0.9m;
                     }
                 }
 

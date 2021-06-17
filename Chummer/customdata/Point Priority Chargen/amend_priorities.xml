@@ -19,6 +19,10 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
+  <priortysumtotenvalues>
+    <A>7</A>
+    <B>4</B>
+  </priortysumtotenvalues>
   <priorities amendoperation="replace">
     <!-- Region Standard -->
     <priority>

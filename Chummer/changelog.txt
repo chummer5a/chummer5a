@@ -1,5 +1,7 @@
 Future Build 215
 Application Changes:
+- Added the ability for devs to set an action on doubleclick on the char-roster
+- Added the upload of a crash to ApplicationInsights in parallel to the old Crashhandler (Loglevelfilters still apply)
 - Properly split apart settings that can be different for individual characters (e.g. karma costs, enabled sourcebooks, enabled custom data) and those that cannot (e.g. PDF paths, UI language, dark mode). The old Options screen now controls the latter, while the former can be managed through a separate, dedicated screen.
 - Settings files that were created for previous versions of Chummer will automatically be converted to character-based settings that use a new format. Characters created for previous versions of Chummer will have their specific entries for certain settings (e.g. character creation karma costs, enabled sourcebooks) converted as well. However, these two changes mean that once settings and/or characters are saved in this version of Chummer, they cannot be opened (properly) with older versions. The Nightlies will therefore show a one-time warning about using the Nightly when one might plan to go back and open up characters with the latest stable (or an earlier build).
 - Properly unhardcoded Sum-to-Ten costs for each priority category. They can now be modified with custom data files.
@@ -20,6 +22,7 @@ Application Changes:
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 - Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
+- Added the ability to track sustained spells and complex forms in the Career mode. They are found in their respective tabs. Psyche is also supported.
 - Added the ability to specify a city, district, and borough for a lifestyle.
 - If a character sheet is printed/exported in a language other than the one with which Chummer is being used, Chummer now attemtps to translate the names of gear, vehicle, and weapon locations.
 - Generating character sheets in languages where commas are used as decimal separators and/or periods are used as number group separators no longer sometimes causes the generator to stall out and silently crash. Fixes #4415.
@@ -56,6 +59,21 @@ Application Changes:
 - Cyberware and vehicles now export the amount that their Matrix Condition Monitors are filled. Weapons now properly export all of their Matrix-related properties, including their Matrix attributes and their Matrix Condition Monitor status.
 - Deleting a skill by undoing the Karma expense for adding it now properly deletes the skill instead of lowering its rating by 1. Fixes #4323.
 - Fixed an issue that prevented 'ware with a capacity of 0 from having any gear added to it, even ones that are explicitly allowed. Fixes #4228.
+- Fixed an issue that some specific skills were not shown for critters based on a Force selection
+- Added an option to assign a color to each note to allow a way to categorize notes.
+- Data entries that directly use attribute values (e.g. for damage codes) now all require the abbreviations of those attributes to be enclosed in curly brackets, e.g. {STR}. They now also all support using unaugmented attribute values by adding "Unaug" after the attribute name but before the end of the curly brackets, as well as "base" attribute values (i.e. those given by priority entries only) by adding "Base" after the attribute abbreviation the same way.
+- When determining dice pools for weapons, having a specialization in the specific weapon name is now always enough to give the appropriate dice pool bonus. In the case of exotic skills, this means an exotic skill in the specific weapon is enough. Fixes #4467.
+- Fixed some weird behavior that might happen when trying to open a Chummer save file before opening Chummer first.
+- The karma cost of fettering a spirit is no longer hardcoded.
+- Attempting to buy a cyberlimb accessory for a non-Adapsin, non-Standard grade cyberlimb after having bought Adapsin no longer causes the accessory's grade to be set to Standard (Adapsin).
+- Added the ability to re-attempt connecting to GitHub inside the Updater tool.
+- Using custom date formats no longer causes the Nuyen and Karma expenses lists to be sorted incorrectly. Fixes #4472.
+- Using and regaining Edge no longer affects modifiers to the value of the Edge attribute. Instead, spent Edge is tracked purely on its own and is printed/exported separately as `edgeused` and `edgeremaining` for spent Edge and remaining Edge respectively. Character sheets now properly display the amount of Edge remaining for a character in the attributes section.
+- Weapons added to a vehicle mount no longer disappear after editing said vehicle mount.
+- First-time Chummer users who download a Nightly version now have their "Prefer Nightly Version" option set to True by default instead of False. Only completely new users (i.e. people who do not have a Chummer registry key) are affected.
+- Cyberprograms, Software, Autosofts, et al. are now properly recognized as programs and printed as such.
+- A vehicle weapon mount that comes pre-installed with a vehicle but whose size is from a splatbook that the character does not have enabled now still show up as weapon mounts. However, their sizes are shown as one of the core rulebook weapon mount sizes: Heavy if it can fit heavy weapons, Standard otherwise. Fixes #4477.
+- Chummer no longer allows more than one unbound spirit or sprite on a character at a time, but now also only cares about unbound and unfettered spirits and sprites that have at least one service in their entry.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -78,6 +96,15 @@ Data Changes:
 - Fixed a typo in Baseline Reagents' availability. Fixes #4458.
 - All French translations that contain a shortened article (i.e. "d'" or "l'") now have zero-width spaces between the consonant and the apostrophe in order to prevent weirdness with the way they are sorted alphabetically. Searching without a zero-width space should still work, however.
 - Chemical Glands can now hold Chemicals and Custom Drugs.
+- Special Work Area can now be selected multiple times for Advanced Lifestyles and have some text specified for it each time.
+- The spells Pollutant Stream, Knockout, Punch, and Frigid now have proper descriptors. Fixes #4479.
+- Added a Bodyware entry for Additional Eye Mount that can only be placed inside of cyberlimbs. This is a crude but effective way of allowing Additional Eye Mount to be put anywhere on a character's body, including in cyberlimbs. Fixes #4482.
+- Croki now properly have access to Ritual Spellcasting.
+- The Morgan Cutlass' weapon mounts now properly use the newer system of dedicated weapon mount types instead of vehicle mods.
+- Vestigial remains of the old, vehicle mod-based weapon mount system have been purged.
+- Vehicles and drones in the core rulebook that come with weapon mounts now use the weapon mount settings written for them in Rigger 5.0 instead of the default core rulebook settings. Players playing without Rigger 5.0 will still see them as their core rulebook weapon sizes however.
+- The Krime Euskaldunak Tankette now uses Rigger 5.0 weapon mounts if Rigger 5.0 is enabled.
+- There are now dedicated options for weapon mount options that are for the weapon mounts that are statted out in the core rulebook. Fixes #4493.
 
 Changed/New Strings:
 - String_ContactPoints
@@ -156,6 +183,15 @@ Changed/New Strings:
 - Message_MergeIdentical
 - MessageTitle_MergeIdentical
 - Message_Load_Error_Warning
+- String_DeleteShort
+- Message_DeleteSustainedSpell
+- Button_Sustain
+- Label_PsycheActive
+- Label_SustainedSelf
+- Label_SustainedForce
+- Label_NetHits
+- Label_Options_DicePenaltySustaining
+- Tip_Skill_Sustain
 - Label_SelectLifestyle_Borough
 - Label_SelectLifestyle_District
 - Label_SelectLifestyle_City
@@ -167,6 +203,13 @@ Changed/New Strings:
 - Label_SelectMentor_Bonus
 - String_Saving
 - String_Saving_Pattern
+- Button_ChooseCustomColor
+- String_NaturalAttribute
+- String_BaseAttribute
+- Label_Options_SpiritFettering
+- Button_Reconnect
+- Message_UnboundSpiritLimit
+- MessageTitle_UnboundSpiritLimit
 - Label_SkillGroup_Disabled
 - Label_SkillGroup_DisabledBy
 - Enum_GunneryCommandDevice
@@ -1063,7 +1106,7 @@ New Features:
 - Exposed ParentDetails requirement checks to Armor Mods. This allows for filtering mods based on the XML properties of their parent, such as filtering based on name or armour value.
 - Gameplay Options can now be used as a forbidden/required choice for items; currently this is used for the Free Insect Spirit qualities, which require the Prime Runner gameplay choice. 
 - Cyberware now supports the use of math operators in the ess and cost values. This allows for customdata files to easily make bulk changes to cyberware Essence and Cost entries.
-- Reimplemented the addsprite and addspirit improvement types to support adding Watchers, Homonculi and other spirit types that are added separately to a tradition.
+- Reimplemented the addsprite and addspirit improvement types to support adding Watchers, Homunculi and other spirit types that are added separately to a tradition.
 - Created new Improvement Types to support the Networker and Massive Network qualities from No Future.
   - The ContactKarma improvement type changes the cost for all contacts by the listed amount.
   - The ContactKarmaMinimum improvement type changes the minimum cost for contacts. The minimum is assumed to be 2.

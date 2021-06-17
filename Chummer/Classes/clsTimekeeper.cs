@@ -70,11 +70,13 @@ namespace Chummer
             {
                 final = s_Time.Elapsed - objStartTimeSpan;
 
+#if DEBUG
                 string logentry = string.Format(GlobalOptions.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
                     taskname, final);
                 //Logger.Trace(logentry);
 
                 Debug.WriteLine(logentry);
+#endif
 
                 if (s_DictionaryStatistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
                 {

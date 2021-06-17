@@ -34,10 +34,13 @@ namespace Chummer
         private static int _intHeight = int.MinValue;
 	    private readonly bool _blnLoading;
         private string _strNotes;
+        private Color _colNotes;
 
         #region Control Events
-        public frmNotes(string strOldNotes)
-		{
+        public frmNotes(string strOldNotes) : this(strOldNotes, ColorManager.HasNotesColor) { }
+
+        public frmNotes(string strOldNotes, Color colNotes)
+        {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -56,25 +59,30 @@ namespace Chummer
 			Height = _intHeight;
             _blnLoading = false;
             txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
-        }
 
-		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
-		{
-            if (_strNotes == txtNotes.Text)
-            {
-                DialogResult = DialogResult.Cancel;
-            }
-            else
-            {
-                _strNotes = txtNotes.Text;
-                DialogResult = DialogResult.OK;
-            }
-		}
+            btnColorSelect.Enabled = txtNotes.Text.Length > 0;
+
+            _colNotes = colNotes;
+            if (_colNotes.IsEmpty)
+                _colNotes = ColorManager.HasNotesColor;
+
+            updateColorRepresentation();
+        }
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
-                Close();
+            switch (e.KeyCode)
+            {
+                case Keys.Escape:
+                    Close();
+                    break;
+                case Keys.Enter:
+                {
+                    if (e.Control)
+                        btnOK_Click(sender, e);
+                    break;
+                }
+            }
         }
 
         private void frmNotes_Resize(object sender, EventArgs e)
@@ -92,6 +100,32 @@ namespace Chummer
             txtNotes.SelectionLength = 0;
             txtNotes.SelectionStart = txtNotes.TextLength;
         }
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            _strNotes = txtNotes.Text;
+            DialogResult = DialogResult.OK;
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private void btnColorSelect_Click(object sender, EventArgs e)
+        {
+            _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
+            var resNewColor = colorDialog1.ShowDialog();
+            if (resNewColor == DialogResult.OK)
+            {
+                _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
+                updateColorRepresentation();
+            }
+        }
+        private void txtNotes_TextChanged(object sender, EventArgs e)
+        {
+            btnColorSelect.Enabled = txtNotes.TextLength > 0;
+        }
+
         #endregion
 
         #region Properties
@@ -100,7 +134,13 @@ namespace Chummer
         /// Notes.
         /// </summary>
         public string Notes => _strNotes;
+        public Color NotesColor => _colNotes;
 
         #endregion
+
+        private void updateColorRepresentation()
+        {
+            txtNotes.ForeColor = ColorManager.GenerateCurrentModeColor(_colNotes);
+        }
     }
 }

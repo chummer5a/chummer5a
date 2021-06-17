@@ -57,6 +57,7 @@ namespace Chummer
         private bool _blnDiscountedGeas;
         private XPathNavigator _nodAdeptWayRequirements;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strAdeptWayDiscount = "0";
         private string _strBonusSource = string.Empty;
         private decimal _decFreePoints;
@@ -145,6 +146,7 @@ namespace Chummer
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
 
             CharacterObject.SourceProcess(_strSource);
@@ -161,6 +163,11 @@ namespace Chummer
             _intRating = intRating;
             if (!objNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
             {
                 objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
@@ -217,7 +224,18 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, CharacterObject);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        CharacterObject);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Load the Power from the XmlNode.
@@ -274,6 +292,11 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             Bonus = objNode["bonus"];
             if (objNode["adeptway"] != null)
             {
@@ -282,13 +305,14 @@ namespace Chummer
             if (Name != "Improved Reflexes" && Name.StartsWith("Improved Reflexes", StringComparison.Ordinal))
             {
                 XmlNode objXmlPower = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[starts-with(./name,\"Improved Reflexes\")]");
-                if (objXmlPower != null)
+                if (objXmlPower != null && int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
                 {
-                    if (int.TryParse(Name.TrimStartOnce("Improved Reflexes", true).Trim(), out int intTemp))
-                    {
-                        Create(objXmlPower, intTemp, null, false);
-                        objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
-                    }
+                    Create(objXmlPower, intTemp, null, false);
+                    objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                    sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                    objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                    _colNotes = ColorTranslator.FromHtml(sNotesColor);
                 }
             }
             else
@@ -814,6 +838,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Action.
         /// </summary>
         public string Action
@@ -861,7 +894,7 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
 
         #endregion
@@ -1010,17 +1043,14 @@ namespace Chummer
                 _decCachedPowerPoints = decimal.MinValue;
 
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
-            if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)))
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)) && Bonus?.InnerXml.Contains("Rating") == true)
             {
-                if (Bonus?.InnerXml.Contains("Rating") == true)
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
+                int intTotalRating = TotalRating;
+                if (intTotalRating > 0)
                 {
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
-                    int intTotalRating = TotalRating;
-                    if (intTotalRating > 0)
-                    {
-                        ImprovementManager.ForcedValue = Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, intTotalRating, DisplayNameShort(GlobalOptions.Language));
-                    }
+                    ImprovementManager.ForcedValue = Extra;
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, intTotalRating, DisplayNameShort(GlobalOptions.Language));
                 }
             }
 
@@ -1043,13 +1073,10 @@ namespace Chummer
 
         protected void OnBoostedSkillChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e?.PropertyName == nameof(Skill.LearnedRating) && sender is Skill objSkill)
+            if (e?.PropertyName == nameof(Skill.LearnedRating) && sender is Skill objSkill && BoostedSkill.LearnedRating != _cachedLearnedRating && _cachedLearnedRating != TotalMaximumLevels)
             {
-                if (BoostedSkill.LearnedRating != _cachedLearnedRating && _cachedLearnedRating != TotalMaximumLevels)
-                {
-                    _cachedLearnedRating = objSkill.LearnedRating;
-                    OnPropertyChanged(nameof(TotalMaximumLevels));
-                }
+                _cachedLearnedRating = objSkill.LearnedRating;
+                OnPropertyChanged(nameof(TotalMaximumLevels));
             }
         }
 
@@ -1129,8 +1156,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

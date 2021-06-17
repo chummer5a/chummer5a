@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using System.Transactions;
 using System.Xml.Serialization;
@@ -59,6 +60,8 @@ namespace ChummerHub.Models.V1
 
         public DateTime? LastDownload { get; set; }
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, Required = Required.AllowNull)]
+        [DataMember(EmitDefaultValue = false)]
         public SINnerGroup MyGroup { get; set; }
 
         [MaxLength(64)]

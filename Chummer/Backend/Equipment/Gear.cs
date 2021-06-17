@@ -27,7 +27,6 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -42,7 +41,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste, IHasWirelessBonus
+    public class Gear : IHasChildrenAndCost<Gear>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort, IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -75,6 +74,7 @@ namespace Chummer.Backend.Equipment
         private Guid _guiWeaponID = Guid.Empty;
         private readonly TaggedObservableCollection<Gear> _lstChildren = new TaggedObservableCollection<Gear>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
         private readonly Character _objCharacter;
         private int _intChildCostMultiplier = 1;
@@ -182,6 +182,10 @@ namespace Chummer.Backend.Equipment
             if (!objXmlGear.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlGear.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlGear.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (string.IsNullOrEmpty(Notes))
             {
                 string strEnglishNameOnPage = Name;
@@ -264,43 +268,40 @@ namespace Chummer.Backend.Equipment
             }
 
             // Check for a Variable Cost.
-            if (!string.IsNullOrEmpty(_strCost))
+            if (!string.IsNullOrEmpty(_strCost) && _strCost.StartsWith("Variable(", StringComparison.Ordinal) && string.IsNullOrEmpty(_strForcedValue))
             {
-                if (_strCost.StartsWith("Variable(", StringComparison.Ordinal) && string.IsNullOrEmpty(_strForcedValue))
+                decimal decMin;
+                decimal decMax = decimal.MaxValue;
+                string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                if (strCost.Contains('-'))
                 {
-                    decimal decMin;
-                    decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                    if (strCost.Contains('-'))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                    string[] strValues = strCost.Split('-');
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                }
+                else
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                    if (decMin != 0 || decMax != decimal.MaxValue)
+                if (decMin != 0 || decMax != decimal.MaxValue)
+                {
+                    if (decMax > 1000000)
+                        decMax = 1000000;
+                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.MaxNuyenDecimals)
                     {
-                        if (decMax > 1000000)
-                            decMax = 1000000;
-                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.MaxNuyenDecimals)
+                        Minimum = decMin,
+                        Maximum = decMax,
+                        Description = string.Format(GlobalOptions.CultureInfo,
+                            LanguageManager.GetString("String_SelectVariableCost"),
+                            DisplayNameShort(GlobalOptions.Language)),
+                        AllowCancel = false
+                    })
+                    {
+                        if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                         {
-                            Minimum = decMin,
-                            Maximum = decMax,
-                            Description = string.Format(GlobalOptions.CultureInfo,
-                                LanguageManager.GetString("String_SelectVariableCost"),
-                                DisplayNameShort(GlobalOptions.Language)),
-                            AllowCancel = false
-                        })
-                        {
-                            if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
-                            {
-                                _guiID = Guid.Empty;
-                                return;
-                            }
-                            _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
+                            _guiID = Guid.Empty;
+                            return;
                         }
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -441,7 +442,16 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source, DisplayPage(GlobalOptions.Language),
+                        GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         private void CreateChildren(XmlNode xmlParentGearNode, bool blnAddImprovements)
         {
@@ -483,23 +493,17 @@ namespace Chummer.Backend.Equipment
                                 if (objXmlLoopGear == null)
                                     continue;
                                 XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
-                                if (xmlTestNode != null)
+                                if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
-                                    if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                    {
-                                        continue;
-                                    }
+                                    continue;
                                 }
 
                                 xmlTestNode = objXmlLoopGear.SelectSingleNode("required/geardetails");
-                                if (xmlTestNode != null)
+                                if (xmlTestNode != null && !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
-                                    if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                    {
-                                        continue;
-                                    }
+                                    continue;
                                 }
 
                                 string strName = objChoiceNode["name"]?.InnerText ?? string.Empty;
@@ -830,6 +834,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
 
             objWriter.WriteElementString("programlimit", _strProgramLimit);
@@ -868,13 +873,10 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && !objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
-                if (!objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
-                {
-                    XmlNode node = GetNode(GlobalOptions.Language, objNode["name"]?.InnerText, objNode["category"]?.InnerText);
-                    node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-                }
+                XmlNode node = GetNode(GlobalOptions.Language, objNode["name"]?.InnerText, objNode["category"]?.InnerText);
+                node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             _objCachedMyXmlNode = null;
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
@@ -929,10 +931,9 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
             string strWeaponID = string.Empty;
-            if (objNode.TryGetStringFieldQuickly("weaponguid", ref strWeaponID))
+            if (objNode.TryGetStringFieldQuickly("weaponguid", ref strWeaponID) && !Guid.TryParse(strWeaponID, out _guiWeaponID))
             {
-                if (!Guid.TryParse(strWeaponID, out _guiWeaponID))
-                    _guiWeaponID = Guid.Empty;
+                _guiWeaponID = Guid.Empty;
             }
             objNode.TryGetInt32FieldQuickly("childcostmultiplier", ref _intChildCostMultiplier);
             objNode.TryGetInt32FieldQuickly("childavailmodifier", ref _intChildAvailModifier);
@@ -1005,6 +1006,10 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -1172,14 +1177,11 @@ namespace Chummer.Backend.Equipment
                     this.SetHomeNode(_objCharacter, true);
                 }
             }
-            if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes))
+            if (!objNode.TryGetBoolFieldQuickly("canswapattributes", ref _blnCanSwapAttributes) && Category == "Cyberdecks")
             {
                 // Legacy shim
-                if (Category == "Cyberdecks")
-                {
-                    _blnCanSwapAttributes = (Name != "MCT Trainee" && Name != "C-K Analyst" && Name != "Aztechnology Emissary" &&
-                        Name != "Yak Killer" && Name != "Ring of Light Special" && Name != "Ares Echo Unlimited");
-                }
+                _blnCanSwapAttributes = (Name != "MCT Trainee" && Name != "C-K Analyst" && Name != "Aztechnology Emissary" &&
+                                         Name != "Yak Killer" && Name != "Ring of Light Special" && Name != "Ares Echo Unlimited");
             }
 
             if (blnNeedCommlinkLegacyShim)
@@ -1723,7 +1725,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _strCanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent"));
+                return CanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent"));
             }
         }
 
@@ -1746,6 +1748,15 @@ namespace Chummer.Backend.Equipment
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -1875,14 +1886,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not the Gear qualifies as a Program in the printout XML.
         /// </summary>
-        public bool IsProgram => Category == "ARE Programs" ||
-                                 Category.StartsWith("Autosofts", StringComparison.Ordinal) ||
-                                 Category == "Data Software" ||
-                                 Category == "Malware" ||
-                                 Category == "Matrix Programs" ||
-                                 Category == "Tactical AR Software" ||
-                                 Category == "Telematics Infrastructure Software" ||
-                                 Category == "Sensor Software";
+        public bool IsProgram => Category.EndsWith("Programs", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.EndsWith("Apps", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.StartsWith("Autosofts", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.StartsWith("Software", StringComparison.OrdinalIgnoreCase) ||
+                                 Category.StartsWith("Skillsofts", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Cost multiplier for Children attached to this Gear.
@@ -2019,7 +2027,7 @@ namespace Chummer.Backend.Equipment
             set => _strModAttributeArray = value;
         }
 
-        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children.Cast<IHasMatrixAttributes>().ToList();
+        public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children;
 
         /// <summary>
         /// Commlink's Limit for how many Programs they can run.
@@ -2859,16 +2867,13 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
                 {
-                    if (WirelessBonus.Attributes?.Count > 0)
+                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes["mode"].InnerText == "replace")
                     {
-                        if (WirelessBonus.Attributes["mode"].InnerText == "replace")
-                        {
-                            ImprovementManager.DisableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                        x.ImproveSource == Improvement.ImprovementSource.Gear &&
-                                        x.SourceName == InternalId)
-                                    .ToArray());
-                        }
+                        ImprovementManager.DisableImprovements(_objCharacter,
+                            _objCharacter.Improvements.Where(x =>
+                                    x.ImproveSource == Improvement.ImprovementSource.Gear &&
+                                    x.SourceName == InternalId)
+                                .ToArray());
                     }
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
@@ -2878,16 +2883,13 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus.Attributes?.Count > 0)
+                    if (WirelessBonus.Attributes?.Count > 0 && WirelessBonus.Attributes?["mode"].InnerText == "replace")
                     {
-                        if (WirelessBonus.Attributes?["mode"].InnerText == "replace")
-                        {
-                            ImprovementManager.EnableImprovements(_objCharacter,
-                                _objCharacter.Improvements.Where(x =>
-                                        x.ImproveSource == Improvement.ImprovementSource.Gear &&
-                                        x.SourceName == InternalId)
-                                    .ToArray());
-                        }
+                        ImprovementManager.EnableImprovements(_objCharacter,
+                            _objCharacter.Improvements.Where(x =>
+                                    x.ImproveSource == Improvement.ImprovementSource.Gear &&
+                                    x.SourceName == InternalId)
+                                .ToArray());
                     }
 
                     ImprovementManager.RemoveImprovements(_objCharacter,
@@ -3144,8 +3146,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !string.IsNullOrEmpty(ParentID)
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText
@@ -3282,43 +3284,31 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlLoopNode in xmlGearDataList)
                         {
                             XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                            if (xmlTestNode != null)
+                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
-                                if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
 
                             xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                            if (xmlTestNode != null)
+                            if (xmlTestNode != null && !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
-                                if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
 
                             xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
-                            if (xmlTestNode != null)
+                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
-                                if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
 
                             xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
-                            if (xmlTestNode != null)
+                            if (xmlTestNode != null && !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
-                                if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                {
-                                    continue;
-                                }
+                                continue;
                             }
 
                             xmlGearDataNode = xmlLoopNode;
@@ -3340,43 +3330,31 @@ namespace Chummer.Backend.Equipment
                                 foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                 {
                                     XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                                    if (xmlTestNode != null)
+                                    if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
                                         // Assumes topmost parent is an AND node
-                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                        {
-                                            continue;
-                                        }
+                                        continue;
                                     }
 
                                     xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                                    if (xmlTestNode != null)
+                                    if (xmlTestNode != null && !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
                                         // Assumes topmost parent is an AND node
-                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                        {
-                                            continue;
-                                        }
+                                        continue;
                                     }
 
                                     xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
-                                    if (xmlTestNode != null)
+                                    if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
                                         // Assumes topmost parent is an AND node
-                                        if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                        {
-                                            continue;
-                                        }
+                                        continue;
                                     }
 
                                     xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
-                                    if (xmlTestNode != null)
+                                    if (xmlTestNode != null && !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
                                         // Assumes topmost parent is an AND node
-                                        if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                        {
-                                            continue;
-                                        }
+                                        continue;
                                     }
 
                                     xmlGearDataNode = xmlLoopNode;
@@ -3401,43 +3379,31 @@ namespace Chummer.Backend.Equipment
                                     foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                     {
                                         XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                                        if (xmlTestNode != null)
+                                        if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
                                             // Assumes topmost parent is an AND node
-                                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                            {
-                                                continue;
-                                            }
+                                            continue;
                                         }
 
                                         xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
-                                        if (xmlTestNode != null)
+                                        if (xmlTestNode != null && !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
                                             // Assumes topmost parent is an AND node
-                                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                            {
-                                                continue;
-                                            }
+                                            continue;
                                         }
 
                                         xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
-                                        if (xmlTestNode != null)
+                                        if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
                                             // Assumes topmost parent is an AND node
-                                            if (xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                            {
-                                                continue;
-                                            }
+                                            continue;
                                         }
 
                                         xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
-                                        if (xmlTestNode != null)
+                                        if (xmlTestNode != null && !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
                                             // Assumes topmost parent is an AND node
-                                            if (!xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
-                                            {
-                                                continue;
-                                            }
+                                            continue;
                                         }
 
                                         xmlGearDataNode = xmlLoopNode;
@@ -3566,17 +3532,14 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGear")))
+                return false;
 
             switch (Parent)
             {
                 case IHasGear objHasChildren:
                     DeleteGear();
-                    objHasChildren.Gear.Remove(this);
+                    objHasChildren.GearChildren.Remove(this);
                     break;
                 case IHasChildren<Gear> objHasChildren:
                     DeleteGear();
@@ -3620,8 +3583,8 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
 
@@ -3679,5 +3642,7 @@ namespace Chummer.Backend.Equipment
         {
             throw new NotImplementedException();
         }
+
+        public TaggedObservableCollection<Gear> GearChildren => Children;
     }
 }

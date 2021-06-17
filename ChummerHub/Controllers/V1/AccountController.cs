@@ -542,12 +542,14 @@ namespace ChummerHub.Controllers
                 };
                 return BadRequest(res);
             }
+            res.UserEmail = user.Email;
             user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
             SINnerSearchGroup ssg = new SINnerSearchGroup(sg, user)
             {
                 MyMembers = new List<SINnerSearchGroupMember>()
             };
+
             using (var t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
@@ -719,6 +721,7 @@ namespace ChummerHub.Controllers
                 };
                 return BadRequest(res);
             }
+            res.UserEmail = user.Email;
             user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
             SINnerSearchGroup ssg = new SINnerSearchGroup(sg, user)

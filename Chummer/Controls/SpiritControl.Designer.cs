@@ -38,14 +38,14 @@ namespace Chummer
             this.cboSpiritName = new Chummer.ElasticComboBox();
             this.imgLink = new System.Windows.Forms.PictureBox();
             this.cmsSpirit = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsContactOpen = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsRemoveCharacter = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsAttachCharacter = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsCreateCharacter = new System.Windows.Forms.ToolStripMenuItem();
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.txtCritterName = new System.Windows.Forms.TextBox();
             this.chkFettered = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsCreateCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudServices)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudForce)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
@@ -92,6 +92,11 @@ namespace Chummer
             -1,
             -1,
             0});
+            this.nudServices.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudServices.Name = "nudServices";
             this.nudServices.Size = new System.Drawing.Size(197, 20);
             this.nudServices.TabIndex = 4;
@@ -119,6 +124,11 @@ namespace Chummer
             this.nudForce.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.nudForce.Maximum = new decimal(new int[] {
             6,
+            0,
+            0,
+            0});
+            this.nudForce.Minimum = new decimal(new int[] {
+            0,
             0,
             0,
             0});
@@ -183,43 +193,7 @@ namespace Chummer
             this.tsAttachCharacter,
             this.tsCreateCharacter});
             this.cmsSpirit.Name = "cmsContact";
-            this.cmsSpirit.Size = new System.Drawing.Size(172, 92);
-            // 
-            // tsContactOpen
-            // 
-            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go;
-            this.tsContactOpen.Name = "tsContactOpen";
-            this.tsContactOpen.Size = new System.Drawing.Size(171, 22);
-            this.tsContactOpen.Tag = "MenuItem_OpenCharacter";
-            this.tsContactOpen.Text = "Open Character";
-            this.tsContactOpen.Click += new System.EventHandler(this.tsContactOpen_Click);
-            // 
-            // tsRemoveCharacter
-            // 
-            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete;
-            this.tsRemoveCharacter.Name = "tsRemoveCharacter";
-            this.tsRemoveCharacter.Size = new System.Drawing.Size(171, 22);
-            this.tsRemoveCharacter.Tag = "MenuItem_RemoveCharacter";
-            this.tsRemoveCharacter.Text = "Remove Character";
-            this.tsRemoveCharacter.Click += new System.EventHandler(this.tsRemoveCharacter_Click);
-            // 
-            // tsAttachCharacter
-            // 
-            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
-            this.tsAttachCharacter.Name = "tsAttachCharacter";
-            this.tsAttachCharacter.Size = new System.Drawing.Size(171, 22);
-            this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
-            this.tsAttachCharacter.Text = "Attach Character";
-            this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
-            // 
-            // tsCreateCharacter
-            // 
-            this.tsCreateCharacter.Image = global::Chummer.Properties.Resources.user_add;
-            this.tsCreateCharacter.Name = "tsCreateCharacter";
-            this.tsCreateCharacter.Size = new System.Drawing.Size(171, 22);
-            this.tsCreateCharacter.Tag = "MenuItem_CreateCritter";
-            this.tsCreateCharacter.Text = "Create Critter";
-            this.tsCreateCharacter.Click += new System.EventHandler(this.tsCreateCharacter_Click);
+            this.cmsSpirit.Size = new System.Drawing.Size(181, 114);
             // 
             // imgNotes
             // 
@@ -294,6 +268,66 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(853, 30);
             this.tlpMain.TabIndex = 14;
             // 
+            // tsContactOpen
+            // 
+            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go;
+            this.tsContactOpen.ImageDpi120 = null;
+            this.tsContactOpen.ImageDpi144 = null;
+            this.tsContactOpen.ImageDpi192 = global::Chummer.Properties.Resources.link_go1;
+            this.tsContactOpen.ImageDpi288 = null;
+            this.tsContactOpen.ImageDpi384 = null;
+            this.tsContactOpen.ImageDpi96 = global::Chummer.Properties.Resources.link_go;
+            this.tsContactOpen.Name = "tsContactOpen";
+            this.tsContactOpen.Size = new System.Drawing.Size(180, 22);
+            this.tsContactOpen.Tag = "MenuItem_OpenCharacter";
+            this.tsContactOpen.Text = "Open Character";
+            this.tsContactOpen.Click += new System.EventHandler(this.tsContactOpen_Click);
+            // 
+            // tsRemoveCharacter
+            // 
+            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete;
+            this.tsRemoveCharacter.ImageDpi120 = null;
+            this.tsRemoveCharacter.ImageDpi144 = null;
+            this.tsRemoveCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_delete1;
+            this.tsRemoveCharacter.ImageDpi288 = null;
+            this.tsRemoveCharacter.ImageDpi384 = null;
+            this.tsRemoveCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_delete;
+            this.tsRemoveCharacter.Name = "tsRemoveCharacter";
+            this.tsRemoveCharacter.Size = new System.Drawing.Size(180, 22);
+            this.tsRemoveCharacter.Tag = "MenuItem_RemoveCharacter";
+            this.tsRemoveCharacter.Text = "Remove Character";
+            this.tsRemoveCharacter.Click += new System.EventHandler(this.tsRemoveCharacter_Click);
+            // 
+            // tsAttachCharacter
+            // 
+            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.ImageDpi120 = null;
+            this.tsAttachCharacter.ImageDpi144 = null;
+            this.tsAttachCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_add1;
+            this.tsAttachCharacter.ImageDpi288 = null;
+            this.tsAttachCharacter.ImageDpi384 = null;
+            this.tsAttachCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.Name = "tsAttachCharacter";
+            this.tsAttachCharacter.Size = new System.Drawing.Size(180, 22);
+            this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
+            this.tsAttachCharacter.Text = "Attach Character";
+            this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
+            // 
+            // tsCreateCharacter
+            // 
+            this.tsCreateCharacter.Image = global::Chummer.Properties.Resources.ladybird_add;
+            this.tsCreateCharacter.ImageDpi120 = null;
+            this.tsCreateCharacter.ImageDpi144 = null;
+            this.tsCreateCharacter.ImageDpi192 = global::Chummer.Properties.Resources.ladybird_add1;
+            this.tsCreateCharacter.ImageDpi288 = null;
+            this.tsCreateCharacter.ImageDpi384 = null;
+            this.tsCreateCharacter.ImageDpi96 = global::Chummer.Properties.Resources.ladybird_add;
+            this.tsCreateCharacter.Name = "tsCreateCharacter";
+            this.tsCreateCharacter.Size = new System.Drawing.Size(180, 22);
+            this.tsCreateCharacter.Tag = "MenuItem_CreateCritter";
+            this.tsCreateCharacter.Text = "Create Critter";
+            this.tsCreateCharacter.Click += new System.EventHandler(this.tsCreateCharacter_Click);
+            // 
             // SpiritControl
             // 
             this.AutoSize = true;
@@ -327,13 +361,13 @@ namespace Chummer
         private ElasticComboBox cboSpiritName;
         private System.Windows.Forms.PictureBox imgLink;
         private System.Windows.Forms.ContextMenuStrip cmsSpirit;
-        private System.Windows.Forms.ToolStripMenuItem tsContactOpen;
-        private System.Windows.Forms.ToolStripMenuItem tsRemoveCharacter;
-        private System.Windows.Forms.ToolStripMenuItem tsAttachCharacter;
         private System.Windows.Forms.PictureBox imgNotes;
-        private System.Windows.Forms.ToolStripMenuItem tsCreateCharacter;
         private System.Windows.Forms.TextBox txtCritterName;
         private Chummer.ColorableCheckBox chkFettered;
         private BufferedTableLayoutPanel tlpMain;
+        private DpiFriendlyToolStripMenuItem tsContactOpen;
+        private DpiFriendlyToolStripMenuItem tsRemoveCharacter;
+        private DpiFriendlyToolStripMenuItem tsAttachCharacter;
+        private DpiFriendlyToolStripMenuItem tsCreateCharacter;
     }
 }

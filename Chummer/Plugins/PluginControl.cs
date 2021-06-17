@@ -34,7 +34,7 @@ using NLog;
 namespace Chummer.Plugins
 {
     [InheritedExport(typeof(IPlugin))]
-    public interface IPlugin
+    public interface IPlugin : IDisposable
     {
         //only very rudimentary initialization should take place here. Make it QUICK.
         void CustomInitialize(frmChummerMain mainControl);
@@ -54,7 +54,6 @@ namespace Chummer.Plugins
         void SetIsUnitTest(bool isUnitTest);
 
         Assembly GetPluginAssembly();
-        void Dispose();
         bool SetCharacterRosterNode(TreeNode objNode);
         Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList);
     }
@@ -366,7 +365,7 @@ namespace Chummer.Plugins
                 dCatalog.Refresh();
         }
 
-        internal void LoadPlugins(CustomActivity parentActivity)
+        internal void LoadPlugins(CustomActivity parentActivity = null)
         {
             try
             {
@@ -429,10 +428,9 @@ namespace Chummer.Plugins
                         continue;
                     foreach (TabPage page in pages)
                     {
-                        if (page != null)
+                        if (page != null && !frmCareer.TabCharacterTabs.TabPages.Contains(page))
                         {
-                            if (!frmCareer.TabCharacterTabs.TabPages.Contains(page))
-                                frmCareer.TabCharacterTabs.TabPages.Add(page);
+                            frmCareer.TabCharacterTabs.TabPages.Add(page);
                         }
                     }
                 }
@@ -450,10 +448,9 @@ namespace Chummer.Plugins
                         continue;
                     foreach (TabPage page in pages)
                     {
-                        if (page != null)
+                        if (page != null && !frmCreate.TabCharacterTabs.TabPages.Contains(page))
                         {
-                            if (!frmCreate.TabCharacterTabs.TabPages.Contains(page))
-                                frmCreate.TabCharacterTabs.TabPages.Add(page);
+                            frmCreate.TabCharacterTabs.TabPages.Add(page);
                         }
                     }
                 }
@@ -472,10 +469,9 @@ namespace Chummer.Plugins
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)
                     {
-                        if (plugInMenu != null)
+                        if (plugInMenu != null && !menu.DropDownItems.Contains(plugInMenu))
                         {
-                            if (!menu.DropDownItems.Contains(plugInMenu))
-                                menu.DropDownItems.Add(plugInMenu);
+                            menu.DropDownItems.Add(plugInMenu);
                         }
                     }
                 }

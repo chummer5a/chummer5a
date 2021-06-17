@@ -68,7 +68,7 @@ namespace Chummer
     [Flags]
     public enum QualityFailureReasons
     {
-        Allowed = 0x0,
+        None = 0x0,
         LimitExceeded = 0x1,
         RequiredSingle = 0x2,
         RequiredMultiple = 0x4,
@@ -93,6 +93,7 @@ namespace Chummer
         private string _strPage = string.Empty;
         private bool _blnMutant;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private bool _blnImplemented = true;
         private bool _blnContributeToBP = true;
         private bool _blnContributeToLimit = true;
@@ -199,6 +200,11 @@ namespace Chummer
             }
             if (!objXmlQuality.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlQuality.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlQuality.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objXmlQuality.TryGetInt32FieldQuickly("karma", ref _intBP);
             _eQualityType = ConvertToQualityType(objXmlQuality["category"]?.InnerText);
             _eQualitySource = objQualitySource;
@@ -352,7 +358,16 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source, DisplayPage(GlobalOptions.Language),
+                        GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -395,6 +410,7 @@ namespace Chummer
             if (_nodDiscounts != null)
                 objWriter.WriteRaw("<costdiscount>" + _nodDiscounts.InnerXml + "</costdiscount>");
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             if (_eQualityType == QualityType.LifeModule)
             {
                 objWriter.WriteElementString("stage", _strStage);
@@ -463,6 +479,10 @@ namespace Chummer
             _nodDiscounts = objNode["costdiscount"]?.CreateNavigator();
             objNode.TryGetField("weaponguid", Guid.TryParse, out _guiWeaponID);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
             if (_eQualityType == QualityType.LifeModule)
             {
@@ -985,6 +1005,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         private int _intCachedSuppressed = -1;
         public bool Suppressed
         {
@@ -1080,8 +1109,8 @@ namespace Chummer
                            || OriginSource == QualitySource.LifeModule
                            || OriginSource == QualitySource.Metatype
                            || OriginSource == QualitySource.Heritage
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return OriginSource == QualitySource.BuiltIn
                        || OriginSource == QualitySource.Improvement
@@ -1090,6 +1119,7 @@ namespace Chummer
                        || OriginSource == QualitySource.Heritage
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
+                
             }
         }
         #endregion
@@ -1123,7 +1153,7 @@ namespace Chummer
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             conflictingQualities = new List<Quality>(objCharacter.Qualities.Count);
-            reason = QualityFailureReasons.Allowed;
+            reason = QualityFailureReasons.None;
             //If limit are not present or no, check if same quality exists
             string strTemp = string.Empty;
             if (!(objXmlQuality.TryGetStringFieldQuickly("limit", ref strTemp) && strTemp == bool.FalseString))
@@ -1224,7 +1254,7 @@ namespace Chummer
                 }
             }
 
-            return conflictingQualities.Count <= 0 && reason == QualityFailureReasons.Allowed;
+            return conflictingQualities.Count <= 0 && reason == QualityFailureReasons.None;
         }
 
         /// <summary>
@@ -1335,12 +1365,11 @@ namespace Chummer
                     blnAddItem = false;
                 }
 
-                if (blnAddItem)
+                if (blnAddItem && !CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
+                    , objOldQuality.DisplayNameShort(GlobalOptions.Language)
+                    , DisplayNameShort(GlobalOptions.Language))))
                 {
-                    if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap")
-                        , objOldQuality.DisplayNameShort(GlobalOptions.Language)
-                        , DisplayNameShort(GlobalOptions.Language))))
-                        blnAddItem = false;
+                    blnAddItem = false;
                 }
 
                 if (!blnAddItem) return false;
@@ -1371,10 +1400,9 @@ namespace Chummer
                         blnAddItem = false;
                     }
 
-                    if (blnAddItem)
+                    if (blnAddItem && !CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
                     {
-                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_QualitySwap"), objOldQuality.DisplayNameShort(GlobalOptions.Language), DisplayNameShort(GlobalOptions.Language))))
-                            blnAddItem = false;
+                        blnAddItem = false;
                     }
                 }
                 else
@@ -1431,8 +1459,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
 

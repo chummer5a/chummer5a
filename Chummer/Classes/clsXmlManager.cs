@@ -24,10 +24,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
@@ -91,23 +91,14 @@ namespace Chummer
             public bool IsLoaded { get; set; }
         }
 
-        private static readonly ConcurrentDictionary<int, XmlReference> s_DicXmlDocuments = new ConcurrentDictionary<int, XmlReference>(); // Key is the HashCode for the complete combination of data used
-        private static bool s_blnSetDataDirectoriesLoaded;
+        private static readonly ConcurrentDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
+            new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is languge + array of all file paths for the complete combination of data used
+        private static bool s_blnSetDataDirectoriesLoaded = true;
         private static readonly object s_SetDataDirectoriesLock = new object();
-        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>();
-
-        #region Constructor
-        static XmlManager()
-        {
-            s_SetDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
-            foreach (CustomDataDirectoryInfo objCustomDataDirectory in GlobalOptions.CustomDataDirectoryInfos)
-            {
-                s_SetDataDirectories.Add(objCustomDataDirectory.Path);
-            }
-
-            s_blnSetDataDirectoriesLoaded = true;
-        }
-        #endregion
+        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
+            .Combine(Utils.GetStartupPath, "data").Yield()
+            .Concat(GlobalOptions.CustomDataDirectoryInfos.Select(x => x.Path)));
+        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         #region Methods
         public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> customDirectories)
@@ -198,15 +189,15 @@ namespace Chummer
             
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
-            int intDataConfigHash = lstRelevantCustomDataPaths.Count > 0
-                ? (new[] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
-                : new { strLanguage, strPath }.GetHashCode();
+            List<string> lstKey = new List<string> {strLanguage, strPath};
+            lstKey.AddRange(lstRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             // Look to see if this XmlDocument is already loaded.
             XmlDocument xmlDocumentOfReturn = null;
             if (blnLoadFile
                 || (GlobalOptions.LiveCustomData && strFileName != "improvements.xml")
-                || !s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
+                || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 // The file was not found in the reference list, so it must be loaded.
                 xmlReferenceOfReturn = null;
@@ -215,7 +206,7 @@ namespace Chummer
                 {
                     // ReSharper disable once MethodHasAsyncOverload
                     xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile);
-                    blnLoadSuccess = s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                    blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                 }
                 else
                     blnLoadSuccess = await LoadAsync(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile)
@@ -223,7 +214,7 @@ namespace Chummer
                         x =>
                         {
                             xmlDocumentOfReturn = x.Result;
-                            return s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn);
+                            return s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
                         });
                 if (!blnLoadSuccess)
                 {
@@ -323,28 +314,28 @@ namespace Chummer
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
             bool blnHasCustomData = lstRelevantCustomDataPaths.Count > 0;
-            int intDataConfigHash = blnHasCustomData
-                ? (new [] { strLanguage, strPath }).Concat(lstRelevantCustomDataPaths).GetEnsembleHashCode()
-                : new { strLanguage, strPath }.GetHashCode();
+            List<string> lstKey = new List<string> { strLanguage, strPath };
+            lstKey.AddRange(lstRelevantCustomDataPaths);
+            KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
 
             XmlDocument xmlReturn = null;
             // Create a new document that everything will be merged into.
             XmlDocument xmlScratchpad = new XmlDocument { XmlResolver = null };
             // Look to see if this XmlDocument is already loaded.
-            if (!s_DicXmlDocuments.TryGetValue(intDataConfigHash, out XmlReference xmlReferenceOfReturn))
+            if (!s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 int intEmergencyRelease = 0;
                 while (true) // Hacky as heck, but it works for now. We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
                 {
                     // The file was not found in the reference list, so it must be loaded.
                     xmlReferenceOfReturn = new XmlReference();
-                    if (s_DicXmlDocuments.TryAdd(intDataConfigHash, xmlReferenceOfReturn))
+                    if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
                     {
                         blnLoadFile = true;
                         break;
                     }
                     // It somehow got added in the meantime, so let's fetch it again
-                    if (s_DicXmlDocuments.TryGetValue(intDataConfigHash, out xmlReferenceOfReturn))
+                    if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
                         break;
                     if (intEmergencyRelease > 1000) // Shouldn't every happen, but just in case it does, emergency exit out of the loading function
                     {
@@ -402,11 +393,15 @@ namespace Chummer
                             }
                         }
                     }
-                    catch (IOException)
+                    catch (IOException e)
                     {
+                        Log.Info(e);
+                        Utils.BreakIfDebug();
                     }
-                    catch (XmlException)
+                    catch (XmlException e)
                     {
+                        Log.Warn(e);
+                        Utils.BreakIfDebug();
                     }
                 }
 
@@ -947,12 +942,11 @@ namespace Chummer
                     else
                     {
                         objAmendingNodeId = xmlAmendingNode["name"];
-                        if (objAmendingNodeId != null)
+                        if (objAmendingNodeId != null && (strOperation == "remove" || xmlAmendingNode.SelectSingleNode("child::*[not(self::name)]") != null))
                         {
                             // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node
                             // if there are other nodes present in the amending node or if a remove operation is specified (since that only requires an id node).
-                            if (strOperation == "remove" || xmlAmendingNode.SelectSingleNode("child::*[not(self::name)]") != null)
-                                sbdFilter.Append("name = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
+                            sbdFilter.Append("name = " + objAmendingNodeId.InnerText.Replace("&amp;", "&").CleanXPath());
                         }
                     }
                     // Child Nodes marked with "isidnode" serve as additional identifier nodes, in case something needs modifying that uses neither a name nor an ID.
@@ -1149,15 +1143,12 @@ namespace Chummer
                                                     {
                                                         foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                         {
-                                                            if (objChildToEdit.NodeType == eChildNodeType)
+                                                            if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
+                                                                objChildToEdit.Name == xmlChild.Name))
                                                             {
-                                                                if (eChildNodeType != XmlNodeType.Attribute ||
-                                                                    objChildToEdit.Name == xmlChild.Name)
-                                                                {
-                                                                    objChildToEdit.Value += xmlChild.Value;
-                                                                    blnItemFound = true;
-                                                                    break;
-                                                                }
+                                                                objChildToEdit.Value += xmlChild.Value;
+                                                                blnItemFound = true;
+                                                                break;
                                                             }
                                                         }
                                                     }
@@ -1200,38 +1191,32 @@ namespace Chummer
                                                 XmlNodeType eChildNodeType = xmlChild.NodeType;
 
                                                 // Text, Attributes, and CDATA are subject to the RegexReplace
-                                                if (eChildNodeType == XmlNodeType.Text ||
-                                                    eChildNodeType == XmlNodeType.Attribute ||
-                                                    eChildNodeType == XmlNodeType.CDATA)
+                                                if ((eChildNodeType == XmlNodeType.Text ||
+                                                     eChildNodeType == XmlNodeType.Attribute ||
+                                                     eChildNodeType == XmlNodeType.CDATA) && objNodeToEdit.HasChildNodes)
                                                 {
-                                                    if (objNodeToEdit.HasChildNodes)
+                                                    foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                     {
-                                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                        if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
+                                                            objChildToEdit.Name == xmlChild.Name))
                                                         {
-                                                            if (objChildToEdit.NodeType == eChildNodeType)
+                                                            // Try-Catch just in case initial RegEx pattern validity check overlooked something
+                                                            try
                                                             {
-                                                                if (eChildNodeType != XmlNodeType.Attribute ||
-                                                                    objChildToEdit.Name == xmlChild.Name)
-                                                                {
-                                                                    // Try-Catch just in case initial RegEx pattern validity check overlooked something
-                                                                    try
-                                                                    {
-                                                                        objChildToEdit.Value =
-                                                                            Regex.Replace(objChildToEdit.Value,
-                                                                                strRegexPattern, xmlChild.Value);
-                                                                    }
-                                                                    catch (ArgumentException ex)
-                                                                    {
-                                                                        Program.MainForm?.ShowMessageBox(ex.ToString());
-                                                                        // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
-                                                                        // So just exit out early instead of spamming the user with a bunch of error messages
-                                                                        if (!blnReturn)
-                                                                            return blnReturn;
-                                                                    }
-
-                                                                    break;
-                                                                }
+                                                                objChildToEdit.Value =
+                                                                    Regex.Replace(objChildToEdit.Value,
+                                                                        strRegexPattern, xmlChild.Value);
                                                             }
+                                                            catch (ArgumentException ex)
+                                                            {
+                                                                Program.MainForm?.ShowMessageBox(ex.ToString());
+                                                                // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
+                                                                // So just exit out early instead of spamming the user with a bunch of error messages
+                                                                if (!blnReturn)
+                                                                    return blnReturn;
+                                                            }
+
+                                                            break;
                                                         }
                                                     }
                                                 }

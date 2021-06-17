@@ -64,6 +64,7 @@ namespace ChummerHub.Models.V1
             unknown
         }
 
+        [JsonConstructor]
         public Tag()
         {
             TagConstructor(null, null);

@@ -408,9 +408,6 @@ namespace Chummer
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
             cboBaseLifestyle.PopulateWithListItems(lstLifestyles);
-            cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;
-            if (cboBaseLifestyle.SelectedIndex == -1)
-                cboBaseLifestyle.SelectedIndex = 0;
             cboBaseLifestyle.EndUpdate();
             txtLifestyleName.DoDatabinding("Text",_objLifestyle,nameof(Lifestyle.Name));
             nudRoommates.DoDatabinding("Value",_objLifestyle,nameof(Lifestyle.Roommates));
@@ -433,6 +430,9 @@ namespace Chummer
             lblComfortTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
             lblSecurityTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
             lblTotalLP.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
+
+            if (cboBaseLifestyle.SelectedIndex == -1)
+                cboBaseLifestyle.SelectedIndex = 0;
 
             _objLifestyle.LifestyleQualities.CollectionChanged += LifestyleQualitiesOnCollectionChanged;
             _objLifestyle.FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
@@ -572,11 +572,10 @@ namespace Chummer
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
 
-            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality)) return;
-            if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
-            {
+            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality))
                 return;
-            }
+            if (objQuality.OriginSource == QualitySource.BuiltIn)
+                return;
             _objLifestyle.LifestyleQualities.Remove(objQuality);
         }
 
@@ -594,7 +593,7 @@ namespace Chummer
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 objQuality.SetSourceDetail(lblQualitySource);
-                cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
+                cmdDeleteQuality.Enabled = objQuality.OriginSource != QualitySource.BuiltIn;
             }
             else
             {

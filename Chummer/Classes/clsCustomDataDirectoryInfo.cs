@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace Chummer
 {
-    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>
+    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>
     {
         private bool _blnCreated;
         private int _version;
@@ -404,29 +404,21 @@ namespace Chummer
         #region Interface Implementations and Operators
         public int CompareTo(object obj)
         {
-            if (obj == null)
-                return 1;
             if (obj is CustomDataDirectoryInfo objOtherDirectoryInfo)
-            {
-                int intReturn = string.Compare(Name, objOtherDirectoryInfo.Name, StringComparison.Ordinal);
-                if (intReturn == 0)
-                {
-                    intReturn = string.Compare(Path, objOtherDirectoryInfo.Path, StringComparison.Ordinal);
-                }
+                return CompareTo(objOtherDirectoryInfo);
+            return 1;
+        }
 
-                return intReturn;
-            }
-
-            return string.Compare(Name, obj.ToString(), StringComparison.Ordinal);
+        public int CompareTo(CustomDataDirectoryInfo other)
+        {
+            int intReturn = string.Compare(Name, other.Name, StringComparison.Ordinal);
+            if (intReturn == 0)
+                intReturn = string.Compare(Path, other.Path, StringComparison.Ordinal);
+            return intReturn;
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(this, obj))
-            {
-                return true;
-            }
-
             if (obj is CustomDataDirectoryInfo objOther)
                 return Equals(objOther);
             return false;

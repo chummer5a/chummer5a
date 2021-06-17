@@ -65,7 +65,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Indirect</descriptor>
+      <descriptor>Indirect, Touch</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -234,7 +234,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Touch</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -1288,39 +1288,39 @@
       <bonus>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Fragile)</spirit>
+          <spirit>Homunculus (Fragile)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Cheap Material)</spirit>
+          <spirit>Homunculus (Cheap Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Average Material)</spirit>
+          <spirit>Homunculus (Average Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Heavy Material)</spirit>
+          <spirit>Homunculus (Heavy Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Reinforced Material)</spirit>
+          <spirit>Homunculus (Reinforced Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Structural Material)</spirit>
+          <spirit>Homunculus (Structural Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Heavy Structural Material)</spirit>
+          <spirit>Homunculus (Heavy Structural Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Armored Material)</spirit>
+          <spirit>Homunculus (Armored Material)</spirit>
         </addspirit>
         <addspirit>
           <addtoselected>False</addtoselected>
-          <spirit>Homonculus (Hardened Material)</spirit>
+          <spirit>Homunculus (Hardened Material)</spirit>
         </addspirit>
       </bonus>
     </spell>
@@ -1619,7 +1619,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Indirect, Area, Elemental</descriptor>
+      <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
       <range>LOS</range>
@@ -3778,7 +3778,7 @@
       <source>SSP</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Direct</descriptor>
+      <descriptor>Direct, Area</descriptor>
       <duration>I</duration>
       <dv>F+1</dv>
       <range>LOS (A)</range>

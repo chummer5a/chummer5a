@@ -18,7 +18,8 @@
  */
  using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
+ using System.Text;
+ using System.Windows.Forms;
  using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -63,15 +64,15 @@ namespace Chummer
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {
-                    string strPlugins = string.Empty;
+                    StringBuilder sbdPlugins = new StringBuilder();
                     foreach (Gear objChild in objGear.Children)
                     {
-                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
+                        sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace);
                     }
                     // Remove the trailing comma.
-                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
+                    sbdPlugins.Length -= 1 + strSpace.Length;
                     // Append the plugin information to the name.
-                    strName += strSpace + '[' + strPlugins + ']';
+                    strName += strSpace + '[' + sbdPlugins + ']';
                 }
                 lstAmmo.Add(new ListItem(objGear.InternalId, strName));
             }

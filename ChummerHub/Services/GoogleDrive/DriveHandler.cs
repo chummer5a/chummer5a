@@ -19,7 +19,7 @@ namespace ChummerHub.Services.GoogleDrive
 {
     public class DriveHandler
     {
-        GoogleCredential Credential = null;
+        private readonly GoogleCredential Credential = null;
         public static string[] Scopes = {
             DriveService.Scope.DriveFile,
             DriveService.Scope.Drive,
@@ -27,10 +27,10 @@ namespace ChummerHub.Services.GoogleDrive
             DriveService.Scope.DriveMetadata
 
         };
-        static string ApplicationName = "SINners";
+        private const string ApplicationName = "SINners";
         private readonly ILogger _logger;
 
-        private static string _contentType = "application/octet-stream";
+        private const string _contentType = "application/octet-stream";
         private static string _folderId = string.Empty;
         readonly IConfiguration Configuration;
 
@@ -108,7 +108,7 @@ namespace ChummerHub.Services.GoogleDrive
             }
         }
 
-        private static IAuthorizationCodeFlow flow = null;
+        private static readonly IAuthorizationCodeFlow flow = null;
 
 
         public DriveHandler(ILogger<Startup> Logger, IConfiguration configuration)

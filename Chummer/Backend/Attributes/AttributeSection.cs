@@ -836,6 +836,93 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        public string ProcessAttributesInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalOptions.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strReturn = strInput;
+            foreach (string strCharAttributeName in AttributeStrings)
+            {
+                strReturn = strReturn
+                    .CheapReplace('{' + strCharAttributeName + '}', () =>
+                        _objCharacter.GetAttribute(strCharAttributeName).DisplayNameShort(strLanguage) +
+                        (blnShowValues
+                            ? strSpace + '(' + (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                                ? dicValueOverrides[strCharAttributeName]
+                                : _objCharacter.GetAttribute(strCharAttributeName).TotalValue)
+                            .ToString(objCultureInfo) + ')'
+                            : string.Empty))
+                    .CheapReplace('{' + strCharAttributeName + "Unaug}", () =>
+                        string.Format(objCultureInfo, LanguageManager.GetString("String_NaturalAttribute", strLanguage),
+                            _objCharacter.GetAttribute(strCharAttributeName).DisplayNameShort(strLanguage) +
+                            (blnShowValues
+                                ? strSpace + '(' + (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") ==
+                                                    true
+                                    ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                                    : _objCharacter.GetAttribute(strCharAttributeName).Value)
+                                .ToString(objCultureInfo) + ')'
+                                : string.Empty)))
+                    .CheapReplace('{' + strCharAttributeName + "Base}", () =>
+                        string.Format(objCultureInfo, LanguageManager.GetString("String_BaseAttribute", strLanguage),
+                            _objCharacter.GetAttribute(strCharAttributeName).DisplayNameShort(strLanguage) +
+                            (blnShowValues
+                                ? strSpace + '(' + (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") ==
+                                                    true
+                                    ? dicValueOverrides[strCharAttributeName + "Base"]
+                                    : _objCharacter.GetAttribute(strCharAttributeName).TotalBase)
+                                .ToString(objCultureInfo) + ')'
+                                : string.Empty)));
+            }
+            return strReturn;
+        }
+
+        public void ProcessAttributesInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        {
+            if (sbdInput == null || sbdInput.Length <= 0)
+                return;
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalOptions.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            foreach (string strCharAttributeName in AttributeStrings)
+            {
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + '}', () =>
+                    _objCharacter.GetAttribute(strCharAttributeName).DisplayNameShort(strLanguage) +
+                    (blnShowValues
+                        ? strSpace + '(' + (dicValueOverrides?.ContainsKey(strCharAttributeName) == true
+                            ? dicValueOverrides[strCharAttributeName]
+                            : _objCharacter.GetAttribute(strCharAttributeName).TotalValue)
+                        .ToString(objCultureInfo) + ')'
+                        : string.Empty));
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Unaug}", () =>
+                    string.Format(objCultureInfo, LanguageManager.GetString("String_NaturalAttribute", strLanguage),
+                        _objCharacter.GetAttribute(strCharAttributeName).DisplayNameShort(strLanguage) +
+                        (blnShowValues
+                            ? strSpace + '(' + (dicValueOverrides?.ContainsKey(strCharAttributeName + "Unaug") == true
+                                ? dicValueOverrides[strCharAttributeName + "Unaug"]
+                                : _objCharacter.GetAttribute(strCharAttributeName).Value)
+                            .ToString(objCultureInfo) + ')'
+                            : string.Empty)));
+                sbdInput.CheapReplace(strOriginal, '{' + strCharAttributeName + "Base}", () =>
+                    string.Format(objCultureInfo, LanguageManager.GetString("String_BaseAttribute", strLanguage),
+                        _objCharacter.GetAttribute(strCharAttributeName).DisplayNameShort(strLanguage) +
+                        (blnShowValues
+                            ? strSpace + '(' + (dicValueOverrides?.ContainsKey(strCharAttributeName + "Base") == true
+                                ? dicValueOverrides[strCharAttributeName + "Base"]
+                                : _objCharacter.GetAttribute(strCharAttributeName).TotalBase)
+                            .ToString(objCultureInfo) + ')'
+                            : string.Empty)));
+            }
+        }
+
         internal void Reset()
         {
             // Keeping enumerations separate reduces heap allocations

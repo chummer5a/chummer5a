@@ -338,7 +338,7 @@ namespace Chummer
             this.lstVehicle.Size = new System.Drawing.Size(300, 510);
             this.lstVehicle.TabIndex = 32;
             this.lstVehicle.SelectedIndexChanged += new System.EventHandler(this.lstVehicle_SelectedIndexChanged);
-            this.lstVehicle.DoubleClick += new System.EventHandler(this.lstVehicle_DoubleClick);
+            this.lstVehicle.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // lblCategory
             // 

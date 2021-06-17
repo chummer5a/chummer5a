@@ -20,7 +20,6 @@
  using System.ComponentModel;
  using System.Diagnostics;
 ﻿using System.IO;
- using System.Linq;
  using System.Reflection;
  using System.Runtime.CompilerServices;
  using System.Security.AccessControl;
@@ -130,12 +129,104 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Test if the file at a given path is accessible to write operations.
+        /// </summary>
+        /// <param name="strPath"></param>
+        /// <returns>File is locked if True.</returns>
+        public static bool IsFileLocked(string strPath)
+        {
+            try
+            {
+                using (File.Open(strPath, FileMode.Open))
+                    return false;
+            }
+            catch (FileNotFoundException)
+            {
+                // File doesn't exist.
+                return true;
+            }
+            catch (IOException)
+            {
+                //the file is unavailable because it is:
+                //still being written to
+                //or being processed by another thread
+                //or does not exist (has already been processed)
+                return true;
+            }
+            catch (Exception)
+            {
+                BreakIfDebug();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Wait for an open file to be available for deletion and then delete it.
+        /// </summary>
+        /// <param name="strPath">File path to delete.</param>
+        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
+        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
+        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
+        public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                return true;
+            int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
+            while (File.Exists(strPath))
+            {
+                try
+                {
+                    File.Delete(strPath);
+                }
+                catch (PathTooLongException)
+                {
+                    // File path is somehow too long? File is not deleted, so return false.
+                    return false;
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    // We do not have sufficient privileges to delete this file.
+                    if (blnShowUnauthorizedAccess)
+                        Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    return false;
+                }
+                catch (DirectoryNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (FileNotFoundException)
+                {
+                    // File doesn't exist.
+                    return true;
+                }
+                catch (IOException)
+                {
+                    //the file is unavailable because it is:
+                    //still being written to
+                    //or being processed by another thread
+                    //or does not exist (has already been processed)
+                    SafeSleep(intWaitInterval);
+                    intTimeout -= intWaitInterval;
+                }
+                if (intTimeout < 0)
+                {
+                    BreakIfDebug();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        /// <summary>
         /// Restarts Chummer5a.
         /// </summary>
-        /// <param name="strLanguage">Language in which to display any prompts or warnings.</param>
+        /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use Chummer's current language.</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
-        public static void RestartApplication(string strLanguage, string strText)
+        public static void RestartApplication(string strLanguage = "", string strText = "")
         {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalOptions.Language;
             if (!string.IsNullOrEmpty(strText))
             {
                 string text = LanguageManager.GetString(strText, strLanguage);
@@ -161,7 +252,7 @@ namespace Chummer
                             return;
                         // We saved a character as created, which closed the current form and added a new one
                         // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                        else if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                        if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
                             i -= 1;
                     }
                     else if (objResult == DialogResult.Cancel)
@@ -185,13 +276,43 @@ namespace Chummer
             {
                 objForm.Close();
             }
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            ProcessStartInfo objStartInfo = new ProcessStartInfo
             {
                 FileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
                 Arguments = sbdArguments.ToString()
             };
             Application.Exit();
-            Process.Start(startInfo);
+            objStartInfo.Start();
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static Task StartSTATask(Action func)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            Thread thread = new Thread(() =>
+            {
+                try
+                {
+                    tcs.SetResult(DummyFunction());
+                    // This is needed because SetResult always needs a return type
+                    bool DummyFunction()
+                    {
+                        func.Invoke();
+                        return true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
         }
 
         /// <summary>
@@ -208,6 +329,36 @@ namespace Chummer
                 try
                 {
                     tcs.SetResult(func());
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
+            });
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            return tcs.Task;
+        }
+
+        /// <summary>
+        /// Start a task in a single-threaded apartment (STA) mode, which a lot of UI methods need.
+        /// </summary>
+        /// <param name="func"></param>
+        /// <returns></returns>
+        public static Task StartSTATask(Task func)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+            Thread thread = new Thread(async () =>
+            {
+                try
+                {
+                    tcs.SetResult(await DummyFunction());
+                    // This is needed because SetResult always needs a return type
+                    async Task<bool> DummyFunction()
+                    {
+                        await func;
+                        return true;
+                    }
                 }
                 catch (Exception e)
                 {
@@ -325,7 +476,7 @@ namespace Chummer
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
-        private static bool EverDoEvents => !IsDesignerMode && !IsRunningInVisualStudio;
+        private static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
 
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
@@ -352,9 +503,7 @@ namespace Chummer
             }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
         }
 
         /// <summary>
@@ -367,17 +516,12 @@ namespace Chummer
         {
             if (!EverDoEvents)
             {
-                foreach (Action funcToRun in afuncToRun)
-                    funcToRun.Invoke();
+                Parallel.Invoke(afuncToRun);
                 return;
             }
-            Task[] aobjTasks = new Task[afuncToRun.Length];
-            for (int i = 0; i < afuncToRun.Length; ++i)
-                aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task objTask = Task.Run(() => Parallel.Invoke(afuncToRun));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
         }
 
         /// <summary>
@@ -394,9 +538,7 @@ namespace Chummer
             }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
             return objTask.Result;
         }
 
@@ -411,17 +553,15 @@ namespace Chummer
             T[] aobjReturn = new T[afuncToRun.Length];
             if (!EverDoEvents)
             {
-                for (int i = 0; i < afuncToRun.Length; ++i)
-                    aobjReturn[i] = afuncToRun[i].Invoke();
+                Parallel.For(0, afuncToRun.Length, i => aobjReturn[i] = afuncToRun[i].Invoke());
                 return aobjReturn;
             }
             Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -438,14 +578,13 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 Task<T> objSyncTask = funcToRun.Invoke();
-                objSyncTask.RunSynchronously();
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
                 return objSyncTask.Result;
             }
             Task<T> objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
             return objTask.Result;
         }
 
@@ -460,21 +599,21 @@ namespace Chummer
             T[] aobjReturn = new T[afuncToRun.Length];
             if (!EverDoEvents)
             {
-                for (int i = 0; i < afuncToRun.Length; ++i)
+                Parallel.For(0, afuncToRun.Length, i =>
                 {
                     Task<T> objSyncTask = afuncToRun[i].Invoke();
-                    objSyncTask.RunSynchronously();
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
                     aobjReturn[i] = objSyncTask.Result;
-                }
+                });
                 return aobjReturn;
             }
             Task<T>[] aobjTasks = new Task<T>[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task<T[]> objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjReturn[i] = aobjTasks[i].Result;
             return aobjReturn;
@@ -491,14 +630,13 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 Task objSyncTask = funcToRun.Invoke();
-                objSyncTask.RunSynchronously();
+                if (objSyncTask.Status == TaskStatus.Created)
+                    objSyncTask.RunSynchronously();
                 return;
             }
             Task objTask = Task.Run(funcToRun);
             while (!objTask.IsCompleted)
-            {
                 SafeSleep();
-            }
         }
 
         /// <summary>
@@ -511,20 +649,20 @@ namespace Chummer
         {
             if (!EverDoEvents)
             {
-                foreach (Func<Task> funcToRun in afuncToRun)
+                Parallel.ForEach(afuncToRun, funcToRun =>
                 {
                     Task objSyncTask = funcToRun.Invoke();
-                    objSyncTask.RunSynchronously();
-                }
+                    if (objSyncTask.Status == TaskStatus.Created)
+                        objSyncTask.RunSynchronously();
+                });
                 return;
             }
             Task[] aobjTasks = new Task[afuncToRun.Length];
             for (int i = 0; i < afuncToRun.Length; ++i)
                 aobjTasks[i] = Task.Run(afuncToRun[i]);
-            while (aobjTasks.Any(objTask => !objTask.IsCompleted))
-            {
+            Task objTask = Task.Run(() => Task.WhenAll(aobjTasks));
+            while (!objTask.IsCompleted)
                 SafeSleep();
-            }
         }
     }
 }

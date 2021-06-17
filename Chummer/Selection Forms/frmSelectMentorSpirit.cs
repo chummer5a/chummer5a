@@ -142,10 +142,12 @@ namespace Chummer
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     cmdOK.Enabled = true;
                     tlpRight.Visible = true;
+                    tlpBottomRight.Visible = true;
                 }
                 else
                 {
                     tlpRight.Visible = false;
+                    tlpBottomRight.Visible = false;
                     cmdOK.Enabled = false;
                 }
             }

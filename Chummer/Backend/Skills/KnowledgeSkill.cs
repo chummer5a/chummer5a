@@ -109,7 +109,7 @@ namespace Chummer.Backend.Skills
 
         public KnowledgeSkill(Character objCharacter, string strForcedName, bool allowUpgrade) : this(objCharacter)
         {
-            WriteableName = strForcedName;
+            WritableName = strForcedName;
             ForcedName = true;
             _blnAllowUpgrade = allowUpgrade;
         }
@@ -125,7 +125,7 @@ namespace Chummer.Backend.Skills
             set => _blnAllowUpgrade = value;
         }
 
-        public string WriteableName
+        public string WritableName
         {
             get => CurrentDisplayName;
             set

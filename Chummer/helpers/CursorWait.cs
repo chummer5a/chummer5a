@@ -132,8 +132,17 @@ namespace Chummer
         {
             if (objCursor != null)
             {
-                _objControl.DoThreadSafe(() => _objControl.Cursor = objCursor);
-                _frmControlTopParent?.DoThreadSafe(() => _frmControlTopParent.Cursor = objCursor);
+                // Only wait for the cursor change if we're changing to or from a full waiting cursor
+                if (objCursor == Cursors.WaitCursor || _objControl.Cursor == Cursors.WaitCursor)
+                {
+                    _objControl.DoThreadSafe(() => _objControl.Cursor = objCursor);
+                    _frmControlTopParent?.DoThreadSafe(() => _frmControlTopParent.Cursor = objCursor);
+                }
+                else
+                {
+                    _objControl.QueueThreadSafe(() => _objControl.Cursor = objCursor);
+                    _frmControlTopParent?.QueueThreadSafe(() => _frmControlTopParent.Cursor = objCursor);
+                }
             }
             else
             {

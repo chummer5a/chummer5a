@@ -131,12 +131,6 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void lstArmor_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -266,26 +260,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstArmor.SelectedIndex + 1 < lstArmor.Items.Count)
-                {
+                case Keys.Down when lstArmor.SelectedIndex + 1 < lstArmor.Items.Count:
                     lstArmor.SelectedIndex += 1;
-                }
-                else if (lstArmor.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstArmor.SelectedIndex = 0;
+                    if (lstArmor.Items.Count > 0)
+                    {
+                        lstArmor.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstArmor.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstArmor.SelectedIndex - 1 >= 0:
                     lstArmor.SelectedIndex -= 1;
-                }
-                else if (lstArmor.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
+                    if (lstArmor.Items.Count > 0)
+                    {
+                        lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -426,7 +425,7 @@ namespace Chummer
                             {
                                 strAccessories.AppendLine(objMod.CurrentDisplayName);
                             }
-                            foreach (Gear objGear in objArmor.Gear)
+                            foreach (Gear objGear in objArmor.GearChildren)
                             {
                                 strAccessories.AppendLine(objGear.CurrentDisplayName);
                             }

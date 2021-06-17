@@ -64,6 +64,7 @@ namespace Chummer
                 treCharacterList.DragEnter += treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop += treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver += treCharacterList_OnDefaultDragOver;
+                treCharacterList.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
                 OnMyMouseDown += OnDefaultMouseDown;
                 if (watcherCharacterRosterFolder != null)
                 {
@@ -80,6 +81,7 @@ namespace Chummer
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
                 treCharacterList.DragOver -= treCharacterList_OnDefaultDragOver;
+                treCharacterList.NodeMouseDoubleClick -= treCharacterList_OnDefaultDoubleClick;
                 OnMyMouseDown = null;
 
                 if(watcherCharacterRosterFolder != null)
@@ -582,7 +584,8 @@ namespace Chummer
             if (objSelectedNode == null)
                 return;
             CharacterCache objCache = objSelectedNode.Tag as CharacterCache;
-            objCache?.OnMyAfterSelect(sender, e);
+            if (objCache?.OnMyAfterSelect != null)
+                objCache.OnMyAfterSelect(sender, e);
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
@@ -637,6 +640,23 @@ namespace Chummer
 
             // Clear the background color for all other Nodes.
             treCharacterList.ClearNodeBackground(objNode);
+        }
+
+        
+
+        private void treCharacterList_OnDefaultDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (!(sender is TreeView treSenderView) || e == null)
+                return;
+            //Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
+            TreeNode objNode = e.Node;
+            if (objNode != null)
+            {
+                if (objNode.Tag is Action act)
+                {
+                    act.Invoke();
+                }
+            }
         }
 
         private void treCharacterList_OnDefaultDragDrop(object sender, DragEventArgs e)
@@ -866,34 +886,37 @@ namespace Chummer
             // 
             // tsToggleFav
             //
-            ToolStripMenuItem tsToggleFav = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsToggleFav = new DpiFriendlyToolStripMenuItem
             {
                 Image = Properties.Resources.asterisk_orange,
                 Name = "tsToggleFav",
                 Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_ToggleFavorite"
+                Tag = "Menu_ToggleFavorite",
+                ImageDpi192 = Properties.Resources.asterisk_orange1
             };
             tsToggleFav.Click += tsToggleFav_Click;
             // 
             // tsSort
             //
-            ToolStripMenuItem tsSort = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsSort = new DpiFriendlyToolStripMenuItem
             {
                 Image = Properties.Resources.page_refresh,
                 Name = "tsSort",
                 Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Sort"
+                Tag = "Menu_Sort",
+                ImageDpi192 = Properties.Resources.page_refresh1
             };
             tsSort.Click += tsSort_Click;
             // 
             // tsDelete
             //
-            ToolStripMenuItem tsDelete = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsDelete = new DpiFriendlyToolStripMenuItem
             {
                 Image = Properties.Resources.delete,
                 Name = "tsDelete",
                 Size = new Size(intToolStripWidth, intToolStripHeight),
-                Tag = "Menu_Delete"
+                Tag = "Menu_Delete",
+                ImageDpi192 = Properties.Resources.delete1
             };
             tsDelete.Click += tsDelete_Click;
             // 
@@ -920,12 +943,13 @@ namespace Chummer
                 // 
                 // tsCloseOpenCharacter
                 //
-                ToolStripMenuItem tsCloseOpenCharacter = new ToolStripMenuItem
+                DpiFriendlyToolStripMenuItem tsCloseOpenCharacter = new DpiFriendlyToolStripMenuItem
                 {
                     Image = Properties.Resources.door_out,
                     Name = "tsCloseOpenCharacter",
                     Size = new Size(intToolStripWidth, intToolStripHeight),
-                    Tag = "Menu_Close"
+                    Tag = "Menu_Close",
+                    ImageDpi192 = Properties.Resources.door_out1
                 };
                 tsCloseOpenCharacter.Click += tsCloseOpenCharacter_Click;
                 cmsRoster.Items.Add(tsCloseOpenCharacter);

@@ -95,53 +95,50 @@ namespace Chummer
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
                 {
                     // Prevents locking the UI thread while still benefitting from static scheduling of Parallel.ForEach
-                    await Task.Run(() =>
+                    await Task.WhenAll(_lstFileNames.Select(strFileName => Task.Run(async () =>
                     {
-                        Parallel.ForEach(_lstFileNames, strFileName =>
+                        XPathNavigator xmlBaseNode = await XmlManager.LoadXPathAsync(strFileName);
+                        xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
+                        if (xmlBaseNode == null)
+                            return;
+                        bool blnLoopFileNameHasItems = false;
+                        foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " +
+                            strSourceFilter + ']'))
                         {
-                            XPathNavigator xmlBaseNode = XmlManager.LoadXPath(strFileName);
-                            xmlBaseNode = xmlBaseNode.SelectSingleNode("/chummer");
-                            if (xmlBaseNode == null)
-                                return;
-                            bool blnLoopFileNameHasItems = false;
-                            foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(".//*[page and " +
-                                strSourceFilter + ']'))
-                            {
-                                blnLoopFileNameHasItems = true;
-                                string strName = xmlItemNode.SelectSingleNode("name")?.Value;
-                                string strDisplayName = xmlItemNode.SelectSingleNode("translate")?.Value
-                                                        ?? strName
-                                                        ?? xmlItemNode.SelectSingleNode("id")?.Value
-                                                        ?? LanguageManager.GetString("String_Unknown");
-                                string strSource = xmlItemNode.SelectSingleNode("source")?.Value;
-                                string strPage = xmlItemNode.SelectSingleNode("page")?.Value;
-                                string strDisplayPage = xmlItemNode.SelectSingleNode("altpage")?.Value
-                                                        ?? strPage;
-                                string strEnglishNameOnPage = xmlItemNode.SelectSingleNode("nameonpage")?.Value
-                                                              ?? strName;
-                                string strTranslatedNameOnPage =
-                                    xmlItemNode.SelectSingleNode("altnameonpage")?.Value
-                                    ?? strDisplayName;
-                                string strNotes = xmlItemNode.SelectSingleNode("altnotes")?.Value
-                                                  ?? xmlItemNode.SelectSingleNode("notes")?.Value;
-                                MasterIndexEntry objEntry = new MasterIndexEntry(
-                                    strDisplayName,
-                                    strFileName,
-                                    new SourceString(strSource, strPage, GlobalOptions.DefaultLanguage,
-                                        GlobalOptions.InvariantCultureInfo),
-                                    new SourceString(strSource, strDisplayPage, GlobalOptions.Language,
-                                        GlobalOptions.CultureInfo),
-                                    strEnglishNameOnPage,
-                                    strTranslatedNameOnPage);
-                                lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
-                                if (!string.IsNullOrEmpty(strNotes))
-                                    _dicCachedNotes.TryAdd(objEntry, strNotes);
-                            }
+                            blnLoopFileNameHasItems = true;
+                            string strName = xmlItemNode.SelectSingleNode("name")?.Value;
+                            string strDisplayName = xmlItemNode.SelectSingleNode("translate")?.Value
+                                                    ?? strName
+                                                    ?? xmlItemNode.SelectSingleNode("id")?.Value
+                                                    ?? LanguageManager.GetString("String_Unknown");
+                            string strSource = xmlItemNode.SelectSingleNode("source")?.Value;
+                            string strPage = xmlItemNode.SelectSingleNode("page")?.Value;
+                            string strDisplayPage = xmlItemNode.SelectSingleNode("altpage")?.Value
+                                                    ?? strPage;
+                            string strEnglishNameOnPage = xmlItemNode.SelectSingleNode("nameonpage")?.Value
+                                                          ?? strName;
+                            string strTranslatedNameOnPage =
+                                xmlItemNode.SelectSingleNode("altnameonpage")?.Value
+                                ?? strDisplayName;
+                            string strNotes = xmlItemNode.SelectSingleNode("altnotes")?.Value
+                                              ?? xmlItemNode.SelectSingleNode("notes")?.Value;
+                            MasterIndexEntry objEntry = new MasterIndexEntry(
+                                strDisplayName,
+                                strFileName,
+                                new SourceString(strSource, strPage, GlobalOptions.DefaultLanguage,
+                                    GlobalOptions.InvariantCultureInfo),
+                                new SourceString(strSource, strDisplayPage, GlobalOptions.Language,
+                                    GlobalOptions.CultureInfo),
+                                strEnglishNameOnPage,
+                                strTranslatedNameOnPage);
+                            lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
+                            if (!string.IsNullOrEmpty(strNotes))
+                                _dicCachedNotes.TryAdd(objEntry, strNotes);
+                        }
 
-                            if (blnLoopFileNameHasItems)
-                                lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
-                        });
-                    });
+                        if (blnLoopFileNameHasItems)
+                            lstFileNamesWithItemsForLoading.Add(new ListItem(strFileName, strFileName));
+                    })));
                 }
 
                 using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))

@@ -46,10 +46,10 @@ namespace Chummer.UI.Shared
             this.lblPhysical = new Chummer.LabelWithToolTip();
             this.lblMental = new Chummer.LabelWithToolTip();
             this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.tssLimitModifierNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsLimitModifierNotesOnly = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tssLimitModifierNotesOnlyNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tssLimitModifierEdit = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tssLimitModifierNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tssLimitModifierNotesOnlyNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tlpParent.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
@@ -271,9 +271,22 @@ namespace Chummer.UI.Shared
             this.cmsLimitModifier.Name = "cmsLimitModifier";
             this.cmsLimitModifier.Size = new System.Drawing.Size(106, 48);
             // 
+            // cmsLimitModifierNotesOnly
+            // 
+            this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tssLimitModifierNotesOnlyNotes});
+            this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
+            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(106, 26);
+            // 
             // tssLimitModifierEdit
             // 
             this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
+            this.tssLimitModifierEdit.ImageDpi120 = null;
+            this.tssLimitModifierEdit.ImageDpi144 = null;
+            this.tssLimitModifierEdit.ImageDpi192 = global::Chummer.Properties.Resources.house_edit1;
+            this.tssLimitModifierEdit.ImageDpi288 = null;
+            this.tssLimitModifierEdit.ImageDpi384 = null;
+            this.tssLimitModifierEdit.ImageDpi96 = global::Chummer.Properties.Resources.house_edit;
             this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
             this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
             this.tssLimitModifierEdit.Tag = "Menu_Main_Edit";
@@ -283,24 +296,29 @@ namespace Chummer.UI.Shared
             // tssLimitModifierNotes
             // 
             this.tssLimitModifierNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tssLimitModifierNotes.ImageDpi120 = null;
+            this.tssLimitModifierNotes.ImageDpi144 = null;
+            this.tssLimitModifierNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tssLimitModifierNotes.ImageDpi288 = null;
+            this.tssLimitModifierNotes.ImageDpi384 = null;
+            this.tssLimitModifierNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tssLimitModifierNotes.Name = "tssLimitModifierNotes";
             this.tssLimitModifierNotes.Size = new System.Drawing.Size(105, 22);
             this.tssLimitModifierNotes.Tag = "Menu_Notes";
             this.tssLimitModifierNotes.Text = "&Notes";
             this.tssLimitModifierNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
             // 
-            // cmsLimitModifierNotesOnly
-            // 
-            this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tssLimitModifierNotesOnlyNotes});
-            this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
-            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(106, 26);
-            // 
             // tssLimitModifierNotesOnlyNotes
             // 
             this.tssLimitModifierNotesOnlyNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi120 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi144 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi288 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi384 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tssLimitModifierNotesOnlyNotes.Name = "tssLimitModifierNotesOnlyNotes";
-            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(105, 22);
+            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(180, 22);
             this.tssLimitModifierNotesOnlyNotes.Tag = "Menu_Notes";
             this.tssLimitModifierNotesOnlyNotes.Text = "&Notes";
             this.tssLimitModifierNotesOnlyNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
@@ -344,11 +362,11 @@ namespace Chummer.UI.Shared
         private LabelWithToolTip lblSocial;
         private System.Windows.Forms.Label lblAstralLabel;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifier;
-        private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
-        private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotes;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifierNotesOnly;
-        private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotesOnlyNotes;
         private BufferedTableLayoutPanel tlpButtons;
         private BufferedTableLayoutPanel tlpRight;
+        private DpiFriendlyToolStripMenuItem tssLimitModifierEdit;
+        private DpiFriendlyToolStripMenuItem tssLimitModifierNotes;
+        private DpiFriendlyToolStripMenuItem tssLimitModifierNotesOnlyNotes;
     }
 }

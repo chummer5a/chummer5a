@@ -367,7 +367,7 @@ namespace Chummer.UI.Powers
             })
             {
                 ClickHandler = p => {
-                    using (frmNotes frmPowerNotes = new frmNotes(p.Notes))
+                    using (frmNotes frmPowerNotes = new frmNotes(p.Notes, p.NotesColor))
                     {
                         frmPowerNotes.ShowDialog(this);
                         if (frmPowerNotes.DialogResult == DialogResult.OK)

@@ -299,15 +299,12 @@ namespace Chummer
                 return;
             if (string.IsNullOrEmpty(strIntoLanguage))
                 strIntoLanguage = GlobalOptions.Language;
-            if (eIntoRightToLeft == RightToLeft.Inherit)
+            if (eIntoRightToLeft == RightToLeft.Inherit && LoadLanguage(strIntoLanguage))
             {
-                if (LoadLanguage(strIntoLanguage))
+                string strKey = strIntoLanguage.ToUpperInvariant();
+                if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
                 {
-                    string strKey = strIntoLanguage.ToUpperInvariant();
-                    if (DictionaryLanguages.TryGetValue(strKey, out LanguageData objLanguageData))
-                    {
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                    }
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 }
             }
             tssItem.RightToLeft = eIntoRightToLeft;
@@ -350,12 +347,9 @@ namespace Chummer
             if (LoadLanguage(strLanguage))
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (DictionaryLanguages.TryGetValue(strLanguageKey, out LanguageData objLanguageData))
+                if (DictionaryLanguages.TryGetValue(strLanguageKey, out LanguageData objLanguageData) && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                 {
-                    if (objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
+                    return strReturn;
                 }
             }
             if (s_DictionaryEnglishStrings.TryGetValue(strKey, out strReturn))
@@ -371,9 +365,9 @@ namespace Chummer
         /// <param name="strInput">Input string to process.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
-        /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() or GetString() for translating localized strings.</param>
+        /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
         /// <returns></returns>
-        public static string ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
+        public static async Task<string> ProcessCompoundString(string strInput, string strLanguage = "", Character objCharacter = null, bool blnUseTranslateExtra = false)
         {
             if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
                 return strInput;
@@ -451,11 +445,11 @@ namespace Chummer
                         // Inner string is a compound string in and of itself, so recurse this method
                         if (strLoop.IndexOfAny('{', '}') != -1)
                         {
-                            strLoop = ProcessCompoundString(strLoop, strLanguage, objCharacter, blnUseTranslateExtra);
+                            strLoop = await ProcessCompoundString(strLoop, strLanguage, objCharacter, blnUseTranslateExtra);
                         }
                         // Use more expensive TranslateExtra if flag is set to use that
                         sbdReturn.Append(blnUseTranslateExtra
-                            ? TranslateExtra(strLoop, strLanguage, objCharacter)
+                            ? await TranslateExtraAsync(strLoop, strLanguage, objCharacter)
                             : GetString(strLoop, strLanguage, false));
                     }
                     // Items between curly bracket sets do not need processing, so just append them to the return value wholesale
@@ -571,14 +565,15 @@ namespace Chummer
 
             string strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
             // Display the message.
-            Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.", "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.MainForm.ShowMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
+                "Language File Contents", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         // List of arrays for XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter.
         // List index indicates priority. Priority tries to avoid issues where an English word has multiple translations, and an unofficial one might get preference over an official one
-        private static readonly List<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]> s_LstAXPathsToSearch =
-            new List<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]>
-        {
+        private static readonly IReadOnlyList<IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>> s_LstAXPathsToSearch =
+            new []
+            {
             new []
             {
                 new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>("programs.xml", "/chummer/categories/category",
@@ -792,17 +787,16 @@ namespace Chummer
                         {
                             await Task.Run(() =>
                             {
-                                foreach (Tuple<string, string, Func<XPathNavigator, string>,
-                                    Func<XPathNavigator, string>>[] aobjPaths
+                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                    Func<XPathNavigator, string>>> aobjPaths
                                 in s_LstAXPathsToSearch)
                                 {
                                     Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
-                                        (objXPathPair, objState) =>
+                                        async (objXPathPair, objState) =>
                                         {
-                                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths,
-                                                    strIntoLanguage)
-                                                .Select(objXPathPair.Item2))
+                                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
+                                            foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                             {
                                                 if (objCancellationToken.IsCancellationRequested ||
                                                     objState.ShouldExitCurrentIteration)
@@ -819,7 +813,8 @@ namespace Chummer
                                                 break;
                                             }
                                         });
-
+                                    if (objCancellationToken.IsCancellationRequested)
+                                        return;
                                 }
                             }, objCancellationTokenSource.Token);
                         }
@@ -827,15 +822,15 @@ namespace Chummer
                         {
                             await Task.Run(() =>
                             {
-                                foreach (Tuple<string, string, Func<XPathNavigator, string>,
-                                        Func<XPathNavigator, string>>[] aobjPaths
+                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                        Func<XPathNavigator, string>>> aobjPaths
                                     in s_LstAXPathsToSearch)
                                 {
-                                    Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                                    Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
                                     {
-                                        foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage)
-                                            .Select(objXPathPair.Item2))
+                                        XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
+                                        foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                         {
                                             if (objCancellationToken.IsCancellationRequested ||
                                                 objState.ShouldExitCurrentIteration)
@@ -852,6 +847,8 @@ namespace Chummer
                                             break;
                                         }
                                     });
+                                    if (objCancellationToken.IsCancellationRequested)
+                                        return;
                                 }
                             }, objCancellationTokenSource.Token);
                         }
@@ -955,15 +952,15 @@ namespace Chummer
             {
                 await Task.Run(() =>
                 {
-                    foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]
+                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>
                             aobjPaths
                         in s_LstAXPathsToSearch)
                     {
-                        Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), (objXPathPair, objState) =>
+                        Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), async (objXPathPair, objState) =>
                         {
-                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
-                                .Select(objXPathPair.Item2))
+                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                            foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                             {
                                 if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                     return;
@@ -979,6 +976,8 @@ namespace Chummer
                                 break;
                             }
                         });
+                        if (objCancellationToken.IsCancellationRequested)
+                            return;
                     }
                 }, objCancellationTokenSource.Token);
             }
@@ -987,15 +986,15 @@ namespace Chummer
             {
                 await Task.Run(() =>
                 {
-                    foreach (Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>[]
+                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>
                             aobjPaths
                         in s_LstAXPathsToSearch)
                     {
-                        Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
+                        Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
                         {
-                            foreach (XPathNavigator objNode in XmlManager.LoadXPath(objXPathPair.Item1,
-                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage)
-                                .Select(objXPathPair.Item2))
+                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                            foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                             {
                                 if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
                                     return;
@@ -1011,6 +1010,8 @@ namespace Chummer
                                 break;
                             }
                         });
+                        if (objCancellationToken.IsCancellationRequested)
+                            return;
                     }
                 }, objCancellationTokenSource.Token);
             }

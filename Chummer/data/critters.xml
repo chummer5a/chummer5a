@@ -36,6 +36,7 @@
     <category>Paranormal Critters</category>
     <category>Primordial Spirits</category>
     <category>Protosapients</category>
+    <category>Ritual</category>
     <category>Shadow Spirits</category>
     <category>Shedim</category>
     <category>Spirits</category>
@@ -29051,6 +29052,698 @@
       <page>88</page>
     </metatype>
     <!-- End Region -->
+    <!-- Region Ritual -->
+    <metatype>
+      <id>c24746f8-2a42-4d51-9b58-60200701b036</id>
+      <name>Watcher</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>0</bodmin>
+      <bodmax>0</bodmax>
+      <bodaug>0</bodaug>
+      <agimin>0</agimin>
+      <agimax>0</agimax>
+      <agiaug>0</agiaug>
+      <reamin>0</reamin>
+      <reamax>0</reamax>
+      <reaaug>0</reaaug>
+      <strmin>0</strmin>
+      <strmax>0</strmax>
+      <straug>0</straug>
+      <chamin>F-2</chamin>
+      <chamax>F-2</chamax>
+      <chaaug>F-2</chaaug>
+      <intmin>F-2</intmin>
+      <intmax>F-2</intmax>
+      <intaug>F-2</intaug>
+      <logmin>F-2</logmin>
+      <logmax>F-2</logmax>
+      <logaug>F-2</logaug>
+      <wilmin>F-2</wilmin>
+      <wilmax>F-2</wilmax>
+      <wilaug>F-2</wilaug>
+      <inimin>F*2</inimin>
+      <inimax>F*2</inimax>
+      <iniaug>F*2</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>0</essmax>
+      <essaug>0</essaug>
+      <walk>500/500/500</walk>
+      <run>500/500/500</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Manifest</power>
+        <power>Sapience</power>
+        <power>Search</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
+      <name>Homunculus (Fragile)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>1</bodmin>
+      <bodmax>1</bodmax>
+      <bodaug>1</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>28d8859b-21da-43f7-b401-181cf1284f97</id>
+      <name>Homunculus (Cheap Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>2</bodmin>
+      <bodmax>2</bodmax>
+      <bodaug>2</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
+      <name>Homunculus (Average Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>4</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>4</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
+      <name>Homunculus (Heavy Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>6</bodmin>
+      <bodmax>6</bodmax>
+      <bodaug>6</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
+      <name>Homunculus (Reinforced Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>8</bodmin>
+      <bodmax>8</bodmax>
+      <bodaug>8</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
+      <name>Homunculus (Structural Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>10</bodmin>
+      <bodmax>10</bodmax>
+      <bodaug>10</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
+      <name>Homunculus (Heavy Structural Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>12</bodmin>
+      <bodmax>12</bodmax>
+      <bodaug>12</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
+      <name>Homunculus (Armored Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>14</bodmin>
+      <bodmax>14</bodmax>
+      <bodaug>14</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <metatype>
+      <id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
+      <name>Homunculus (Hardened Material)</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>16</bodmin>
+      <bodmax>16</bodmax>
+      <bodaug>16</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>0</chamin>
+      <chamax>0</chamax>
+      <chaaug>0</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F+1</inimin>
+      <inimax>F+1</inimax>
+      <iniaug>F+1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>15/15/15</walk>
+      <run>30/30/30</run>
+      <sprint>2/2/2</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F/2">Assensing</skill>
+        <skill rating="F/2">Astral Combat</skill>
+        <skill rating="F/2">Perception</skill>
+        <skill rating="F/2">Unarmed Combat</skill>
+      </skills>
+      <source>SR5</source>
+      <page>298</page>
+    </metatype>
+    <!-- End Region -->
     <!-- Region Toxic Critters -->
     <metatype>
       <id>ba5e2809-186c-4d11-a5a9-c8b1cb060f2c</id>
@@ -51139,7 +51832,7 @@
         <skill>Astral Combat</skill>
         <skill>Gymnastics</skill>
         <skill>Perception</skill>
-        <skill rating="Ritual Spellcasting"></skill>
+        <skill>Ritual Spellcasting</skill>
         <skill>Spellcasting</skill>
       </skills>
       <powers>

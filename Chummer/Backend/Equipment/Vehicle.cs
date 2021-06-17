@@ -72,6 +72,7 @@ namespace Chummer.Backend.Equipment
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private readonly TaggedObservableCollection<WeaponMount> _lstWeaponMounts = new TaggedObservableCollection<WeaponMount>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
         private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
         private bool _blnBlackMarketDiscount;
@@ -211,6 +212,10 @@ namespace Chummer.Backend.Equipment
             if (!objXmlVehicle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlVehicle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlVehicle.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (string.IsNullOrEmpty(Notes))
             {
                 string strEnglishNameOnPage = Name;
@@ -243,42 +248,39 @@ namespace Chummer.Backend.Equipment
             }
 
             _strCost = objXmlVehicle["cost"]?.InnerText ?? string.Empty;
-            if (!string.IsNullOrEmpty(_strCost))
+            if (!string.IsNullOrEmpty(_strCost) && _strCost.StartsWith("Variable(", StringComparison.Ordinal))
             {
                 // Check for a Variable Cost.
-                if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                decimal decMin;
+                decimal decMax = decimal.MaxValue;
+                string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                if (strCost.Contains('-'))
                 {
-                    decimal decMin;
-                    decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                    if (strCost.Contains('-'))
-                    {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
-                    }
-                    else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                    string[] strValues = strCost.Split('-');
+                    decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
+                    decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                }
+                else
+                    decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
 
-                    if (decMin != 0 || decMax != decimal.MaxValue)
+                if (decMin != 0 || decMax != decimal.MaxValue)
+                {
+                    if (decMax > 1000000)
+                        decMax = 1000000;
+                    using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.MaxNuyenDecimals)
                     {
-                        if (decMax > 1000000)
-                            decMax = 1000000;
-                        using (frmSelectNumber frmPickNumber = new frmSelectNumber(_objCharacter.Options.MaxNuyenDecimals)
+                        Minimum = decMin,
+                        Maximum = decMax,
+                        Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
+                        AllowCancel = false
+                    })
+                    {
+                        if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
                         {
-                            Minimum = decMin,
-                            Maximum = decMax,
-                            Description = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SelectVariableCost"), DisplayNameShort(GlobalOptions.Language)),
-                            AllowCancel = false
-                        })
-                        {
-                            if (frmPickNumber.ShowDialog(Program.MainForm) == DialogResult.Cancel)
-                            {
-                                _guiID = Guid.Empty;
-                                return;
-                            }
-                            _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
+                            _guiID = Guid.Empty;
+                            return;
                         }
+                        _strCost = frmPickNumber.SelectedValue.ToString(GlobalOptions.InvariantCultureInfo);
                     }
                 }
             }
@@ -400,9 +402,8 @@ namespace Chummer.Backend.Equipment
                     }
 
                     XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
-                    if (objAddSlotsNode != null)
-                        if (!int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots))
-                            _intAddSlots = 0;
+                    if (objAddSlotsNode != null && !int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots))
+                        _intAddSlots = 0;
                 }
 
                 // If there are any Weapon Mounts that come with the Vehicle, add them.
@@ -437,7 +438,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     objGear.Parent = this;
                                     objGear.ParentID = InternalId;
-                                    Gear.Add(objGear);
+                                    GearChildren.Add(objGear);
                                     foreach (Weapon objWeapon in lstWeapons)
                                     {
                                         objWeapon.ParentVehicle = this;
@@ -546,7 +547,18 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -610,6 +622,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
@@ -952,6 +965,11 @@ namespace Chummer.Backend.Equipment
                 _objLocation?.Children.Add(this);
             }
             objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
@@ -1046,7 +1064,7 @@ namespace Chummer.Backend.Equipment
                 objMount.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("gears");
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
                 objGear.Print(objWriter, objCulture, strLanguageToPrint);
             objWriter.WriteEndElement();
             objWriter.WriteStartElement("weapons");
@@ -1266,11 +1284,9 @@ namespace Chummer.Backend.Equipment
             get
             {
                 //TODO: Move to user-accessible options
-                if (IsDrone && Category == "Drones: Anthro")
-                    //Rigger 5: p145
-                    return 8;
                 if (IsDrone)
-                    return 6;
+                    //Rigger 5: p145
+                    return Category == "Drones: Anthro" ? 8 : 6;
                 return 12;
             }
         }
@@ -1372,7 +1388,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Gear applied to the Vehicle.
         /// </summary>
-        public TaggedObservableCollection<Gear> Gear => _lstGear;
+        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
         /// <summary>
         /// Weapons applied to the Vehicle through Gear.
@@ -1464,7 +1480,7 @@ namespace Chummer.Backend.Equipment
                         chrLastAvailChar = 'R';
                 }
 
-                foreach (Gear objChild in Gear)
+                foreach (Gear objChild in GearChildren)
                 {
                     if (objChild.ParentID == InternalId) continue;
                     AvailabilityValue objLoopAvail = objChild.TotalAvailTuple();
@@ -1528,7 +1544,7 @@ namespace Chummer.Backend.Equipment
 
                 // Step through all the Gear looking for the Sensor Array that was built it. Set the rating to the current Sensor value.
                 // The display value of this gets updated by UpdateSensor when RefreshSelectedVehicle gets called.
-                Gear objGear = Gear.FirstOrDefault(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
+                Gear objGear = GearChildren.FirstOrDefault(x => x.Category == "Sensors" && x.Name == "Sensor Array" && x.IncludedInParent);
                 if (objGear != null)
                     objGear.Rating = Math.Max(intSensor, 0);
 
@@ -1543,6 +1559,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -1669,22 +1694,21 @@ namespace Chummer.Backend.Equipment
                 foreach (VehicleMod objMod in Mods)
                 {
                     // Mods that are included with a Vehicle by default do not count toward the Slots used.
-                    if (!objMod.IncludedInVehicle && objMod.Equipped)
+                    if (!objMod.IncludedInVehicle && objMod.Equipped && objMod.CalculatedSlots < 0)
                     {
-                        if (objMod.CalculatedSlots < 0)
-                            //You receive only one additional Mod Point from Downgrades
-                            if (objMod.Downgrade)
-                            {
-                                if (!blnDowngraded)
-                                {
-                                    intDroneModSlots -= objMod.CalculatedSlots;
-                                    blnDowngraded = true;
-                                }
-                            }
-                            else
+                        //You receive only one additional Mod Point from Downgrades
+                        if (objMod.Downgrade)
+                        {
+                            if (!blnDowngraded)
                             {
                                 intDroneModSlots -= objMod.CalculatedSlots;
+                                blnDowngraded = true;
                             }
+                        }
+                        else
+                        {
+                            intDroneModSlots -= objMod.CalculatedSlots;
+                        }
                     }
                 }
 
@@ -1799,7 +1823,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 decCost += WeaponMounts.AsParallel().Sum(wm => wm.TotalCost);
-                decCost += Gear.AsParallel().Sum(objGear => objGear.TotalCost);
+                decCost += GearChildren.AsParallel().Sum(objGear => objGear.TotalCost);
 
                 return decCost;
             }
@@ -1831,7 +1855,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 decCost += WeaponMounts.AsParallel().Where(objGear => objGear.Stolen).Sum(wm => wm.StolenTotalCost);
-                decCost += Gear.AsParallel().Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
+                decCost += GearChildren.AsParallel().Where(objGear => objGear.Stolen).Sum(objGear => objGear.StolenTotalCost);
 
                 return decCost;
             }
@@ -2820,7 +2844,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                Gear objGear = Gear.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
+                Gear objGear = GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
                 if (objGear != null)
                 {
                     return objGear.Rating;
@@ -2966,7 +2990,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CanFormPersona { get => string.Empty; set { } }
 
-        public bool IsCommlink => Gear.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
+        public bool IsCommlink => GearChildren.Any(x => x.CanFormPersona.Contains("Parent")) && this.GetTotalMatrixAttribute("Device Rating") > 0;
 
         /// <summary>
         /// 0 for Vehicles.
@@ -2978,7 +3002,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 0;
-                foreach (Gear objGear in Gear)
+                foreach (Gear objGear in GearChildren)
                 {
                     if (objGear.Equipped)
                     {
@@ -3024,7 +3048,7 @@ namespace Chummer.Backend.Equipment
             set => _blnCanSwapAttributes = value;
         }
 
-        public List<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Gear.Concat(Weapons.Cast<IHasMatrixAttributes>()).ToList();
+        public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat(Weapons.Cast<IHasMatrixAttributes>());
 
         #endregion
 
@@ -3092,7 +3116,7 @@ namespace Chummer.Backend.Equipment
         {
             decimal decReturn = 0;
 
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
             {
                 decReturn += objGear.DeleteGear();
             }
@@ -3153,7 +3177,7 @@ namespace Chummer.Backend.Equipment
             {
                 objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, strCyberwareGrade, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem, out strCyberwareGrade);
             }
-            foreach (Gear objChild in Gear)
+            foreach (Gear objChild in GearChildren)
             {
                 objChild.CheckRestrictedGear(blnRestrictedGearUsed, intRestrictedCount, strAvailItems, strRestrictedItem, out blnRestrictedGearUsed, out intRestrictedCount, out strAvailItems, out strRestrictedItem);
             }
@@ -3259,7 +3283,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Vehicle Gear.
-            foreach (Gear objGear in Gear)
+            foreach (Gear objGear in GearChildren)
             {
                 TreeNode objLoopNode = objGear.CreateTreeNode(cmsVehicleGear);
                 if (objLoopNode != null)
@@ -3293,8 +3317,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !string.IsNullOrEmpty(ParentID)
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText
@@ -3380,7 +3404,7 @@ namespace Chummer.Backend.Equipment
             Gear objNewSensor = new Gear(_objCharacter);
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
-            foreach (Gear objCurrentGear in Gear)
+            foreach (Gear objCurrentGear in GearChildren)
             {
                 if (objCurrentGear.Name == "Microdrone Sensor")
                 {
@@ -3487,22 +3511,28 @@ namespace Chummer.Backend.Equipment
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
-                List<IHasMatrixAttributes> lstChildrenWithMatrixAttributes = ChildrenWithMatrixAttributes;
-                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                if (ChildrenWithMatrixAttributes.Any())
                 {
-                    if (lstChildrenWithMatrixAttributes.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
+                    foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                     {
-                        int intTotalChildrenValue = 0;
-                        foreach (IHasMatrixAttributes objChild in lstChildrenWithMatrixAttributes)
+                        if (strExpression.Contains("{Children " + strMatrixAttribute + "}"))
                         {
-                            if (objChild is Gear objGear && objGear.Equipped || objChild is Weapon objWeapon && objWeapon.Equipped)
+                            int intTotalChildrenValue = 0;
+                            foreach (IHasMatrixAttributes objChild in ChildrenWithMatrixAttributes)
                             {
-                                intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
+                                if (objChild is Gear objGear && objGear.Equipped ||
+                                    objChild is Weapon objWeapon && objWeapon.Equipped)
+                                {
+                                    intTotalChildrenValue += objChild.GetBaseMatrixAttribute(strMatrixAttribute);
+                                }
                             }
+
+                            objValue.Replace("{Children " + strMatrixAttribute + "}",
+                                intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
                         }
-                        objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
                     }
                 }
+
                 _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
@@ -3555,7 +3585,7 @@ namespace Chummer.Backend.Equipment
             if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
                 strAttributeName = "Mod " + strAttributeName;
 
-            foreach (Gear loopGear in Gear)
+            foreach (Gear loopGear in GearChildren)
             {
                 if (loopGear.Equipped)
                 {
@@ -3569,11 +3599,8 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicle")))
+                return false;
 
             DeleteVehicle();
             return _objCharacter.Vehicles.Remove(this);
@@ -3594,8 +3621,8 @@ namespace Chummer.Backend.Equipment
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
 
@@ -3624,5 +3651,7 @@ namespace Chummer.Backend.Equipment
         {
             throw new NotImplementedException();
         }
+
+        public const int MaxWheels = 50;
     }
 }

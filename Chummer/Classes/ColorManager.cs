@@ -124,6 +124,8 @@ namespace Chummer
 
         private static readonly ConcurrentDictionary<Color, Color> s_DicDarkModeColors = new ConcurrentDictionary<Color, Color>();
         private static readonly ConcurrentDictionary<Color, Color> s_DicInverseDarkModeColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicDimmedColors = new ConcurrentDictionary<Color, Color>();
+        private static readonly ConcurrentDictionary<Color, Color> s_DicBrightenedColors = new ConcurrentDictionary<Color, Color>();
 
         /// <summary>
         /// Returns a version of a color that has its lightness almost inverted (slightly increased lightness from inversion, slight desaturation)
@@ -156,6 +158,70 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Returns a version of a color that has is adapted to the current Color mode setting (same color in Light mode, changed one in Dark mode)
+        /// </summary>
+        /// <param name="objColor">Color as it would be in Light mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
+        public static Color GenerateCurrentModeColor(Color objColor)
+        {
+            if (IsLightMode)
+            {
+                return objColor;
+            }
+            else
+            {
+                return GenerateDarkModeColor(objColor);
+            }
+        }
+
+        /// <summary>
+        /// Returns a version of a color that is independent of the current Color mode and can savely be used for storing.
+        /// </summary>
+        /// <param name="objColor">Color as it is shown in current color mode</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
+        public static Color GenerateModeIndependentColor(Color objColor)
+        {
+            if (IsLightMode)
+            {
+                return objColor;
+            }
+            else
+            {
+                return GenerateInverseDarkModeColor(objColor);
+            }
+        }
+
+
+
+        /// <summary>
+        /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode
+        /// </summary>
+        /// <param name="objColor">Color whose lightness should be dimmed.</param>
+        /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
+        public static Color GenerateCurrentModeDimmedColor(Color objColor)
+        {
+            Color objRetColor;
+            if (IsLightMode)
+            {
+                if (!s_DicDimmedColors.TryGetValue(objColor, out objRetColor))
+                {
+                    objRetColor = GetDimmedVersion(objColor);
+                    s_DicDimmedColors.TryAdd(objColor, objRetColor);
+                }
+            }
+            else
+            {
+                if (!s_DicBrightenedColors.TryGetValue(objColor, out objRetColor))
+                {
+                    objRetColor = GetBrightenedVersion(objColor);
+                    s_DicBrightenedColors.TryAdd(objColor, objRetColor);
+                }
+            }
+
+            return objRetColor;
+        }
+
+        /// <summary>
         /// Because the transforms applied to convert a Light Mode color to Dark Mode cannot produce some ranges of lightness and saturation, not all colors are valid in Dark Mode.
         /// This function takes a color intended for Dark Mode and converts it to the closest possible color that is valid in Dark Mode.
         /// If the original color is valid in Dark Mode to begin with, the transforms should end up reproducing it.
@@ -166,6 +232,7 @@ namespace Chummer
         {
             return GenerateDarkModeColor(GenerateInverseDarkModeColor(objColor));
         }
+
 
         public static Color WindowText => IsLightMode ? WindowTextLight : WindowTextDark;
         private static Color WindowTextLight => SystemColors.WindowText;
@@ -226,6 +293,25 @@ namespace Chummer
         private static Color GrayHasNotesColorLight => Color.Tan;
         private static Color GrayHasNotesColorDark => GenerateDarkModeColor(GrayHasNotesColorLight);
         public static Color ErrorColor => Color.Red;
+
+        public static Color DieGlitchFore => IsLightMode ? DieGlitchForeLight : DieGlitchForeDark;
+        private static Color DieGlitchForeLight => WindowTextDark;
+        private static Color DieGlitchForeDark => GenerateDarkModeColor(DieGlitchForeLight);
+        public static Color DieGlitchBackground => IsLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
+        private static Color DieGlitchBackgroundLight => ControlDarkerLight;
+        private static Color DieGlitchBackgroundDark => GenerateDarkModeColor(DieGlitchBackgroundLight);
+        public static Color DieHitFore => IsLightMode ? DieHitForeLight : DieHitForeDark;
+        private static Color DieHitForeLight => ControlTextLight;
+        private static Color DieHitForeDark => GenerateDarkModeColor(DieHitForeLight);
+        public static Color DieHitBackground => IsLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+        private static Color DieHitBackgroundLight => Color.LightGreen;
+        private static Color DieHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
+        public static Color DieGlitchHitFore => IsLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
+        private static Color DieGlitchHitForeLight => ControlTextLight;
+        private static Color DieGlitchHitForeDark => GenerateDarkModeColor(DieHitForeLight);
+        public static Color DieGlitchHitBackground => IsLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
+        private static Color DieGlitchHitBackgroundLight => Color.DarkGreen;
+        private static Color DieGlitchHitBackgroundDark => GenerateDarkModeColor(DieHitBackgroundLight);
 
         public static void UpdateLightDarkMode(this Control objControl)
         {
@@ -315,6 +401,27 @@ namespace Chummer
             return FromHsla(fltHue, fltNewSaturationHsl, fltNewLightness, objColor.A);
         }
 
+        private static Color GetBrightenedVersion(Color objColor)
+        {
+            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
+            float fltHue = objColor.GetHue() / 360.0f;
+            float fltBrightness = objColor.GetBrightness();
+            float fltSaturation = objColor.GetSaturation();
+            fltSaturation = Math.Min(fltSaturation * 1.15f, 1);
+            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
+        }
+
+        private static Color GetDimmedVersion(Color objColor)
+        {
+            // Built-in functions are in HSV/HSB, so we need to convert to HSL to invert lightness.
+            float fltHue = objColor.GetHue() / 360.0f;
+            float fltBrightness = objColor.GetBrightness();
+            float fltSaturation = objColor.GetSaturation();
+            fltSaturation = Math.Max(0, fltSaturation * 0.85f);
+            return FromHsva(fltHue, fltBrightness, fltSaturation, objColor.A);
+        }
+
+
         private static void ApplyColorsRecursively(Control objControl, bool blnLightMode)
         {
             void ApplyButtonStyle()
@@ -362,7 +469,36 @@ namespace Chummer
                         ? blnLightMode ? ControlLight : ControlDark
                         : blnLightMode ? WindowLight : WindowDark;
                     break;
-                case ListView _:
+                case ListView objListView:
+                    objControl.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                    objControl.BackColor = blnLightMode ? WindowLight : WindowDark;
+                    foreach (DiceRollerListViewItem objItem in objListView.Items)
+                    {
+                        if (objItem.IsHit)
+                        {
+                            if (objItem.IsGlitch)
+                            {
+                                objItem.ForeColor = blnLightMode ? DieGlitchHitForeLight : DieGlitchHitForeDark;
+                                objItem.BackColor = blnLightMode ? DieGlitchHitBackgroundLight : DieGlitchHitBackgroundDark;
+                            }
+                            else
+                            {
+                                objItem.ForeColor = blnLightMode ? DieHitForeLight : DieHitForeDark;
+                                objItem.BackColor = blnLightMode ? DieHitBackgroundLight : DieHitBackgroundDark;
+                            }
+                        }
+                        else if (objItem.IsGlitch)
+                        {
+                            objItem.ForeColor = blnLightMode ? DieGlitchForeLight : DieGlitchForeDark;
+                            objItem.BackColor = blnLightMode ? DieGlitchBackgroundLight : DieGlitchBackgroundDark;
+                        }
+                        else
+                        {
+                            objItem.ForeColor = blnLightMode ? WindowTextLight : WindowTextDark;
+                            objItem.BackColor = blnLightMode ? WindowLight : WindowDark;
+                        }
+                    }
+                    break;
                 case ListBox _:
                 case ComboBox _:
                 case TableCell _:

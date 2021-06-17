@@ -318,6 +318,25 @@
           <name>Command</name>
         </specificskill>
       </bonus>
+      <choices>
+        <choice xpathfilter="name = 'Magician: +2 dice for Ritual Spellcasting Tests'">
+          <name>Magician: +2 dice for Ceremony Tests</name>
+          <bonus>
+            <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+              <name>Ceremony</name>
+            </specificskill>
+          </bonus>
+        </choice>
+      </choices>
+    </mentor>
+    <mentor>
+      <name>Tide</name>
+      <advantage>All: +2 dice pool modifier for tests using the Ceremony skill.</advantage>
+      <bonus>
+        <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+          <name>Ceremony</name>
+        </specificskill>
+      </bonus>
     </mentor>
     <mentor>
       <name>Lion</name>

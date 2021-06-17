@@ -112,12 +112,6 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void trePrograms_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -136,26 +130,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstAIPrograms.SelectedIndex + 1 < lstAIPrograms.Items.Count)
-                {
+                case Keys.Down when lstAIPrograms.SelectedIndex + 1 < lstAIPrograms.Items.Count:
                     lstAIPrograms.SelectedIndex += 1;
-                }
-                else if (lstAIPrograms.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstAIPrograms.SelectedIndex = 0;
+                    if (lstAIPrograms.Items.Count > 0)
+                    {
+                        lstAIPrograms.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstAIPrograms.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstAIPrograms.SelectedIndex - 1 >= 0:
                     lstAIPrograms.SelectedIndex -= 1;
-                }
-                else if (lstAIPrograms.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstAIPrograms.SelectedIndex = lstAIPrograms.Items.Count - 1;
+                    if (lstAIPrograms.Items.Count > 0)
+                    {
+                        lstAIPrograms.SelectedIndex = lstAIPrograms.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }
@@ -312,11 +311,8 @@ namespace Chummer
 
                 string strName = objXmlProgram.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 // If this is a critter with Optional Programs, see if this Program is allowed.
-                if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null)
-                {
-                    if (_xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + "]") == null)
-                        continue;
-                }
+                if (_xmlOptionalAIProgramsNode?.SelectSingleNode("program") != null && _xmlOptionalAIProgramsNode.SelectSingleNode("program[. = " + strName.CleanXPath() + "]") == null)
+                    continue;
                 string strDisplayName = objXmlProgram.SelectSingleNode("translate")?.Value ?? strName;
                 if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0)
                 {

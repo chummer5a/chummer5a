@@ -212,12 +212,6 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void lstQualities_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
             BuildQualityList();
@@ -249,26 +243,31 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstQualities.SelectedIndex + 1 < lstQualities.Items.Count)
-                {
+                case Keys.Down when lstQualities.SelectedIndex + 1 < lstQualities.Items.Count:
                     lstQualities.SelectedIndex += 1;
-                }
-                else if (lstQualities.Items.Count > 0)
+                    break;
+                case Keys.Down:
                 {
-                    lstQualities.SelectedIndex = 0;
+                    if (lstQualities.Items.Count > 0)
+                    {
+                        lstQualities.SelectedIndex = 0;
+                    }
+
+                    break;
                 }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstQualities.SelectedIndex - 1 >= 0)
-                {
+                case Keys.Up when lstQualities.SelectedIndex - 1 >= 0:
                     lstQualities.SelectedIndex -= 1;
-                }
-                else if (lstQualities.Items.Count > 0)
+                    break;
+                case Keys.Up:
                 {
-                    lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
+                    if (lstQualities.Items.Count > 0)
+                    {
+                        lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
+                    }
+
+                    break;
                 }
             }
         }

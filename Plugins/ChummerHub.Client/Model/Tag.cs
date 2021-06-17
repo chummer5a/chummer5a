@@ -26,7 +26,13 @@ namespace ChummerHub.Client.Sinners
             MyRuntimeHubTag = hubTag;
         }
 
-        public Tag (bool isUserGenerated = false)
+        public Tag()
+        {
+            Id = Guid.NewGuid();
+            IsUserGenerated = false;
+        }
+
+        public Tag (bool isUserGenerated)
         {
             Id = Guid.NewGuid();
             IsUserGenerated = isUserGenerated;

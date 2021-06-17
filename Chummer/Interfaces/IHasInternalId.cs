@@ -104,7 +104,14 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        nodParent.Nodes.Clear();
+                        for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                        {
+                            TreeNode objNode = nodParent.Nodes[i];
+                            if (objNode.Tag is Gear objNodeGear && !ReferenceEquals(objNodeGear.Parent, objParent))
+                            {
+                                objNode.Remove();
+                            }
+                        }
                     }
                     break;
             }
@@ -221,7 +228,15 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        nodParent.Nodes.Clear();
+                        VehicleMod objParentAsVehicleMod = objParent as VehicleMod;
+                        for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                        {
+                            TreeNode objNode = nodParent.Nodes[i];
+                            if (objNode.Tag is Cyberware objNodeCyberware && !ReferenceEquals(objNodeCyberware.Parent, objParent) && !ReferenceEquals(objNodeCyberware.ParentVehicle, objParent) && objParentAsVehicleMod?.Cyberware.Contains(objNodeCyberware) != true)
+                            {
+                                objNode.Remove();
+                            }
+                        }
                     }
                     break;
             }
@@ -314,6 +329,14 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Reset:
                     {
                         nodParent.Nodes.Clear();
+                        for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                        {
+                            TreeNode objNode = nodParent.Nodes[i];
+                            if (objNode.Tag is Weapon objNodeWeapon && !ReferenceEquals(objNodeWeapon.Parent, objParent) && !ReferenceEquals(objNodeWeapon.ParentMount, objParent) && !ReferenceEquals(objNodeWeapon.ParentVehicle, objParent) && !ReferenceEquals(objNodeWeapon.ParentVehicleMod, objParent))
+                            {
+                                objNode.Remove();
+                            }
+                        }
                     }
                     break;
             }
@@ -352,8 +375,8 @@ namespace Chummer
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
-                            objWeaponAccessory.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                             intNewIndex += 1;
                         }
@@ -363,8 +386,8 @@ namespace Chummer
                     {
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(treWeapons);
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.RemoveTaggedCollectionChanged(treWeapons);
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
@@ -375,8 +398,8 @@ namespace Chummer
                         string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objWeaponAccessory.Gear.RemoveTaggedCollectionChanged(treWeapons);
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.RemoveTaggedCollectionChanged(treWeapons);
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(false, treWeapons);
                             nodParent.FindNode(objWeaponAccessory.InternalId)?.Remove();
                         }
@@ -386,8 +409,8 @@ namespace Chummer
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.NewItems)
                         {
                             AddToTree(objWeaponAccessory, intNewIndex);
-                            objWeaponAccessory.Gear.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
-                            foreach (Gear objGear in objWeaponAccessory.Gear)
+                            objWeaponAccessory.GearChildren.AddTaggedCollectionChanged(treWeapons, (x, y) => objWeaponAccessory.RefreshChildrenGears(treWeapons, cmsWeaponAccessoryGear, null, y));
+                            foreach (Gear objGear in objWeaponAccessory.GearChildren)
                                 objGear.SetupChildrenGearsCollectionChanged(true, treWeapons, cmsWeaponAccessoryGear);
                             intNewIndex += 1;
                         }
@@ -414,7 +437,14 @@ namespace Chummer
                     break;
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        nodParent.Nodes.Clear();
+                        for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                        {
+                            TreeNode objNode = nodParent.Nodes[i];
+                            if (objNode.Tag is WeaponAccessory objNodeAccessory && !ReferenceEquals(objNodeAccessory.Parent, objParent))
+                            {
+                                objNode.Remove();
+                            }
+                        }
                     }
                     break;
             }
@@ -431,6 +461,292 @@ namespace Chummer
                 nodParent.Expand();
                 if (blnSingleAdd)
                     treWeapons.SelectedNode = objNode;
+            }
+        }
+
+        public static void RefreshVehicleMods(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleMod, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
+                return;
+
+            TreeNode nodParent = treVehicles.FindNodeByTag(objParent);
+            if (nodParent == null)
+                return;
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
+                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objVehicleMod, intNewIndex);
+                            objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
+                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                            objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
+                            foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objVehicleMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
+                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles);
+                            objVehicleMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
+                            foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            nodParent.FindNodeByTag(objVehicleMod)?.Remove();
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objVehicleMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
+                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                            objVehicleMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
+                            foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            nodParent.FindNodeByTag(objVehicleMod)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
+                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objVehicleMod, intNewIndex);
+                            objVehicleMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
+                            foreach (Cyberware objCyberware in objVehicleMod.Cyberware)
+                                objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                            objVehicleMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objVehicleMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objVehicleMod.Cyberware.Count, y));
+                            foreach (Weapon objWeapon in objVehicleMod.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            intNewIndex += 1;
+                        }
+                        treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            nodParent.FindNodeByTag(objVehicleMod)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
+                        foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objVehicleMod, intNewIndex);
+                            intNewIndex += 1;
+                        }
+                        treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                        {
+                            TreeNode objNode = nodParent.Nodes[i];
+                            if (objNode.Tag is VehicleMod objNodeMod && !ReferenceEquals(objNodeMod.Parent, objParent) && !ReferenceEquals(objNodeMod.WeaponMountParent, objParent))
+                            {
+                                objNode.Remove();
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            void AddToTree(VehicleMod objVehicleMod, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objVehicleMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                if (objNode == null)
+                    return;
+
+                if (intIndex >= 0)
+                    nodParent.Nodes.Insert(intIndex, objNode);
+                else
+                    nodParent.Nodes.Add(objNode);
+                nodParent.Expand();
+                if (blnSingleAdd)
+                    treVehicles.SelectedNode = objNode;
+            }
+        }
+
+        public static void RefreshVehicleWeaponMounts(this IHasInternalId objParent, TreeView treVehicles, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, ContextMenuStrip cmsVehicleMod, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
+        {
+            if (treVehicles == null || notifyCollectionChangedEventArgs == null)
+                return;
+
+            TreeNode nodVehicleParent = treVehicles.FindNodeByTag(objParent);
+            if (nodVehicleParent == null)
+                return;
+            TreeNode nodParent = nodVehicleParent.FindNode("String_WeaponMounts", false);
+
+            switch (notifyCollectionChangedEventArgs.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objWeaponMount, intNewIndex);
+                            objWeaponMount.Mods.AddTaggedCollectionChanged(treVehicles,
+                                (x, y) => objWeaponMount.RefreshVehicleMods(treVehicles, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
+                            objWeaponMount.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objWeaponMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y));
+                            foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            foreach (VehicleMod objMod in objWeaponMount.Mods)
+                            {
+                                objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
+                                foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
+                                foreach (Weapon objWeapon in objMod.Weapons)
+                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            }
+                            intNewIndex += 1;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objWeaponMount.Mods.RemoveTaggedCollectionChanged(treVehicles);
+                            objWeaponMount.Weapons.RemoveTaggedCollectionChanged(treVehicles);
+                            foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            foreach (VehicleMod objMod in objWeaponMount.Mods)
+                            {
+                                objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
+                                foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles);
+                                objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
+                                foreach (Weapon objWeapon in objMod.Weapons)
+                                    objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            }
+                            if (nodParent != null)
+                            {
+                                nodParent.FindNodeByTag(objWeaponMount)?.Remove();
+                                if (nodParent.Nodes.Count == 0)
+                                    nodParent.Remove();
+                            }
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            objWeaponMount.Mods.RemoveTaggedCollectionChanged(treVehicles);
+                            objWeaponMount.Weapons.RemoveTaggedCollectionChanged(treVehicles);
+                            foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            foreach (VehicleMod objMod in objWeaponMount.Mods)
+                            {
+                                objMod.Cyberware.RemoveTaggedCollectionChanged(treVehicles);
+                                foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    objCyberware.SetupChildrenCyberwareCollectionChanged(false, treVehicles);
+                                objMod.Weapons.RemoveTaggedCollectionChanged(treVehicles);
+                                foreach (Weapon objWeapon in objMod.Weapons)
+                                    objWeapon.SetupChildrenWeaponsCollectionChanged(false, treVehicles);
+                            }
+                            nodParent?.FindNodeByTag(objWeaponMount)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objWeaponMount, intNewIndex);
+                            objWeaponMount.Mods.AddTaggedCollectionChanged(treVehicles,
+                                (x, y) => objWeaponMount.RefreshVehicleMods(treVehicles, cmsVehicleMod, cmsCyberware, cmsCyberwareGear, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, null, y));
+                            objWeaponMount.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objWeaponMount.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objWeaponMount.Mods.Count, y));
+                            foreach (Weapon objWeapon in objWeaponMount.Weapons)
+                                objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            foreach (VehicleMod objMod in objWeaponMount.Mods)
+                            {
+                                objMod.Cyberware.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenCyberware(treVehicles, cmsCyberware, cmsCyberwareGear, null, y));
+                                foreach (Cyberware objCyberware in objMod.Cyberware)
+                                    objCyberware.SetupChildrenCyberwareCollectionChanged(true, treVehicles, cmsCyberware, cmsCyberwareGear);
+                                objMod.Weapons.AddTaggedCollectionChanged(treVehicles, (x, y) => objMod.RefreshChildrenWeapons(treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, () => objMod.Cyberware.Count, y));
+                                foreach (Weapon objWeapon in objMod.Weapons)
+                                    objWeapon.SetupChildrenWeaponsCollectionChanged(true, treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear);
+                            }
+                            intNewIndex += 1;
+                        }
+                        treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
+                        {
+                            nodParent?.FindNodeByTag(objWeaponMount)?.Remove();
+                        }
+                        int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objWeaponMount, intNewIndex);
+                            intNewIndex += 1;
+                        }
+                        treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        if (nodParent != null)
+                        {
+                            for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                            {
+                                TreeNode objNode = nodParent.Nodes[i];
+                                if (objNode.Tag is WeaponMount objNodeWeaponMount && !ReferenceEquals(objNodeWeaponMount.Parent, objParent))
+                                {
+                                    objNode.Remove();
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            void AddToTree(WeaponMount objWeaponMount, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = objWeaponMount.CreateTreeNode(cmsVehicleWeaponMount, cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, cmsCyberware, cmsCyberwareGear, cmsVehicleMod);
+                if (objNode == null)
+                    return;
+
+                if (nodParent == null)
+                {
+                    nodParent = new TreeNode
+                    {
+                        Tag = "String_WeaponMounts",
+                        Text = LanguageManager.GetString("String_WeaponMounts")
+                    };
+                    nodVehicleParent.Nodes.Insert(funcOffset?.Invoke() ?? 0, nodParent);
+                    nodParent.Expand();
+                }
+
+                if (intIndex >= 0)
+                    nodParent.Nodes.Insert(intIndex, objNode);
+                else
+                    nodParent.Nodes.Add(objNode);
+                nodParent.Expand();
+                if (blnSingleAdd)
+                    treVehicles.SelectedNode = objNode;
             }
         }
     }

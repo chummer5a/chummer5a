@@ -247,6 +247,8 @@
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
+    <Compile Include="Backend\Datastructures\KeyArray.cs" />
+    <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
@@ -269,6 +271,7 @@
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
@@ -331,6 +334,7 @@
     <Compile Include="Backend\Uniques\Spell.cs" />
     <Compile Include="Backend\Uniques\Spirit.cs" />
     <Compile Include="Backend\Uniques\StackedFocus.cs" />
+    <Compile Include="Backend\Uniques\SustainedObject.cs" />
     <Compile Include="Backend\Uniques\Tradition.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
@@ -370,6 +374,12 @@
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\TooltipFactory.cs" />
+    <Compile Include="Controls\SustainedObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SustainedObjectControl.Designer.cs">
+      <DependentUpon>SustainedObjectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -415,6 +425,19 @@
     </Compile>
     <Compile Include="helpers\CursorWait.cs" />
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
+    <Compile Include="helpers\DiceRollerListViewItem.cs" />
+    <Compile Include="helpers\DpiFriendlyToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripButton.Designer.cs">
+      <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.Designer.cs">
+      <DependentUpon>DpiFriendlyToolStripMenuItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -475,12 +498,6 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
-    <None Include="Controls\DiceRollerControl.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="Controls\DiceRollerControl.Designer.cs">
-      <DependentUpon>DiceRollerControl.cs</DependentUpon>
-    </None>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -640,6 +657,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\amend_encumbrance_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_critters.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_lifemodules.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Flashback System Enables Cyberzombies\amend_cyberware.xml">
@@ -1293,8 +1316,8 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\DiceRollerControl.resx">
-      <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\SustainedObjectControl.resx">
+      <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterRoster.resx">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
@@ -2072,6 +2095,8 @@
     <Content Include="Resources\HeroLab.ico" />
     <Content Include="Resources\icons\defaulted.png" />
     <Content Include="Resources\icons\die.png" />
+    <Content Include="Resources\icons\discord_16px.png" />
+    <Content Include="Resources\icons\discord_32px.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\32_bit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\3d_glasses.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\64_bit.png" />
@@ -10240,6 +10265,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\box_resize_actual.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\box_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain_add.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain_edit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain_trainer.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\bread.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\breadcrumb.png" />
@@ -11657,6 +11684,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashdisk.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashdisk_logo.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashlight.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashlight_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashlight_shine.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flask.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flask_empty.png" />
@@ -11825,6 +11853,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\group_link.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\group_stroke.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\gun.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\gun_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\half_moon.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hamburger.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hammer.png" />
@@ -11840,6 +11869,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hand_property.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hardware_building_oem.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hard_hat_military.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hard_hat_military_edit.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hard_hat_military_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hat.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hbox.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hdividedbox.png" />
@@ -12017,6 +12048,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\labels_page.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\label_link.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\ladybird.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\ladybird_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\landmarks.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\languange.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\laptop.png" />
@@ -12670,6 +12702,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\print_tiles.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\private.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\processor.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\processor_add.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\processor_edit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\process_marked_headers.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\production_copyleft.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\profiles.png" />
@@ -13204,6 +13238,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel_common.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel_racing.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel_racing_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\stethoscope.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\stethoscope_vintage.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\stickman.png" />
@@ -13235,6 +13270,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\switch.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\switch_windows.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\sword.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\sword_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\synchronize_ftp_password.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\synchronous_scrolling.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\system_monitor.png" />
@@ -13636,6 +13672,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_king.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_king_black.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_knight.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_knight_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_leprechaun.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_level_filtering.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_lisa.png" />
@@ -17806,6 +17843,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\zoom_selection.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\zootool.ico" />
     <Content Include="Resources\icons\HeroLab_16.png" />
+    <Content Include="Resources\icons\Locate_48.png" />
+    <Content Include="Resources\icons\HeroLab_32.png" />
+    <Content Include="Resources\icons\HeroLab_48.png" />
     <Content Include="Resources\icons\noimagedots.png" />
     <Content Include="Resources\troll.ico" />
     <Content Include="Resources\troll.png" />
@@ -18537,6 +18577,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
   </Target>
+  <PropertyGroup>
+    <PreBuildEvent>copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

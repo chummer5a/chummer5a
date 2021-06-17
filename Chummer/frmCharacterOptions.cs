@@ -52,6 +52,7 @@ namespace Chummer
         public frmCharacterOptions(CharacterOptions objExistingOptions = null)
         {
             InitializeComponent();
+            this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objReferenceCharacterOptions = objExistingOptions ?? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
             _objCharacterOptions = new CharacterOptions(_objReferenceCharacterOptions);
@@ -150,15 +151,8 @@ namespace Chummer
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                 return;
 
-            try
-            {
-                File.Delete(Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterOptions.FileName));
-            }
-            catch (UnauthorizedAccessException)
-            {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+            if (!Utils.SafeDeleteFile(Path.Combine(Application.StartupPath, "settings", _objReferenceCharacterOptions.FileName), true))
                 return;
-            }
 
             using (new CursorWait(this))
             {
@@ -1147,6 +1141,7 @@ namespace Chummer
             nudKarmaEnemy.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaEnemy));
             nudKarmaCarryover.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCarryover));
             nudKarmaSpirit.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpirit));
+            nudKarmaSpiritFettering.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpiritFettering));
             nudKarmaTechnique.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaTechnique));
             nudKarmaInitiation.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiation));
             nudKarmaInitiationFlat.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiationFlat));

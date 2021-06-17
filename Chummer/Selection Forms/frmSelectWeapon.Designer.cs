@@ -252,7 +252,7 @@ namespace Chummer
             this.dgvWeapons.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvWeapons.Size = new System.Drawing.Size(752, 455);
             this.dgvWeapons.TabIndex = 36;
-            this.dgvWeapons.DoubleClick += new System.EventHandler(this.dgvWeapons_DoubleClick);
+            this.dgvWeapons.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // dgvc_Guid
             // 

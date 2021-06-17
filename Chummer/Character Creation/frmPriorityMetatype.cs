@@ -746,15 +746,14 @@ namespace Chummer
                                                                                                  " and (not(prioritytable) or prioritytable = " + _objCharacter.Options.PriorityTable.CleanXPath() + ")]");
                     foreach (XPathNavigator xmlResourcesPriority in xmlResourcesPriorityList)
                     {
-                        if (xmlResourcesPriorityList.Count == 1 || xmlResourcesPriority.SelectSingleNode("prioritytable") != null)
+                        if (xmlResourcesPriorityList.Count == 1 ||
+                            (xmlResourcesPriority.SelectSingleNode("prioritytable") != null &&
+                             xmlResourcesPriority.SelectSingleNode("gameplayoption") != null))
                         {
-                            if (xmlResourcesPriorityList.Count == 1 || xmlResourcesPriority.SelectSingleNode("gameplayoption") != null)
-                            {
-                                decimal decResources = 0;
-                                if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
-                                    _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
-                                break;
-                            }
+                            decimal decResources = 0;
+                            if (xmlResourcesPriority.TryGetDecFieldQuickly("resources", ref decResources))
+                                _objCharacter.StartingNuyen = _objCharacter.Nuyen = decResources;
+                            break;
                         }
                     }
 
@@ -871,17 +870,16 @@ namespace Chummer
                                                                                                      " and (not(prioritytable) or prioritytable = " + _objCharacter.Options.PriorityTable.CleanXPath() + ")]");
                     foreach (XPathNavigator objXmlAttributesPriority in objXmlAttributesPriorityList)
                     {
-                        if (objXmlAttributesPriorityList.Count == 1 || objXmlAttributesPriority.SelectSingleNode("prioritytable") != null)
+                        if (objXmlAttributesPriorityList.Count == 1 ||
+                            (objXmlAttributesPriority.SelectSingleNode("prioritytable") != null &&
+                             objXmlAttributesPriority.SelectSingleNode("gameplayoption") != null))
                         {
-                            if (objXmlAttributesPriorityList.Count == 1 || objXmlAttributesPriority.SelectSingleNode("gameplayoption") != null)
-                            {
-                                int intAttributes = 0;
-                                objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
-                                if (boolHalveAttributePriorityPoints)
-                                    intAttributes /= 2;
-                                _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
-                                break;
-                            }
+                            int intAttributes = 0;
+                            objXmlAttributesPriority.TryGetInt32FieldQuickly("attributes", ref intAttributes);
+                            if (boolHalveAttributePriorityPoints)
+                                intAttributes /= 2;
+                            _objCharacter.TotalAttributes = _objCharacter.Attributes = intAttributes;
+                            break;
                         }
                     }
 
@@ -890,17 +888,16 @@ namespace Chummer
                                                                                                  " and (not(prioritytable) or prioritytable = " + _objCharacter.Options.PriorityTable.CleanXPath() + ")]");
                     foreach (XPathNavigator objXmlSkillsPriority in objXmlSkillsPriorityList)
                     {
-                        if (objXmlSkillsPriorityList.Count == 1 || objXmlSkillsPriority.SelectSingleNode("prioritytable") != null)
+                        if (objXmlSkillsPriorityList.Count == 1 ||
+                            (objXmlSkillsPriority.SelectSingleNode("prioritytable") != null &&
+                             objXmlSkillsPriority.SelectSingleNode("gameplayoption") != null))
                         {
-                            if (objXmlSkillsPriorityList.Count == 1 || objXmlSkillsPriority.SelectSingleNode("gameplayoption") != null)
-                            {
-                                int intTemp = 0;
-                                if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
-                                    _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
-                                if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
-                                    _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
-                                break;
-                            }
+                            int intTemp = 0;
+                            if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skills", ref intTemp))
+                                _objCharacter.SkillsSection.SkillPointsMaximum = intTemp;
+                            if (objXmlSkillsPriority.TryGetInt32FieldQuickly("skillgroups", ref intTemp))
+                                _objCharacter.SkillsSection.SkillGroupPointsMaximum = intTemp;
+                            break;
                         }
                     }
 
@@ -938,10 +935,9 @@ namespace Chummer
                             CharacterAttrib objAttributeToShift = null;
                             foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.AttributeList)
                             {
-                                if (objAttribute.Karma > 0)
+                                if (objAttribute.Karma > 0 && (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value))
                                 {
-                                    if (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value)
-                                        objAttributeToShift = objAttribute;
+                                    objAttributeToShift = objAttribute;
                                 }
                             }
                             if (objAttributeToShift == null)
@@ -971,10 +967,9 @@ namespace Chummer
                             CharacterAttrib objAttributeToShift = null;
                             foreach (CharacterAttrib objAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
                             {
-                                if (objAttribute.Karma > 0)
+                                if (objAttribute.Karma > 0 && (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value))
                                 {
-                                    if (objAttributeToShift == null || objAttributeToShift.Value < objAttribute.Value)
-                                        objAttributeToShift = objAttribute;
+                                    objAttributeToShift = objAttribute;
                                 }
                             }
                             if (objAttributeToShift == null)
@@ -1004,10 +999,9 @@ namespace Chummer
                             SkillGroup objGroupToShift = null;
                             foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
                             {
-                                if (objGroup.Karma > 0)
+                                if (objGroup.Karma > 0 && (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating))
                                 {
-                                    if (objGroupToShift == null || objGroupToShift.Rating < objGroup.Rating)
-                                        objGroupToShift = objGroup;
+                                    objGroupToShift = objGroup;
                                 }
                             }
                             if (objGroupToShift == null)
@@ -1037,10 +1031,9 @@ namespace Chummer
                             Skill objSkillToShift = null;
                             foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                             {
-                                if (objSkill.Karma > 0)
+                                if (objSkill.Karma > 0 && (objSkillToShift == null || objSkillToShift.Rating < objSkill.Rating))
                                 {
-                                    if (objSkillToShift == null || objSkillToShift.Rating < objSkill.Rating)
-                                        objSkillToShift = objSkill;
+                                    objSkillToShift = objSkill;
                                 }
                             }
                             if (objSkillToShift == null)
@@ -1558,14 +1551,11 @@ namespace Chummer
                                             goto EndForbiddenLoop;
                                         }
                                     }
-                                    else if (objXmlForbidden.Name == "metavariant")
+                                    // Check the Metavariant restriction.
+                                    else if (objXmlForbidden.Name == "metavariant" && objXmlForbidden.Value == cboMetavariant.SelectedValue?.ToString())
                                     {
-                                        // Check the Metavariant restriction.
-                                        if (objXmlForbidden.Value == cboMetavariant.SelectedValue?.ToString())
-                                        {
-                                            blnRequirementForbidden = true;
-                                            goto EndForbiddenLoop;
-                                        }
+                                        blnRequirementForbidden = true;
+                                        goto EndForbiddenLoop;
                                     }
                                 }
                             }
@@ -1604,14 +1594,11 @@ namespace Chummer
                                             goto EndRequiredLoop;
                                         }
                                     }
-                                    else if (objXmlRequired.Name == "metavariant")
+                                    // Check the Metavariant restriction.
+                                    else if (objXmlRequired.Name == "metavariant" && objXmlRequired.Value == cboMetavariant.SelectedValue?.ToString())
                                     {
-                                        // Check the Metavariant restriction.
-                                        if (objXmlRequired.Value == cboMetavariant.SelectedValue?.ToString())
-                                        {
-                                            blnRequirementMet = true;
-                                            goto EndRequiredLoop;
-                                        }
+                                        blnRequirementMet = true;
+                                        goto EndRequiredLoop;
                                     }
                                 }
                             }

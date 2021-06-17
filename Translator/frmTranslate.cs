@@ -374,14 +374,15 @@ namespace Translator
 
         private void frmTranslate_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.F3)
+            switch (e.KeyCode)
             {
-                btnSearch.PerformClick();
-                return;
+                case Keys.F3:
+                    btnSearch.PerformClick();
+                    return;
+                case Keys.F when e.Modifiers == Keys.Control:
+                    txtSearch.Focus();
+                    break;
             }
-
-            if (e.KeyCode == Keys.F && e.Modifiers == Keys.Control)
-                txtSearch.Focus();
         }
 
         private void frmTranslate_Load(object sender, EventArgs e)

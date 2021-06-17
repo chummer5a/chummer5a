@@ -224,7 +224,7 @@ namespace Chummer
     /// Expense Log Entry.
     /// </summary>
     [DebuggerDisplay("{Date.ToString()}: {Amount.ToString()}")]
-    public class ExpenseLogEntry : IHasInternalId, IComparable, IEquatable<ExpenseLogEntry>
+    public sealed class ExpenseLogEntry : IHasInternalId, IComparable, IEquatable<ExpenseLogEntry>, IComparable<ExpenseLogEntry>
     {
         private Guid _guiID;
         private readonly Character _objCharacter;
@@ -236,46 +236,6 @@ namespace Chummer
         private bool _blnForceCareerVisible;
 
         #region Helper Methods
-        public int CompareTo(object obj)
-        {
-            if (obj is ExpenseLogEntry objEntry)
-            {
-                if (Equals(_objCharacter, objEntry._objCharacter))
-                {
-                    int intReturn = Date.CompareTo(objEntry.Date);
-                    if (intReturn == 0)
-                        intReturn = _objExpenseType.CompareTo(objEntry._objExpenseType);
-                    if (intReturn == 0)
-                        intReturn = string.Compare(Reason, objEntry.Reason, StringComparison.Ordinal);
-                    if (intReturn == 0)
-                        intReturn = Refund.CompareTo(objEntry.Refund);
-                    if (intReturn == 0)
-                        intReturn = Amount.CompareTo(objEntry.Amount);
-                    if (intReturn == 0)
-                        intReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
-                    return -intReturn;
-                }
-
-                int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, objEntry._objCharacter?.FileName ?? string.Empty, StringComparison.Ordinal);
-                if (intBackupReturn == 0)
-                    intBackupReturn = string.Compare(_objCharacter?.CharacterName ?? string.Empty, objEntry._objCharacter?.CharacterName ?? string.Empty, StringComparison.Ordinal);
-                if (intBackupReturn == 0)
-                    intBackupReturn = Date.CompareTo(objEntry.Date);
-                if (intBackupReturn == 0)
-                    intBackupReturn = _objExpenseType.CompareTo(objEntry._objExpenseType);
-                if (intBackupReturn == 0)
-                    intBackupReturn = string.Compare(Reason, objEntry.Reason, StringComparison.Ordinal);
-                if (intBackupReturn == 0)
-                    intBackupReturn = Refund.CompareTo(objEntry.Refund);
-                if (intBackupReturn == 0)
-                    intBackupReturn = Amount.CompareTo(objEntry.Amount);
-                if (intBackupReturn == 0)
-                    intBackupReturn = ForceCareerVisible.CompareTo(objEntry.ForceCareerVisible);
-                return -intBackupReturn;
-            }
-            return 1;
-        }
-
         /// <summary>
         /// Convert a string to an ExpenseType.
         /// </summary>
@@ -490,22 +450,88 @@ namespace Chummer
 
         public bool Equals(ExpenseLogEntry other)
         {
-            if (other is null) return false;
-            if (ReferenceEquals(this, other)) return true;
+            if (other is null)
+                return false;
+            if (ReferenceEquals(this, other))
+                return true;
             return CompareTo(other) == 0;
         }
 
         public override bool Equals(object obj)
         {
-            if (obj is null) return false;
-            if (ReferenceEquals(this, obj)) return true;
-            if (obj.GetType() != GetType()) return false;
-            return Equals((ExpenseLogEntry) obj);
+            if (ReferenceEquals(this, obj))
+                return true;
+            return obj is ExpenseLogEntry objEntry && Equals(objEntry);
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is ExpenseLogEntry objEntry)
+            {
+                return CompareTo(objEntry);
+            }
+            return 1;
+        }
+
+        public int CompareTo(ExpenseLogEntry other)
+        {
+            if (Equals(_objCharacter, other._objCharacter))
+            {
+                int intReturn = Date.CompareTo(other.Date);
+                if (intReturn == 0)
+                {
+                    intReturn = _objExpenseType.CompareTo(other._objExpenseType);
+                    if (intReturn == 0)
+                    {
+                        intReturn = string.Compare(Reason, other.Reason, StringComparison.Ordinal);
+                        if (intReturn == 0)
+                        {
+                            intReturn = Refund.CompareTo(other.Refund);
+                            if (intReturn == 0)
+                            {
+                                intReturn = Amount.CompareTo(other.Amount);
+                                if (intReturn == 0)
+                                    intReturn = ForceCareerVisible.CompareTo(other.ForceCareerVisible);
+                            }
+                        }
+                    }
+                }
+                return -intReturn;
+            }
+
+            int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, other._objCharacter?.FileName ?? string.Empty, StringComparison.Ordinal);
+            if (intBackupReturn == 0)
+            {
+                intBackupReturn = string.Compare(_objCharacter?.CharacterName ?? string.Empty, other._objCharacter?.CharacterName ?? string.Empty, StringComparison.Ordinal);
+                if (intBackupReturn == 0)
+                {
+                    intBackupReturn = Date.CompareTo(other.Date);
+                    if (intBackupReturn == 0)
+                    {
+                        intBackupReturn = _objExpenseType.CompareTo(other._objExpenseType);
+                        if (intBackupReturn == 0)
+                        {
+                            intBackupReturn = string.Compare(Reason, other.Reason, StringComparison.Ordinal);
+                            if (intBackupReturn == 0)
+                            {
+                                intBackupReturn = Refund.CompareTo(other.Refund);
+                                if (intBackupReturn == 0)
+                                {
+                                    intBackupReturn = Amount.CompareTo(other.Amount);
+                                    if (intBackupReturn == 0)
+                                        intBackupReturn = ForceCareerVisible.CompareTo(other.ForceCareerVisible);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return -intBackupReturn;
         }
 
         public override int GetHashCode()
         {
-            return new {_objCharacter, Date, Amount, Reason, Refund, ForceCareerVisible}.GetHashCode();
+            return (_objCharacter, Date, Amount, Reason, Refund, ForceCareerVisible).GetHashCode();
         }
 
         public static bool operator ==(ExpenseLogEntry left, ExpenseLogEntry right)

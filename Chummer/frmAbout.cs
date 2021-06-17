@@ -136,13 +136,21 @@ namespace Chummer
 
         private void txt_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
-                DialogResult = DialogResult.OK;
-
-            if (e.Control && e.KeyCode == Keys.A)
+            switch (e.KeyCode)
             {
-                e.SuppressKeyPress = true;
-                (sender as TextBox)?.SelectAll();
+                case Keys.Escape:
+                    DialogResult = DialogResult.OK;
+                    break;
+                case Keys.A:
+                {
+                    if (e.Control)
+                    {
+                        e.SuppressKeyPress = true;
+                        (sender as TextBox)?.SelectAll();
+                    }
+
+                    break;
+                }
             }
         }
         #endregion

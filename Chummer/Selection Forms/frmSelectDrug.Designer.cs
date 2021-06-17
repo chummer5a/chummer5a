@@ -238,7 +238,7 @@ namespace Chummer
             this.lstDrug.Size = new System.Drawing.Size(297, 390);
             this.lstDrug.TabIndex = 26;
             this.lstDrug.SelectedIndexChanged += new System.EventHandler(this.lstDrug_SelectedIndexChanged);
-            this.lstDrug.DoubleClick += new System.EventHandler(this.lstDrug_DoubleClick);
+            this.lstDrug.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // tlpButtons
             // 
@@ -710,7 +710,6 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdCancel;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private BufferedTableLayoutPanel tlpButtons;

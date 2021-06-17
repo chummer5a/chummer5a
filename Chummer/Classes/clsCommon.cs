@@ -265,7 +265,7 @@ namespace Chummer
             {
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    Gear objReturn = objVehicle.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objVehicle.GearChildren.DeepFindById(strGuid);
                     if (!string.IsNullOrEmpty(objReturn?.Name))
                     {
                         objFoundVehicle = objVehicle;
@@ -603,7 +603,7 @@ namespace Chummer
             {
                 foreach (Armor objArmor in lstArmors)
                 {
-                    Gear objReturn = objArmor.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objArmor.GearChildren.DeepFindById(strGuid);
                     if (objReturn != null)
                     {
                         objFoundArmor = objArmor;
@@ -613,7 +613,7 @@ namespace Chummer
 
                     foreach (ArmorMod objMod in objArmor.ArmorMods)
                     {
-                        objReturn = objMod.Gear.DeepFindById(strGuid);
+                        objReturn = objMod.GearChildren.DeepFindById(strGuid);
                         if (objReturn != null)
                         {
                             objFoundArmor = objArmor;
@@ -677,9 +677,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+                foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
                 {
-                    Gear objReturn = objCyberware.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objCyberware.GearChildren.DeepFindById(strGuid);
 
                     if (objReturn != null)
                     {
@@ -743,11 +743,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                 {
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        Gear objReturn = objAccessory.Gear.DeepFindById(strGuid);
+                        Gear objReturn = objAccessory.GearChildren.DeepFindById(strGuid);
 
                         if (objReturn != null)
                         {
@@ -905,36 +905,36 @@ namespace Chummer
             if (GlobalOptions.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
             {
                 strSearchText2 = strSearchText
-                    .Replace("D\'A", "D​\'A")
-                    .Replace("D\'À", "D​\'À")
-                    .Replace("D\'Â", "D​\'Â")
-                    .Replace("D\'E", "D​\'E")
-                    .Replace("D\'É", "D​\'É")
-                    .Replace("D\'È", "D​\'È")
-                    .Replace("D\'Ê", "D​\'Ê")
-                    .Replace("D\'I", "D​\'I")
-                    .Replace("D\'Î", "D​\'Î")
-                    .Replace("D\'Ï", "D​\'Ï")
-                    .Replace("D\'O", "D​\'O")
-                    .Replace("D\'Ô", "D​\'Ô")
-                    .Replace("D\'Œ", "D​\'Œ")
-                    .Replace("D\'U", "D​\'U")
-                    .Replace("D\'Û", "D​\'Û")
-                    .Replace("L\'A", "L​\'A")
-                    .Replace("L\'À", "L​\'À")
-                    .Replace("L\'Â", "L​\'Â")
-                    .Replace("L\'E", "L​\'E")
-                    .Replace("L\'É", "L​\'É")
-                    .Replace("L\'È", "L​\'È")
-                    .Replace("L\'Ê", "L​\'Ê")
-                    .Replace("L\'I", "L​\'I")
-                    .Replace("L\'Î", "L​\'Î")
-                    .Replace("L\'Ï", "L​\'Ï")
-                    .Replace("L\'O", "L​\'O")
-                    .Replace("L\'Ô", "L​\'Ô")
-                    .Replace("L\'Œ", "L​\'Œ")
-                    .Replace("L\'U", "L​\'U")
-                    .Replace("L\'Û", "L​\'Û");
+                    .Replace("D\'A", "D\u200B\'A")
+                    .Replace("D\'À", "D\u200B\'À")
+                    .Replace("D\'Â", "D\u200B\'Â")
+                    .Replace("D\'E", "D\u200B\'E")
+                    .Replace("D\'É", "D\u200B\'É")
+                    .Replace("D\'È", "D\u200B\'È")
+                    .Replace("D\'Ê", "D\u200B\'Ê")
+                    .Replace("D\'I", "D\u200B\'I")
+                    .Replace("D\'Î", "D\u200B\'Î")
+                    .Replace("D\'Ï", "D\u200B\'Ï")
+                    .Replace("D\'O", "D\u200B\'O")
+                    .Replace("D\'Ô", "D\u200B\'Ô")
+                    .Replace("D\'Œ", "D\u200B\'Œ")
+                    .Replace("D\'U", "D\u200B\'U")
+                    .Replace("D\'Û", "D\u200B\'Û")
+                    .Replace("L\'A", "L\u200B\'A")
+                    .Replace("L\'À", "L\u200B\'À")
+                    .Replace("L\'Â", "L\u200B\'Â")
+                    .Replace("L\'E", "L\u200B\'E")
+                    .Replace("L\'É", "L\u200B\'É")
+                    .Replace("L\'È", "L\u200B\'È")
+                    .Replace("L\'Ê", "L\u200B\'Ê")
+                    .Replace("L\'I", "L\u200B\'I")
+                    .Replace("L\'Î", "L\u200B\'Î")
+                    .Replace("L\'Ï", "L\u200B\'Ï")
+                    .Replace("L\'O", "L\u200B\'O")
+                    .Replace("L\'Ô", "L\u200B\'Ô")
+                    .Replace("L\'Œ", "L\u200B\'Œ")
+                    .Replace("L\'U", "L\u200B\'U")
+                    .Replace("L\'Û", "L\u200B\'Û");
             }
             // Treat everything as being uppercase so the search is case-insensitive.
             string strReturn = string.Format(
@@ -1202,7 +1202,7 @@ namespace Chummer
                 FileName = strPdfAppPath,
                 Arguments = strParams
             };
-            Process.Start(objProgress);
+            objProgress.Start();
         }
 
         /// <summary>
@@ -1304,12 +1304,14 @@ namespace Chummer
                             if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                             {
                                 // now just add more lines to it until it is enough
-                                while (strCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                StringBuilder sbdCurrentLine = new StringBuilder(strCurrentLine);
+                                while (sbdCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
                                 {
                                     intTitleExtraLines++;
                                     // add the content plus a space
-                                    strCurrentLine += ' ' + lstStringFromPdf[i + intTitleExtraLines];
+                                    sbdCurrentLine.Append(' ' + lstStringFromPdf[i + intTitleExtraLines]);
                                 }
+                                strCurrentLine = sbdCurrentLine.ToString();
                             }
                             else
                             {
@@ -1343,14 +1345,11 @@ namespace Chummer
                                 }
                             }
                             // if we found the tile lets finish some things before finding the text block
-                            if (intTitleIndex != -1)
+                            if (intTitleIndex != -1 && intTitleExtraLines > 0)
                             {
                                 // if we had to concatenate stuff lets fix the list of strings before continuing
-                                if (intTitleExtraLines > 0)
-                                {
-                                    lstStringFromPdf[i] = strCurrentLine;
-                                    lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
-                                }
+                                lstStringFromPdf[i] = strCurrentLine;
+                                lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
                             }
                         }
                     }

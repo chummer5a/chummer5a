@@ -103,8 +103,6 @@ namespace Chummer
         /// </summary>
         public static bool DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 if (!predicate(objLoopChild) || !funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate))
@@ -118,8 +116,6 @@ namespace Chummer
         /// </summary>
         public static bool DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild) || funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate))
@@ -165,8 +161,6 @@ namespace Chummer
         /// </summary>
         public static T DeepFirst<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
@@ -199,10 +193,8 @@ namespace Chummer
         /// <summary>
         /// Similar to Linq's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static T DeepLast<T>([NotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
+        public static T DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate);
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -212,10 +204,8 @@ namespace Chummer
         /// <summary>
         /// Similar to Linq's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static T DeepLast<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
+        public static T DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod);
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -267,8 +257,6 @@ namespace Chummer
         /// </summary>
         public static IEnumerable<T> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
@@ -284,8 +272,6 @@ namespace Chummer
         /// </summary>
         public static IEnumerable<T> GetAllDescendants<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 yield return objLoopChild;

@@ -16,10 +16,6 @@ assembly_info:
   assembly_informational_version: '{version}'
 environment:
   SolutionDir: C:\projects\chummer\
-  CHUMMER_OAUTH_TOKEN: 831e3c01126ca8da4661fe3d48a15c1c0bb2c5cb
-  matrix:
-  - project_name: Chummer
-    api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
 install:
 - ps: ''
 nuget:
@@ -113,5 +109,5 @@ on_failure:
     if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
     {
       Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
-      ./send.ps1 failure https://discord.com/api/webhooks/776194471510671361/IZvRFV0SdIlwNO4b2PzSfvMmRtkc-bZeiDqoimm_CbaVwOCsyQmAOhH5WfL0fSgLZqRu
+      ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
     }

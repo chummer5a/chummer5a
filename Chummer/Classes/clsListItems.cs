@@ -27,7 +27,7 @@ namespace Chummer
     /// ListItem class to make populating a DropDownList from a DataSource easier.
     /// </summary>
     [DebuggerDisplay("{Name} {Value?.ToString() ?? \"\"}")]
-    public readonly struct ListItem : IEquatable<ListItem>
+    public readonly struct ListItem : IEquatable<ListItem>, IComparable, IComparable<ListItem>
     {
         public static readonly ListItem Blank = new ListItem(string.Empty, string.Empty);
 
@@ -47,6 +47,11 @@ namespace Chummer
         /// </summary>
         public string Name { get; }
 
+        public bool Equals(ListItem other)
+        {
+            return Name == other.Name && Value == other.Value;
+        }
+
         public override bool Equals(object obj)
         {
             return Value.Equals(obj);
@@ -55,6 +60,18 @@ namespace Chummer
         public override int GetHashCode()
         {
             return Value.GetHashCode();
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is ListItem objItem)
+                return CompareTo(objItem);
+            return string.Compare(ToString(), obj?.ToString() ?? string.Empty, StringComparison.Ordinal);
+        }
+
+        public int CompareTo(ListItem other)
+        {
+            return CompareListItems.CompareNames(this, other);
         }
 
         public override string ToString()
@@ -82,9 +99,24 @@ namespace Chummer
             return !(x?.Equals(y) ?? y == null);
         }
 
-        public bool Equals(ListItem other)
+        public static bool operator <(ListItem left, ListItem right)
         {
-            return Name == other.Name && Value == other.Value;
+            return left.CompareTo(right) < 0;
+        }
+
+        public static bool operator <=(ListItem left, ListItem right)
+        {
+            return left.CompareTo(right) <= 0;
+        }
+
+        public static bool operator >(ListItem left, ListItem right)
+        {
+            return left.CompareTo(right) > 0;
+        }
+
+        public static bool operator >=(ListItem left, ListItem right)
+        {
+            return left.CompareTo(right) >= 0;
         }
     }
 
@@ -157,23 +189,51 @@ namespace Chummer
             int intCompareResult;
 
             // Cast the objects to be compared to ListViewItem objects
-            ListViewItem listviewX = (ListViewItem)x;
-            ListViewItem listviewY = (ListViewItem)y;
+            ListViewItem objListViewX = (ListViewItem)x;
+            ListViewItem objListViewY = (ListViewItem)y;
 
             // Compare the two items
             if (_intColumnToSort == 0)
             {
-                intCompareResult = CompareListViewItems.CompareTextAsDates(listviewX, listviewY);
+                if (objListViewX is ListViewItemWithValue objListViewItemWithValueX &&
+                    objListViewY is ListViewItemWithValue objListViewItemWithValueY &&
+                    (objListViewItemWithValueX.Value is IComparable ||
+                     objListViewItemWithValueY.Value is IComparable))
+                {
+                    if (objListViewItemWithValueX.Value is IComparable objXValue)
+                        intCompareResult = objXValue.CompareTo(objListViewItemWithValueY.Value);
+                    else
+                        intCompareResult = -(objListViewItemWithValueY.Value as IComparable)?.CompareTo(objListViewItemWithValueX.Value) ?? 0;
+                }
+                else
+                    intCompareResult = CompareListViewItems.CompareTextAsDates(objListViewX, objListViewY);
             }
             else
             {
-                string strX = listviewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                string strY = listviewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decX) &&
-                    decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decY))
-                    intCompareResult = decimal.Compare(decX, decY);
+                ListViewItem.ListViewSubItem objListViewSubItemX = objListViewX?.SubItems[_intColumnToSort];
+                ListViewItem.ListViewSubItem objListViewSubItemY = objListViewY?.SubItems[_intColumnToSort];
+                if (objListViewSubItemX is ListViewItemWithValue.ListViewSubItemWithValue objListViewSubItemWithValueX &&
+                    objListViewSubItemY is ListViewItemWithValue.ListViewSubItemWithValue objListViewSubItemWithValueY &&
+                    (objListViewSubItemWithValueX.Value is IComparable ||
+                     objListViewSubItemWithValueY.Value is IComparable))
+                {
+                    if (objListViewSubItemWithValueX.Value is IComparable objXValue)
+                        intCompareResult = objXValue.CompareTo(objListViewSubItemWithValueY.Value);
+                    else
+                        intCompareResult = -(objListViewSubItemWithValueY.Value as IComparable)?.CompareTo(objListViewSubItemWithValueX.Value) ?? 0;
+                }
                 else
-                    intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+                {
+                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                    if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo,
+                            out decimal decX) &&
+                        decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalOptions.CultureInfo,
+                            out decimal decY))
+                        intCompareResult = decimal.Compare(decX, decY);
+                    else
+                        intCompareResult = string.Compare(strX, strY, true, GlobalOptions.CultureInfo);
+                }
             }
 
             // Calculate correct return value based on object comparison

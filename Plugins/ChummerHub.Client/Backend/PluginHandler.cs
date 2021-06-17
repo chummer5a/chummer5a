@@ -62,7 +62,7 @@ namespace Chummer.Plugins
 
         public bool SetCharacterRosterNode(TreeNode objNode)
         {
-            if (objNode == null || objNode.Tag == null)
+             if (objNode == null || objNode.Tag == null)
                 return false;
             if (objNode.ContextMenuStrip == null)
             {
@@ -72,20 +72,36 @@ namespace Chummer.Plugins
             }
 
             ContextMenuStrip cmsRoster = new ContextMenuStrip();
-            ToolStripMenuItem tsShowMySINners = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem tsShowMySINners = new DpiFriendlyToolStripMenuItem
             {
                 Name = "tsShowMySINners",
                 Tag = "Menu_ShowMySINners",
                 Text = "Show all my SINners",
                 Size = new Size(177, 22),
-                Image = Resources.group
+                Image = Resources.group,
+                ImageDpi192 = Resources.group1,
             };
             tsShowMySINners.Click += ShowMySINnersOnClick;
             tsShowMySINners.UpdateLightDarkMode();
             tsShowMySINners.TranslateToolStripItemsRecursively();
             cmsRoster.Items.Add(tsShowMySINners);
+            
+            DpiFriendlyToolStripMenuItem tsSINnersCreateGroup = new DpiFriendlyToolStripMenuItem
+            {
+                Name = "tsSINnersCreateGroup",
+                Tag = "Menu_SINnersCreateGroup",
+                Text = "Create Group",
+                Size = new Size(177, 22),
+                Image = Resources.group,
+                ImageDpi192 = Resources.group1,
+            };
+            tsSINnersCreateGroup.Click += SINnersCreateGroupOnClick;
+            tsSINnersCreateGroup.UpdateLightDarkMode();
+            tsSINnersCreateGroup.TranslateToolStripItemsRecursively();
+            cmsRoster.Items.Add(tsSINnersCreateGroup);
             cmsRoster.UpdateLightDarkMode();
             cmsRoster.TranslateWinForm();
+
             objNode.ContextMenuStrip = cmsRoster;
             if (objNode.Tag is CharacterCache member)
             {
@@ -263,7 +279,7 @@ namespace Chummer.Plugins
             return true;
         }
 
-        void IPlugin.Dispose()
+        public void Dispose()
         {
             if (PipeManager != null)
             {
@@ -548,14 +564,15 @@ namespace Chummer.Plugins
 #if DEBUG
             if (Settings.Default.UserModeRegistered)
             {
-                ToolStripMenuItem mnuSINnerSearchs = new ToolStripMenuItem
+                DpiFriendlyToolStripMenuItem mnuSINnerSearchs = new DpiFriendlyToolStripMenuItem
                 {
                     Name = "mnuSINSearch",
                     Text = "&SINner Search",
-                    Image = ChummerHub.Client.Properties.Resources.group,
+                    Image = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
-                    Tag = "Menu_Tools_SINnerSearch"
+                    Tag = "Menu_Tools_SINnerSearch",
+                    ImageDpi192 = Resources.group1,
                 };
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
                 mnuSINnerSearchs.UpdateLightDarkMode();
@@ -563,14 +580,15 @@ namespace Chummer.Plugins
                 yield return mnuSINnerSearchs;
             }
 
-            ToolStripMenuItem mnuSINnersArchetypes = new ToolStripMenuItem
+            DpiFriendlyToolStripMenuItem mnuSINnersArchetypes = new DpiFriendlyToolStripMenuItem
             {
                 Name = "mnuSINnersArchetypes",
                 Text = "&Archetypes",
-                Image = ChummerHub.Client.Properties.Resources.group,
+                Image = Resources.group,
                 ImageTransparentColor = Color.Black,
                 Size = new Size(148, 22),
-                Tag = "Menu_Tools_SINnersArchetypes"
+                Tag = "Menu_Tools_SINnersArchetypes",
+                ImageDpi192 = Resources.group1,
             };
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
             mnuSINnersArchetypes.UpdateLightDarkMode();
@@ -579,14 +597,15 @@ namespace Chummer.Plugins
 #endif
             if (Settings.Default.UserModeRegistered)
             {
-                ToolStripMenuItem mnuSINners = new ToolStripMenuItem
+                DpiFriendlyToolStripMenuItem mnuSINners = new DpiFriendlyToolStripMenuItem
                 {
                     Name = "mnuSINners",
                     Text = "&SINners",
-                    Image = ChummerHub.Client.Properties.Resources.group,
+                    Image = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
-                    Tag = "Menu_Tools_SINners"
+                    Tag = "Menu_Tools_SINners",
+                    ImageDpi192 = Resources.group1,
                 };
                 mnuSINners.Click += mnuSINners_Click;
                 mnuSINners.UpdateLightDarkMode();
@@ -667,7 +686,9 @@ namespace Chummer.Plugins
                     {
                         TopMost = true
                     })
-                        frmSearch.Show();
+                    {
+                        frmSearch.ShowDialog();
+                    }
                 }
 
             }
@@ -735,7 +756,7 @@ namespace Chummer.Plugins
 
                         async Task<ResultAccountGetSinnersByAuthorization> getSINnersFunction()
                         {
-                            MySinnersClient client = null;
+                            SinnersClient client = null;
                             try
                             {
                                 client = StaticUtils.GetClient();
@@ -756,6 +777,7 @@ namespace Chummer.Plugins
                                     if (e1.Response?.Contains("<li><a href=\"/Identity/Account/Login\">Login</a></li>") == true)
                                     {
                                         Log.Info(e1, "User is not logged in.");
+                                        throw new ArgumentException("User not logged in.");
                                     }
                                     else {
                                         Log.Error(e1);
@@ -807,24 +829,76 @@ namespace Chummer.Plugins
                     }
                 };
             }
+            catch(ApiException e)
+            {
+                TreeNode node = null;
+                Log.Error(e);
+                if (e.StatusCode == 500)
+                {
+                    node = new TreeNode("SINers seems to be down (Error 500)")
+                    {
+                        ToolTipText = e.Message,
+                        Tag = e
+
+                    };
+                }
+                else if (e.StatusCode == 200)
+                {
+                    node = new TreeNode("SINersplugin encounterd an error: " + e.StatusCode)
+                    {
+                        ToolTipText = e.Message,
+                        Tag = e
+                    };
+                }
+                else
+                {
+                    node = new TreeNode("SINers encounterd an error: " + e.StatusCode)
+                    {
+                        ToolTipText = e.Message,
+                        Tag = e
+                    };
+                }
+                return new List<TreeNode>
+                    {
+                        node
+                    };
+            }
             catch(Exception e)
             {
-                Log.Error(e);
+                Log.Info(e);
+                var node = new TreeNode("SINers: please log in")
+                {
+                    ToolTipText = e.Message,
+                    Tag = e
+
+                };
+                
                 return new List<TreeNode>
                 {
-                    new TreeNode("SINners Error: please log in")
-                    {
-                        ToolTipText = e.ToString(),
-                        Tag = e
-                    }
+                    node
                 };
             }
         }
 
 
+        
+
+        private async void SINnersCreateGroupOnClick(object sender, EventArgs e)
+        {
+            try
+            {
+                var g = await ChummerHub.Client.Backend.Utils.CreateGroupOnClickAsync();
+                ShowMySINnersOnClick(sender, e);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex);
+                Program.MainForm.ShowMessageBox(ex.Message);
+            }
+        }
+
         private async void ShowMySINnersOnClick(object sender, EventArgs e)
         {
-            //TreeNode t = PluginHandler.MainForm.CharacterRoster.treCharacterList.SelectedNode;
             try
             {
                 using (new CursorWait(MainForm.CharacterRoster, true))
@@ -933,16 +1007,33 @@ namespace Chummer.Plugins
 
                     if (Guid.TryParse(sinneridstring, out Guid sinnerid))
                     {
+                        SINner res = null;
                         try
                         {
-                            var res = await client.PutSINerInGroupAsync(null, sinnerid, null);
-                            
+                            res = await client.PutSINerInGroupAsync(null, sinnerid, null);
+
                             var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                             if (res != null)
                             {
                                 await MainForm.CharacterRoster.LoadCharacters(false, false, false);
                             }
                             
+                        }
+                        catch(ApiException e1)
+                        {
+                            if (res != null)
+                            {
+                                var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                                if (res != null)
+                                {
+                                    await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                                }
+                            }
+                            else
+                            {
+                                ChummerHub.Client.Backend.Utils.HandleError(e1);
+                            }
+
                         }
                         catch (Exception exception)
                         {
@@ -1085,14 +1176,13 @@ namespace Chummer.Plugins
                 }
 
                 Log.Info("Only one instance, starting NamedPipe-Server...");
-                PipeManager.StartServer();
-                PipeManager.ReceiveString += HandleNamedPipe_OpenRequest;
+                Task.Run(() => PipeManager.StartServer().ContinueWith(x => PipeManager.ReceiveString += y => HandleNamedPipe_OpenRequest(y).GetAwaiter().GetResult()));
             }
         }
 
         private static string fileNameToLoad = string.Empty;
 
-        public static async void HandleNamedPipe_OpenRequest(string argument)
+        public static async Task HandleNamedPipe_OpenRequest(string argument)
         {
             Log.Trace("Pipeserver receiced a request: " + argument);
             if (!string.IsNullOrEmpty(argument))

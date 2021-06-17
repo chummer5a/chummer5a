@@ -29,6 +29,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using Newtonsoft.Json.Converters;
+using Microsoft.Data.SqlClient;
 
 namespace ChummerHub
 {
@@ -205,6 +206,7 @@ namespace ChummerHub
                     x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                     x.SerializerSettings.PreserveReferencesHandling = Newtonsoft.Json.PreserveReferencesHandling.Objects;
                     x.SerializerSettings.Converters.Add(new StringEnumConverter());
+                    x.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             
                 });
             // order is vital, this *must* be called *after* AddNewtonsoftJson()
@@ -332,7 +334,8 @@ namespace ChummerHub
                 //});
                 // resolve the IApiVersionDescriptionProvider service
                 // note: that we have to build a temporary service provider here because one has not been created yet
-
+                options.UseAllOfToExtendReferenceSchemas();
+                
                 AddSwaggerApiVersionDescriptions(services, options);
                 
                 
@@ -364,6 +367,7 @@ namespace ChummerHub
                 //});
 
             });
+            services.AddAzureAppConfiguration();
 
 
             //services.AddDistributedMemoryCache(); // Adds a default in-memory implementation of IDistributedCache
@@ -382,7 +386,7 @@ namespace ChummerHub
 
         }
 
-        private void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
+        private static void AddSwaggerApiVersionDescriptions(IServiceCollection services, Swashbuckle.AspNetCore.SwaggerGen.SwaggerGenOptions options)
         {
             var provider = services.BuildServiceProvider()
                 .GetRequiredService<IApiVersionDescriptionProvider>();
@@ -435,6 +439,14 @@ namespace ChummerHub
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            try
+            {
+                app.UseAzureAppConfiguration();
+            }
+            catch(Exception e)
+            {
+                _logger?.LogWarning(e, e.Message);
+            }
             app.UseRouting();
             //app.UseCookiePolicy();
 
@@ -480,8 +492,18 @@ namespace ChummerHub
                 var dbContext = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
                 if (dbContext != null)
                 {
-                    //dbContext.Database.EnsureDeleted();
-                    dbContext.Database.EnsureCreated();
+                    try
+                    {
+                        dbContext.Database.EnsureCreated();
+                    }
+                    catch(SqlException e)
+                    {
+                        if(!e.Message?.Contains("already exists") == true)
+                        {
+                            throw;
+                        }
+                    }
+                    
                 }
             }
 
@@ -502,6 +524,12 @@ namespace ChummerHub
                 try
                 {
                     context.Database.Migrate();
+                }
+                catch(SqlException e)
+                {
+                    if (!e.Message.Contains("already exists") == true)
+                        throw;
+                    logger.LogWarning(e, e.Message);
                 }
                 catch (Exception e)
                 {

@@ -118,36 +118,7 @@ namespace ChummerHub.Client.UI
             bJoinGroup.Enabled = false;
         }
 
-        private async Task<SINnerGroup> CreateGroup(SINnerGroup mygroup)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(tbSearchGroupname.Text) && mygroup == null)
-                {
-                    Program.MainForm.ShowMessageBox("Please specify a groupename to create!");
-                    tbSearchGroupname.Focus();
-                    return null;
-                }
-                var client = StaticUtils.GetClient();
-                await client.PostGroupAsync(
-                    mygroup.Id,
-                    mygroup);
-                //{
-                //    ResultGroupPostGroup response = await Backend.Utils.HandleError(res, res.Body) as ResultGroupPostGroup;
-                //    if (response?.CallSuccess == true)
-                //    {
-                //        return response.MyGroup;
-                //    }
-                //}
-            }
-            catch (Exception ex)
-            {
-                Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
-                throw;
-            }
-            return null;
-        }
+        
 
         private async void bSearch_Click(object sender, EventArgs e)
         {
@@ -818,57 +789,19 @@ namespace ChummerHub.Client.UI
 
         private async void bCreateGroup_Click(object sender, EventArgs e)
         {
-            try
+            SINnerGroup group = null;
+            if (tvGroupSearchResult.SelectedNode?.Tag is SINnerSearchGroup sel)
             {
-                var group = new SINnerGroup (null)
-                {
-                    Groupname = tbSearchGroupname.Text,
-                    IsPublic = false
-                };
-                //if ((MyCE?.MySINnerFile.MyGroup != null)
-                //    && ((String.IsNullOrEmpty(tbSearchGroupname.Text))
-                //        || (tbSearchGroupname.Text == MyCE?.MySINnerFile.MyGroup?.Groupname)))
-                //{
-                //    group = MyCE?.MySINnerFile.MyGroup;
-                //}
-
-                if (tvGroupSearchResult.SelectedNode?.Tag is SINnerSearchGroup sel)
-                {
-                    group = new SINnerGroup(sel);
-                }
-
-                using (frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false))
-                {
-                    var result = ge.ShowDialog(this);
-                    if (result == DialogResult.OK)
-                    {
-                        group = ge.MySINnerGroupCreate.MyGroup;
-                        try
-                        {
-                            using (new CursorWait(this))
-                            {
-                                var a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
-                                if (a != null)
-                                {
-                                    MySINSearchGroupResult = await SearchForGroups(a.Groupname);
-                                    if (MyParentForm?.MyParentForm != null)
-                                        await (MyParentForm?.MyParentForm?.CheckSINnerStatus());
-                                }
-                            }
-                        }
-                        catch (Exception exception)
-                        {
-                            Program.MainForm.ShowMessageBox(exception.Message);
-                        }
-                    }
-                }
+                group = new SINnerGroup(sel);
             }
-            catch (Exception ex)
+            group = await ChummerHub.Client.Backend.Utils.CreateGroupOnClickAsync(group, tbSearchGroupname.Text);
+
+            if (group != null)
             {
-                Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.ToString());
+                MySINSearchGroupResult = await SearchForGroups(group.Groupname);
+                if (MyParentForm?.MyParentForm != null)
+                    await (MyParentForm?.MyParentForm?.CheckSINnerStatus());
             }
-
         }
 
         private void CbShowMembers_CheckedChanged(object sender, EventArgs e)

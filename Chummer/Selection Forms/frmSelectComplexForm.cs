@@ -164,12 +164,6 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void lstComplexForms_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -188,26 +182,30 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (lstComplexForms.SelectedIndex == -1)
+            if (lstComplexForms.SelectedIndex == -1 && lstComplexForms.Items.Count > 0)
             {
-                if (lstComplexForms.Items.Count > 0)
-                    lstComplexForms.SelectedIndex = 0;
+                lstComplexForms.SelectedIndex = 0;
             }
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                int intNewIndex = lstComplexForms.SelectedIndex + 1;
-                if (intNewIndex >= lstComplexForms.Items.Count)
-                    intNewIndex = 0;
-                if (lstComplexForms.Items.Count > 0)
-                    lstComplexForms.SelectedIndex = intNewIndex;
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                int intNewIndex = lstComplexForms.SelectedIndex - 1;
-                if (intNewIndex <= 0)
-                    intNewIndex = lstComplexForms.Items.Count - 1;
-                if (lstComplexForms.Items.Count > 0)
-                    lstComplexForms.SelectedIndex = intNewIndex;
+                case Keys.Down:
+                {
+                    int intNewIndex = lstComplexForms.SelectedIndex + 1;
+                    if (intNewIndex >= lstComplexForms.Items.Count)
+                        intNewIndex = 0;
+                    if (lstComplexForms.Items.Count > 0)
+                        lstComplexForms.SelectedIndex = intNewIndex;
+                    break;
+                }
+                case Keys.Up:
+                {
+                    int intNewIndex = lstComplexForms.SelectedIndex - 1;
+                    if (intNewIndex <= 0)
+                        intNewIndex = lstComplexForms.Items.Count - 1;
+                    if (lstComplexForms.Items.Count > 0)
+                        lstComplexForms.SelectedIndex = intNewIndex;
+                    break;
+                }
             }
         }
 
@@ -253,11 +251,8 @@ namespace Chummer
 
                 string strName = xmlComplexForm.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
                 // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null)
-                {
-                    if (_xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + "]") == null)
-                        continue;
-                }
+                if (_xmlOptionalComplexFormNode?.SelectSingleNode("complexform") != null && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + "]") == null)
+                    continue;
 
                 lstComplexFormItems.Add(new ListItem(strId, xmlComplexForm.SelectSingleNode("translate")?.Value ?? strName));
             }

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using RtfPipe;
 
@@ -584,35 +585,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
-            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
+                                                // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
+                                                && (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
-                // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                if (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal))
-                {
-                    int intTrimLength = strToTrim.Length;
-                    return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
-                }
-            }
-            return strInput;
-        }
-
-        /// <summary>
-        /// Trims a substring out of a string if the string ends with it.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="strToTrim">Substring to trim</param>
-        /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
-        /// <returns>Trimmed String</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
-        {
-            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
-            {
-                // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                if (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal))
-                {
-                    return strInput.Substring(0, strInput.Length - strToTrim.Length);
-                }
+                int intTrimLength = strToTrim.Length;
+                return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
             }
             return strInput;
         }
@@ -649,6 +627,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Escapes a char once out of a string if the string begins with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim">Char to escape</param>
+        /// <returns>String with <paramref name="chrToTrim"/> escaped out once from the beginning of it.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim)
+        {
+            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
+            {
+                return strInput.Substring(1, strInput.Length - 1);
+            }
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="achrToTrim">Chars to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
+        {
+            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
+                return strInput.Substring(1, strInput.Length - 1);
+            return strInput;
+        }
+
+        /// <summary>
+        /// Trims a substring out of a string if the string ends with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim">Substring to trim</param>
+        /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
+        {
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
+                                                // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
+                                                && (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
+            {
+                return strInput.Substring(0, strInput.Length - strToTrim.Length);
+            }
+            return strInput;
+        }
+
+        /// <summary>
         /// If a string ends with any substrings, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -680,22 +707,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Escapes a char once out of a string if the string begins with it.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="chrToTrim">Char to escape</param>
-        /// <returns>String with <paramref name="chrToTrim"/> escaped out once from the beginning of it.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStartOnce(this string strInput, char chrToTrim)
-        {
-            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
-            {
-                return strInput.Substring(1, strInput.Length - 1);
-            }
-            return strInput;
-        }
-
-        /// <summary>
         /// Trims a char out of a string if the string ends with it.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -710,20 +721,6 @@ namespace Chummer
                 if (strInput[intLength - 1] == chrToTrim)
                     return strInput.Substring(0, intLength - 1);
             }
-            return strInput;
-        }
-
-        /// <summary>
-        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="achrToTrim">Chars to trim</param>
-        /// <returns>Trimmed String</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
-        {
-            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
-                return strInput.Substring(1, strInput.Length - 1);
             return strInput;
         }
 
@@ -925,6 +922,96 @@ namespace Chummer
                     string strOldStringBuilderValue = sbdInput.ToString();
                     sbdInput.Clear();
                     sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, funcNewValueFactory.Invoke(), eStringComparison));
+                }
+            }
+
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        string strFactoryResult = string.Empty;
+                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        return strInput.Replace(strOldValue, strFactoryResult);
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    string strFactoryResult = string.Empty;
+                    await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                    return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<StringBuilder> CheapReplaceAsync(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            return sbdInput.CheapReplaceAsync(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
+        }
+
+        /// <summary>
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> CheapReplaceAsync(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            if (sbdInput?.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strOriginal.Contains(strOldValue))
+                    {
+                        string strFactoryResult = string.Empty;
+                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        sbdInput.Replace(strOldValue, strFactoryResult);
+                    }
+                }
+                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    string strFactoryResult = string.Empty;
+                    Task tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                        x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                    string strOldStringBuilderValue = sbdInput.ToString();
+                    sbdInput.Clear();
+                    await tskGetValue;
+                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, strFactoryResult, eStringComparison));
                 }
             }
 
@@ -1263,11 +1350,12 @@ namespace Chummer
                 return string.Empty;
             if (strInput.IsRtf())
                 return strInput;
+            strInput = strInput.NormalizeWhiteSpace();
             lock (rtbRtfManipulatorLock)
             {
                 if (!rtbRtfManipulator.IsHandleCreated)
                     rtbRtfManipulator.CreateControl();
-                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput.NormalizeWhiteSpace());
+                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput);
                 return rtbRtfManipulator.Rtf;
             }
         }

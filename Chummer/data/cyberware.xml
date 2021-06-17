@@ -2324,6 +2324,35 @@
           <value>-1</value>
         </limitmodifier>
       </bonus>
+      <forbidden>
+        <parentdetails>
+          <category>Cyberlimb</category>
+        </parentdetails>
+      </forbidden>
+    </cyberware>
+    <cyberware>
+      <!-- Yes, I know duplicating Additional Eye Mount as Bodyware just so it can work with cyberlimbs is stupid, but if it's stupid and it works, it ain't stupid -->
+      <id>3bfb8c0e-87a6-49ba-9b33-f2a991ed26ea</id>
+      <name>Additional Eye Mount</name>
+      <limit>False</limit>
+      <category>Bodyware</category>
+      <ess>0.2</ess>
+      <capacity>[2]</capacity>
+      <avail>8</avail>
+      <cost>1000</cost>
+      <source>CF</source>
+      <page>75</page>
+      <bonus>
+        <limitmodifier>
+          <limit>Physical</limit>
+          <value>-1</value>
+        </limitmodifier>
+      </bonus>
+      <required>
+        <parentdetails>
+          <category>Cyberlimb</category>
+        </parentdetails>
+      </required>
     </cyberware>
     <cyberware>
       <id>f51aeeaf-dc86-420e-a078-b50a45de600c</id>

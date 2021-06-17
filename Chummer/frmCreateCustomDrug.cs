@@ -184,13 +184,10 @@ namespace Chummer
             }
 
             //drug can have only one foundation
-            if (objNodeData.DrugComponent.Category == "Foundation")
+            if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
             {
-                if (_lstSelectedDrugComponents.Any(c => c.DrugComponent.Category == "Foundation"))
-                {
-                    Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
-                    return;
-                }
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_DuplicateDrugFoundationWarning"));
+                return;
             }
 
             string strSpaceString = LanguageManager.GetString("String_Space");

@@ -21,8 +21,17 @@
 <chummer>
   <qualities>
     <quality>
+      <bonus xpathfilter="skillgroupdisable = 'Enchanting' and not(skilldisable = 'Alchemy')">
+        <skilldisable amendoperation="addnode">Alchemy</skilldisable>
+      </bonus>
+      <bonus xpathfilter="skilldisable = 'Ritual Spellcasting' and skilldisable = 'Counterspelling'">
+        <skilldisable amendoperation="addnode">Ceremony</skilldisable>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Navigation' and specificskill/name = 'Tracking'">
+        <specificskill xpathfilter="name = 'Tracking'" amendoperation="remove"/>
+      </bonus>
       <bonus>
-        <specificskill xpathfilter="name = 'Navigation' or name = 'Escape Artist' or name = 'Perception' or name = 'Diving' or name = 'Intimidation' or name = 'Assensing' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Escape Artist' or name = 'Perception' or name = 'Diving' or name = 'Intimidation' or name = 'Assensing' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Running'">
           <name>Athletics</name>
         </specificskill>
@@ -31,6 +40,12 @@
         </specificskill>
         <specificskill xpathfilter="name = 'Swimming'" >
           <name>Aquatics</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Tracking'" >
+          <name>Query</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Navigation'" >
+          <name>Query</name>
         </specificskill>
         <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Artisan)'" amendoperation="remove" />
         <unlockskills xpathfilter="@name = 'Assensing'" amendoperation="replace" name="Astral">Name</unlockskills>
@@ -49,21 +64,33 @@
         <specificskill xpathfilter="name = 'Negotiation'" >
           <name>Persuade</name>
         </specificskill>
+        <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+          <name>Ceremony</name>
+        </specificskill>
         <weaponcategorydv>
           <selectskill xpathfilter="@limittoskill='Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat'" amendoperation="replace" limittoskill="Astral,Edged Weapons,Blunt Weapons,Unarmed Combat" />
         </weaponcategorydv>
+        <skilldisable xpathfilter=". = 'Ritual Spellcasting'" amendoperation="remove"/>
+        <specificskill>
+          <name xpathfilter=". = 'Ritual Spellcasting'">Ceremony</name>
+        </specificskill>
+        <skilldisable xpathfilter=". = 'Artificing'" amendoperation="remove"/>
+        <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove"/>
+        <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove"/>
+        <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove"/>
+        <skillgroupdisable xpathfilter=". 'Enchanting'" amendoperation="remove"/>
       </bonus>
       <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Astral">Name</unlockskills>
-        <unlockskills amendoperation="addnode" name="Ritual Spellcasting">Name</unlockskills>
+        <unlockskills amendoperation="addnode" name="Ceremony">Name</unlockskills>
         <!-- Need to remove nodes last to make sure filter keeps firing -->
         <unlockskills xpathfilter=". = 'Adept' or . = 'Aware' or . = 'Explorer'" amendoperation="remove" />
       </bonus>
       <bonus xpathfilter="unlockskills = 'Sorcery,Conjuring,Enchanting'">
         <unlockskills amendoperation="addnode" name="Arcana">Name</unlockskills>
         <unlockskills amendoperation="addnode" name="Astral">Name</unlockskills>
-        <unlockskills amendoperation="addnode" name="Ritual Spellcasting">Name</unlockskills>
+        <unlockskills amendoperation="addnode" name="Ceremony">Name</unlockskills>
         <unlockskills amendoperation="addnode" >Sorcery,Conjuring</unlockskills>
         <!-- Need to remove nodes last to make sure filter keeps firing -->
         <unlockskills xpathfilter=". = 'Sorcery,Conjuring,Enchanting'" amendoperation="remove" />
@@ -82,6 +109,9 @@
           <skill xpathfilter="name = 'Industrial Mechanic' or name = 'Artisan'" amendoperation="remove" />
           <skill xpathfilter="name = 'Leadership'" >
             <name>Command</name>
+          </skill>
+          <skill xpathfilter="name = 'Ritual Spellcasting'" >
+            <name>Ceremony</name>
           </skill>
         </allof>
         <oneof>
@@ -102,6 +132,9 @@
             <name>Astral</name>
             <spec xpathfilter=". = 'Astral Barriers' or . = 'Spirits'" addifnotfound="False" >Astral Combat</spec>
           </skill>
+          <skill xpathfilter="name = 'Ritual Spellcasting'" >
+            <name>Ceremony</name>
+          </skill>
           <skill xpathfilter="(name = 'Alchemy' or name = 'Spellcasting') and spec" amendoperation="remove" />
           <group  xpathfilter="skill[(name = 'Alchemy' or name = 'Spellcasting') and spec]" amendoperation="remove" />
           <group>
@@ -111,6 +144,9 @@
             <skill xpathfilter="name = 'Assensing'" >
               <name>Astral</name>
               <spec xpathfilter=". = 'Aura Reading'" addifnotfound="False" >Assensing</spec>
+            </skill>
+            <skill xpathfilter="name = 'Ritual Spellcasting'" >
+              <name>Ceremony</name>
             </skill>
           </group>
         </oneof>
