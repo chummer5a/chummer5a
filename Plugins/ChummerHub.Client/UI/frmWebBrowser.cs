@@ -64,17 +64,16 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     //we are logged in!
-                    GetCookieContainer();
-                    var client = StaticUtils.GetClient();
+                    var client = GetCookieContainer();
                     if (client == null)
                     {
                         Log.Error("Cloud not create an instance of SINnersclient!");
+                        login = false;
                         return;
                     }
-                    //var body = client.GetUserByAuthorizationAsync().Result;
                     var body = await client.GetUserByAuthorizationAsync().ConfigureAwait(false);
                     {
-                     
+
                         if (body?.CallSuccess == true)
                         {
                             login = true;
@@ -82,10 +81,10 @@ namespace ChummerHub.Client.UI
                             {
                                 SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
                                                            ?? new SINnerVisibility
-                                {
-                                    IsGroupVisible = true,
-                                    IsPublic = true
-                                };
+                                                           {
+                                                               IsGroupVisible = true,
+                                                               IsPublic = true
+                                                           };
                                 tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
                                 Close();
                             }));
@@ -96,6 +95,11 @@ namespace ChummerHub.Client.UI
                         }
                     }
                 }
+                catch(ApiException ae)
+                {
+                    Log.Info(ae);
+                    throw;
+                }
                 catch (Exception exception)
                 {
                     Log.Error(exception);
@@ -104,7 +108,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private void GetCookieContainer()
+        private SinnersClient GetCookieContainer()
         {
             try
             {
@@ -115,13 +119,14 @@ namespace ChummerHub.Client.UI
                     var cookies =
                         StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Settings.Default
                             .SINnerUrl));
-                    var client = StaticUtils.GetClient(true);
+                    return StaticUtils.GetClient(true);
                 }
             }
             catch(Exception ex)
             {
                 Log.Warn(ex);
             }
+            return null;
         }
 
         private void FrmWebBrowser_FormClosing(object sender, FormClosingEventArgs e)
