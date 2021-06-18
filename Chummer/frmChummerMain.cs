@@ -1047,7 +1047,7 @@ namespace Chummer
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
-            _objVersionUpdaterCancellationTokenSource?.Cancel();
+            _objVersionUpdaterCancellationTokenSource?.Cancel(false);
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {

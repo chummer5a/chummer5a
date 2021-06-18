@@ -214,8 +214,8 @@ namespace Chummer
 
         private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objRefresherCancellationTokenSource?.Cancel();
-            _objOutputGeneratorCancellationTokenSource?.Cancel();
+            _objRefresherCancellationTokenSource?.Cancel(false);
+            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
 
             // Remove the mugshots directory when the form closes.
             string mugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
@@ -435,8 +435,8 @@ namespace Chummer
         /// </summary>
         public async Task RefreshCharacters()
         {
-            _objOutputGeneratorCancellationTokenSource?.Cancel();
-            _objRefresherCancellationTokenSource?.Cancel();
+            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
+            _objRefresherCancellationTokenSource?.Cancel(false);
             _objRefresherCancellationTokenSource = new CancellationTokenSource();
             if (_tskRefresher?.IsCompleted == false)
                 await _tskRefresher;
@@ -448,7 +448,7 @@ namespace Chummer
         /// </summary>
         private async Task RefreshSheet()
         {
-            _objOutputGeneratorCancellationTokenSource?.Cancel();
+            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
             _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
             if (_tskOutputGenerator?.IsCompleted == false)
                 await _tskOutputGenerator;

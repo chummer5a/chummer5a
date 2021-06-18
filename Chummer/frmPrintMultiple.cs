@@ -43,7 +43,7 @@ namespace Chummer
 
         private void frmPrintMultiple_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objPrinterCancellationTokenSource?.Cancel();
+            _objPrinterCancellationTokenSource?.Cancel(false);
             CleanUpOldCharacters();
         }
 
@@ -83,7 +83,7 @@ namespace Chummer
 
         private async Task CancelPrint()
         {
-            _objPrinterCancellationTokenSource?.Cancel();
+            _objPrinterCancellationTokenSource?.Cancel(false);
             if (_tskPrinter?.IsCompleted == false)
                 await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
                     prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
@@ -120,7 +120,7 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel();
+                            _objPrinterCancellationTokenSource?.Cancel(false);
                             return;
                         }
 
@@ -131,7 +131,7 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel();
+                            _objPrinterCancellationTokenSource?.Cancel(false);
                             return;
                         }
                         if (blnLoadSuccessful)

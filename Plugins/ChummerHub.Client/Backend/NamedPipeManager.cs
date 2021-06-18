@@ -49,8 +49,7 @@ namespace ChummerHub.Client.Backend
         /// </summary>
         public void StopServer()
         {
-            if (_objCancellationTokenSource != null)
-                _objCancellationTokenSource.Cancel();
+            _objCancellationTokenSource?.Cancel(false);
             Log.Trace("Sending Exit to PipeServer...");
             Write(EXIT_STRING);
         }

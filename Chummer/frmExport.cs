@@ -82,8 +82,8 @@ namespace Chummer
 
         private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objXmlGeneratorCancellationTokenSource?.Cancel();
-            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel();
+            _objXmlGeneratorCancellationTokenSource?.Cancel(false);
+            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -144,7 +144,7 @@ namespace Chummer
                 return;
             if (_objCharacterXml == null)
             {
-                _objCharacterXmlGeneratorCancellationTokenSource?.Cancel();
+                _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
                 _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                 if (_tskCharacterXmlGenerator?.IsCompleted == false)
                     await _tskCharacterXmlGenerator;
@@ -165,7 +165,7 @@ namespace Chummer
                 }
                 else
                 {
-                    _objXmlGeneratorCancellationTokenSource?.Cancel();
+                    _objXmlGeneratorCancellationTokenSource?.Cancel(false);
                     _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
                     if (_tskXmlGenerator?.IsCompleted == false)
                         await _tskXmlGenerator;

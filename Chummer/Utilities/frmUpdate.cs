@@ -68,7 +68,7 @@ namespace Chummer
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
         }
 
-        private void frmUpdate_Load(object sender, EventArgs e)
+        private async void frmUpdate_Load(object sender, EventArgs e)
         {
             Log.Info("frmUpdate_Load enter");
             Log.Info("Check Global Mutex for duplicate");
@@ -93,9 +93,10 @@ namespace Chummer
                 Log.Info("frmUpdate_Load exit");
                 Close();
             }
-            if (_tskConnectionLoader?.IsCompleted != false)
+            if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
+                _tskConnectionLoader.IsFaulted)))
             {
-                DownloadChangelog();
+                await DownloadChangelog();
             }
             Log.Info("frmUpdate_Load exit");
         }
@@ -104,14 +105,17 @@ namespace Chummer
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             _blnFormClosing = true;
-            _objConnectionLoaderCancellationTokenSource?.Cancel();
+            _objConnectionLoaderCancellationTokenSource?.Cancel(false);
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
         }
 
-        private void DownloadChangelog()
+        private async Task DownloadChangelog()
         {
+            _objConnectionLoaderCancellationTokenSource?.Cancel(false);
             _objConnectionLoaderCancellationTokenSource = new CancellationTokenSource();
+            if (_tskConnectionLoader?.IsCompleted == false)
+                await _tskConnectionLoader;
             _tskConnectionLoader = Task.Run(async () =>
             {
                 await LoadConnection();
@@ -326,9 +330,10 @@ namespace Chummer
             set
             {
                 _blnSilentMode = value;
-                if (value && (_tskConnectionLoader == null || _tskConnectionLoader.IsCompleted))
+                if (value && (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
+                    _tskConnectionLoader.IsFaulted))))
                 {
-                    DownloadChangelog();
+                    Utils.RunWithoutThreadLock(DownloadChangelog);
                 }
             }
         }
@@ -402,10 +407,11 @@ namespace Chummer
             Log.Info("cmdUpdate_Click");
             if (_blnIsConnected)
                 await DownloadUpdates();
-            else if (_tskConnectionLoader?.IsCompleted != false)
+            else if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
+                _tskConnectionLoader.IsFaulted)))
             {
                 cmdUpdate.Enabled = false;
-                DownloadChangelog();
+                await DownloadChangelog();
             }
         }
 
