@@ -74,6 +74,7 @@ Application Changes:
 - A vehicle weapon mount that comes pre-installed with a vehicle but whose size is from a splatbook that the character does not have enabled now still show up as weapon mounts. However, their sizes are shown as one of the core rulebook weapon mount sizes: Heavy if it can fit heavy weapons, Standard otherwise. Fixes #4477.
 - Chummer no longer allows more than one unbound spirit or sprite on a character at a time, but now also only cares about unbound and unfettered spirits and sprites that have at least one service in their entry.
 - In Create mode, gear can now be pasted into armor mods and armor, and armor mods can now be pasted into armor.
+- Weapons that use External Source ammo now have External Source properly recognized as one of the options with which the weapon can be loaded.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

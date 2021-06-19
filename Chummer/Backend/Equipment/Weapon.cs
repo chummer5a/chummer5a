@@ -1602,44 +1602,25 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The total number of rounds that the weapon can load.
         /// </summary>
-        private static string AmmoCapacity(string ammoString)
+        private static string AmmoCapacity(string strAmmo)
         {
-            // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains("Special"))
+            // Assuming base text of 10(ml)x2
+            // matches [2x]10(ml) or [10x]2(ml)
+            foreach (Match m in Regex.Matches(strAmmo, "^[0-9]*[0-9]*x"))
             {
-                string strWeaponAmmo = ammoString.ToLowerInvariant();
-                // Get rid of external source, special, or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
-                    .Replace("special", "100")
-                    .FastEscapeOnceFromEnd(" + energy");
-
-                // Assuming base text of 10(ml)x2
-                // matches [2x]10(ml) or [10x]2(ml)
-                foreach (Match m in Regex.Matches(strWeaponAmmo, "^[0-9]*[0-9]*x"))
-                {
-                    strWeaponAmmo = strWeaponAmmo.TrimStartOnce(m.Value);
-                }
-
-                // Matches 2(ml[)x10] (But does not capture the ')') or 10(ml)[x2]
-                foreach (Match m in Regex.Matches(strWeaponAmmo, "(?<=\\))(x[0-9]*[0-9]*$)*"))
-                {
-                    strWeaponAmmo = strWeaponAmmo.TrimEndOnce(m.Value);
-                }
-
-                int intPos = strWeaponAmmo.IndexOf('(');
-                if (intPos != -1)
-                    strWeaponAmmo = strWeaponAmmo.Substring(0, intPos);
-                return strWeaponAmmo;
+                strAmmo = strAmmo.TrimStartOnce(m.Value);
             }
-            else
+
+            // Matches 2(ml[)x10] (But does not capture the ')') or 10(ml)[x2]
+            foreach (Match m in Regex.Matches(strAmmo, "(?<=\\))(x[0-9]*[0-9]*$)*"))
             {
-                // Nothing weird in the ammo string, so just use the number given.
-                string strAmmo = ammoString;
-                int intPos = strAmmo.IndexOf('(');
-                if (intPos != -1)
-                    strAmmo = strAmmo.Substring(0, intPos);
-                return strAmmo;
+                strAmmo = strAmmo.TrimEndOnce(m.Value);
             }
+
+            int intPos = strAmmo.IndexOf('(');
+            if (intPos != -1)
+                strAmmo = strAmmo.Substring(0, intPos);
+            return strAmmo;
         }
 
         /// <summary>
@@ -5036,23 +5017,23 @@ namespace Chummer.Backend.Equipment
             List<Gear> lstAmmo = new List<Gear>(1);
             List<string> lstCount = new List<string>(1);
             bool blnExternalSource = false;
-            Gear objExternalSource = new Gear(_objCharacter)
-            {
-                Name = "External Source"
-            };
 
             string ammoString = CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
             // Determine which loading methods are available to the Weapon.
-            if (ammoString.IndexOfAny('x', '+') != -1 || ammoString.Contains(" or ") || ammoString.Contains("Special"))
+            if (ammoString.IndexOfAny('x', '+') != -1 ||
+                ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
+                ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
+                ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
             {
-                string strWeaponAmmo = ammoString.ToLowerInvariant();
-                if (strWeaponAmmo.Contains("external source"))
+                string strWeaponAmmo = ammoString;
+                if (strWeaponAmmo.Contains("External Source", StringComparison.OrdinalIgnoreCase))
+                {
                     blnExternalSource = true;
-                // Get rid of external source, special, or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.Replace("external source", "100")
-                    .Replace("special", "100")
-                    .FastEscapeOnceFromEnd(" + energy")
-                    .Replace(" or belt", " or 250(belt)");
+                    strWeaponAmmo = strWeaponAmmo.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
+                }
+                strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
+                // Get rid of or belt, and + energy.
+                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy").Replace(" or belt", " or 250(belt)");
 
                 foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -5068,11 +5049,23 @@ namespace Chummer.Backend.Equipment
                     strAmmo = strAmmo.Substring(0, intPos);
                 lstCount.Add(strAmmo);
             }
+            Gear objExternalSource = null;
+            if (blnExternalSource)
+            {
+                lstCount.Add(LanguageManager.GetString("String_ExternalSource"));
+                objExternalSource = new Gear(_objCharacter)
+                {
+                    Name = LanguageManager.GetString("String_ExternalSource"),
+                    SourceID = Guid.Empty
+                };
+            }
 
             try
             {
                 var ammoToReload = GetAmmoReloadable(lstGears);
                 lstAmmo.AddRange(ammoToReload);
+                if (objExternalSource != null)
+                    lstAmmo.Add(objExternalSource);
             }
             catch(ArgumentException ae)
             {
@@ -5087,15 +5080,26 @@ namespace Chummer.Backend.Equipment
                 Count = lstCount
             })
             {
-                if (frmReloadWeapon.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                if (frmReloadWeapon.ShowDialog(Program.MainForm) != DialogResult.OK)
                     return;
 
                 // Return any unspent rounds to the Ammo.
                 if (AmmoRemaining > 0)
                 {
-                    foreach (Gear objAmmo in lstGears)
+                    Gear objAmmo = lstGears.DeepFirstOrDefault(x => x.Children, x => x.InternalId == AmmoLoaded);
+                    if (objAmmo != null)
                     {
-                        if (objAmmo.InternalId == AmmoLoaded)
+                        // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
+                        if (objAmmo.Parent is Gear parent &&
+                            (parent.Name.StartsWith("Spare Clip", StringComparison.OrdinalIgnoreCase) ||
+                             parent.Name.StartsWith("Speed Loader", StringComparison.OrdinalIgnoreCase)))
+                        {
+                            Gear objNewGear = new Gear(_objCharacter);
+                            objNewGear.Copy(objAmmo);
+                            objNewGear.Quantity = AmmoRemaining;
+                            lstGears.Add(objNewGear);
+                        }
+                        else
                         {
                             objAmmo.Quantity += AmmoRemaining;
 
@@ -5105,47 +5109,14 @@ namespace Chummer.Backend.Equipment
                             {
                                 objNode.Text = objAmmo.CurrentDisplayName;
                             }
-
-                            break;
-                        }
-
-                        foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
-                        {
-                            if (objChild.InternalId == AmmoLoaded)
-                            {
-                                // If this is a plugin for a Spare Clip, move any extra rounds to the character instead of messing with the Clip amount.
-                                if (objChild.Parent is Gear parent &&
-                                    (parent.Name.StartsWith("Spare Clip", StringComparison.Ordinal) || parent.Name.StartsWith("Speed Loader", StringComparison.Ordinal)))
-                                {
-                                    Gear objNewGear = new Gear(_objCharacter);
-                                    objNewGear.Copy(objChild);
-                                    objNewGear.Quantity = AmmoRemaining;
-                                    lstGears.Add(objNewGear);
-
-                                    goto EndLoop;
-                                }
-
-                                objChild.Quantity += AmmoRemaining;
-
-                                // Refresh the Gear tree.
-                                TreeNode objNode = treGearView.FindNode(objChild.InternalId);
-                                if (objNode != null)
-                                {
-                                    objNode.Text = objAmmo.CurrentDisplayName;
-                                }
-
-                                break;
-                            }
                         }
                     }
-
-                    EndLoop:;
                 }
 
                 Gear objSelectedAmmo;
                 decimal decQty = frmReloadWeapon.SelectedCount;
                 // If an External Source is not being used, consume ammo.
-                if (frmReloadWeapon.SelectedAmmo != objExternalSource.InternalId)
+                if (frmReloadWeapon.SelectedAmmo != objExternalSource?.InternalId)
                 {
                     objSelectedAmmo = lstGears.DeepFindById(frmReloadWeapon.SelectedAmmo);
 
@@ -5184,16 +5155,16 @@ namespace Chummer.Backend.Equipment
                 }
 
                 AmmoRemaining = decQty.ToInt32();
-                AmmoLoaded = objSelectedAmmo.InternalId;
+                AmmoLoaded = objSelectedAmmo?.InternalId ?? Guid.Empty.ToString("D", GlobalOptions.InvariantCultureInfo);
             }
         }
 
         public List<Gear> GetAmmoReloadable(ICollection<Gear> lstGears, bool throwExceptions = true)
         {
-            bool blnExternalSource = false;
             Gear objExternalSource = new Gear(_objCharacter)
             {
-                Name = "External Source"
+                Name = LanguageManager.GetString("String_ExternalSource"),
+                SourceID = Guid.Empty
             };
             List<Gear> ammoToReload = new List<Gear>();
             if (!RequireAmmo)
@@ -5224,16 +5195,11 @@ namespace Chummer.Backend.Equipment
                         && (string.IsNullOrEmpty(x.Extra)
                             || x.Extra == AmmoCategory
                             || (UseSkill == "Throwing Weapons" && Name == x.Name))));
-                // If the Weapon is allowed to use an External Source, put in an External Source item.
-                if (blnExternalSource)
-                {
-                    ammoToReload.Add(objExternalSource);
-                }
 
                 // Make sure the character has some form of Ammunition for this Weapon.
                 if (ammoToReload.Count == 0 && throwExceptions)
                 {
-                    throw new ArgumentException(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutOfAmmoType"), DisplayNameShort(GlobalOptions.Language)));
+                    throw new ArgumentException(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutOfAmmoType"), CurrentDisplayName));
                 }
             }
             return ammoToReload;
