@@ -603,6 +603,11 @@ namespace Chummer
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_DamageResistance");
                         return objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
                     }
+                case "depenabled":
+                    // Character must be an AI.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_AttributeDEPLong") + strSpace + '≥' + strSpace + 1.ToString(GlobalOptions.CultureInfo);
+                    return objCharacter.DEPEnabled;
                 case "ess":
                     {
                         string strEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;

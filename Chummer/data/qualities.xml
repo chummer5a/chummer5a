@@ -829,7 +829,8 @@
           <quality>Explorer</quality>
           <quality>Aware</quality>
           <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -863,7 +864,8 @@
           <quality>Enchanter</quality>
           <quality>Explorer</quality>
           <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -896,7 +898,8 @@
           <quality>Enchanter</quality>
           <quality>Explorer</quality>
           <quality>Apprentice</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -925,16 +928,9 @@
       </bonus>
       <forbidden>
         <oneof>
-          <metatypecategory>Metasapient</metatypecategory>
-          <metatypecategory>Shapeshifter</metatypecategory>
-          <quality>Aware</quality>
-          <quality>Magician</quality>
-          <quality>Mystic Adept</quality>
-          <quality>Aspected Magician</quality>
-          <quality>Enchanter</quality>
-          <quality>Explorer</quality>
-          <quality>Apprentice</quality>
-          <quality>Adept</quality>
+          <quality>Latent Dracomorphosis</quality>
+          <magenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -965,7 +961,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -7210,7 +7207,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7357,7 +7355,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7512,7 +7511,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7650,7 +7650,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7793,7 +7794,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -7936,7 +7938,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8079,7 +8082,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8222,7 +8226,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8365,7 +8370,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8508,7 +8514,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8635,7 +8642,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8800,7 +8808,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -8955,7 +8964,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9113,7 +9123,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9274,7 +9285,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9445,7 +9457,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Infected: Fomoraig</quality>
           <quality>Infected: Dzoo-Noo-Qua</quality>
           <quality>Infected: Ghoul (Troll)</quality>
@@ -9616,7 +9629,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9765,7 +9779,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -9917,7 +9932,8 @@
           <metatypecategory>Metasapient</metatypecategory>
           <metatypecategory>Shapeshifter</metatypecategory>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -10062,7 +10078,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -10215,7 +10232,8 @@
           <metatypecategory>Metasapient</metatypecategory>
           <metatypecategory>Shapeshifter</metatypecategory>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -10382,7 +10400,8 @@
       <forbidden>
         <oneof>
           <quality>Magic Resistance</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
           <quality>Latent Dracomorphosis</quality>
         </oneof>
       </forbidden>
@@ -10915,7 +10934,6 @@
       <karma>4</karma>
       <category>Positive</category>
       <bonus />
-
       <source>DT</source>
       <page>45</page>
     </quality>
@@ -17202,7 +17220,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>FA</source>
@@ -17233,7 +17252,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>FA</source>
@@ -17261,7 +17281,8 @@
           <quality>Magician</quality>
           <quality>Mystic Adept</quality>
           <quality>Adept</quality>
-          <quality>Technomancer</quality>
+          <resenabled />
+          <depenabled />
         </oneof>
       </forbidden>
       <source>FA</source>
