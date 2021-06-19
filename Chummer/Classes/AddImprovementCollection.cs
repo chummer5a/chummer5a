@@ -2063,11 +2063,10 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectcontact");
-            XmlNode nodSelect = bonusNode;
 
             using (frmSelectItem frmSelect = new frmSelectItem())
             {
-                string strMode = nodSelect["type"]?.InnerText ?? "all";
+                string strMode = bonusNode["type"]?.InnerText ?? "all";
 
                 Contact[] lstSelectedContacts;
                 if (strMode == "all")
@@ -2108,18 +2107,18 @@ namespace Chummer.Classes
                     : throw new AbortedException();
 
                 string strTemp = string.Empty;
-                if (nodSelect.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
+                if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
                 {
                     decimal decForcedLoyalty = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
                     CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty);
                 }
 
-                if (nodSelect["free"] != null)
+                if (bonusNode["free"] != null)
                 {
                     CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
                 }
 
-                if (nodSelect["forcegroup"] != null)
+                if (bonusNode["forcegroup"] != null)
                 {
                     CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
                 }
@@ -3655,12 +3654,11 @@ namespace Chummer.Classes
 
             Log.Info("weaponcategorydv");
             Log.Info("weaponcategorydv = " + bonusNode.OuterXml);
-            XmlNode nodWeapon = bonusNode;
 
-            if (nodWeapon["selectskill"] != null)
+            if (bonusNode["selectskill"] != null)
             {
                 bool blnDummy = false;
-                SelectedValue = ImprovementManager.DoSelectSkill(nodWeapon["selectskill"], _objCharacter, _intRating, _strFriendlyName, ref blnDummy);
+                SelectedValue = ImprovementManager.DoSelectSkill(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, ref blnDummy);
 
                 if (blnDummy)
                 {
@@ -3673,9 +3671,9 @@ namespace Chummer.Classes
                 if (objPower != null)
                     objPower.Extra = SelectedValue;
             }
-            else if (nodWeapon["name"] != null)
+            else if (bonusNode["name"] != null)
             {
-                SelectedValue = nodWeapon["name"].InnerText;
+                SelectedValue = bonusNode["name"].InnerText;
             }
             else
             {
@@ -3683,7 +3681,7 @@ namespace Chummer.Classes
             }
             Log.Info("Calling CreateImprovement");
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToDec(_objCharacter, nodWeapon["bonus"]?.InnerXml, _intRating));
+                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating));
         }
 
         public void weaponcategorydice(XmlNode bonusNode)

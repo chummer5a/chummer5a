@@ -389,18 +389,11 @@ namespace Chummer
                 }
             }
 
-            if (_dicCustomDataDirectoryNames.Any(x => x.Value.Item2 && !other.CustomDataDirectoryNames.ContainsKey(x.Key)))
-                return false;
-
-            if (!_lstBooks.SequenceEqual(other._lstBooks))
-                return false;
-
-            if (!BannedWareGrades.SequenceEqual(other.BannedWareGrades))
-                return false;
-
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return true;
+            return !_dicCustomDataDirectoryNames.Any(x =>
+                       x.Value.Item2 && !other.CustomDataDirectoryNames.ContainsKey(x.Key)) &&
+                   _lstBooks.SequenceEqual(other._lstBooks) && BannedWareGrades.SequenceEqual(other.BannedWareGrades);
         }
 
         /// <summary>

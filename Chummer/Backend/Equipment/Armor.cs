@@ -106,12 +106,12 @@ namespace Chummer.Backend.Equipment
                                 {
                                     if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
                                     {
-                                        foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in objImprovement.GetRelevantPropertyChangers())
                                         {
-                                            if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
-                                                setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                            if (dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
+                                                setChangedProperties.Add(strPropertyToUpdate);
                                             else
-                                                dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                                dicChangedProperties.Add(objItemToUpdate, new HashSet<string> { strPropertyToUpdate });
                                         }
                                     }
                                 }
@@ -978,10 +978,10 @@ namespace Chummer.Backend.Equipment
                     return strReturn;
                 }
 
-                if (decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out decimal decReturn))
-                    return decReturn.ToString("#,0.##", GlobalOptions.CultureInfo);
-
-                return strArmorCapacity;
+                return decimal.TryParse(strArmorCapacity, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                    out decimal decReturn)
+                    ? decReturn.ToString("#,0.##", GlobalOptions.CultureInfo)
+                    : strArmorCapacity;
             }
         }
 

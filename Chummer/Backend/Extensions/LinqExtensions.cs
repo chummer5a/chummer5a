@@ -60,9 +60,7 @@ namespace Chummer
         /// </summary>
         public static TResult DeepAggregate<TSource, TAccumulate, TResult>(this IEnumerable<TSource> objParentList, Func<TSource, IEnumerable<TSource>> funcGetChildrenMethod, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> funcAggregate, Func<TAccumulate, TResult> resultSelector)
         {
-            if (resultSelector == null)
-                return default;
-            return resultSelector(objParentList.DeepAggregate(funcGetChildrenMethod, seed, funcAggregate));
+            return resultSelector == null ? default : resultSelector(objParentList.DeepAggregate(funcGetChildrenMethod, seed, funcAggregate));
         }
 
         /// <summary>

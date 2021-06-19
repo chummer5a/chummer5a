@@ -154,29 +154,19 @@ namespace Chummer
             //$DOLLAR is defined elsewhere to prevent recursive calling
             if (macroName == "street")
             {
-                if (!string.IsNullOrEmpty(_objCharacter.Alias))
-                {
-                    return _objCharacter.Alias;
-                }
-                return "Alias ";
+                return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
             }
             if(macroName == "real")
             {
-                if (!string.IsNullOrEmpty(_objCharacter.Name))
-                {
-                    return _objCharacter.Name;
-                }
-                return "Unnamed John Doe ";
+                return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
             }
             if (macroName == "year")
             {
                 if (int.TryParse(_objCharacter.Age, out int year))
                 {
-                    if (int.TryParse(macroPool, out int age))
-                    {
-                        return (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo);
-                    }
-                    return (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
+                    return int.TryParse(macroPool, out int age)
+                        ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo)
+                        : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
                 }
                 return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
             }

@@ -2845,11 +2845,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 Gear objGear = GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
-                if (objGear != null)
-                {
-                    return objGear.Rating;
-                }
-                return 0;
+                return objGear?.Rating ?? 0;
             }
         }
 
@@ -3539,9 +3535,7 @@ namespace Chummer.Backend.Equipment
                 return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
-            if (!int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn))
-                return 0;
-            return intReturn;
+            return !int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
         }
 
         public int GetBonusMatrixAttribute(string strAttributeName)

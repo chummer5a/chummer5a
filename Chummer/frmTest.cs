@@ -649,53 +649,52 @@ namespace Chummer
                             }
                             else
                             {
-                                int intMinModifier = -3;
                                 _objCharacter.BOD.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, 3));
                                 _objCharacter.AGI.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, 3));
                                 _objCharacter.REA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, 3));
                                 _objCharacter.STR.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, 3));
                                 _objCharacter.CHA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, 3));
                                 _objCharacter.INT.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, 3));
                                 _objCharacter.LOG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, 3));
                                 _objCharacter.WIL.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, 3));
                                 _objCharacter.MAG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3));
                                 _objCharacter.MAGAdept.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3));
                                 _objCharacter.RES.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, 3));
                                 _objCharacter.EDG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, 3));
                                 _objCharacter.ESS.AssignLimits(
@@ -703,7 +702,7 @@ namespace Chummer
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"].InnerText, intForce),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"].InnerText, intForce));
                                 _objCharacter.DEP.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, 3));
                             }

@@ -65,10 +65,9 @@ namespace Chummer.Backend.Skills
 
         public string DisplaySpecific(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return Specific;
-
-            return CharacterObject.TranslateExtra(Specific, strLanguage);
+            return strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Specific
+                : CharacterObject.TranslateExtra(Specific, strLanguage);
         }
 
         public override string DisplaySpecialization(string strLanguage)

@@ -858,9 +858,11 @@ namespace Chummer.Backend.Skills
                 return 0;
             if (intRating > 0)
                 return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
-            if (Default)
-                return Math.Max(0, intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
-            return 0;
+            return Default
+                ? Math.Max(0,
+                    intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier +
+                    CharacterObject.WoundModifier + CharacterObject.SustainingPenalty)
+                : 0;
         }
 
         private static readonly Guid s_GuiReflexRecorderId = new Guid("17a6ba49-c21c-461b-9830-3beae8a237fc");
@@ -1840,9 +1842,7 @@ namespace Chummer.Backend.Skills
                     || !string.IsNullOrEmpty(x.Condition)
                     || !x.Enabled))
                 : GetSpecialization(strSpecialization);
-            if (objTargetSpecialization == null)
-                return 0;
-            return objTargetSpecialization.SpecializationBonus;
+            return objTargetSpecialization?.SpecializationBonus ?? 0;
         }
 
         private XmlNode _objCachedMyXmlNode;

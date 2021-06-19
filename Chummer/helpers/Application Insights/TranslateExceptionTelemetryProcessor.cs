@@ -39,7 +39,7 @@ namespace Chummer
         // Link processors to each other in a chain.
         public TranslateExceptionTelemetryProcessor(ITelemetryProcessor next)
         {
-            this.Next = next;
+            Next = next;
         }
         public void Process(ITelemetry item)
         {
@@ -48,7 +48,7 @@ namespace Chummer
             // Modify the item if required
             ModifyItem(item);
 
-            this.Next.Process(item);
+            Next.Process(item);
         }
 
         // Example: replace with your own criteria.
@@ -58,7 +58,7 @@ namespace Chummer
         }
 
         // Example: replace with your own modifiers.
-        private void ModifyItem(ITelemetry item)
+        private static void ModifyItem(ITelemetry item)
         {
             if (!(item is ExceptionTelemetry exceptionTelemetry)) return;
             var translateCultureInfo = new CultureInfo("en");

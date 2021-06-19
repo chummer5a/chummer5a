@@ -584,8 +584,7 @@ namespace Chummer
             if (objSelectedNode == null)
                 return;
             CharacterCache objCache = objSelectedNode.Tag as CharacterCache;
-            if (objCache?.OnMyAfterSelect != null)
-                objCache.OnMyAfterSelect(sender, e);
+            objCache?.OnMyAfterSelect?.Invoke(sender, e);
             UpdateCharacter(objCache);
             treCharacterList.ClearNodeBackground(treCharacterList.SelectedNode);
         }
@@ -617,7 +616,7 @@ namespace Chummer
             objCache?.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t));
         }
 
-        private void treCharacterList_OnDefaultDragEnter(object sender, DragEventArgs e)
+        private static void treCharacterList_OnDefaultDragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -644,18 +643,15 @@ namespace Chummer
 
         
 
-        private void treCharacterList_OnDefaultDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
+        private static void treCharacterList_OnDefaultDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            if (!(sender is TreeView treSenderView) || e == null)
+            if (!(sender is TreeView) || e == null)
                 return;
             //Point pt = treSenderView.PointToClient(new Point(e.X, e.Y));
             TreeNode objNode = e.Node;
-            if (objNode != null)
+            if (objNode?.Tag is Action act)
             {
-                if (objNode.Tag is Action act)
-                {
-                    act.Invoke();
-                }
+                act.Invoke();
             }
         }
 

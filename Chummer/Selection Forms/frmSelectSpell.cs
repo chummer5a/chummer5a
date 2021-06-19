@@ -65,9 +65,9 @@ namespace Chummer
                 _strSelectedSpell = _strForceSpell;
                 DialogResult = DialogResult.OK;
             }
-            Tuple<bool, bool> tupAllowFreeSpells = _objCharacter.AllowFreeSpells;
-            _blnCanGenericSpellBeFree = tupAllowFreeSpells.Item2;
-            _blnCanTouchOnlySpellBeFree = tupAllowFreeSpells.Item1;
+            (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = _objCharacter.AllowFreeSpells;
+            _blnCanTouchOnlySpellBeFree = blnCanTouchOnlySpellBeFree;
+            _blnCanGenericSpellBeFree = blnCanGenericSpellBeFree;
             txtSearch.Text = string.Empty;
             // Populate the Category list.
             HashSet<string> limit = new HashSet<string>();

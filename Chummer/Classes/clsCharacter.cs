@@ -514,18 +514,17 @@ namespace Chummer
                         // the tooltip was built before the object was added to the character
                         foreach (Improvement objImprovement in Improvements)
                         {
-                            if (objImprovement.SourceName == objNewPower.InternalId && objImprovement.Enabled)
+                            if (objImprovement.SourceName != objNewPower.InternalId || !objImprovement.Enabled)
+                                continue;
+                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                objImprovement.GetRelevantPropertyChangers())
                             {
-                                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
-                                    objImprovement.GetRelevantPropertyChangers())
-                                {
-                                    if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
-                                        out HashSet<string> setChangedProperties))
-                                        setChangedProperties.Add(tuplePropertyChanged.Item2);
-                                    else
-                                        dicChangedProperties.Add(tuplePropertyChanged.Item1,
-                                            new HashSet<string> {tuplePropertyChanged.Item2});
-                                }
+                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                    out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(strPropertyToUpdate);
+                                else
+                                    dicChangedProperties.Add(objItemToUpdate,
+                                        new HashSet<string> { strPropertyToUpdate });
                             }
                         }
                     }
@@ -600,18 +599,17 @@ namespace Chummer
                     // the tooltip was built before the object was added to the character
                     foreach (Improvement objImprovement in Improvements)
                     {
-                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                            continue;
+                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                            objImprovement.GetRelevantPropertyChangers())
                         {
-                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
-                                objImprovement.GetRelevantPropertyChangers())
-                            {
-                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
-                                    out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
-                                else
-                                    dicChangedProperties.Add(tuplePropertyChanged.Item1,
-                                        new HashSet<string> {tuplePropertyChanged.Item2});
-                            }
+                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                out HashSet<string> setChangedProperties))
+                                setChangedProperties.Add(strPropertyToUpdate);
+                            else
+                                dicChangedProperties.Add(objItemToUpdate,
+                                    new HashSet<string> { strPropertyToUpdate });
                         }
                     }
                 }
@@ -645,18 +643,17 @@ namespace Chummer
                         // the tooltip was built before the object was added to the character
                         foreach (Improvement objImprovement in Improvements)
                         {
-                            if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                            if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                continue;
+                            foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                                objImprovement.GetRelevantPropertyChangers())
                             {
-                                foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
-                                    objImprovement.GetRelevantPropertyChangers())
-                                {
-                                    if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
-                                        out HashSet<string> setChangedProperties))
-                                        setChangedProperties.Add(tuplePropertyChanged.Item2);
-                                    else
-                                        dicChangedProperties.Add(tuplePropertyChanged.Item1,
-                                            new HashSet<string> {tuplePropertyChanged.Item2});
-                                }
+                                if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                    out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(strPropertyToUpdate);
+                                else
+                                    dicChangedProperties.Add(objItemToUpdate,
+                                        new HashSet<string> { strPropertyToUpdate });
                             }
                         }
                     }
@@ -681,18 +678,17 @@ namespace Chummer
                     // the tooltip was built before the object was added to the character
                     foreach (Improvement objImprovement in Improvements)
                     {
-                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                            continue;
+                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                            objImprovement.GetRelevantPropertyChangers())
                         {
-                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
-                                objImprovement.GetRelevantPropertyChangers())
-                            {
-                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
-                                    out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
-                                else
-                                    dicChangedProperties.Add(tuplePropertyChanged.Item1,
-                                        new HashSet<string> {tuplePropertyChanged.Item2});
-                            }
+                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                out HashSet<string> setChangedProperties))
+                                setChangedProperties.Add(strPropertyToUpdate);
+                            else
+                                dicChangedProperties.Add(objItemToUpdate,
+                                    new HashSet<string> { strPropertyToUpdate });
                         }
                     }
                 }
@@ -716,18 +712,17 @@ namespace Chummer
                     // the tooltip was built before the object was added to the character
                     foreach (Improvement objImprovement in Improvements)
                     {
-                        if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
+                        if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                            continue;
+                        foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
+                            objImprovement.GetRelevantPropertyChangers())
                         {
-                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
-                                objImprovement.GetRelevantPropertyChangers())
-                            {
-                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
-                                    out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
-                                else
-                                    dicChangedProperties.Add(tuplePropertyChanged.Item1,
-                                        new HashSet<string> {tuplePropertyChanged.Item2});
-                            }
+                            if (dicChangedProperties.TryGetValue(objItemToUpdate,
+                                out HashSet<string> setChangedProperties))
+                                setChangedProperties.Add(strPropertyToUpdate);
+                            else
+                                dicChangedProperties.Add(objItemToUpdate,
+                                    new HashSet<string> { strPropertyToUpdate });
                         }
                     }
                 }
@@ -824,15 +819,15 @@ namespace Chummer
                                 if (objImprovement.SourceName.TrimEndOnce("Wireless") == objNewItem.InternalId &&
                                     objImprovement.Enabled)
                                 {
-                                    foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
+                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
                                         objImprovement.GetRelevantPropertyChangers())
                                     {
-                                        if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
+                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
                                             out HashSet<string> setChangedProperties))
-                                            setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                            setChangedProperties.Add(strPropertyToUpdate);
                                         else
-                                            dicChangedProperties.Add(tuplePropertyChanged.Item1,
-                                                new HashSet<string> {tuplePropertyChanged.Item2});
+                                            dicChangedProperties.Add(objItemToUpdate,
+                                                new HashSet<string> { strPropertyToUpdate });
                                     }
                                 }
                             }
@@ -917,15 +912,15 @@ namespace Chummer
                                 if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
                                     objNewItem.InternalId && objImprovement.Enabled)
                                 {
-                                    foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in
+                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in
                                         objImprovement.GetRelevantPropertyChangers())
                                     {
-                                        if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1,
+                                        if (dicChangedProperties.TryGetValue(objItemToUpdate,
                                             out HashSet<string> setChangedProperties))
-                                            setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                            setChangedProperties.Add(strPropertyToUpdate);
                                         else
-                                            dicChangedProperties.Add(tuplePropertyChanged.Item1,
-                                                new HashSet<string> {tuplePropertyChanged.Item2});
+                                            dicChangedProperties.Add(objItemToUpdate,
+                                                new HashSet<string> { strPropertyToUpdate });
                                     }
                                 }
                             }
@@ -1086,13 +1081,11 @@ namespace Chummer
                 objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strMetavariantId.CleanXPath() + "]");
 
             // Set Metatype information.
-            int intMinModifier = 0;
-            int intMaxModifier = 0;
             XmlNode charNode =
                 strSelectedMetatypeCategory == "Shapeshifter" || strMetavariantId == Guid.Empty.ToString()
                     ? objXmlMetatype
                     : objXmlMetavariant ?? objXmlMetatype;
-            AttributeSection.Create(charNode, intForce, intMinModifier, intMaxModifier);
+            AttributeSection.Create(charNode, intForce);
             MetatypeGuid = new Guid(strMetatypeId);
             Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
             MetatypeCategory = strSelectedMetatypeCategory;
@@ -7893,9 +7886,7 @@ namespace Chummer
             {
                 if(!string.IsNullOrWhiteSpace(Alias))
                     return Alias;
-                if(!string.IsNullOrWhiteSpace(Name))
-                    return Name;
-                return LanguageManager.GetString("String_UnnamedCharacter");
+                return !string.IsNullOrWhiteSpace(Name) ? Name : LanguageManager.GetString("String_UnnamedCharacter");
             }
         }
 
@@ -13010,12 +13001,9 @@ namespace Chummer
         public string GetMovement(CultureInfo objCulture, string strLanguage)
         {
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-            if(Movement == "Special")
-            {
-                return LanguageManager.GetString("String_ModeSpecial", strLanguage);
-            }
-
-            return CalculatedMovement("Ground", true, objCulture);
+            return Movement == "Special"
+                ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
+                : CalculatedMovement("Ground", true, objCulture);
         }
 
         /// <summary>
@@ -13403,12 +13391,9 @@ namespace Chummer
         public string GetSwim(CultureInfo objCulture, string strLanguage)
         {
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-            if(Movement == "Special")
-            {
-                return LanguageManager.GetString("String_ModeSpecial", strLanguage);
-            }
-
-            return CalculatedMovement("Swim", false, objCulture);
+            return Movement == "Special"
+                ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
+                : CalculatedMovement("Swim", false, objCulture);
         }
 
         public string DisplayFly => GetFly(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -13419,12 +13404,9 @@ namespace Chummer
         public string GetFly(CultureInfo objCulture, string strLanguage)
         {
             // Don't attempt to do anything if the character's Movement is "Special" (typically for A.I.s).
-            if(Movement == "Special")
-            {
-                return LanguageManager.GetString("String_ModeSpecial", strLanguage);
-            }
-
-            return CalculatedMovement("Fly", false, objCulture);
+            return Movement == "Special"
+                ? LanguageManager.GetString("String_ModeSpecial", strLanguage)
+                : CalculatedMovement("Fly", false, objCulture);
         }
 
         /// <summary>
@@ -13495,28 +13477,12 @@ namespace Chummer
         /// <summary>
         /// Whether or not the character is a non-Free Sprite.
         /// </summary>
-        public bool IsSprite
-        {
-            get
-            {
-                if(MetatypeCategory.EndsWith("Sprites", StringComparison.Ordinal) && !IsFreeSprite)
-                    return true;
-                return false;
-            }
-        }
+        public bool IsSprite => MetatypeCategory.EndsWith("Sprites", StringComparison.Ordinal) && !IsFreeSprite;
 
         /// <summary>
         /// Whether or not the character is a Free Sprite.
         /// </summary>
-        public bool IsFreeSprite
-        {
-            get
-            {
-                if(MetatypeCategory == "Free Sprite")
-                    return true;
-                return false;
-            }
-        }
+        public bool IsFreeSprite => MetatypeCategory == "Free Sprite";
 
         #endregion
 
@@ -16003,13 +15969,12 @@ namespace Chummer
                     PostLoadMethods.Enqueue(RefreshSustainingPenalties);
                 return true;
             }
-
-            int intPenaltyWithPsyche = -1;
+            
             int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
 
             //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
             int intSustainedSpells = SustainedCollection.Count(x => x.HasSustainingPenalty);
-            int intModifierPerSpell = PsycheActive ? intPenaltyWithPsyche : -intDicePenaltySustainedSpell;
+            int intModifierPerSpell = PsycheActive ? -1 : -intDicePenaltySustainedSpell;
                                                                                                                
             SustainingPenalty = intSustainedSpells * intModifierPerSpell;
 

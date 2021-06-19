@@ -421,10 +421,7 @@ namespace Chummer.Backend.Skills
                                 return false;
 
                             //This could be more fine grained, but frankly i don't care
-                            if (skill.SkillCategory == "Magical Active" && !_objCharacter.MAGEnabled)
-                                return false;
-
-                            return true;
+                            return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
                         }
 
                         foreach (Skill objSkill in lstTempSkillList)
@@ -562,10 +559,7 @@ namespace Chummer.Backend.Skills
                         return false;
 
                     //This could be more fine grained, but frankly i don't care
-                    if (skill.SkillCategory == "Magical Active" && !_objCharacter.MAGEnabled)
-                        return false;
-
-                    return true;
+                    return skill.SkillCategory != "Magical Active" || _objCharacter.MAGEnabled;
                 }
 
                 foreach (Skill objSkill in lstTempSkillList)
@@ -1063,9 +1057,11 @@ namespace Chummer.Backend.Skills
             ExoticSkill lhsExoticSkill = lhs as ExoticSkill;
             if (rhs is ExoticSkill rhsExoticSkill)
             {
-                if (lhsExoticSkill != null)
-                    return string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Language), lhsExoticSkill.DisplaySpecific(GlobalOptions.Language) ?? string.Empty, false, GlobalOptions.CultureInfo);
-                return 1;
+                return lhsExoticSkill != null
+                    ? string.Compare(rhsExoticSkill.DisplaySpecific(GlobalOptions.Language),
+                        lhsExoticSkill.DisplaySpecific(GlobalOptions.Language) ?? string.Empty, false,
+                        GlobalOptions.CultureInfo)
+                    : 1;
             }
             if (lhsExoticSkill != null)
                 return -1;
@@ -1076,9 +1072,7 @@ namespace Chummer.Backend.Skills
         {
             if (objXGroup == null)
             {
-                if (objYGroup == null)
-                    return 0;
-                return 1;
+                return objYGroup == null ? 0 : 1;
             }
             return objYGroup == null ? -1 : string.Compare(objXGroup.CurrentDisplayName, objYGroup.CurrentDisplayName, false, GlobalOptions.CultureInfo);
         }

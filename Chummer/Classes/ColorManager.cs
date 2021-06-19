@@ -164,14 +164,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to dark mode.</returns>
         public static Color GenerateCurrentModeColor(Color objColor)
         {
-            if (IsLightMode)
-            {
-                return objColor;
-            }
-            else
-            {
-                return GenerateDarkModeColor(objColor);
-            }
+            return IsLightMode ? objColor : GenerateDarkModeColor(objColor);
         }
 
         /// <summary>
@@ -181,17 +174,8 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but potentially adapted to light mode.</returns>
         public static Color GenerateModeIndependentColor(Color objColor)
         {
-            if (IsLightMode)
-            {
-                return objColor;
-            }
-            else
-            {
-                return GenerateInverseDarkModeColor(objColor);
-            }
+            return IsLightMode ? objColor : GenerateInverseDarkModeColor(objColor);
         }
-
-
 
         /// <summary>
         /// Returns a version of a color that has its lightness dimmed down in Light mode or brightened in Dark Mode

@@ -661,12 +661,10 @@ namespace Chummer.Backend.Attributes
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
-                if (_objCharacter.Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev))
-                {
-                    return TotalMaximum;
-                }
-                return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
+                return _objCharacter.Improvements.Any(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev)
+                    ? TotalMaximum
+                    : Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
 
@@ -682,10 +680,9 @@ namespace Chummer.Backend.Attributes
 
         public string DisplayNameLong(string strLanguage)
         {
-            if (Abbrev == "MAGAdept")
-                return LanguageManager.MAGAdeptString(strLanguage, true);
-
-            return LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
+            return Abbrev == "MAGAdept"
+                ? LanguageManager.MAGAdeptString(strLanguage, true)
+                : LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
         }
 
         public string DisplayNameFormatted => GetDisplayNameFormatted(GlobalOptions.Language);
@@ -781,22 +778,22 @@ namespace Chummer.Backend.Attributes
                     decimal decHighest = decimal.MinValue;
 
                     StringBuilder sbdNewModifier = new StringBuilder();
-                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                    foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                     {
-                        if (strValues.Item1 == "precedence0" && strValues.Item2 > decHighest)
+                        if (strGroupName == "precedence0" && decValue > decHighest)
                         {
-                            decHighest = strValues.Item2;
-                            sbdNewModifier = new StringBuilder(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                            decHighest = decValue;
+                            sbdNewModifier = new StringBuilder(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                         }
                     }
                     if (lstUniqueName.Contains("precedence-1"))
                     {
-                        foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                        foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                         {
-                            if (strValues.Item1 == "precedence-1")
+                            if (strGroupName == "precedence-1")
                             {
-                                decHighest += strValues.Item2;
-                                sbdNewModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                decHighest += decValue;
+                                sbdNewModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -808,9 +805,9 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
                     StringBuilder strNewModifier = new StringBuilder();
-                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
+                    foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                     {
-                        strNewModifier.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace, strValues.Item3, strValues.Item2);
+                        strNewModifier.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace, strSourceName, decValue);
                     }
                     sbdModifier = strNewModifier;
                 }
@@ -820,12 +817,12 @@ namespace Chummer.Backend.Attributes
                     foreach (string strName in lstUniqueName)
                     {
                         decimal decHighest = decimal.MinValue;
-                        foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                        foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                         {
-                            if (strValues.Item1 == strName && strValues.Item2 > decHighest)
+                            if (strGroupName == strName && decValue > decHighest)
                             {
-                                decHighest = strValues.Item2;
-                                sbdModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                decHighest = decValue;
+                                sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -859,12 +856,12 @@ namespace Chummer.Backend.Attributes
                 foreach (string strName in lstUniqueName)
                 {
                     decimal decHighest = decimal.MinValue;
-                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                    foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                     {
-                        if (strValues.Item1 == strName && strValues.Item2 > decHighest)
+                        if (strGroupName == strName && decValue > decHighest)
                         {
-                            decHighest = strValues.Item2;
-                            sbdModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                            decHighest = decValue;
+                            sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                         }
                     }
                 }
@@ -1260,10 +1257,9 @@ namespace Chummer.Backend.Attributes
 
         public string GetDisplayAbbrev(string strLanguage)
         {
-            if (Abbrev == "MAGAdept")
-                return LanguageManager.MAGAdeptString(strLanguage);
-
-            return LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
+            return Abbrev == "MAGAdept"
+                ? LanguageManager.MAGAdeptString(strLanguage)
+                : LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
         }
 
         public void Upgrade(int intAmount = 1)

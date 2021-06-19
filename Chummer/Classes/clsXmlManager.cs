@@ -282,7 +282,7 @@ namespace Chummer
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         [Annotations.NotNull]
-        private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyCollection<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
@@ -675,7 +675,7 @@ namespace Chummer
         /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
         /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
         /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in in <paramref name="lstPaths"/>.</returns>
-        private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyList<string> lstPaths)
+        private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyCollection<string> lstPaths)
         {
             List<string> lstReturn = new List<string>();
             if (strFileName != "improvements.xml" && lstPaths?.Count > 0)
@@ -1285,16 +1285,15 @@ namespace Chummer
                     {
                         // Because this is a list, foreach will move from oldest element to newest
                         // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
-                        foreach (Tuple<XmlNode, string> objDataToAdd in lstExtraNodesToAddIfNotFound)
+                        foreach ((XmlNode xmlNodeToAdd, string strXPathToAdd) in lstExtraNodesToAddIfNotFound)
                         {
-                            using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(objDataToAdd.Item2))
+                            using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPathToAdd))
                             {
-                                if (xmlParentNodeList?.Count > 0)
+                                if (!(xmlParentNodeList?.Count > 0))
+                                    continue;
+                                foreach (XmlNode xmlParentNode in xmlParentNodeList)
                                 {
-                                    foreach (XmlNode xmlParentNode in xmlParentNodeList)
-                                    {
-                                        xmlParentNode.AppendChild(xmlDoc.ImportNode(objDataToAdd.Item1, false));
-                                    }
+                                    xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlNodeToAdd, false));
                                 }
                             }
                         }

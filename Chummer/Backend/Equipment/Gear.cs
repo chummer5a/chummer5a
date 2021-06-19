@@ -2043,12 +2043,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Overclocked
         {
-            get
-            {
-                if (!CharacterObject.Overclocker)
-                    return string.Empty;
-                return _strOverclocked;
-            }
+            get => !CharacterObject.Overclocker ? string.Empty : _strOverclocked;
             set => _strOverclocked = value;
         }
 
@@ -2489,9 +2484,7 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                if (decimal.TryParse(strCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decReturn))
-                    return decReturn;
-                return 0;
+                return decimal.TryParse(strCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decReturn) ? decReturn : 0;
             }
         }
 
@@ -2512,9 +2505,7 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                if (strCapacity == "*")
-                    return 0;
-                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
+                return strCapacity == "*" ? 0 : Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
             }
         }
 

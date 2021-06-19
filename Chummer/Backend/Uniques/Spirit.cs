@@ -294,7 +294,7 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        private void PrintPowerInfo(XmlTextWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
+        private void PrintPowerInfo(XmlWriter objWriter, XPathNavigator xmlSpiritPowersBaseChummerNode, XPathNavigator xmlCritterPowersBaseChummerNode, XmlNode xmlPowerEntryNode, string strLanguageToPrint = "")
         {
             StringBuilder sbdExtra = new StringBuilder();
             string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
@@ -441,12 +441,7 @@ namespace Chummer
         /// </summary>
         public string CritterName
         {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.CharacterName;
-                return _strCritterName;
-            }
+            get => LinkedCharacter != null ? LinkedCharacter.CharacterName : _strCritterName;
             set
             {
                 if (_strCritterName != value)
@@ -929,15 +924,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public List<Image> Mugshots
-        {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.Mugshots;
-                return _lstMugshots;
-            }
-        }
+        public List<Image> Mugshots => LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -982,12 +969,7 @@ namespace Chummer
         /// </summary>
         public int MainMugshotIndex
         {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.MainMugshotIndex;
-                return _intMainMugshotIndex;
-            }
+            get => LinkedCharacter?.MainMugshotIndex ?? _intMainMugshotIndex;
             set
             {
                 if (LinkedCharacter != null)

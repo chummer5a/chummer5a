@@ -763,12 +763,9 @@ namespace ChummerHub.Client.UI
                     group = MyCE?.MySINnerFile.MyGroup;
                 }
 
-                if (tvGroupSearchResult.SelectedNode != null)
+                if (tvGroupSearchResult.SelectedNode?.Tag is SINnerSearchGroup sel)
                 {
-                    if (tvGroupSearchResult.SelectedNode.Tag is SINnerSearchGroup sel)
-                    {
-                        group = new SINnerGroup(sel);
-                    }
+                    @group = new SINnerGroup(sel);
                 }
 
                 using (frmSINnerGroupEdit ge = new frmSINnerGroupEdit(group, false))

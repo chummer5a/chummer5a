@@ -569,7 +569,7 @@ namespace Chummer
         private async void cmdUploadPastebin_Click(object sender, EventArgs e)
         {
 #if DEBUG
-            string strFilePath = "Insert local file here";
+            const string strFilePath = "Insert local file here";
             System.Collections.Specialized.NameValueCollection data = new System.Collections.Specialized.NameValueCollection();
             string line;
             using (StreamReader sr = new StreamReader(strFilePath, Encoding.UTF8, true))
@@ -1154,7 +1154,7 @@ namespace Chummer
             return lstSheetLanguages;
         }
 
-        private List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
+        private static List<ListItem> GetXslFilesFromLocalDirectory(string strLanguage)
         {
             List<ListItem> lstSheets = new List<ListItem>();
 

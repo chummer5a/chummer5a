@@ -724,20 +724,20 @@ namespace Chummer
             {
                 treCustomDataDirectories.Nodes.Clear();
 
-                foreach (Tuple<object, bool> objCustomDataDirectory in _lstCharacterCustomDataDirectoryInfos)
+                foreach ((object objUntypedInfo, bool blnDataDirectoryEnabled) in _lstCharacterCustomDataDirectoryInfos)
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Tag = objCustomDataDirectory.Item1,
-                        Checked = objCustomDataDirectory.Item2
+                        Tag = objUntypedInfo,
+                        Checked = blnDataDirectoryEnabled
                     };
-                    if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
+                    if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
                     }
                     else
                     {
-                        objNode.Text = objCustomDataDirectory.Item1.ToString();
+                        objNode.Text = objUntypedInfo.ToString();
                         objNode.ForeColor = SystemColors.GrayText;
                     }
                     treCustomDataDirectories.Nodes.Add(objNode);
@@ -748,18 +748,18 @@ namespace Chummer
                 for(int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
                 {
                     TreeNode objNode = treCustomDataDirectories.Nodes[i];
-                    Tuple<object, bool> objCustomDataDirectory = _lstCharacterCustomDataDirectoryInfos[i];
-                    if (objCustomDataDirectory.Item1 != objNode.Tag)
-                        objNode.Tag = objCustomDataDirectory.Item1;
-                    if (objCustomDataDirectory.Item2 != objNode.Checked)
-                        objNode.Checked = objCustomDataDirectory.Item2;
-                    if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
+                    (object objUntypedInfo, bool blnDataDirectoryEnabled) = _lstCharacterCustomDataDirectoryInfos[i];
+                    if (objUntypedInfo != objNode.Tag)
+                        objNode.Tag = objUntypedInfo;
+                    if (blnDataDirectoryEnabled != objNode.Checked)
+                        objNode.Checked = blnDataDirectoryEnabled;
+                    if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
                     }
                     else
                     {
-                        objNode.Text = objCustomDataDirectory.Item1.ToString();
+                        objNode.Text = objUntypedInfo.ToString();
                         objNode.ForeColor = SystemColors.GrayText;
                     }
                 }

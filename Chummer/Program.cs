@@ -344,7 +344,7 @@ namespace Chummer
                                 continue;
                             if (!GlobalOptions.PluginsEnabled)
                             {
-                                string strMessage = "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
+                                const string strMessage = "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                 Log.Warn(strMessage);
                                 MainForm.ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             }

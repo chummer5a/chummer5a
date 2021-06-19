@@ -220,11 +220,13 @@ namespace Chummer
         /// <param name="xmlSuite">XmlNode to parse.</param>
         /// <param name="objGrade">Grade that the Cyberware should be created with.</param>
         /// <param name="lstChildren">List for children to which child items should be assigned.</param>
-        private void ParseNode(XmlNode xmlSuite, Grade objGrade, IList<Cyberware> lstChildren)
+        private void ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren)
         {
             // Run through all of the items in the Suite list.
             using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
+            {
                 if (xmlChildrenList?.Count > 0)
+                {
                     foreach (XmlNode xmlChildItem in xmlChildrenList)
                     {
                         int intRating = 0;
@@ -245,6 +247,8 @@ namespace Chummer
 
                         ParseNode(xmlChildItem, objGrade, objCyberware.Children);
                     }
+                }
+            }
         }
 
         /// <summary>
@@ -253,7 +257,7 @@ namespace Chummer
         /// <param name="objCyberwareLabelString">StringBuilder into which the cyberware list is written.</param>
         /// <param name="objCyberware">Cyberware to iterate through.</param>
         /// <param name="intDepth">Current dept in the list to determine how many spaces to print.</param>
-        private void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
+        private static void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
         {
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");

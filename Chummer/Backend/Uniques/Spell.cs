@@ -831,11 +831,10 @@ namespace Chummer
                 {
                     return _objCharacter.SkillsSection.GetActiveSkill("Artificing");
                 }
-                if (Category == "Rituals")
-                {
-                    return _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting");
-                }
-                return _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
+
+                return Category == "Rituals"
+                    ? _objCharacter.SkillsSection.GetActiveSkill("Ritual Spellcasting")
+                    : _objCharacter.SkillsSection.GetActiveSkill(UsesUnarmed ? "Unarmed Combat" : "Spellcasting");
             }
         }
 

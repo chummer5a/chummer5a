@@ -777,7 +777,6 @@ namespace Chummer
                     {
                         List<Quality> lstOldPriorityQualities = _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Heritage).ToList();
                         List<Weapon> lstWeapons = new List<Weapon>(1);
-                        int intMaxModifier = 0;
                         bool blnRemoveFreeSkills = true;
                         XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + _objCharacter.SpecialPriority.CleanXPath() +
                                                                                                       " and (not(prioritytable) or prioritytable = " + _objCharacter.Options.PriorityTable.CleanXPath() + ")]");
@@ -816,20 +815,20 @@ namespace Chummer
                                     _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
                                     _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp)
                                         ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intForce, intMaxModifier);
+                                        : CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intForce);
                                     // Set starting resonance
                                     _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;
                                     _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
                                     _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp)
                                         ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intForce, intMaxModifier);
+                                        : CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intForce);
                                     // Set starting depth
                                     _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 1;
                                     _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
                                     _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
                                     _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp)
                                         ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intForce, intMaxModifier);
+                                        : CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intForce);
 
                                     // Set Free Skills/Skill Groups
                                     int intFreeLevels = 0;
@@ -1893,9 +1892,9 @@ namespace Chummer
 
         private XPathNodeIterator GetActiveSkillList(string strXPathFilter = "")
         {
-            if (string.IsNullOrEmpty(strXPathFilter))
-                return _xmlBaseSkillDataNode.Select("skills/skill");
-            return _xmlBaseSkillDataNode.Select("skills/skill[" + strXPathFilter + ']');
+            return _xmlBaseSkillDataNode.Select(!string.IsNullOrEmpty(strXPathFilter)
+                ? "skills/skill[" + strXPathFilter + ']'
+                : "skills/skill");
         }
 
         private XPathNodeIterator BuildSkillCategoryList(XPathNodeIterator objSkillList)

@@ -1574,16 +1574,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Category of Ammo the Weapon uses.
         /// </summary>
-        public string AmmoCategory
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(_strAmmoCategory))
-                    return _strAmmoCategory;
-
-                return Category;
-            }
-        }
+        public string AmmoCategory => !string.IsNullOrEmpty(_strAmmoCategory) ? _strAmmoCategory : Category;
 
         /// <summary>
         /// Category of Ammo the Weapon uses.
@@ -3171,26 +3162,27 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Tuple<string, int> objRCGroup in lstRCGroups)
+            foreach ((string strGroup, int intRecoil) in lstRCGroups)
             {
-                if (!string.IsNullOrEmpty(objRCGroup.Item1))
+                if (!string.IsNullOrEmpty(strGroup))
                 {
                     // Add in the Recoil Group bonuses.
-                    intRCBase += objRCGroup.Item2;
-                    intRCFull += objRCGroup.Item2;
+                    intRCBase += intRecoil;
+                    intRCFull += intRecoil;
                     if (blnRefreshRCToolTip)
-                        sbdRCTip.Append(strSpace + '+' + strSpace + objRCGroup.Item1 + strSpace + '(' + objRCGroup.Item2.ToString(objCulture) + ')');
+                        sbdRCTip.Append(strSpace + '+' + strSpace + strGroup + strSpace + '(' + intRecoil.ToString(objCulture) + ')');
                 }
             }
 
-            foreach (Tuple<string, int> objRCGroup in lstRCDeployGroups)
+            foreach ((string strGroup, int intRecoil) in lstRCDeployGroups)
             {
-                if (!string.IsNullOrEmpty(objRCGroup.Item1))
+                if (!string.IsNullOrEmpty(strGroup))
                 {
                     // Add in the Recoil Group bonuses.
-                    intRCFull += objRCGroup.Item2;
+                    intRCFull += intRecoil;
                     if (blnRefreshRCToolTip)
-                        sbdRCTip.Append(strSpace + '+' + strSpace + string.Format(objCulture, LanguageManager.GetString("Tip_RecoilAccessories", strLanguage), objRCGroup.Item1, objRCGroup.Item2));
+                        sbdRCTip.Append(strSpace + '+' + strSpace + string.Format(objCulture,
+                            LanguageManager.GetString("Tip_RecoilAccessories", strLanguage), strGroup, intRecoil));
                 }
             }
 
@@ -4378,9 +4370,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.IsProgram;
-                return false;
+                return objThis != null && objThis.IsProgram;
             }
         }
 
@@ -4392,9 +4382,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.DeviceRating;
-                return _strDeviceRating;
+                return objThis != null ? objThis.DeviceRating : _strDeviceRating;
             }
             set
             {
@@ -4414,9 +4402,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.Attack;
-                return _strAttack;
+                return objThis != null ? objThis.Attack : _strAttack;
             }
             set
             {
@@ -4436,9 +4422,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.Sleaze;
-                return _strSleaze;
+                return objThis != null ? objThis.Sleaze : _strSleaze;
             }
             set
             {
@@ -4458,9 +4442,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.DataProcessing;
-                return _strDataProcessing;
+                return objThis != null ? objThis.DataProcessing : _strDataProcessing;
             }
             set
             {
@@ -4480,9 +4462,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.Firewall;
-                return _strFirewall;
+                return objThis != null ? objThis.Firewall : _strFirewall;
             }
             set
             {
@@ -4502,9 +4482,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.ModAttack;
-                return _strModAttack;
+                return objThis != null ? objThis.ModAttack : _strModAttack;
             }
             set
             {
@@ -4524,9 +4502,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.ModSleaze;
-                return _strModSleaze;
+                return objThis != null ? objThis.ModSleaze : _strModSleaze;
             }
             set
             {
@@ -4546,9 +4522,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.ModDataProcessing;
-                return _strModDataProcessing;
+                return objThis != null ? objThis.ModDataProcessing : _strModDataProcessing;
             }
             set
             {
@@ -4568,9 +4542,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.ModFirewall;
-                return _strModFirewall;
+                return objThis != null ? objThis.ModFirewall : _strModFirewall;
             }
             set
             {
@@ -4590,9 +4562,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.AttributeArray;
-                return _strAttributeArray;
+                return objThis != null ? objThis.AttributeArray : _strAttributeArray;
             }
             set
             {
@@ -4612,9 +4582,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.ModAttributeArray;
-                return _strModAttributeArray;
+                return objThis != null ? objThis.ModAttributeArray : _strModAttributeArray;
             }
             set
             {
@@ -4634,9 +4602,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.Overclocked;
-                return _strOverclocked;
+                return objThis != null ? objThis.Overclocked : _strOverclocked;
             }
             set
             {
@@ -4656,9 +4622,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.CanFormPersona;
-                return string.Empty;
+                return objThis != null ? objThis.CanFormPersona : string.Empty;
             }
             set
             {
@@ -4673,9 +4637,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.IsCommlink;
-                return false;
+                return objThis != null && objThis.IsCommlink;
             }
         }
 
@@ -4687,9 +4649,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.BonusMatrixBoxes;
-                return 0;
+                return objThis?.BonusMatrixBoxes ?? 0;
             }
             set
             {
@@ -4704,9 +4664,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.TotalBonusMatrixBoxes;
-                return 0;
+                return objThis?.TotalBonusMatrixBoxes ?? 0;
             }
         }
 
@@ -4718,9 +4676,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.ProgramLimit;
-                return _strProgramLimit;
+                return objThis != null ? objThis.ProgramLimit : _strProgramLimit;
             }
             set
             {
@@ -4740,9 +4696,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.CanSwapAttributes;
-                return _blnCanSwapAttributes;
+                return objThis?.CanSwapAttributes ?? _blnCanSwapAttributes;
             }
             set
             {
@@ -4759,9 +4713,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.ChildrenWithMatrixAttributes;
-                return Children;
+                return objThis != null ? objThis.ChildrenWithMatrixAttributes : Children;
             }
         }
 
@@ -4773,10 +4725,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.BaseMatrixBoxes;
-                int baseMatrixBoxes = 8;
-                return baseMatrixBoxes;
+                return objThis?.BaseMatrixBoxes ?? 8;
             }
         }
 
@@ -4802,9 +4751,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
-                if (objThis != null)
-                    return objThis.MatrixCMFilled;
-                return _intMatrixCMFilled;
+                return objThis?.MatrixCMFilled ?? _intMatrixCMFilled;
             }
             set
             {
@@ -5697,7 +5644,7 @@ namespace Chummer.Backend.Equipment
                 return null;
             }
 
-            internal void Save(XmlTextWriter writer)
+            internal void Save(XmlWriter writer)
             {
                 
                 if (Guid != Guid.Empty || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
@@ -5867,13 +5814,8 @@ namespace Chummer.Backend.Equipment
             }
 
             xmlTestNode = objXmlAccessory.SelectSingleNode("required/weapondetails");
-            if (xmlTestNode != null && !GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false))
-            {
-                // Assumes topmost parent is an AND node
-                return false;
-            }
-
-            return true;
+            // Assumes topmost parent is an AND node
+            return xmlTestNode == null || GetNode().CreateNavigator().ProcessFilterOperationNode(xmlTestNode, false);
         }
 
         public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)

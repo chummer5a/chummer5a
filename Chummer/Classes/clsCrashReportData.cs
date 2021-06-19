@@ -86,13 +86,7 @@ namespace Chummer
         private string _subject;
         public string Subject
         {
-            get
-            {
-                if (_subject == null)
-                    return Id.ToString("D", GlobalOptions.InvariantCultureInfo);
-
-                return _subject;
-            }
+            get => _subject ?? Id.ToString("D", GlobalOptions.InvariantCultureInfo);
             set => _subject = value;
         }
 

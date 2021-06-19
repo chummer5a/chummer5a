@@ -9,15 +9,7 @@ namespace ChummerHub.Client.Sinners
     {
         public DateTime DownloadedFromSINnersTime { get; set; }
 
-        public string ZipFilePath
-        {
-            get
-            {
-                if (Id == null)
-                    return null;
-                return Path.Combine(Path.GetTempPath(), "SINner", Id.Value.ToString());
-            }
-        }
+        public string ZipFilePath => Id == null ? null : Path.Combine(Path.GetTempPath(), "SINner", Id.Value.ToString());
 
         public string FilePath
         {
@@ -28,7 +20,7 @@ namespace ChummerHub.Client.Sinners
                     foreach (var file in Directory.EnumerateFiles(ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly))
                     {
                         DateTime lastwrite = File.GetLastWriteTime(file);
-                        if (lastwrite >= LastChange || LastChange == null)
+                        if (lastwrite >= LastChange || LastChange == default)
                         {
                             return file;
                         }

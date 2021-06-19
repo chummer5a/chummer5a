@@ -189,15 +189,7 @@ namespace Chummer.Backend.Skills
 
         public override string SkillCategory => Type;
 
-        public override string DisplayPool
-        {
-            get
-            {
-                if (IsNativeLanguage)
-                    return LanguageManager.GetString("Skill_NativeLanguageShort");
-                return base.DisplayPool;
-            }
-        }
+        public override string DisplayPool => IsNativeLanguage ? LanguageManager.GetString("Skill_NativeLanguageShort") : base.DisplayPool;
 
         // ReSharper disable once InconsistentNaming
         private int _intCachedCyberwareRating = int.MinValue;
@@ -433,11 +425,7 @@ namespace Chummer.Backend.Skills
                     intValue = (intValue * decMultiplier + decExtra).StandardRound();
                 else
                     intValue += decExtra.StandardRound();
-                if (intMinOverride != int.MaxValue)
-                {
-                    return Math.Max(intValue, intMinOverride);
-                }
-                return Math.Max(intValue, Math.Min(1, intOptionsCost));
+                return Math.Max(intValue, intMinOverride != int.MaxValue ? intMinOverride : Math.Min(1, intOptionsCost));
             }
         }
 

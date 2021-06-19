@@ -88,10 +88,7 @@ namespace Codaxy.WkHtmlToPdf
                 return filePath;
 
             filePath = Path.Combine(programFilesPath, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
-            if (File.Exists(filePath))
-                return filePath;
-
-            return Path.Combine(programFilesx86Path, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
+            return File.Exists(filePath) ? filePath : Path.Combine(programFilesx86Path, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
         }
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfOutput output)

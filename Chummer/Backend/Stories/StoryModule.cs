@@ -222,23 +222,23 @@ namespace Chummer
                 return string.Empty;
             if (lstSubstrings.Count == 1)
             {
-                Tuple<string, bool> objFirstItem = lstSubstrings[0];
-                if (!objFirstItem.Item2)
-                    return objFirstItem.Item1;
+                (string strContent, bool blnContainsMacros) = lstSubstrings[0];
+                if (!blnContainsMacros)
+                    return strContent;
             }
 
             string[] lstOutputStrings = new string[lstSubstrings.Count];
             for(int i = 0; i < lstSubstrings.Count; ++i)
             {
-                Tuple<string, bool> objLoopItem = lstSubstrings[i];
-                if (objLoopItem.Item2)
+                (string strContent, bool blnContainsMacros) = lstSubstrings[i];
+                if (blnContainsMacros)
                 {
-                    lstOutputStrings[i] = await ProcessSingleMacro(objLoopItem.Item1, objCulture, strLanguage,
+                    lstOutputStrings[i] = await ProcessSingleMacro(strContent, objCulture, strLanguage,
                         blnGeneratePersistents);
                 }
                 else
                 {
-                    lstOutputStrings[i] = objLoopItem.Item1;
+                    lstOutputStrings[i] = strContent;
                 }
             }
             return string.Concat(lstOutputStrings);
@@ -343,10 +343,8 @@ namespace Chummer
                 case "$XPath":
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strArguments, out bool blnIsSuccess);
-                    if (blnIsSuccess)
-                        return objProcess.ToString();
-                    return LanguageManager.GetString("String_Unknown", strLanguage);
-                    }
+                    return blnIsSuccess ? objProcess.ToString() : LanguageManager.GetString("String_Unknown", strLanguage);
+                }
                 case "$Index":
                 {
                     string[] strArgumentsSplit = strArguments.Split('|', StringSplitOptions.RemoveEmptyEntries);

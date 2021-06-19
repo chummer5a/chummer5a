@@ -223,12 +223,12 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") == objNewItem.InternalId && objImprovement.Enabled)
                                 {
-                                    foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                                    foreach ((INotifyMultiplePropertyChanged objItemToUpdate, string strPropertyToUpdate) in objImprovement.GetRelevantPropertyChangers())
                                     {
-                                        if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
-                                            setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                        if (dicChangedProperties.TryGetValue(objItemToUpdate, out HashSet<string> setChangedProperties))
+                                            setChangedProperties.Add(strPropertyToUpdate);
                                         else
-                                            dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                            dicChangedProperties.Add(objItemToUpdate, new HashSet<string> { strPropertyToUpdate });
                                     }
                                 }
                             }
@@ -2801,14 +2801,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Physical Boxes. 12 for vehicles, 6 for Drones.
         /// </summary>
-        public int BaseMatrixBoxes
-        {
-            get
-            {
-                int baseMatrixBoxes = 8;
-                return baseMatrixBoxes;
-            }
-        }
+        public int BaseMatrixBoxes => 8;
 
         /// <summary>
         /// Matrix Condition Monitor boxes.
@@ -3012,11 +3005,15 @@ namespace Chummer.Backend.Equipment
                     return nameof(Character.PrototypeTranshumanEssenceUsed);
                 if (SourceID.Equals(EssenceHoleGUID) || SourceID.Equals(EssenceAntiHoleGUID))
                     return nameof(Character.EssenceHole);
-                if (SourceType == Improvement.ImprovementSource.Bioware)
-                    return nameof(Character.BiowareEssence);
-                if (SourceType == Improvement.ImprovementSource.Cyberware)
-                    return nameof(Character.CyberwareEssence);
-                return nameof(Character.Essence);
+                switch (SourceType)
+                {
+                    case Improvement.ImprovementSource.Bioware:
+                        return nameof(Character.BiowareEssence);
+                    case Improvement.ImprovementSource.Cyberware:
+                        return nameof(Character.CyberwareEssence);
+                    default:
+                        return nameof(Character.Essence);
+                }
             }
         }
 
@@ -3939,10 +3936,8 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strCategory != "Cyberlimb")
                     return 0;
-                if (ParentVehicle != null)
-                    return Math.Max(ParentVehicle.TotalBody, 0);
                 // Base Strength for any limb is 3.
-                return 3;
+                return ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : 3;
             }
         }
 
@@ -4043,10 +4038,8 @@ namespace Chummer.Backend.Equipment
             {
                 if (_strCategory != "Cyberlimb")
                     return 0;
-                if (ParentVehicle != null)
-                    return Math.Max(ParentVehicle.Pilot, 0);
                 // Base Agility for any limb is 3.
-                return 3;
+                return ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : 3;
             }
         }
 

@@ -902,12 +902,9 @@ namespace Chummer
                 if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
 
-                if (_objCharacter.Improvements.Any(imp =>
+                return !_objCharacter.Improvements.Any(imp =>
                     imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
-                    imp.ImprovedName == Name) && imp.Enabled))
-                    return false;
-
-                return _blnContributeToLimit;
+                        imp.ImprovedName == Name) && imp.Enabled) && _blnContributeToLimit;
             }
             set
             {
@@ -964,11 +961,9 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 if (Name == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
-                if (_objCharacter.Improvements.Any(imp =>
+                return !_objCharacter.Improvements.Any(imp =>
                     imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
-                    imp.ImprovedName == Name) && imp.Enabled))
-                    return false;
-                return _blnContributeToBP;
+                        imp.ImprovedName == Name) && imp.Enabled) && _blnContributeToBP;
             }
         }
 

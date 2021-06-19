@@ -656,10 +656,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return Name;
-
-            return _objCharacter.TranslateExtra(Name, strLanguage);
+            return strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Name
+                : _objCharacter.TranslateExtra(Name, strLanguage);
         }
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalOptions.Language);

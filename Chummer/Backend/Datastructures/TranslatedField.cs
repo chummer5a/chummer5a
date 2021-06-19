@@ -44,9 +44,9 @@ namespace Chummer
         {
             if (range == null)
                 return;
-            foreach (Tuple<T, T> tuple in range)
+            foreach ((T item1, T item2) in range)
             {
-                Add(tuple.Item1, tuple.Item2);
+                Add(item1, item2);
             }
         }
 
@@ -58,17 +58,16 @@ namespace Chummer
             {
                 return orginal;
             }
-            else
+
+            if(translated != null)
+                return translated;
+
+            if (orginal != null && _translate.TryGetValue(orginal, out translated))
             {
-                if(translated != null) return translated;
-
-                if (orginal != null && _translate.TryGetValue(orginal, out translated))
-                {
-                    return translated;
-                }
-
-                return orginal;
+                return translated;
             }
+
+            return orginal;
         }
 
         public void Write(T value, ref T orginal, ref T translated)

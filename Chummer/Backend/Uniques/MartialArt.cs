@@ -71,12 +71,12 @@ namespace Chummer
                     {
                         if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
                         {
-                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                            foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in objImprovement.GetRelevantPropertyChangers())
                             {
-                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                if (dicChangedProperties.TryGetValue(objToUpdate, out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(strPropertyName);
                                 else
-                                    dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                    dicChangedProperties.Add(objToUpdate, new HashSet<string> { strPropertyName });
                             }
                         }
                     }

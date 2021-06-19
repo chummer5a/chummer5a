@@ -27,7 +27,7 @@ namespace Chummer.UI.Table
         private int _intArrowSize = 8;
         private int _intArrowPadding = 3;
         private SortOrder _eSortType = SortOrder.None;
-        private readonly int _intLabelPadding = 3;
+        private const int _intLabelPadding = 3;
 
         public HeaderCell()
         {

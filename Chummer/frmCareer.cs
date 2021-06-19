@@ -45,7 +45,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // Set the default culture to en-US so we work with decimals correctly.
         private bool _blnSkipUpdate;
-        private readonly bool _blnSkipToolStripRevert = false;
+        private const bool _blnSkipToolStripRevert = false;
         private bool _blnReapplyImprovements;
         private int _intDragLevel;
         private MouseButtons _eDragButton = MouseButtons.None;
@@ -3291,10 +3291,10 @@ namespace Chummer
 
             do
             {
-                Tuple<bool, bool> tupAllowFreeSpells = CharacterObject.AllowFreeSpells;
+                (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = CharacterObject.AllowFreeSpells;
                 int intSpellKarmaCost = CharacterObject.SpellKarmaCost("Spells");
                 // Make sure the character has enough Karma before letting them select a Spell.
-                if (CharacterObject.Karma < intSpellKarmaCost && !(tupAllowFreeSpells.Item1 || tupAllowFreeSpells.Item2))
+                if (CharacterObject.Karma < intSpellKarmaCost && !(blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree))
                 {
                     Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"),
                         LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
@@ -3305,7 +3305,7 @@ namespace Chummer
                 using (frmSelectSpell frmPickSpell = new frmSelectSpell(CharacterObject)
                 {
                     FreeOnly = CharacterObject.Karma < intSpellKarmaCost &&
-                               (tupAllowFreeSpells.Item1 || tupAllowFreeSpells.Item2)
+                               (blnCanTouchOnlySpellBeFree || blnCanGenericSpellBeFree)
                 })
                 {
                     frmPickSpell.ShowDialog(this);
@@ -10157,7 +10157,7 @@ namespace Chummer
             }
         }
 
-        private void treWeapons_DragEnter(object sender, DragEventArgs e)
+        private static void treWeapons_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -10233,7 +10233,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void treArmor_DragEnter(object sender, DragEventArgs e)
+        private static void treArmor_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -10551,7 +10551,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void treGear_DragEnter(object sender, DragEventArgs e)
+        private static void treGear_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -11197,7 +11197,7 @@ namespace Chummer
             }
         }
 
-        private void treVehicles_DragEnter(object sender, DragEventArgs e)
+        private static void treVehicles_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -12237,7 +12237,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void treImprovements_DragEnter(object sender, DragEventArgs e)
+        private static void treImprovements_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -12609,7 +12609,7 @@ namespace Chummer
         /// <param name="button_Click">Event handler for when a CM box is clicked</param>
         /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
-        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
+        private static void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
         {
             pnlConditionMonitorPanel.SuspendLayout();
             if (intConditionMax > 0)
@@ -16048,7 +16048,7 @@ namespace Chummer
         /// <param name="objSource">Source character.</param>
         /// <param name="objDestination">Destination character.</param>
         /// <param name="objGear">Gear to copy.</param>
-        private void CopyGearImprovements(Character objSource, Character objDestination, Gear objGear)
+        private static void CopyGearImprovements(Character objSource, Character objDestination, Gear objGear)
         {
             foreach (Improvement objImprovement in objSource.Improvements)
             {
@@ -16068,7 +16068,7 @@ namespace Chummer
         /// <param name="objSource">Source character.</param>
         /// <param name="objDestination">Destination character.</param>
         /// <param name="objCyberware">Cyberware to copy.</param>
-        private void CopyCyberwareImprovements(Character objSource, Character objDestination, Cyberware objCyberware)
+        private static void CopyCyberwareImprovements(Character objSource, Character objDestination, Cyberware objCyberware)
         {
             foreach (Improvement objImprovement in objSource.Improvements)
             {
@@ -16477,9 +16477,7 @@ namespace Chummer
                 XmlNode objXmlArt = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
 
                 Art objArt = new Art(CharacterObject);
-                Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Metamagic;
-
-                objArt.Create(objXmlArt, objSource);
+                objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
                 objArt.Grade = intGrade;
                 if (objArt.InternalId.IsEmptyGuid())
                     return;
@@ -16562,9 +16560,7 @@ namespace Chummer
             }
 
             Spell objNewSpell = new Spell(CharacterObject);
-            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
-
-            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, objSource);
+            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
             objNewSpell.Grade = intGrade;
             if (objNewSpell.InternalId.IsEmptyGuid())
                 return;
@@ -16633,9 +16629,7 @@ namespace Chummer
             }
 
             Spell objNewSpell = new Spell(CharacterObject);
-            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
-
-            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, objSource);
+            objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
             objNewSpell.Grade = intGrade;
             if (objNewSpell.InternalId.IsEmptyGuid())
                 return;
@@ -16709,9 +16703,7 @@ namespace Chummer
                 return;
 
             Enhancement objEnhancement = new Enhancement(CharacterObject);
-            Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
-
-            objEnhancement.Create(objXmlArt, objSource);
+            objEnhancement.Create(objXmlArt, Improvement.ImprovementSource.Initiation);
             objEnhancement.Grade = intGrade;
             if (objEnhancement.InternalId.IsEmptyGuid())
                 return;

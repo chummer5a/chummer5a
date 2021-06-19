@@ -62,7 +62,7 @@ namespace Chummer.Plugins
 
         public bool SetCharacterRosterNode(TreeNode objNode)
         {
-             if (objNode == null || objNode.Tag == null)
+            if (objNode?.Tag == null)
                 return false;
             if (objNode.ContextMenuStrip == null)
             {

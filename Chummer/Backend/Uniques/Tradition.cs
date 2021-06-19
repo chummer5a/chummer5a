@@ -74,9 +74,7 @@ namespace Chummer.Backend.Uniques
 
         public override string ToString()
         {
-            if (!string.IsNullOrEmpty(_strName))
-                return _strName;
-            return base.ToString();
+            return !string.IsNullOrEmpty(_strName) ? _strName : base.ToString();
         }
 
         public void ResetTradition()
@@ -647,13 +645,13 @@ namespace Chummer.Backend.Uniques
 
         public void RefreshDrainExpression(object sender, PropertyChangedEventArgs e)
         {
-            if(Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
+            if (Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
                 OnPropertyChanged(nameof(DrainExpression));
         }
 
         public void RefreshDrainValue(object sender, PropertyChangedEventArgs e)
         {
-            if(Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            if (Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(DrainValue));
         }
 
@@ -664,15 +662,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritCombat
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritCombat;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritCombat;
             set
             {
-                if(Type != TraditionType.None && _strSpiritCombat != value)
+                if (Type != TraditionType.None && _strSpiritCombat != value)
                 {
                     _strSpiritCombat = value;
                     OnPropertyChanged();
@@ -685,9 +678,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritCombatMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritCombat))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritCombat, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritCombat)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritCombat, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -698,7 +691,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritCombatMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritCombat = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -708,15 +701,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritDetection
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritDetection;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritDetection;
             set
             {
-                if(Type != TraditionType.None && _strSpiritDetection != value)
+                if (Type != TraditionType.None && _strSpiritDetection != value)
                 {
                     _strSpiritDetection = value;
                     OnPropertyChanged();
@@ -729,9 +717,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritDetectionMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritDetection))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritDetection, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritDetection)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritDetection, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -742,7 +730,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritDetectionMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritDetection = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -752,15 +740,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritHealth
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritHealth;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritHealth;
             set
             {
-                if(Type != TraditionType.None && _strSpiritHealth != value)
+                if (Type != TraditionType.None && _strSpiritHealth != value)
                 {
                     _strSpiritHealth = value;
                     OnPropertyChanged();
@@ -773,9 +756,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritHealthMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritHealth))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritHealth, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritHealth)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritHealth, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -786,7 +769,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritHealthMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritHealth = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -796,15 +779,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritIllusion
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritIllusion;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritIllusion;
             set
             {
-                if(Type != TraditionType.None && _strSpiritIllusion != value)
+                if (Type != TraditionType.None && _strSpiritIllusion != value)
                 {
                     _strSpiritIllusion = value;
                     OnPropertyChanged();
@@ -817,9 +795,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritIllusionMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritIllusion))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritIllusion, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritIllusion)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritIllusion, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -830,7 +808,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritIllusionMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritIllusion = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -840,15 +818,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritManipulation
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritManipulation;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritManipulation;
             set
             {
-                if(Type != TraditionType.None && _strSpiritManipulation != value)
+                if (Type != TraditionType.None && _strSpiritManipulation != value)
                 {
                     _strSpiritManipulation = value;
                     OnPropertyChanged();
@@ -861,9 +834,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritManipulationMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritManipulation))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritManipulation, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritManipulation)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritManipulation, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -874,7 +847,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritManipulationMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritManipulation = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }

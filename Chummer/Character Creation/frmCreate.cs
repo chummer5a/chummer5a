@@ -2618,7 +2618,7 @@ namespace Chummer
                     XmlNode objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
                     if (objXmlNode != null)
                     {
-                        Weapon objWeapon = null;
+                        Weapon objWeapon;
                         if (objSelectedObject is Weapon objWeaponParent)
                         {
                             if (!objWeaponParent.AllowPasteXml)
@@ -5236,8 +5236,6 @@ namespace Chummer
 
         private void tsArmorNotes_Click(object sender, EventArgs e)
         {
-            if (treArmor.SelectedNode == null)
-                return;
             if (treArmor.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treArmor.SelectedNode);
@@ -5246,8 +5244,6 @@ namespace Chummer
 
         private void tsWeaponNotes_Click(object sender, EventArgs e)
         {
-            if (treWeapons.SelectedNode == null)
-                return;
             if (treWeapons.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treWeapons.SelectedNode);
@@ -5256,8 +5252,6 @@ namespace Chummer
 
         private void tsCyberwareNotes_Click(object sender, EventArgs e)
         {
-            if (treCyberware.SelectedNode == null)
-                return;
             if (treCyberware.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treCyberware.SelectedNode);
@@ -5266,8 +5260,6 @@ namespace Chummer
 
         private void tsVehicleNotes_Click(object sender, EventArgs e)
         {
-            if (treVehicles.SelectedNode == null)
-                return;
             if (treVehicles.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treVehicles.SelectedNode);
@@ -5276,8 +5268,6 @@ namespace Chummer
 
         private void tsQualityNotes_Click(object sender, EventArgs e)
         {
-            if (treQualities.SelectedNode == null)
-                return;
             if (treQualities.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treQualities.SelectedNode);
@@ -5286,8 +5276,6 @@ namespace Chummer
 
         private void tsMartialArtsNotes_Click(object sender, EventArgs e)
         {
-            if (treMartialArts.SelectedNode == null)
-                return;
             if (treMartialArts.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treMartialArts.SelectedNode);
@@ -5296,8 +5284,6 @@ namespace Chummer
 
         private void tsSpellNotes_Click(object sender, EventArgs e)
         {
-            if (treSpells.SelectedNode == null)
-                return;
             if (treSpells.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treSpells.SelectedNode);
@@ -5306,8 +5292,6 @@ namespace Chummer
 
         private void tsComplexFormNotes_Click(object sender, EventArgs e)
         {
-            if (treComplexForms.SelectedNode == null)
-                return;
             if (treComplexForms.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treComplexForms.SelectedNode);
@@ -5316,8 +5300,6 @@ namespace Chummer
 
         private void tsAIProgramNotes_Click(object sender, EventArgs e)
         {
-            if (treAIPrograms.SelectedNode == null)
-                return;
             if (treAIPrograms.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treAIPrograms.SelectedNode);
@@ -5326,8 +5308,6 @@ namespace Chummer
 
         private void tsCritterPowersNotes_Click(object sender, EventArgs e)
         {
-            if (treCritterPowers.SelectedNode == null)
-                return;
             if (treCritterPowers.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treCritterPowers.SelectedNode);
@@ -5336,8 +5316,6 @@ namespace Chummer
 
         private void tsMetamagicNotes_Click(object sender, EventArgs e)
         {
-            if (treMetamagic.SelectedNode == null)
-                return;
             if (treMetamagic.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treMetamagic.SelectedNode);
@@ -5346,8 +5324,6 @@ namespace Chummer
 
         private void tsGearNotes_Click(object sender, EventArgs e)
         {
-            if (treGear.SelectedNode == null)
-                return;
             if (treGear.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treGear.SelectedNode);
@@ -5356,8 +5332,6 @@ namespace Chummer
 
         private void tsLifestyleNotes_Click(object sender, EventArgs e)
         {
-            if (treLifestyles.SelectedNode == null)
-                return;
             if (treLifestyles.SelectedNode?.Tag is IHasNotes objNotes)
             {
                 WriteNotes(objNotes, treLifestyles.SelectedNode);
@@ -5366,8 +5340,7 @@ namespace Chummer
 
         private void tsWeaponMountLocation_Click(object sender, EventArgs e)
         {
-            if (treVehicles.SelectedNode == null ||
-                !(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
+            if (!(treVehicles.SelectedNode?.Tag is WeaponMount objWeaponMount))
                 return;
             using (frmSelectText frmPickText = new frmSelectText
             {
@@ -6773,7 +6746,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void treWeapons_DragEnter(object sender, DragEventArgs e)
+        private static void treWeapons_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -6852,7 +6825,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void treArmor_DragEnter(object sender, DragEventArgs e)
+        private static void treArmor_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -7229,7 +7202,7 @@ namespace Chummer
             DoDragDrop(e.Item, DragDropEffects.Move);
         }
 
-        private void treGear_DragEnter(object sender, DragEventArgs e)
+        private static void treGear_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -7633,7 +7606,7 @@ namespace Chummer
             }
         }
 
-        private void treVehicles_DragEnter(object sender, DragEventArgs e)
+        private static void treVehicles_DragEnter(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
         }
@@ -8633,7 +8606,7 @@ namespace Chummer
         {
             int intKarmaPointsRemain = CharacterObjectOptions.BuildKarma;
             //int intPointsUsed = 0; // used as a running total for each section
-            int intFreestyleBPMin = 0;
+            const int intFreestyleBPMin = 0;
             int intFreestyleBP = 0;
             StringBuilder sbdPositiveQualityTooltip = new StringBuilder();
             StringBuilder sbdNegativeQualityTooltip = new StringBuilder();
@@ -12807,13 +12780,9 @@ namespace Chummer
         /// </summary>
         public override bool ConfirmSaveCreatedCharacter()
         {
-            if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ConfirmCreate"), LanguageManager.GetString("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return false;
-
-            if (!ValidateCharacter())
-                return false;
-
-            return true;
+            return Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_ConfirmCreate"),
+                LanguageManager.GetString("MessageTitle_ConfirmCreate"), MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question) != DialogResult.No && ValidateCharacter();
         }
 
         /// <summary>
@@ -12892,7 +12861,7 @@ namespace Chummer
 
             if (objXmlKit == null)
                 return false;
-            bool blnCreateChildren = true;
+            const bool blnCreateChildren = true;
             // Update Qualities.
             XmlNode xmlQualities = objXmlKit["qualities"];
             if (xmlQualities != null)
@@ -14083,11 +14052,10 @@ namespace Chummer
                     return;
 
                 XmlNode objXmlArt = CharacterObject.LoadData("metamagic.xml").SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-                Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Metamagic;
 
                 Art objArt = new Art(CharacterObject);
 
-                objArt.Create(objXmlArt, objSource);
+                objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
                 objArt.Grade = objGrade.Grade;
                 if (objArt.InternalId.IsEmptyGuid())
                     return;
@@ -14114,11 +14082,10 @@ namespace Chummer
                     return;
 
                 XmlNode objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-                Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
                 Spell objNewSpell = new Spell(CharacterObject);
 
-                objNewSpell.Create(objXmlArt, string.Empty, false, false, false, objSource);
+                objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
                 objNewSpell.Grade = objGrade.Grade;
                 if (objNewSpell.InternalId.IsEmptyGuid())
                     return;
@@ -14145,11 +14112,10 @@ namespace Chummer
                     return;
 
                 XmlNode objXmlArt = CharacterObject.LoadData("spells.xml").SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
-                Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
                 Spell objNewSpell = new Spell(CharacterObject);
 
-                objNewSpell.Create(objXmlArt, string.Empty, false, false, false, objSource);
+                objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
                 objNewSpell.Grade = objGrade.Grade;
                 if (objNewSpell.InternalId.IsEmptyGuid())
                     return;
@@ -14185,10 +14151,9 @@ namespace Chummer
                 XmlNode objXmlArt = CharacterObject.LoadData("powers.xml").SelectSingleNode("/chummer/enhancements/enhancement[id = " + frmPickArt.SelectedItem.CleanXPath() + "]");
                 if (objXmlArt == null)
                     return;
-                Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Initiation;
 
                 Enhancement objEnhancement = new Enhancement(CharacterObject);
-                objEnhancement.Create(objXmlArt, objSource);
+                objEnhancement.Create(objXmlArt, Improvement.ImprovementSource.Initiation);
                 objEnhancement.Grade = objGrade.Grade;
                 if (objEnhancement.InternalId.IsEmptyGuid())
                     return;
@@ -14469,8 +14434,6 @@ namespace Chummer
 
         private void cmdCyberwareChangeMount_Click(object sender, EventArgs e)
         {
-            if (treCyberware.SelectedNode == null)
-                return;
             if (!(treCyberware.SelectedNode?.Tag is Cyberware objModularCyberware))
                 return;
 

@@ -38,12 +38,7 @@ namespace Chummer.Backend.Skills
 
         public int Base
         {
-            get
-            {
-                if (IsDisabled)
-                    return 0;
-                return Math.Min(BasePoints + FreeBase, RatingMaximum);
-            }
+            get => IsDisabled ? 0 : Math.Min(BasePoints + FreeBase, RatingMaximum);
             set
             {
                 if (BaseUnbroken)
@@ -73,9 +68,7 @@ namespace Chummer.Backend.Skills
                 {
                     KarmaPoints = 0;
                 }
-                if (IsDisabled)
-                    return 0;
-                return Math.Min(KarmaPoints + FreeLevels, RatingMaximum);
+                return IsDisabled ? 0 : Math.Min(KarmaPoints + FreeLevels, RatingMaximum);
             }
             set
             {
@@ -265,16 +258,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public bool CareerCanIncrease
-        {
-            get
-            {
-                if (UpgradeKarmaCost > CharacterObject.Karma)
-                    return false;
-
-                return CareerIncrease;
-            }
-        }
+        public bool CareerCanIncrease => UpgradeKarmaCost <= CharacterObject.Karma && CareerIncrease;
 
         public int Rating => Karma + Base;
 

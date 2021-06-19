@@ -444,12 +444,7 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.CharacterName;
-                return _strName;
-            }
+            get => LinkedCharacter != null ? LinkedCharacter.CharacterName : _strName;
             set
             {
                 if (_strName != value)
@@ -532,9 +527,7 @@ namespace Chummer
             {
                 if (ForcedLoyalty > 0)
                     return ForcedLoyalty;
-                if (IsGroup)
-                    return 1;
-                return _intLoyalty;
+                return IsGroup ? 1 : _intLoyalty;
             }
             set
             {
@@ -628,12 +621,7 @@ namespace Chummer
         /// </summary>
         public string Gender
         {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.Gender;
-                return _strGender;
-            }
+            get => LinkedCharacter != null ? LinkedCharacter.Gender : _strGender;
             set
             {
                 if (_strGender != value)
@@ -663,12 +651,7 @@ namespace Chummer
         /// </summary>
         public string Age
         {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.Age;
-                return _strAge;
-            }
+            get => LinkedCharacter != null ? LinkedCharacter.Age : _strAge;
             set
             {
                 if (_strAge != value)
@@ -1133,16 +1116,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public List<Image> Mugshots
-        {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.Mugshots;
-
-                return _lstMugshots;
-            }
-        }
+        public List<Image> Mugshots => LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -1187,13 +1161,7 @@ namespace Chummer
         /// </summary>
         public int MainMugshotIndex
         {
-            get
-            {
-                if (LinkedCharacter != null)
-                    return LinkedCharacter.MainMugshotIndex;
-
-                return _intMainMugshotIndex;
-            }
+            get => LinkedCharacter?.MainMugshotIndex ?? _intMainMugshotIndex;
             set
             {
                 if (LinkedCharacter != null)

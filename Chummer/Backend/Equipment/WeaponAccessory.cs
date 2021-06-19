@@ -878,14 +878,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Cost
         {
-            get
-            {
-                // The Accessory has a cost of 0 if it is included in the base weapon configureation.
-                if (_blnIncludedInWeapon)
-                    return "0";
-                else
-                    return _strCost;
-            }
+            // The Accessory has a cost of 0 if it is included in the base weapon configureation.
+            get => _blnIncludedInWeapon ? "0" : _strCost;
             set => _strCost = value;
         }
 
@@ -1196,16 +1190,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dice Pool modifier.
         /// </summary>
-        public int DicePool
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(DicePoolString))
-                    return Convert.ToInt32(DicePoolString, GlobalOptions.InvariantCultureInfo);
-
-                return 0;
-            }
-        }
+        public int DicePool => !string.IsNullOrEmpty(DicePoolString) ? Convert.ToInt32(DicePoolString, GlobalOptions.InvariantCultureInfo) : 0;
 
         private string DicePoolString => _strDicePool;
 

@@ -134,10 +134,7 @@ namespace Chummer
                     return 0;
                 return -1;
             }
-
-            if (ty == null)
-                return 1;
-            return string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
+            return ty == null ? 1 : string.Compare(tx.Text.FastEscape('[', ']'), ty.Text.FastEscape('[', ']'), false, GlobalOptions.CultureInfo);
         }
     }
 

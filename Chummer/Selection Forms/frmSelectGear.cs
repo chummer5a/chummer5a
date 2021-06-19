@@ -137,8 +137,7 @@ namespace Chummer
                 }
                 if (_lstCategory.All(x => x.Value.ToString() != strCategory) && RefreshList(strCategory, false, true).Count > 0)
                 {
-                    string strInnerText = strCategory;
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
+                    _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);

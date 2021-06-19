@@ -191,7 +191,7 @@ namespace Chummer.UI.Table
         private readonly List<TableRow> _lstRowCells = new List<TableRow>();
         private SortOrder _eSortType = SortOrder.None;
         private object _objSortPausedSender;
-        private int _intSelectedIndex = -1;
+        private readonly int _intSelectedIndex = -1;
 
         public TableView()
         {

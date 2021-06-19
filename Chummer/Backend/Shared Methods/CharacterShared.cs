@@ -260,7 +260,7 @@ namespace Chummer
         {
             if (pnlAttributes == null)
                 return;
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
             {
                 pnlAttributes.SuspendLayout();
                 pnlAttributes.Controls.Clear();
@@ -405,11 +405,6 @@ namespace Chummer
                                     objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth, intLimitsWidth);
                             }
                             pnlAttributes.Controls.AddRange(aobjControls);
-                        }
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        {
-                            RefreshAttributes(pnlAttributes, null, lblName, intKarmaWidth, intValueWidth, intLimitsWidth);
                         }
                         break;
                 }
@@ -4502,7 +4497,7 @@ namespace Chummer
         {
             if (lstCalendar == null)
                 return;
-            if (listChangedEventArgs == null)
+            if (listChangedEventArgs == null || listChangedEventArgs.ListChangedType == ListChangedType.Reset)
             {
                 lstCalendar.SuspendLayout();
                 lstCalendar.Items.Clear();
@@ -4532,11 +4527,6 @@ namespace Chummer
             {
                 switch (listChangedEventArgs.ListChangedType)
                 {
-                    case ListChangedType.Reset:
-                        {
-                            RefreshCalendar(lstCalendar);
-                        }
-                        break;
                     case ListChangedType.ItemAdded:
                         {
                             int intInsertIndex = listChangedEventArgs.NewIndex;
@@ -4624,7 +4614,7 @@ namespace Chummer
         {
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
             {
                 panContacts?.SuspendLayout();
                 panEnemies?.SuspendLayout();
@@ -4897,11 +4887,6 @@ namespace Chummer
                             }
                         }
                         break;
-                    case NotifyCollectionChangedAction.Reset:
-                        {
-                            RefreshContacts(panContacts, panEnemies, panPets);
-                        }
-                        break;
                 }
             }
         }
@@ -4947,7 +4932,7 @@ namespace Chummer
                 return null;
             }
 
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
             {
                 pnlSustainedSpells?.Controls.Clear();
                 pnlSustainedComplexForms?.Controls.Clear();
@@ -5086,9 +5071,6 @@ namespace Chummer
                             }
                         }
                         break;
-                    case NotifyCollectionChangedAction.Reset:
-                        RefreshSustainedSpells(pnlSustainedSpells, pnlSustainedComplexForms, pnlSustainedCritterPowers, chkPsycheActiveMagician, chkPsycheActiveTechnomancer);
-                        break;
                 }
             }
         }
@@ -5114,7 +5096,7 @@ namespace Chummer
         /// <param name="intNewIndex">The new index in the parent array</param>
         public void MoveTreeNode(TreeNode objNode, int intNewIndex)
         {
-            if (objNode == null || !(objNode.Tag is ICanSort objSortable))
+            if (!(objNode?.Tag is ICanSort objSortable))
                 return;
 
             TreeView treOwningTree = objNode.TreeView;
@@ -5681,7 +5663,7 @@ namespace Chummer
         {
             if (panSpirits == null && panSprites == null)
                 return;
-            if (notifyCollectionChangedEventArgs == null)
+            if (notifyCollectionChangedEventArgs == null || notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
             {
                 panSpirits?.SuspendLayout();
                 panSprites?.SuspendLayout();
@@ -5902,11 +5884,6 @@ namespace Chummer
                                     intSprites += 1;
                                 }
                             }
-                        }
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        {
-                            RefreshSpirits(panSpirits, panSprites);
                         }
                         break;
                 }
