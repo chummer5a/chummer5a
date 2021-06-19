@@ -1402,7 +1402,31 @@ namespace Chummer.Backend.Equipment
             SourceDetail.SetControl(sourceControl);
         }
 
-        public bool AllowPasteXml { get; }
+        public bool AllowPasteXml
+        {
+            get
+            {
+                string strGearCapacity = CalculatedGearCapacity;
+                if (string.IsNullOrEmpty(strGearCapacity) || strGearCapacity == "0")
+                    return false;
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Gear:
+                    {
+                        using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                        {
+                            if (!(xmlAddonCategoryList?.Count > 0))
+                                return true;
+                            string strGearCategory = GlobalOptions.Clipboard.SelectSingleNode("category")?.Value;
+                            return xmlAddonCategoryList.Cast<XmlNode>()
+                                .Any(xmlCategory => xmlCategory.InnerText == strGearCategory);
+                        }
+                    }
+                    default:
+                        return false;
+                }
+            }
+        }
 
         bool ICanPaste.AllowPasteObject(object input)
         {

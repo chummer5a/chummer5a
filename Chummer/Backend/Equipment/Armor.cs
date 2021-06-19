@@ -1916,17 +1916,39 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
+                string strCapacity = CalculatedCapacity;
+                if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
+                    return false;
+                string strPasteCategory = GlobalOptions.Clipboard.SelectSingleNode("category")?.Value ?? string.Empty;
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.ArmorMod:
+                    {
+                        XmlNode xmlNode = GetNode();
+                        if (xmlNode == null)
+                            return strPasteCategory == "General";
+                        XmlNode xmlForceModCategory = xmlNode["forcemodcategory"];
+                        if (xmlForceModCategory != null)
+                            return xmlForceModCategory.InnerText == strPasteCategory;
+                        if (strPasteCategory == "General")
+                            return true;
+                        using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                        {
+                            if (!(xmlAddonCategoryList?.Count > 0))
+                                return true;
+                            return xmlAddonCategoryList.Cast<XmlNode>()
+                                .Any(xmlCategory => xmlCategory.InnerText == strPasteCategory);
+                        }
+                    }
                     case ClipboardContentType.Gear:
                     {
-                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
-                        if (xmlAddonCategoryList?.Count > 0)
-                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
-
-                        return false;
+                        using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                        {
+                            if (!(xmlAddonCategoryList?.Count > 0))
+                                return true;
+                            return xmlAddonCategoryList.Cast<XmlNode>()
+                                .Any(xmlCategory => xmlCategory.InnerText == strPasteCategory);
+                        }
                     }
                     default:
                         return false;

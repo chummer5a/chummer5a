@@ -917,7 +917,7 @@ namespace Chummer
             foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
             {
                 CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
-                if (objLoopInfo != null)
+                if (objLoopInfo != default)
                 {
                     _lstCharacterCustomDataDirectoryInfos.Add(
                         new Tuple<object, bool>(

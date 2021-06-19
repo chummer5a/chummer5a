@@ -2506,13 +2506,6 @@ namespace Chummer
                     {
                         ArmorMod objArmorMod = new ArmorMod(CharacterObject);
                         objArmorMod.Load(objXmlNode, true);
-                        //TODO: Should be in AllowPasteXml
-                        if (selectedArmor.CapacityRemaining - objArmorMod.TotalCapacity < 0)
-                        {
-                            objArmorMod.DeleteArmorMod();
-                            break;
-                        }
-
                         selectedArmor.ArmorMods.Add(objArmorMod);
 
                         AddChildVehicles(objArmorMod.InternalId);
@@ -2551,10 +2544,8 @@ namespace Chummer
                                 objCyberware.DeleteCyberware();
                                 return;
                             }
-                            else
-                            {
-                                CharacterObject.Cyberware.Add(objCyberware);
-                            }
+
+                            CharacterObject.Cyberware.Add(objCyberware);
                         }
 
                         AddChildVehicles(objCyberware.InternalId);
@@ -2627,38 +2618,35 @@ namespace Chummer
                     XmlNode objXmlNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weapon");
                     if (objXmlNode != null)
                     {
-                        Weapon objWeapon = new Weapon(CharacterObject);
-                        objWeapon.Load(objXmlNode, true);
+                        Weapon objWeapon = null;
                         if (objSelectedObject is Weapon objWeaponParent)
                         {
                             if (!objWeaponParent.AllowPasteXml)
-                            {
-                                objWeapon.DeleteWeapon();
                                 return;
-                            }
-
+                            objWeapon = new Weapon(CharacterObject);
+                            objWeapon.Load(objXmlNode, true);
                             objWeaponParent.Children.Add(objWeapon);
                         }
                         else if (objSelectedObject is WeaponMount objWeaponMount)
                         {
                             if (!objWeaponMount.AllowPasteXml)
-                            {
-                                objWeapon.DeleteWeapon();
                                 return;
-                            }
+                            objWeapon = new Weapon(CharacterObject);
+                            objWeapon.Load(objXmlNode, true);
                             objWeaponMount.Weapons.Add(objWeapon);
                         }
                         else if (objSelectedObject is VehicleMod objMod)
                         {
                             if (!objMod.AllowPasteXml)
-                            {
-                                objWeapon.DeleteWeapon();
                                 return;
-                            }
+                            objWeapon = new Weapon(CharacterObject);
+                            objWeapon.Load(objXmlNode, true);
                             objMod.Weapons.Add(objWeapon);
                         }
                         else
                         {
+                            objWeapon = new Weapon(CharacterObject);
+                            objWeapon.Load(objXmlNode, true);
                             CharacterObject.Weapons.Add(objWeapon);
                         }
 

@@ -33,7 +33,6 @@ using Chummer.Backend.Attributes;
 using System.Text;
 using System.ComponentModel;
 using Chummer.UI.Attributes;
-using System.Collections.ObjectModel;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 using NLog;
@@ -2003,7 +2002,7 @@ namespace Chummer
             string strSelectedId = (treArmor.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = treArmor.FindNode("Node_SelectedImprovements", false);
-            RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs, _objCharacter.ArmorLocations, strSelectedId, "Node_SelectedArmor");
+            RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs, strSelectedId, "Node_SelectedArmor");
         }
 
         protected void RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -2014,7 +2013,8 @@ namespace Chummer
             string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = treGear.FindNode("Node_SelectedGear", false);
-            RefreshLocation(treGear, nodRoot, cmsGearLocation, notifyCollectionChangedEventArgs, _objCharacter.GearLocations, strSelectedId, "Node_SelectedGear");
+            RefreshLocation(treGear, nodRoot, cmsGearLocation, notifyCollectionChangedEventArgs, strSelectedId,
+                "Node_SelectedGear");
         }
 
         protected void RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -2024,7 +2024,8 @@ namespace Chummer
 
             TreeNode nodRoot = treVehicles.FindNode("Node_SelectedVehicles", false);
             string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-            RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, notifyCollectionChangedEventArgs, _objCharacter.VehicleLocations, strSelectedId, "Node_SelectedVehicles");
+            RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, notifyCollectionChangedEventArgs, strSelectedId,
+                "Node_SelectedVehicles");
         }
         protected void RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<int> funcOffset, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
@@ -2035,7 +2036,7 @@ namespace Chummer
 
             TreeNode nodRoot = treVehicles.FindNodeByTag(objVehicle);
             RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset, notifyCollectionChangedEventArgs,
-                objVehicle.Locations, strSelectedId, "Node_SelectedVehicles", false);
+                strSelectedId, "Node_SelectedVehicles", false);
         }
 
         protected void RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -2046,7 +2047,8 @@ namespace Chummer
             string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
 
             TreeNode nodRoot = treWeapons.FindNode("Node_SelectedWeapons", false);
-            RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, notifyCollectionChangedEventArgs, _objCharacter.WeaponLocations, strSelectedId, "Node_SelectedWeapons");
+            RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, notifyCollectionChangedEventArgs, strSelectedId,
+                "Node_SelectedWeapons");
         }
 
         protected void RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
@@ -2185,16 +2187,14 @@ namespace Chummer
         }
 
         private void RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
-            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs,
-            ObservableCollection<Location> collection, string strSelectedId, string strNodeName)
+            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName)
         {
-            RefreshLocation(treSelected, nodRoot, cmsLocation, () => 0, notifyCollectionChangedEventArgs, collection, strSelectedId, strNodeName);
+            RefreshLocation(treSelected, nodRoot, cmsLocation, null, notifyCollectionChangedEventArgs, strSelectedId, strNodeName);
         }
 
         private void RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
             Func<int> funcOffset,
-            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs,
-            ObservableCollection<Location> collection, string strSelectedId, string strNodeName,
+            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
             bool rootSibling = true)
         {
             switch (notifyCollectionChangedEventArgs.Action)

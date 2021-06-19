@@ -256,15 +256,19 @@ namespace Codaxy.WkHtmlToPdf
                                     byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         stream.BaseStream.Write(buffer, 0, buffer.Length);
                                         // ReSharper disable once MethodHasAsyncOverload
                                         stream.WriteLine();
                                     }
                                     else
                                     {
-                                        await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length);
-                                        await stream.WriteLineAsync();
+                                        try
+                                        {
+                                            await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length, objCancellationTokenSource.Token);
+                                            await stream.WriteLineAsync();
+                                        }
+                                        catch (TaskCanceledException) { }
                                     }
                                 }
                             }
