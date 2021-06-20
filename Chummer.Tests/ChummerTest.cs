@@ -316,7 +316,7 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests saving a given character.
         /// </summary>
-        private void SaveCharacter(Character c, string path)
+        private static void SaveCharacter(Character c, string path)
         {
             Debug.WriteLine("Unit test initialized for: SaveCharacter()");
             Assert.IsNotNull(c);

@@ -41,7 +41,7 @@ namespace ChummerHub.Services
         {
             if (string.IsNullOrEmpty(apiKey))
             {
-                throw new ArgumentNullException("EmailSender.cs: apiKey is null!");
+                throw new ArgumentNullException(nameof(apiKey), "EmailSender.cs: apiKey is null!");
             }
             var httpClientHandler = new HttpClientHandler()
             {

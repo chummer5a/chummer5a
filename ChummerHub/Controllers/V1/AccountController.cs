@@ -32,8 +32,8 @@ namespace ChummerHub.Controllers
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     {
 
-        private readonly UserManager<ApplicationUser> _userManager = null;
-        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
@@ -384,7 +384,7 @@ namespace ChummerHub.Controllers
                     var user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)

@@ -16014,7 +16014,7 @@ namespace Chummer
         /// <param name="objSource">Source character.</param>
         /// <param name="objDestination">Destination character.</param>
         /// <param name="objArmor">Armor to copy.</param>
-        private void CopyArmorImprovements(Character objSource, Character objDestination, Armor objArmor)
+        private static void CopyArmorImprovements(Character objSource, Character objDestination, Armor objArmor)
         {
             foreach (Improvement objImprovement in objSource.Improvements)
             {

@@ -942,12 +942,11 @@ namespace Chummer.Plugins
 
                     if (Guid.TryParse(sinneridstring, out Guid sinnerid))
                     {
-                        SINner res = null;
                         try
                         {
-                            res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
+                            var res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
                             var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                            if (res != null)
+                            if (response != null)
                                 await MainForm.CharacterRoster.LoadCharacters(false, false, false);
                         }
                         catch (Exception exception)
@@ -968,13 +967,12 @@ namespace Chummer.Plugins
             }
             else if (t?.Tag is SINnerSearchGroup ssg)
             {
-                ResultGroupPutGroupInGroup res = null;
                 try
                 {
                     var client = StaticUtils.GetClient();
-                    res = await client.PutGroupInGroupAsync(ssg.Id, null, Guid.Empty, null, null);
+                    var res = await client.PutGroupInGroupAsync(ssg.Id, null, Guid.Empty, null, null);
                     var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                    if (res != null)
+                    if (response != null)
                     {
                         await MainForm.CharacterRoster.LoadCharacters(false, false, false);
                     }

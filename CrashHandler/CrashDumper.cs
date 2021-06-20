@@ -235,7 +235,7 @@ namespace CrashHandler
                     ThreadId = threadId
                 };
 
-                MINIDUMP_TYPE dtype = MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
+                const MINIDUMP_TYPE dtype = MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
 				                      MINIDUMP_TYPE.MiniDumpWithDataSegs |
 				                      MINIDUMP_TYPE.MiniDumpWithHandleData |
 				                      MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
@@ -370,7 +370,7 @@ namespace CrashHandler
             }
         }
 
-	    private string ExtractUrl(string input)
+	    private static string ExtractUrl(string input)
 		{
             try
             {
@@ -488,9 +488,9 @@ namespace CrashHandler
 			return false;
 		}
 
-		private static string MakeStringKey(byte[] iv, byte[] key)
+		private static string MakeStringKey(IEnumerable<byte> iv, IEnumerable<byte> key)
 		{
-			return string.Join("", iv.Select(x => x.ToString("X2"))) + ":" + string.Join("", key.Select(x => x.ToString("X2")));
+			return string.Join(string.Empty, iv.Select(x => x.ToString("X2"))) + ":" + string.Join(string.Empty, key.Select(x => x.ToString("X2")));
 		}
 
         #region IDisposable Support

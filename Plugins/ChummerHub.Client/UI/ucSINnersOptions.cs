@@ -458,7 +458,6 @@ namespace ChummerHub.Client.UI
 
         private async Task<IList<string>> GetRolesStatus(Control sender)
         {
-            ResultAccountGetRoles myresult = null;
             try
             {
                 using (new CursorWait(sender, true))
@@ -466,7 +465,7 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     if (client == null)
                         return StaticUtils.UserRoles;
-                    myresult = await client.GetRolesAsync();
+                    var myresult = await client.GetRolesAsync();
                     await Utils.ShowErrorResponseFormAsync(myresult);
                     var myresultbody = myresult;
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
@@ -657,7 +656,6 @@ namespace ChummerHub.Client.UI
                     var client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)
                     {
-                        ResultSinnerPostSIN posttask = null;
                         try
                         {
                             string sinjson = File.ReadAllText(file.FullName);
@@ -671,7 +669,7 @@ namespace ChummerHub.Client.UI
                                     sin
                                 }
                             };
-                            posttask = await client.PostSINAsync(uploadInfoObject);
+                            var posttask = await client.PostSINAsync(uploadInfoObject);
                             if (posttask.CallSuccess)
                             {
                                 Log.Info("SINner " + (sin?.Id.ToString() ?? "null") + " posted!");

@@ -52,7 +52,7 @@ namespace Chummer.Backend.Equipment
         private decimal _decCost;
         private int _intAddictionThreshold;
         private int _intAddictionRating;
-        private readonly int _intSpeed = 9;
+        private const int _intSpeed = 9;
         private decimal _decQty;
         private int _intSortOrder;
         private readonly Character _objCharacter;

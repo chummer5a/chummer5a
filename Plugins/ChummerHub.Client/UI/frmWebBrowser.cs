@@ -17,15 +17,14 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
         }
 
-        private Uri LoginUrl
+        private static Uri LoginUrl
         {
             get
             {
                 if(string.IsNullOrEmpty(Settings.Default.SINnerUrl))
                 {
                     Settings.Default.SINnerUrl = "https://chummer-stable.azurewebsites.net/";
-                    string msg = "if you are (want to be) a Beta-Tester, change this to http://chummer-beta.azurewebsites.net/!";
-                    Log.Warn(msg);
+                    Log.Warn("if you are (want to be) a Beta-Tester, change this to http://chummer-beta.azurewebsites.net/!");
                     Settings.Default.Save();
                 }
                 string path = Settings.Default.SINnerUrl.TrimEnd('/');

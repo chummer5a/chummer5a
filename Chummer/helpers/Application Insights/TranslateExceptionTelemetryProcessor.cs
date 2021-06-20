@@ -31,7 +31,7 @@ namespace Chummer
 {
     public class TranslateExceptionTelemetryProcessor : ITelemetryProcessor
     {
-        private ITelemetryProcessor Next { get; set; }
+        private ITelemetryProcessor Next { get; }
 
         // You can pass values from .config
         public string MyParamFromConfigFile { get; set; }
