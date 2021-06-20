@@ -122,22 +122,15 @@ namespace Chummer
                 return;
 
             SuspendLayout();
-            if (e?.Text != "mru")
+            try
             {
-                try
-                {
-                    treCharacterList.Nodes.Clear();
-                    await LoadCharacters(true, true, true, false);
-                }
-                catch (ObjectDisposedException)
-                {
-                    //swallow this
-                    _blnSkipUpdate = false;
-                }
+                await LoadCharacters(e?.Text != "mru", true, false, false);
+                RefreshNodes();
             }
-            else
+            catch (ObjectDisposedException)
             {
-                await LoadCharacters(false, true, true, false);
+                //swallow this
+                _blnSkipUpdate = false;
             }
             ResumeLayout();
         }
@@ -189,10 +182,6 @@ namespace Chummer
             {
                 foreach (string strFile in Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
                 {
-                    // Make sure we're not loading a character that was already loaded by the MRU list.
-                    if (lstFavorites.Contains(strFile) ||
-                        lstRecents.Contains(strFile))
-                        continue;
                     FileInfo objInfo = new FileInfo(strFile);
                     if (objInfo.Directory == null || objInfo.Directory.FullName == GlobalOptions.CharacterRosterPath)
                     {
@@ -233,8 +222,7 @@ namespace Chummer
                     string strFile = objCharacterForm.CharacterObject.FileName;
                     // Make sure we're not loading a character that was already loaded by the MRU list.
                     if(lstFavorites.Contains(strFile)
-                       || lstRecents.Contains(strFile)
-                       || dicWatch.ContainsValue(strFile))
+                       || lstRecents.Contains(strFile))
                         continue;
 
                     lstRecents.Add(strFile);
