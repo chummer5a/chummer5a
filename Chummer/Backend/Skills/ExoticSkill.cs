@@ -36,9 +36,10 @@ namespace Chummer.Backend.Skills
 
         public static bool IsExoticSkillName(string strSkillName)
         {
-            return strSkillName.Contains("Exotic Melee Weapon", StringComparison.OrdinalIgnoreCase) ||
-                   strSkillName.Contains("Exotic Ranged Weapon", StringComparison.OrdinalIgnoreCase) ||
-                   strSkillName.Contains("Pilot Exotic Vehicle", StringComparison.OrdinalIgnoreCase);
+            return !string.IsNullOrEmpty(strSkillName) &&
+                   (strSkillName.Contains("Exotic Melee Weapon", StringComparison.OrdinalIgnoreCase) ||
+                    strSkillName.Contains("Exotic Ranged Weapon", StringComparison.OrdinalIgnoreCase) ||
+                    strSkillName.Contains("Pilot Exotic Vehicle", StringComparison.OrdinalIgnoreCase));
         }
 
         public override bool IsExoticSkill => true;
