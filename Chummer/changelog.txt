@@ -76,6 +76,7 @@ Application Changes:
 - In Create mode, gear can now be pasted into armor mods and armor, and armor mods can now be pasted into armor.
 - Weapons that use External Source ammo now have External Source properly recognized as one of the options with which the weapon can be loaded.
 - In the character roster tool, saves that are present both in the Watch folder and in either the Favorites or Recents lists now also still show up in the Watch folder section.
+- Extended versions of Detection spells that are explicitly allowed by RAW no longer erroneously have drain codes of 2 higher than normal.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

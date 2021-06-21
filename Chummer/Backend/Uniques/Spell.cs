@@ -54,6 +54,7 @@ namespace Chummer
         private string _strExtra = string.Empty;
         private bool _blnLimited;
         private bool _blnExtended;
+        private bool _blnCustomExtended;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
@@ -87,7 +88,6 @@ namespace Chummer
                 Utils.BreakIfDebug();
             }
             objXmlSpellNode.TryGetStringFieldQuickly("name", ref _strName);
-            _blnExtended = blnExtended;
 
             ImprovementManager.ForcedValue = strForcedValue;
             if (objXmlSpellNode["bonus"] != null)
@@ -121,6 +121,13 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlSpellNode.TryGetStringFieldQuickly("page", ref _strPage);
             _objImprovementSource = objSource;
+
+            _blnExtended = blnExtended;
+            if (blnExtended)
+            {
+                _blnCustomExtended = !HashDescriptors.Any(x =>
+                    string.Equals(x.Trim(), "Extended Area", StringComparison.OrdinalIgnoreCase));
+            }
 
             /*
             if (string.IsNullOrEmpty(_strNotes))
@@ -165,11 +172,12 @@ namespace Chummer
             objWriter.WriteElementString("dv", _strDV);
             objWriter.WriteElementString("limited", _blnLimited.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("extended", _blnExtended.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("customextended", _blnCustomExtended.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("alchemical", _blnAlchemical.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("extra", _strExtra);
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", string.Empty));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("freebonus", _blnFreeBonus.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("usesunarmed", _blnUsesUnarmed.ToString(GlobalOptions.InvariantCultureInfo));
@@ -200,7 +208,8 @@ namespace Chummer
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
-            objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors);
+            if (objNode.TryGetStringFieldQuickly("descriptors", ref _strDescriptors))
+                UpdateHashDescriptors();
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("type", ref _strType);
             objNode.TryGetStringFieldQuickly("range", ref _strRange);
@@ -217,6 +226,11 @@ namespace Chummer
                 GetNode()?.TryGetStringFieldQuickly("dv", ref _strDV);
             }
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
+            if (!objNode.TryGetBoolFieldQuickly("customextended", ref _blnCustomExtended))
+            {
+                _blnCustomExtended = !HashDescriptors.Any(x =>
+                    string.Equals(x.Trim(), "Extended Area", StringComparison.OrdinalIgnoreCase));
+            }
             objNode.TryGetBoolFieldQuickly("freebonus", ref _blnFreeBonus);
             objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnUsesUnarmed);
             objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
@@ -321,13 +335,23 @@ namespace Chummer
                 if (_strDescriptors == value)
                     return;
                 _strDescriptors = value;
-                HashDescriptors.Clear();
-                foreach (string strDescriptor in Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
-                    HashDescriptors.Add(strDescriptor);
+                UpdateHashDescriptors();
+                if (Extended)
+                {
+                    _blnCustomExtended = !HashDescriptors.Any(x =>
+                        string.Equals(x.Trim(), "Extended Area", StringComparison.OrdinalIgnoreCase));
+                }
             }
         }
 
-        public HashSet<string> HashDescriptors => new HashSet<string>(Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
+        private void UpdateHashDescriptors()
+        {
+            HashDescriptors.Clear();
+            foreach (string strDescriptor in Descriptors.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                HashDescriptors.Add(strDescriptor);
+        }
+
+        public HashSet<string> HashDescriptors { get; } = new HashSet<string>();
 
         /// <summary>
         /// Translated Descriptors.
@@ -338,7 +362,6 @@ namespace Chummer
                 return LanguageManager.GetString("String_None", strLanguage);
             StringBuilder objReturn = new StringBuilder();
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-            bool blnExtendedFound = false;
             if (HashDescriptors.Count > 0)
             {
                 foreach (string strDescriptor in HashDescriptors)
@@ -346,13 +369,10 @@ namespace Chummer
                     switch (strDescriptor.Trim())
                     {
                         case "Alchemical Preparation":
-                            objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation",
-                                strLanguage));
+                            objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", strLanguage));
                             break;
                         case "Extended Area":
-                            blnExtendedFound = true;
-                            objReturn.Append(LanguageManager.GetString("String_DescExtendedArea",
-                                strLanguage));
+                            objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage));
                             break;
                         case "Material Link":
                             objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
@@ -378,7 +398,7 @@ namespace Chummer
             }
 
             // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
-            if (Extended && !blnExtendedFound)
+            if (_blnCustomExtended)
                 objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage) + ',' + strSpace);
 
             // Remove the trailing comma.
@@ -481,7 +501,7 @@ namespace Chummer
                         {
                             sbdTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellLimited"), -2);
                         }
-                        if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
+                        if (_blnCustomExtended)
                         {
                             sbdTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellExtended"), '+' + 2.ToString(GlobalOptions.CultureInfo));
                         }
@@ -615,7 +635,7 @@ namespace Chummer
             get
             {
                 string strReturn = _strDV;
-                if (!Limited && (!Extended || Name.EndsWith("Extended", StringComparison.Ordinal)) && !RelevantImprovements(o =>
+                if (!Limited && !_blnCustomExtended && !RelevantImprovements(o =>
                         o.ImproveType == Improvement.ImprovementType.DrainValue
                         || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                         || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true).Any())
@@ -657,7 +677,7 @@ namespace Chummer
                 {
                     sbdDV.Append("-2");
                 }
-                if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
+                if (_blnCustomExtended)
                 {
                     sbdDV.Append("+2");
                 }
@@ -733,7 +753,17 @@ namespace Chummer
         public bool Extended
         {
             get => _blnExtended;
-            set => _blnExtended = value;
+            set
+            {
+                _blnExtended = value;
+                if (value)
+                {
+                    _blnCustomExtended = !HashDescriptors.Any(x =>
+                        string.Equals(x.Trim(), "Extended Area", StringComparison.OrdinalIgnoreCase));
+                }
+                else
+                    _blnCustomExtended = false;
+            }
         }
 
         /// <summary>
@@ -769,7 +799,7 @@ namespace Chummer
         public string DisplayNameShort(string strLanguage)
         {
             string strReturn = !strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? GetNode(strLanguage)?["translate"]?.InnerText ?? Name : Name;
-            if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
+            if (_blnCustomExtended)
                 strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_SpellExtended", strLanguage);
 
             return strReturn;

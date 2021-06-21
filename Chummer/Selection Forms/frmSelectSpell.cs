@@ -200,12 +200,14 @@ namespace Chummer
 
         private void chkExtended_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnRefresh) return;
+            if (_blnRefresh)
+                return;
             UpdateSpellInfo();
         }
         private void chkLimited_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnRefresh) return;
+            if (_blnRefresh)
+                return;
             UpdateSpellInfo();
         }
         #endregion
@@ -592,9 +594,11 @@ namespace Chummer
                 chkExtended.Checked = true;
                 chkExtended.Enabled = false;
             }
-            else if (xmlSpell.SelectSingleNode("category")?.Value == "Detection")
+            else if (_objCharacter.Options.ExtendAnyDetectionSpell && xmlSpell.SelectSingleNode("category")?.Value == "Detection")
             {
                 chkExtended.Visible = true;
+                if (!chkExtended.Enabled) // Resets this checkbox if we just selected an Extended Area spell
+                    chkExtended.Checked = false;
                 chkExtended.Enabled = true;
             }
             else
@@ -671,7 +675,7 @@ namespace Chummer
             {
                 strDV += " + -2";
             }
-            if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
+            if (Extended && !blnExtendedFound)
             {
                 strDV += " + 2";
             }
