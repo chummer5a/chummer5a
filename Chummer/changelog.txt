@@ -78,6 +78,7 @@ Application Changes:
 - In the character roster tool, saves that are present both in the Watch folder and in either the Favorites or Recents lists now also still show up in the Watch folder section.
 - Extended versions of Detection spells that are explicitly allowed by RAW no longer erroneously have drain codes of 2 higher than normal.
 - Picking an exotic skill as a skill in which to get free levels from a Priority selection now works properly and adds the selected exotic skill to the character's skill list at the specified level.
+- Improvements that alter the number of power points available to a character now properly cause power point totals in the Adept Powers tab to be updated with new values. This includes metamagics that add power points.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

@@ -79,18 +79,6 @@ namespace Chummer.UI.Powers
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
-            _objCharacter.Powers.ListChanged += (sender, e) => {
-                if (e.ListChangedType == ListChangedType.ItemChanged)
-                {
-                    string propertyName = e.PropertyDescriptor?.Name;
-                    if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
-                    {
-                        // recalculation of power points on rating/free levels change
-                        CalculatePowerPoints();
-                    }
-                }
-            };
-
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
             //Keep everything visible until ready to display everything. This
@@ -128,8 +116,49 @@ namespace Chummer.UI.Powers
             //this.Update();
             ResumeLayout(true);
             //this.PerformLayout();
+
+            _objCharacter.Powers.ListChanged += OnPowersListChanged;
+            _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+        }
+
+        private void UnbindPowersTabUserControl()
+        {
+            if (_objCharacter != null)
+            {
+                _objCharacter.Powers.ListChanged -= OnPowersListChanged;
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+            }
+        }
+
+        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
+                CalculatePowerPoints();
+        }
+
+        private void OnPowersListChanged(object sender, ListChangedEventArgs e)
+        {
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemChanged:
+                {
+                    string propertyName = e.PropertyDescriptor?.Name;
+                    if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                    {
+                        // recalculation of power points on rating/free levels change
+                        CalculatePowerPoints();
+                    }
+                    break;
+                }
+                case ListChangedType.Reset:
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                    CalculatePowerPoints();
+                    break;
+            }
         }
 
         private static List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
