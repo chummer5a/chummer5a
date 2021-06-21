@@ -138,7 +138,7 @@ namespace Chummer
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
-                //Both of these need to be set, before any windows are created. And must be the first in the mutex or clsCustomDataDirectoryInfo produces an exception for some reason 
+
                 Application.SetCompatibleTextRenderingDefault(false);
  
 
