@@ -29,6 +29,7 @@ namespace Chummer
     public partial class frmSelectExoticSkill : Form
     {
         private readonly Character _objCharacter;
+        private string _strForceSkill;
 
         #region Control Events
         public frmSelectExoticSkill(Character objCharacter)
@@ -62,7 +63,7 @@ namespace Chummer
                     foreach (XmlNode objXmlSkill in objXmlSkillList)
                     {
                         string strName = objXmlSkill["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
+                        if (!string.IsNullOrEmpty(strName) && (string.IsNullOrEmpty(_strForceSkill) || strName.Equals(_strForceSkill, StringComparison.OrdinalIgnoreCase)))
                             lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
                     }
                 }
@@ -73,7 +74,10 @@ namespace Chummer
 
             // Select the first Skill in the list.
             if (lstSkills.Count > 0)
+            {
                 cboCategory.SelectedIndex = 0;
+                cboCategory.Enabled = lstSkills.Count > 1;
+            }
             else
                 cmdOK.Enabled = false;
 
@@ -85,6 +89,11 @@ namespace Chummer
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
             BuildList();
+        }
+
+        public void ForceSkill(string strSkill)
+        {
+            _strForceSkill = strSkill;
         }
         #endregion
 

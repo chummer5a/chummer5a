@@ -705,45 +705,47 @@ namespace Chummer.Classes
                     }
                 }
             }
-            else if (strSelectedSkill.Contains("Exotic Melee Weapon") ||
-                     strSelectedSkill.Contains("Exotic Ranged Weapon") ||
-                     strSelectedSkill.Contains("Pilot Exotic Vehicle"))
+            else if (ExoticSkill.IsExoticSkillName(strSelectedSkill))
             {
-                foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
+                if (!string.IsNullOrEmpty(strVal))
                 {
-                    ExoticSkill objSkill = (ExoticSkill) objLoopSkill;
-                    string strSpecificName = objSkill.Name + " (" + objSkill.Specific + ')';
-                    if (strSpecificName != strSelectedSkill)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
+                    // Make sure we have the exotic skill in the list if we're altering any values
+                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != strSelectedSkill || !s.IsExoticSkill))
                     {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(strSpecificName, _objImprovementSource,
-                            SourceName,
-                            Improvement.ImprovementType.Skill, _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1,
-                            0, 0, 0, 0, string.Empty, blnAddToRating);
+                        string strSkillName = strSelectedSkill;
+                        int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                        {
+                            string strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
+                            strSkillName = strSkillName.Substring(0, intParenthesesIndex);
+                            _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                        }
                     }
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strSelectedSkill, _objImprovementSource,
+                        SourceName,
+                        Improvement.ImprovementType.Skill, _strUnique,
+                        ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1,
+                        0, 0, 0, 0, string.Empty, blnAddToRating);
+                }
 
-                    if (blnDisableSpec)
-                    {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(strSpecificName, _objImprovementSource,
-                            SourceName,
-                            Improvement.ImprovementType.DisableSpecializationEffects,
-                            _strUnique);
-                    }
+                if (blnDisableSpec)
+                {
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strSelectedSkill, _objImprovementSource,
+                        SourceName,
+                        Improvement.ImprovementType.DisableSpecializationEffects,
+                        _strUnique);
+                }
 
-                    if (!string.IsNullOrEmpty(strMax))
-                    {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(strSpecificName, _objImprovementSource,
-                            SourceName,
-                            Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
-                            ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                            blnAddToRating);
-                    }
+                if (!string.IsNullOrEmpty(strMax))
+                {
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strSelectedSkill, _objImprovementSource,
+                        SourceName,
+                        Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
+                        ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
+                        blnAddToRating);
                 }
             }
             else
@@ -2340,30 +2342,35 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + strForcedValue);
 
             bool blnDummy = false;
-            SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy) : strForcedValue;
+            SelectedValue = string.IsNullOrEmpty(strForcedValue)
+                ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
+                : strForcedValue;
             if (blnDummy)
                 throw new AbortedException();
 
             string strVal = bonusNode["val"]?.InnerText;
 
-            if (SelectedValue.Contains("Exotic Melee Weapon") ||
-                SelectedValue.Contains("Exotic Ranged Weapon") ||
-                SelectedValue.Contains("Pilot Exotic Vehicle"))
+            if (ExoticSkill.IsExoticSkillName(SelectedValue))
             {
-                foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
+                if (!string.IsNullOrEmpty(strVal))
                 {
-                    ExoticSkill objExoticSkill = (ExoticSkill)objLoopSkill;
-                    if (objExoticSkill.Name + " (" + objExoticSkill.Specific + ')' != SelectedValue)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
+                    // Make sure we have the exotic skill in the list if we're adding an activesoft
+                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != SelectedValue || !s.IsExoticSkill))
                     {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Activesoft,
-                            _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
+                        string strSkillName = SelectedValue;
+                        int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                        {
+                            string strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
+                            strSkillName = strSkillName.Substring(0, intParenthesesIndex);
+                            _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                        }
                     }
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.Activesoft,
+                        _strUnique,
+                        ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
                 }
             }
             else

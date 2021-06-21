@@ -168,8 +168,32 @@ namespace Chummer.Backend.Skills
                     objExistSkill.Base = objNewSkill.Base;
                 if (objNewSkill.Karma > objExistSkill.Karma)
                     objExistSkill.Karma = objNewSkill.Karma;
-                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, (x, y) => x.Free == y.Free ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo) : (x.Free ? 1 : -1));
+                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
+                    (x, y) => x.Free == y.Free
+                        ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
+                        : (x.Free ? 1 : -1));
             });
+        }
+
+        internal ExoticSkill AddExoticSkill(string strName, string strSpecific)
+        {
+            XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[name = " + strName.CleanXPath() + "]");
+            ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
+            {
+                Specific = strSpecific
+            };
+            Skills.AddWithSort(objExoticSkill, CompareSkills, (objExistSkill, objNewSkill) =>
+            {
+                if (objNewSkill.Base > objExistSkill.Base)
+                    objExistSkill.Base = objNewSkill.Base;
+                if (objNewSkill.Karma > objExistSkill.Karma)
+                    objExistSkill.Karma = objNewSkill.Karma;
+                objExistSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations,
+                    (x, y) => x.Free == y.Free
+                        ? string.Compare(x.CurrentDisplayName, y.CurrentDisplayName, false, GlobalOptions.CultureInfo)
+                        : (x.Free ? 1 : -1));
+            });
+            return objExoticSkill;
         }
 
         internal void RemoveSkills(FilterOption skills, bool createKnowledge = true)

@@ -610,9 +610,7 @@ namespace Chummer
                     : LanguageManager.GetString("String_Attribute" + strToTranslate + "Short");
 
                 case "SelectSkill":
-                    if (strToTranslate.Contains("Exotic Melee Weapon") ||
-                        strToTranslate.Contains("Exotic Ranged Weapon") ||
-                        strToTranslate.Contains("Pilot Exotic Vehicle"))
+                    if (ExoticSkill.IsExoticSkillName(strToTranslate))
                     {
                         string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();

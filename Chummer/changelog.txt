@@ -77,6 +77,7 @@ Application Changes:
 - Weapons that use External Source ammo now have External Source properly recognized as one of the options with which the weapon can be loaded.
 - In the character roster tool, saves that are present both in the Watch folder and in either the Favorites or Recents lists now also still show up in the Watch folder section.
 - Extended versions of Detection spells that are explicitly allowed by RAW no longer erroneously have drain codes of 2 higher than normal.
+- Picking an exotic skill as a skill in which to get free levels from a Priority selection now works properly and adds the selected exotic skill to the character's skill list at the specified level.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

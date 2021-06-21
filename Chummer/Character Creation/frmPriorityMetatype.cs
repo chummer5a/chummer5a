@@ -204,16 +204,34 @@ namespace Chummer
                 string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
+                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    {
+                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                    }
                     cboSkill1.SelectedValue = strSkill;
                 }
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
+                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    {
+                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                    }
                     cboSkill2.SelectedValue = strSkill;
                 }
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
+                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    {
+                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                    }
                     cboSkill3.SelectedValue = strSkill;
                 }
                 cboTalents_SelectedIndexChanged(null, EventArgs.Empty);
@@ -350,7 +368,7 @@ namespace Chummer
                                 xmlSkillsList = BuildSkillList(xmlTalentNode.Select("skillchoices/skill"));
                                 break;
                             case "xpath":
-                                xmlSkillsList = GetActiveSkillList(xmlSkillTypeNode.SelectSingleNode("@xpath")?.Value);
+                                xmlSkillsList = GetActiveSkillList(xmlSkillTypeNode?.SelectSingleNode("@xpath")?.Value);
                                 strSkillType = "active";
                                 break;
                             default:
@@ -402,7 +420,7 @@ namespace Chummer
                                     cboSkill2.SelectedIndex = intOldSelectedIndex;
                                     _blnLoading = blnOldLoading;
                                 }
-                                if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex)
+                                if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex && ExoticSkill.IsExoticSkillName(cboSkill2.SelectedValue?.ToString()))
                                 {
                                     if (cboSkill2.SelectedIndex + 1 >= cboSkill2.Items.Count)
                                         cboSkill2.SelectedIndex = 0;
@@ -421,7 +439,10 @@ namespace Chummer
                                         cboSkill3.SelectedIndex = intOldSelectedIndex;
                                         _blnLoading = blnOldLoading;
                                     }
-                                    if (cboSkill3.SelectedIndex == cboSkill1.SelectedIndex || cboSkill3.SelectedIndex == cboSkill2.SelectedIndex)
+
+                                    if ((cboSkill3.SelectedIndex == cboSkill1.SelectedIndex ||
+                                         cboSkill3.SelectedIndex == cboSkill2.SelectedIndex) &&
+                                        ExoticSkill.IsExoticSkillName(cboSkill3.SelectedValue?.ToString()))
                                     {
                                         int intNewIndex = cboSkill3.SelectedIndex;
                                         do
@@ -430,7 +451,8 @@ namespace Chummer
                                             if (intNewIndex >= cboSkill3.Items.Count)
                                                 intNewIndex = 0;
                                         }
-                                        while ((intNewIndex == cboSkill1.SelectedIndex || intNewIndex == cboSkill2.SelectedIndex) && intNewIndex != cboSkill3.SelectedIndex);
+                                        while ((intNewIndex == cboSkill1.SelectedIndex || intNewIndex == cboSkill2.SelectedIndex) && intNewIndex != cboSkill3.SelectedIndex &&
+                                               !ExoticSkill.IsExoticSkillName(((ListItem) cboSkill3.Items[intNewIndex]).Value.ToString()));
                                         cboSkill3.SelectedIndex = intNewIndex;
                                     }
                                 }
@@ -644,6 +666,37 @@ namespace Chummer
                 return;
             }
 
+            if (ExoticSkill.IsExoticSkillName(strSkill1))
+            {
+                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                {
+                    frmSelectExotic.ForceSkill(strSkill1);
+                    if (frmSelectExotic.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strSkill1 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                }
+            }
+            if (ExoticSkill.IsExoticSkillName(strSkill2))
+            {
+                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                {
+                    frmSelectExotic.ForceSkill(strSkill2);
+                    if (frmSelectExotic.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strSkill2 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                }
+            }
+            if (ExoticSkill.IsExoticSkillName(strSkill3))
+            {
+                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                {
+                    frmSelectExotic.ForceSkill(strSkill3);
+                    if (frmSelectExotic.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strSkill3 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                }
+            }
+
             if ((cboSkill1.Visible && cboSkill2.Visible && strSkill1 == strSkill2)
                 || (cboSkill1.Visible && cboSkill3.Visible && strSkill1 == strSkill3)
                 || (cboSkill2.Visible && cboSkill3.Visible && strSkill2 == strSkill3))
@@ -844,7 +897,7 @@ namespace Chummer
                                     }
 
                                     blnRemoveFreeSkills = false;
-                                    AddFreeSkills(intFreeLevels, eType);
+                                    AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
                                 }
 
                                 break;
@@ -1053,61 +1106,52 @@ namespace Chummer
             }
         }
 
-        private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type)
+        private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3)
         {
             List<Improvement> lstOldFreeSkillImprovements = _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Heritage
                                                                                                   && x.ImproveType == type).ToList();
             if (intFreeLevels != 0)
             {
                 bool blnCommit = false;
-                if (cboSkill1.Visible)
+                if (!string.IsNullOrEmpty(strSkill1))
                 {
-                    string strSkill = cboSkill1.SelectedValue.ToString();
-                    if (!string.IsNullOrEmpty(strSkill))
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill1 && x.Value == intFreeLevels);
+                    if (objOldSkillImprovement != null)
+                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                    else
                     {
-                        Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill && x.Value == intFreeLevels);
-                        if (objOldSkillImprovement != null)
-                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                        else
-                        {
-                            blnCommit = true;
-                            ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
-                                type, string.Empty, intFreeLevels);
-                        }
+                        blnCommit = true;
+                        AddExoticSkillIfNecessary(strSkill1);
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
+                            type, string.Empty, intFreeLevels);
                     }
                 }
 
-                if (cboSkill2.Visible)
+                if (!string.IsNullOrEmpty(strSkill2))
                 {
-                    string strSkill = cboSkill2.SelectedValue.ToString();
-                    if (!string.IsNullOrEmpty(strSkill))
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill2 && x.Value == intFreeLevels);
+                    if (objOldSkillImprovement != null)
+                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                    else
                     {
-                        Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill && x.Value == intFreeLevels);
-                        if (objOldSkillImprovement != null)
-                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                        else
-                        {
-                            blnCommit = true;
-                            ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
-                                type, string.Empty, intFreeLevels);
-                        }
+                        blnCommit = true;
+                        AddExoticSkillIfNecessary(strSkill2);
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
+                            type, string.Empty, intFreeLevels);
                     }
                 }
 
-                if (cboSkill3.Visible)
+                if (!string.IsNullOrEmpty(strSkill3))
                 {
-                    string strSkill = cboSkill3.SelectedValue.ToString();
-                    if (!string.IsNullOrEmpty(strSkill))
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill3 && x.Value == intFreeLevels);
+                    if (objOldSkillImprovement != null)
+                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                    else
                     {
-                        Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill && x.Value == intFreeLevels);
-                        if (objOldSkillImprovement != null)
-                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                        else
-                        {
-                            blnCommit = true;
-                            ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
-                                type, string.Empty, intFreeLevels);
-                        }
+                        blnCommit = true;
+                        AddExoticSkillIfNecessary(strSkill3);
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
+                            type, string.Empty, intFreeLevels);
                     }
                 }
 
@@ -1115,6 +1159,23 @@ namespace Chummer
                     ImprovementManager.RemoveImprovements(_objCharacter, lstOldFreeSkillImprovements);
                 if (blnCommit)
                     ImprovementManager.Commit(_objCharacter);
+
+                void AddExoticSkillIfNecessary(string strDictionaryKey)
+                {
+                    // Add exotic skills if we are increasing their base level
+                    if (!ExoticSkill.IsExoticSkillName(strDictionaryKey) ||
+                        _objCharacter.SkillsSection.GetActiveSkill(strDictionaryKey) != null)
+                        return;
+                    string strSkillName = strDictionaryKey;
+                    string strSkillSpecific = string.Empty;
+                    int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                    if (intParenthesesIndex > 0)
+                    {
+                        strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
+                        strSkillName = strSkillName.Substring(0, intParenthesesIndex);
+                    }
+                    _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                }
             }
             else
                 ImprovementManager.RemoveImprovements(_objCharacter, lstOldFreeSkillImprovements);

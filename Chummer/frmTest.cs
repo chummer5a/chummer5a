@@ -815,7 +815,7 @@ namespace Chummer
                             // Set the Skill Ratings for the Critter.
                             foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/skill"))
                             {
-                                if (objXmlSkill.InnerText.Contains("Exotic"))
+                                if (ExoticSkill.IsExoticSkillName(objXmlSkill.InnerText))
                                 {
                                     //Skill objExotic = new Skill(_objCharacter);
                                     //objExotic.ExoticSkill = true;

@@ -3971,7 +3971,7 @@ namespace Chummer.Backend.Equipment
                     strSkill = UseSkill;
                     strSpec = string.Empty;
 
-                    if (UseSkill.Contains("Exotic"))
+                    if (ExoticSkill.IsExoticSkillName(UseSkill))
                         strSpec = UseSkillSpec;
                 }
 

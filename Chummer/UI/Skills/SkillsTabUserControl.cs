@@ -725,30 +725,25 @@ namespace Chummer.UI.Skills
         private void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
             {
                 frmPickExoticSkill.ShowDialog(this);
 
-                if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)
+                if (frmPickExoticSkill.DialogResult != DialogResult.OK)
                     return;
 
-                XmlNode xmlSkillNode = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + frmPickExoticSkill.SelectedExoticSkill.CleanXPath() + "]");
-
-                objSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
-                {
-                    Specific = frmPickExoticSkill.SelectedExoticSkillSpecialisation
-                };
+                objSkill = _objCharacter.SkillsSection.AddExoticSkill(frmPickExoticSkill.SelectedExoticSkill,
+                    frmPickExoticSkill.SelectedExoticSkillSpecialisation);
             }
 
             // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
             if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"));
+                _objCharacter.SkillsSection.Skills.Remove(objSkill);
                 return;
             }
             objSkill.Upgrade();
-            _objCharacter.SkillsSection.Skills.Add(objSkill);
         }
 
         private void btnKnowledge_Click(object sender, EventArgs e)

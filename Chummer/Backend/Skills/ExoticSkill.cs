@@ -34,9 +34,16 @@ namespace Chummer.Backend.Skills
             node.TryGetStringFieldQuickly("specific", ref _strSpecific);
         }
 
+        public static bool IsExoticSkillName(string strSkillName)
+        {
+            return strSkillName.Contains("Exotic Melee Weapon", StringComparison.OrdinalIgnoreCase) ||
+                   strSkillName.Contains("Exotic Ranged Weapon", StringComparison.OrdinalIgnoreCase) ||
+                   strSkillName.Contains("Pilot Exotic Vehicle", StringComparison.OrdinalIgnoreCase);
+        }
+
         public override bool IsExoticSkill => true;
 
-        public override bool AllowDelete => !CharacterObject.Created;
+        public override bool AllowDelete => !CharacterObject.Created && FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0;
 
         public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
