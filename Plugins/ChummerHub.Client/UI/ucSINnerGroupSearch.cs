@@ -259,7 +259,7 @@ namespace ChummerHub.Client.UI
                                 Log.Info(msg);
                                 Program.MainForm.ShowMessageBox(msg, string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Information);
                                 await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
-                                await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                                await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                             }
                         });
                     }
@@ -534,7 +534,7 @@ namespace ChummerHub.Client.UI
                     {
                         PluginHandler.MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
                     }
-                    await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                     PluginHandler.MainForm.CharacterRoster.BringToFront();
                     MyParentForm.Close();
                 }

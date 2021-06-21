@@ -647,7 +647,7 @@ namespace Chummer.Plugins
                                     (key, oldValue) => node);
                             }
 
-                            await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                            await MainForm.CharacterRoster.RefreshPluginNodes(this);
                             MainForm.CharacterRoster.treCharacterList.SelectedNode =
                                 nodelist.FirstOrDefault(a => a.Name == "Archetypes");
                             MainForm.BringToFront();
@@ -913,7 +913,7 @@ namespace Chummer.Plugins
                         {
                             MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
                         }
-                        await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
                         MainForm.CharacterRoster.BringToFront();
                     }
                 }
@@ -947,7 +947,7 @@ namespace Chummer.Plugins
                             var res = await client.PutSINerInGroupAsync(Guid.Empty, sinnerid, null);
                             var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                             if (response != null)
-                                await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                                await MainForm.CharacterRoster.RefreshPluginNodes(this);
                         }
                         catch (Exception exception)
                         {
@@ -974,7 +974,7 @@ namespace Chummer.Plugins
                     var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
                     if (response != null)
                     {
-                        await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
                     }
                 }
                 catch (Exception exception)
@@ -1011,9 +1011,9 @@ namespace Chummer.Plugins
                             res = await client.PutSINerInGroupAsync(null, sinnerid, null);
 
                             var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                            if (res != null)
+                            if (response != null)
                             {
-                                await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                                await MainForm.CharacterRoster.RefreshPluginNodes(this);
                             }
                             
                         }
@@ -1022,9 +1022,9 @@ namespace Chummer.Plugins
                             if (res != null)
                             {
                                 var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                                if (res != null)
+                                if (response != null)
                                 {
-                                    await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                                    await MainForm.CharacterRoster.RefreshPluginNodes(this);
                                 }
                             }
                             else
@@ -1038,8 +1038,6 @@ namespace Chummer.Plugins
                             ChummerHub.Client.Backend.Utils.HandleError(exception);
                         }
                     }
-
-
                 }
                 catch (Exception exception)
                 {
@@ -1053,12 +1051,10 @@ namespace Chummer.Plugins
                 {
                     var client = StaticUtils.GetClient();
                     var res = await client.PutGroupInGroupAsync(ssg.Id, null, null, null, null);
+                    var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
+                    if (response != null)
                     {
-                        var response = await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(res);
-                        if (res != null)
-                        {
-                            await MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                        }
+                        await MainForm.CharacterRoster.RefreshPluginNodes(this);
                     }
                 }
                 catch (Exception exception)
@@ -1407,7 +1403,7 @@ namespace Chummer.Plugins
             }
             finally
             {
-                await MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                await MainForm.CharacterRoster.RefreshPluginNodes(this);
             }
             return true;
         }

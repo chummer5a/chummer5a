@@ -308,7 +308,7 @@ namespace ChummerHub.Client.UI
                         lUsername.Text = mail;
                         //also, since we are logged in in now, refresh the frmCharacterRoster!
                         if (PluginHandler.MainForm != null)
-                            await PluginHandler.MainForm.CharacterRoster.LoadCharacters();
+                            await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                         bLogin.Text = "Logout";
                         BindingSource bs = new BindingSource
                         {
