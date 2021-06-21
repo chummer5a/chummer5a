@@ -226,8 +226,8 @@ Changed/New Strings:
 - Tooltip_Dependency_Missing
 - Tooltip_Exclusivity_Present
 - IsMainAuthor
-- AddVersion
-- AddMinimumVersion
+- Tooltip_Exclusivity_VersionMismatch
+- Tooltip_Dependency_VersionMismatch
 
 Build 214
 Application Fixes:

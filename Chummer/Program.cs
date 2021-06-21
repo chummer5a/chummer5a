@@ -69,14 +69,15 @@ namespace Chummer
             PageViewTelemetry pvt = null;
             var startTime = DateTimeOffset.UtcNow;
 
-            //Both of these need to be set, before any windows are created. 
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
+
 
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
+
+
                 // Set DPI Stuff
                 SetProcessDPI(GlobalOptions.DpiScalingMethodSetting);
+
                 // Set default cultures based on the currently set language
                 CultureInfo.DefaultThreadCurrentCulture = GlobalOptions.CultureInfo;
                 CultureInfo.DefaultThreadCurrentUICulture = GlobalOptions.CultureInfo;
@@ -137,7 +138,9 @@ namespace Chummer
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
-
+                //Both of these need to be set, before any windows are created. And must be the first in the mutex or clsCustomDataDirectoryInfo produces an exception for some reason 
+                Application.SetCompatibleTextRenderingDefault(false);
+ 
 
                 sw.TaskEnd("languagefreestartup");
 
@@ -173,7 +176,7 @@ namespace Chummer
 
                 sw.TaskEnd("Startup");
 
-
+                Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException);
 
                 if (!string.IsNullOrEmpty(LanguageManager.ManagerErrorMessage))
                 {

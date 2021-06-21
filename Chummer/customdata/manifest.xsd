@@ -9,7 +9,7 @@
   <xs:complexType name ="manifest">
     <xs:sequence>
       <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1"/>
-      <xs:element name="version" type="xs:string" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="version" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
       <xs:element name="authors" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
@@ -45,10 +45,10 @@
               <xs:complexType>
                 <xs:sequence>
                   <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  <xs:element name="version" type="xs:string" minOccurs="1" maxOccurs="1" />
+                  <!--Inclusive version range, missing declaration will be handled as open end.-->
+                  <xs:element name="minversion" type="xs:decimal" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="maxversion" type="xs:decimal" minOccurs="0" maxOccurs="1" />
                   <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  <!--If this is set to true the given or any higher version will be accepted-->
-                  <xs:element name="isminimumversion" type="xs:string" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
               </xs:complexType>
             </xs:element>
@@ -62,17 +62,16 @@
               <xs:complexType>
                 <xs:sequence>
                   <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  <xs:element name="version" type="xs:string" minOccurs="1" maxOccurs="1" />
+                  <!--Inclusive version range, missing declaration will be handled as open end.-->
+                  <xs:element name="minversion" type="xs:decimal" minOccurs="0" maxOccurs="1" />
+                  <xs:element name="maxversion" type="xs:decimal" minOccurs="0" maxOccurs="1" />
                   <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
-                  <!--If this is set to true, every custom, data with the given UID will be handled as exclusive, regardless of version-->
-                  <xs:element name="ignoreversion" type="xs:string" minOccurs="0" maxOccurs="1"/>
                 </xs:sequence>
               </xs:complexType>
             </xs:element>
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="hash" type="xs:string" minOccurs="0" maxOccurs="1"/>
     </xs:sequence>
   </xs:complexType>
 </xs:schema>

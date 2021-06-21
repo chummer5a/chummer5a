@@ -173,29 +173,11 @@ namespace Chummer
             this.lblKarmaSpirit = new System.Windows.Forms.Label();
             this.nudKarmaSpirit = new Chummer.NumericUpDownEx();
             this.lblKarmaSpiritExtra = new System.Windows.Forms.Label();
-            this.lblKarmaNewComplexForm = new System.Windows.Forms.Label();
-            this.nudKarmaNewComplexForm = new Chummer.NumericUpDownEx();
-            this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
-            this.nudKarmaMysticAdeptPowerPoint = new Chummer.NumericUpDownEx();
             this.lblKarmaNuyenPer = new System.Windows.Forms.Label();
             this.nudKarmaNuyenPer = new Chummer.NumericUpDownEx();
             this.lblKarmaNuyenPerExtra = new System.Windows.Forms.Label();
             this.lblKarmaJoinGroup = new System.Windows.Forms.Label();
             this.nudKarmaJoinGroup = new Chummer.NumericUpDownEx();
-            this.lblKarmaNewAIProgram = new System.Windows.Forms.Label();
-            this.nudKarmaNewAIProgram = new Chummer.NumericUpDownEx();
-            this.lblKarmaNewAIAdvancedProgram = new System.Windows.Forms.Label();
-            this.nudKarmaNewAIAdvancedProgram = new Chummer.NumericUpDownEx();
-            this.lblKarmaMetamagic = new System.Windows.Forms.Label();
-            this.nudKarmaMetamagic = new Chummer.NumericUpDownEx();
-            this.lblKarmaTechnique = new System.Windows.Forms.Label();
-            this.nudKarmaTechnique = new Chummer.NumericUpDownEx();
-            this.flpKarmaInitiation = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblKarmaInitiation = new System.Windows.Forms.Label();
-            this.lblKarmaInitiationBracket = new System.Windows.Forms.Label();
-            this.nudKarmaInitiation = new Chummer.NumericUpDownEx();
-            this.lblKarmaInitiationExtra = new System.Windows.Forms.Label();
-            this.nudKarmaInitiationFlat = new Chummer.NumericUpDownEx();
             this.lblKarmaCarryover = new System.Windows.Forms.Label();
             this.nudKarmaCarryover = new Chummer.NumericUpDownEx();
             this.lblKarmaCarryoverExtra = new System.Windows.Forms.Label();
@@ -216,6 +198,27 @@ namespace Chummer
             this.nudKarmaWeaponFocus = new Chummer.NumericUpDownEx();
             this.lblMetatypeCostsKarmaMultiplierLabel = new System.Windows.Forms.Label();
             this.nudMetatypeCostsKarmaMultiplier = new Chummer.NumericUpDownEx();
+            this.lblKarmaTechnique = new System.Windows.Forms.Label();
+            this.lblKarmaMetamagic = new System.Windows.Forms.Label();
+            this.flpKarmaInitiation = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblKarmaInitiation = new System.Windows.Forms.Label();
+            this.lblKarmaInitiationBracket = new System.Windows.Forms.Label();
+            this.lblKarmaNewAIAdvancedProgram = new System.Windows.Forms.Label();
+            this.lblKarmaNewAIProgram = new System.Windows.Forms.Label();
+            this.lblKarmaNewComplexForm = new System.Windows.Forms.Label();
+            this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
+            this.nudKarmaTechnique = new Chummer.NumericUpDownEx();
+            this.nudKarmaMetamagic = new Chummer.NumericUpDownEx();
+            this.nudKarmaInitiation = new Chummer.NumericUpDownEx();
+            this.lblKarmaInitiationExtra = new System.Windows.Forms.Label();
+            this.nudKarmaInitiationFlat = new Chummer.NumericUpDownEx();
+            this.nudKarmaNewAIAdvancedProgram = new Chummer.NumericUpDownEx();
+            this.nudKarmaNewAIProgram = new Chummer.NumericUpDownEx();
+            this.nudKarmaNewComplexForm = new Chummer.NumericUpDownEx();
+            this.nudKarmaMysticAdeptPowerPoint = new Chummer.NumericUpDownEx();
+            this.lblKarmaSpiritFettering = new System.Windows.Forms.Label();
+            this.nudKarmaSpiritFettering = new Chummer.NumericUpDownEx();
+            this.lblKarmaSpiritFetteringExtra = new System.Windows.Forms.Label();
             this.tabCustomData = new System.Windows.Forms.TabPage();
             this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
@@ -290,9 +293,8 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.lblKarmaSpiritFettering = new System.Windows.Forms.Label();
-            this.nudKarmaSpiritFettering = new Chummer.NumericUpDownEx();
-            this.lblKarmaSpiritFetteringExtra = new System.Windows.Forms.Label();
+            this.lblDependencyList = new System.Windows.Forms.Label();
+            this.lblExclusivityList = new System.Windows.Forms.Label();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -347,17 +349,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).BeginInit();
-            this.flpKarmaInitiation.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).BeginInit();
@@ -365,12 +358,24 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
+            this.flpKarmaInitiation.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).BeginInit();
             this.tabCustomData.SuspendLayout();
             this.tlpOptionalRules.SuspendLayout();
             this.gbpDirectoryInfo.SuspendLayout();
             this.tlpDirectoryInfo.SuspendLayout();
             this.gbpDirectoryInfoDependencies.SuspendLayout();
+            this.flpDirectoryDependencies.SuspendLayout();
             this.gbpDirectoryInfoExclusivities.SuspendLayout();
+            this.flpExclusivities.SuspendLayout();
             this.tabHouseRules.SuspendLayout();
             this.flpHouseRules.SuspendLayout();
             this.gpbHouseRulesQualities.SuspendLayout();
@@ -386,7 +391,6 @@ namespace Chummer
             this.gpbHouseRulesMagicResonance.SuspendLayout();
             this.tlpHouseRulesMagicResonance.SuspendLayout();
             this.tlpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -2718,70 +2722,6 @@ namespace Chummer
             this.lblKarmaSpiritExtra.Text = "x Services Owed";
             this.lblKarmaSpiritExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblKarmaNewComplexForm
-            // 
-            this.lblKarmaNewComplexForm.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNewComplexForm.AutoSize = true;
-            this.lblKarmaNewComplexForm.Location = new System.Drawing.Point(419, 162);
-            this.lblKarmaNewComplexForm.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNewComplexForm.Name = "lblKarmaNewComplexForm";
-            this.lblKarmaNewComplexForm.Size = new System.Drawing.Size(98, 13);
-            this.lblKarmaNewComplexForm.TabIndex = 25;
-            this.lblKarmaNewComplexForm.Tag = "Label_Options_NewComplexForm";
-            this.lblKarmaNewComplexForm.Text = "New Complex Form";
-            this.lblKarmaNewComplexForm.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaNewComplexForm
-            // 
-            this.nudKarmaNewComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNewComplexForm.AutoSize = true;
-            this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(523, 159);
-            this.nudKarmaNewComplexForm.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaNewComplexForm.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
-            this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaNewComplexForm.TabIndex = 26;
-            // 
-            // lblKarmaMysticAdeptPowerPoint
-            // 
-            this.lblKarmaMysticAdeptPowerPoint.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaMysticAdeptPowerPoint.AutoSize = true;
-            this.lblKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(389, 136);
-            this.lblKarmaMysticAdeptPowerPoint.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaMysticAdeptPowerPoint.Name = "lblKarmaMysticAdeptPowerPoint";
-            this.lblKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(128, 13);
-            this.lblKarmaMysticAdeptPowerPoint.TabIndex = 122;
-            this.lblKarmaMysticAdeptPowerPoint.Tag = "Label_Options_KarmaMysticAdeptPowerPoint";
-            this.lblKarmaMysticAdeptPowerPoint.Text = "Mystic Adept Power Point";
-            this.lblKarmaMysticAdeptPowerPoint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaMysticAdeptPowerPoint
-            // 
-            this.nudKarmaMysticAdeptPowerPoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaMysticAdeptPowerPoint.AutoSize = true;
-            this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(523, 133);
-            this.nudKarmaMysticAdeptPowerPoint.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaMysticAdeptPowerPoint.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
-            this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
-            // 
             // lblKarmaNuyenPer
             // 
             this.lblKarmaNuyenPer.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -2858,224 +2798,6 @@ namespace Chummer
             this.nudKarmaJoinGroup.Name = "nudKarmaJoinGroup";
             this.nudKarmaJoinGroup.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaJoinGroup.TabIndex = 57;
-            // 
-            // lblKarmaNewAIProgram
-            // 
-            this.lblKarmaNewAIProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNewAIProgram.AutoSize = true;
-            this.lblKarmaNewAIProgram.Location = new System.Drawing.Point(427, 188);
-            this.lblKarmaNewAIProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNewAIProgram.Name = "lblKarmaNewAIProgram";
-            this.lblKarmaNewAIProgram.Size = new System.Drawing.Size(90, 13);
-            this.lblKarmaNewAIProgram.TabIndex = 109;
-            this.lblKarmaNewAIProgram.Tag = "Label_Options_NewAIProgram";
-            this.lblKarmaNewAIProgram.Text = "New Program (AI)";
-            this.lblKarmaNewAIProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaNewAIProgram
-            // 
-            this.nudKarmaNewAIProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNewAIProgram.AutoSize = true;
-            this.nudKarmaNewAIProgram.Location = new System.Drawing.Point(523, 185);
-            this.nudKarmaNewAIProgram.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaNewAIProgram.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaNewAIProgram.Name = "nudKarmaNewAIProgram";
-            this.nudKarmaNewAIProgram.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaNewAIProgram.TabIndex = 111;
-            // 
-            // lblKarmaNewAIAdvancedProgram
-            // 
-            this.lblKarmaNewAIAdvancedProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNewAIAdvancedProgram.AutoSize = true;
-            this.lblKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(375, 214);
-            this.lblKarmaNewAIAdvancedProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNewAIAdvancedProgram.Name = "lblKarmaNewAIAdvancedProgram";
-            this.lblKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(142, 13);
-            this.lblKarmaNewAIAdvancedProgram.TabIndex = 110;
-            this.lblKarmaNewAIAdvancedProgram.Tag = "Label_Options_NewAIAdvancedProgram";
-            this.lblKarmaNewAIAdvancedProgram.Text = "New Advanced Program (AI)";
-            this.lblKarmaNewAIAdvancedProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaNewAIAdvancedProgram
-            // 
-            this.nudKarmaNewAIAdvancedProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNewAIAdvancedProgram.AutoSize = true;
-            this.nudKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(523, 211);
-            this.nudKarmaNewAIAdvancedProgram.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaNewAIAdvancedProgram.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaNewAIAdvancedProgram.Name = "nudKarmaNewAIAdvancedProgram";
-            this.nudKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaNewAIAdvancedProgram.TabIndex = 112;
-            // 
-            // lblKarmaMetamagic
-            // 
-            this.lblKarmaMetamagic.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaMetamagic.AutoSize = true;
-            this.lblKarmaMetamagic.Location = new System.Drawing.Point(363, 266);
-            this.lblKarmaMetamagic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaMetamagic.Name = "lblKarmaMetamagic";
-            this.lblKarmaMetamagic.Size = new System.Drawing.Size(154, 13);
-            this.lblKarmaMetamagic.TabIndex = 57;
-            this.lblKarmaMetamagic.Tag = "Label_Options_Metamagics";
-            this.lblKarmaMetamagic.Text = "Additional Metamagics/Echoes";
-            this.lblKarmaMetamagic.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaMetamagic
-            // 
-            this.nudKarmaMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaMetamagic.AutoSize = true;
-            this.nudKarmaMetamagic.Location = new System.Drawing.Point(523, 263);
-            this.nudKarmaMetamagic.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaMetamagic.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
-            this.nudKarmaMetamagic.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaMetamagic.TabIndex = 58;
-            // 
-            // lblKarmaTechnique
-            // 
-            this.lblKarmaTechnique.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaTechnique.AutoSize = true;
-            this.lblKarmaTechnique.Location = new System.Drawing.Point(409, 292);
-            this.lblKarmaTechnique.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaTechnique.Name = "lblKarmaTechnique";
-            this.lblKarmaTechnique.Size = new System.Drawing.Size(108, 13);
-            this.lblKarmaTechnique.TabIndex = 39;
-            this.lblKarmaTechnique.Tag = "Label_Options_MartialArtTechnique";
-            this.lblKarmaTechnique.Text = "Martial Art Technique";
-            this.lblKarmaTechnique.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaTechnique
-            // 
-            this.nudKarmaTechnique.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaTechnique.AutoSize = true;
-            this.nudKarmaTechnique.Location = new System.Drawing.Point(523, 289);
-            this.nudKarmaTechnique.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaTechnique.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaTechnique.Name = "nudKarmaTechnique";
-            this.nudKarmaTechnique.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaTechnique.TabIndex = 40;
-            // 
-            // flpKarmaInitiation
-            // 
-            this.flpKarmaInitiation.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.flpKarmaInitiation.AutoSize = true;
-            this.flpKarmaInitiation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpKarmaInitiation.Controls.Add(this.lblKarmaInitiation);
-            this.flpKarmaInitiation.Controls.Add(this.lblKarmaInitiationBracket);
-            this.flpKarmaInitiation.Location = new System.Drawing.Point(386, 234);
-            this.flpKarmaInitiation.Margin = new System.Windows.Forms.Padding(0);
-            this.flpKarmaInitiation.Name = "flpKarmaInitiation";
-            this.flpKarmaInitiation.Size = new System.Drawing.Size(134, 25);
-            this.flpKarmaInitiation.TabIndex = 128;
-            this.flpKarmaInitiation.WrapContents = false;
-            // 
-            // lblKarmaInitiation
-            // 
-            this.lblKarmaInitiation.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaInitiation.AutoSize = true;
-            this.lblKarmaInitiation.Location = new System.Drawing.Point(3, 6);
-            this.lblKarmaInitiation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaInitiation.Name = "lblKarmaInitiation";
-            this.lblKarmaInitiation.Size = new System.Drawing.Size(112, 13);
-            this.lblKarmaInitiation.TabIndex = 53;
-            this.lblKarmaInitiation.Tag = "Label_Options_Initiation";
-            this.lblKarmaInitiation.Text = "Initiation / Submersion";
-            this.lblKarmaInitiation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblKarmaInitiationBracket
-            // 
-            this.lblKarmaInitiationBracket.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaInitiationBracket.AutoSize = true;
-            this.lblKarmaInitiationBracket.Location = new System.Drawing.Point(121, 6);
-            this.lblKarmaInitiationBracket.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaInitiationBracket.Name = "lblKarmaInitiationBracket";
-            this.lblKarmaInitiationBracket.Size = new System.Drawing.Size(10, 13);
-            this.lblKarmaInitiationBracket.TabIndex = 54;
-            this.lblKarmaInitiationBracket.Text = "(";
-            this.lblKarmaInitiationBracket.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaInitiation
-            // 
-            this.nudKarmaInitiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaInitiation.AutoSize = true;
-            this.nudKarmaInitiation.Location = new System.Drawing.Point(523, 237);
-            this.nudKarmaInitiation.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaInitiation.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaInitiation.Name = "nudKarmaInitiation";
-            this.nudKarmaInitiation.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaInitiation.TabIndex = 55;
-            // 
-            // lblKarmaInitiationExtra
-            // 
-            this.lblKarmaInitiationExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaInitiationExtra.AutoSize = true;
-            this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(570, 240);
-            this.lblKarmaInitiationExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaInitiationExtra.Name = "lblKarmaInitiationExtra";
-            this.lblKarmaInitiationExtra.Size = new System.Drawing.Size(83, 13);
-            this.lblKarmaInitiationExtra.TabIndex = 56;
-            this.lblKarmaInitiationExtra.Tag = "Label_Options_NewRatingPlus";
-            this.lblKarmaInitiationExtra.Text = "x New Rating) +";
-            this.lblKarmaInitiationExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // nudKarmaInitiationFlat
-            // 
-            this.nudKarmaInitiationFlat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaInitiationFlat.AutoSize = true;
-            this.nudKarmaInitiationFlat.Location = new System.Drawing.Point(659, 237);
-            this.nudKarmaInitiationFlat.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaInitiationFlat.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaInitiationFlat.Name = "nudKarmaInitiationFlat";
-            this.nudKarmaInitiationFlat.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaInitiationFlat.TabIndex = 121;
             // 
             // lblKarmaCarryover
             // 
@@ -3384,6 +3106,334 @@ namespace Chummer
             0,
             0});
             // 
+            // lblKarmaTechnique
+            // 
+            this.lblKarmaTechnique.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaTechnique.AutoSize = true;
+            this.lblKarmaTechnique.Location = new System.Drawing.Point(409, 292);
+            this.lblKarmaTechnique.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaTechnique.Name = "lblKarmaTechnique";
+            this.lblKarmaTechnique.Size = new System.Drawing.Size(108, 13);
+            this.lblKarmaTechnique.TabIndex = 39;
+            this.lblKarmaTechnique.Tag = "Label_Options_MartialArtTechnique";
+            this.lblKarmaTechnique.Text = "Martial Art Technique";
+            this.lblKarmaTechnique.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaMetamagic
+            // 
+            this.lblKarmaMetamagic.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaMetamagic.AutoSize = true;
+            this.lblKarmaMetamagic.Location = new System.Drawing.Point(363, 266);
+            this.lblKarmaMetamagic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaMetamagic.Name = "lblKarmaMetamagic";
+            this.lblKarmaMetamagic.Size = new System.Drawing.Size(154, 13);
+            this.lblKarmaMetamagic.TabIndex = 57;
+            this.lblKarmaMetamagic.Tag = "Label_Options_Metamagics";
+            this.lblKarmaMetamagic.Text = "Additional Metamagics/Echoes";
+            this.lblKarmaMetamagic.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // flpKarmaInitiation
+            // 
+            this.flpKarmaInitiation.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.flpKarmaInitiation.AutoSize = true;
+            this.flpKarmaInitiation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpKarmaInitiation.Controls.Add(this.lblKarmaInitiation);
+            this.flpKarmaInitiation.Controls.Add(this.lblKarmaInitiationBracket);
+            this.flpKarmaInitiation.Location = new System.Drawing.Point(386, 234);
+            this.flpKarmaInitiation.Margin = new System.Windows.Forms.Padding(0);
+            this.flpKarmaInitiation.Name = "flpKarmaInitiation";
+            this.flpKarmaInitiation.Size = new System.Drawing.Size(134, 25);
+            this.flpKarmaInitiation.TabIndex = 128;
+            this.flpKarmaInitiation.WrapContents = false;
+            // 
+            // lblKarmaInitiation
+            // 
+            this.lblKarmaInitiation.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaInitiation.AutoSize = true;
+            this.lblKarmaInitiation.Location = new System.Drawing.Point(3, 6);
+            this.lblKarmaInitiation.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaInitiation.Name = "lblKarmaInitiation";
+            this.lblKarmaInitiation.Size = new System.Drawing.Size(112, 13);
+            this.lblKarmaInitiation.TabIndex = 53;
+            this.lblKarmaInitiation.Tag = "Label_Options_Initiation";
+            this.lblKarmaInitiation.Text = "Initiation / Submersion";
+            this.lblKarmaInitiation.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaInitiationBracket
+            // 
+            this.lblKarmaInitiationBracket.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaInitiationBracket.AutoSize = true;
+            this.lblKarmaInitiationBracket.Location = new System.Drawing.Point(121, 6);
+            this.lblKarmaInitiationBracket.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaInitiationBracket.Name = "lblKarmaInitiationBracket";
+            this.lblKarmaInitiationBracket.Size = new System.Drawing.Size(10, 13);
+            this.lblKarmaInitiationBracket.TabIndex = 54;
+            this.lblKarmaInitiationBracket.Text = "(";
+            this.lblKarmaInitiationBracket.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaNewAIAdvancedProgram
+            // 
+            this.lblKarmaNewAIAdvancedProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNewAIAdvancedProgram.AutoSize = true;
+            this.lblKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(375, 214);
+            this.lblKarmaNewAIAdvancedProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNewAIAdvancedProgram.Name = "lblKarmaNewAIAdvancedProgram";
+            this.lblKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(142, 13);
+            this.lblKarmaNewAIAdvancedProgram.TabIndex = 110;
+            this.lblKarmaNewAIAdvancedProgram.Tag = "Label_Options_NewAIAdvancedProgram";
+            this.lblKarmaNewAIAdvancedProgram.Text = "New Advanced Program (AI)";
+            this.lblKarmaNewAIAdvancedProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaNewAIProgram
+            // 
+            this.lblKarmaNewAIProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNewAIProgram.AutoSize = true;
+            this.lblKarmaNewAIProgram.Location = new System.Drawing.Point(427, 188);
+            this.lblKarmaNewAIProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNewAIProgram.Name = "lblKarmaNewAIProgram";
+            this.lblKarmaNewAIProgram.Size = new System.Drawing.Size(90, 13);
+            this.lblKarmaNewAIProgram.TabIndex = 109;
+            this.lblKarmaNewAIProgram.Tag = "Label_Options_NewAIProgram";
+            this.lblKarmaNewAIProgram.Text = "New Program (AI)";
+            this.lblKarmaNewAIProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaNewComplexForm
+            // 
+            this.lblKarmaNewComplexForm.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNewComplexForm.AutoSize = true;
+            this.lblKarmaNewComplexForm.Location = new System.Drawing.Point(419, 162);
+            this.lblKarmaNewComplexForm.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNewComplexForm.Name = "lblKarmaNewComplexForm";
+            this.lblKarmaNewComplexForm.Size = new System.Drawing.Size(98, 13);
+            this.lblKarmaNewComplexForm.TabIndex = 25;
+            this.lblKarmaNewComplexForm.Tag = "Label_Options_NewComplexForm";
+            this.lblKarmaNewComplexForm.Text = "New Complex Form";
+            this.lblKarmaNewComplexForm.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaMysticAdeptPowerPoint
+            // 
+            this.lblKarmaMysticAdeptPowerPoint.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaMysticAdeptPowerPoint.AutoSize = true;
+            this.lblKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(389, 136);
+            this.lblKarmaMysticAdeptPowerPoint.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaMysticAdeptPowerPoint.Name = "lblKarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(128, 13);
+            this.lblKarmaMysticAdeptPowerPoint.TabIndex = 122;
+            this.lblKarmaMysticAdeptPowerPoint.Tag = "Label_Options_KarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Text = "Mystic Adept Power Point";
+            this.lblKarmaMysticAdeptPowerPoint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaTechnique
+            // 
+            this.nudKarmaTechnique.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaTechnique.AutoSize = true;
+            this.nudKarmaTechnique.Location = new System.Drawing.Point(523, 289);
+            this.nudKarmaTechnique.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaTechnique.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaTechnique.Name = "nudKarmaTechnique";
+            this.nudKarmaTechnique.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaTechnique.TabIndex = 40;
+            // 
+            // nudKarmaMetamagic
+            // 
+            this.nudKarmaMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMetamagic.AutoSize = true;
+            this.nudKarmaMetamagic.Location = new System.Drawing.Point(523, 263);
+            this.nudKarmaMetamagic.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaMetamagic.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
+            this.nudKarmaMetamagic.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaMetamagic.TabIndex = 58;
+            // 
+            // nudKarmaInitiation
+            // 
+            this.nudKarmaInitiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaInitiation.AutoSize = true;
+            this.nudKarmaInitiation.Location = new System.Drawing.Point(523, 237);
+            this.nudKarmaInitiation.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaInitiation.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaInitiation.Name = "nudKarmaInitiation";
+            this.nudKarmaInitiation.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaInitiation.TabIndex = 55;
+            // 
+            // lblKarmaInitiationExtra
+            // 
+            this.lblKarmaInitiationExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaInitiationExtra.AutoSize = true;
+            this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(570, 240);
+            this.lblKarmaInitiationExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaInitiationExtra.Name = "lblKarmaInitiationExtra";
+            this.lblKarmaInitiationExtra.Size = new System.Drawing.Size(83, 13);
+            this.lblKarmaInitiationExtra.TabIndex = 56;
+            this.lblKarmaInitiationExtra.Tag = "Label_Options_NewRatingPlus";
+            this.lblKarmaInitiationExtra.Text = "x New Rating) +";
+            this.lblKarmaInitiationExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // nudKarmaInitiationFlat
+            // 
+            this.nudKarmaInitiationFlat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaInitiationFlat.AutoSize = true;
+            this.nudKarmaInitiationFlat.Location = new System.Drawing.Point(659, 237);
+            this.nudKarmaInitiationFlat.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaInitiationFlat.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaInitiationFlat.Name = "nudKarmaInitiationFlat";
+            this.nudKarmaInitiationFlat.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaInitiationFlat.TabIndex = 121;
+            // 
+            // nudKarmaNewAIAdvancedProgram
+            // 
+            this.nudKarmaNewAIAdvancedProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIAdvancedProgram.AutoSize = true;
+            this.nudKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(523, 211);
+            this.nudKarmaNewAIAdvancedProgram.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIAdvancedProgram.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIAdvancedProgram.Name = "nudKarmaNewAIAdvancedProgram";
+            this.nudKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaNewAIAdvancedProgram.TabIndex = 112;
+            // 
+            // nudKarmaNewAIProgram
+            // 
+            this.nudKarmaNewAIProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIProgram.AutoSize = true;
+            this.nudKarmaNewAIProgram.Location = new System.Drawing.Point(523, 185);
+            this.nudKarmaNewAIProgram.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIProgram.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIProgram.Name = "nudKarmaNewAIProgram";
+            this.nudKarmaNewAIProgram.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaNewAIProgram.TabIndex = 111;
+            // 
+            // nudKarmaNewComplexForm
+            // 
+            this.nudKarmaNewComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewComplexForm.AutoSize = true;
+            this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(523, 159);
+            this.nudKarmaNewComplexForm.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewComplexForm.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
+            this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaNewComplexForm.TabIndex = 26;
+            // 
+            // nudKarmaMysticAdeptPowerPoint
+            // 
+            this.nudKarmaMysticAdeptPowerPoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMysticAdeptPowerPoint.AutoSize = true;
+            this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(523, 133);
+            this.nudKarmaMysticAdeptPowerPoint.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaMysticAdeptPowerPoint.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
+            this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
+            // 
+            // lblKarmaSpiritFettering
+            // 
+            this.lblKarmaSpiritFettering.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaSpiritFettering.AutoSize = true;
+            this.lblKarmaSpiritFettering.Location = new System.Drawing.Point(443, 110);
+            this.lblKarmaSpiritFettering.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSpiritFettering.Name = "lblKarmaSpiritFettering";
+            this.lblKarmaSpiritFettering.Size = new System.Drawing.Size(74, 13);
+            this.lblKarmaSpiritFettering.TabIndex = 129;
+            this.lblKarmaSpiritFettering.Tag = "Label_Options_SpiritFettering";
+            this.lblKarmaSpiritFettering.Text = "Spirit Fettering";
+            this.lblKarmaSpiritFettering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaSpiritFettering
+            // 
+            this.nudKarmaSpiritFettering.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpiritFettering.AutoSize = true;
+            this.nudKarmaSpiritFettering.Location = new System.Drawing.Point(523, 107);
+            this.nudKarmaSpiritFettering.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSpiritFettering.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaSpiritFettering.Name = "nudKarmaSpiritFettering";
+            this.nudKarmaSpiritFettering.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaSpiritFettering.TabIndex = 130;
+            // 
+            // lblKarmaSpiritFetteringExtra
+            // 
+            this.lblKarmaSpiritFetteringExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaSpiritFetteringExtra.AutoSize = true;
+            this.tlpKarmaCosts.SetColumnSpan(this.lblKarmaSpiritFetteringExtra, 2);
+            this.lblKarmaSpiritFetteringExtra.Location = new System.Drawing.Point(570, 110);
+            this.lblKarmaSpiritFetteringExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSpiritFetteringExtra.Name = "lblKarmaSpiritFetteringExtra";
+            this.lblKarmaSpiritFetteringExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaSpiritFetteringExtra.TabIndex = 131;
+            this.lblKarmaSpiritFetteringExtra.Tag = "Label_Options_Force";
+            this.lblKarmaSpiritFetteringExtra.Text = "x Force";
+            this.lblKarmaSpiritFetteringExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // tabCustomData
             // 
             this.tabCustomData.BackColor = System.Drawing.SystemColors.Control;
@@ -3626,6 +3676,7 @@ namespace Chummer
             // flpDirectoryDependencies
             // 
             this.flpDirectoryDependencies.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpDirectoryDependencies.Controls.Add(this.lblDependencyList);
             this.flpDirectoryDependencies.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpDirectoryDependencies.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpDirectoryDependencies.Location = new System.Drawing.Point(3, 16);
@@ -3650,6 +3701,7 @@ namespace Chummer
             // flpExclusivities
             // 
             this.flpExclusivities.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpExclusivities.Controls.Add(this.lblExclusivityList);
             this.flpExclusivities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpExclusivities.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
             this.flpExclusivities.Location = new System.Drawing.Point(3, 16);
@@ -4479,51 +4531,23 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // lblKarmaSpiritFettering
+            // lblDependencyList
             // 
-            this.lblKarmaSpiritFettering.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaSpiritFettering.AutoSize = true;
-            this.lblKarmaSpiritFettering.Location = new System.Drawing.Point(443, 110);
-            this.lblKarmaSpiritFettering.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSpiritFettering.Name = "lblKarmaSpiritFettering";
-            this.lblKarmaSpiritFettering.Size = new System.Drawing.Size(74, 13);
-            this.lblKarmaSpiritFettering.TabIndex = 129;
-            this.lblKarmaSpiritFettering.Tag = "Label_Options_SpiritFettering";
-            this.lblKarmaSpiritFettering.Text = "Spirit Fettering";
-            this.lblKarmaSpiritFettering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblDependencyList.AutoSize = true;
+            this.lblDependencyList.Location = new System.Drawing.Point(3, 0);
+            this.lblDependencyList.Name = "lblDependencyList";
+            this.lblDependencyList.Size = new System.Drawing.Size(97, 13);
+            this.lblDependencyList.TabIndex = 0;
+            this.lblDependencyList.Text = "[DEPENDENCIES]";
             // 
-            // nudKarmaSpiritFettering
+            // lblExclusivityList
             // 
-            this.nudKarmaSpiritFettering.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaSpiritFettering.AutoSize = true;
-            this.nudKarmaSpiritFettering.Location = new System.Drawing.Point(523, 107);
-            this.nudKarmaSpiritFettering.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaSpiritFettering.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaSpiritFettering.Name = "nudKarmaSpiritFettering";
-            this.nudKarmaSpiritFettering.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaSpiritFettering.TabIndex = 130;
-            // 
-            // lblKarmaSpiritFetteringExtra
-            // 
-            this.lblKarmaSpiritFetteringExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaSpiritFetteringExtra.AutoSize = true;
-            this.tlpKarmaCosts.SetColumnSpan(this.lblKarmaSpiritFetteringExtra, 2);
-            this.lblKarmaSpiritFetteringExtra.Location = new System.Drawing.Point(570, 110);
-            this.lblKarmaSpiritFetteringExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSpiritFetteringExtra.Name = "lblKarmaSpiritFetteringExtra";
-            this.lblKarmaSpiritFetteringExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaSpiritFetteringExtra.TabIndex = 131;
-            this.lblKarmaSpiritFetteringExtra.Tag = "Label_Options_Force";
-            this.lblKarmaSpiritFetteringExtra.Text = "x Force";
-            this.lblKarmaSpiritFetteringExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblExclusivityList.AutoSize = true;
+            this.lblExclusivityList.Location = new System.Drawing.Point(3, 0);
+            this.lblExclusivityList.Name = "lblExclusivityList";
+            this.lblExclusivityList.Size = new System.Drawing.Size(92, 13);
+            this.lblExclusivityList.TabIndex = 0;
+            this.lblExclusivityList.Text = "[EXCLUSIVITIES]";
             // 
             // frmCharacterOptions
             // 
@@ -4614,18 +4638,8 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).EndInit();
-            this.flpKarmaInitiation.ResumeLayout(false);
-            this.flpKarmaInitiation.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).EndInit();
@@ -4633,6 +4647,17 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
+            this.flpKarmaInitiation.ResumeLayout(false);
+            this.flpKarmaInitiation.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).EndInit();
             this.tabCustomData.ResumeLayout(false);
             this.tabCustomData.PerformLayout();
             this.tlpOptionalRules.ResumeLayout(false);
@@ -4641,7 +4666,11 @@ namespace Chummer
             this.tlpDirectoryInfo.ResumeLayout(false);
             this.tlpDirectoryInfo.PerformLayout();
             this.gbpDirectoryInfoDependencies.ResumeLayout(false);
+            this.flpDirectoryDependencies.ResumeLayout(false);
+            this.flpDirectoryDependencies.PerformLayout();
             this.gbpDirectoryInfoExclusivities.ResumeLayout(false);
+            this.flpExclusivities.ResumeLayout(false);
+            this.flpExclusivities.PerformLayout();
             this.tabHouseRules.ResumeLayout(false);
             this.flpHouseRules.ResumeLayout(false);
             this.flpHouseRules.PerformLayout();
@@ -4670,7 +4699,6 @@ namespace Chummer
             this.tlpHouseRulesMagicResonance.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4941,5 +4969,7 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpDirectoryDependencies;
         private System.Windows.Forms.Label lblDirectoryAuthorsLabel;
         private System.Windows.Forms.TextBox tboxDirectoryDescription;
+        private System.Windows.Forms.Label lblDependencyList;
+        private System.Windows.Forms.Label lblExclusivityList;
     }
 }

@@ -7950,7 +7950,7 @@
     </string>
     <string>
       <key>Tooltip_CharacterOptions_ManifestMissing</key>
-      <text>There is no, an empty or an inaccessible manifest.xml present for this Custom Data Directory.</text>
+      <text>There is no or an inaccessible manifest.xml present for this Custom Data Directory.</text>
     </string>
     <string>
       <key>Tooltip_CharacterOptions_LanguageSpecificManifestMissing</key>
@@ -7990,23 +7990,23 @@
     </string>
     <string>
       <key>Tooltip_Dependency_Missing</key>
-      <text>Missing dependencies: {0}</text>
+      <text>Missing dependencies:</text>
     </string>
     <string>
       <key>Tooltip_Exclusivity_Present</key>
-      <text>Present exclusivities: {0}</text>
+      <text>Present exclusivities:</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_VersionMismatch</key>
+      <text>{0} version does not meet the required version range of {1}</text>
+    </string>
+    <string>
+      <key>Tooltip_Exclusivity_VersionMismatch</key>
+      <text>{0} is incompatible with {1}</text>
     </string>
     <string>
       <key>IsMainAuthor</key>
       <text> (Main)</text>
-    </string>
-    <string>
-      <key>AddVersion</key>
-      <text> (Version: {0})</text>
-    </string>
-    <string>
-      <key>AddMinimumVersion</key>
-      <text> (Version: {0} or greater)</text>
     </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->

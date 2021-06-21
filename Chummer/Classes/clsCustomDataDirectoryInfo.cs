@@ -1,176 +1,276 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
 namespace Chummer
 {
+    /// <summary>
+    /// This class holds all information about an CustomDataDirectory
+    /// </summary>
     public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>
     {
-        private bool _blnCreated;
-        private int _version;
+        private readonly decimal _version;
+        private readonly Guid _guid;
+        private bool _isCreated;
+        private readonly Exception _xmlException;
 
-        //Tuple<int Hash, string Name, int Version, bool isMinimumVersion>
-        private readonly List<Tuple<Guid, string, int, bool>> _lstDependencies= new List<Tuple<Guid, string, int, bool>>();
-        //Tuple<int Hash, string Name, int Version, bool ignoreVersion>
-        private readonly List<Tuple<Guid, string, int, bool>> _lstExclusivities = new List<Tuple<Guid, string, int, bool>>();
-        private Guid _guid;
+        private readonly List<DirectoryDependency> _lstDependencies = new List<DirectoryDependency>();
+        private readonly List<DirectoryDependency> _lstExclusivities = new List<DirectoryDependency>();
+
+        private readonly Dictionary<string, bool> _authorDictionary = new Dictionary<string, bool>();
+        private readonly Dictionary<string, string> _descriptionDictionary = new Dictionary<string, string>();
 
         public CustomDataDirectoryInfo(string strName, string strPath)
         {
             Name = strName;
             Path = strPath;
-            Create();
+
+            //Load all the needed data from xml and form the correct strings
+            try
+            {
+                XmlDocument xmlObjManifest = new XmlDocument();
+                string strFullDirectory = System.IO.Path.Combine(Path, "manifest.xml");
+
+                if (File.Exists(strFullDirectory))
+                {
+                    xmlObjManifest.LoadStandard(strFullDirectory);
+
+                    var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
+
+                    xmlNode.TryGetDecFieldQuickly("version", ref _version);
+                    xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
+
+                    GetManifestDescriptions(xmlNode);
+                    GetManifestAuthors(xmlNode);
+                    GetDependencies(xmlNode);
+                    GetExclusivities(xmlNode);
+                    DisplayName = GetDisplayName();
+                }
+            }
+            catch (Exception ex)
+            {
+                //we save the exception to show it when opening CharacterOptions, see comment in LazyCreate() for the reasoning.
+                _xmlException = ex;
+            }
+
+            #region Local Methods
+            string GetDisplayName()
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(Name);
+                sb.Append(" ");
+                sb.Append("(");
+                sb.Append(Version.ToString(GlobalOptions.CultureInfo));
+                sb.Append(")");
+                return sb.ToString();
+            }
+            void GetManifestDescriptions(XmlNode xmlDocument)
+            {
+                XmlNodeList xmlDescriptionNodes = xmlDocument.SelectNodes("descriptions/description");
+
+                if (xmlDescriptionNodes == null)
+                    return;
+
+                foreach (XmlNode descriptionNode in xmlDescriptionNodes)
+                {
+                    string text = string.Empty;
+                    string language = string.Empty;
+
+                    descriptionNode.TryGetStringFieldQuickly("text", ref text);
+                    descriptionNode.TryGetStringFieldQuickly("lang", ref language);
+
+                    if (!string.IsNullOrEmpty(language))
+                        _descriptionDictionary.Add(language, text);
+                }
+                //SetDisplayDescription();
+            }
+            //Must be called after DisplayDictionary was populated!
+
+            void GetManifestAuthors(XmlNode xmlDocument)
+            {
+                XmlNodeList xmlAuthorNodes = xmlDocument.SelectNodes("authors/author");
+
+                if (xmlAuthorNodes == null)
+                    return;
+
+                foreach (XmlNode objXmlNode in xmlAuthorNodes)
+                {
+                    string authorName = string.Empty;
+                    bool isMain = false;
+
+                    objXmlNode.TryGetStringFieldQuickly("name", ref authorName);
+                    objXmlNode.TryGetBoolFieldQuickly("main", ref isMain);
+
+                    if (!string.IsNullOrEmpty(authorName))
+                        //Maybe a stupid idea? But who would add two authors with the same name anyway?
+                        _authorDictionary.Add(authorName, isMain);
+                }
+                //After the list is fully formed, set the display author
+                //SetDisplayAuthors();
+            }
+            //Must be called after AuthorDictionary was populated!
+
+            void GetDependencies(XmlNode xmlDocument)
+            {
+                XmlNodeList xmlDependencies = xmlDocument.SelectNodes("dependencies/dependency");
+
+                if (xmlDependencies == null)
+                    return;
+
+                foreach (XmlNode objXmlNode in xmlDependencies)
+                {
+                    Guid depGuid = Guid.Empty;
+                    var newMaximumVersion = decimal.MaxValue; //If no upper limit is given, assume the maximum possible version
+                    var newMinimumVersion = decimal.MinValue; //If no lower limit is given, assume the lowest possible version
+
+                    string newName = string.Empty;
+
+                    objXmlNode.TryGetStringFieldQuickly("name", ref newName);
+                    objXmlNode.TryGetDecFieldQuickly("maxversion", ref newMaximumVersion);
+                    objXmlNode.TryGetDecFieldQuickly("minversion", ref newMinimumVersion);
+                    objXmlNode.TryGetGuidFieldQuickly("guid", ref depGuid);
+
+                    //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
+                    if (string.IsNullOrEmpty(newName) || depGuid == Guid.Empty)
+                        continue;
+
+                    DirectoryDependency newDependency = new DirectoryDependency(newName, depGuid, newMinimumVersion, newMaximumVersion);
+
+                    _lstDependencies.Add(newDependency);
+                }
+            }
+            void GetExclusivities(XmlNode xmlDocument)
+            {
+                XmlNodeList xmlExclusivities = xmlDocument.SelectNodes("exclusivities/exclusivity");
+
+                if (xmlExclusivities == null)
+                    return;
+
+                foreach (XmlNode objXmlNode in xmlExclusivities)
+                {
+                    Guid depGuid = Guid.Empty;
+                    var newMaximumVersion = decimal.MaxValue; //If no upper limit is given, assume the maximum possible version
+                    var newMinimumVersion = decimal.MinValue; //If no lower limit is given, assume the lowest possible version
+                    string newName = string.Empty;
+
+                    objXmlNode.TryGetStringFieldQuickly("name", ref newName);
+                    objXmlNode.TryGetDecFieldQuickly("maxversion", ref newMaximumVersion);
+                    objXmlNode.TryGetDecFieldQuickly("minversion", ref newMinimumVersion);
+                    objXmlNode.TryGetGuidFieldQuickly("guid", ref depGuid);
+
+                    //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
+                    if (string.IsNullOrEmpty(newName) || depGuid == Guid.Empty)
+                        continue;
+
+                    DirectoryDependency newExclusivity = new DirectoryDependency(newName, depGuid, newMinimumVersion, newMaximumVersion);
+                    _lstExclusivities.Add(newExclusivity);
+                }
+            }
+            #endregion
         }
 
-
-        #region Create, Load and Save Methods
-
-        #region Create() Helper Methods
         /// <summary>
-        /// Reads in all descriptions from an given loaded manifest.xml and adds them to _lstDescriptions
+        /// Contains all needed methods, that depend on LanguageManager.GetString and can't be called in the constructor or an exception will occur.
         /// </summary>
-        /// <param name="xmlDocument"></param>
-        private void GetManifestDescriptions(XmlNode xmlDocument)
+        public void LazyCreate()
         {
-            XmlNodeList xmlDescriptionNodes = xmlDocument.SelectNodes("descriptions/description");
+            //Explanation: LanguageManager.GetString seems to create some win32Window Objects and will cause Application.SetCompatibleTextRenderingDefault(false);
+            //and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after 
+            //SetProcessDPI(GlobalOptions.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
+            //the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterOptions are opened.
 
-            if (xmlDescriptionNodes == null)
+            //any message box creation in the constructor will violently kill chummer, because the CultureInfo was not set at that point in time. For that we show the massage, when opening CharacterOptions
+            if (_xmlException != default)
+            {
+                Program.MainForm.ShowMessageBox(
+                    string.Format(GlobalOptions.CultureInfo,
+                        LanguageManager.GetString("Message_FailedLoad"), _xmlException.Message),
+                    string.Format(GlobalOptions.CultureInfo,
+                        LanguageManager.GetString("MessageTitle_FailedLoad")
+                        + " " + Name),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (_isCreated)
                 return;
 
-            foreach (XmlNode descriptionNode in xmlDescriptionNodes)
+            var strFullDirectory = System.IO.Path.Combine(Path, "manifest.xml");
+            if (!File.Exists(strFullDirectory))
             {
-                descriptionNode.TryGetField("text", out string text);
-                descriptionNode.TryGetField("lang", out string language);
-
-                if(!string.IsNullOrEmpty(language))
-                    DescriptionDictionary.Add(language, text);
-            }
-            SetDisplayDescription();
-        }
-
-        /// <summary>
-        /// Selects the description in the correct language and saves it to _strDisplayDescription
-        /// </summary>
-        private void SetDisplayDescription()
-        {
-            bool blnDefaultedToEng = false;
-
-            DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description);
-
-            if (string.IsNullOrEmpty(description))
-            {
-                DescriptionDictionary.TryGetValue("en-us", out description);
-                blnDefaultedToEng = true;
-            }
-
-            if (string.IsNullOrEmpty(description))
-            {
+                _isCreated = true;
                 DisplayDescription = LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
                 return;
             }
-
-            if (blnDefaultedToEng)
-                description =
-                    LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
-                    Environment.NewLine + Environment.NewLine + description;
             
-            DisplayDescription = description;
-        }
-
-        /// <summary>
-        /// Loads all authors from an given loaded manifest.xml and saves them to _lstAuthors
-        /// </summary>
-        /// <param name="xmlDocument"></param>
-        private void GetManifestAuthors(XmlNode xmlDocument)
-        {
-            XmlNodeList xmlAuthorNodes = xmlDocument.SelectNodes("authors/author");
-
-            if (xmlAuthorNodes == null)
-                return;
-
-            foreach (XmlNode objXmlNode in xmlAuthorNodes)
+            try
             {
-                objXmlNode.TryGetField("name", out string authorName);
-                objXmlNode.TryGetField("main", out bool authorMain);
-
-                if(!string.IsNullOrEmpty(authorName))
-                    //Maybe a stupid idea? But who would add two authors with the same name anyway?
-                    AuthorDictionary.Add(authorName, authorMain);
+                DisplayAuthors = SetDisplayAuthors();
+                DisplayDescription = SetDisplayDescription();
             }
-            //After the list is fully formed, set the display author
-            SetDisplayAuthors();
-        }
-
-        /// <summary>
-        /// Sets the DisplayAuthors to be a sting of all authors separated with "," and marked with main-
-        /// </summary>
-        private void SetDisplayAuthors()
-        {
-            List<string> authorsList = new List<string>();
-            foreach ( KeyValuePair<string, bool> kvp in AuthorDictionary)
+            finally
             {
-                string formattedName = kvp.Key;
-
-                if (kvp.Value)
-                    formattedName = kvp.Key + LanguageManager.GetString("IsMainAuthor");
-
-                authorsList.Add(formattedName);
+                _isCreated = true;
             }
-            DisplayAuthors = string.Join(", ", authorsList.ToArray());
-        }
 
-        /// <summary>
-        /// Loads all dependencies from an given loaded manifest.xml and saves them to DependenciesList
-        /// </summary>
-        /// <param name="xmlDocument"></param>
-        private void GetDependencies(XmlNode xmlDocument)
-        {
-            XmlNodeList xmlDependencies = xmlDocument.SelectNodes("dependencies/dependency");
 
-            if (xmlDependencies == null)
-                return;
-
-            foreach (XmlNode objXmlNode in xmlDependencies)
+            string SetDisplayDescription()
             {
-                Guid depGuid = Guid.Empty;
-                objXmlNode.TryGetField("name", out string newName);
-                objXmlNode.TryGetField("version", out int newVersion);
-                objXmlNode.TryGetGuidFieldQuickly("guid", ref depGuid);
-                objXmlNode.TryGetField("isminimumversion", out bool isMinimumVersion);
+                bool blnDefaultedToEng = false;
 
-                if (string.IsNullOrEmpty(newName) || newVersion == int.MinValue || depGuid == Guid.Empty)
-                    continue;
+                DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description);
 
-                _lstDependencies.Add(Tuple.Create(depGuid, newName, newVersion, isMinimumVersion));
+                if (string.IsNullOrEmpty(description))
+                {
+                    DescriptionDictionary.TryGetValue("en-us", out description);
+                    blnDefaultedToEng = true;
+                }
+
+                if (string.IsNullOrEmpty(description))
+                    return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing");
+
+                if (blnDefaultedToEng)
+                    description =
+                        LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
+                        Environment.NewLine + Environment.NewLine + description;
+
+                return description;
             }
-        }
-
-        /// <summary>
-        /// Loads all dependencies from an given loaded manifest.xml and saves them to ExclusivitiesList
-        /// </summary>
-        /// <param name="xmlDocument"></param>
-        private void GetExclusivities(XmlNode xmlDocument)
-        {
-            XmlNodeList xmlExclusivities = xmlDocument.SelectNodes("exclusivities/exclusivity");
-
-            if (xmlExclusivities == null)
-                return;
-
-            foreach (XmlNode objXmlNode in xmlExclusivities)
+            string SetDisplayAuthors()
             {
-                Guid newGuid = Guid.Empty;
-                objXmlNode.TryGetField("name", out string newName);
-                objXmlNode.TryGetField("version", out int newVersion);
-                objXmlNode.TryGetGuidFieldQuickly("guid", ref newGuid);
-                objXmlNode.TryGetField("ignoreversion", out bool isMinimumVersion);
+                List<string> authorsList = new List<string>();
+                foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
+                {
+                    string formattedName = kvp.Key;
 
-                if (string.IsNullOrEmpty(newName) || newVersion == int.MinValue || newGuid == Guid.Empty)
-                    continue;
+                    if (kvp.Value)
+                        formattedName = kvp.Key + LanguageManager.GetString("IsMainAuthor");
 
-                _lstExclusivities.Add(Tuple.Create(newGuid, newName, newVersion, isMinimumVersion));
+                    authorsList.Add(formattedName);
+                }
+                return string.Join(", ", authorsList.ToArray());
             }
         }
 
@@ -209,54 +309,6 @@ namespace Chummer
 
             return intHash;
         }*/
-        #endregion
-
-        /// <summary>
-        /// Loads and gets all relevant infos from the manifest.xml and stores them in the respective property
-        /// </summary>
-        private void Create()
-        {
-            if (_blnCreated)
-                return;
-
-            try
-            {
-                XmlDocument xmlObjManifest = new XmlDocument();
-                string strFullDirectory = System.IO.Path.Combine(Path, "manifest.xml");
-
-                //Hash = CalculateHash();
-
-                if (!File.Exists(strFullDirectory))
-                    return;
-
-                xmlObjManifest.LoadStandard(strFullDirectory);
-
-                var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
-                xmlNode.TryGetInt32FieldQuickly("version", ref _version);
-
-                xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
-
-                GetManifestDescriptions(xmlNode);
-                GetManifestAuthors(xmlNode);
-                GetDependencies(xmlNode);
-                GetExclusivities(xmlNode);
-            }
-            catch (Exception ex)
-            {
-                Program.MainForm.ShowMessageBox(
-                    string.Format(GlobalOptions.CultureInfo,
-                        LanguageManager.GetString("Message_FailedLoad"), ex.Message),
-                    string.Format(GlobalOptions.CultureInfo,
-                        LanguageManager.GetString("MessageTitle_FailedLoad")
-                        + " " + Name),
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                _blnCreated = true;
-            }
-        }
-        #endregion
 
         /// <summary>
         /// Checks if any custom data is activated, that matches name and version of the dependent upon directory
@@ -265,25 +317,30 @@ namespace Chummer
         /// <returns>List of the names of all missing dependencies as a single string</returns>
         public string CheckDependency(CharacterOptions objCharacterOptions)
         {
-            var missingDependencyList = new List<string>();
-            foreach (var (depGuid, depName, depVersion, isMinimumVersion) in DependenciesList)
+            StringBuilder sb = new StringBuilder();
+            foreach (DirectoryDependency dependency in DependenciesList)
             {
-                if (isMinimumVersion)
+                if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(enabledDirectory =>
+                    enabledDirectory.Guid != dependency.UniqueIdentifier))
                 {
-                    if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(loadedFile =>
-                        depGuid != loadedFile.Guid && depVersion != loadedFile.Version))
-                        missingDependencyList.Add(string.Format(depName + LanguageManager.GetString("AddMinimumVersion"), depVersion));
-                }
-                else
-                {
-                    if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(loadedFile =>
-                        depGuid != loadedFile.Guid && depVersion >= loadedFile.Version))
-                        missingDependencyList.Add(string.Format(depName + LanguageManager.GetString("AddVersion"), depVersion));
+                    sb.Append(dependency.DisplayName);
+                    sb.Append(Environment.NewLine);
+
+                    //We don't even need to attempt to check any versions if all guids are mismatched
+                    continue;
                 }
 
+                //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
+                foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == dependency.UniqueIdentifier))
+                {
+                    if (enabledCustomData.Version < dependency.MinimumVersion || enabledCustomData.Version > dependency.MaximumVersion)
+                    {
+                        sb.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"), enabledCustomData.DisplayName, dependency.DisplayName);
+                        sb.Append(Environment.NewLine);
+                    }
+                }
             }
-            var missingDependencies = string.Join(", ", missingDependencyList);
-            return string.IsNullOrEmpty(missingDependencies) ? string.Empty : missingDependencies;
+            return string.IsNullOrEmpty(sb.ToString()) ? string.Empty : sb.ToString();
         }
 
         /// <summary>
@@ -293,27 +350,23 @@ namespace Chummer
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
         public string CheckExclusivity(CharacterOptions objCharacterOptions)
         {
-
-            var existingProhibitedDirectory = new List<string>();
-
-            foreach (var (forbiddenGuid, forbiddenName, forbiddenVersion, ignoreVersion) in ExclusivitiesList)
+            StringBuilder sb = new StringBuilder();
+            foreach (var exclusivity in ExclusivitiesList)
             {
-                if (!ignoreVersion)
+                //If all IDs are different we don't need to check any further
+                if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(enabledDirectory => enabledDirectory.Guid != exclusivity.UniqueIdentifier)) continue;
+
+                foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == exclusivity.UniqueIdentifier))
                 {
-                    if(objCharacterOptions.EnabledCustomDataDirectoryInfos.Any(enabledDirectory =>
-                        enabledDirectory.Guid == forbiddenGuid && enabledDirectory.Version == forbiddenVersion))
-                        existingProhibitedDirectory.Add(string.Format(forbiddenName + LanguageManager.GetString("AddVersion"), forbiddenVersion));
-                }
-                else
-                {
-                    if (objCharacterOptions.EnabledCustomDataDirectoryInfos.Any(enabledDirectory =>
-                        enabledDirectory.Guid == forbiddenGuid))
-                        existingProhibitedDirectory.Add(forbiddenName);
+                    //if the version is within the version range add it to the list.
+                    if (enabledCustomData.Version > exclusivity.MinimumVersion && enabledCustomData.Version < exclusivity.MaximumVersion)
+                    {
+                        sb.Append(string.Format(LanguageManager.GetString("Tooltip_Exclusivity_VersionMismatch"), enabledCustomData.DisplayName, exclusivity.DisplayName));
+                        sb.Append(Environment.NewLine);
+                    }
                 }
             }
-
-            var strExistingExclusivities = string.Join(", ", existingProhibitedDirectory);
-            return string.IsNullOrEmpty(strExistingExclusivities) ? string.Empty : strExistingExclusivities;
+            return string.IsNullOrEmpty(sb.ToString()) ? string.Empty : sb.ToString();
         }
 
         /// <summary>
@@ -324,22 +377,22 @@ namespace Chummer
         /// <returns></returns>
         public static string BuildExclusivityDependencyString(string missingDependency = "", string presentExclusivities = "")
         {
-            string formedString = string.Empty;
+            var sb = new StringBuilder();
 
-            if (!string.IsNullOrEmpty(missingDependency) && !string.IsNullOrEmpty(presentExclusivities))
+            if (!string.IsNullOrEmpty(missingDependency))
             {
-                formedString = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), missingDependency
-                    + Environment.NewLine + Environment.NewLine
-                    + string.Format(LanguageManager.GetString("Tooltip_Exclusivity_Present"), presentExclusivities));
+                sb.Append(LanguageManager.GetString("Tooltip_Dependency_Missing"));
+                sb.Append(Environment.NewLine);
+                sb.Append(missingDependency);
+                sb.Append(Environment.NewLine);
             }
-            else if (!string.IsNullOrEmpty(missingDependency))
+            if (!string.IsNullOrEmpty(presentExclusivities))
             {
-                formedString = string.Format(LanguageManager.GetString("Tooltip_Dependency_Missing"), missingDependency);
+                sb.Append(LanguageManager.GetString("Tooltip_Exclusivity_Present"));
+                sb.Append(Environment.NewLine);
+                sb.Append(presentExclusivities);
             }
-            else if (!string.IsNullOrEmpty(presentExclusivities))
-            {
-                formedString = string.Format(LanguageManager.GetString("Tooltip_Exclusivity_Present"), presentExclusivities);
-            }
+            var formedString = sb.ToString();
 
             return string.IsNullOrEmpty(formedString) ? string.Empty : formedString;
         }
@@ -360,7 +413,7 @@ namespace Chummer
         /// <summary>
         /// The version of the custom data directory
         /// </summary>
-        public int Version => _version;
+        public decimal Version => _version;
 
 
         // /// <summary>
@@ -371,17 +424,17 @@ namespace Chummer
         /// <summary>
         /// A list of all dependencies each formatted as Tuple(guid, str name, int version, bool isMinimumVersion).
         /// </summary>
-        public IReadOnlyList<Tuple<Guid, string, int, bool>> DependenciesList => _lstDependencies;
+        public IReadOnlyList<DirectoryDependency> DependenciesList => _lstDependencies;
 
         /// <summary>
         /// A list of all exclusivities each formatted as Tuple(int guid, str name, int version, bool ignoreVersion).
         /// </summary>
-        public IReadOnlyList<Tuple<Guid, string, int, bool>> ExclusivitiesList => _lstExclusivities;
+        public IReadOnlyList<DirectoryDependency> ExclusivitiesList => _lstExclusivities;
 
         /// <summary>
         /// A Dictionary containing all Descriptions, which uses the language code as key
         /// </summary>
-        public IDictionary<string, string> DescriptionDictionary { get; } = new Dictionary<string, string>();
+        public IReadOnlyDictionary<string, string> DescriptionDictionary => _descriptionDictionary;
 
         /// <summary>
         /// The description to display
@@ -391,7 +444,7 @@ namespace Chummer
         /// <summary>
         /// A Dictionary, that uses the author name as key and provides a bool if he is the main author
         /// </summary>
-        public IDictionary<string, bool> AuthorDictionary { get; } = new Dictionary<string, bool>();
+        public IReadOnlyDictionary<string, bool> AuthorDictionary => _authorDictionary;
 
         /// <summary>
         /// A string containing all Authors formatted as Author(main), Author2 
@@ -399,6 +452,11 @@ namespace Chummer
         public string DisplayAuthors { get; private set; }
 
         public Guid Guid => _guid;
+
+        /// <summary>
+        /// The name including the Version in this format "NAME (Version)"
+        /// </summary>
+        public string DisplayName { get; }
         #endregion
 
         #region Interface Implementations and Operators
@@ -414,6 +472,10 @@ namespace Chummer
             int intReturn = string.Compare(Name, other.Name, StringComparison.Ordinal);
             if (intReturn == 0)
                 intReturn = string.Compare(Path, other.Path, StringComparison.Ordinal);
+            //Should basically never happen, because paths are supposed to be unique. But this "future proofs" it.
+            if (intReturn == 0)
+                intReturn = string.Compare(Version.ToString(GlobalOptions.CultureInfo), other.Version.ToString(GlobalOptions.CultureInfo), StringComparison.Ordinal);
+            
             return intReturn;
         }
 
@@ -426,12 +488,14 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new { Name, Path }.GetHashCode();
+            //Path and Guid should already be enough because they are both unique, but just to be sure.
+            return new { Name, Path, Guid, Version, DependenciesList, ExclusivitiesList }.GetHashCode();
         }
 
         public bool Equals(CustomDataDirectoryInfo other)
         {
-            return other != null && Name == other.Name && Path == other.Path;
+            //This should be enough to uniquely identify an object.
+            return other != null && Name == other.Name && Path == other.Path && other.Guid == Guid && other.Version == Version;
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
@@ -470,6 +534,78 @@ namespace Chummer
         }
 
         #endregion
+    }
+
+    /// <summary>
+    /// Holds all information about an Dependency or Exclusivity
+    /// </summary>
+    public class DirectoryDependency
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="guid"></param>
+        /// <param name="minimumversion"></param>
+        /// <param name="maximumversion"></param>
+        public DirectoryDependency(string name, Guid guid, decimal minimumversion, decimal maximumversion)
+        {
+            Name = name;
+            UniqueIdentifier = guid;
+            MinimumVersion = minimumversion;
+            MaximumVersion = maximumversion;
+            DisplayName = GetDisplayName();
+
+            string GetDisplayName()
+            {
+                StringBuilder sb = new StringBuilder();
+
+                //If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
+                if (MinimumVersion == decimal.MinValue && MaximumVersion == decimal.MaxValue)
+                {
+                    return Name;
+                }
+
+                //If no maxversion is not given, don't display decimal.max display > instead
+                if (MinimumVersion != decimal.MinValue && MaximumVersion == decimal.MaxValue)
+                {
+                    sb.Append(Name);
+                    sb.Append(" ");
+                    sb.Append("(");
+                    sb.Append(" > ");
+                    sb.Append(MinimumVersion.ToString(GlobalOptions.CultureInfo));
+                    sb.Append(")");
+                    return sb.ToString();
+                }
+
+                //If no minversion is not given, don't display decimal.min display < instead
+                if (MinimumVersion == decimal.MinValue && MaximumVersion != decimal.MaxValue)
+                {
+                    sb.Append(Name);
+                    sb.Append(" ");
+                    sb.Append("(");
+                    sb.Append(" < ");
+                    sb.Append(MaximumVersion.ToString(GlobalOptions.CultureInfo));
+                    sb.Append(")");
+                    return sb.ToString();
+                }
+
+                sb.Append(Name);
+                sb.Append(" ");
+                sb.Append("(");
+                sb.Append(MinimumVersion.ToString(GlobalOptions.CultureInfo));
+                sb.Append(" - ");
+                sb.Append(MaximumVersion.ToString(GlobalOptions.CultureInfo));
+                sb.Append(")");
+                return sb.ToString();
+            }
+        }
+
+        public string Name { get; }
+        public Guid UniqueIdentifier { get; }
+        public decimal MinimumVersion { get; }
+        public decimal MaximumVersion { get; }
+        public string DisplayName { get; }
     }
     
 }

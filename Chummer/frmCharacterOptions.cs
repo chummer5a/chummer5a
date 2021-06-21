@@ -684,52 +684,43 @@ namespace Chummer
 
             gbpDirectoryInfo.SuspendLayout();
             tboxDirectoryDescription.Text = objSelected.DisplayDescription;
-            lblDirectoryVersion.Text = objSelected.Version.ToString();
+            lblDirectoryVersion.Text = objSelected.Version.ToString(GlobalOptions.CultureInfo);
             lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
             lblDirectoryName.Text = objSelected.Name;
 
-            flpDirectoryDependencies.Controls.Clear();
             if (objSelected.DependenciesList.Count > 0)
             {
-                foreach (var (_, name, version, isMinimumVersion) in objSelected.DependenciesList)
-                {
-                    string labelText;
-                    if (isMinimumVersion)
-                    {
-                        labelText = string.Format(GlobalOptions.CultureInfo,
-                            name + LanguageManager.GetString("AddMinimumVersion"), version);
-                    }
-                    else
-                    {
-                        labelText = string.Format(GlobalOptions.CultureInfo,
-                            name + LanguageManager.GetString("AddVersion"), version);
-                    }
+                StringBuilder sb = new StringBuilder();
 
-                    var depLabel = new Label {Text = labelText, AutoSize = true };
-                    flpDirectoryDependencies.Controls.Add(depLabel);
+                foreach (var dependency in objSelected.DependenciesList)
+                {
+                    sb.Append(dependency.DisplayName);
+                    sb.Append(Environment.NewLine);
                 }
+                lblDependencyList.Text = sb.ToString();
+            }
+            else
+            {
+                //Make sure all old information is discarded
+                lblDependencyList.Text = string.Empty;
             }
 
-            flpExclusivities.Controls.Clear();
             if (objSelected.ExclusivitiesList.Count > 0)
             {
-                foreach (var (_, name, version, ignoreVersion) in objSelected.ExclusivitiesList)
-                {
-                    string labelText;
-                    if (ignoreVersion)
-                    {
-                        labelText = name;
-                    }
-                    else
-                    {
-                        labelText = string.Format(GlobalOptions.CultureInfo,
-                            name + LanguageManager.GetString("AddVersion"), version);
-                    }
-                    var excLabel = new Label {Text = labelText, AutoSize = true};
-                    flpExclusivities.Controls.Add(excLabel);
-                }
-            }
+                //We only need a Stringbuilder if we got anything
+                StringBuilder sb = new StringBuilder();
 
+                foreach (var exclusivity in objSelected.ExclusivitiesList)
+                {
+                    sb.Append(exclusivity.DisplayName);
+                    sb.Append(Environment.NewLine);
+                }
+                lblExclusivityList.Text = sb.ToString();
+            }
+            else
+            {
+                lblExclusivityList.Text = string.Empty;
+            }
             gbpDirectoryInfo.ResumeLayout();
         }
         #endregion
@@ -791,6 +782,7 @@ namespace Chummer
                     if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
+                        objInfo.LazyCreate();
                     }
                     else
                     {
@@ -822,7 +814,6 @@ namespace Chummer
                 }
             }
 
-            //CheckForDependenciesAndExclusivities();
 
             if (objOldSelected != null)
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
@@ -834,10 +825,17 @@ namespace Chummer
         {
             foreach (TreeNode directoryNode in treCustomDataDirectories.Nodes)
             {
-                if (directoryNode.Tag is CustomDataDirectoryInfo customDataDirectory && directoryNode.Checked)
+                if (!(directoryNode.Tag is CustomDataDirectoryInfo customDataDirectory)) continue;
+                if (directoryNode.Checked)
                 {
-                    string missingDirectories = customDataDirectory.CheckDependency(_objCharacterOptions);
-                    string prohibitedDirectories = customDataDirectory.CheckExclusivity(_objCharacterOptions);
+                    // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
+                    string missingDirectories = string.Empty;
+                    if (customDataDirectory.DependenciesList.Count>0)
+                        missingDirectories = customDataDirectory.CheckDependency(_objCharacterOptions);
+
+                    string prohibitedDirectories = string.Empty;
+                    if (customDataDirectory.ExclusivitiesList.Count>0)
+                        prohibitedDirectories = customDataDirectory.CheckExclusivity(_objCharacterOptions);
 
                     if (string.IsNullOrEmpty(missingDirectories) && string.IsNullOrEmpty(prohibitedDirectories))
                     {
@@ -846,12 +844,13 @@ namespace Chummer
                         continue;
                     }
 
-                    string tooltip = CustomDataDirectoryInfo.BuildExclusivityDependencyString(missingDirectories, prohibitedDirectories);
+                    string tooltip =
+                        CustomDataDirectoryInfo.BuildExclusivityDependencyString(missingDirectories, prohibitedDirectories);
 
                     directoryNode.ToolTipText = tooltip;
                     directoryNode.ForeColor = ColorManager.ErrorColor;
                 }
-                else if (directoryNode.Tag is CustomDataDirectoryInfo && directoryNode.Checked == false)
+                else
                 {
                     directoryNode.ToolTipText = string.Empty;
                     directoryNode.ForeColor = Color.Empty;
