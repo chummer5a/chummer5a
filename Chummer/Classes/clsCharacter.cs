@@ -19859,8 +19859,8 @@ namespace Chummer
                               LanguageManager.GetString("String_Space") + '[' + strSettings + ']';
                     else
                         SettingsFile = string.Empty;
-                    MugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value ?? string.Empty;
-                    if (string.IsNullOrEmpty(MugshotBase64))
+                    string strMugshotBase64 = xmlSourceNode.SelectSingleNode("mugshot")?.Value ?? string.Empty;
+                    if (string.IsNullOrEmpty(strMugshotBase64))
                     {
                         XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNode("mainmugshotindex");
                         if (xmlMainMugshotIndex != null &&
@@ -19875,7 +19875,7 @@ namespace Chummer
                                 {
                                     if (intMainMugshotIndex == intIndex)
                                     {
-                                        MugshotBase64 = xmlMugshot.Value;
+                                        strMugshotBase64 = xmlMugshot.Value;
                                         break;
                                     }
 
@@ -19884,6 +19884,12 @@ namespace Chummer
                             }
                         }
                     }
+
+                    if (!string.IsNullOrEmpty(strMugshotBase64))
+                        MugshotBase64 = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? strMugshotBase64.CompressBase64String(80)
+                            : await strMugshotBase64.CompressBase64StringAsync(80);
                 }
                 else
                 {

@@ -20,6 +20,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using NLog;
@@ -29,6 +30,40 @@ namespace Chummer
     public static class ImageExtensions
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
+        /// <summary>
+        /// Takes a Base64 String that is meant to represent an Image and turns it into a Base64 String that is meant to represent a JPEG
+        /// </summary>
+        /// <param name="strBase64String">String representing image to compress.</param>
+        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <returns>String of compressed image.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string CompressBase64String(this string strBase64String, int intQuality = 90)
+        {
+            if (string.IsNullOrEmpty(strBase64String))
+                return string.Empty;
+            using (Image imgTemp = strBase64String.ToImage())
+            {
+                return imgTemp == null ? strBase64String : imgTemp.ToBase64StringAsJpeg(intQuality);
+            }
+        }
+
+        /// <summary>
+        /// Takes a Base64 String that is meant to represent an Image and turns it into a Base64 String that is meant to represent a JPEG
+        /// </summary>
+        /// <param name="strBase64String">String representing image to compress.</param>
+        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <returns>String of compressed image.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CompressBase64StringAsync(this string strBase64String, int intQuality = 90)
+        {
+            if (string.IsNullOrEmpty(strBase64String))
+                return string.Empty;
+            using (Image imgTemp = await strBase64String.ToImageAsync())
+            {
+                return imgTemp == null ? strBase64String : await imgTemp.ToBase64StringAsJpegAsync(intQuality);
+            }
+        }
 
         /// <summary>
         /// Converts a Base64 String into an Image.
@@ -100,8 +135,8 @@ namespace Chummer
                 {
                     using (MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length))
                     {
-                        await objStream.WriteAsync(bytImage, 0, bytImage.Length)
-                            .ContinueWith(x => imgReturn = Image.FromStream(objStream, true));
+                        await objStream.WriteAsync(bytImage, 0, bytImage.Length);
+                        imgReturn = Image.FromStream(objStream, true);
                     }
                 }
             }
@@ -176,6 +211,49 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Converts an Image into a Base64 string.
+        /// </summary>
+        /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="eOverrideFormat">The image format in which the image should be saved. If null, will use <paramref name="imgToConvert"/>'s RawFormat.</param>
+        /// <returns>Base64 string from Image.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageFormat eOverrideFormat = null)
+        {
+            if (imgToConvert == null)
+                return string.Empty;
+            return await Task.Run(() =>
+            {
+                using (MemoryStream objImageStream = new MemoryStream())
+                {
+                    imgToConvert.Save(objImageStream, eOverrideFormat ?? imgToConvert.RawFormat);
+                    return Convert.ToBase64String(objImageStream.ToArray());
+                }
+            });
+        }
+
+        /// <summary>
+        /// Converts an Image into a Base64 string.
+        /// </summary>
+        /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="objCodecInfo">Encoder to use to encode the image.</param>
+        /// <param name="lstEncoderParameters">List of parameters for <paramref name="objCodecInfo"/>.</param>
+        /// <returns>Base64 string from Image.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> ToBase64StringAsync(this Image imgToConvert, ImageCodecInfo objCodecInfo, EncoderParameters lstEncoderParameters)
+        {
+            if (imgToConvert == null)
+                return string.Empty;
+            return await Task.Run(() =>
+            {
+                using (MemoryStream objImageStream = new MemoryStream())
+                {
+                    imgToConvert.Save(objImageStream, objCodecInfo, lstEncoderParameters);
+                    return Convert.ToBase64String(objImageStream.ToArray());
+                }
+            });
+        }
+
+        /// <summary>
         /// Converts an Image into a Base64 string of its Jpeg version with a custom quality setting (default ImageFormat.Jpeg quality is 50).
         /// </summary>
         /// <param name="imgToConvert">Image to convert.</param>
@@ -186,12 +264,37 @@ namespace Chummer
         {
             if (imgToConvert == null)
                 return string.Empty;
+            // Do not add more JPEG to a JPEG (i.e. don't re-compress a JPEG that is already compressed)
+            if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                return imgToConvert.ToBase64String();
             ImageCodecInfo objJpegEncoder = GetEncoder(ImageFormat.Jpeg);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = {[0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
             };
             return imgToConvert.ToBase64String(objJpegEncoder, lstJpegParameters);
+        }
+
+        /// <summary>
+        /// Converts an Image into a Base64 string of its Jpeg version with a custom quality setting (default ImageFormat.Jpeg quality is 50).
+        /// </summary>
+        /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="intQuality">Jpeg quality to use. 90 by default.</param>
+        /// <returns>Base64 string of Jpeg version of Image with a quality of <paramref name="intQuality"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> ToBase64StringAsJpegAsync(this Image imgToConvert, int intQuality = 90)
+        {
+            if (imgToConvert == null)
+                return string.Empty;
+            // Do not add more JPEG to a JPEG (i.e. don't re-compress a JPEG that is already compressed)
+            if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                return await imgToConvert.ToBase64StringAsync();
+            ImageCodecInfo objJpegEncoder = GetEncoder(ImageFormat.Jpeg);
+            EncoderParameters lstJpegParameters = new EncoderParameters(1)
+            {
+                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+            };
+            return await imgToConvert.ToBase64StringAsync(objJpegEncoder, lstJpegParameters);
         }
 
         /// <summary>
@@ -213,14 +316,7 @@ namespace Chummer
         /// <returns>The encoder of <paramref name="eFormat"/> if one is found, otherwise null.</returns>
         public static ImageCodecInfo GetEncoder(this ImageFormat eFormat)
         {
-            foreach (ImageCodecInfo objCodec in ImageCodecInfo.GetImageDecoders())
-            {
-                if (objCodec.FormatID == eFormat.Guid)
-                {
-                    return objCodec;
-                }
-            }
-            return null;
+            return ImageCodecInfo.GetImageDecoders().FirstOrDefault(objCodec => objCodec.FormatID == eFormat.Guid);
         }
     }
 }
