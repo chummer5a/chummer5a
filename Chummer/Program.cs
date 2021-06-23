@@ -68,10 +68,16 @@ namespace Chummer
             //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
             var startTime = DateTimeOffset.UtcNow;
+
+
+
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + strChummerGuid))
             {
+
+
                 // Set DPI Stuff
                 SetProcessDPI(GlobalOptions.DpiScalingMethodSetting);
+
                 // Set default cultures based on the currently set language
                 CultureInfo.DefaultThreadCurrentCulture = GlobalOptions.CultureInfo;
                 CultureInfo.DefaultThreadCurrentUICulture = GlobalOptions.CultureInfo;
@@ -132,7 +138,9 @@ namespace Chummer
                 sw.TaskEnd("infoprnt");
 
                 Application.EnableVisualStyles();
+
                 Application.SetCompatibleTextRenderingDefault(false);
+ 
 
                 sw.TaskEnd("languagefreestartup");
 
