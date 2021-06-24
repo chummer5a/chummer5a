@@ -113,6 +113,7 @@ Data Changes:
 - The Krime Euskaldunak Tankette now uses Rigger 5.0 weapon mounts if Rigger 5.0 is enabled.
 - There are now dedicated options for weapon mount options that are for the weapon mounts that are statted out in the core rulebook. Fixes #4493.
 - The Technomancer quality can no longer be taken after taking an Infected quality.
+- Missiles now properly have 4 higher Availability than their rocket equivalents.
 
 Changed/New Strings:
 - String_ContactPoints

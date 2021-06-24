@@ -1424,7 +1424,7 @@
       <rating>0</rating>
       <source>SR5</source>
       <page>436</page>
-      <avail>18F</avail>
+      <avail>22F</avail>
       <addweapon>Missile: Anti-Vehicle</addweapon>
       <cost>2800</cost>
       <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
@@ -1436,7 +1436,7 @@
       <rating>0</rating>
       <source>SR5</source>
       <page>436</page>
-      <avail>12F</avail>
+      <avail>16F</avail>
       <addweapon>Missile: Fragmentation</addweapon>
       <cost>2000</cost>
       <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>
@@ -1448,7 +1448,7 @@
       <rating>0</rating>
       <source>SR5</source>
       <page>436</page>
-      <avail>18F</avail>
+      <avail>22F</avail>
       <addweapon>Missile: High Explosive</addweapon>
       <cost>2100</cost>
       <ammoforweapontype noextra="True">mlauncher</ammoforweapontype>

@@ -2915,7 +2915,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>18F</avail>
+      <avail>22F</avail>
       <cost>2800</cost>
       <source>SR5</source>
       <page>436</page>
@@ -2933,7 +2933,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>12F</avail>
+      <avail>16F</avail>
       <cost>2000</cost>
       <source>SR5</source>
       <page>436</page>
@@ -2951,7 +2951,7 @@
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
-      <avail>18F</avail>
+      <avail>22F</avail>
       <cost>2100</cost>
       <source>SR5</source>
       <page>436</page>
