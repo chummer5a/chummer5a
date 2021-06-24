@@ -147,16 +147,7 @@ namespace Chummer
             {
                 try
                 {
-                    string strAutosavePath;
-                    try
-                    {
-                        strAutosavePath = Path.Combine(Utils.GetStartupPath, "saves", "autosave");
-                    }
-                    catch (ArgumentException e)
-                    {
-                        Log.Error(e, "Path: " + Utils.GetStartupPath);
-                        return;
-                    }
+                    string strAutosavePath = Utils.GetAutosavePath;
 
                     if (!Directory.Exists(strAutosavePath))
                     {

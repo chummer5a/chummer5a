@@ -9824,6 +9824,10 @@
       <text>An autosave for the file {0} was found that was saved more recently ({1}) than the current file being loaded ({2}).\n\nDo you wish to load the autosave instead? If you do, the original {0} will not be altered until you manually save.</text>
     </string>
     <string>
+      <key>Message_PossibleCrashAutosaveFound</key>
+      <text>An autosave for the file {0} was found saved on {1} that may have been for an unsaved character lost during an unclean exit.\n\nDo you wish to load this autosave?</text>
+    </string>
+    <string>
       <key>MessageTitle_AutosaveFound</key>
       <text>Autosave Found</text>
     </string>

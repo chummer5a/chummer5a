@@ -86,6 +86,8 @@ namespace Chummer
 
         public static string GetStartupPath => !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
 
+        public static string GetAutosavesFolderPath => Path.Combine(GetStartupPath, "saves", "autosave");
+
         public static int GitUpdateAvailable => CachedGitVersion?.CompareTo(Assembly.GetExecutingAssembly().GetName().Version) ?? 0;
 
         public const int DefaultSleepDuration = 20;
