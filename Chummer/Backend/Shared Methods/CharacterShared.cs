@@ -147,7 +147,7 @@ namespace Chummer
             {
                 try
                 {
-                    string strAutosavePath = Utils.GetAutosavePath;
+                    string strAutosavePath = Utils.GetAutosavesFolderPath;
 
                     if (!Directory.Exists(strAutosavePath))
                     {
