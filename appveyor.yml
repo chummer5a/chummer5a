@@ -40,8 +40,16 @@ before_build:
         Write-host "Previous Commit ID: $PreviousCommitID"
         if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
         {
-            Write-host "Current Commit ID is the same as previous, exiting build."
-            $exitBuild = $true
+            $PreviousCommitStatus = $history.builds[1].status
+            if ($PreviousCommitStatus -eq "failed")
+            {
+                Write-Host "Current Commit ID is the same as previous, but previous build failed, so going ahead and building."
+            }
+            else
+            {
+                Write-host "Current Commit ID is the same as previous, exiting build."
+                $exitBuild = $true
+            }
         }
     }
     # Needs to be in this format, otherwise Exit-AppVeyorBuild won't work. That command has to be the final one executed in the script
