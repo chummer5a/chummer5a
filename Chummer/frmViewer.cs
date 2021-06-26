@@ -438,8 +438,12 @@ namespace Chummer
             _objOutputGeneratorCancellationTokenSource?.Cancel(false);
             _objRefresherCancellationTokenSource?.Cancel(false);
             _objRefresherCancellationTokenSource = new CancellationTokenSource();
-            if (_tskRefresher?.IsCompleted == false)
-                await _tskRefresher;
+            try
+            {
+                if (_tskRefresher?.IsCompleted == false)
+                    await _tskRefresher;
+            }
+            catch (TaskCanceledException) { }
             _tskRefresher = Task.Run(RefreshCharacterXml, _objRefresherCancellationTokenSource.Token);
         }
 
@@ -450,8 +454,12 @@ namespace Chummer
         {
             _objOutputGeneratorCancellationTokenSource?.Cancel(false);
             _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
-            if (_tskOutputGenerator?.IsCompleted == false)
-                await _tskOutputGenerator;
+            try
+            {
+                if (_tskOutputGenerator?.IsCompleted == false)
+                    await _tskOutputGenerator;
+            }
+            catch (TaskCanceledException) { }
             _tskOutputGenerator = Task.Run(AsyncGenerateOutput, _objOutputGeneratorCancellationTokenSource.Token);
         }
 

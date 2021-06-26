@@ -105,8 +105,12 @@ namespace Chummer
             _tskMRUsRefresh = LoadMRUCharacters(true);
             _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
             _tskWatchFolderRefresh = LoadWatchFolderCharacters();
-            await Task.WhenAll(_tskMRUsRefresh, _tskWatchFolderRefresh,
-                Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
+            try
+            {
+                await Task.WhenAll(_tskMRUsRefresh, _tskWatchFolderRefresh,
+                    Task.WhenAll(Program.PluginLoader.MyActivePlugins.Select(RefreshPluginNodes)));
+            }
+            catch (TaskCanceledException) { }
             UpdateCharacter(null);
         }
 
@@ -121,8 +125,12 @@ namespace Chummer
         {
             _objWatchFolderRefreshCancellationTokenSource?.Cancel(false);
             _objWatchFolderRefreshCancellationTokenSource = new CancellationTokenSource();
-            if (_tskWatchFolderRefresh?.IsCompleted == false)
-                await _tskWatchFolderRefresh;
+            try
+            {
+                if (_tskWatchFolderRefresh?.IsCompleted == false)
+                    await _tskWatchFolderRefresh;
+            }
+            catch (TaskCanceledException) { }
             SuspendLayout();
             _tskWatchFolderRefresh = LoadWatchFolderCharacters();
             try
@@ -133,6 +141,7 @@ namespace Chummer
             {
                 //swallow this
             }
+            catch (TaskCanceledException) { }
             ResumeLayout();
         }
 
@@ -145,8 +154,12 @@ namespace Chummer
         {
             _objMRUsRefreshCancellationTokenSource?.Cancel(false);
             _objMRUsRefreshCancellationTokenSource = new CancellationTokenSource();
-            if (_tskMRUsRefresh?.IsCompleted == false)
-                await _tskMRUsRefresh;
+            try
+            {
+                if (_tskMRUsRefresh?.IsCompleted == false)
+                    await _tskMRUsRefresh;
+            }
+            catch (TaskCanceledException) { }
             SuspendLayout();
             _tskMRUsRefresh = LoadMRUCharacters(strMRUType != "mru");
             try
@@ -157,6 +170,7 @@ namespace Chummer
             {
                 //swallow this
             }
+            catch (TaskCanceledException) { }
             ResumeLayout();
         }
 
@@ -230,65 +244,75 @@ namespace Chummer
             if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            await Task.WhenAll(
-                Task.Run(() =>
-                {
-                    if (lstFavoritesNodes == null || lstFavorites == null || lstFavorites.Count <= 0 || _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    Parallel.For(0, lstFavorites.Count, (i, objState) =>
+            try
+            {
+                await Task.WhenAll(
+                    Task.Run(() =>
                     {
-                        if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                        if (lstFavoritesNodes == null || lstFavorites == null || lstFavorites.Count <= 0 ||
+                            _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                            return;
+                        Parallel.For(0, lstFavorites.Count, (i, objState) =>
                         {
-                            objState.Stop();
+                            if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                            {
+                                objState.Stop();
+                                return;
+                            }
+
+                            if (objState.ShouldExitCurrentIteration)
+                                return;
+                            lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]);
+                        });
+                        if (!blnAddFavoriteNode || objFavoriteNode == null ||
+                            _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
                             return;
-                        }
-                        if (objState.ShouldExitCurrentIteration)
-                            return;
-                        lstFavoritesNodes[i] = CacheCharacter(lstFavorites[i]);
-                    });
-                    if (!blnAddFavoriteNode || objFavoriteNode == null || _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    foreach (TreeNode objNode in lstFavoritesNodes)
-                    {
-                        if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
-                            return;
-                        if (objNode == null)
-                            continue;
-                        if (objFavoriteNode.TreeView != null)
-                            objFavoriteNode.TreeView.DoThreadSafe(() => objFavoriteNode.Nodes.Add(objNode));
-                        else
-                            objFavoriteNode.Nodes.Add(objNode);
-                    }
-                }, _objMRUsRefreshCancellationTokenSource.Token),
-                Task.Run(() =>
-                {
-                    if (lstRecentsNodes == null || lstRecents.Count <= 0 || _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    Parallel.For(0, lstRecents.Count, (i, objState) =>
-                    {
-                        if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                        foreach (TreeNode objNode in lstFavoritesNodes)
                         {
-                            objState.Stop();
-                            return;
+                            if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                                return;
+                            if (objNode == null)
+                                continue;
+                            if (objFavoriteNode.TreeView != null)
+                                objFavoriteNode.TreeView.DoThreadSafe(() => objFavoriteNode.Nodes.Add(objNode));
+                            else
+                                objFavoriteNode.Nodes.Add(objNode);
                         }
-                        if (objState.ShouldExitCurrentIteration)
-                            return;
-                        lstRecentsNodes[i] = CacheCharacter(lstRecents[i]);
-                    });
-                    if (!blnAddRecentNode || objRecentNode == null || _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    foreach (TreeNode objNode in lstRecentsNodes)
+                    }, _objMRUsRefreshCancellationTokenSource.Token),
+                    Task.Run(() =>
                     {
-                        if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                        if (lstRecentsNodes == null || lstRecents.Count <= 0 ||
+                            _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
                             return;
-                        if (objNode == null)
-                            continue;
-                        if (objRecentNode.TreeView != null)
-                            objRecentNode.TreeView.DoThreadSafe(() => objRecentNode.Nodes.Add(objNode));
-                        else
-                            objRecentNode.Nodes.Add(objNode);
-                    }
-                }, _objMRUsRefreshCancellationTokenSource.Token));
+                        Parallel.For(0, lstRecents.Count, (i, objState) =>
+                        {
+                            if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                            {
+                                objState.Stop();
+                                return;
+                            }
+
+                            if (objState.ShouldExitCurrentIteration)
+                                return;
+                            lstRecentsNodes[i] = CacheCharacter(lstRecents[i]);
+                        });
+                        if (!blnAddRecentNode || objRecentNode == null ||
+                            _objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                            return;
+                        foreach (TreeNode objNode in lstRecentsNodes)
+                        {
+                            if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
+                                return;
+                            if (objNode == null)
+                                continue;
+                            if (objRecentNode.TreeView != null)
+                                objRecentNode.TreeView.DoThreadSafe(() => objRecentNode.Nodes.Add(objNode));
+                            else
+                                objRecentNode.Nodes.Add(objNode);
+                        }
+                    }, _objMRUsRefreshCancellationTokenSource.Token));
+            }
+            catch (TaskCanceledException) { }
 
             if (_objMRUsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;

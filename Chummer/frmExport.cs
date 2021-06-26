@@ -146,8 +146,12 @@ namespace Chummer
             {
                 _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
                 _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
-                if (_tskCharacterXmlGenerator?.IsCompleted == false)
-                    await _tskCharacterXmlGenerator;
+                try
+                {
+                    if (_tskCharacterXmlGenerator?.IsCompleted == false)
+                        await _tskCharacterXmlGenerator;
+                }
+                catch (TaskCanceledException) { }
                 _tskCharacterXmlGenerator = Task.Run(GenerateCharacterXml, _objCharacterXmlGeneratorCancellationTokenSource.Token);
                 return;
             }
@@ -167,8 +171,12 @@ namespace Chummer
                 {
                     _objXmlGeneratorCancellationTokenSource?.Cancel(false);
                     _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
-                    if (_tskXmlGenerator?.IsCompleted == false)
-                        await _tskXmlGenerator;
+                    try
+                    {
+                        if (_tskXmlGenerator?.IsCompleted == false)
+                            await _tskXmlGenerator;
+                    }
+                    catch (TaskCanceledException) { }
                     _tskXmlGenerator = _strXslt == "Export JSON"
                         ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
                         : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);

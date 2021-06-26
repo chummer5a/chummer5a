@@ -114,8 +114,12 @@ namespace Chummer
         {
             _objConnectionLoaderCancellationTokenSource?.Cancel(false);
             _objConnectionLoaderCancellationTokenSource = new CancellationTokenSource();
-            if (_tskConnectionLoader?.IsCompleted == false)
-                await _tskConnectionLoader;
+            try
+            {
+                if (_tskConnectionLoader?.IsCompleted == false)
+                    await _tskConnectionLoader;
+            }
+            catch (TaskCanceledException) { }
             _tskConnectionLoader = Task.Run(async () =>
             {
                 await LoadConnection();

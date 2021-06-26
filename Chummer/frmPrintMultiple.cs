@@ -84,12 +84,16 @@ namespace Chummer
         private async Task CancelPrint()
         {
             _objPrinterCancellationTokenSource?.Cancel(false);
-            if (_tskPrinter?.IsCompleted == false)
-                await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                    prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
-            else
-                await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                    prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+            try
+            {
+                if (_tskPrinter?.IsCompleted == false)
+                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                        prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+                else
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                        prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+            }
+            catch (TaskCanceledException) { }
         }
 
         private async Task StartPrint()
