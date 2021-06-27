@@ -8,7 +8,6 @@
   <xsl:include href="xt.PreserveLineBreaks.xslt"/>
 
   <xsl:template match="/characters/character">
-    <xsl:variable name="ImageFormat" select="imageformat" />
     <xsl:variable name="TitleName">
       <xsl:call-template name="TitleName">
         <xsl:with-param name="name" select="name"/>
@@ -43,7 +42,7 @@
                     <table width="100%" style="cellpadding: 0; width: 100%;">
                       <tr>
                         <td style = "text-align: center; vertical-align: middle;">
-                          <img src="data:image/{ImageFormat};base64,{mainmugshotbase64}" class="mugshot" style="width: auto; max-height: 14em;" />
+                          <img src="data:image/jpeg;base64,{mainmugshotbase64}" class="mugshot" style="width: auto; max-height: 14em;" />
                         </td>
                       </tr>
                     </table>

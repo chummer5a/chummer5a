@@ -29,6 +29,8 @@ namespace Chummer
 {
     public static class ImageExtensions
     {
+        private static readonly Lazy<ImageCodecInfo> _lzyJpegEncoder =
+            new Lazy<ImageCodecInfo>(() => GetEncoder(ImageFormat.Jpeg));
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -66,6 +68,142 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar to generate a thumbnail for an image that is also compressed as a JPEG.
+        /// </summary>
+        /// <param name="imgToConvert">Image whose thumbnail is to be generated.</param>
+        /// <param name="intThumbWidth">Width of the thumbnail.</param>
+        /// <param name="intThumbHeight">Height of the thumbnail.</param>
+        /// <param name="blnKeepAspectRatio">Whether or not to make sure we retain the aspect ratio of the old image.</param>
+        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Image GetCompressedThumbnailImage(this Image imgToConvert, int intThumbWidth, int intThumbHeight,
+            bool blnKeepAspectRatio = true, int intQuality = 90)
+        {
+            if (imgToConvert == null)
+                return null;
+            int intImageWidth = imgToConvert.Width;
+            int intImageHeight = imgToConvert.Height;
+            if (blnKeepAspectRatio)
+            {
+                double dblImageAspectRatio = intImageWidth / (double) intImageHeight;
+                double dblThumbAspectRatio = intThumbWidth / (double) intThumbHeight;
+                // Too wide, use height as correct measure
+                if (dblThumbAspectRatio > dblImageAspectRatio)
+                {
+                    intThumbWidth = (intThumbHeight * dblImageAspectRatio).StandardRound();
+                }
+                // Too tall, use width as correct measure
+                else if (dblThumbAspectRatio < dblImageAspectRatio)
+                {
+                    intThumbHeight = (intThumbWidth / dblImageAspectRatio).StandardRound();
+                }
+            }
+
+            if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
+            {
+                return imgToConvert.GetCompressedImage(intQuality);
+            }
+
+            using (Image imgThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
+            {
+                return imgThumbnail.GetCompressedImage(intQuality);
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to generate a thumbnail for an image that is also compressed as a JPEG.
+        /// </summary>
+        /// <param name="imgToConvert">Image whose thumbnail is to be generated.</param>
+        /// <param name="intThumbWidth">Width of the thumbnail.</param>
+        /// <param name="intThumbHeight">Height of the thumbnail.</param>
+        /// <param name="blnKeepAspectRatio">Whether or not to make sure we retain the aspect ratio of the old image.</param>
+        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<Image> GetCompressedThumbnailImageAsync(this Image imgToConvert, int intThumbWidth, int intThumbHeight, bool blnKeepAspectRatio = true, int intQuality = 90)
+        {
+            if (imgToConvert == null)
+                return null;
+            int intImageWidth = imgToConvert.Width;
+            int intImageHeight = imgToConvert.Height;
+            if (blnKeepAspectRatio)
+            {
+                double dblImageAspectRatio = intImageWidth / (double)intImageHeight;
+                double dblThumbAspectRatio = intThumbWidth / (double)intThumbHeight;
+                // Too wide, use height as correct measure
+                if (dblThumbAspectRatio > dblImageAspectRatio)
+                {
+                    intThumbWidth = (intThumbHeight * dblImageAspectRatio).StandardRound();
+                }
+                // Too tall, use width as correct measure
+                else if (dblThumbAspectRatio < dblImageAspectRatio)
+                {
+                    intThumbHeight = (intThumbWidth / dblImageAspectRatio).StandardRound();
+                }
+            }
+
+            if (intThumbWidth >= intImageWidth && intThumbHeight >= intImageHeight)
+            {
+                return await imgToConvert.GetCompressedImageAsync(intQuality);
+            }
+
+            using (Image objThumbnail = imgToConvert.GetThumbnailImage(intThumbWidth, intThumbHeight, null, IntPtr.Zero))
+            {
+                return await objThumbnail.GetCompressedImageAsync(intQuality);
+            }
+        }
+
+        /// <summary>
+        /// Get a clone of an image that is compressed as a JPEG.
+        /// </summary>
+        /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Image GetCompressedImage(this Image imgToConvert, int intQuality = 90)
+        {
+            if (imgToConvert == null)
+                return null;
+            EncoderParameters lstJpegParameters = new EncoderParameters(1)
+            {
+                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+            };
+            using (MemoryStream objImageStream = new MemoryStream())
+            {
+                imgToConvert.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
+                objImageStream.Position = 0;
+                return Image.FromStream(objImageStream, true);
+            }
+        }
+
+        /// <summary>
+        /// Get a clone of an image that is compressed as a JPEG.
+        /// </summary>
+        /// <param name="imgToConvert">Image to convert.</param>
+        /// <param name="intQuality">JPEG quality to use.</param>
+        /// <returns>A clone of <paramref name="imgToConvert"/> that is compressed.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<Image> GetCompressedImageAsync(this Image imgToConvert, int intQuality = 90)
+        {
+            if (imgToConvert == null)
+                return null;
+            EncoderParameters lstJpegParameters = new EncoderParameters(1)
+            {
+                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+            };
+            return await Task.Run(() =>
+            {
+                using (MemoryStream objImageStream = new MemoryStream())
+                {
+                    imgToConvert.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
+                    objImageStream.Position = 0;
+                    return Image.FromStream(objImageStream, true);
+                }
+            });
+        }
+
+        /// <summary>
         /// Converts a Base64 String into an Image.
         /// </summary>
         /// <param name="strBase64String">String to convert.</param>
@@ -76,12 +214,11 @@ namespace Chummer
             Image imgReturn = null;
             try
             {
-                byte[] bytImage = Convert.FromBase64String(strBase64String);
-                if (bytImage.Length > 0)
+                byte[] achrImage = Convert.FromBase64String(strBase64String);
+                if (achrImage.Length > 0)
                 {
-                    using (MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length))
+                    using (MemoryStream objStream = new MemoryStream(achrImage, 0, achrImage.Length))
                     {
-                        objStream.Write(bytImage, 0, bytImage.Length);
                         imgReturn = Image.FromStream(objStream, true);
                     }
                 }
@@ -130,12 +267,12 @@ namespace Chummer
             Image imgReturn = null;
             try
             {
-                byte[] bytImage = Convert.FromBase64String(strBase64String);
-                if (bytImage.Length > 0)
+                byte[] achrImage = Convert.FromBase64String(strBase64String);
+                if (achrImage.Length > 0)
                 {
-                    using (MemoryStream objStream = new MemoryStream(bytImage, 0, bytImage.Length))
+                    using (MemoryStream objStream = new MemoryStream())
                     {
-                        await objStream.WriteAsync(bytImage, 0, bytImage.Length);
+                        await objStream.WriteAsync(achrImage, 0, achrImage.Length);
                         imgReturn = Image.FromStream(objStream, true);
                     }
                 }
@@ -264,15 +401,11 @@ namespace Chummer
         {
             if (imgToConvert == null)
                 return string.Empty;
-            // Do not add more JPEG to a JPEG (i.e. don't re-compress a JPEG that is already compressed)
-            if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
-                return imgToConvert.ToBase64String();
-            ImageCodecInfo objJpegEncoder = GetEncoder(ImageFormat.Jpeg);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = {[0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
             };
-            return imgToConvert.ToBase64String(objJpegEncoder, lstJpegParameters);
+            return imgToConvert.ToBase64String(_lzyJpegEncoder.Value, lstJpegParameters);
         }
 
         /// <summary>
@@ -286,15 +419,11 @@ namespace Chummer
         {
             if (imgToConvert == null)
                 return string.Empty;
-            // Do not add more JPEG to a JPEG (i.e. don't re-compress a JPEG that is already compressed)
-            if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
-                return await imgToConvert.ToBase64StringAsync();
-            ImageCodecInfo objJpegEncoder = GetEncoder(ImageFormat.Jpeg);
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
             };
-            return await imgToConvert.ToBase64StringAsync(objJpegEncoder, lstJpegParameters);
+            return await imgToConvert.ToBase64StringAsync(_lzyJpegEncoder.Value, lstJpegParameters);
         }
 
         /// <summary>

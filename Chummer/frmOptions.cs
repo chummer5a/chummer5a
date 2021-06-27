@@ -366,7 +366,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
+            nudMugshotCompressionQuality.Enabled = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
             OptionsChanged(sender, e);
         }
 
@@ -936,8 +936,8 @@ namespace Chummer
         {
             List<ListItem> lstMugshotCompressionOptions = new List<ListItem>(2)
             {
-                new ListItem(ImageFormat.Png.ToString(), LanguageManager.GetString("String_Lossless_Compression_Option")),
-                new ListItem(ImageFormat.Jpeg.ToString(), LanguageManager.GetString("String_Lossy_Compression_Option"))
+                new ListItem(ImageFormat.Png, LanguageManager.GetString("String_Lossless_Compression_Option")),
+                new ListItem(ImageFormat.Jpeg, LanguageManager.GetString("String_Lossy_Compression_Option"))
             };
 
             string strOldSelected = cboMugshotCompression.SelectedValue?.ToString();
@@ -952,7 +952,7 @@ namespace Chummer
             }
 
             cboMugshotCompression.EndUpdate();
-            nudMugshotCompressionQuality.Enabled = string.Equals(cboMugshotCompression.SelectedValue.ToString(), ImageFormat.Jpeg.ToString(), StringComparison.Ordinal);
+            nudMugshotCompressionQuality.Enabled = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
         }
 
         private void PopulatePDFParameters()

@@ -1287,7 +1287,7 @@ namespace Chummer
         public static string ImageToBase64StringForStorage(Image objImageToSave)
         {
             return SavedImageQuality == int.MaxValue
-                ? objImageToSave.ToBase64String(ImageFormat.Png)
+                ? objImageToSave.ToBase64String()
                 : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
         }
 
