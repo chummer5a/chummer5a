@@ -216,31 +216,31 @@ namespace Chummer
                         lblNuyenTotal.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.DisplayTotalStartingNuyen));
                         lblStolenNuyen.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayStolenNuyen));
-                        lblAttributesBase.DoDatabinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                        lblAttributesBase.DoDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
 
-                        txtGroupName.DoDatabinding("Text", CharacterObject, nameof(Character.GroupName));
-                        txtGroupNotes.DoDatabinding("Text", CharacterObject, nameof(Character.GroupNotes));
+                        txtGroupName.DoDataBinding("Text", CharacterObject, nameof(Character.GroupName));
+                        txtGroupNotes.DoDataBinding("Text", CharacterObject, nameof(Character.GroupNotes));
 
-                        txtCharacterName.DoDatabinding("Text", CharacterObject, nameof(Character.Name));
-                        txtGender.DoDatabinding("Text", CharacterObject, nameof(Character.Gender));
-                        txtAge.DoDatabinding("Text", CharacterObject, nameof(Character.Age));
-                        txtEyes.DoDatabinding("Text", CharacterObject, nameof(Character.Eyes));
-                        txtHeight.DoDatabinding("Text", CharacterObject, nameof(Character.Height));
-                        txtWeight.DoDatabinding("Text", CharacterObject, nameof(Character.Weight));
-                        txtSkin.DoDatabinding("Text", CharacterObject, nameof(Character.Skin));
-                        txtHair.DoDatabinding("Text", CharacterObject, nameof(Character.Hair));
-                        rtfDescription.DoDatabinding("Rtf", CharacterObject, nameof(Character.Description));
-                        rtfBackground.DoDatabinding("Rtf", CharacterObject, nameof(Character.Background));
-                        rtfConcept.DoDatabinding("Rtf", CharacterObject, nameof(Character.Concept));
-                        rtfNotes.DoDatabinding("Rtf", CharacterObject, nameof(Character.Notes));
-                        txtAlias.DoDatabinding("Text", CharacterObject, nameof(Character.Alias));
-                        txtPlayerName.DoDatabinding("Text", CharacterObject, nameof(Character.PlayerName));
+                        txtCharacterName.DoDataBinding("Text", CharacterObject, nameof(Character.Name));
+                        txtGender.DoDataBinding("Text", CharacterObject, nameof(Character.Gender));
+                        txtAge.DoDataBinding("Text", CharacterObject, nameof(Character.Age));
+                        txtEyes.DoDataBinding("Text", CharacterObject, nameof(Character.Eyes));
+                        txtHeight.DoDataBinding("Text", CharacterObject, nameof(Character.Height));
+                        txtWeight.DoDataBinding("Text", CharacterObject, nameof(Character.Weight));
+                        txtSkin.DoDataBinding("Text", CharacterObject, nameof(Character.Skin));
+                        txtHair.DoDataBinding("Text", CharacterObject, nameof(Character.Hair));
+                        rtfDescription.DoDataBinding("Rtf", CharacterObject, nameof(Character.Description));
+                        rtfBackground.DoDataBinding("Rtf", CharacterObject, nameof(Character.Background));
+                        rtfConcept.DoDataBinding("Rtf", CharacterObject, nameof(Character.Concept));
+                        rtfNotes.DoDataBinding("Rtf", CharacterObject, nameof(Character.Notes));
+                        txtAlias.DoDataBinding("Text", CharacterObject, nameof(Character.Alias));
+                        txtPlayerName.DoDataBinding("Text", CharacterObject, nameof(Character.PlayerName));
 
                         lblPositiveQualitiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayPositiveQualityKarma));
                         lblNegativeQualitiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayNegativeQualityKarma));
                         lblMetagenicQualities.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayMetagenicQualityKarma));
-                        lblMetagenicQualities.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
-                        lblMetagenicQualitiesLabel.DoDatabinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualities.DoDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
+                        lblMetagenicQualitiesLabel.DoDataBinding("Visible", CharacterObject, nameof(Character.IsChangeling));
                         lblEnemiesBP.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEnemyKarma));
                         tslKarmaLabel.Text = LanguageManager.GetString("Label_Karma");
                         tslKarmaRemainingLabel.Text = LanguageManager.GetString("Label_KarmaRemaining");
@@ -253,7 +253,7 @@ namespace Chummer
                         mnuSpecialAddBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
                         mnuSpecialCreateBiowareSuite.Visible = CharacterObjectOptions.AllowBiowareSuites;
 
-                        chkJoinGroup.DoDatabinding("Checked", CharacterObject, nameof(Character.GroupMember));
+                        chkJoinGroup.DoDataBinding("Checked", CharacterObject, nameof(Character.GroupMember));
                         chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
                         // If the character has a mugshot, decode it and put it in the PictureBox.
@@ -281,8 +281,8 @@ namespace Chummer
 
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.AddInitiationsAllowed));
 
-                        cmdLifeModule.DoDatabinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
-                        btnCreateBackstory.DoDatabinding("Visible", CharacterObject, nameof(Character.EnableAutomaticStoryButton));
+                        cmdLifeModule.DoDataBinding("Visible", CharacterObject, nameof(Character.EffectiveBuildMethodIsLifeModule));
+                        btnCreateBackstory.DoDataBinding("Visible", CharacterObject, nameof(Character.EnableAutomaticStoryButton));
 
                         if (!CharacterObjectOptions.BookEnabled("RF"))
                         {
@@ -418,7 +418,7 @@ namespace Chummer
                         lstDrainAttributes.Sort(CompareListItems.CompareNames);
                         cboDrain.BeginUpdate();
                         cboDrain.PopulateWithListItems(lstDrainAttributes);
-                        cboDrain.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
+                        cboDrain.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.DrainExpression));
                         cboDrain.EndUpdate();
 
@@ -474,7 +474,7 @@ namespace Chummer
                         List<ListItem> lstCombat = new List<ListItem>(lstSpirit);
                         cboSpiritCombat.BeginUpdate();
                         cboSpiritCombat.PopulateWithListItems(lstCombat);
-                        cboSpiritCombat.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
+                        cboSpiritCombat.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritCombat));
                         lblSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
                         cboSpiritCombat.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
@@ -484,7 +484,7 @@ namespace Chummer
                         List<ListItem> lstDetection = new List<ListItem>(lstSpirit);
                         cboSpiritDetection.BeginUpdate();
                         cboSpiritDetection.PopulateWithListItems(lstDetection);
-                        cboSpiritDetection.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
+                        cboSpiritDetection.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritDetection));
                         lblSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
                         cboSpiritDetection.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
@@ -494,7 +494,7 @@ namespace Chummer
                         List<ListItem> lstHealth = new List<ListItem>(lstSpirit);
                         cboSpiritHealth.BeginUpdate();
                         cboSpiritHealth.PopulateWithListItems(lstHealth);
-                        cboSpiritHealth.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
+                        cboSpiritHealth.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritHealth));
                         lblSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
                         cboSpiritHealth.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
@@ -504,7 +504,7 @@ namespace Chummer
                         List<ListItem> lstIllusion = new List<ListItem>(lstSpirit);
                         cboSpiritIllusion.BeginUpdate();
                         cboSpiritIllusion.PopulateWithListItems(lstIllusion);
-                        cboSpiritIllusion.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
+                        cboSpiritIllusion.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritIllusion));
                         lblSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
                         cboSpiritIllusion.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
@@ -514,7 +514,7 @@ namespace Chummer
                         List<ListItem> lstManip = new List<ListItem>(lstSpirit);
                         cboSpiritManipulation.BeginUpdate();
                         cboSpiritManipulation.PopulateWithListItems(lstManip);
-                        cboSpiritManipulation.DoDatabinding("SelectedValue", CharacterObject.MagicTradition,
+                        cboSpiritManipulation.DoDataBinding("SelectedValue", CharacterObject.MagicTradition,
                             nameof(Tradition.SpiritManipulation));
                         lblSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
                         cboSpiritManipulation.Visible = CharacterObject.MagicTradition.Type != TraditionType.None;
@@ -554,7 +554,7 @@ namespace Chummer
 
                         nudMysticAdeptMAGMagician.DoOneWayDataBinding("Maximum", CharacterObject.MAG,
                             nameof(CharacterAttrib.TotalValue));
-                        nudMysticAdeptMAGMagician.DoDatabinding("Value", CharacterObject,
+                        nudMysticAdeptMAGMagician.DoDataBinding("Value", CharacterObject,
                             nameof(Character.MysticAdeptPowerPoints));
 
                         // Select the Magician's Tradition.
@@ -563,7 +563,7 @@ namespace Chummer
                         else if (cboTradition.SelectedIndex == -1 && cboTradition.Items.Count > 0)
                             cboTradition.SelectedIndex = 0;
 
-                        txtTraditionName.DoDatabinding("Text", CharacterObject.MagicTradition, nameof(Tradition.Name));
+                        txtTraditionName.DoDataBinding("Text", CharacterObject.MagicTradition, nameof(Tradition.Name));
 
                         // Select the Technomancer's Stream.
                         if (CharacterObject.MagicTradition.Type == TraditionType.RES)
@@ -618,7 +618,7 @@ namespace Chummer
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_databinding2", op_load_frm_create))
                     {
-                        nudNuyen.DoDatabinding("Value", CharacterObject, nameof(Character.NuyenBP));
+                        nudNuyen.DoDataBinding("Value", CharacterObject, nameof(Character.NuyenBP));
                         nudNuyen.DoOneWayDataBinding("Maximum", CharacterObject, nameof(Character.TotalNuyenMaximumBP));
 
                         lblCMPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
@@ -629,7 +629,7 @@ namespace Chummer
                         lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
                         lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
                         lblCMStun.Visible = true; // Needed for some weird reason
-                        lblCMStun.DoDatabinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+                        lblCMStun.DoDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
                         lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
                         lblESSMax.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEssence));
@@ -719,7 +719,7 @@ namespace Chummer
                             nameof(Character.DisplaySpellDefenseManipulationPhysical));
                         lblSpellDefenseManipPhysical.DoOneWayDataBinding("ToolTipText", CharacterObject,
                             nameof(Character.SpellDefenseManipulationPhysicalToolTip));
-                        nudCounterspellingDice.DoDatabinding("Value", CharacterObject,
+                        nudCounterspellingDice.DoDataBinding("Value", CharacterObject,
                             nameof(Character.CurrentCounterspellingDice));
 
                         lblMovement.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayMovement));

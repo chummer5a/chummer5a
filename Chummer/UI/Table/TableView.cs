@@ -386,12 +386,12 @@ namespace Chummer.UI.Table
             CreateCellsForColumn(index, column);
             foreach (string dependency in column.Dependencies)
             {
-                if (!_dicObservedProperties.TryGetValue(dependency, out List<int> lstDependancies))
+                if (!_dicObservedProperties.TryGetValue(dependency, out List<int> lstDependencies))
                 {
-                    lstDependancies = new List<int>();
-                    _dicObservedProperties[dependency] = lstDependancies;
+                    lstDependencies = new List<int>();
+                    _dicObservedProperties[dependency] = lstDependencies;
                 }
-                lstDependancies.Add(index);
+                lstDependencies.Add(index);
             }
         }
 

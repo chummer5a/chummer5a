@@ -135,14 +135,14 @@ namespace Chummer.UI.Attributes
                 nudBase.BeforeValueIncrement += nudBase_BeforeValueIncrement;
                 nudBase.ValueChanged += nudBase_ValueChanged;
 
-                nudBase.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                nudBase.DoDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
                 nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
-                nudBase.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Base));
+                nudBase.DoDataBinding("Value", _dataSource, nameof(CharacterAttrib.Base));
                 nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
                 nudBase.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
                 nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
-                nudKarma.DoDatabinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
+                nudKarma.DoDataBinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
                 nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
                 nudBase.UpdateLightDarkMode();

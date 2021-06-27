@@ -268,7 +268,7 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        public static void DoDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
         {
             if (objControl == null)
                 return;
@@ -287,7 +287,7 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoOneWayNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        public static void DoOneWayNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
         {
             if (objControl == null)
                 return;
@@ -305,7 +305,7 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        public static void DoNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
         {
             if (objControl == null)
                 return;

@@ -240,8 +240,8 @@ namespace Chummer
 
         private void DoDataBindings()
         {
-            cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
-            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
+            cboMetatype.DoDataBinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
+            txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves

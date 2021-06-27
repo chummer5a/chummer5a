@@ -155,7 +155,7 @@ namespace Chummer.UI.Skills
                     };
                     lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
                     btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
-                    btnAddSpec.DoDatabinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
+                    btnAddSpec.DoDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
                     btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
 
                     tlpRight.Controls.Add(lblCareerSpec, 0, 0);
@@ -219,12 +219,12 @@ namespace Chummer.UI.Skills
                     btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
                     btnAttribute.FlatAppearance.MouseOverBackColor = Color.Transparent;
 
-                    nudSkill.DoDatabinding("Visible", objSkill.CharacterObject,
+                    nudSkill.DoDataBinding("Visible", objSkill.CharacterObject,
                         nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
-                    nudSkill.DoDatabinding("Value", objSkill, nameof(Skill.Base));
+                    nudSkill.DoDataBinding("Value", objSkill, nameof(Skill.Base));
                     nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
                     nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
-                    nudKarma.DoDatabinding("Value", objSkill, nameof(Skill.Karma));
+                    nudKarma.DoDataBinding("Value", objSkill, nameof(Skill.Karma));
                     nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.KarmaUnlocked));
                     nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
@@ -259,7 +259,7 @@ namespace Chummer.UI.Skills
                         cboSpec.BeginUpdate();
                         cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
                         cboSpec.SelectedIndex = -1;
-                        cboSpec.DoDatabinding("Text", objSkill, nameof(Skill.Specialization));
+                        cboSpec.DoDataBinding("Text", objSkill, nameof(Skill.Specialization));
                         cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                         cboSpec.EndUpdate();
                         chkKarma = new ColorableCheckBox(components)
@@ -271,9 +271,9 @@ namespace Chummer.UI.Skills
                             Name = "chkKarma",
                             UseVisualStyleBackColor = true
                         };
-                        chkKarma.DoDatabinding("Visible", objSkill.CharacterObject,
+                        chkKarma.DoDataBinding("Visible", objSkill.CharacterObject,
                             nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
-                        chkKarma.DoDatabinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
+                        chkKarma.DoDataBinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
                         chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                         tlpRight.Controls.Add(cboSpec, 0, 0);
                         tlpRight.Controls.Add(chkKarma, 1, 0);

@@ -49,12 +49,12 @@ namespace Chummer
             try
             {
                 lblSustainedSpell.DoOneWayDataBinding("Text", _objLinkedSustainedObject, nameof(SustainedObject.CurrentDisplayName));
-                nudForce.DoDatabinding("Value", _objLinkedSustainedObject, nameof(SustainedObject.Force));
-                nudNetHits.DoDatabinding("Value", _objLinkedSustainedObject, nameof(SustainedObject.NetHits));
+                nudForce.DoDataBinding("Value", _objLinkedSustainedObject, nameof(SustainedObject.Force));
+                nudNetHits.DoDataBinding("Value", _objLinkedSustainedObject, nameof(SustainedObject.NetHits));
 
                 //Only do  the binding if it's actually needed
                 if (_objLinkedSustainedObject.LinkedObjectType != Improvement.ImprovementSource.CritterPower)
-                    chkSelfSustained.DoDatabinding("Checked", _objLinkedSustainedObject, nameof(SustainedObject.SelfSustained));
+                    chkSelfSustained.DoDataBinding("Checked", _objLinkedSustainedObject, nameof(SustainedObject.SelfSustained));
             }
             finally
             {

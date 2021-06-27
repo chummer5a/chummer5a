@@ -403,25 +403,25 @@ namespace Chummer
                 }
             }
 
-            chkBonusLPRandomize.DoNegatableDatabinding("Checked",_objLifestyle, nameof(Lifestyle.AllowBonusLP));
-            nudBonusLP.DoDatabinding("Value", _objLifestyle,nameof(Lifestyle.BonusLP));
+            chkBonusLPRandomize.DoNegatableDataBinding("Checked",_objLifestyle, nameof(Lifestyle.AllowBonusLP));
+            nudBonusLP.DoDataBinding("Value", _objLifestyle,nameof(Lifestyle.BonusLP));
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
             cboBaseLifestyle.PopulateWithListItems(lstLifestyles);
             cboBaseLifestyle.EndUpdate();
-            txtLifestyleName.DoDatabinding("Text",_objLifestyle,nameof(Lifestyle.Name));
-            nudRoommates.DoDatabinding("Value",_objLifestyle,nameof(Lifestyle.Roommates));
-            nudPercentage.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.Percentage));
-            nudArea.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableArea));
-            nudComforts.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableComforts));
-            nudSecurity.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity));
+            txtLifestyleName.DoDataBinding("Text",_objLifestyle,nameof(Lifestyle.Name));
+            nudRoommates.DoDataBinding("Value",_objLifestyle,nameof(Lifestyle.Roommates));
+            nudPercentage.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.Percentage));
+            nudArea.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableArea));
+            nudComforts.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableComforts));
+            nudSecurity.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity));
             nudArea.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.AreaDelta));
             nudComforts.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.ComfortsDelta));
             nudSecurity.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.SecurityDelta));
-            cboBaseLifestyle.DoDatabinding("SelectedValue",_objLifestyle,nameof(Lifestyle.BaseLifestyle));
-            chkTrustFund.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.TrustFund));
+            cboBaseLifestyle.DoDataBinding("SelectedValue",_objLifestyle,nameof(Lifestyle.BaseLifestyle));
+            chkTrustFund.DoDataBinding("Checked", _objLifestyle, nameof(Lifestyle.TrustFund));
             chkTrustFund.DoOneWayDataBinding("Enabled",_objLifestyle,nameof(Lifestyle.IsTrustFundEligible));
-            chkPrimaryTenant.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant));
+            chkPrimaryTenant.DoDataBinding("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant));
             lblCost.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
             lblArea.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedArea));
             lblComforts.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedComforts));
@@ -455,7 +455,7 @@ namespace Chummer
 
             cboCity.BeginUpdate();
             cboCity.PopulateWithListItems(lstCity);
-            cboCity.DoDatabinding("SelectedValue", _objLifestyle, nameof(Lifestyle.City));
+            cboCity.DoDataBinding("SelectedValue", _objLifestyle, nameof(Lifestyle.City));
             cboCity.EndUpdate();
 
             //Populate District and Borough ComboBox for the first time

@@ -2264,8 +2264,7 @@ namespace Chummer
 
             if (callOnSaveCallBack)
             {
-                foreach (Func<Character, bool> funcToRun in DoOnSaveCompleted)
-                    blnErrorFree = funcToRun(this) && blnErrorFree;
+                blnErrorFree = DoOnSaveCompleted.Aggregate(blnErrorFree, (current, funcToRun) => funcToRun(this) && current);
             }
             return blnErrorFree;
         }
@@ -4672,7 +4671,8 @@ namespace Chummer
                     LanguageManager.GetString("String_Improvement_SideRight", strLanguageToPrint));
             }
 
-            // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from having a self-terminated title tag which causes browser to not rendering anything.
+            // If the character does not have a name, call them Unnamed Character. This prevents a transformed document from
+            // having a self-terminated title tag which causes browser to not rendering anything.
             // <name />
             objWriter.WriteElementString("name",
                 !string.IsNullOrEmpty(Name)
@@ -4682,9 +4682,13 @@ namespace Chummer
             PrintMugshots(objWriter);
 
             // <sex />
-            objWriter.WriteElementString("gender", TranslateExtra(ReverseTranslateExtra(Gender, GlobalOptions.Language, "contacts.xml"), strLanguageToPrint, "contacts.xml"));
+            objWriter.WriteElementString("gender",
+                TranslateExtra(ReverseTranslateExtra(Gender, GlobalOptions.Language, "contacts.xml"),
+                    strLanguageToPrint, "contacts.xml"));
             // <age />
-            objWriter.WriteElementString("age", TranslateExtra(ReverseTranslateExtra(Age, GlobalOptions.Language, "contacts.xml"), strLanguageToPrint, "contacts.xml"));
+            objWriter.WriteElementString("age",
+                TranslateExtra(ReverseTranslateExtra(Age, GlobalOptions.Language, "contacts.xml"), strLanguageToPrint,
+                    "contacts.xml"));
             // <eyes />
             objWriter.WriteElementString("eyes", TranslateExtra(ReverseTranslateExtra(Eyes), strLanguageToPrint));
             // <height />
@@ -8562,7 +8566,7 @@ namespace Chummer
                 decimal decMultiplier = 1.0m;
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
-                    if(objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
+                    if (objLoopImprovement.Enabled && (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
                                                        (objLoopImprovement.Condition == "career") == Created ||
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {

@@ -55,16 +55,16 @@ namespace Chummer
         {
             bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
             nudForce.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            chkBound.DoDatabinding("Checked", _objSpirit, nameof(Spirit.Bound));
+            chkBound.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Bound));
             chkBound.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            cboSpiritName.DoDatabinding("Text", _objSpirit, nameof(Spirit.Name));
-            txtCritterName.DoDatabinding("Text", _objSpirit, nameof(Spirit.CritterName));
+            cboSpiritName.DoDataBinding("Text", _objSpirit, nameof(Spirit.Name));
+            txtCritterName.DoDataBinding("Text", _objSpirit, nameof(Spirit.CritterName));
             txtCritterName.DoOneWayDataBinding("Enabled", _objSpirit, nameof(Spirit.NoLinkedCharacter));
             nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
-            nudServices.DoDatabinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
-            nudForce.DoDatabinding("Value", _objSpirit, nameof(Spirit.Force));
+            nudServices.DoDataBinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
+            nudForce.DoDataBinding("Value", _objSpirit, nameof(Spirit.Force));
             chkFettered.DoOneWayDataBinding("Enabled",_objSpirit, nameof(Spirit.AllowFettering));
-            chkFettered.DoDatabinding("Checked", _objSpirit, nameof(Spirit.Fettered));
+            chkFettered.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
                 lblForce.Text = LanguageManager.GetString("Label_Spirit_Force");
