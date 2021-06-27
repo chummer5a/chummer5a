@@ -72,7 +72,7 @@ namespace Chummer.UI.Shared
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
                 Contents.ListChanged += ContentsChanged;
-                ComptuteDisplayIndex();
+                ComputeDisplayIndex();
                 LoadScreenContent();
                 BindingListDisplay_SizeChanged(null, null);
             }
@@ -144,7 +144,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void ComptuteDisplayIndex()
+        private void ComputeDisplayIndex()
         {
             List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>(_lstContentList.Count);
             for (int i = 0; i < _lstContentList.Count; ++i)
@@ -224,7 +224,7 @@ namespace Chummer.UI.Shared
                     ++intNumVisible;
             }
             ResetDisplayPanelHeight(intNumVisible);
-            ComptuteDisplayIndex();
+            ComputeDisplayIndex();
             LoadScreenContent();
         }
 
