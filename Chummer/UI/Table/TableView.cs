@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -41,9 +42,9 @@ namespace Chummer.UI.Table
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 _table.SuspendLayout();
-                Span<int> widths = _table._columns.Count > GlobalOptions.MaxStackLimit
-                    ? new int[_table._columns.Count]
-                    : stackalloc int[_table._columns.Count];
+                int[] aintSharedWidths = _table._columns.Count > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_table._columns.Count) : null;
+                // ReSharper disable once MergeConditionalExpression
+                Span<int> widths = aintSharedWidths != null ? aintSharedWidths : stackalloc int[_table._columns.Count];
 
                 int y = 0;
 
@@ -163,6 +164,8 @@ namespace Chummer.UI.Table
                     _table.Height = y;
                 }
                 _table.ResumeLayout(false);
+                if (aintSharedWidths != null)
+                    ArrayPool<int>.Shared.Return(aintSharedWidths);
                 return true;
             }
         }

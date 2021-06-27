@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -86,7 +87,7 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
@@ -97,7 +98,9 @@ namespace Chummer
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrent);
+                string strReturn = new string(achrNewChars, 0, intCurrent);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -135,7 +138,7 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
@@ -154,7 +157,9 @@ namespace Chummer
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrent);
+                string strReturn = new string(achrNewChars, 0, intCurrent);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -409,7 +414,7 @@ namespace Chummer
                 funcIsWhiteSpace = (x) => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                 int intCurrent = 0;
                 int intLoopWhitespaceCount = 0;
@@ -439,7 +444,9 @@ namespace Chummer
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                 // If the last char is whitespace, we don't copy that, either.
-                return new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                string strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe

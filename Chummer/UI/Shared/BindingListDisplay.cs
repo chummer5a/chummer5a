@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -158,8 +159,10 @@ namespace Chummer.UI.Shared
             objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
 
             // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
-            Span<int> aintOldDisplayIndex = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit
-                ? new int[_lstDisplayIndex.Count]
+            int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count) : null;
+            // ReSharper disable once MergeConditionalExpression
+            Span<int> aintOldDisplayIndex = aintSharedOldDisplayIndexes != null
+                ? aintSharedOldDisplayIndexes
                 : stackalloc int[_lstDisplayIndex.Count];
             for (int i = 0; i < aintOldDisplayIndex.Length; ++i)
                 aintOldDisplayIndex[i] = _lstDisplayIndex[i];
@@ -175,6 +178,8 @@ namespace Chummer.UI.Shared
                     _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                 }
             }
+            if (aintSharedOldDisplayIndexes != null)
+                ArrayPool<int>.Shared.Return(aintSharedOldDisplayIndexes);
         }
 
         private void LoadScreenContent()
