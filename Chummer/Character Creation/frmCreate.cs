@@ -12321,12 +12321,12 @@ namespace Chummer
                 }
 
                 // Check if the character's Essence is above 0.
-                double dblEss = decimal.ToDouble(CharacterObject.Essence());
-                double dblMinEss = CharacterObjectOptions.DontRoundEssenceInternally ? 0.0 : Math.Pow(10.0, -CharacterObjectOptions.EssenceDecimals);
-                if (dblEss < dblMinEss && CharacterObject.ESS.MetatypeMaximum > 0)
+                decimal decEss = CharacterObject.Essence();
+                decimal decMinEss = CharacterObjectOptions.DontRoundEssenceInternally ? 0 : 10.0m.RaiseToPower(-CharacterObjectOptions.EssenceDecimals);
+                if (decEss < decMinEss && CharacterObject.ESS.MetatypeMaximum > 0)
                 {
                     blnValid = false;
-                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), dblMinEss - dblEss));
+                    sbdMessage.Append(Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_InvalidEssenceExcess"), decMinEss - decEss));
                 }
 
                 // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.

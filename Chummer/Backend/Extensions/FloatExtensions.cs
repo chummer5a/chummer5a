@@ -33,5 +33,17 @@ namespace Chummer
         {
             return Convert.ToInt32(fltToRound >= 0 ? Math.Ceiling(fltToRound) : Math.Floor(fltToRound));
         }
+
+        /// <summary>
+        /// Syntactic sugar for exponentiating a float by another float.
+        /// </summary>
+        /// <param name="fltBase">Number to exponentiate.</param>
+        /// <param name="fltPower">Power to which to raise <paramref name="fltBase"/>.</param>
+        /// <returns><paramref name="fltBase"/> to the power of <paramref name="fltPower"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static float RaiseToPower(this float fltBase, float fltPower)
+        {
+            return Convert.ToSingle(Math.Pow(fltBase, fltPower));
+        }
     }
 }
