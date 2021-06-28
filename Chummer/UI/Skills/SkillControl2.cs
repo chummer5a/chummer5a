@@ -181,7 +181,7 @@ namespace Chummer.UI.Skills
 
                     cboSelectAttribute = new ElasticComboBox
                     {
-                        Anchor = AnchorStyles.Left | AnchorStyles.Right,
+                        Dock = DockStyle.Fill,
                         DropDownStyle = ComboBoxStyle.DropDownList,
                         FormattingEnabled = true,
                         Margin = new Padding(3, 0, 3, 0),
