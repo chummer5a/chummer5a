@@ -104,7 +104,7 @@ namespace Chummer.Backend.Skills
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            AttributeObject = objCharacter.LOG;
+            DefaultAttribute = "LOG";
         }
 
         public KnowledgeSkill(Character objCharacter, string strForcedName, bool allowUpgrade) : this(objCharacter)
@@ -166,7 +166,7 @@ namespace Chummer.Backend.Skills
 
             if (!string.IsNullOrEmpty(strAttribute))
             {
-                AttributeObject = CharacterObject.GetAttribute(strAttribute) ?? CharacterObject.LOG;
+                DefaultAttribute = CharacterObject.GetAttribute(strAttribute) != null ? strAttribute : "LOG";
             }
         }
 
@@ -265,7 +265,7 @@ namespace Chummer.Backend.Skills
                 */
                 if (CategoriesSkillMap.TryGetValue(value, out string strNewAttributeValue))
                 {
-                    AttributeObject = CharacterObject.GetAttribute(strNewAttributeValue);
+                    DefaultAttribute = strNewAttributeValue;
                 }
 
                 OnPropertyChanged();

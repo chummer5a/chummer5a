@@ -1168,13 +1168,13 @@ namespace Chummer
                 case ImprovementType.SwapSkillSpecAttribute:
                 {
                     Skill objTargetSkill =
-                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName)
-                            ?? _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
-                                x.DictionaryKey == ImprovedName || x.CurrentDisplayName == ImprovedName);
+                        _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == Target)
+                        ?? _objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(x =>
+                            x.DictionaryKey == Target || x.CurrentDisplayName == Target);
                     if (objTargetSkill != null)
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
-                            nameof(Skill.PoolToolTip));
+                            nameof(Skill.DefaultAttribute));
                     }
                 }
                     break;

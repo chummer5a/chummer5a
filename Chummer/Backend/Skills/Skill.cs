@@ -16,20 +16,23 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
-using Chummer.Annotations;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Attributes;
-using System.Drawing;
 using System.Xml.XPath;
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
 
 namespace Chummer.Backend.Skills
 {
@@ -39,7 +42,6 @@ namespace Chummer.Backend.Skills
     {
         private CharacterAttrib _objAttribute;
         private string _strDefaultAttribute;
-        private bool _blnCheckSwapSkillImprovements = true;
         private bool _blnRequiresGroundMovement;
         private bool _blnRequiresSwimMovement;
         private bool _blnRequiresFlyMovement;
@@ -49,35 +51,32 @@ namespace Chummer.Backend.Skills
 
         public CharacterAttrib AttributeObject
         {
-            get
+            get => _objAttribute;
+            private set
             {
-                if (!_blnCheckSwapSkillImprovements && _objAttribute != null) return _objAttribute;
-                if (CharacterObject.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && imp.Target == Name))
-                {
-                    AttributeObject = CharacterObject.GetAttribute(CharacterObject.Improvements.First(imp =>
-                            imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute &&
-                            imp.Target == DictionaryKey).ImprovedName);
-                }
-                else if (_strDefaultAttribute != _objAttribute?.Abbrev || _objAttribute == null)
-                {
-                    AttributeObject = CharacterObject.GetAttribute(_strDefaultAttribute);
-                }
-
-                return _objAttribute;
-            }
-            protected set
-            {
-                if (_objAttribute == value) return;
-                if (_objAttribute != null)
-                    _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
-                if (value != null)
-                    value.PropertyChanged += OnLinkedAttributeChanged;
+                if (_objAttribute == value)
+                    return;
                 _objAttribute = value;
-                _strDefaultAttribute = _objAttribute?.Abbrev;
                 OnPropertyChanged();
             }
-        } //Attribute this skill primarily depends on
+        }
+
+        private void RecacheAttribute()
+        {
+            string strAttributeString = DefaultAttribute;
+            Improvement objImprovementOverride = CharacterObject.Improvements.FirstOrDefault(x =>
+                x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && x.Target == DictionaryKey && x.Enabled);
+            if (objImprovementOverride != null)
+                strAttributeString = objImprovementOverride.ImprovedName;
+            CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
+            if (AttributeObject == objNewAttribute)
+                return;
+            if (AttributeObject != null)
+                AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
+            if (objNewAttribute != null)
+                objNewAttribute.PropertyChanged += OnLinkedAttributeChanged;
+            AttributeObject = objNewAttribute;
+        }
 
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
@@ -99,7 +98,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteElementString("requiresflymovement", RequiresFlyMovement.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(Notes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notes", Regex.Replace(Notes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("name", Name);
             if (!CharacterObject.Created)
@@ -500,39 +499,36 @@ namespace Chummer.Backend.Skills
             Specializations.BeforeRemove += SpecializationsOnBeforeRemove;
         }
 
-        private void OnAttributesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Add:
                     {
                         if (e.NewItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
                             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                            AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+                            RecacheAttribute();
                             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
                             AttributeActiveOnPropertyChanged(sender, null);
                         }
                         break;
                     }
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Remove:
                     {
                         if (e.OldItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
                             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                            AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+                            RecacheAttribute();
                             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
                             AttributeActiveOnPropertyChanged(sender, null);
                         }
                         break;
                     }
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                case NotifyCollectionChangedAction.Reset:
                     {
                         AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                        AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+                        RecacheAttribute();
                         AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
                         AttributeActiveOnPropertyChanged(sender, null);
                         break;
@@ -545,8 +541,7 @@ namespace Chummer.Backend.Skills
             if (e.PropertyName != nameof(AttributeSection.AttributeCategory))
                 return;
             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-            AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+            RecacheAttribute();
             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
             AttributeActiveOnPropertyChanged(sender, e);
         }
@@ -574,7 +569,7 @@ namespace Chummer.Backend.Skills
             if (xmlNode == null)
                 return;
             _strName = xmlNode["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-            _strDefaultAttribute = xmlNode["attribute"]?.InnerText;
+            DefaultAttribute = xmlNode["attribute"]?.InnerText;
             SkillCategory = xmlNode["category"]?.InnerText ?? string.Empty;
             Default = xmlNode["default"]?.InnerText == bool.TrueString;
             Source = xmlNode["source"]?.InnerText;
@@ -911,9 +906,16 @@ namespace Chummer.Backend.Skills
                 if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
                 switch (objImprovement.ImproveType)
                 {
-                    case Improvement.ImprovementType.Skill:
                     case Improvement.ImprovementType.SwapSkillAttribute:
                     case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                        if (objImprovement.Target == strNameToUse)
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+                    case Improvement.ImprovementType.Skill:
                     case Improvement.ImprovementType.SkillDisable:
                         if (objImprovement.ImprovedName == strNameToUse)
                         {
@@ -1134,6 +1136,18 @@ namespace Chummer.Backend.Skills
         /// The Abbreviation of the linked attribute. Not the object due legacy
         /// </summary>
         public string Attribute => AttributeObject.Abbrev;
+
+        public string DefaultAttribute
+        {
+            get => _strDefaultAttribute;
+            set
+            {
+                if (_strDefaultAttribute == value)
+                    return;
+                _strDefaultAttribute = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// The translated abbreviation of the linked attribute.
@@ -1538,6 +1552,11 @@ namespace Chummer.Backend.Skills
             }
 
             s.Append(strSpace + '+' + strSpace + att.DisplayAbbrev + strSpace + '(' + att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+            Improvement objAttributeSwapImprovement =
+                lstRelevantImprovements.FirstOrDefault(x =>
+                    x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute);
+            if (objAttributeSwapImprovement != null)
+                s.Append(strSpace + CharacterObject.GetObjectName(objAttributeSwapImprovement));
 
             if (Default && !Leveled)
             {
@@ -1609,13 +1628,11 @@ namespace Chummer.Backend.Skills
                 return s.ToString();
             foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements)
             {
-                if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillAttribute
-                    && objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
+                if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
                     continue;
-                s.AppendLine();
-                if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                    s.Append(objSwapSkillAttribute.Exclude + LanguageManager.GetString("String_Colon") + strSpace);
-                s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace);
+                s.Append(Environment.NewLine + objSwapSkillAttribute.Exclude +
+                         LanguageManager.GetString("String_Colon") + strSpace +
+                         CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace);
                 int intBasePool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false, CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
                 SkillSpecialization objSpecialization = null;
                 if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
@@ -1632,16 +1649,16 @@ namespace Chummer.Backend.Skills
                 }
 
                 s.Append(intBasePool.ToString(GlobalOptions.CultureInfo));
-                if (objSwapSkillAttribute.ImprovedName != "STR" &&
-                    objSwapSkillAttribute.ImprovedName != "AGI") continue;
+                if (objSwapSkillAttribute.ImprovedName != "STR" && objSwapSkillAttribute.ImprovedName != "AGI")
+                    continue;
                 foreach (Cyberware cyberware in CharacterObject.Cyberware)
                 {
                     if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
                         continue;
-                    s.AppendLine();
-                    if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                        s.Append(objSwapSkillAttribute.Exclude + LanguageManager.GetString("String_Colon") + strSpace);
-                    s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace + cyberware.Location + strSpace + cyberware.CurrentDisplayNameShort);
+                    s.Append(Environment.NewLine + objSwapSkillAttribute.Exclude +
+                             LanguageManager.GetString("String_Colon") + strSpace +
+                             CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace + cyberware.Location +
+                             strSpace + cyberware.CurrentDisplayNameShort);
                     if (cyberware.Grade.Name != "Standard")
                     {
                         s.Append(strSpace + '(' + cyberware.Grade.CurrentDisplayName + ')');
@@ -2178,6 +2195,9 @@ namespace Chummer.Backend.Skills
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
+            // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
+            if (lstNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
+                RecacheAttribute();
         }
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)
@@ -2256,15 +2276,6 @@ namespace Chummer.Backend.Skills
                         nameof(BaseUnlocked),
                         nameof(ForcedBuyWithKarma));
                     break;
-                case nameof(Character.Improvements):
-                {
-                    //TODO: Dear god outbound improvements please this is is minimal an impact we can have and it's going to be a nightmare.
-                    if (CharacterObject.Improvements.Any(i =>
-                            i.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && i.Target == "Name")
-                        || _strDefaultAttribute != _objAttribute.Abbrev)
-                        _blnCheckSwapSkillImprovements = true;
-                    break;
-                }
             }
         }
 

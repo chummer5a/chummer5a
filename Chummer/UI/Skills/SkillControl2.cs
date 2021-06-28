@@ -57,6 +57,8 @@ namespace Chummer.UI.Skills
                 return;
             _objSkill = objSkill;
             _objAttributeActive = objSkill.AttributeObject;
+            if (_objAttributeActive != null)
+                _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
             InitializeComponent();
             SuspendLayout();
             pnlAttributes.SuspendLayout();
@@ -327,6 +329,19 @@ namespace Chummer.UI.Skills
                 case nameof(Skill.Default):
                     lblName.Font = !_objSkill.Default ? _fntItalicName : _fntNormalName;
                     if (blnUpdateAll)
+                        goto case nameof(Skill.DefaultAttribute);
+                    break;
+                case nameof(Skill.DefaultAttribute):
+                    if (cboSelectAttribute != null)
+                    {
+                        cboSelectAttribute.SelectedValue = _objSkill.AttributeObject.Abbrev;
+                        cboSelectAttribute_Closed(this, EventArgs.Empty);
+                    }
+                    else
+                    {
+                        AttributeActive = _objSkill.AttributeObject;
+                    }
+                    if (blnUpdateAll)
                         goto case nameof(Skill.CGLSpecializations);
                     break;
                 case nameof(Skill.CGLSpecializations):
@@ -368,6 +383,7 @@ namespace Chummer.UI.Skills
                     break;
             }
         }
+
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
@@ -439,19 +455,32 @@ namespace Chummer.UI.Skills
         {
             btnAttribute.Visible = true;
             cboSelectAttribute.Visible = false;
-            _objAttributeActive.PropertyChanged -= Attribute_PropertyChanged;
-            _objAttributeActive = _objSkill.CharacterObject.GetAttribute((string) cboSelectAttribute.SelectedValue);
-            _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
-
-            btnAttribute.Font = _objAttributeActive == _objSkill.AttributeObject ? _fntNormal : _fntItalic;
+            AttributeActive = _objSkill.CharacterObject.GetAttribute((string) cboSelectAttribute.SelectedValue);
             btnAttribute.Text = cboSelectAttribute.Text;
-            Attribute_PropertyChanged(sender, new PropertyChangedEventArgs(nameof(CharacterAttrib.Abbrev)));
-            CustomAttributeChanged?.Invoke(sender, e);
+        }
+
+        private CharacterAttrib AttributeActive
+        {
+            get => _objAttributeActive;
+            set
+            {
+                if (_objAttributeActive == value)
+                    return;
+                if (_objAttributeActive != null)
+                    _objAttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+                _objAttributeActive = value;
+                if (_objAttributeActive != null)
+                    _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
+                btnAttribute.QueueThreadSafe(() =>
+                    btnAttribute.Font = _objAttributeActive == _objSkill.AttributeObject ? _fntNormal : _fntItalic);
+                SkillControl2_RefreshPoolTooltipAndDisplay();
+                CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public event EventHandler CustomAttributeChanged;
 
-        public bool CustomAttributeSet => _objAttributeActive != _objSkill.AttributeObject;
+        public bool CustomAttributeSet => AttributeActive != _objSkill.AttributeObject;
 
         [UsedImplicitly]
         public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
@@ -507,7 +536,7 @@ namespace Chummer.UI.Skills
         private void UnbindSkillControl()
         {
             _objSkill.PropertyChanged -= Skill_PropertyChanged;
-            _objAttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+            AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
 
             foreach (Control objControl in Controls)
             {
@@ -576,9 +605,9 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void SkillControl2_RefreshPoolTooltipAndDisplay()
         {
-            string backgroundCalcPool = _objSkill.DisplayOtherAttribute(_objAttributeActive.Abbrev);
+            string backgroundCalcPool = _objSkill.DisplayOtherAttribute(AttributeActive.Abbrev);
             lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
-            string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(_objAttributeActive.Abbrev);
+            string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(AttributeActive.Abbrev);
             lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
         }
     }
