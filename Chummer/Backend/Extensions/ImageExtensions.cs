@@ -323,7 +323,17 @@ namespace Chummer
                 return string.Empty;
             using (MemoryStream objImageStream = new MemoryStream())
             {
-                imgToConvert.Save(objImageStream, eOverrideFormat ?? imgToConvert.RawFormat);
+                if (eOverrideFormat == null)
+                {
+                    // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
+                    if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                        eOverrideFormat = ImageFormat.Jpeg;
+                    else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                        eOverrideFormat = ImageFormat.Gif;
+                    else
+                        eOverrideFormat = ImageFormat.Png;
+                }
+                imgToConvert.Save(objImageStream, eOverrideFormat);
                 return Convert.ToBase64String(objImageStream.ToArray());
             }
         }
@@ -362,7 +372,17 @@ namespace Chummer
             {
                 using (MemoryStream objImageStream = new MemoryStream())
                 {
-                    imgToConvert.Save(objImageStream, eOverrideFormat ?? imgToConvert.RawFormat);
+                    if (eOverrideFormat == null)
+                    {
+                        // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
+                        if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                            eOverrideFormat = ImageFormat.Jpeg;
+                        else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                            eOverrideFormat = ImageFormat.Gif;
+                        else
+                            eOverrideFormat = ImageFormat.Png;
+                    }
+                    imgToConvert.Save(objImageStream, eOverrideFormat);
                     return Convert.ToBase64String(objImageStream.ToArray());
                 }
             });
