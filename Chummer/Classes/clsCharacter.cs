@@ -10202,21 +10202,25 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
-                    .Append(strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + WIL.DisplayAbbrev)
-                    .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
-                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
-                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpace + '(' +
+                                                             CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
+                                                             '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
+                                                             '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
+                                                             '(' +
+                                                             SustainingPenalty.ToString(GlobalOptions.CultureInfo) +
+                                                             ')');
                 foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Composure &&
                         objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement))
-                            .Append(strSpace + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement) + strSpace +
+                                          '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -10238,22 +10242,26 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
-                    .Append(strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + INT.DisplayAbbrev)
-                    .Append(strSpace + '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
-                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
-                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpace + '(' +
+                                                             CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpace + '+' + strSpace + INT.DisplayAbbrev + strSpace +
+                                                             '(' + INT.TotalValue.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
+                                                             '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
+                                                             '(' +
+                                                             SustainingPenalty.ToString(GlobalOptions.CultureInfo) +
+                                                             ')');
                 foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions
                         || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsOffense)
                        && objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement))
-                            .Append(strSpace + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement) + strSpace +
+                                          '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -10273,18 +10281,19 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev)
-                    .Append(strSpace + '(' + CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + WIL.DisplayAbbrev)
-                    .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(CHA.DisplayAbbrev + strSpace + '(' +
+                                                             CHA.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
+                                                             '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
+                                                             ')');
                 foreach(Improvement objLoopImprovement in Improvements)
                 {
                     if((objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentions
                         || objLoopImprovement.ImproveType == Improvement.ImprovementType.JudgeIntentionsDefense)
                        && objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement))
-                            .Append(strSpace + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement) + strSpace +
+                                          '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -10305,21 +10314,25 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(BOD.DisplayAbbrev)
-                    .Append(strSpace + '(' + BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + STR.DisplayAbbrev)
-                    .Append(strSpace + '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
-                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
-                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(BOD.DisplayAbbrev + strSpace + '(' +
+                                                             BOD.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpace + '+' + strSpace + STR.DisplayAbbrev + strSpace +
+                                                             '(' + STR.TotalValue.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
+                                                             '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
+                                                             '(' +
+                                                             SustainingPenalty.ToString(GlobalOptions.CultureInfo) +
+                                                             ')');
                 foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.LiftAndCarry
                        && objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement))
-                            .Append(strSpace + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement) + strSpace +
+                                          '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 
@@ -10342,21 +10355,25 @@ namespace Chummer
             get
             {
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev)
-                    .Append(strSpace + '(' + LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + WIL.DisplayAbbrev)
-                    .Append(strSpace + '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds"))
-                    .Append(strSpace + '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) + ')')
-                    .Append(strSpace + '+' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain"))
-                    .Append(strSpace + '(' + SustainingPenalty.ToString(GlobalOptions.CultureInfo) + ')');
+                StringBuilder sbdToolTip = new StringBuilder(LOG.DisplayAbbrev + strSpace + '(' +
+                                                             LOG.TotalValue.ToString(GlobalOptions.CultureInfo) + ')' +
+                                                             strSpace + '+' + strSpace + WIL.DisplayAbbrev + strSpace +
+                                                             '(' + WIL.TotalValue.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Wounds") + strSpace +
+                                                             '(' + WoundModifier.ToString(GlobalOptions.CultureInfo) +
+                                                             ')' + strSpace + '+' + strSpace +
+                                                             LanguageManager.GetString("Tip_Skill_Sustain") + strSpace +
+                                                             '(' +
+                                                             SustainingPenalty.ToString(GlobalOptions.CultureInfo) +
+                                                             ')');
                 foreach (Improvement objLoopImprovement in Improvements)
                 {
                     if(objLoopImprovement.ImproveType == Improvement.ImprovementType.Memory &&
                         objLoopImprovement.Enabled)
                     {
-                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement))
-                            .Append(strSpace + '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdToolTip.Append(strSpace + '+' + strSpace + GetObjectName(objLoopImprovement) + strSpace +
+                                          '(' + objLoopImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                     }
                 }
 

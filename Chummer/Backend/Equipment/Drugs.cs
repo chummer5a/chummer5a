@@ -1478,7 +1478,7 @@ namespace Chummer.Backend.Equipment
             bool blnNewLineFlag = false;
             string strSpace = LanguageManager.GetString("String_Space");
             string strColon = LanguageManager.GetString("String_Colon");
-            sbdDescription.Append(DisplayCategory(GlobalOptions.Language) + strColon + strSpace + CurrentDisplayName).AppendLine();
+            sbdDescription.AppendLine(DisplayCategory(GlobalOptions.Language) + strColon + strSpace + CurrentDisplayName);
 
             if (intLevel != -1)
             {

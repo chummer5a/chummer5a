@@ -977,17 +977,16 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(_strCachedNotes))
                     return _strCachedNotes;
-                StringBuilder sb = new StringBuilder();
+                _strCachedNotes = string.Empty;
                 if (Suppressed)
                 {
-                    sb.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SuppressedBy"),
+                    _strCachedNotes += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SuppressedBy"),
                         _objCharacter.GetObjectName(_objCharacter.Improvements.FirstOrDefault(imp =>
                             imp.ImproveType == Improvement.ImprovementType.DisableQuality
                             && (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled))
-                        ?? LanguageManager.GetString("String_Unknown")).AppendLine();
+                        ?? LanguageManager.GetString("String_Unknown")) + Environment.NewLine;
                 }
-                sb.Append(_strNotes);
-                _strCachedNotes = sb.ToString();
+                _strCachedNotes += _strNotes;
                 return _strCachedNotes;
             }
             set
