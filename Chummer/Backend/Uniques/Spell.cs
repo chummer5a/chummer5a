@@ -226,11 +226,16 @@ namespace Chummer
                 GetNode()?.TryGetStringFieldQuickly("dv", ref _strDV);
             }
             objNode.TryGetBoolFieldQuickly("extended", ref _blnExtended);
-            if (!objNode.TryGetBoolFieldQuickly("customextended", ref _blnCustomExtended))
+            if (_blnExtended)
             {
-                _blnCustomExtended = !HashDescriptors.Any(x =>
-                    string.Equals(x.Trim(), "Extended Area", StringComparison.OrdinalIgnoreCase));
+                if (!objNode.TryGetBoolFieldQuickly("customextended", ref _blnCustomExtended))
+                {
+                    _blnCustomExtended = !HashDescriptors.Any(x =>
+                        string.Equals(x.Trim(), "Extended Area", StringComparison.OrdinalIgnoreCase));
+                }
             }
+            else
+                _blnCustomExtended = false;
             objNode.TryGetBoolFieldQuickly("freebonus", ref _blnFreeBonus);
             objNode.TryGetBoolFieldQuickly("usesunarmed", ref _blnUsesUnarmed);
             objNode.TryGetBoolFieldQuickly("alchemical", ref _blnAlchemical);
@@ -398,7 +403,7 @@ namespace Chummer
             }
 
             // If Extended Area was not found and the Extended flag is enabled, add Extended Area to the list of Descriptors.
-            if (_blnCustomExtended)
+            if (Extended && _blnCustomExtended)
                 objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage) + ',' + strSpace);
 
             // Remove the trailing comma.
@@ -501,7 +506,7 @@ namespace Chummer
                         {
                             sbdTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellLimited"), -2);
                         }
-                        if (_blnCustomExtended)
+                        if (Extended && _blnCustomExtended)
                         {
                             sbdTip.AppendFormat(GlobalOptions.CultureInfo, strLabelFormat, LanguageManager.GetString("String_SpellExtended"), '+' + 2.ToString(GlobalOptions.CultureInfo));
                         }
@@ -677,7 +682,7 @@ namespace Chummer
                 {
                     sbdDV.Append("-2");
                 }
-                if (_blnCustomExtended)
+                if (Extended && _blnCustomExtended)
                 {
                     sbdDV.Append("+2");
                 }
@@ -799,7 +804,7 @@ namespace Chummer
         public string DisplayNameShort(string strLanguage)
         {
             string strReturn = !strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? GetNode(strLanguage)?["translate"]?.InnerText ?? Name : Name;
-            if (_blnCustomExtended)
+            if (Extended && _blnCustomExtended)
                 strReturn += ',' + LanguageManager.GetString("String_Space", strLanguage) + LanguageManager.GetString("String_SpellExtended", strLanguage);
 
             return strReturn;
