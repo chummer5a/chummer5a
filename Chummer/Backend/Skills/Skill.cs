@@ -1528,14 +1528,14 @@ namespace Chummer.Backend.Skills
 
             string strSpace = LanguageManager.GetString("String_Space");
             List<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
-            StringBuilder s = new StringBuilder();
+            StringBuilder s;
             if (CyberwareRating > TotalBaseRating)
             {
-                s.Append(LanguageManager.GetString("Tip_Skill_SkillsoftRating") + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
+                s = new StringBuilder(LanguageManager.GetString("Tip_Skill_SkillsoftRating") + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
             }
             else
             {
-                s.Append(LanguageManager.GetString("Tip_Skill_SkillRating") + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
+                s = new StringBuilder(LanguageManager.GetString("Tip_Skill_SkillRating") + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
                 bool first = true;
                 foreach (Improvement objImprovement in lstRelevantImprovements)
                 {
@@ -1547,12 +1547,11 @@ namespace Chummer.Backend.Skills
                         s.Append(strSpace + "(Base" + strSpace + '(' + LearnedRating.ToString(GlobalOptions.CultureInfo) + ')');
                     }
 
-                    s.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    s.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace +
+                             '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
-
-                if (!first)
-                    s.Append(')');
-                s.Append(')');
+                
+                s.Append(first ? ")" : "))");
             }
 
             s.Append(strSpace + '+' + strSpace + att.DisplayAbbrev + strSpace + '(' + att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
@@ -1564,14 +1563,13 @@ namespace Chummer.Backend.Skills
 
             if (Default && !Leveled)
             {
-                s.Append(strSpace);
                 int intDefaultModifier = DefaultModifier;
                 if (intDefaultModifier == 0)
-                    s.Append(CharacterObject.GetObjectName(
+                    s.Append(strSpace + CharacterObject.GetObjectName(
                         CharacterObject.Improvements.FirstOrDefault(x =>
                             x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled)));
                 else
-                    s.Append((intDefaultModifier > 0 ? '+' : '-') + strSpace + LanguageManager.GetString("Tip_Skill_Defaulting")
+                    s.Append(strSpace + (intDefaultModifier > 0 ? '+' : '-') + strSpace + LanguageManager.GetString("Tip_Skill_Defaulting")
                              + strSpace + '(' + Math.Abs(intDefaultModifier).ToString(GlobalOptions.CultureInfo) + ')');
             }
 
@@ -1592,14 +1590,15 @@ namespace Chummer.Backend.Skills
             int wound = CharacterObject.WoundModifier;
             if (wound != 0)
             {
-                s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds") + strSpace + '(' + wound.ToString(GlobalOptions.CultureInfo) + ')');
+                s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds") + strSpace + '(' +
+                         wound.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             int sustains = CharacterObject.SustainingPenalty;
             if (sustains != 0)
             {
-                s.Append(strSpace).Append('-').Append(strSpace).Append(LanguageManager.GetString("Tip_Skill_Sustain"))
-                    .Append(strSpace).Append('(').Append(sustains.ToString(GlobalOptions.CultureInfo)).Append(')');
+                s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain") + strSpace + '(' +
+                         sustains.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
             if (att.Abbrev == "STR" || att.Abbrev == "AGI")

@@ -9184,15 +9184,17 @@ namespace Chummer
                 sbdComplexFormsBP.Append(intFormsPointsUsed.ToString(GlobalOptions.CultureInfo) + strOf + CharacterObject.CFPLimit.ToString(GlobalOptions.CultureInfo));
                 if (intFormsPointsUsed > CharacterObject.CFPLimit)
                 {
-                    sbdComplexFormsBP.Append(strColon + strSpace)
-                        .Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo))
-                        .Append(strSpace + strPoints);
+                    sbdComplexFormsBP.Append(strColon + strSpace +
+                                             ((intFormsPointsUsed - CharacterObject.CFPLimit) *
+                                              CharacterObject.ComplexFormKarmaCost)
+                                             .ToString(GlobalOptions.CultureInfo) + strSpace + strPoints);
                 }
             }
             else
             {
-                sbdComplexFormsBP.Append(((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(GlobalOptions.CultureInfo))
-                    .Append(strSpace + strPoints);
+                sbdComplexFormsBP.Append(
+                    ((intFormsPointsUsed - CharacterObject.CFPLimit) * CharacterObject.ComplexFormKarmaCost).ToString(
+                        GlobalOptions.CultureInfo) + strSpace + strPoints);
             }
             lblComplexFormsBP.Text = sbdComplexFormsBP.ToString();
 
@@ -10278,10 +10280,7 @@ namespace Chummer
                     StringBuilder sbdArmorEquipped = new StringBuilder();
                     foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                     {
-                        sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName);
-                        sbdArmorEquipped.Append(strSpace + '(');
-                        sbdArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
-                        sbdArmorEquipped.AppendLine(")");
+                        sbdArmorEquipped.AppendLine(objLoopArmor.CurrentDisplayName + strSpace + '(' + objLoopArmor.DisplayArmorValue + ')');
                     }
                     if (sbdArmorEquipped.Length > 0)
                     {
@@ -10307,10 +10306,7 @@ namespace Chummer
                         StringBuilder sbdArmorEquipped = new StringBuilder();
                         foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
                         {
-                            sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName);
-                            sbdArmorEquipped.Append(strSpace + '(');
-                            sbdArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
-                            sbdArmorEquipped.AppendLine(")");
+                            sbdArmorEquipped.AppendLine(objLoopArmor.CurrentDisplayName + strSpace + '(' + objLoopArmor.DisplayArmorValue + ')');
                         }
                         if (sbdArmorEquipped.Length > 0)
                         {
@@ -11245,9 +11241,9 @@ namespace Chummer
                     if (sbdQualities.Length > 0)
                         sbdQualities.AppendLine(",");
 
-                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement))
-                        .Append(LanguageManager.GetString("String_Space") + '[')
-                        .Append(objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo) + "%]");
+                    sbdQualities.Append(CharacterObject.GetObjectName(objImprovement) +
+                                        LanguageManager.GetString("String_Space") + '[' +
+                                        objImprovement.Value.ToString("+#,0;-#,0;0", GlobalOptions.CultureInfo) + "%]");
                 }
 
                 if (objLifestyle.FreeGrids.Count > 0)

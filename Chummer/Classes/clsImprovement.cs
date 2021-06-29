@@ -3224,9 +3224,7 @@ namespace Chummer
                     }
                     if (setForbiddenCategories?.Count > 0)
                     {
-                        if (sbdFilter.Length > 0)
-                            sbdFilter.Append(" and ");
-                        sbdFilter.Append("not(");
+                        sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                         foreach (string strCategory in setForbiddenCategories)
                         {
                             sbdFilter.Append("category = " + strCategory.CleanXPath() + " or ");
@@ -3236,9 +3234,7 @@ namespace Chummer
                     }
                     if (setAllowedNames?.Count > 0)
                     {
-                        if (sbdFilter.Length > 0)
-                            sbdFilter.Append(" and ");
-                        sbdFilter.Append('(');
+                        sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
                         foreach (string strName in setAllowedNames)
                         {
                             sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
@@ -3248,9 +3244,7 @@ namespace Chummer
                     }
                     if (setProcessedSkillNames.Count > 0)
                     {
-                        if (sbdFilter.Length > 0)
-                            sbdFilter.Append(" and ");
-                        sbdFilter.Append("not(");
+                        sbdFilter.Append(sbdFilter.Length > 0 ? " and not(" : "not(");
                         foreach (string strName in setProcessedSkillNames)
                         {
                             sbdFilter.Append("name = " + strName.CleanXPath() + " or ");
@@ -3260,9 +3254,7 @@ namespace Chummer
                     }
                     if (setAllowedLinkedAttributes?.Count > 0)
                     {
-                        if (sbdFilter.Length > 0)
-                            sbdFilter.Append(" and ");
-                        sbdFilter.Append('(');
+                        sbdFilter.Append(sbdFilter.Length > 0 ? " and (" : "(");
                         foreach (string strAttribute in setAllowedLinkedAttributes)
                         {
                             sbdFilter.Append("attribute = " + strAttribute.CleanXPath() + " or ");

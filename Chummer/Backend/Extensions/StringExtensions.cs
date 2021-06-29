@@ -64,8 +64,7 @@ namespace Chummer
             // intHead already set to the index of the first instance, for loop's initializer can be left empty
             for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
             {
-                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace))
-                    .Append(strNewValue);
+                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace) + strNewValue);
                 intEndPositionOfLastReplace = intHead + strOldValue.Length;
             }
             sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace));
@@ -1043,11 +1042,8 @@ namespace Chummer
             bool blnFirst = true;
             foreach (T objValue in lstValues)
             {
-                if (blnFirst)
-                    blnFirst = false;
-                else
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(objValue);
+                sbdInput.Append(blnFirst ? objValue.ToString() : strSeparator + objValue);
+                blnFirst = false;
             }
             return sbdInput;
         }
@@ -1069,11 +1065,8 @@ namespace Chummer
             bool blnFirst = true;
             foreach (string strValue in lstValues)
             {
-                if (blnFirst)
-                    blnFirst = false;
-                else
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(strValue);
+                sbdInput.Append(blnFirst ? strValue : strSeparator + strValue);
+                blnFirst = false;
             }
             return sbdInput;
         }
@@ -1102,9 +1095,8 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             for (int i = 0; i < intCount; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i + intStartIndex]);
+                string strLoop = astrValues[i + intStartIndex];
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1125,9 +1117,8 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(astrValues));
             for(int i = 0; i < astrValues.Length; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i]);
+                string strLoop = astrValues[i];
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1148,9 +1139,8 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(aobjValues));
             for (int i = 0; i < aobjValues.Length; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(aobjValues[i]);
+                string strLoop = aobjValues[i].ToString();
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
