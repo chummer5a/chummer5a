@@ -9152,8 +9152,8 @@ namespace Chummer
             }
             if (intPointsInContacts > 0 || CharacterObject.CHA.Value * 4 < intHighPlacesFriends)
             {
-                sbdContactPoints.Append(strSpace + '(' + intPointsInContacts.ToString(GlobalOptions.CultureInfo))
-                    .Append(strSpace + strPoints + ')');
+                sbdContactPoints.Append(strSpace + '(' + intPointsInContacts.ToString(GlobalOptions.CultureInfo) +
+                                        strSpace + strPoints + ')');
             }
 
             string strContactPoints = sbdContactPoints.ToString();
@@ -11233,8 +11233,7 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
-                StringBuilder sbdQualities = new StringBuilder()
-                    .AppendJoin(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName));
+                StringBuilder sbdQualities = new StringBuilder(string.Join(',' + Environment.NewLine, objLifestyle.LifestyleQualities.Select(r => r.CurrentFormattedDisplayName)));
 
                 foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LifestyleCost && x.Enabled))
                 {
@@ -11253,8 +11252,6 @@ namespace Chummer
 
                     sbdQualities.AppendJoin(',' + Environment.NewLine, objLifestyle.FreeGrids.Select(r => r.CurrentFormattedDisplayName));
                 }
-
-
 
                 lblBaseLifestyle.Text = objLifestyle.CurrentDisplayName;
                 lblLifestyleQualities.Text = sbdQualities.ToString();

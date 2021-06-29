@@ -76,18 +76,18 @@ namespace Chummer
 
         private async void frmMasterIndex_Load(object sender, EventArgs e)
         {
-            using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
+            using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
+                CustomActivity.OperationType.RequestOperation, null))
             {
                 HashSet<string> setValidCodes = new HashSet<string>();
-                foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync("books.xml")).Select("/chummer/books/book/code"))
+                foreach (XPathNavigator xmlBookNode in (await XmlManager.LoadXPathAsync("books.xml")).Select(
+                    "/chummer/books/book/code"))
                 {
                     setValidCodes.Add(xmlBookNode.Value);
                 }
 
                 string strSourceFilter = setValidCodes.Count > 0
-                    ? new StringBuilder("(")
-                        .AppendJoin(" or ", setValidCodes.Select(x => "source = \'" + x + "\'"))
-                        .Append(')').ToString()
+                    ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = \'" + x + "\'")) + ')'
                     : "source";
 
                 ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();

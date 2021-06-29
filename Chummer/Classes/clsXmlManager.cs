@@ -795,30 +795,31 @@ namespace Chummer
                                 XmlNode objParentNode = objChild.ParentNode;
                                 if (objParentNode == null)
                                     continue;
-                                StringBuilder sbdFilter = new StringBuilder();
+                                string strFilter = string.Empty;
                                 XmlNode xmlIdNode = objChild["id"];
                                 if (xmlIdNode != null)
-                                    sbdFilter.Append("id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                 XmlNode xmlNameNode = objChild["name"];
                                 if (xmlNameNode != null)
                                 {
-                                    if (sbdFilter.Length > 0)
-                                        sbdFilter.Append(" and ");
-                                    sbdFilter.Append("name = " + xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    strFilter += (string.IsNullOrEmpty(strFilter)
+                                                     ? "name = "
+                                                     : " and name = ") +
+                                                 xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                 }
 
                                 // Only do this if the child has the name or id field since this is what we must match on.
-                                if (sbdFilter.Length > 0)
+                                if (!string.IsNullOrEmpty(strFilter))
                                 {
-                                    StringBuilder sbdParentNodeFilter = new StringBuilder();
+                                    string strParentNodeFilter = string.Empty;
                                     if (objParentNode.Attributes?.Count > 0)
                                     {
-                                        sbdParentNodeFilter.AppendJoin(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
+                                        strParentNodeFilter = string.Join(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
                                             "@" + x.Name + " = " + x.Value.Replace("&amp;", "&").CleanXPath()));
-                                        if (sbdParentNodeFilter.Length > 0)
-                                            sbdParentNodeFilter.Insert(0, '[').Append(']');
                                     }
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objParentNode.Name + sbdParentNodeFilter + '/' + objChild.Name + '[' + sbdFilter + ']');
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
+                                        ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
+                                        : "/chummer/" + objParentNode.Name + '[' + strParentNodeFilter + "]/" + objChild.Name + '[' + strFilter + ']');
                                     if (objItem != null)
                                         lstDelete.Add(objChild);
                                 }

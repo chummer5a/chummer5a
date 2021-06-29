@@ -609,19 +609,19 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrWhiteSpace(_strCachedDisplayDuration))
                     return _strCachedDisplayDuration;
                 string strSpace = LanguageManager.GetString("String_Space");
-                StringBuilder sb = new StringBuilder();
+                string strDisplayDuration = string.Empty;
                 if (Duration > 0)
                 {
-                    sb.Append(Duration.ToString(GlobalOptions.CultureInfo) + strSpace);
+                    strDisplayDuration += Duration.ToString(GlobalOptions.CultureInfo) + strSpace;
                     if (DurationDice > 0)
                     {
-                        sb.Append('x' + strSpace + DurationDice.ToString(GlobalOptions.CultureInfo))
-                            .Append(LanguageManager.GetString("String_D6") + strSpace);
+                        strDisplayDuration += 'x' + strSpace + DurationDice.ToString(GlobalOptions.CultureInfo) +
+                                              LanguageManager.GetString("String_D6") + strSpace;
                     }
                 }
 
-                sb.Append(CommonFunctions.GetTimescaleString(DurationTimescale, Duration > 1));
-                _strCachedDisplayDuration = sb.ToString();
+                strDisplayDuration += CommonFunctions.GetTimescaleString(DurationTimescale, Duration > 1);
+                _strCachedDisplayDuration = strDisplayDuration;
 
                 return _strCachedDisplayDuration;
             }
@@ -849,18 +849,18 @@ namespace Chummer.Backend.Equipment
                     sbdDescription.AppendLine(LanguageManager.GetString("Label_CrashEffect", strLanguage) + strSpace + CrashDamage.ToString(objCulture) + LanguageManager.GetString("String_DamageStun", strLanguage) + strSpace + LanguageManager.GetString("String_DamageUnresisted", strLanguage));
                 if (!blnEffectsOnly)
                 {
-                    sbdDescription.AppendLine(LanguageManager.GetString("Label_AddictionRating", strLanguage) + strSpace + (AddictionRating * (intLevel + 1)).ToString(objCulture));
-                    sbdDescription.AppendLine(LanguageManager.GetString("Label_AddictionThreshold", strLanguage) + strSpace + (AddictionThreshold * (intLevel + 1)).ToString(objCulture));
-                    sbdDescription.AppendLine(LanguageManager.GetString("Label_Cost", strLanguage) + strSpace + (Cost * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, objCulture) + '¥');
-                    sbdDescription.AppendLine(LanguageManager.GetString("Label_Avail", strLanguage) + strSpace + TotalAvail(objCulture, strLanguage));
+                    sbdDescription.AppendLine(LanguageManager.GetString("Label_AddictionRating", strLanguage) + strSpace + (AddictionRating * (intLevel + 1)).ToString(objCulture))
+                        .AppendLine(LanguageManager.GetString("Label_AddictionThreshold", strLanguage) + strSpace + (AddictionThreshold * (intLevel + 1)).ToString(objCulture))
+                        .AppendLine(LanguageManager.GetString("Label_Cost", strLanguage) + strSpace + (Cost * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, objCulture) + '¥')
+                        .AppendLine(LanguageManager.GetString("Label_Avail", strLanguage) + strSpace + TotalAvail(objCulture, strLanguage));
                 }
             }
             else if (!blnEffectsOnly)
             {
-                sbdDescription.AppendLine(LanguageManager.GetString("Label_AddictionRating", strLanguage) + strSpace + 0.ToString(objCulture));
-                sbdDescription.AppendLine(LanguageManager.GetString("Label_AddictionThreshold", strLanguage) + strSpace + 0.ToString(objCulture));
-                sbdDescription.AppendLine(LanguageManager.GetString("Label_Cost", strLanguage) + strSpace + (Cost * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, objCulture) + '¥');
-                sbdDescription.AppendLine(LanguageManager.GetString("Label_Avail", strLanguage) + strSpace + TotalAvail(objCulture, strLanguage));
+                sbdDescription.AppendLine(LanguageManager.GetString("Label_AddictionRating", strLanguage) + strSpace + 0.ToString(objCulture))
+                    .AppendLine(LanguageManager.GetString("Label_AddictionThreshold", strLanguage) + strSpace + 0.ToString(objCulture))
+                    .AppendLine(LanguageManager.GetString("Label_Cost", strLanguage) + strSpace + (Cost * (intLevel + 1)).ToString(_objCharacter.Options.NuyenFormat, objCulture) + '¥')
+                    .AppendLine(LanguageManager.GetString("Label_Avail", strLanguage) + strSpace + TotalAvail(objCulture, strLanguage));
             }
 
             string strReturn = sbdDescription.ToString();
@@ -1260,15 +1260,13 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            StringBuilder sbdReturn = new StringBuilder(DisplayNameShort(strLanguage));
+            string strReturn = DisplayNameShort(strLanguage);
             if (Level != 0)
             {
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
-                sbdReturn.Append(strSpace + '(' + LanguageManager.GetString("String_Level", strLanguage))
-                    .Append(strSpace + Level.ToString(objCulture) + ')');
+                strReturn += strSpace + '(' + LanguageManager.GetString("String_Level", strLanguage) + strSpace + Level.ToString(objCulture) + ')';
             }
-
-            return sbdReturn.ToString();
+            return strReturn;
         }
 
         public string CurrentDisplayName => DisplayName(GlobalOptions.CultureInfo, GlobalOptions.Language);
@@ -1493,8 +1491,9 @@ namespace Chummer.Backend.Equipment
                             sbdDescription.Append(',' + strSpace);
                         }
 
-                        sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short"))
-                            .Append(strSpace + objAttribute.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
+                        sbdDescription.Append(
+                            LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short") + strSpace +
+                            objAttribute.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
                         blnNewLineFlag = true;
                     }
                 }
@@ -1513,8 +1512,9 @@ namespace Chummer.Backend.Equipment
                             sbdDescription.Append(',' + strSpace);
                         }
 
-                        sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key) + strSpace + LanguageManager.GetString("String_Limit") + strSpace)
-                            .Append(objLimit.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
+                        sbdDescription.Append(LanguageManager.GetString("Node_" + objLimit.Key) + strSpace +
+                                              LanguageManager.GetString("String_Limit") + strSpace +
+                                              objLimit.Value.ToString("+#;-#", GlobalOptions.CultureInfo));
                         blnNewLineFlag = true;
                     }
                 }

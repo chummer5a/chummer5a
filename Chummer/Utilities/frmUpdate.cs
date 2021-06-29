@@ -388,13 +388,14 @@ namespace Chummer
             }
             else
             {
-                lblUpdaterStatus.Text = new StringBuilder(LanguageManager.GetString("String_Up_To_Date"))
-                                            .Append(strSpace)
-                                            .AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"),
-                                                CurrentVersion)
-                                            .Append(strSpace)
-                                            .AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Latest_Version"),
-                                                LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable"), strLatestVersion).ToString();
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date") + strSpace +
+                                        string.Format(GlobalOptions.CultureInfo,
+                                            LanguageManager.GetString("String_Currently_Installed_Version"),
+                                            CurrentVersion) + strSpace + string.Format(GlobalOptions.CultureInfo,
+                                            LanguageManager.GetString("String_Latest_Version"),
+                                            LanguageManager.GetString(_blnPreferNightly
+                                                ? "String_Nightly"
+                                                : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
                     cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date");

@@ -207,11 +207,14 @@ namespace Chummer
                             dctBlockAttributes.TryGetValue(objItem.Key, out decimal decBlockAttrValue) &&
                             decBlockAttrValue > 0)
                         {
-                            string message = new StringBuilder(LanguageManager.GetString("String_MaximumDrugBlockLevel")).
-                                AppendLine().
-                                Append(objFoundationNodeData.DrugComponent.CurrentDisplayName + strColonString + strSpaceString + objItem.Key + objItem.Value.ToString("+#;-#;", GlobalOptions.CultureInfo)).AppendLine().
-                                Append(objNodeData.DrugComponent.CurrentDisplayName + strColonString + strSpaceString + objItem.Key + decBlockAttrValue.ToString("+#.#;-#.#;", GlobalOptions.CultureInfo)).
-                                ToString();
+                            string message = LanguageManager.GetString("String_MaximumDrugBlockLevel") +
+                                             Environment.NewLine + Environment.NewLine +
+                                             objFoundationNodeData.DrugComponent.CurrentDisplayName + strColonString +
+                                             strSpaceString + objItem.Key +
+                                             objItem.Value.ToString("+#;-#;", GlobalOptions.CultureInfo) +
+                                             objNodeData.DrugComponent.CurrentDisplayName + strColonString +
+                                             strSpaceString + objItem.Key +
+                                             decBlockAttrValue.ToString("+#.#;-#.#;", GlobalOptions.CultureInfo);
                             Program.MainForm.ShowMessageBox(this, message);
                             return;
                         }

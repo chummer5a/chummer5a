@@ -812,12 +812,12 @@ namespace Chummer.Backend.Skills
         {
             //Build a crazy xpath to get everything we want to convert
 
-            StringBuilder sbdXPath = new StringBuilder("/character/expenses/expense[type = \'Karma\']/undo[")
-                .AppendJoin(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'"))
-                .Append("]/objectid");
+            string strXPath = "/character/expenses/expense[type = \'Karma\']/undo[" +
+                              string.Join(" or ", typesRequreingConverting.Select(x => "karmatype = '" + x + "'")) +
+                              "]/objectid";
 
             //Find everything
-            XmlNodeList lstNodesToChange = doc.SelectNodes(sbdXPath.ToString());
+            XmlNodeList lstNodesToChange = doc.SelectNodes(strXPath);
             if (lstNodesToChange != null)
             {
                 for (int i = 0; i < lstNodesToChange.Count; i++)

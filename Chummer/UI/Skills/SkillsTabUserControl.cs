@@ -23,9 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Skills;
 using Chummer.UI.Shared;
@@ -58,13 +56,14 @@ namespace Chummer.UI.Skills
 
         private void UpdateKnoSkillRemaining()
         {
-            StringBuilder sbdText = new StringBuilder(_objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo))
-                .Append(LanguageManager.GetString("String_Of"))
-                .Append(_objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalOptions.CultureInfo));
+            string strText =
+                _objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo) +
+                LanguageManager.GetString("String_Of") +
+                _objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalOptions.CultureInfo);
             int intSkillPointsSpentOnKnoSkills = _objCharacter.SkillsSection.SkillPointsSpentOnKnoskills;
             if (intSkillPointsSpentOnKnoSkills != 0)
-                sbdText.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent"), intSkillPointsSpentOnKnoSkills);
-            lblKnowledgeSkillPoints.Text = sbdText.ToString();
+                strText += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent"), intSkillPointsSpentOnKnoSkills);
+            lblKnowledgeSkillPoints.Text = strText;
         }
 
         private Character _objCharacter;
