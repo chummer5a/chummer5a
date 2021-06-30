@@ -1784,7 +1784,7 @@
       <name>Light Crossbow</name>
       <category>Crossbows</category>
       <type>Ranged</type>
-      <conceal>2</conceal>
+      <conceal>6</conceal>
       <accuracy>7</accuracy>
       <reach>0</reach>
       <damage>5P</damage>
@@ -1803,7 +1803,7 @@
       <name>Medium Crossbow</name>
       <category>Crossbows</category>
       <type>Ranged</type>
-      <conceal>4</conceal>
+      <conceal>6</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>7P</damage>
