@@ -757,10 +757,11 @@ namespace Chummer.Plugins
                         async Task<ResultAccountGetSinnersByAuthorization> getSINnersFunction()
                         {
                             SinnersClient client = null;
+                            ResultAccountGetSinnersByAuthorization ret = null;
                             try
                             {
                                 client = StaticUtils.GetClient();
-                                var ret = await client.GetSINnersByAuthorizationAsync();
+                                ret = await client.GetSINnersByAuthorizationAsync();
                                 return ret;
                             }
                             catch (Exception e)
@@ -769,8 +770,7 @@ namespace Chummer.Plugins
                                     client.ReadResponseAsString = !client.ReadResponseAsString;
                                 try
                                 {
-                                    var ret = client != null ? await client.GetSINnersByAuthorizationAsync() : null;
-                                    Log.Error(e);
+                                    ret = client != null ? await client.GetSINnersByAuthorizationAsync() : null;
                                 }
                                 catch(ApiException e1)
                                 {
@@ -789,8 +789,10 @@ namespace Chummer.Plugins
                                     if (client != null)
                                         client.ReadResponseAsString = !client.ReadResponseAsString;
                                 }
-                                throw;
+                                if (ret == null)
+                                    throw;
                             }
+                            return ret;
                         }
 
                         res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, getSINnersFunction);

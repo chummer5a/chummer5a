@@ -356,14 +356,12 @@ namespace ChummerHub.Controllers
         }
 
         [HttpGet]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByAuthorization")]
         [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         public async Task<ActionResult<ResultAccountGetUserByAuthorization>> GetUserByAuthorization()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         {
             ResultAccountGetUserByAuthorization res;
             try
@@ -373,9 +371,9 @@ namespace ChummerHub.Controllers
                 if (user == null)
                     return NotFound(res);
 
-                user.PasswordHash = string.Empty;
-                user.SecurityStamp = string.Empty;
-                return Ok(res);
+                res.MyApplicationUser.PasswordHash = string.Empty;
+                res.MyApplicationUser.SecurityStamp = string.Empty;
+                return res;
             }
             catch (Exception e)
             {
