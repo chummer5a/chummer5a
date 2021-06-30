@@ -1095,20 +1095,31 @@ namespace Chummer
 
         private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.Name))
-                OnPropertyChanged(nameof(Name));
-            else if (e.PropertyName == nameof(Character.Age))
-                OnPropertyChanged(nameof(Age));
-            else if (e.PropertyName == nameof(Character.Gender))
-                OnPropertyChanged(nameof(Gender));
-            else if (e.PropertyName == nameof(Character.Metatype) || e.PropertyName == nameof(Character.Metavariant))
-                OnPropertyChanged(nameof(Metatype));
-            else if (e.PropertyName == nameof(Character.Mugshots))
-                OnPropertyChanged(nameof(Mugshots));
-            else if (e.PropertyName == nameof(Character.MainMugshot))
-                OnPropertyChanged(nameof(MainMugshot));
-            else if (e.PropertyName == nameof(Character.MainMugshotIndex))
-                OnPropertyChanged(nameof(MainMugshotIndex));
+            switch (e.PropertyName)
+            {
+                case nameof(Character.Name):
+                    OnPropertyChanged(nameof(Name));
+                    break;
+                case nameof(Character.Age):
+                    OnPropertyChanged(nameof(Age));
+                    break;
+                case nameof(Character.Gender):
+                    OnPropertyChanged(nameof(Gender));
+                    break;
+                case nameof(Character.Metatype):
+                case nameof(Character.Metavariant):
+                    OnPropertyChanged(nameof(Metatype));
+                    break;
+                case nameof(Character.Mugshots):
+                    OnPropertyChanged(nameof(Mugshots));
+                    break;
+                case nameof(Character.MainMugshot):
+                    OnPropertyChanged(nameof(MainMugshot));
+                    break;
+                case nameof(Character.MainMugshotIndex):
+                    OnPropertyChanged(nameof(MainMugshotIndex));
+                    break;
+            }
         }
         #endregion
 

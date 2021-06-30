@@ -523,17 +523,18 @@ namespace Chummer
 
                 string strSuffix = string.Empty;
                 char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
-                if (chrSuffix == 'R')
+                switch (chrSuffix)
                 {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted");
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                else if (chrSuffix == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden");
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                    case 'R':
+                        strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                        // Remove the trailing character if it is "F" or "R".
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                        break;
+                    case 'F':
+                        strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                        // Remove the trailing character if it is "F" or "R".
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                        break;
                 }
 
                 string strPrefix = string.Empty;

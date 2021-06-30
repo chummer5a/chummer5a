@@ -548,31 +548,34 @@ namespace Chummer
                         break;
                     }
 
-                    if (e.PropertyDescriptor.Name == nameof(Power.AdeptWayDiscountEnabled))
+                    switch (e.PropertyDescriptor.Name)
                     {
-                        dicChangedProperties.Add(this, new HashSet<string>
+                        case nameof(Power.AdeptWayDiscountEnabled):
+                            dicChangedProperties.Add(this, new HashSet<string>
+                            {
+                                nameof(AnyPowerAdeptWayDiscountEnabled),
+                                nameof(AllowAdeptWayPowerDiscount)
+                            });
+                            break;
+                        case nameof(Power.DiscountedAdeptWay):
                         {
-                            nameof(AnyPowerAdeptWayDiscountEnabled),
-                            nameof(AllowAdeptWayPowerDiscount)
-                        });
-                    }
-                    else if (e.PropertyDescriptor.Name == nameof(Power.DiscountedAdeptWay))
-                    {
-                        dicChangedProperties.Add(this, new HashSet<string>
-                        {
-                            nameof(PowerPointsUsed),
-                            nameof(AnyPowerAdeptWayDiscountEnabled),
-                            nameof(AllowAdeptWayPowerDiscount)
-                        });
-                        foreach (Power objPower in Powers)
-                        {
-                            dicChangedProperties.Add(objPower,
-                                new HashSet<string> {nameof(Power.AdeptWayDiscountEnabled)});
+                            dicChangedProperties.Add(this, new HashSet<string>
+                            {
+                                nameof(PowerPointsUsed),
+                                nameof(AnyPowerAdeptWayDiscountEnabled),
+                                nameof(AllowAdeptWayPowerDiscount)
+                            });
+                            foreach (Power objPower in Powers)
+                            {
+                                dicChangedProperties.Add(objPower,
+                                    new HashSet<string> {nameof(Power.AdeptWayDiscountEnabled)});
+                            }
+
+                            break;
                         }
-                    }
-                    else if (e.PropertyDescriptor.Name == nameof(Power.PowerPoints))
-                    {
-                        dicChangedProperties.Add(this, new HashSet<string> {nameof(PowerPointsUsed)});
+                        case nameof(Power.PowerPoints):
+                            dicChangedProperties.Add(this, new HashSet<string> {nameof(PowerPointsUsed)});
+                            break;
                     }
                 }
                     break;
@@ -5979,7 +5982,7 @@ namespace Chummer
                     string strReturn = objImprovement.SourceName;
                     if(string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                     {
-                        string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource.ToString(),
+                        string strTemp = LanguageManager.GetString("String_" + objImprovement.ImproveSource,
                             strLanguage, false);
                         if(!string.IsNullOrEmpty(strTemp))
                             strReturn = strTemp;
@@ -6098,20 +6101,20 @@ namespace Chummer
             {
                 int intPowerPoints;
 
-                if(Metatype == "Free Spirit")
+                switch (Metatype)
                 {
-                    // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
-                    intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints).StandardRound();
-                }
-                else if(Metatype == "Ally Spirit")
-                {
-                    // Ally Spirits get a number of Power Points equal to their MAG.
-                    intPowerPoints = MAG.TotalValue;
-                }
-                else
-                {
-                    // Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
-                    intPowerPoints = MAG.TotalValue / 3;
+                    case "Free Spirit":
+                        // Critter Free Spirits have a number of Power Points equal to their EDG plus any Free Spirit Power Points Improvements.
+                        intPowerPoints = EDG.TotalValue + ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreeSpiritPowerPoints).StandardRound();
+                        break;
+                    case "Ally Spirit":
+                        // Ally Spirits get a number of Power Points equal to their MAG.
+                        intPowerPoints = MAG.TotalValue;
+                        break;
+                    default:
+                        // Spirits get 1 Power Point for every 3 full points of Force (MAG) they possess.
+                        intPowerPoints = MAG.TotalValue / 3;
+                        break;
                 }
 
                 int intUsed = 0; // _objCharacter.CritterPowers.Count - intExisting;
@@ -6630,18 +6633,19 @@ namespace Chummer
             else
                 Gear.Remove(objGear);
 
-            if(objDestination.Tag is Location objLocation)
+            switch (objDestination.Tag)
             {
-                // The Gear was moved to a location, so add it to the character instead.
-                objGear.Location = objLocation;
-                objLocation.Children.Add(objGear);
-                Gear.Add(objGear);
-            }
-            else if(objDestination.Tag is Gear objParent)
-            {
-                // Add the Gear as a child of the destination Node and clear its location.
-                objGear.Location = null;
-                objParent.Children.Add(objGear);
+                case Location objLocation:
+                    // The Gear was moved to a location, so add it to the character instead.
+                    objGear.Location = objLocation;
+                    objLocation.Children.Add(objGear);
+                    Gear.Add(objGear);
+                    break;
+                case Gear objParent:
+                    // Add the Gear as a child of the destination Node and clear its location.
+                    objGear.Location = null;
+                    objParent.Children.Add(objGear);
+                    break;
             }
         }
 
@@ -6661,17 +6665,18 @@ namespace Chummer
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                if (objNewParent.Tag is Location objLocation)
+                switch (objNewParent.Tag)
                 {
-                    nodeToMove.Remove();
-                    objGear.Location = objLocation;
-                    objNewParent.Nodes.Insert(0, nodeToMove);
-                }
-                else if (objNewParent.Tag is string)
-                {
-                    objGear.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Gear.Count - 1);
-                    Gear.Move(Gear.IndexOf(objGear), intNewIndex);
+                    case Location objLocation:
+                        nodeToMove.Remove();
+                        objGear.Location = objLocation;
+                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+                    case string _:
+                        objGear.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, Gear.Count - 1);
+                        Gear.Move(Gear.IndexOf(objGear), intNewIndex);
+                        break;
                 }
             }
         }
@@ -6742,17 +6747,18 @@ namespace Chummer
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                if (objNewParent.Tag is Location objLocation)
+                switch (objNewParent.Tag)
                 {
-                    nodeToMove.Remove();
-                    objArmor.Location = objLocation;
-                    objNewParent.Nodes.Insert(0, nodeToMove);
-                }
-                else if(objNewParent.Tag is string)
-                {
-                    objArmor.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Armor.Count - 1);
-                    Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
+                    case Location objLocation:
+                        nodeToMove.Remove();
+                        objArmor.Location = objLocation;
+                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+                    case string _:
+                        objArmor.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, Armor.Count - 1);
+                        Armor.Move(Armor.IndexOf(objArmor), intNewIndex);
+                        break;
                 }
             }
         }
@@ -6799,17 +6805,18 @@ namespace Chummer
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                if (objNewParent.Tag is Location objLocation)
+                switch (objNewParent.Tag)
                 {
-                    nodeToMove.Remove();
-                    objWeapon.Location = objLocation;
-                    objNewParent.Nodes.Insert(0, nodeToMove);
-                }
-                else if(objNewParent.Tag is string)
-                {
-                    objWeapon.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Weapons.Count - 1);
-                    Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
+                    case Location objLocation:
+                        nodeToMove.Remove();
+                        objWeapon.Location = objLocation;
+                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+                    case string _:
+                        objWeapon.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, Weapons.Count - 1);
+                        Weapons.Move(Weapons.IndexOf(objWeapon), intNewIndex);
+                        break;
                 }
             }
         }
@@ -6856,17 +6863,18 @@ namespace Chummer
                 while (objNewParent.Level > 0 && !(objNewParent.Tag is Location))
                     objNewParent = objNewParent.Parent;
 
-                if (objNewParent.Tag is Location objLocation)
+                switch (objNewParent.Tag)
                 {
-                    nodeToMove.Remove();
-                    objVehicle.Location = objLocation;
-                    objNewParent.Nodes.Insert(0, nodeToMove);
-                }
-                else if (objNewParent.Tag is string)
-                {
-                    objVehicle.Location = null;
-                    intNewIndex = Math.Min(intNewIndex, Weapons.Count - 1);
-                    Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
+                    case Location objLocation:
+                        nodeToMove.Remove();
+                        objVehicle.Location = objLocation;
+                        objNewParent.Nodes.Insert(0, nodeToMove);
+                        break;
+                    case string _:
+                        objVehicle.Location = null;
+                        intNewIndex = Math.Min(intNewIndex, Weapons.Count - 1);
+                        Vehicles.Move(Vehicles.IndexOf(objVehicle), intNewIndex);
+                        break;
                 }
             }
         }
@@ -8488,10 +8496,15 @@ namespace Chummer
                                                    (objLoopImprovement.Condition == "career") == Created ||
                                                    (objLoopImprovement.Condition == "create") != Created))
                 {
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCost)
-                        decReturn += objLoopImprovement.Value;
-                    if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewSpellKarmaCostMultiplier)
-                        decMultiplier *= objLoopImprovement.Value / 100.0m;
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.NewSpellKarmaCost:
+                            decReturn += objLoopImprovement.Value;
+                            break;
+                        case Improvement.ImprovementType.NewSpellKarmaCostMultiplier:
+                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
+                    }
                 }
             }
 
@@ -8514,11 +8527,15 @@ namespace Chummer
                                                        (objLoopImprovement.Condition == "career") == Created ||
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewComplexFormKarmaCost)
-                            decReturn += objLoopImprovement.Value;
-                        if(objLoopImprovement.ImproveType ==
-                            Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.NewComplexFormKarmaCost:
+                                decReturn += objLoopImprovement.Value;
+                                break;
+                            case Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
 
@@ -8542,11 +8559,15 @@ namespace Chummer
                                                        (objLoopImprovement.Condition == "career") == Created ||
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIProgramKarmaCost)
-                            decReturn += objLoopImprovement.Value;
-                        if(objLoopImprovement.ImproveType ==
-                            Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.NewAIProgramKarmaCost:
+                                decReturn += objLoopImprovement.Value;
+                                break;
+                            case Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
 
@@ -8570,11 +8591,15 @@ namespace Chummer
                                                        (objLoopImprovement.Condition == "career") == Created ||
                                                        (objLoopImprovement.Condition == "create") != Created))
                     {
-                        if(objLoopImprovement.ImproveType == Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost)
-                            decReturn += objLoopImprovement.Value;
-                        if(objLoopImprovement.ImproveType ==
-                            Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost:
+                                decReturn += objLoopImprovement.Value;
+                                break;
+                            case Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
 
@@ -8858,14 +8883,15 @@ namespace Chummer
                                 if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
-                                    if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
+                                    switch (objImprovement.ImproveType)
                                     {
-                                        decLoopEssencePenalty += objImprovement.Value;
-                                    }
-                                    else if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100
-                                            || objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)
-                                    {
-                                        decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                        case Improvement.ImprovementType.EssencePenalty:
+                                            decLoopEssencePenalty += objImprovement.Value;
+                                            break;
+                                        case Improvement.ImprovementType.EssencePenaltyT100:
+                                        case Improvement.ImprovementType.EssencePenaltyMAGOnlyT100:
+                                            decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                            break;
                                     }
 
                                     if(decLoopEssencePenalty != 0)
@@ -9157,13 +9183,14 @@ namespace Chummer
                                 if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
-                                    if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
+                                    switch (objImprovement.ImproveType)
                                     {
-                                        decLoopEssencePenalty += objImprovement.Value;
-                                    }
-                                    else if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100)
-                                    {
-                                        decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                        case Improvement.ImprovementType.EssencePenalty:
+                                            decLoopEssencePenalty += objImprovement.Value;
+                                            break;
+                                        case Improvement.ImprovementType.EssencePenaltyT100:
+                                            decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                            break;
                                     }
 
                                     if(decLoopEssencePenalty != 0)
@@ -9376,13 +9403,14 @@ namespace Chummer
                                 if (blnCountImprovement)
                                 {
                                     decimal decLoopEssencePenalty = 0;
-                                    if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenalty)
+                                    switch (objImprovement.ImproveType)
                                     {
-                                        decLoopEssencePenalty += objImprovement.Value;
-                                    }
-                                    else if(objImprovement.ImproveType == Improvement.ImprovementType.EssencePenaltyT100)
-                                    {
-                                        decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                        case Improvement.ImprovementType.EssencePenalty:
+                                            decLoopEssencePenalty += objImprovement.Value;
+                                            break;
+                                        case Improvement.ImprovementType.EssencePenaltyT100:
+                                            decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                            break;
                                     }
 
                                     if(decLoopEssencePenalty != 0)

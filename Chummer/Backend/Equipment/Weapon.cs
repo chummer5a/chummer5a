@@ -757,10 +757,15 @@ namespace Chummer.Backend.Equipment
             }
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            if (_strCategory == "Hold-Outs")
-                _strCategory = "Holdouts";
-            else if (_strCategory == "Cyberware Hold-Outs")
-                _strCategory = "Cyberware Holdouts";
+            switch (_strCategory)
+            {
+                case "Hold-Outs":
+                    _strCategory = "Holdouts";
+                    break;
+                case "Cyberware Hold-Outs":
+                    _strCategory = "Cyberware Holdouts";
+                    break;
+            }
             objNode.TryGetStringFieldQuickly("type", ref _strType);
             objNode.TryGetStringFieldQuickly("spec", ref _strSpec);
             objNode.TryGetStringFieldQuickly("spec2", ref _strSpec2);
@@ -1447,19 +1452,15 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayCategory(string strLanguage)
         {
-            // If Categories are actually the name of object types, so pull them from the language file.
-            if (Category == "Gear")
+            switch (Category)
             {
-                return LanguageManager.GetString("String_SelectPACKSKit_Gear", strLanguage);
-            }
-
-            if (Category == "Cyberware")
-            {
-                return LanguageManager.GetString("String_SelectPACKSKit_Cyberware", strLanguage);
-            }
-            if (Category == "Bioware")
-            {
-                return LanguageManager.GetString("String_SelectPACKSKit_Bioware", strLanguage);
+                // If Categories are actually the name of object types, so pull them from the language file.
+                case "Gear":
+                    return LanguageManager.GetString("String_SelectPACKSKit_Gear", strLanguage);
+                case "Cyberware":
+                    return LanguageManager.GetString("String_SelectPACKSKit_Cyberware", strLanguage);
+                case "Bioware":
+                    return LanguageManager.GetString("String_SelectPACKSKit_Bioware", strLanguage);
             }
 
             if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))

@@ -330,29 +330,34 @@ namespace Chummer
             if (chkBoxChummer.SelectedIndex < 0)
                 return;
             int index = chkBoxChummer.SelectedIndex;
-            if (characters[index].Delayed && index != _intIndex)
+            if (characters[index].Delayed)
             {
-                DialogResult result = Program.MainForm.ShowMessageBox("Would you like the chummer to perform a delayed action?", "Delayed Action", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
+                if (index != _intIndex)
                 {
-                    // un-delay character, and lock it in the current location
+                    DialogResult result = Program.MainForm.ShowMessageBox(
+                        "Would you like the chummer to perform a delayed action?", "Delayed Action",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        // un-delay character, and lock it in the current location
+                        Character character = characters[index];
+                        character.Delayed = false;
+
+                        // place the chummer as the current chummer
+                        characters.RemoveAt(index);
+                        characters.Insert(_intIndex, character);
+
+                        ResetListBoxChummers();
+                    }
+                }
+                else
+                {
+                    // it is the chummers turn and we should just turn off the delayed action
                     Character character = characters[index];
                     character.Delayed = false;
-
-                    // place the chummer as the current chummer
-                    characters.RemoveAt(index);
-                    characters.Insert(_intIndex, character);
-
-                    ResetListBoxChummers();
+                    characters[index] = character;
+                    chkBoxChummer.Items[index] = characters[index];
                 }
-            }
-            else if (characters[index].Delayed && index == _intIndex)
-            {
-                // it is the chummers turn and we should just turn off the delayed action
-                Character character = characters[index];
-                character.Delayed = false;
-                characters[index] = character;
-                chkBoxChummer.Items[index] = characters[index];
             }
         }
 

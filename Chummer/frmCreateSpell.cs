@@ -689,81 +689,91 @@ namespace Chummer
                 strMessage += LanguageManager.GetString("Message_SpellRestricted");
             }
 
-            // Make sure the Spell has met all of its requirements.
-            if (cboCategory.SelectedValue.ToString() == "Combat")
+            switch (cboCategory.SelectedValue.ToString())
             {
-                // Either Direct or Indirect must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked)
+                // Make sure the Spell has met all of its requirements.
+                case "Combat":
                 {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
-                }
+                    // Either Direct or Indirect must be selected.
+                    if (!chkModifier1.Checked && !chkModifier2.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
+                    }
 
-                // Either Physical damage or Stun damage must be selected.
-                if (!chkModifier4.Checked && !chkModifier5.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Detection")
-            {
-                // Either Directional, Area, or Psychic must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
-                }
+                    // Either Physical damage or Stun damage must be selected.
+                    if (!chkModifier4.Checked && !chkModifier5.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
+                    }
 
-                // Either Active or Passive must be selected.
-                if (!chkModifier4.Checked && !chkModifier5.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
+                    break;
                 }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Health")
-            {
-                // Nothing special.
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Illusion")
-            {
-                // Either Obvious or Realistic must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked)
+                case "Detection":
                 {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
-                }
+                    // Either Directional, Area, or Psychic must be selected.
+                    if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
+                    }
 
-                // Either Single-Sense or Multi-Sense must be selected.
-                if (!chkModifier3.Checked && !chkModifier4.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Manipulation")
-            {
-                // Either Environmental, Mental, or Physical must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
-                }
+                    // Either Active or Passive must be selected.
+                    if (!chkModifier4.Checked && !chkModifier5.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
+                    }
 
-                // Either Minor Change or Major Change must be selected.
-                if (!chkModifier4.Checked && !chkModifier5.Checked)
+                    break;
+                }
+                case "Health":
+                    // Nothing special.
+                    break;
+                case "Illusion":
                 {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
+                    // Either Obvious or Realistic must be selected.
+                    if (!chkModifier1.Checked && !chkModifier2.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
+                    }
+
+                    // Either Single-Sense or Multi-Sense must be selected.
+                    if (!chkModifier3.Checked && !chkModifier4.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
+                    }
+
+                    break;
+                }
+                case "Manipulation":
+                {
+                    // Either Environmental, Mental, or Physical must be selected.
+                    if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
+                    }
+
+                    // Either Minor Change or Major Change must be selected.
+                    if (!chkModifier4.Checked && !chkModifier5.Checked)
+                    {
+                        if (!string.IsNullOrEmpty(strMessage))
+                            strMessage += Environment.NewLine;
+                        strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
+                    }
+
+                    break;
                 }
             }
 
@@ -827,10 +837,16 @@ namespace Chummer
                         strDescriptors += "Direct, ";
                     if (chkModifier2.Checked)
                         strDescriptors += "Indirect, ";
-                    if (cboRange.SelectedValue.ToString() == "T")
-                        strDescriptors += "Touch, ";
-                    if (cboRange.SelectedValue.ToString() == "A")
-                        strDescriptors += "Area, ";
+                    switch (cboRange.SelectedValue.ToString())
+                    {
+                        case "T":
+                            strDescriptors += "Touch, ";
+                            break;
+                        case "A":
+                            strDescriptors += "Area, ";
+                            break;
+                    }
+
                     if (chkModifier3.Checked)
                         strDescriptors += "Elemental, ";
                     break;

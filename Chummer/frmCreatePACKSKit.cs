@@ -177,10 +177,16 @@ namespace Chummer
                         // Determine if Positive or Negative Qualities exist.
                         foreach (Quality objQuality in _objCharacter.Qualities)
                         {
-                            if (objQuality.Type == QualityType.Positive)
-                                blnPositive = true;
-                            if (objQuality.Type == QualityType.Negative)
-                                blnNegative = true;
+                            switch (objQuality.Type)
+                            {
+                                case QualityType.Positive:
+                                    blnPositive = true;
+                                    break;
+                                case QualityType.Negative:
+                                    blnNegative = true;
+                                    break;
+                            }
+
                             if (blnPositive && blnNegative)
                                 break;
                         }
@@ -384,10 +390,16 @@ namespace Chummer
                         bool blnBioware = false;
                         foreach (Cyberware objCharacterCyberware in _objCharacter.Cyberware)
                         {
-                            if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                blnBioware = true;
-                            if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                                blnCyberware = true;
+                            switch (objCharacterCyberware.SourceType)
+                            {
+                                case Improvement.ImprovementSource.Bioware:
+                                    blnBioware = true;
+                                    break;
+                                case Improvement.ImprovementSource.Cyberware:
+                                    blnCyberware = true;
+                                    break;
+                            }
+
                             if (blnCyberware && blnBioware)
                                 break;
                         }

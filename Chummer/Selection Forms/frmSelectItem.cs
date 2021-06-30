@@ -49,186 +49,193 @@ namespace Chummer
         {
             List<ListItem> lstItems = new List<ListItem>();
 
-            if (_strMode == "Gear")
+            switch (_strMode)
             {
-                string strSpace = LanguageManager.GetString("String_Space");
-                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
-                // Add each of the items to a new List since we need to also grab their plugin information.
-                foreach (Gear objGear in _lstGear)
+                case "Gear":
                 {
-                    StringBuilder sbdAmmoName = new StringBuilder(objGear.DisplayNameShort(GlobalOptions.Language));
-                    // Retrieve the plugin information if it has any.
-                    if (objGear.Children.Count > 0)
+                    string strSpace = LanguageManager.GetString("String_Space");
+                    cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
+                    // Add each of the items to a new List since we need to also grab their plugin information.
+                    foreach (Gear objGear in _lstGear)
                     {
-                        // Append the plugin information to the name.
-                        sbdAmmoName.Append(strSpace + '[' + string.Join(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalOptions.Language))) + ']');
-                    }
-                    if (objGear.Rating > 0)
-                        sbdAmmoName.Append(strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')');
-                    sbdAmmoName.Append(strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
-                    lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
-                }
-            }
-            else if (_strMode == "Vehicles")
-            {
-                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
-                // Add each of the items to a new List.
-                foreach (Vehicle objVehicle in _lstVehicles)
-                {
-                    lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.CurrentDisplayName));
-                }
-            }
-            else if (_strMode == "General")
-            {
-                cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
-                lstItems = _lstGeneralItems;
-            }
-            else if (_strMode == "Dropdown")
-            {
-                cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
-                cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
-                lstItems = _lstGeneralItems;
-            }
-            else if (_strMode == "Restricted")
-            {
-                cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
-                cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
-                if (!_objCharacter.Options.LicenseRestricted)
-                {
-                    foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml").Select("/chummer/licenses/license"))
-                    {
-                        string strInnerText = objNode.Value;
-                        if (!string.IsNullOrEmpty(strInnerText))
-                            lstItems.Add(new ListItem(strInnerText, objNode.SelectSingleNode("@translate")?.Value ?? strInnerText));
-                    }
-                }
-                else
-                {
-                    // Cyberware/Bioware.
-                    foreach (Cyberware objCyberware in _objCharacter.Cyberware.GetAllDescendants(x => x.Children))
-                    {
-                        if (objCyberware.TotalAvailTuple(false).Suffix == 'R')
+                        StringBuilder sbdAmmoName = new StringBuilder(objGear.DisplayNameShort(GlobalOptions.Language));
+                        // Retrieve the plugin information if it has any.
+                        if (objGear.Children.Count > 0)
                         {
-                            lstItems.Add(new ListItem(objCyberware.InternalId, objCyberware.CurrentDisplayName));
+                            // Append the plugin information to the name.
+                            sbdAmmoName.Append(strSpace + '[' + string.Join(',' + strSpace, objGear.Children.Select(x => x.DisplayNameShort(GlobalOptions.Language))) + ']');
                         }
-                        foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
-                        {
-                            lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
-                        }
+                        if (objGear.Rating > 0)
+                            sbdAmmoName.Append(strSpace + '(' + LanguageManager.GetString(objGear.RatingLabel) + strSpace + objGear.Rating.ToString(GlobalOptions.CultureInfo) + ')');
+                        sbdAmmoName.Append(strSpace + 'x' + objGear.Quantity.ToString(GlobalOptions.InvariantCultureInfo));
+                        lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                     }
 
-                    // Armor.
-                    foreach (Armor objArmor in _objCharacter.Armor)
+                    break;
+                }
+                case "Vehicles":
+                {
+                    cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
+                    // Add each of the items to a new List.
+                    foreach (Vehicle objVehicle in _lstVehicles)
                     {
-                        if (objArmor.TotalAvailTuple(false).Suffix == 'R')
+                        lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.CurrentDisplayName));
+                    }
+
+                    break;
+                }
+                case "General":
+                    cboAmmo.DropDownStyle = ComboBoxStyle.DropDownList;
+                    lstItems = _lstGeneralItems;
+                    break;
+                case "Dropdown":
+                    cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
+                    cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
+                    lstItems = _lstGeneralItems;
+                    break;
+                case "Restricted":
+                {
+                    cboAmmo.DropDownStyle = ComboBoxStyle.DropDown;
+                    cboAmmo.AutoCompleteMode = AutoCompleteMode.Suggest;
+                    if (!_objCharacter.Options.LicenseRestricted)
+                    {
+                        foreach (XPathNavigator objNode in _objCharacter.LoadDataXPath("licenses.xml").Select("/chummer/licenses/license"))
                         {
-                            lstItems.Add(new ListItem(objArmor.InternalId, objArmor.CurrentDisplayName));
+                            string strInnerText = objNode.Value;
+                            if (!string.IsNullOrEmpty(strInnerText))
+                                lstItems.Add(new ListItem(strInnerText, objNode.SelectSingleNode("@translate")?.Value ?? strInnerText));
                         }
-                        foreach (ArmorMod objMod in objArmor.ArmorMods)
+                    }
+                    else
+                    {
+                        // Cyberware/Bioware.
+                        foreach (Cyberware objCyberware in _objCharacter.Cyberware.GetAllDescendants(x => x.Children))
                         {
-                            if (objMod.TotalAvailTuple(false).Suffix == 'R')
+                            if (objCyberware.TotalAvailTuple(false).Suffix == 'R')
                             {
-                                lstItems.Add(new ListItem(objMod.InternalId, objMod.CurrentDisplayName));
+                                lstItems.Add(new ListItem(objCyberware.InternalId, objCyberware.CurrentDisplayName));
                             }
-                            foreach (Gear objGear in objMod.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                             {
                                 lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                             }
                         }
-                        foreach (Gear objGear in objArmor.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+
+                        // Armor.
+                        foreach (Armor objArmor in _objCharacter.Armor)
+                        {
+                            if (objArmor.TotalAvailTuple(false).Suffix == 'R')
+                            {
+                                lstItems.Add(new ListItem(objArmor.InternalId, objArmor.CurrentDisplayName));
+                            }
+                            foreach (ArmorMod objMod in objArmor.ArmorMods)
+                            {
+                                if (objMod.TotalAvailTuple(false).Suffix == 'R')
+                                {
+                                    lstItems.Add(new ListItem(objMod.InternalId, objMod.CurrentDisplayName));
+                                }
+                                foreach (Gear objGear in objMod.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                {
+                                    lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
+                                }
+                            }
+                            foreach (Gear objGear in objArmor.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            {
+                                lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
+                            }
+                        }
+
+                        // Weapons.
+                        foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                        {
+                            if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
+                            {
+                                lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
+                            }
+                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            {
+                                if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvailTuple(false).Suffix == 'R')
+                                {
+                                    lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
+                                }
+                                foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                {
+                                    lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
+                                }
+                            }
+                        }
+
+                        // Gear.
+                        foreach (Gear objGear in _objCharacter.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                         {
                             lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                         }
-                    }
 
-                    // Weapons.
-                    foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
-                    {
-                        if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
+                        // Vehicles.
+                        foreach (Vehicle objVehicle in _objCharacter.Vehicles)
                         {
-                            lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
-                        }
-                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                        {
-                            if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvailTuple(false).Suffix == 'R')
+                            if (objVehicle.TotalAvailTuple(false).Suffix == 'R')
                             {
-                                lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
+                                lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.CurrentDisplayName));
                             }
-                            foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            foreach (VehicleMod objMod in objVehicle.Mods)
+                            {
+                                if (!objMod.IncludedInVehicle && objMod.TotalAvailTuple(false).Suffix == 'R')
+                                {
+                                    lstItems.Add(new ListItem(objMod.InternalId, objMod.CurrentDisplayName));
+                                }
+                                foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                                {
+                                    if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
+                                    {
+                                        lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
+                                    }
+                                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                    {
+                                        if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvailTuple(false).Suffix == 'R')
+                                        {
+                                            lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
+                                        }
+                                        foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                        {
+                                            lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
+                            {
+                                if (!objWeaponMount.IncludedInVehicle && objWeaponMount.TotalAvailTuple(false).Suffix == 'R')
+                                {
+                                    lstItems.Add(new ListItem(objWeaponMount.InternalId, objWeaponMount.CurrentDisplayName));
+                                }
+                                foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(x => x.Children))
+                                {
+                                    if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
+                                    {
+                                        lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
+                                    }
+                                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                    {
+                                        if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvailTuple(false).Suffix == 'R')
+                                        {
+                                            lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
+                                        }
+                                        foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                        {
+                                            lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
+                                        }
+                                    }
+                                }
+                            }
+                            foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
                             {
                                 lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
                             }
                         }
                     }
 
-                    // Gear.
-                    foreach (Gear objGear in _objCharacter.Gear.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
-                    {
-                        lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
-                    }
-
-                    // Vehicles.
-                    foreach (Vehicle objVehicle in _objCharacter.Vehicles)
-                    {
-                        if (objVehicle.TotalAvailTuple(false).Suffix == 'R')
-                        {
-                            lstItems.Add(new ListItem(objVehicle.InternalId, objVehicle.CurrentDisplayName));
-                        }
-                        foreach (VehicleMod objMod in objVehicle.Mods)
-                        {
-                            if (!objMod.IncludedInVehicle && objMod.TotalAvailTuple(false).Suffix == 'R')
-                            {
-                                lstItems.Add(new ListItem(objMod.InternalId, objMod.CurrentDisplayName));
-                            }
-                            foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
-                            {
-                                if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
-                                {
-                                    lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
-                                }
-                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                                {
-                                    if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvailTuple(false).Suffix == 'R')
-                                    {
-                                        lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
-                                    }
-                                    foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
-                                    {
-                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
-                                    }
-                                }
-                            }
-                        }
-                        foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
-                        {
-                            if (!objWeaponMount.IncludedInVehicle && objWeaponMount.TotalAvailTuple(false).Suffix == 'R')
-                            {
-                                lstItems.Add(new ListItem(objWeaponMount.InternalId, objWeaponMount.CurrentDisplayName));
-                            }
-                            foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(x => x.Children))
-                            {
-                                if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
-                                {
-                                    lstItems.Add(new ListItem(objWeapon.InternalId, objWeapon.CurrentDisplayName));
-                                }
-                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                                {
-                                    if (!objAccessory.IncludedInWeapon && objAccessory.TotalAvailTuple(false).Suffix == 'R')
-                                    {
-                                        lstItems.Add(new ListItem(objAccessory.InternalId, objAccessory.CurrentDisplayName));
-                                    }
-                                    foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
-                                    {
-                                        lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
-                                    }
-                                }
-                            }
-                        }
-                        foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
-                        {
-                            lstItems.Add(new ListItem(objGear.InternalId, objGear.CurrentDisplayName));
-                        }
-                    }
+                    break;
                 }
             }
             lstItems.Sort(CompareListItems.CompareNames);

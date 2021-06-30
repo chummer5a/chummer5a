@@ -2955,37 +2955,45 @@ namespace Chummer.Backend.Equipment
 
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
 
-            // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
-            if (Category == "Foci" || Category == "Metamagic Foci")
+            switch (Category)
             {
-                HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
-                foreach (Focus objFocus in _objCharacter.Foci)
+                // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
+                case "Foci":
+                case "Metamagic Foci":
                 {
-                    if (objFocus.GearObject == this)
-                        lstRemoveFoci.Add(objFocus);
-                }
-                foreach (Focus objFocus in lstRemoveFoci)
-                {
-                    /*
-                    foreach (Power objPower in objCharacter.Powers)
+                    HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
+                    foreach (Focus objFocus in _objCharacter.Foci)
                     {
-                        if (objPower.BonusSource == objFocus.GearId)
-                        {
-                            //objPower.FreeLevels -= (objFocus.Rating / 4);
-                        }
+                        if (objFocus.GearObject == this)
+                            lstRemoveFoci.Add(objFocus);
                     }
-                    */
-                    _objCharacter.Foci.Remove(objFocus);
+                    foreach (Focus objFocus in lstRemoveFoci)
+                    {
+                        /*
+                        foreach (Power objPower in objCharacter.Powers)
+                        {
+                            if (objPower.BonusSource == objFocus.GearId)
+                            {
+                                //objPower.FreeLevels -= (objFocus.Rating / 4);
+                            }
+                        }
+                        */
+                        _objCharacter.Foci.Remove(objFocus);
+                    }
+
+                    break;
                 }
-            }
-            // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
-            else if (Category == "Stacked Focus")
-            {
-                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
-                if (objStack != null)
+                // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
+                case "Stacked Focus":
                 {
-                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                    _objCharacter.StackedFoci.Remove(objStack);
+                    StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
+                    if (objStack != null)
+                    {
+                        decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                        _objCharacter.StackedFoci.Remove(objStack);
+                    }
+
+                    break;
                 }
             }
 

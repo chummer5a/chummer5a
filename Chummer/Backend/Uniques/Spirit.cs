@@ -903,19 +903,25 @@ namespace Chummer
 
         private void LinkedCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.Name))
-                OnPropertyChanged(nameof(CritterName));
-            else if (e.PropertyName == nameof(Character.Mugshots))
-                OnPropertyChanged(nameof(Mugshots));
-            else if (e.PropertyName == nameof(Character.MainMugshot))
-                OnPropertyChanged(nameof(MainMugshot));
-            else if (e.PropertyName == nameof(Character.MainMugshotIndex))
-                OnPropertyChanged(nameof(MainMugshotIndex));
-            else if (e.PropertyName == nameof(Character.AllowSpriteFettering))
+            switch (e.PropertyName)
             {
-                _intCachedAllowFettering = int.MinValue;
-                OnPropertyChanged(nameof(AllowFettering));
-                OnPropertyChanged(nameof(Fettered));
+                case nameof(Character.Name):
+                    OnPropertyChanged(nameof(CritterName));
+                    break;
+                case nameof(Character.Mugshots):
+                    OnPropertyChanged(nameof(Mugshots));
+                    break;
+                case nameof(Character.MainMugshot):
+                    OnPropertyChanged(nameof(MainMugshot));
+                    break;
+                case nameof(Character.MainMugshotIndex):
+                    OnPropertyChanged(nameof(MainMugshotIndex));
+                    break;
+                case nameof(Character.AllowSpriteFettering):
+                    _intCachedAllowFettering = int.MinValue;
+                    OnPropertyChanged(nameof(AllowFettering));
+                    OnPropertyChanged(nameof(Fettered));
+                    break;
             }
         }
         #endregion

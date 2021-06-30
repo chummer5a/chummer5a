@@ -213,10 +213,14 @@ namespace Chummer
                                 strSelectedName),
                             LanguageManager.GetString("MessageTitle_CharacterOptions_DuplicateFileName"),
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                        if (eCreateDuplicateSetting == DialogResult.Cancel)
-                            return;
-                        if (eCreateDuplicateSetting == DialogResult.No)
-                            strSelectedName = string.Empty;
+                        switch (eCreateDuplicateSetting)
+                        {
+                            case DialogResult.Cancel:
+                                return;
+                            case DialogResult.No:
+                                strSelectedName = string.Empty;
+                                break;
+                        }
                     }
                 } while (string.IsNullOrWhiteSpace(strSelectedName));
 
@@ -1113,22 +1117,28 @@ namespace Chummer
                 IsDirty = !_objCharacterOptions.Equals(_objReferenceCharacterOptions);
                 cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
                 cmdSave.Enabled = cmdSaveAs.Enabled && !_objCharacterOptions.BuiltInOption;
-                if (e.PropertyName == nameof(CharacterOptions.EnabledCustomDataDirectoryPaths))
-                    PopulateOptions();
-                else if (e.PropertyName == nameof(CharacterOptions.PriorityTable))
-                    PopulatePriorityTableList();
+                switch (e.PropertyName)
+                {
+                    case nameof(CharacterOptions.EnabledCustomDataDirectoryPaths):
+                        PopulateOptions();
+                        break;
+                    case nameof(CharacterOptions.PriorityTable):
+                        PopulatePriorityTableList();
+                        break;
+                }
             }
-            else if (e.PropertyName == nameof(CharacterOptions.BuiltInOption))
+            else switch (e.PropertyName)
             {
-                cmdSave.Enabled = cmdSaveAs.Enabled
-                                  && !_objCharacterOptions.BuiltInOption;
-            }
-            else if (e.PropertyName == nameof(CharacterOptions.PriorityArray)
-                     || e.PropertyName == nameof(CharacterOptions.BuildMethod))
-            {
-                cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
-                cmdSave.Enabled = cmdSaveAs.Enabled
-                                  && !_objCharacterOptions.BuiltInOption;
+                case nameof(CharacterOptions.BuiltInOption):
+                    cmdSave.Enabled = cmdSaveAs.Enabled
+                                      && !_objCharacterOptions.BuiltInOption;
+                    break;
+                case nameof(CharacterOptions.PriorityArray):
+                case nameof(CharacterOptions.BuildMethod):
+                    cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
+                    cmdSave.Enabled = cmdSaveAs.Enabled
+                                      && !_objCharacterOptions.BuiltInOption;
+                    break;
             }
         }
 

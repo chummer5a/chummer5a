@@ -411,10 +411,15 @@ namespace Chummer.UI.Skills
                     && objLoopImprovement.Enabled
                     && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
                 {
-                    if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCost)
-                        decExtraSpecCost += objLoopImprovement.Value;
-                    else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier)
-                        decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                    switch (objLoopImprovement.ImproveType)
+                    {
+                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                            decExtraSpecCost += objLoopImprovement.Value;
+                            break;
+                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                            break;
+                    }
                 }
             }
             if (decSpecCostMultiplier != 1.0m)

@@ -194,95 +194,109 @@ namespace Chummer
                     Utils.BreakIfDebug();
                 }
 
-                if (objChild is Label || objChild is Button || objChild is CheckBox)
+                switch (objChild)
                 {
-                    string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                        objChild.Text = GetString(strControlTag, strIntoLanguage);
-                    else if (objChild.Text.StartsWith('['))
-                        objChild.Text = string.Empty;
-                }
-                else if (objChild is ToolStrip tssStrip)
-                {
-                    foreach (ToolStripItem tssItem in tssStrip.Items)
+                    case Label _:
+                    case Button _:
+                    case CheckBox _:
                     {
-                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
-                    }
-                }
-                else if (objChild is ListView lstList)
-                {
-                    foreach (ColumnHeader objHeader in lstList.Columns)
-                    {
-                        string strControlTag = objHeader.Tag?.ToString();
+                        string strControlTag = objChild.Tag?.ToString();
                         if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                            objHeader.Text = GetString(strControlTag, strIntoLanguage);
-                        else if (objHeader.Text.StartsWith('['))
-                            objHeader.Text = string.Empty;
+                            objChild.Text = GetString(strControlTag, strIntoLanguage);
+                        else if (objChild.Text.StartsWith('['))
+                            objChild.Text = string.Empty;
+                        break;
                     }
-                }
-                else if (objChild is TabControl objTabControl)
-                {
-                    foreach (TabPage tabPage in objTabControl.TabPages)
+                    case ToolStrip tssStrip:
                     {
-                        string strControlTag = tabPage.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                            tabPage.Text = GetString(strControlTag, strIntoLanguage);
-                        else if (tabPage.Text.StartsWith('['))
-                            tabPage.Text = string.Empty;
-
-                        UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
-                    }
-                }
-                else if (objChild is SplitContainer objSplitControl)
-                {
-                    UpdateControls(objSplitControl.Panel1, strIntoLanguage, eIntoRightToLeft);
-                    UpdateControls(objSplitControl.Panel2, strIntoLanguage, eIntoRightToLeft);
-                }
-                else if (objChild is GroupBox)
-                {
-                    string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                        objChild.Text = GetString(strControlTag, strIntoLanguage);
-                    else if (objChild.Text.StartsWith('['))
-                        objChild.Text = string.Empty;
-                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
-                }
-                else if (objChild is Panel)
-                {
-                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
-                }
-                else if (objChild is TreeView treTree)
-                {
-                    foreach (TreeNode objNode in treTree.Nodes)
-                    {
-                        if (objNode.Level == 0)
+                        foreach (ToolStripItem tssItem in tssStrip.Items)
                         {
-                            string strControlTag = objNode.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                            TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
+                        }
+
+                        break;
+                    }
+                    case ListView lstList:
+                    {
+                        foreach (ColumnHeader objHeader in lstList.Columns)
+                        {
+                            string strControlTag = objHeader.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                objHeader.Text = GetString(strControlTag, strIntoLanguage);
+                            else if (objHeader.Text.StartsWith('['))
+                                objHeader.Text = string.Empty;
+                        }
+
+                        break;
+                    }
+                    case TabControl objTabControl:
+                    {
+                        foreach (TabPage tabPage in objTabControl.TabPages)
+                        {
+                            string strControlTag = tabPage.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                tabPage.Text = GetString(strControlTag, strIntoLanguage);
+                            else if (tabPage.Text.StartsWith('['))
+                                tabPage.Text = string.Empty;
+
+                            UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
+                        }
+
+                        break;
+                    }
+                    case SplitContainer objSplitControl:
+                        UpdateControls(objSplitControl.Panel1, strIntoLanguage, eIntoRightToLeft);
+                        UpdateControls(objSplitControl.Panel2, strIntoLanguage, eIntoRightToLeft);
+                        break;
+                    case GroupBox _:
+                    {
+                        string strControlTag = objChild.Tag?.ToString();
+                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                            objChild.Text = GetString(strControlTag, strIntoLanguage);
+                        else if (objChild.Text.StartsWith('['))
+                            objChild.Text = string.Empty;
+                        UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
+                        break;
+                    }
+                    case Panel _:
+                        UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
+                        break;
+                    case TreeView treTree:
+                    {
+                        foreach (TreeNode objNode in treTree.Nodes)
+                        {
+                            if (objNode.Level == 0)
                             {
-                                objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                string strControlTag = objNode.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                                {
+                                    objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                }
+                                else if (objNode.Text.StartsWith('['))
+                                    objNode.Text = string.Empty;
                             }
                             else if (objNode.Text.StartsWith('['))
                                 objNode.Text = string.Empty;
                         }
-                        else if (objNode.Text.StartsWith('['))
-                            objNode.Text = string.Empty;
+
+                        break;
                     }
-                }
-                else if (objChild is DataGridView objDataGridView)
-                {
-                    foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
+                    case DataGridView objDataGridView:
                     {
-                        if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                        foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
                         {
-                            objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
+                            if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                            {
+                                objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
+                            }
                         }
+
+                        break;
                     }
-                }
-                else if (objChild is ITranslatable translatable)
-                {
-                    // let custom nodes determine how they want to be translated
-                    translatable.Translate();
+                    case ITranslatable translatable:
+                        // let custom nodes determine how they want to be translated
+                        translatable.Translate();
+                        break;
                 }
             }
         }

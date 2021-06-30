@@ -1130,32 +1130,35 @@ namespace Chummer
                                             {
                                                 XmlNodeType eChildNodeType = xmlChild.NodeType;
 
-                                                // Skip adding comments, they're pointless for the purposes of Chummer5a's code
-                                                if (eChildNodeType == XmlNodeType.Comment)
-                                                    continue;
-
-                                                // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
-                                                if (eChildNodeType == XmlNodeType.Text ||
-                                                    eChildNodeType == XmlNodeType.Attribute ||
-                                                    eChildNodeType == XmlNodeType.CDATA)
+                                                switch (eChildNodeType)
                                                 {
-                                                    bool blnItemFound = false;
-                                                    if (objNodeToEdit.HasChildNodes)
+                                                    // Skip adding comments, they're pointless for the purposes of Chummer5a's code
+                                                    case XmlNodeType.Comment:
+                                                        continue;
+                                                    // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
+                                                    case XmlNodeType.Text:
+                                                    case XmlNodeType.Attribute:
+                                                    case XmlNodeType.CDATA:
                                                     {
-                                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                        bool blnItemFound = false;
+                                                        if (objNodeToEdit.HasChildNodes)
                                                         {
-                                                            if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
-                                                                objChildToEdit.Name == xmlChild.Name))
+                                                            foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                             {
-                                                                objChildToEdit.Value += xmlChild.Value;
-                                                                blnItemFound = true;
-                                                                break;
+                                                                if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
+                                                                    objChildToEdit.Name == xmlChild.Name))
+                                                                {
+                                                                    objChildToEdit.Value += xmlChild.Value;
+                                                                    blnItemFound = true;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
-                                                    }
 
-                                                    if (blnItemFound)
-                                                        continue;
+                                                        if (blnItemFound)
+                                                            continue;
+                                                        break;
+                                                    }
                                                 }
 
                                                 StripAmendAttributesRecursively(xmlChild);

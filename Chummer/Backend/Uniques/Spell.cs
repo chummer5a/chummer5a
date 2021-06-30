@@ -1095,10 +1095,15 @@ namespace Chummer
             string strText = CurrentDisplayName;
             if (blnAddCategory)
             {
-                if (Category == "Rituals")
-                    strText = LanguageManager.GetString("Label_Ritual") + LanguageManager.GetString("String_Space") + strText;
-                else if (Category == "Enchantments")
-                    strText = LanguageManager.GetString("Label_Enchantment") + LanguageManager.GetString("String_Space") + strText;
+                switch (Category)
+                {
+                    case "Rituals":
+                        strText = LanguageManager.GetString("Label_Ritual") + LanguageManager.GetString("String_Space") + strText;
+                        break;
+                    case "Enchantments":
+                        strText = LanguageManager.GetString("Label_Enchantment") + LanguageManager.GetString("String_Space") + strText;
+                        break;
+                }
             }
             TreeNode objNode = new TreeNode
             {

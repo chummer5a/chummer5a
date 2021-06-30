@@ -284,10 +284,16 @@ namespace Chummer
                             bool blnFoundInhabitation = false;
                             foreach (string strCheckPower in lstPowerWhitelist)
                             {
-                                if (strCheckPower == "Possession")
-                                    blnFoundPossession = true;
-                                else if (strCheckPower == "Inhabitation")
-                                    blnFoundInhabitation = true;
+                                switch (strCheckPower)
+                                {
+                                    case "Possession":
+                                        blnFoundPossession = true;
+                                        break;
+                                    case "Inhabitation":
+                                        blnFoundInhabitation = true;
+                                        break;
+                                }
+
                                 if (blnFoundInhabitation && blnFoundPossession)
                                     break;
                             }

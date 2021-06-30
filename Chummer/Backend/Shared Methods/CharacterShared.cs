@@ -20,18 +20,18 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
-using Chummer.Backend.Equipment;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
-using System.Text;
-using System.ComponentModel;
+using Chummer.Backend.Equipment;
 using Chummer.UI.Attributes;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -762,7 +762,7 @@ namespace Chummer
 
                 if (objParentNode == null)
                 {
-                    objParentNode = new TreeNode()
+                    objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAIPrograms",
                         Text = LanguageManager.GetString("Node_SelectedAIPrograms")
@@ -893,7 +893,7 @@ namespace Chummer
                     return;
                 if (objParentNode == null)
                 {
-                    objParentNode = new TreeNode()
+                    objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAdvancedComplexForms",
                         Text = LanguageManager.GetString("Node_SelectedAdvancedComplexForms")
@@ -1669,7 +1669,7 @@ namespace Chummer
                     case "Weakness":
                         if (objWeaknessesNode == null)
                         {
-                            objWeaknessesNode = new TreeNode()
+                            objWeaknessesNode = new TreeNode
                             {
                                 Tag = "Node_CritterWeaknesses",
                                 Text = LanguageManager.GetString("Node_CritterWeaknesses")
@@ -1682,7 +1682,7 @@ namespace Chummer
                     default:
                         if (objPowersNode == null)
                         {
-                            objPowersNode = new TreeNode()
+                            objPowersNode = new TreeNode
                             {
                                 Tag = "Node_CritterPowers",
                                 Text = LanguageManager.GetString("Node_CritterPowers")
@@ -1916,28 +1916,33 @@ namespace Chummer
 
             void AddedQualityOnPropertyChanged(object sender, PropertyChangedEventArgs e)
             {
-                if (e.PropertyName == nameof(Quality.Suppressed))
+                switch (e.PropertyName)
                 {
-                    if (!(sender is Quality objQuality))
-                        return;
-                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
-                    if (objNode == null)
-                        return;
-                    Font objOldFont = objNode.NodeFont;
-                    //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
-                    objNode.NodeFont = new Font(treQualities.Font,
-                        objQuality.Suppressed ? FontStyle.Strikeout : FontStyle.Regular);
-                    // Dispose the old font if it's not null so that we don't leak memory
-                    objOldFont?.Dispose();
-                }
-                else if (e.PropertyName == nameof(Quality.Notes))
-                {
-                    if (!(sender is Quality objQuality))
-                        return;
-                    TreeNode objNode = treQualities.FindNodeByTag(objQuality);
-                    if (objNode == null)
-                        return;
-                    objNode.ToolTipText = objQuality.Notes.WordWrap();
+                    case nameof(Quality.Suppressed):
+                    {
+                        if (!(sender is Quality objQuality))
+                            return;
+                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                        if (objNode == null)
+                            return;
+                        Font objOldFont = objNode.NodeFont;
+                        //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
+                        objNode.NodeFont = new Font(treQualities.Font,
+                            objQuality.Suppressed ? FontStyle.Strikeout : FontStyle.Regular);
+                        // Dispose the old font if it's not null so that we don't leak memory
+                        objOldFont?.Dispose();
+                        break;
+                    }
+                    case nameof(Quality.Notes):
+                    {
+                        if (!(sender is Quality objQuality))
+                            return;
+                        TreeNode objNode = treQualities.FindNodeByTag(objQuality);
+                        if (objNode == null)
+                            return;
+                        objNode.ToolTipText = objQuality.Notes.WordWrap();
+                        break;
+                    }
                 }
             }
         }
@@ -3096,9 +3101,9 @@ namespace Chummer
                     return;
 
                 TreeNode nodParent = null;
-                if (objCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
+                switch (objCyberware.SourceType)
                 {
-                    if (objCyberware.IsModularCurrentlyEquipped)
+                    case Improvement.ImprovementSource.Cyberware when objCyberware.IsModularCurrentlyEquipped:
                     {
                         if (objCyberwareRoot == null)
                         {
@@ -3111,8 +3116,9 @@ namespace Chummer
                             objCyberwareRoot.Expand();
                         }
                         nodParent = objCyberwareRoot;
+                        break;
                     }
-                    else
+                    case Improvement.ImprovementSource.Cyberware:
                     {
                         if (objModularRoot == null)
                         {
@@ -3128,21 +3134,23 @@ namespace Chummer
                             objModularRoot.Expand();
                         }
                         nodParent = objModularRoot;
+                        break;
                     }
-                }
-                else if (objCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                {
-                    if (objBiowareRoot == null)
+                    case Improvement.ImprovementSource.Bioware:
                     {
-                        objBiowareRoot = new TreeNode
+                        if (objBiowareRoot == null)
                         {
-                            Tag = "Node_SelectedBioware",
-                            Text = LanguageManager.GetString("Node_SelectedBioware")
-                        };
-                        treCyberware.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
-                        objBiowareRoot.Expand();
+                            objBiowareRoot = new TreeNode
+                            {
+                                Tag = "Node_SelectedBioware",
+                                Text = LanguageManager.GetString("Node_SelectedBioware")
+                            };
+                            treCyberware.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
+                            objBiowareRoot.Expand();
+                        }
+                        nodParent = objBiowareRoot;
+                        break;
                     }
-                    nodParent = objBiowareRoot;
                 }
 
                 if (nodParent != null)
@@ -3929,7 +3937,7 @@ namespace Chummer
                 {
                     if (objQualityNode == null)
                     {
-                        objQualityNode = new TreeNode()
+                        objQualityNode = new TreeNode
                         {
                             Tag = "Node_SelectedQualities",
                             Text = LanguageManager.GetString("Node_SelectedQualities")
@@ -3943,7 +3951,7 @@ namespace Chummer
                 {
                     if (objMartialArtsParentNode == null)
                     {
-                        objMartialArtsParentNode = new TreeNode()
+                        objMartialArtsParentNode = new TreeNode
                         {
                             Tag = "Node_SelectedMartialArts",
                             Text = LanguageManager.GetString("Node_SelectedMartialArts")
@@ -4231,7 +4239,7 @@ namespace Chummer
                             switch (intTargetLimit)
                             {
                                 case 0:
-                                    objParentNode = new TreeNode()
+                                    objParentNode = new TreeNode
                                     {
                                         Tag = "Node_Physical",
                                         Text = LanguageManager.GetString("Node_Physical")
@@ -4239,7 +4247,7 @@ namespace Chummer
                                     treLimit.Nodes.Insert(0, objParentNode);
                                     break;
                                 case 1:
-                                    objParentNode = new TreeNode()
+                                    objParentNode = new TreeNode
                                     {
                                         Tag = "Node_Mental",
                                         Text = LanguageManager.GetString("Node_Mental")
@@ -4247,7 +4255,7 @@ namespace Chummer
                                     treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
                                     break;
                                 case 2:
-                                    objParentNode = new TreeNode()
+                                    objParentNode = new TreeNode
                                     {
                                         Tag = "Node_Social",
                                         Text = LanguageManager.GetString("Node_Social")
@@ -4255,7 +4263,7 @@ namespace Chummer
                                     treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
                                     break;
                                 case 3:
-                                    objParentNode = new TreeNode()
+                                    objParentNode = new TreeNode
                                     {
                                         Tag = "Node_Astral",
                                         Text = LanguageManager.GetString("Node_Astral")
@@ -4285,12 +4293,18 @@ namespace Chummer
                             };
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
-                                if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
-                                    objImprovement.ImprovedName = "Social";
-                                else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
-                                    objImprovement.ImprovedName = "Mental";
-                                else
-                                    objImprovement.ImprovedName = "Physical";
+                                switch (objImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SocialLimit:
+                                        objImprovement.ImprovedName = "Social";
+                                        break;
+                                    case Improvement.ImprovementType.MentalLimit:
+                                        objImprovement.ImprovedName = "Mental";
+                                        break;
+                                    default:
+                                        objImprovement.ImprovedName = "Physical";
+                                        break;
+                                }
                             }
 
                             TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
@@ -4330,7 +4344,7 @@ namespace Chummer
                 {
                     if (objParentNode == null)
                     {
-                        objParentNode = new TreeNode()
+                        objParentNode = new TreeNode
                         {
                             Tag = "Node_SelectedImprovements",
                             Text = LanguageManager.GetString("Node_SelectedImprovements")
@@ -6324,10 +6338,15 @@ namespace Chummer
 
                             // Multiply the cost if applicable.
                             char chrAvail = objGear.TotalAvailTuple().Suffix;
-                            if (chrAvail == 'R' && CharacterObjectOptions.MultiplyRestrictedCost)
-                                decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
-                            if (chrAvail == 'F' && CharacterObjectOptions.MultiplyForbiddenCost)
-                                decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectOptions.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectOptions.RestrictedCostMultiplier;
+                                    break;
+                                case 'F' when CharacterObjectOptions.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectOptions.ForbiddenCostMultiplier;
+                                    break;
+                            }
 
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.FreeCost)

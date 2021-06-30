@@ -753,17 +753,27 @@ namespace Chummer.Backend.Skills
                     {
                         if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                         {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupPointCost)
-                                decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupPointCostMultiplier)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupPointCost:
+                                    decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                    break;
+                                case Improvement.ImprovementType.SkillGroupPointCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
                         }
                         else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
                         {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupCategoryPointCost)
-                                decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupCategoryPointCost:
+                                    decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                    break;
+                                case Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
                         }
                     }
                 }
@@ -805,17 +815,27 @@ namespace Chummer.Backend.Skills
                     {
                         if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                         {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupKarmaCost)
-                                decExtra += objLoopImprovement.Value * (Math.Min(intUpper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupKarmaCostMultiplier)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupKarmaCost:
+                                    decExtra += objLoopImprovement.Value * (Math.Min(intUpper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                    break;
+                                case Improvement.ImprovementType.SkillGroupKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
                         }
                         else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
                         {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupCategoryKarmaCost)
-                                decExtra += objLoopImprovement.Value * (Math.Min(intUpper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
+                                    decExtra += objLoopImprovement.Value * (Math.Min(intUpper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
+                                    break;
+                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
                         }
                     }
                 }
@@ -865,17 +885,27 @@ namespace Chummer.Backend.Skills
                     {
                         if (objLoopImprovement.ImprovedName == Name || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
                         {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupKarmaCost)
-                                decExtra += objLoopImprovement.Value;
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupKarmaCostMultiplier)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupKarmaCost:
+                                    decExtra += objLoopImprovement.Value;
+                                    break;
+                                case Improvement.ImprovementType.SkillGroupKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
                         }
                         else if (lstRelevantCategories.Contains(objLoopImprovement.ImprovedName))
                         {
-                            if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupCategoryKarmaCost)
-                                decExtra += objLoopImprovement.Value;
-                            else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier)
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCost:
+                                    decExtra += objLoopImprovement.Value;
+                                    break;
+                                case Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
                         }
                     }
                 }

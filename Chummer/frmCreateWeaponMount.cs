@@ -470,16 +470,19 @@ namespace Chummer
 
                         string strLoopAvail = xmlLoopNode["avail"]?.InnerText ?? string.Empty;
                         char chrLoopAvailSuffix = strLoopAvail.Length > 0 ? strLoopAvail[strLoopAvail.Length - 1] : ' ';
-                        if (chrLoopAvailSuffix == 'F')
+                        switch (chrLoopAvailSuffix)
                         {
-                            strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
-                            chrAvailSuffix = 'F';
-                        }
-                        else if (chrLoopAvailSuffix == 'R')
-                        {
-                            strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
-                            if (chrAvailSuffix == ' ')
-                                chrAvailSuffix = 'R';
+                            case 'F':
+                                strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                                chrAvailSuffix = 'F';
+                                break;
+                            case 'R':
+                            {
+                                strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                                if (chrAvailSuffix == ' ')
+                                    chrAvailSuffix = 'R';
+                                break;
+                            }
                         }
                         intAvail += Convert.ToInt32(strLoopAvail, GlobalOptions.InvariantCultureInfo);
                     }
@@ -505,10 +508,15 @@ namespace Chummer
             }
 
             string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
-            if (chrAvailSuffix == 'F')
-                strAvailText += LanguageManager.GetString("String_AvailForbidden");
-            else if (chrAvailSuffix == 'R')
-                strAvailText += LanguageManager.GetString("String_AvailRestricted");
+            switch (chrAvailSuffix)
+            {
+                case 'F':
+                    strAvailText += LanguageManager.GetString("String_AvailForbidden");
+                    break;
+                case 'R':
+                    strAvailText += LanguageManager.GetString("String_AvailRestricted");
+                    break;
+            }
 
 	        decCost *= 1 + (nudMarkup.Value / 100.0m);
 	        lblCost.Text = decCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
@@ -621,10 +629,15 @@ namespace Chummer
 
                         // Multiply the cost if applicable.
                         char chrAvail = objMod.TotalAvailTuple().Suffix;
-                        if (chrAvail == 'R' && _objCharacter.Options.MultiplyRestrictedCost)
-                            decCost *= _objCharacter.Options.RestrictedCostMultiplier;
-                        if (chrAvail == 'F' && _objCharacter.Options.MultiplyForbiddenCost)
-                            decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
+                        switch (chrAvail)
+                        {
+                            case 'R' when _objCharacter.Options.MultiplyRestrictedCost:
+                                decCost *= _objCharacter.Options.RestrictedCostMultiplier;
+                                break;
+                            case 'F' when _objCharacter.Options.MultiplyForbiddenCost:
+                                decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
+                                break;
+                        }
 
                         if (decCost > _objCharacter.Nuyen)
                         {

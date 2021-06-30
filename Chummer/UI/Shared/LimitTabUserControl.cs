@@ -242,12 +242,18 @@ namespace Chummer.UI.Shared
                             };
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
-                                if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
-                                    objImprovement.ImprovedName = "Social";
-                                else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
-                                    objImprovement.ImprovedName = "Mental";
-                                else
-                                    objImprovement.ImprovedName = "Physical";
+                                switch (objImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SocialLimit:
+                                        objImprovement.ImprovedName = "Social";
+                                        break;
+                                    case Improvement.ImprovementType.MentalLimit:
+                                        objImprovement.ImprovedName = "Mental";
+                                        break;
+                                    default:
+                                        objImprovement.ImprovedName = "Physical";
+                                        break;
+                                }
                             }
 
                             objParentNode.Nodes.Add(objNode);
@@ -364,7 +370,7 @@ namespace Chummer.UI.Shared
                     switch (intTargetLimit)
                     {
                         case 0:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Physical",
                                 Text = LanguageManager.GetString("Node_Physical")
@@ -372,7 +378,7 @@ namespace Chummer.UI.Shared
                             treLimit.Nodes.Insert(0, objParentNode);
                             break;
                         case 1:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Mental",
                                 Text = LanguageManager.GetString("Node_Mental")
@@ -380,7 +386,7 @@ namespace Chummer.UI.Shared
                             treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
                             break;
                         case 2:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Social",
                                 Text = LanguageManager.GetString("Node_Social")
@@ -388,7 +394,7 @@ namespace Chummer.UI.Shared
                             treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
                             break;
                         case 3:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Astral",
                                 Text = LanguageManager.GetString("Node_Astral")

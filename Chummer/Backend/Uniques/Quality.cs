@@ -26,7 +26,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -488,19 +487,21 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _strStage);
             }
-            if (_eQualitySource == QualitySource.Selected && string.IsNullOrEmpty(_nodBonus?.InnerText) && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText) &&
-                (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative) &&
-                GetNode() != null && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType)
+            switch (_eQualitySource)
             {
-                _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
-            }
-            // Legacy shim for priority-given qualities
-            else if (_eQualitySource == QualitySource.Metatype
-                     && _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
-                     && _objCharacter.EffectiveBuildMethodUsesPriorityTables
-                     && GetNode()?["onlyprioritygiven"] != null)
-            {
-                _eQualitySource = QualitySource.Heritage;
+                case QualitySource.Selected when string.IsNullOrEmpty(_nodBonus?.InnerText)
+                                                 && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText)
+                                                 && (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative)
+                                                 && GetNode() != null
+                                                 && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType:
+                    _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
+                    break;
+                // Legacy shim for priority-given qualities
+                case QualitySource.Metatype when _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
+                                                 && _objCharacter.EffectiveBuildMethodUsesPriorityTables
+                                                 && GetNode()?["onlyprioritygiven"] != null:
+                    _eQualitySource = QualitySource.Heritage;
+                    break;
             }
         }
 
@@ -758,13 +759,14 @@ namespace Chummer
                 int intReturn = _intBP;
                 if (_nodDiscounts.RequirementsMet(_objCharacter))
                 {
-                    if (Type == QualityType.Positive)
+                    switch (Type)
                     {
-                        intReturn += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
-                    }
-                    else if (Type == QualityType.Negative)
-                    {
-                        intReturn -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                        case QualityType.Positive:
+                            intReturn += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                            break;
+                        case QualityType.Negative:
+                            intReturn -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                            break;
                     }
                 }
                 return intReturn;

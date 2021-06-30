@@ -1342,12 +1342,17 @@ namespace Chummer.Backend.Equipment
 
                 foreach (Cyberware objChild in Cyberware)
                 {
-                    // If the limb has Customized Strength, this is its new base value.
-                    if (objChild.Name == "Customized Strength")
-                        intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Strength, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Strength")
-                        intBonus = objChild.Rating;
+                    switch (objChild.Name)
+                    {
+                        // If the limb has Customized Strength, this is its new base value.
+                        case "Customized Strength":
+                            intAttribute = objChild.Rating;
+                            break;
+                        // If the limb has Enhanced Strength, this adds to the limb's value.
+                        case "Enhanced Strength":
+                            intBonus = objChild.Rating;
+                            break;
+                    }
                 }
                 return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
             }
@@ -1375,12 +1380,17 @@ namespace Chummer.Backend.Equipment
 
                 foreach (Cyberware objChild in Cyberware)
                 {
-                    // If the limb has Customized Agility, this is its new base value.
-                    if (objChild.Name == "Customized Agility")
-                        intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Agility, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Agility")
-                        intBonus = objChild.Rating;
+                    switch (objChild.Name)
+                    {
+                        // If the limb has Customized Agility, this is its new base value.
+                        case "Customized Agility":
+                            intAttribute = objChild.Rating;
+                            break;
+                        // If the limb has Enhanced Agility, this adds to the limb's value.
+                        case "Enhanced Agility":
+                            intBonus = objChild.Rating;
+                            break;
+                    }
                 }
 
                 return Math.Min(intAttribute + intBonus, Math.Max(pilot, 1));

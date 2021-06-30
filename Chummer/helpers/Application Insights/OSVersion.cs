@@ -37,56 +37,59 @@ namespace Chummer.helpers.Application_Insights
                 //Variable to hold our return value
                 string operatingSystem = string.Empty;
 
-                if (os.Platform == PlatformID.Win32Windows)
+                switch (os.Platform)
                 {
-                    //This is a pre-NT version of Windows
-                    switch (vs.Minor)
-                    {
-                        case 0:
-                            operatingSystem = "95";
-                            break;
-                        case 10:
-                            operatingSystem = vs.Revision.ToString() == "2222A" ? "98SE" : "98";
-                            break;
-                        case 90:
-                            operatingSystem = "Me";
-                            break;
-                    }
-                }
-                else if (os.Platform == PlatformID.Win32NT)
-                {
-                    switch (vs.Major)
-                    {
-                        case 3:
-                            operatingSystem = "NT 3.51";
-                            break;
-                        case 4:
-                            operatingSystem = "NT 4.0";
-                            break;
-                        case 5:
-                            operatingSystem = vs.Minor == 0 ? "2000" : "XP";
-                            break;
-                        case 6:
-                            switch (vs.Minor)
-                            {
-                                case 0:
-                                    operatingSystem = "Vista";
-                                    break;
-                                case 1:
-                                    operatingSystem = "7";
-                                    break;
-                                case 2:
-                                    operatingSystem = "8";
-                                    break;
-                                default:
-                                    operatingSystem = "8.1";
-                                    break;
-                            }
-                            break;
-                        case 10:
-                            operatingSystem = "10";
-                            break;
-                    }
+                    case PlatformID.Win32Windows:
+                        //This is a pre-NT version of Windows
+                        switch (vs.Minor)
+                        {
+                            case 0:
+                                operatingSystem = "95";
+                                break;
+                            case 10:
+                                operatingSystem = vs.Revision.ToString() == "2222A" ? "98SE" : "98";
+                                break;
+                            case 90:
+                                operatingSystem = "Me";
+                                break;
+                        }
+
+                        break;
+                    case PlatformID.Win32NT:
+                        switch (vs.Major)
+                        {
+                            case 3:
+                                operatingSystem = "NT 3.51";
+                                break;
+                            case 4:
+                                operatingSystem = "NT 4.0";
+                                break;
+                            case 5:
+                                operatingSystem = vs.Minor == 0 ? "2000" : "XP";
+                                break;
+                            case 6:
+                                switch (vs.Minor)
+                                {
+                                    case 0:
+                                        operatingSystem = "Vista";
+                                        break;
+                                    case 1:
+                                        operatingSystem = "7";
+                                        break;
+                                    case 2:
+                                        operatingSystem = "8";
+                                        break;
+                                    default:
+                                        operatingSystem = "8.1";
+                                        break;
+                                }
+                                break;
+                            case 10:
+                                operatingSystem = "10";
+                                break;
+                        }
+
+                        break;
                 }
                 //Make sure we actually got something in our OS check
                 //We don't want to just return " Service Pack 2" or " 32-bit"

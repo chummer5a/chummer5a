@@ -172,14 +172,14 @@ public class SplitButton : Button
     {
         if (_showSplit)
         {
-            if (kevent.KeyCode.Equals(Keys.Down) && !_isSplitMenuVisible)
+            switch (kevent.KeyCode)
             {
-                ShowContextMenuStrip();
-            }
-
-            else if (kevent.KeyCode.Equals(Keys.Space) && kevent.Modifiers == Keys.None)
-            {
-                State = PushButtonState.Pressed;
+                case Keys.Down when !_isSplitMenuVisible:
+                    ShowContextMenuStrip();
+                    break;
+                case Keys.Space when kevent.Modifiers == Keys.None:
+                    State = PushButtonState.Pressed;
+                    break;
             }
         }
 
@@ -188,16 +188,20 @@ public class SplitButton : Button
 
     protected override void OnKeyUp(KeyEventArgs kevent)
     {
-        if (kevent.KeyCode.Equals(Keys.Space))
+        switch (kevent.KeyCode)
         {
-            if (MouseButtons == MouseButtons.None)
+            case Keys.Space:
             {
-                State = PushButtonState.Normal;
+                if (MouseButtons == MouseButtons.None)
+                {
+                    State = PushButtonState.Normal;
+                }
+
+                break;
             }
-        }
-        else if (kevent.KeyCode.Equals(Keys.Apps) && MouseButtons == MouseButtons.None && !_isSplitMenuVisible)
-        {
-            ShowContextMenuStrip();
+            case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
+                ShowContextMenuStrip();
+                break;
         }
 
         base.OnKeyUp(kevent);
@@ -600,14 +604,21 @@ public class SplitButton : Button
         HorizontalAlignment h_text = GetHorizontalAlignment(TextAlign);
         HorizontalAlignment h_image = GetHorizontalAlignment(ImageAlign);
 
-        if (h_image == HorizontalAlignment.Left)
-            offset = 0;
-        else if (h_image == HorizontalAlignment.Right && h_text == HorizontalAlignment.Right)
-            offset = excess_width;
-        else if (h_image == HorizontalAlignment.Center && (h_text == HorizontalAlignment.Left || h_text == HorizontalAlignment.Center))
-            offset += excess_width / 3;
-        else
-            offset += 2 * (excess_width / 3);
+        switch (h_image)
+        {
+            case HorizontalAlignment.Left:
+                offset = 0;
+                break;
+            case HorizontalAlignment.Right when h_text == HorizontalAlignment.Right:
+                offset = excess_width;
+                break;
+            case HorizontalAlignment.Center when (h_text == HorizontalAlignment.Left || h_text == HorizontalAlignment.Center):
+                offset += excess_width / 3;
+                break;
+            default:
+                offset += 2 * (excess_width / 3);
+                break;
+        }
 
         if (textFirst)
         {
@@ -650,14 +661,21 @@ public class SplitButton : Button
         VerticalAlignment v_text = GetVerticalAlignment(TextAlign);
         VerticalAlignment v_image = GetVerticalAlignment(ImageAlign);
 
-        if (v_image == VerticalAlignment.Top)
-            offset = 0;
-        else if (v_image == VerticalAlignment.Bottom && v_text == VerticalAlignment.Bottom)
-            offset = excess_height;
-        else if (v_image == VerticalAlignment.Center && (v_text == VerticalAlignment.Top || v_text == VerticalAlignment.Center))
-            offset += excess_height / 3;
-        else
-            offset += 2 * (excess_height / 3);
+        switch (v_image)
+        {
+            case VerticalAlignment.Top:
+                offset = 0;
+                break;
+            case VerticalAlignment.Bottom when v_text == VerticalAlignment.Bottom:
+                offset = excess_height;
+                break;
+            case VerticalAlignment.Center when (v_text == VerticalAlignment.Top || v_text == VerticalAlignment.Center):
+                offset += excess_height / 3;
+                break;
+            default:
+                offset += 2 * (excess_height / 3);
+                break;
+        }
 
         if (textFirst)
         {
@@ -724,18 +742,42 @@ public class SplitButton : Button
         int x = 0;
         int y = 0;
 
-        if (align == System.Drawing.ContentAlignment.BottomLeft || align == System.Drawing.ContentAlignment.MiddleLeft || align == System.Drawing.ContentAlignment.TopLeft)
-            x = outer.X;
-        else if (align == System.Drawing.ContentAlignment.BottomCenter || align == System.Drawing.ContentAlignment.MiddleCenter || align == System.Drawing.ContentAlignment.TopCenter)
-            x = Math.Max(outer.X + ((outer.Width - inner.Width) / 2), outer.Left);
-        else if (align == System.Drawing.ContentAlignment.BottomRight || align == System.Drawing.ContentAlignment.MiddleRight || align == System.Drawing.ContentAlignment.TopRight)
-            x = outer.Right - inner.Width;
-        if (align == System.Drawing.ContentAlignment.TopCenter || align == System.Drawing.ContentAlignment.TopLeft || align == System.Drawing.ContentAlignment.TopRight)
-            y = outer.Y;
-        else if (align == System.Drawing.ContentAlignment.MiddleCenter || align == System.Drawing.ContentAlignment.MiddleLeft || align == System.Drawing.ContentAlignment.MiddleRight)
-            y = outer.Y + (outer.Height - inner.Height) / 2;
-        else if (align == System.Drawing.ContentAlignment.BottomCenter || align == System.Drawing.ContentAlignment.BottomRight || align == System.Drawing.ContentAlignment.BottomLeft)
-            y = outer.Bottom - inner.Height;
+        switch (align)
+        {
+            case System.Drawing.ContentAlignment.BottomLeft:
+            case System.Drawing.ContentAlignment.MiddleLeft:
+            case System.Drawing.ContentAlignment.TopLeft:
+                x = outer.X;
+                break;
+            case System.Drawing.ContentAlignment.BottomCenter:
+            case System.Drawing.ContentAlignment.MiddleCenter:
+            case System.Drawing.ContentAlignment.TopCenter:
+                x = Math.Max(outer.X + ((outer.Width - inner.Width) / 2), outer.Left);
+                break;
+            case System.Drawing.ContentAlignment.BottomRight:
+            case System.Drawing.ContentAlignment.MiddleRight:
+            case System.Drawing.ContentAlignment.TopRight:
+                x = outer.Right - inner.Width;
+                break;
+        }
+        switch (align)
+        {
+            case System.Drawing.ContentAlignment.TopCenter:
+            case System.Drawing.ContentAlignment.TopLeft:
+            case System.Drawing.ContentAlignment.TopRight:
+                y = outer.Y;
+                break;
+            case System.Drawing.ContentAlignment.MiddleCenter:
+            case System.Drawing.ContentAlignment.MiddleLeft:
+            case System.Drawing.ContentAlignment.MiddleRight:
+                y = outer.Y + (outer.Height - inner.Height) / 2;
+                break;
+            case System.Drawing.ContentAlignment.BottomCenter:
+            case System.Drawing.ContentAlignment.BottomRight:
+            case System.Drawing.ContentAlignment.BottomLeft:
+                y = outer.Bottom - inner.Height;
+                break;
+        }
 
         return new Rectangle(x, y, Math.Min(inner.Width, outer.Width), Math.Min(inner.Height, outer.Height));
     }

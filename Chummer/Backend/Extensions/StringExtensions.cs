@@ -410,7 +410,7 @@ namespace Chummer
             if (intLength == 0)
                 return strInput;
             if (funcIsWhiteSpace == null)
-                funcIsWhiteSpace = (x) => char.IsWhiteSpace(x) && !char.IsControl(x);
+                funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalOptions.MaxStackLimit)
             {
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);

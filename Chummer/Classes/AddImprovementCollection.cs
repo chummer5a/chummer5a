@@ -2071,22 +2071,22 @@ namespace Chummer.Classes
                 string strMode = bonusNode["type"]?.InnerText ?? "all";
 
                 Contact[] lstSelectedContacts;
-                if (strMode == "all")
+                switch (strMode)
                 {
-                    lstSelectedContacts = _objCharacter.Contacts.ToArray();
-                }
-                else if (strMode == "group" || strMode == "nongroup")
-                {
-                    bool blnGroup = strMode == "group";
-
-
-                    //Select any contact where IsGroup equals blnGroup
-                    //and add to a list
-                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToArray();
-                }
-                else
-                {
-                    throw new AbortedException();
+                    case "all":
+                        lstSelectedContacts = _objCharacter.Contacts.ToArray();
+                        break;
+                    case "group":
+                    case "nongroup":
+                    {
+                        bool blnGroup = strMode == "group";
+                        //Select any contact where IsGroup equals blnGroup
+                        //and add to a list
+                        lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToArray();
+                        break;
+                    }
+                    default:
+                        throw new AbortedException();
                 }
 
                 if (lstSelectedContacts.Length == 0)
@@ -5998,36 +5998,37 @@ namespace Chummer.Classes
             for (int i = 0; i < options.Length; ++i)
                 options[i] = options[i].Trim();
             string final;
-            if (options.Length == 0)
+            switch (options.Length)
             {
-                Utils.BreakIfDebug();
-                throw new AbortedException();
-            }
-
-            if (options.Length == 1)
-            {
-                final = options[0];
-            }
-            else
-            {
-                using (frmSelectItem frmSelect = new frmSelectItem
+                case 0:
+                    Utils.BreakIfDebug();
+                    throw new AbortedException();
+                case 1:
+                    final = options[0];
+                    break;
+                default:
                 {
-                    AllowAutoSelect = true
-                })
-                {
-                    frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
-
-                    if (_objCharacter.Pushtext.Count > 0)
+                    using (frmSelectItem frmSelect = new frmSelectItem
                     {
-                        frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
+                        AllowAutoSelect = true
+                    })
+                    {
+                        frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
+
+                        if (_objCharacter.Pushtext.Count > 0)
+                        {
+                            frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
+                        }
+
+                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        final = frmSelect.SelectedItem;
                     }
 
-                    if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
-                    {
-                        throw new AbortedException();
-                    }
-
-                    final = frmSelect.SelectedItem;
+                    break;
                 }
             }
 

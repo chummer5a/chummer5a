@@ -136,7 +136,7 @@ namespace Chummer
             public IntPtr wParam;
             public uint message;
             public IntPtr hwnd;
-        };
+        }
 
         static CenterableMessageBox()
         {

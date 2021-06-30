@@ -329,7 +329,7 @@ namespace Chummer.UI.Table
             {
                 cells = new List<TableCell>();
             }
-            HeaderCell header = new HeaderCell()
+            HeaderCell header = new HeaderCell
             {
                 Text = column.Text,
                 TextTag = column.Tag

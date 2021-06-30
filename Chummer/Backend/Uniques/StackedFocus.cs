@@ -222,10 +222,15 @@ namespace Chummer
 
                     foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(x => x.ImprovedName == strFocusName && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target)) && x.Enabled))
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaCost)
-                            decExtraKarmaCost += objLoopImprovement.Value;
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.FocusBindingKarmaMultiplier)
-                            decKarmaMultiplier += objLoopImprovement.Value;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.FocusBindingKarmaCost:
+                                decExtraKarmaCost += objLoopImprovement.Value;
+                                break;
+                            case Improvement.ImprovementType.FocusBindingKarmaMultiplier:
+                                decKarmaMultiplier += objLoopImprovement.Value;
+                                break;
+                        }
                     }
                     decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
                 }

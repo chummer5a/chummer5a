@@ -99,10 +99,15 @@ namespace Chummer.Backend.Skills
 
         private void OnKnowledgeSkillPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(KnowledgeSkill.CurrentSpCost))
-                OnPropertyChanged(nameof(KnowledgeSkillRanksSum));
-            else if(e.PropertyName == nameof(KnowledgeSkill.IsNativeLanguage))
-                OnPropertyChanged(nameof(HasAvailableNativeLanguageSlots));
+            switch (e.PropertyName)
+            {
+                case nameof(KnowledgeSkill.CurrentSpCost):
+                    OnPropertyChanged(nameof(KnowledgeSkillRanksSum));
+                    break;
+                case nameof(KnowledgeSkill.IsNativeLanguage):
+                    OnPropertyChanged(nameof(HasAvailableNativeLanguageSlots));
+                    break;
+            }
         }
 
         public void UnbindSkillsSection()

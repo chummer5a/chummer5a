@@ -812,63 +812,69 @@ namespace Chummer.Backend.Equipment
             // Retrieve the Bioware or Cyberware ESS Cost Multiplier. Bioware Modifiers do not apply to Genetech.
             if (GetNode()?["forcegrade"]?.InnerText != "None")
             {
-                // Apply the character's Cyberware Essence cost multiplier if applicable.
-                if (_objImprovementSource == Improvement.ImprovementSource.Cyberware)
+                switch (_objImprovementSource)
                 {
-                    if (ImprovementManager.ValueOf(_objCharacter,
+                    // Apply the character's Cyberware Essence cost multiplier if applicable.
+                    case Improvement.ImprovementSource.Cyberware:
+                    {
+                        if (ImprovementManager.ValueOf(_objCharacter,
                             Improvement.ImprovementType.CyberwareEssCostNonRetroactive) != 0)
-                    {
-                        decimal decMultiplier = 1;
-                        decMultiplier = _objCharacter.Improvements
-                            .Where(objImprovement =>
-                                objImprovement.ImproveType ==
-                                Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
-                            .Aggregate(decMultiplier,
-                                (current, objImprovement) =>
-                                    current - (1m - objImprovement.Value / 100m));
-                        _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
-                    }
+                        {
+                            decimal decMultiplier = 1;
+                            decMultiplier = _objCharacter.Improvements
+                                .Where(objImprovement =>
+                                    objImprovement.ImproveType ==
+                                    Improvement.ImprovementType.CyberwareEssCostNonRetroactive && objImprovement.Enabled)
+                                .Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value / 100m));
+                            _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
+                        }
 
-                    if (ImprovementManager.ValueOf(_objCharacter,
+                        if (ImprovementManager.ValueOf(_objCharacter,
                             Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive) != 0)
-                    {
-                        foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
-                            x.Enabled && x.ImproveType ==
-                            Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive))
                         {
-                            _decExtraESSMultiplicativeMultiplier *=
-                                objImprovement.Value / 100m;
+                            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
+                                x.Enabled && x.ImproveType ==
+                                Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive))
+                            {
+                                _decExtraESSMultiplicativeMultiplier *=
+                                    objImprovement.Value / 100m;
+                            }
                         }
-                    }
-                }
 
-                // Apply the character's Bioware Essence cost multiplier if applicable.
-                else if (_objImprovementSource == Improvement.ImprovementSource.Bioware)
-                {
-                    if (ImprovementManager.ValueOf(_objCharacter,
+                        break;
+                    }
+                    // Apply the character's Bioware Essence cost multiplier if applicable.
+                    case Improvement.ImprovementSource.Bioware:
+                    {
+                        if (ImprovementManager.ValueOf(_objCharacter,
                             Improvement.ImprovementType.BiowareEssCostNonRetroactive) != 0)
-                    {
-                        decimal decMultiplier = 1;
-                        decMultiplier = _objCharacter.Improvements
-                            .Where(objImprovement =>
-                                objImprovement.ImproveType ==
-                                Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
-                            .Aggregate(decMultiplier,
-                                (current, objImprovement) =>
-                                    current - (1m - objImprovement.Value / 100m));
-                        _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
-                    }
-
-                    if (ImprovementManager.ValueOf(_objCharacter,
-                            Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive) != 0)
-                    {
-                        foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
-                            x.Enabled && x.ImproveType ==
-                            Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive))
                         {
-                            _decExtraESSMultiplicativeMultiplier *=
-                                objImprovement.Value / 100m;
+                            decimal decMultiplier = 1;
+                            decMultiplier = _objCharacter.Improvements
+                                .Where(objImprovement =>
+                                    objImprovement.ImproveType ==
+                                    Improvement.ImprovementType.BiowareEssCostNonRetroactive && objImprovement.Enabled)
+                                .Aggregate(decMultiplier,
+                                    (current, objImprovement) =>
+                                        current - (1m - objImprovement.Value / 100m));
+                            _decExtraESSAdditiveMultiplier -= 1.0m - decMultiplier;
                         }
+
+                        if (ImprovementManager.ValueOf(_objCharacter,
+                            Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive) != 0)
+                        {
+                            foreach (Improvement objImprovement in _objCharacter.Improvements.Where(x =>
+                                x.Enabled && x.ImproveType ==
+                                Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive))
+                            {
+                                _decExtraESSMultiplicativeMultiplier *=
+                                    objImprovement.Value / 100m;
+                            }
+                        }
+
+                        break;
                     }
                 }
             }
@@ -1885,10 +1891,15 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(Location))
             {
                 string strSide = string.Empty;
-                if (Location == "Left")
-                    strSide = LanguageManager.GetString("String_Improvement_SideLeft", strLanguage);
-                else if (Location == "Right")
-                    strSide = LanguageManager.GetString("String_Improvement_SideRight", strLanguage);
+                switch (Location)
+                {
+                    case "Left":
+                        strSide = LanguageManager.GetString("String_Improvement_SideLeft", strLanguage);
+                        break;
+                    case "Right":
+                        strSide = LanguageManager.GetString("String_Improvement_SideRight", strLanguage);
+                        break;
+                }
                 if (!string.IsNullOrEmpty(strSide))
                     strReturn += strSpace + '(' + strSide + ')';
             }
@@ -5104,10 +5115,15 @@ namespace Chummer.Backend.Equipment
 
                     // Multiply the cost if applicable.
                     char chrAvail = TotalAvailTuple().Suffix;
-                    if (chrAvail == 'R' && _objCharacter.Options.MultiplyRestrictedCost)
-                        decCost *= _objCharacter.Options.RestrictedCostMultiplier;
-                    if (chrAvail == 'F' && _objCharacter.Options.MultiplyForbiddenCost)
-                        decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
+                    switch (chrAvail)
+                    {
+                        case 'R' when _objCharacter.Options.MultiplyRestrictedCost:
+                            decCost *= _objCharacter.Options.RestrictedCostMultiplier;
+                            break;
+                        case 'F' when _objCharacter.Options.MultiplyForbiddenCost:
+                            decCost *= _objCharacter.Options.ForbiddenCostMultiplier;
+                            break;
+                    }
 
                     // Apply a markup if applicable.
                     if (decMarkup != 0)

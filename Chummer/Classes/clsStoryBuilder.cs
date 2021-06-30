@@ -151,24 +151,19 @@ namespace Chummer
                 macroName = macroPool = endString;
             }
 
-            //$DOLLAR is defined elsewhere to prevent recursive calling
-            if (macroName == "street")
+            switch (macroName)
             {
-                return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
-            }
-            if(macroName == "real")
-            {
-                return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
-            }
-            if (macroName == "year")
-            {
-                if (int.TryParse(_objCharacter.Age, out int year))
-                {
+                //$DOLLAR is defined elsewhere to prevent recursive calling
+                case "street":
+                    return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
+                case "real":
+                    return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
+                case "year" when int.TryParse(_objCharacter.Age, out int year):
                     return int.TryParse(macroPool, out int age)
                         ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo)
                         : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
-                }
-                return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
+                case "year":
+                    return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
             }
 
             //Did not meet predefined macros, check user defined
@@ -183,44 +178,49 @@ namespace Chummer
                     //Already defined, no need to do anything fancy
                     if (!persistenceDictionary.TryGetValue(macroPool, out string strSelectedNodeName))
                     {
-                        if (xmlUserMacroFirstChild.Name == "random")
+                        switch (xmlUserMacroFirstChild.Name)
                         {
-                            XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
-                            if (xmlPossibleNodeList.Count > 0)
+                            case "random":
                             {
-                                string[] strNames = new string[xmlPossibleNodeList.Count];
-                                int i = 0;
-                                foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                if (xmlPossibleNodeList.Count > 0)
                                 {
-                                    strNames[i] = xmlLoopNode.Name;
-                                    ++i;
+                                    string[] strNames = new string[xmlPossibleNodeList.Count];
+                                    int i = 0;
+                                    foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                    {
+                                        strNames[i] = xmlLoopNode.Name;
+                                        ++i;
+                                    }
+
+                                    strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                                 }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
+                                break;
                             }
-                        }
-                        else if (xmlUserMacroFirstChild.Name == "persistent")
-                        {
-                            //Any node not named
-                            XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
-                            if (xmlPossibleNodeList.Count > 0)
+                            case "persistent":
                             {
-                                string[] strNames = new string[xmlPossibleNodeList.Count];
-                                int i = 0;
-                                foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                //Any node not named
+                                XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                if (xmlPossibleNodeList.Count > 0)
                                 {
-                                    strNames[i] = xmlLoopNode.Name;
-                                    ++i;
+                                    string[] strNames = new string[xmlPossibleNodeList.Count];
+                                    int i = 0;
+                                    foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                    {
+                                        strNames[i] = xmlLoopNode.Name;
+                                        ++i;
+                                    }
+
+                                    strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
+                                    if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
+                                        persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
                                 }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
-                                if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
-                                    persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
+                                break;
                             }
-                        }
-                        else
-                        {
-                            return "(Formating error in $DOLLAR" + macroName + ")";
+                            default:
+                                return "(Formating error in $DOLLAR" + macroName + ")";
                         }
                     }
 

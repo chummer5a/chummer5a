@@ -71,23 +71,19 @@ namespace Chummer
         // Example: replace with your own modifiers.
         private void ModifyItem(ITelemetry item)
         {
-            if (item is TraceTelemetry trace)
+            switch (item)
             {
-                trace.Message = trace.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
-                return;
-            }
-
-            if (item is RequestTelemetry req)
-            {
-                string newurl = req.Url?.ToString().Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
-                if (!string.IsNullOrEmpty(newurl))
-                    req.Url = new Uri(newurl);
-                return;
-            }
-
-            if (item is ExceptionTelemetry exception)
-            {
-                if (exception.Exception != null)
+                case TraceTelemetry trace:
+                    trace.Message = trace.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    return;
+                case RequestTelemetry req:
+                {
+                    string newurl = req.Url?.ToString().Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    if (!string.IsNullOrEmpty(newurl))
+                        req.Url = new Uri(newurl);
+                    return;
+                }
+                case ExceptionTelemetry exception when exception.Exception != null:
                 {
                     foreach (DictionaryEntry de in exception.Exception.Data)
                     {
@@ -98,9 +94,12 @@ namespace Chummer
                     {
                         exception.Message = exception.Exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                     }
+
+                    break;
                 }
-                else
+                case ExceptionTelemetry exception:
                     exception.Message = exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    break;
             }
         }
 

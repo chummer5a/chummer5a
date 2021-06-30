@@ -769,13 +769,17 @@ namespace Chummer.UI.Skills
                             string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NewNativeLanguageSkill"),
                                 1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WritableName),
                             LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
-                        if (eDialogResult == DialogResult.Cancel)
-                            return;
-                        if (eDialogResult == DialogResult.Yes)
+                        switch (eDialogResult)
                         {
-                            if (!skill.IsLanguage)
-                                skill.Type = "Language";
-                            skill.IsNativeLanguage = true;
+                            case DialogResult.Cancel:
+                                return;
+                            case DialogResult.Yes:
+                            {
+                                if (!skill.IsLanguage)
+                                    skill.Type = "Language";
+                                skill.IsNativeLanguage = true;
+                                break;
+                            }
                         }
                     }
 

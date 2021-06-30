@@ -259,14 +259,15 @@ namespace Chummer
                             LanguageManager.GetString("Message_Viewer_FoundPDFPrinter"), strPdfPrinter),
                         LanguageManager.GetString("MessageTitle_Viewer_FoundPDFPrinter"),
                         MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
-                    if (ePdfPrinterDialogResult == DialogResult.Cancel)
-                        return;
-                    if (ePdfPrinterDialogResult == DialogResult.Yes)
+                    switch (ePdfPrinterDialogResult)
                     {
-                        if (DoPdfPrinterShortcut(strPdfPrinter))
+                        case DialogResult.Cancel:
+                        case DialogResult.Yes when DoPdfPrinterShortcut(strPdfPrinter):
                             return;
-                        Program.MainForm.ShowMessageBox(this,
-                            LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
+                        case DialogResult.Yes:
+                            Program.MainForm.ShowMessageBox(this,
+                                LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
+                            break;
                     }
                 }
 

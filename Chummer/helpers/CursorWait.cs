@@ -50,7 +50,7 @@ namespace Chummer
                 return;
             }
             objTimer.Start();
-            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance.ToString() + "\".");
+            Log.Trace("CursorWait for Control \"" + objControl + "\" started with Guid \"" + instance + "\".");
             _objControl = objControl;
             Form frmControl = _objControl as Form;
             CursorToUse = blnAppStarting ? Cursors.AppStarting : Cursors.WaitCursor;
@@ -170,12 +170,12 @@ namespace Chummer
                 }
                 return;
             }
-            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + instance.ToString() + "\" after " + objTimer.ElapsedMilliseconds + "ms.");
+            Log.Trace("CursorWait for Control \"" + _objControl + "\" disposing with Guid \"" + instance + "\" after " + objTimer.ElapsedMilliseconds + "ms.");
             objTimer.Stop();
             if (!s_dicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstCursorWaits) || lstCursorWaits == null || lstCursorWaits.Count <= 0)
             {
                 Utils.BreakIfDebug();
-                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance.ToString() + "\" somehow does not have a CursorWait list defined for it");
+                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance + "\" somehow does not have a CursorWait list defined for it");
                 throw new ArgumentNullException(nameof(lstCursorWaits));
             }
             
@@ -183,7 +183,7 @@ namespace Chummer
             if (intMyIndex < 0 || !lstCursorWaits.Remove(this))
             {
                 Utils.BreakIfDebug();
-                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance.ToString() + "\" somehow is not in the CursorWait list defined for it");
+                Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance + "\" somehow is not in the CursorWait list defined for it");
                 throw new ArgumentNullException(nameof(intMyIndex));
             }
             if (intMyIndex >= lstCursorWaits.Count)

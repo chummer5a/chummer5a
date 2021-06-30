@@ -901,10 +901,15 @@ namespace Chummer.Backend.Attributes
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                         objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCost)
-                            decExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.AttributePointCost:
+                                decExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                break;
+                            case Improvement.ImprovementType.AttributePointCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)
@@ -959,10 +964,15 @@ namespace Chummer.Backend.Attributes
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                             (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
-                            decExtra += objLoopImprovement.Value;
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.AttributeKarmaCost:
+                                decExtra += objLoopImprovement.Value;
+                                break;
+                            case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)
@@ -1009,10 +1019,15 @@ namespace Chummer.Backend.Attributes
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                             objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
-                            decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.AttributeKarmaCost:
+                                decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
+                                break;
+                            case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)

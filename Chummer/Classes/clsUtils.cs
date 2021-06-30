@@ -246,20 +246,22 @@ namespace Chummer
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
                     DialogResult objResult = Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_UnsavedChanges", strLanguage), strCharacterName), LanguageManager.GetString("MessageTitle_UnsavedChanges", strLanguage), MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                    if (objResult == DialogResult.Yes)
+                    switch (objResult)
                     {
-                        // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                        bool blnResult = objOpenCharacterForm.SaveCharacter();
-                        if (!blnResult)
+                        case DialogResult.Yes:
+                        {
+                            // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                            bool blnResult = objOpenCharacterForm.SaveCharacter();
+                            if (!blnResult)
+                                return;
+                            // We saved a character as created, which closed the current form and added a new one
+                            // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
+                            if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                                i -= 1;
+                            break;
+                        }
+                        case DialogResult.Cancel:
                             return;
-                        // We saved a character as created, which closed the current form and added a new one
-                        // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                        if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
-                            i -= 1;
-                    }
-                    else if (objResult == DialogResult.Cancel)
-                    {
-                        return;
                     }
                 }
             }

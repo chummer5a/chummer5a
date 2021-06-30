@@ -217,14 +217,18 @@ namespace Chummer
                 }
             }
 
-            // Quit out early if we only have one item and it doesn't need processing
-            if (lstSubstrings.Count == 0)
-                return string.Empty;
-            if (lstSubstrings.Count == 1)
+            switch (lstSubstrings.Count)
             {
-                (string strContent, bool blnContainsMacros) = lstSubstrings[0];
-                if (!blnContainsMacros)
-                    return strContent;
+                // Quit out early if we only have one item and it doesn't need processing
+                case 0:
+                    return string.Empty;
+                case 1:
+                {
+                    (string strContent, bool blnContainsMacros) = lstSubstrings[0];
+                    if (!blnContainsMacros)
+                        return strContent;
+                    break;
+                }
             }
 
             string[] lstOutputStrings = new string[lstSubstrings.Count];
