@@ -109,7 +109,8 @@ namespace Chummer
             objXmlSpellNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-            objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors);
+            if (objXmlSpellNode.TryGetStringFieldQuickly("descriptor", ref _strDescriptors))
+                UpdateHashDescriptors();
             objXmlSpellNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlSpellNode.TryGetStringFieldQuickly("type", ref _strType);
             objXmlSpellNode.TryGetStringFieldQuickly("range", ref _strRange);
