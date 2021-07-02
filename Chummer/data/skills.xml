@@ -1396,7 +1396,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -1409,7 +1409,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -1547,7 +1547,7 @@
     </skill>
     <skill>
       <id>8337e83f-af9a-4396-9cbe-0e6679e15b4e</id>
-      <name>Area Knowledge: Hong-Kong</name>
+      <name>Area Knowledge: Hong Kong</name>
       <attribute>INT</attribute>
       <category>Street</category>
       <default>False</default>
@@ -1681,7 +1681,7 @@
         <spec>High-Class</spec>
         <spec>Hotel</spec>
         <spec>Jazz</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Low-Class</spec>
         <spec>Mafia</spec>
@@ -1753,7 +1753,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -1766,7 +1766,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -1867,7 +1867,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -1977,7 +1977,7 @@
         <spec>Denver</spec>
         <spec>FDC</spec>
         <spec>High-Class</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Low-Class</spec>
         <spec>Manhattan</spec>
@@ -2081,7 +2081,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -2094,7 +2094,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -2315,7 +2315,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -2328,7 +2328,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -2422,7 +2422,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -2435,7 +2435,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -2897,13 +2897,13 @@
       <skillgroup />
       <specs>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>Seattle</spec>
         <spec>Algonkian-Manitou Council</spec>
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -2935,7 +2935,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -2948,7 +2948,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -3055,7 +3055,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -3068,7 +3068,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -3335,7 +3335,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -3348,7 +3348,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -3373,7 +3373,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -3386,7 +3386,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -3449,7 +3449,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -3462,7 +3462,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -3700,7 +3700,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -3713,7 +3713,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -4192,7 +4192,7 @@
         <spec>Cheyenne</spec>
         <spec>Chicago</spec>
         <spec>Denver</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Manhattan</spec>
         <spec>FDC</spec>
@@ -4205,7 +4205,7 @@
         <spec>Athabaskan Council</spec>
         <spec>Amazonia</spec>
         <spec>Aztlan</spec>
-        <spec>Carribean League</spec>
+        <spec>Caribbean League</spec>
         <spec>California Free State</spec>
         <spec>Pueblo Corporate Council</spec>
         <spec>CAS</spec>
@@ -4396,11 +4396,11 @@
         <spec>Christian</spec>
         <spec>Buddhist</spec>
         <spec>Taoist</spec>
-        <spec>Confucianist</spec>
+        <spec>Confucian</spec>
         <spec>Kantian</spec>
         <spec>Socialist</spec>
         <spec>Fascist</spec>
-        <spec>Utalitarianist</spec>
+        <spec>Utilitarian</spec>
         <spec>Existentialist</spec>
         <spec>Rationalist</spec>
         <spec>Anti-Rationalist</spec>
@@ -4417,7 +4417,7 @@
         <spec>Rock n Roll</spec>
         <spec>The (19)60's</spec>
         <spec>The (19)70's</spec>
-        <spec>Early millenial</spec>
+        <spec>Early Millenial</spec>
         <spec>Mid-century</spec>
         <spec>[musical era]</spec>
       </specs>
@@ -4625,7 +4625,7 @@
         <spec>Denver</spec>
         <spec>FDC</spec>
         <spec>High-Class</spec>
-        <spec>Hong-Kong</spec>
+        <spec>Hong Kong</spec>
         <spec>LA</spec>
         <spec>Low-Class</spec>
         <spec>Manhattan</spec>
