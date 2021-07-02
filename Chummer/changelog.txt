@@ -117,6 +117,7 @@ Data Changes:
 - Missiles now properly have 4 higher Availability than their rocket equivalents.
 - Light and Medium Crossbows now properly have a Concealability of +6.
 - Fixed various typos in the recommended specializations for certain knowledge skills.
+- Predictive Analytics now properly increases AR initiative dice.
 
 Changed/New Strings:
 - String_ContactPoints

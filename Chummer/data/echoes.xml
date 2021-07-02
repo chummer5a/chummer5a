@@ -231,7 +231,9 @@
       <name>Predictive Analytics</name>
       <source>KC</source>
       <page>101</page>
-      <!-- TODO: Matrix AR Initiative bonus -->
+      <bonus>
+        <initiativepass>1</initiativepass>
+      </bonus>
       <limit>4</limit>
     </echo>
     <echo>
