@@ -250,6 +250,7 @@
     </book>
     <book>
       <id>e997ea2e-916b-4482-a381-bf8c49cb08ff</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>Krime Katalog</name>
       <code>KK</code>
     </book>

@@ -1205,7 +1205,7 @@
       <id>9ad9decb-b52d-4993-9ef6-4768727c3d75</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering I</name>
+      <name>Subsistence Hunting/Gathering I</name>
       <category>Entertainment - Outing</category>
       <lp>1</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1215,7 +1215,7 @@
       <id>cb265e4e-b13a-487b-8c0f-b2b855138a66</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering II</name>
+      <name>Subsistence Hunting/Gathering II</name>
       <category>Entertainment - Outing</category>
       <lp>2</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1225,7 +1225,7 @@
       <id>c0051319-9565-49f1-b59d-ee1f835cf1df</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering III</name>
+      <name>Subsistence Hunting/Gathering III</name>
       <category>Entertainment - Outing</category>
       <lp>3</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1235,7 +1235,7 @@
       <id>3aca0284-8e7f-4329-83e7-9819bf73a13e</id>
     </quality>
     <quality>
-      <name>Subsistance Hunting/Gathering IV</name>
+      <name>Subsistence Hunting/Gathering IV</name>
       <category>Entertainment - Outing</category>
       <lp>4</lp>
       <allowed>Squatter,Low,Medium,High,Luxury</allowed>
@@ -1774,7 +1774,7 @@
           <secRating>E</secRating>
         </borough>
         <borough>
-          <name>GLow City</name>
+          <name>Glow City</name>
           <secRating>Z</secRating>
         </borough>
       </district>

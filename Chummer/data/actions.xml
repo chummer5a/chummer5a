@@ -1162,7 +1162,7 @@
 	  <test>
 		<dice>Variable</dice>
 		<limit>Variable</limit>
-		<bonusstring>Use a skill with the approrpiate dicepool and limit.</bonusstring>
+		<bonusstring>Use a skill with the appropriate dicepool and limit.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>167</page>
@@ -1870,7 +1870,7 @@
 	  <test>
 		<dice>{INT} + {Computer} v. {Action: LOG Sleaze Defense}</dice>
 		<limit>{Icon: Data Processing}</limit>
-		<bonusstring>On success, spot target icon and gain one piece of information about target icon per net hit (see SR5 235). Target only defends if it is running silent. No test is needed to spot icons of devices within 100m that are not running silent. This test can be used to determine if there are running silent icons nearby. If ythe character does not know a specific feature of a running silent icon, they must randomly select a running silent icon in range to spot (remember, there are literally quadrillions of running silent icons on grids that are always in range).</bonusstring>
+		<bonusstring>On success, spot target icon and gain one piece of information about target icon per net hit (see SR5 235). Target only defends if it is running silent. No test is needed to spot icons of devices within 100m that are not running silent. This test can be used to determine if there are running silent icons nearby. If the character does not know a specific feature of a running silent icon, they must randomly select a running silent icon in range to spot (remember, there are literally quadrillions of running silent icons on grids that are always in range).</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>241</page>
@@ -2306,7 +2306,7 @@
 	  <test>
 		<dice>{RES} + {Hardware} v. {Icon}</dice>
 		<limit>{Icon: Attack}</limit>
-		<bonusstring>On success, sprite power succeeds against target device and immedatiately causes it to suffer a glitch; if 4 or more net hits were obtained, this is upgraded to a critical glitch.</bonusstring>
+		<bonusstring>On success, sprite power succeeds against target device and immediately causes it to suffer a glitch; if 4 or more net hits were obtained, this is upgraded to a critical glitch.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>257</page>
@@ -2346,7 +2346,7 @@
 	  <test>
 		<dice>{INT} + {Assensing}</dice>
 		<limit>{Astral}</limit>
-		<bonusstring>On success, consult the appropraite table to see what information is revealed.</bonusstring>
+		<bonusstring>On success, consult the appropriate table to see what information is revealed.</bonusstring>
 	  </test>
       <source>SR5</source>
       <page>312</page>
@@ -2468,7 +2468,7 @@
     </action>
 	<action>
       <id>2b725942-799c-4855-bcfb-a943df21314e</id>
-      <name>Enhanced Suppresion</name>
+      <name>Enhanced Suppression</name>
       <type>Complex</type>
 	  <test>
 		<dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
@@ -2500,7 +2500,7 @@
 	  <test>
 		<dice>{AGI} + {Weapon: Skill} v. {Action: Suppressive Fire Defense}</dice>
 		<limit>{Weapon: Limit}</limit>
-		<bonusstring>Requires flechette ammo type. Identical to {Action: Enhanced Suppresion}, but also get modifiers per tables on RG 121.</bonusstring>
+		<bonusstring>Requires flechette ammo type. Identical to {Action: Enhanced Suppression}, but also get modifiers per tables on RG 121.</bonusstring>
 	  </test>
       <source>RG</source>
       <page>120</page>
@@ -3195,7 +3195,7 @@
 	  <test>
 		<dice>{INT} + {Hacking} v. {Action: LOG Firewall Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>Requires 2 marks on target icon and 2 marks on masquerading persona. On success, the target icon is convinced the character is the masquerading persona for 1 minute per net hit. If the masquerading persona logs off, the masquerade drops immedatiately. Masquerade cannot be used to act as if the character has Owner marks on the target icon.</bonusstring>
+		<bonusstring>Requires 2 marks on target icon and 2 marks on masquerading persona. On success, the target icon is convinced the character is the masquerading persona for 1 minute per net hit. If the masquerading persona logs off, the masquerade drops immediately. Masquerade cannot be used to act as if the character has Owner marks on the target icon.</bonusstring>
 	  </test>
       <source>KC</source>
       <page>39</page>
@@ -3255,7 +3255,7 @@
 	  <test>
 		<dice>{LOG} + {Electronic Warfare} v. {Action: LOG Firewall Defense}</dice>
 		<limit>{Icon: Sleaze}</limit>
-		<bonusstring>Target must be a persona or device. On success, place a mark on the target. The character is now aware of the Matrix actions the target is going to use before they use them. The character can use {Action: Haywire} and {Action: Popup} as Interrupt Actions for -10 initiative and {Action: Squelch} as an Interrupt Action for -5 initiave against the target. This ability lasts as long as the target is marked by the character.</bonusstring>
+		<bonusstring>Target must be a persona or device. On success, place a mark on the target. The character is now aware of the Matrix actions the target is going to use before they use them. The character can use {Action: Haywire} and {Action: Popup} as Interrupt Actions for -10 initiative and {Action: Squelch} as an Interrupt Action for -5 initiative against the target. This ability lasts as long as the target is marked by the character.</bonusstring>
 	  </test>
       <source>KC</source>
       <page>40</page>
