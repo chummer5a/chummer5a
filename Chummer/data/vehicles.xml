@@ -10456,6 +10456,30 @@
         </weaponmount>
       </weaponmounts>
     </vehicle>
+    <vehicle>
+      <id>c8ca0719-8706-49a0-bd07-b0ac903489b5</id>
+      <name>Land Rover Model 2046 (SUV)</name>
+      <page>462</page>
+      <source>SRMC</source>
+      <accel>1</accel>
+      <armor>4</armor>
+      <avail>0</avail>
+      <body>11</body>
+      <category>Trucks</category>
+      <cost>0</cost>
+      <handling>2/2</handling>
+      <pilot>1</pilot>
+      <sensor>1</sensor>
+      <speed>2</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>1</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
     <!-- End Region -->
   </vehicles>
   <mods>
