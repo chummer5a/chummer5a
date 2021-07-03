@@ -121,7 +121,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         private readonly Character _objCharacter;
-        private static readonly char[] s_MathOperators = {'"', '*', '/', '+', '-'};
+        private static readonly char[] s_MathOperators = "\"*/+-".ToCharArray();
 
         // I don't like this, but it's easier than making it a specific property of the cyberware.
         private static readonly HashSet<string> s_AgilityCustomizationStrings = new HashSet<string>

@@ -19,6 +19,7 @@
 using Chummer.Annotations;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -155,7 +156,8 @@ namespace Chummer
             LoadMugshots(objNode);
         }
 
-        private static readonly string[] s_astrPrintAttributeLabels = {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"};
+        private static readonly ReadOnlyCollection<string> s_PrintAttributeLabels = Array.AsReadOnly(new[]
+            {"bod", "agi", "rea", "str", "cha", "int", "wil", "log", "ini"});
 
         /// <summary>
         /// Print the object's XML to the XmlWriter.
@@ -192,7 +194,7 @@ namespace Chummer
 
                 Dictionary<string, int> dicAttributes = new Dictionary<string, int>();
                 objWriter.WriteStartElement("spiritattributes");
-                foreach (string strAttribute in s_astrPrintAttributeLabels)
+                foreach (string strAttribute in s_PrintAttributeLabels)
                 {
                     string strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))

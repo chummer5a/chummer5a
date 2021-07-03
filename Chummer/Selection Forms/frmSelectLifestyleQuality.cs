@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -41,8 +42,8 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
-        private static readonly List<string> s_LstLifestylesSorted = new List<string>(new [] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
-        private static readonly string[] s_StrLifestyleSpecific = { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
+        private static readonly ReadOnlyCollection<string> s_LifestylesSorted = Array.AsReadOnly(new [] {"Street", "Squatter", "Low", "Medium", "High", "Luxury"});
+        private static readonly IReadOnlyCollection<string> s_LifestyleSpecific = new HashSet<string> { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
         private static string s_StrSelectCategory = string.Empty;
 
@@ -190,19 +191,19 @@ namespace Chummer
 
         private static string GetMinimumRequirement(string strAllowedLifestyles)
         {
-            if (s_StrLifestyleSpecific.Contains(strAllowedLifestyles))
+            if (s_LifestyleSpecific.Contains(strAllowedLifestyles))
             {
                 return strAllowedLifestyles;
             }
             int intMin = int.MaxValue;
-            foreach (string strLifesytle in strAllowedLifestyles.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+            foreach (string strLifestyle in strAllowedLifestyles.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
             {
-                if (s_LstLifestylesSorted.Contains(strLifesytle) && s_LstLifestylesSorted.IndexOf(strLifesytle) < intMin)
+                if (s_LifestylesSorted.Contains(strLifestyle) && s_LifestylesSorted.IndexOf(strLifestyle) < intMin)
                 {
-                    intMin = s_LstLifestylesSorted.IndexOf(strLifesytle);
+                    intMin = s_LifestylesSorted.IndexOf(strLifestyle);
                 }
             }
-            return s_LstLifestylesSorted[intMin];
+            return s_LifestylesSorted[intMin];
         }
 
         private void cmdOK_Click(object sender, EventArgs e)

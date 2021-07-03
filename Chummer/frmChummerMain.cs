@@ -97,7 +97,7 @@ namespace Chummer
             }
         }
 
-        private static readonly string[] s_astrPreloadFileNames =
+        private static readonly ReadOnlyCollection<string> s_PreloadFileNames = Array.AsReadOnly(new[]
         {
             "actions.xml",
             "armor.xml",
@@ -136,7 +136,7 @@ namespace Chummer
             "traditions.xml",
             "vehicles.xml",
             "weapons.xml"
-        };
+        });
 
         //Moved most of the initialization out of the constructor to allow the Mainform to be generated fast
         //in case of a commandline argument not asking for the mainform to be shown.
@@ -183,7 +183,7 @@ namespace Chummer
                     {
                         ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
                         Task objCharacterLoadingTask = null;
-                        using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_astrPreloadFileNames.Length))
+                        using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
                         {
 #if DEBUG
                             if (!Utils.IsUnitTest && GlobalOptions.ShowCharacterCustomDataWarning &&
@@ -206,7 +206,7 @@ namespace Chummer
                             // Attempt to cache all XML files that are used the most.
                             using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
                             {
-                                await Task.WhenAll(s_astrPreloadFileNames.Select(x => Task.Run(() =>
+                                await Task.WhenAll(s_PreloadFileNames.Select(x => Task.Run(() =>
                                 {
                                     // Load default language data first for performance reasons
                                     if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))

@@ -35,8 +35,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private static string s_StrSelectCategory = string.Empty;
-
-        private static readonly string[] s_LstCategories = { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+        
         private bool _blnAddAgain;
 
         private readonly XPathNavigator _xmlBaseVehicleDataNode;
@@ -642,7 +641,7 @@ namespace Chummer
                 string strCategory = xmlVehicleMod.SelectSingleNode("category")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strCategory))
                 {
-                    if (s_LstCategories.Contains(strCategory))
+                    if (Vehicle.ModCategoryStrings.Contains(strCategory))
                     {
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;

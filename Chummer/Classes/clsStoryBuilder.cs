@@ -72,7 +72,7 @@ namespace Chummer
                     modules[j] = tmp;
                 }
             }
-
+            
             string[] story = new string[modules.Count];
             XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNode("/chummer/storybuilder/macros");
             //Actually "write" the story
@@ -185,15 +185,19 @@ namespace Chummer
                                 XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
                                 if (xmlPossibleNodeList.Count > 0)
                                 {
-                                    string[] strNames = new string[xmlPossibleNodeList.Count];
+                                    int intUseIndex = xmlPossibleNodeList.Count > 1
+                                        ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                        : 0;
                                     int i = 0;
                                     foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
                                     {
-                                        strNames[i] = xmlLoopNode.Name;
+                                        if (i == intUseIndex)
+                                        {
+                                            strSelectedNodeName = xmlLoopNode.Name;
+                                            break;
+                                        }
                                         ++i;
                                     }
-
-                                    strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
                                 }
 
                                 break;
@@ -204,15 +208,20 @@ namespace Chummer
                                 XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
                                 if (xmlPossibleNodeList.Count > 0)
                                 {
-                                    string[] strNames = new string[xmlPossibleNodeList.Count];
+                                    int intUseIndex = xmlPossibleNodeList.Count > 1
+                                        ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                        : 0;
                                     int i = 0;
                                     foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
                                     {
-                                        strNames[i] = xmlLoopNode.Name;
+                                        if (i == intUseIndex)
+                                        {
+                                            strSelectedNodeName = xmlLoopNode.Name;
+                                            break;
+                                        }
                                         ++i;
                                     }
-
-                                    strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
+                                    
                                     if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
                                         persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
                                 }

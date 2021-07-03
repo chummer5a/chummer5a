@@ -107,9 +107,9 @@ namespace Chummer
         private string _strPlayerName = string.Empty;
         private string _strGameNotes = string.Empty;
         private string _strPrimaryArm = "Right";
-
-        private static readonly string[] s_LstLimbStrings = {"skull", "torso", "arm", "leg"};
-        public static ReadOnlyCollection<string> LimbStrings { get; } = Array.AsReadOnly(s_LstLimbStrings);
+        
+        public static readonly ReadOnlyCollection<string> LimbStrings = Array.AsReadOnly(new[]
+            {"skull", "torso", "arm", "leg"});
 
         // AI Home Node
 
@@ -17223,9 +17223,9 @@ namespace Chummer
         }
 
         #region Hero Lab Importing
-
-        private static readonly string[] s_LstHeroLabPluginNodeNames = { "modifications", "accessories", "ammunition", "programs", "othergear" };
-        public static ReadOnlyCollection<string> HeroLabPluginNodeNames { get; } = Array.AsReadOnly(s_LstHeroLabPluginNodeNames);
+        
+        public static readonly ReadOnlyCollection<string> HeroLabPluginNodeNames = Array.AsReadOnly(new[]
+            {"modifications", "accessories", "ammunition", "programs", "othergear"});
 
         /// <summary>
         /// Load the Character from an XML file.

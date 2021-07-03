@@ -60,8 +60,8 @@ namespace Chummer
 
     public static class MatrixAttributes
     {
-        private static readonly string[] s_LstMatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
-        public static ReadOnlyCollection<string> MatrixAttributeStrings => Array.AsReadOnly(s_LstMatrixAttributeStrings);
+        public static readonly ReadOnlyCollection<string> MatrixAttributeStrings = Array.AsReadOnly(new[]
+            { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" });
 
         /// <summary>
         /// Get the total value of a Matrix attribute of this gear after children and Overclocker

@@ -109,15 +109,13 @@ namespace Chummer.Backend.Attributes
             }
             internal set => _colAttributes = value;
         }
-
-        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
-        public static ReadOnlyCollection<string> AttributeStrings { get; } = Array.AsReadOnly(s_LstAttributeStrings);
-
-        private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
-        public static ReadOnlyCollection<string> PhysicalAttributes { get; } = Array.AsReadOnly(s_LstPhysicalAttributes);
-
-        private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
-        public static ReadOnlyCollection<string> MentalAttributes { get; } = Array.AsReadOnly(s_LstMentalAttributes);
+        
+        public static readonly ReadOnlyCollection<string> AttributeStrings = Array.AsReadOnly(new[]
+            {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP"});
+        public static readonly ReadOnlyCollection<string> PhysicalAttributes = Array.AsReadOnly(new[]
+            {"BOD", "AGI", "REA", "STR"});
+        public static readonly ReadOnlyCollection<string> MentalAttributes = Array.AsReadOnly(new []
+            {"CHA", "INT", "LOG", "WIL"});
 
         public static string GetAttributeEnglishName(string strAbbrev)
         {

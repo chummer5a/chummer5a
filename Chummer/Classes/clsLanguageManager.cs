@@ -373,6 +373,8 @@ namespace Chummer
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
+        private static readonly char[] s_CurlyBrackets = "{}".ToCharArray();
+
         /// <summary>
         /// Processes a compound string that contains both plaintext and references to localized strings
         /// </summary>
@@ -401,12 +403,11 @@ namespace Chummer
                 // Start out with part between start of string and the first set of enclosed curly brackets already added to the list
                 new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
             };
-
-            char[] achrCurlyBrackets = {'{', '}'};
+            
             // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
             int intBracketLevel = 1;
             // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
-            for (int i = strInput.IndexOfAny(achrCurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(achrCurlyBrackets, i + 1))
+            for (int i = strInput.IndexOfAny(s_CurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(s_CurlyBrackets, i + 1))
             {
                 char chrLoop = strInput[i];
                 switch (chrLoop)
@@ -1080,9 +1081,8 @@ namespace Chummer
         {
             List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
-            foreach (string filePath in languageFilePaths)
+            foreach (string filePath in Directory.GetFiles(languageDirectoryPath, "*.xml"))
             {
                 XPathDocument xmlDocument;
                 try

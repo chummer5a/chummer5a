@@ -18,6 +18,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
@@ -699,7 +700,8 @@ namespace Chummer.Backend.Equipment
                 _objCharacter.SourceProcess(_strSource);
         }
 
-        private static readonly string[] s_astrOldClipValues = {string.Empty, "2", "3", "4"};
+        private static readonly ReadOnlyCollection<string> s_OldClipValues = Array.AsReadOnly(new[]
+            {string.Empty, "2", "3", "4"});
 
         /// <summary>
         /// Load the CharacterAttribute from the XmlNode.
@@ -743,7 +745,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else //Load old clips
                 {
-                    foreach (string s in s_astrOldClipValues)
+                    foreach (string s in s_OldClipValues)
                     {
                         int ammo = 0;
                         if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
@@ -1165,8 +1167,7 @@ namespace Chummer.Backend.Equipment
                 objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
                 objClip.Save(objWriter);
             }
-            var ammoreloadable = GetAmmoReloadable(lstGearToSearch, false);
-            foreach (var reloadClipGear in ammoreloadable)
+            foreach (Gear reloadClipGear in GetAmmoReloadable(lstGearToSearch, false))
             {
                 Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
                 reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
