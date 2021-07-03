@@ -1363,7 +1363,7 @@ namespace Chummer
                     Character[] lstCharacters = new Character[lstFilesToOpen.Count];
                     using (_frmProgressBar = CreateAndShowProgressBar(
                         string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
-                        lstFilesToOpen.Count * 35))
+                        lstFilesToOpen.Count * Character.NumLoadingSections))
                     {
                         Dictionary<int, string> dicIndexedStrings =
                             new Dictionary<int, string>(lstFilesToOpen.Count);
