@@ -13098,7 +13098,7 @@ namespace Chummer
 
                 PopulateExpenseList(this, EventArgs.Empty);
 
-                UpdateInitiationCost();
+                UpdateInitiationCost(this, EventArgs.Empty);
                 UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
 
                 RefreshSelectedCyberware();
