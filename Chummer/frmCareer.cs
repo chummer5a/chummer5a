@@ -45,7 +45,6 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // Set the default culture to en-US so we work with decimals correctly.
         private bool _blnSkipUpdate;
-        private const bool _blnSkipToolStripRevert = false;
         private bool _blnReapplyImprovements;
         private int _intDragLevel;
         private MouseButtons _eDragButton = MouseButtons.None;
@@ -1109,9 +1108,9 @@ namespace Chummer
             {
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
-                Program.MainForm.OpenCharacterForms.Remove(this);
-                if (!_blnSkipToolStripRevert)
+                if (Program.MainForm.ActiveMdiChild == this)
                     ToolStripManager.RevertMerge("toolStrip");
+                Program.MainForm.OpenCharacterForms.Remove(this);
 
                 // Unsubscribe from events.
                 CharacterObject.AttributeSection.Attributes.CollectionChanged -= AttributeCollectionChanged;

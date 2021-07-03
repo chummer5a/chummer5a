@@ -47,7 +47,6 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         // Set the default culture to en-US so we work with decimals correctly.
         private bool _blnSkipUpdate;
-        private bool _blnSkipToolStripRevert;
         private bool _blnReapplyImprovements;
         private bool _blnFreestyle;
         private bool _blnIsReopenQueued;
@@ -893,9 +892,9 @@ namespace Chummer
             {
                 Application.Idle -= UpdateCharacterInfo;
                 Application.Idle -= LiveUpdateFromCharacterFile;
-                Program.MainForm.OpenCharacterForms.Remove(this);
-                if (!_blnSkipToolStripRevert)
+                if (Program.MainForm.ActiveMdiChild == this)
                     ToolStripManager.RevertMerge("toolStrip");
+                Program.MainForm.OpenCharacterForms.Remove(this);
 
                 // Unsubscribe from events.
                 GlobalOptions.ClipboardChanged -= RefreshPasteStatus;
@@ -10606,8 +10605,7 @@ namespace Chummer
                 objNuyen.Undo = objNuyenUndo;
                 
                 CharacterObject.Created = true;
-
-                _blnSkipToolStripRevert = true;
+                
                 using (frmLoading frmProgressBar = frmChummerMain.CreateAndShowProgressBar())
                 {
                     frmProgressBar.PerformStep(CharacterObject.CharacterName, true);

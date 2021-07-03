@@ -82,6 +82,7 @@ Application Changes:
 - When Chummer is opened, it now tries to automatically detect if there is an autosave for a character that could have been an unsaved character otherwise lost by Chummer crashing or exiting unsafely. If it finds such an autosave, it prompts the user if they want to load said autosave.
 - Chummer now attempts to delete all autosaves older than 90 days that are not linked to any Favorite or Most Recently Used character.
 - Improvements and qualities that affect the linked attribute of a skill now have their effects properly reflected in the UI all the time.
+- Closing an opened character that is also not the currently viewed character in the program no longer causes the tool strip of icons at the top to misbehave.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
