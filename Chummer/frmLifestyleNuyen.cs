@@ -75,60 +75,71 @@ namespace Chummer
                 return;
             _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
             lblDice.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle?.Dice ?? 0);
-            RefreshCalculation(sender, e);
+            RefreshCalculation();
         }
 
         private void RefreshSelectLifestyle()
         {
             _blnIsSelectLifestyleRefreshing = true;
-            try
+            using (new CursorWait(this))
             {
-                Lifestyle objPreferredLifestyle = null;
-                ListItem objPreferredLifestyleItem = default;
-                Lifestyle objCurrentlySelectedLifestyle = cboSelectLifestyle.SelectedIndex >= 0 ? ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle : null;
-                List<ListItem> lstLifestyleItems = new List<ListItem>();
-                foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
+                try
                 {
-                    ListItem objLifestyleItem = new ListItem(objLifestyle, objLifestyle.CurrentDisplayName);
-                    lstLifestyleItems.Add(new ListItem(objLifestyle, objLifestyle.CurrentDisplayName));
-                    // We already selected a lifestyle, so keep the selection if possible despite the refresh
-                    if (objCurrentlySelectedLifestyle != null)
+                    Lifestyle objPreferredLifestyle = null;
+                    ListItem objPreferredLifestyleItem = default;
+                    Lifestyle objCurrentlySelectedLifestyle = cboSelectLifestyle.SelectedIndex >= 0
+                        ? ((ListItem) cboSelectLifestyle.SelectedItem).Value as Lifestyle
+                        : null;
+                    List<ListItem> lstLifestyleItems = new List<ListItem>();
+                    foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
                     {
-                        if (objCurrentlySelectedLifestyle == objLifestyle)
+                        ListItem objLifestyleItem = new ListItem(objLifestyle, objLifestyle.CurrentDisplayName);
+                        lstLifestyleItems.Add(new ListItem(objLifestyle, objLifestyle.CurrentDisplayName));
+                        // We already selected a lifestyle, so keep the selection if possible despite the refresh
+                        if (objCurrentlySelectedLifestyle != null)
+                        {
+                            if (objCurrentlySelectedLifestyle == objLifestyle)
+                                objPreferredLifestyleItem = objLifestyleItem;
+                        }
+                        else if (objPreferredLifestyle == null ||
+                                 objLifestyle.ExpectedValue > objPreferredLifestyle.ExpectedValue)
+                        {
                             objPreferredLifestyleItem = objLifestyleItem;
+                            objPreferredLifestyle = objLifestyle;
+                        }
                     }
-                    else if (objPreferredLifestyle == null || objLifestyle.ExpectedValue > objPreferredLifestyle.ExpectedValue)
-                    {
-                        objPreferredLifestyleItem = objLifestyleItem;
-                        objPreferredLifestyle = objLifestyle;
-                    }
-                }
-                lstLifestyleItems.Sort(CompareListItems.CompareNames);
 
-                cboSelectLifestyle.BeginUpdate();
-                cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
-                cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
-                if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
-                    cboSelectLifestyle.SelectedIndex = 0;
-                cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
-                cboSelectLifestyle.EndUpdate();
-            }
-            finally
-            {
-                _blnIsSelectLifestyleRefreshing = false;
-                cboSelectLifestyle_SelectionChanged(this, EventArgs.Empty);
-                cmdRoll.Enabled = SelectedLifestyle != null && SelectedLifestyle.Dice > 0;
+                    lstLifestyleItems.Sort(CompareListItems.CompareNames);
+
+                    cboSelectLifestyle.BeginUpdate();
+                    cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
+                    cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
+                    if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
+                        cboSelectLifestyle.SelectedIndex = 0;
+                    cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
+                    cboSelectLifestyle.EndUpdate();
+                }
+                finally
+                {
+                    _blnIsSelectLifestyleRefreshing = false;
+                    cboSelectLifestyle_SelectionChanged(this, EventArgs.Empty);
+                    cmdRoll.Enabled = SelectedLifestyle != null && SelectedLifestyle.Dice > 0;
+                }
             }
         }
 
-        private void RefreshCalculation(object sender, EventArgs e)
+        private void RefreshCalculation()
         {
-            nudDiceResult.SuspendLayout();
-            nudDiceResult.MinimumAsInt = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-            nudDiceResult.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
-            nudDiceResult.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
-            nudDiceResult.ResumeLayout();
-            nudDiceResult_ValueChanged(sender, e);
+            using (new CursorWait(this))
+            {
+                nudDiceResult.SuspendLayout();
+                nudDiceResult.MinimumAsInt =
+                    int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+                nudDiceResult.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
+                nudDiceResult.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
+                nudDiceResult.ResumeLayout();
+                nudDiceResult_ValueChanged(this, EventArgs.Empty);
+            }
         }
 
         private void cmdRoll_Click(object sender, EventArgs e)
