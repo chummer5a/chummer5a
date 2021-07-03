@@ -287,7 +287,108 @@ namespace Chummer
             _lstComplexForms.CollectionChanged += SustainableOnCollectionChanged;
             _lstCritterPowers.CollectionChanged += SustainableOnCollectionChanged;
             _lstSustainedObjects.CollectionChanged += SustainedObjectsOnCollectionChanged;
+            _lstInitiationGrades.CollectionChanged += InitiationGradesOnCollectionChanged;
             _objTradition = new Tradition(this);
+        }
+
+        private bool _blnClearingInitiations;
+        private void InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_blnClearingInitiations)
+                return;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                {
+                    int intAddSubmersion = 0;
+                    int intAddInitiation = 0;
+
+                    foreach (InitiationGrade objItem in e.NewItems)
+                    {
+                        if (objItem.Technomancer)
+                            intAddSubmersion += 1;
+                        else
+                            intAddInitiation += 1;
+                    }
+
+                    SubmersionGrade += intAddSubmersion;
+                    InitiateGrade += intAddInitiation;
+                    break;
+                }
+                case NotifyCollectionChangedAction.Remove:
+                {
+                    int intRemoveSubmersion = 0;
+                    int intRemoveInitiation = 0;
+
+                    foreach (InitiationGrade objItem in e.OldItems)
+                    {
+                        if (objItem.Technomancer)
+                            intRemoveSubmersion += 1;
+                        else
+                            intRemoveInitiation += 1;
+                    }
+
+                    if (SubmersionGrade - intRemoveSubmersion < 0)
+                        SubmersionGrade = 0;
+                    else
+                        SubmersionGrade -= intRemoveSubmersion;
+                    if (InitiateGrade - intRemoveInitiation < 0)
+                        InitiateGrade = 0;
+                    else
+                        InitiateGrade -= intRemoveInitiation;
+                    break;
+                }
+                case NotifyCollectionChangedAction.Replace:
+                {
+                    int intAddSubmersion = 0;
+                    int intAddInitiation = 0;
+
+                    foreach (InitiationGrade objItem in e.OldItems)
+                    {
+                        if (objItem.Technomancer)
+                            intAddSubmersion -= 1;
+                        else
+                            intAddInitiation -= 1;
+                    }
+
+                    foreach (InitiationGrade objItem in e.NewItems)
+                    {
+                        if (objItem.Technomancer)
+                            intAddSubmersion += 1;
+                        else
+                            intAddInitiation += 1;
+                    }
+
+                    if (SubmersionGrade + intAddSubmersion < 0)
+                        SubmersionGrade = 0;
+                    else
+                        SubmersionGrade += intAddSubmersion;
+                    if (InitiateGrade + intAddInitiation < 0)
+                        InitiateGrade = 0;
+                    else
+                        InitiateGrade += intAddInitiation;
+                    break;
+                }
+                case NotifyCollectionChangedAction.Move:
+                    return;
+                case NotifyCollectionChangedAction.Reset:
+                {
+                    int intSubmersion = 0;
+                    int intInitiation = 0;
+
+                    foreach (InitiationGrade objItem in InitiationGrades)
+                    {
+                        if (objItem.Technomancer)
+                            intSubmersion += 1;
+                        else
+                            intInitiation += 1;
+                    }
+
+                    SubmersionGrade = intSubmersion;
+                    InitiateGrade = intInitiation;
+                    break;
+                }
+            }
         }
 
         private void SustainableOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -7172,23 +7273,17 @@ namespace Chummer
         /// </summary>
         public void ClearInitiations()
         {
+            // Do not update grade numbers until after we're done processing everything
+            _blnClearingInitiations = true;
+            // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
+            for (int i = InitiationGrades.Count - 1; i >= 0; --i)
+            {
+                InitiationGrades[i].Remove(false, false);
+            }
+            // Now update our grade numbers
+            _blnClearingInitiations = false;
             InitiateGrade = 0;
             SubmersionGrade = 0;
-            InitiationGrades.Clear();
-            // Metamagics/Echoes can add addition bonus metamagics/echoes, so neither foreach nor RemoveAll() can be used
-            for(int i = Metamagics.Count - 1; i >= 0; i--)
-            {
-                if(i < Metamagics.Count)
-                {
-                    Metamagic objToRemove = Metamagics[i];
-                    if(objToRemove.Grade >= 0)
-                    {
-                        // Remove the Improvements created by the Metamagic.
-                        ImprovementManager.RemoveImprovements(this, objToRemove.SourceType, objToRemove.InternalId);
-                        Metamagics.RemoveAt(i);
-                    }
-                }
-            }
         }
 
         #endregion
@@ -9038,11 +9133,32 @@ namespace Chummer
             get => _intInitiateGrade;
             set
             {
-                if(_intInitiateGrade != value)
+                if (_intInitiateGrade == value)
+                    return;
+                _intInitiateGrade = value;
+                // Remove any existing Initiation Improvements.
+                ImprovementManager.RemoveImprovements(this,
+                    Improvement.ImprovementSource.Initiation);
+                if (value != 0)
                 {
-                    _intInitiateGrade = value;
-                    OnPropertyChanged();
+                    // Create the replacement Improvement.
+                    ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.Initiation,
+                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, value);
+                    ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.Initiation,
+                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, value);
+                    ImprovementManager.Commit(this);
                 }
+                // Update any Echo Improvements the character might have.
+                foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Metamagic && x.Bonus?.InnerXml.Contains("Rating") == true))
+                {
+                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Metamagic,
+                        objMetamagic.InternalId);
+                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
+                        objMetamagic.InternalId, objMetamagic.Bonus, value,
+                        objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                }
+                OnPropertyChanged();
             }
         }
 
@@ -9453,11 +9569,29 @@ namespace Chummer
             get => _intSubmersionGrade;
             set
             {
-                if(_intSubmersionGrade != value)
+                if (_intSubmersionGrade == value)
+                    return;
+                _intSubmersionGrade = value;
+                // Remove any existing Submersion Improvements.
+                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Submersion);
+                if (value != 0)
                 {
-                    _intSubmersionGrade = value;
-                    OnPropertyChanged();
+                    // Create the replacement Improvement.
+                    ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.Submersion,
+                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, value);
+                    ImprovementManager.Commit(this);
                 }
+                // Update any Echo Improvements the character might have.
+                foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Echo && x.Bonus?.InnerXml.Contains("Rating") == true))
+                {
+                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Echo,
+                        objMetamagic.InternalId);
+                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
+                        objMetamagic.InternalId, objMetamagic.Bonus, value,
+                        objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                }
+                OnPropertyChanged();
             }
         }
 

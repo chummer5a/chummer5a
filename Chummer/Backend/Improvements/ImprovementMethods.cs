@@ -322,10 +322,6 @@ namespace Chummer
                     return objImprovementAdder.selectpowers;
                 case "ARMORENCUMBRANCEPENALTY":
                     return objImprovementAdder.armorencumbrancepenalty;
-                case "INITIATION":
-                    return objImprovementAdder.initiation;
-                case "SUBMERSION":
-                    return objImprovementAdder.submersion;
                 case "ADDART":
                     return objImprovementAdder.addart;
                 case "SELECTART":

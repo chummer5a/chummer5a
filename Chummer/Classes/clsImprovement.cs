@@ -110,8 +110,6 @@ namespace Chummer
             FreeSpiritPowerPoints,
             AdeptPowerPoints,
             ArmorEncumbrancePenalty,
-            Initiation,
-            Submersion,
             Art,
             Metamagic,
             Echo,
@@ -3775,12 +3773,6 @@ namespace Chummer
                             // TODO: Add code to enable disabled contact
                         }
                         break;
-                    case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade += objImprovement.Value.StandardRound();
-                        break;
-                    case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade += objImprovement.Value.StandardRound();
-                        break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
                         if (objArt != null)
@@ -4045,12 +4037,6 @@ namespace Chummer
                         {
                             // TODO: Add code to disable contact
                         }
-                        break;
-                    case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade -= objImprovement.Value.StandardRound();
-                        break;
-                    case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade -= objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);
@@ -4417,12 +4403,6 @@ namespace Chummer
                         Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
                         if (NewContact != null)
                             objCharacter.Contacts.Remove(NewContact);
-                        break;
-                    case Improvement.ImprovementType.Initiation:
-                        objCharacter.InitiateGrade -= objImprovement.Value.StandardRound();
-                        break;
-                    case Improvement.ImprovementType.Submersion:
-                        objCharacter.SubmersionGrade -= objImprovement.Value.StandardRound();
                         break;
                     case Improvement.ImprovementType.Art:
                         Art objArt = objCharacter.Arts.FirstOrDefault(x => x.InternalId == objImprovement.ImprovedName);

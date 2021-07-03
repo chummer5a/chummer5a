@@ -4309,32 +4309,6 @@ namespace Chummer.Classes
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
-        // Check for Initiation.
-        public void initiation(XmlNode bonusNode)
-        {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("initiation");
-            Log.Info("initiation = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Initiation, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
-            _objCharacter.InitiateGrade += ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
-        }
-
-        // Check for Submersion.
-        public void submersion(XmlNode bonusNode)
-        {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("submersion");
-            Log.Info("submersion = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Submersion, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
-            _objCharacter.SubmersionGrade += ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
-        }
-
         public void addart(XmlNode bonusNode)
         {
             if (bonusNode == null)

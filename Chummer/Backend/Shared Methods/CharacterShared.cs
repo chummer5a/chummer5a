@@ -952,179 +952,76 @@ namespace Chummer
         {
             if (treMetamagic == null)
                 return;
-            if (notifyCollectionChangedEventArgs == null)
+            using (new CursorWait(this))
             {
-                string strSelectedId = (treMetamagic.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                TreeNodeCollection lstRootNodes = treMetamagic.Nodes;
-                lstRootNodes.Clear();
-
-                foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
+                if (notifyCollectionChangedEventArgs == null ||
+                    notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
                 {
-                    AddToTree(objGrade);
-                }
+                    string strSelectedId =
+                        (treMetamagic.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                    TreeNodeCollection lstRootNodes = treMetamagic.Nodes;
+                    lstRootNodes.Clear();
 
-                int intOffset = lstRootNodes.Count;
-                foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
-                {
-                    if (objMetamagic.Grade < 0)
+                    foreach (InitiationGrade objGrade in _objCharacter.InitiationGrades)
                     {
-                        TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
-                        if (objNode != null)
-                        {
-                            int intNodesCount = lstRootNodes.Count;
-                            int intTargetIndex = intOffset;
-                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                            {
-                                if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
-                                {
-                                    break;
-                                }
-                            }
+                        AddToTree(objGrade);
+                    }
 
-                            lstRootNodes.Insert(intTargetIndex, objNode);
-                            objNode.Expand();
+                    int intOffset = lstRootNodes.Count;
+                    foreach (Metamagic objMetamagic in _objCharacter.Metamagics)
+                    {
+                        if (objMetamagic.Grade < 0)
+                        {
+                            TreeNode objNode = objMetamagic.CreateTreeNode(cmsInitiationNotes, true);
+                            if (objNode != null)
+                            {
+                                int intNodesCount = lstRootNodes.Count;
+                                int intTargetIndex = intOffset;
+                                for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                {
+                                    if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
+                                    {
+                                        break;
+                                    }
+                                }
+
+                                lstRootNodes.Insert(intTargetIndex, objNode);
+                                objNode.Expand();
+                            }
                         }
                     }
+
+                    treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedId);
                 }
-
-                treMetamagic.SelectedNode = treMetamagic.FindNode(strSelectedId);
-            }
-            else
-            {
-                switch (notifyCollectionChangedEventArgs.Action)
+                else
                 {
-                    case NotifyCollectionChangedAction.Add:
+                    switch (notifyCollectionChangedEventArgs.Action)
+                    {
+                        case NotifyCollectionChangedAction.Add:
                         {
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                             {
                                 AddToTree(objGrade, intNewIndex);
                                 intNewIndex += 1;
-                                if (CharacterObject.RESEnabled)
-                                {
-                                    CharacterObject.SubmersionGrade++;
-                                }
-                                else
-                                {
-                                    CharacterObject.InitiateGrade++;
-                                }
-                            }
-                            //TODO: Annoying boilerplate, but whatever.
-                            if (CharacterObject.RESEnabled)
-                            {
-                                // Remove any existing Initiation Improvements.
-                                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
-
-                                // Create the replacement Improvement.
-                                ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
-                                ImprovementManager.Commit(CharacterObject);
-
-                                // Update any Echo Improvements the character might have.
-                                foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(metamagic => metamagic.Bonus != null))
-                                {
-                                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                                    if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                                    {
-                                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId);
-                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Echo, objMetamagic.InternalId, objMetamagic.Bonus, CharacterObject.SubmersionGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                                    }
-                                }
-                            }
-                            else if (CharacterObject.MAGEnabled)
-                            {
-                                // Remove any existing Initiation Improvements.
-                                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
-
-                                // Create the replacement Improvement.
-                                ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                                ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                                ImprovementManager.Commit(CharacterObject);
-
-                                // Update any Metamagic Improvements the character might have.
-                                foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(metamagic => metamagic.Bonus != null))
-                                {
-                                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                                    if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                                    {
-                                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId);
-                                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId, objMetamagic.Bonus, CharacterObject.InitiateGrade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                Utils.BreakIfDebug();
                             }
                         }
-                        break;
-                    case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
-                            {
-                                treMetamagic.FindNodeByTag(objGrade)?.Remove();
-                                // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
-                                // Arts
-                                List<Art> lstRemoveArts = CharacterObject.Arts.Where(o => o.Grade == objGrade.Grade).ToList();
-                                foreach (Art objArt in lstRemoveArts)
-                                    CharacterObject.Arts.Remove(objArt);
-
-                                // Metamagics
-                                List<Metamagic> lstRemoveMetamagics = CharacterObject.Metamagics.Where(o => o.Grade == objGrade.Grade).ToList();
-                                foreach (Metamagic objMetamagic in lstRemoveMetamagics)
-                                {
-                                    CharacterObject.Metamagics.Remove(objMetamagic);
-                                    ImprovementManager.RemoveImprovements(CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId);
-                                }
-
-                                // Enhancements
-                                List<Enhancement> lstRemoveEnhancements = CharacterObject.Enhancements.Where(objEnhancement => objEnhancement.Grade == objGrade.Grade).ToList();
-                                foreach (Enhancement objEnhancement in lstRemoveEnhancements)
-                                    CharacterObject.Enhancements.Remove(objEnhancement);
-
-                                // Spells
-                                List<Spell> lstRemoveSpells = CharacterObject.Spells.Where(objSpell => objSpell.Grade == objGrade.Grade).ToList();
-                                foreach (Spell objSpell in lstRemoveSpells)
-                                    CharacterObject.Spells.Remove(objSpell);
-
-                                // Complex Forms
-                                List<ComplexForm> lstRemoveComplexForms = CharacterObject.ComplexForms.Where(cf => cf.Grade == objGrade.Grade).ToList();
-                                foreach (ComplexForm cf in lstRemoveComplexForms)
-                                    CharacterObject.ComplexForms.Remove(cf);
-
-                                // Grade
-                                CharacterObject.InitiationGrades.Remove(objGrade);
-
-                                if (CharacterObject.MAGEnabled)
-                                {
-                                    CharacterObject.InitiateGrade = Math.Max(objGrade.Grade - 1, 0);
-                                    // Remove any existing Initiation Improvements.
-                                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Initiation);
-                                    if (CharacterObject.InitiateGrade == 0) break;
-                                    // Create the replacement Improvement.
-                                    ImprovementManager.CreateImprovement(CharacterObject, "MAG", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                                    ImprovementManager.CreateImprovement(CharacterObject, "MAGAdept", Improvement.ImprovementSource.Initiation, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.InitiateGrade);
-                                    ImprovementManager.Commit(CharacterObject);
-                                }
-                                else if (CharacterObject.RESEnabled)
-                                {
-                                    CharacterObject.SubmersionGrade = Math.Max(objGrade.Grade - 1, 0);
-
-                                    // Remove any existing Initiation Improvements.
-                                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Submersion);
-                                    if (CharacterObject.SubmersionGrade == 0) break;
-                                    // Create the replacement Improvement.
-                                    ImprovementManager.CreateImprovement(CharacterObject, "RES", Improvement.ImprovementSource.Submersion, string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, CharacterObject.SubmersionGrade);
-                                    ImprovementManager.Commit(CharacterObject);
-                                }
-                            }
-                        }
-                        break;
-                    case NotifyCollectionChangedAction.Replace:
+                            break;
+                        case NotifyCollectionChangedAction.Remove:
                         {
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
                             {
                                 treMetamagic.FindNodeByTag(objGrade)?.Remove();
                             }
+                        }
+                            break;
+                        case NotifyCollectionChangedAction.Replace:
+                        {
+                            foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
+                            {
+                                treMetamagic.FindNodeByTag(objGrade)?.Remove();
+                            }
+
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.NewItems)
                             {
@@ -1132,8 +1029,8 @@ namespace Chummer
                                 intNewIndex += 1;
                             }
                         }
-                        break;
-                    case NotifyCollectionChangedAction.Move:
+                            break;
+                        case NotifyCollectionChangedAction.Move:
                         {
                             int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                             foreach (InitiationGrade objGrade in notifyCollectionChangedEventArgs.OldItems)
@@ -1147,24 +1044,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        break;
-                    case NotifyCollectionChangedAction.Reset:
-                        {
-                            RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes);
-                        }
-                        break;
-                }
-
-                Improvement.ImprovementSource objMetamagicSource = CharacterObject.RESEnabled ? Improvement.ImprovementSource.Echo : Improvement.ImprovementSource.Metamagic;
-                int grade = CharacterObject.RESEnabled ? CharacterObject.SubmersionGrade : CharacterObject.InitiateGrade;
-                // Update any Metamagic Improvements the character might have.
-                foreach (Metamagic objMetamagic in CharacterObject.Metamagics.Where(metamagic => metamagic.Bonus != null))
-                {
-                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                    if (objMetamagic.Bonus.InnerXml.Contains("Rating"))
-                    {
-                        ImprovementManager.RemoveImprovements(CharacterObject, objMetamagicSource, objMetamagic.InternalId);
-                        ImprovementManager.CreateImprovements(CharacterObject, objMetamagicSource, objMetamagic.InternalId, objMetamagic.Bonus, grade, objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                            break;
                     }
                 }
             }

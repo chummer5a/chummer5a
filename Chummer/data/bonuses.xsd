@@ -435,7 +435,6 @@
       <xs:element name="ignorecmpenaltyphysical" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="ignorecmpenaltystun" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="infirm" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="initiation" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="initiative" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:simpleContent>
@@ -1267,7 +1266,6 @@
       </xs:element>
       <xs:element name="streetcredmultiplier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="stuncmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="submersion" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="surprise" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="swapskillattribute" minOccurs="0" maxOccurs="1">
         <xs:complexType>

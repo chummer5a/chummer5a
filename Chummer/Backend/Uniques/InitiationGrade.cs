@@ -325,12 +325,19 @@ namespace Chummer
 
         public bool Remove(bool blnConfirmDelete = true)
         {
+            return Remove(blnConfirmDelete, true);
+        }
+
+        public bool Remove(bool blnConfirmDelete, bool blnPerformGradeCheck)
+        {
             // Stop if this isn't the highest grade
             if (_objCharacter.MAGEnabled)
             {
-                if (Grade != _objCharacter.InitiateGrade)
+                if (Grade != _objCharacter.InitiateGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"), LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                        LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -339,9 +346,11 @@ namespace Chummer
             }
             else if (_objCharacter.RESEnabled)
             {
-                if (Grade != _objCharacter.SubmersionGrade)
+                if (Grade != _objCharacter.SubmersionGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"), LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                        LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -354,6 +363,42 @@ namespace Chummer
                 return false;
 
             _objCharacter.InitiationGrades.Remove(this);
+            // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+            // Arts
+            for (int i = _objCharacter.Arts.Count - 1; i > 0; --i)
+            {
+                Art objLoop = _objCharacter.Arts[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Metamagics
+            for (int i = _objCharacter.Metamagics.Count - 1; i > 0; --i)
+            {
+                Metamagic objLoop = _objCharacter.Metamagics[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Enhancements
+            for (int i = _objCharacter.Enhancements.Count - 1; i > 0; --i)
+            {
+                Enhancement objLoop = _objCharacter.Enhancements[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Spells
+            for (int i = _objCharacter.Spells.Count - 1; i > 0; --i)
+            {
+                Spell objLoop = _objCharacter.Spells[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Complex Forms
+            for (int i = _objCharacter.ComplexForms.Count - 1; i > 0; --i)
+            {
+                ComplexForm objLoop = _objCharacter.ComplexForms[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
             return true;
         }
 
