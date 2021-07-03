@@ -1712,7 +1712,7 @@
       <id>19d69029-259a-4ed6-b66b-944b4ddbc172</id>
       <name>Arcana</name>
       <advantage>All: Once per day, when making a decision or test influenced by a Tarot reading/card, may re-roll misses as if they had used Edge.</advantage>
-      <disadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their frst beneft, with the cards of Tarot being the focus of their centering.</disadvantage>
+      <disadvantage>Followers of the Arcana must use Tarot decks or individual cards as foci and fetishes, or else take –2 when attempting to use them. The Tarot Arcana plays such a major part in the lives of its adherents that when a follower of Arcana becomes a grade 1 initiate, they must choose centering or adept centering for their first benefit, with the cards of Tarot being the focus of their centering.</disadvantage>
       <choices>
         <choice>
           <name>Magician: +1 dice pool modifier for casting Detection spells, an additional +2 dice pool modifier to cast Clairvoyance spells.</name>
@@ -1880,7 +1880,7 @@
       <id>12a4d51d-1d4c-405f-b62e-1ba5ad0aaf01</id>
       <name>Tohu Wa-Bohu</name>
       <advantage>All: +2 dice pool modifier for Intimidation or Demolitions tests (choose one)</advantage>
-      <disadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never beneft from teamwork or leadership bonuses.</disadvantage>
+      <disadvantage>Followers gain the Driven quality, in which the focus is the opportunity to destroy something meaningful. Further, they fnd it hard to work in groups given their destructive nature. They can never benefit from teamwork or leadership bonuses.</disadvantage>
       <bonus>
         <addqualities>
           <addquality>Driven</addquality>
@@ -2245,7 +2245,7 @@
       <id>3244e940-4666-4510-b1a1-c34df97797fe</id>
       <name>Eurasian Jay</name>
       <advantage>All: +1 dice pool modifier for tests using the Perception and Palming skills.</advantage>
-      <disadvantage>Eurasian Jay loves to split his posessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
+      <disadvantage>Eurasian Jay loves to split his possessions. If a follower of Eurasian Jay receives a splittable reward, she must make a Charisma + Willpower (3) test to not spread the reward over different accounts or rooms.</disadvantage>
       <bonus>
         <specificskill>
           <name>Palming</name>

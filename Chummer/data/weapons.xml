@@ -6107,6 +6107,7 @@
       <page>28</page>
       <range>Light Pistols</range>
       <useskill>Exotic Ranged Weapon</useskill>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <weapontype>netgunxl</weapontype>
     </weapon>
     <weapon>
@@ -9222,6 +9223,7 @@
       <source>CA</source>
       <page>134</page>
       <spec>Pepper Punch Pen</spec>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <weapontype>pepperpunch</weapontype>
     </weapon>
     <weapon>

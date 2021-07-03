@@ -67,7 +67,7 @@
     <category>Magical Supplies</category>
     <category>Metatype-Specific</category>
     <category>Miscellany</category>
-    <category>Musical Intruments</category>
+    <category>Musical Instruments</category>
     <category>Nanogear</category>
     <category>Paydata</category>
     <category blackmarket="Electronics">PI-Tac</category>
@@ -958,6 +958,7 @@
         <ap>-5</ap>
         <damagereplace>8S(e)</damagereplace>
       </weaponbonus>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <ammoforweapontype>netgunxl</ammoforweapontype>
     </gear>
     <gear>
@@ -1037,6 +1038,7 @@
       <avail>9</avail>
       <cost>400</cost>
       <costfor>2</costfor>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <ammoforweapontype>netgunxl</ammoforweapontype>
     </gear>
     <gear>
@@ -5183,6 +5185,7 @@
     </gear>
     <gear>
       <id>f35d6a78-de2c-4b99-9509-2c87c5e382b4</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>CompuForce TaskMaster</name>
       <category>Rigger Command Consoles</category>
       <rating>0</rating>
@@ -5338,6 +5341,7 @@
     </gear>
     <gear>
       <id>fe9d2aa1-f914-4e3b-b1ec-29cc97312c34</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>Triox UberMensch</name>
       <category>Rigger Command Consoles</category>
       <rating>0</rating>
@@ -8747,7 +8751,7 @@
     </gear>
     <gear>
       <id>2bb6956f-c00e-452c-ab99-6b4613d7bb3e</id>
-      <name>Rapelling Gloves</name>
+      <name>Rappelling Gloves</name>
       <category>Survival Gear</category>
       <rating>0</rating>
       <source>SR5</source>
@@ -9205,6 +9209,7 @@
     </gear>
     <gear>
       <id>a0076e1e-66ad-4c1b-88eb-09c15c608d68</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>HemostatiX Dressing</name>
       <category>Biotech</category>
       <rating>0</rating>
@@ -12414,6 +12419,7 @@
       <page>410</page>
       <avail>0</avail>
       <cost>5</cost>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <ammoforweapontype noextra="True">pepperpunch</ammoforweapontype>
     </gear>
     <gear>
@@ -12610,6 +12616,7 @@
     </gear>
     <gear>
       <id>5929d3b9-451b-4be8-a292-8b6509d0aeb9</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>HemoSynth</name>
       <category>Drugs</category>
       <rating>0</rating>
@@ -13001,7 +13008,7 @@
     </gear>
     <gear>
       <id>7fdde8cd-95f8-4316-9ca4-2ad06f77cb15</id>
-      <name>Oxygenated Flurocarbons</name>
+      <name>Oxygenated Fluorocarbons</name>
       <category>Drugs</category>
       <rating>0</rating>
       <source>CF</source>
@@ -13362,7 +13369,7 @@
     </gear>
     <gear>
       <id>6f0212e2-e656-4e97-ab10-f2521c38189c</id>
-      <name>Berserkr BTL</name>
+      <name>Berserker BTL</name>
       <category>BTLs</category>
       <rating>0</rating>
       <source>CF</source>
@@ -17505,7 +17512,7 @@
     <!-- Region Metatype-Specific -->
     <gear>
       <id>e6d5c030-9aa7-46da-a9cb-7db33bbfd23f</id>
-      <name>Folding Metachair, basic</name>
+      <name>Folding Metachair, Basic</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -17515,7 +17522,7 @@
     </gear>
     <gear>
       <id>0007e417-d83b-4066-ba77-c3ea4c1aa4b6</id>
-      <name>Folding Metachair, self-assembly</name>
+      <name>Folding Metachair, Self-Assembly</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -17525,7 +17532,7 @@
     </gear>
     <gear>
       <id>30e2f962-3ced-4fc8-a46c-41c26db2332b</id>
-      <name>Folding MaxiMetachair, basic</name>
+      <name>Folding MaxiMetachair, Basic</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -17535,7 +17542,7 @@
     </gear>
     <gear>
       <id>6d55b4d0-ea27-42d6-be1b-83ccdcac65e7</id>
-      <name>Folding MaxiMetachair, self-assembly</name>
+      <name>Folding MaxiMetachair, Self-Assembly</name>
       <category>Metatype-Specific</category>
       <rating>0</rating>
       <source>TCT</source>
@@ -18369,7 +18376,7 @@
     </gear>
     <gear>
       <id>26fe675a-35ec-4cdb-8a54-e0aae0efce74</id>
-      <name>Zauberspruchfocus, Wahrnehmung</name>
+      <name>Spellcasting Focus, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
       <source>2050</source>
@@ -19069,7 +19076,7 @@
     </gear>
     <gear>
       <id>7d84b4c0-ee21-4afb-88e0-b592668e432b</id>
-      <name>Identifcation Scanner, Thumbprint (2050)</name>
+      <name>Identification Scanner, Thumbprint (2050)</name>
       <category>Security Devices</category>
       <rating>6</rating>
       <source>2050</source>
@@ -19079,7 +19086,7 @@
     </gear>
     <gear>
       <id>d2451f12-5148-4153-bcdd-85fed8ea7c7a</id>
-      <name>Identifcation Scanner, Palm Print (2050)</name>
+      <name>Identification Scanner, Palm Print (2050)</name>
       <category>Security Devices</category>
       <rating>6</rating>
       <source>2050</source>
@@ -19089,7 +19096,7 @@
     </gear>
     <gear>
       <id>f14a3b31-48bc-4a2c-86be-6e232339c11f</id>
-      <name>Identifcation Scanner, Retinal (2050)</name>
+      <name>Identification Scanner, Retinal (2050)</name>
       <category>Security Devices</category>
       <rating>6</rating>
       <source>2050</source>
@@ -19159,7 +19166,7 @@
     </gear>
     <gear>
       <id>2e00f743-c10a-4ab9-8548-26666c91f411</id>
-      <name>Tracking Signa (2050)</name>
+      <name>Tracking Signal (2050)</name>
       <category>Communications and Countermeasures</category>
       <rating>6</rating>
       <source>2050</source>
@@ -19189,7 +19196,7 @@
     </gear>
     <gear>
       <id>890fdcd5-f65f-41ed-8b96-9475e5ff7592</id>
-      <name>Voice Identifer (2050)</name>
+      <name>Voice Identifier (2050)</name>
       <category>Communications and Countermeasures</category>
       <rating>6</rating>
       <source>2050</source>
@@ -19425,7 +19432,7 @@
     </gear>
     <gear>
       <id>acb8e080-2230-4dd0-aadc-2bce088bde93</id>
-      <name>DocWagon Contract, Resuscication Service (2050)</name>
+      <name>DocWagon Contract, Resuscitation Service (2050)</name>
       <category>Contracts/Upkeep</category>
       <rating>0</rating>
       <source>2050</source>
