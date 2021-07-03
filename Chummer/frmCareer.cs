@@ -16023,7 +16023,7 @@ namespace Chummer
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>
-        private void UpdateInitiationCost()
+        private void UpdateInitiationCost(object sender, EventArgs e)
         {
             decimal decMultiplier = 1.0m;
             int intAmount;
