@@ -13073,41 +13073,50 @@ namespace Chummer
 
             _blnSkipUpdate = true;
 
-            // TODO: DataBind these wherever possible
-
-            if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
-                CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+            using (new CursorWait(this))
             {
-                lblCritterPowerPointsLabel.Visible = true;
-                lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                // TODO: DataBind these wherever possible
+
+                if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
+                    CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                {
+                    lblCritterPowerPointsLabel.Visible = true;
+                    lblCritterPowerPoints.Visible = true;
+                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                }
+                else if (CharacterObject.IsFreeSprite)
+                {
+                    lblCritterPowerPointsLabel.Visible = true;
+                    lblCritterPowerPoints.Visible = true;
+                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                }
+                else
+                {
+                    lblCritterPowerPointsLabel.Visible = false;
+                    lblCritterPowerPoints.Visible = false;
+                }
+
+                PopulateExpenseList(this, EventArgs.Empty);
+
+                UpdateInitiationCost();
+                UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
+
+                RefreshSelectedCyberware();
+                RefreshSelectedArmor();
+                RefreshSelectedGear();
+                RefreshSelectedDrug();
+                RefreshSelectedLifestyle();
+                RefreshSelectedVehicle();
+                RefreshSelectedWeapon();
+                RefreshSelectedSpell();
+                RefreshSelectedComplexForm();
+
+                if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
+                {
+                    AutoSaveCharacter();
+                }
             }
-            else if (CharacterObject.IsFreeSprite)
-            {
-                lblCritterPowerPointsLabel.Visible = true;
-                lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
-            }
 
-            PopulateExpenseList(null, EventArgs.Empty);
-
-            UpdateInitiationCost(this, EventArgs.Empty);
-            UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
-
-            RefreshSelectedCyberware();
-            RefreshSelectedArmor();
-            RefreshSelectedGear();
-            RefreshSelectedDrug();
-            RefreshSelectedLifestyle();
-            RefreshSelectedVehicle();
-            RefreshSelectedWeapon();
-            RefreshSelectedSpell();
-            RefreshSelectedComplexForm();
-
-            if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
-            {
-                AutoSaveCharacter();
-            }
             _blnSkipUpdate = false;
             IsCharacterUpdateRequested = false;
         }
@@ -16014,7 +16023,7 @@ namespace Chummer
         /// <summary>
         /// Update the karma cost tooltip for Initiation/Submersion.
         /// </summary>
-        private void UpdateInitiationCost(object sender, EventArgs e)
+        private void UpdateInitiationCost()
         {
             decimal decMultiplier = 1.0m;
             int intAmount;

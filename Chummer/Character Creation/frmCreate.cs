@@ -9372,43 +9372,54 @@ namespace Chummer
 
             _blnSkipUpdate = true;
 
-            // TODO: DataBind these wherever possible
-
-            UpdateSkillRelatedInfo();
-
-            // Calculate the number of Build Points remaining.
-            CalculateBP();
-            CalculateNuyen();
-            if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter || CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+            using (new CursorWait(this))
             {
-                lblCritterPowerPointsLabel.Visible = true;
-                lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
-            }
-            else if (CharacterObject.IsFreeSprite)
-            {
-                lblCritterPowerPointsLabel.Visible = true;
-                lblCritterPowerPoints.Visible = true;
-                lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                // TODO: DataBind these wherever possible
+
+                UpdateSkillRelatedInfo();
+
+                // Calculate the number of Build Points remaining.
+                CalculateBP();
+                CalculateNuyen();
+
+                if (CharacterObject.Metatype == "Free Spirit" && !CharacterObject.IsCritter ||
+                    CharacterObject.MetatypeCategory.EndsWith("Spirits", StringComparison.Ordinal))
+                {
+                    lblCritterPowerPointsLabel.Visible = true;
+                    lblCritterPowerPoints.Visible = true;
+                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpiritPowerPoints();
+                }
+                else if (CharacterObject.IsFreeSprite)
+                {
+                    lblCritterPowerPointsLabel.Visible = true;
+                    lblCritterPowerPoints.Visible = true;
+                    lblCritterPowerPoints.Text = CharacterObject.CalculateFreeSpritePowerPoints();
+                }
+                else
+                {
+                    lblCritterPowerPointsLabel.Visible = false;
+                    lblCritterPowerPoints.Visible = false;
+                }
+
+                UpdateInitiationCost();
+                UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
+
+                RefreshSelectedCyberware();
+                RefreshSelectedArmor();
+                RefreshSelectedGear();
+                RefreshSelectedDrug();
+                RefreshSelectedLifestyle();
+                RefreshSelectedVehicle();
+                RefreshSelectedWeapon();
+                RefreshSelectedSpell();
+                RefreshSelectedComplexForm();
+
+                if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
+                {
+                    AutoSaveCharacter();
+                }
             }
 
-            UpdateInitiationCost();
-            UpdateQualityLevelValue(treQualities.SelectedNode?.Tag as Quality);
-
-            RefreshSelectedCyberware();
-            RefreshSelectedArmor();
-            RefreshSelectedGear();
-            RefreshSelectedDrug();
-            RefreshSelectedLifestyle();
-            RefreshSelectedVehicle();
-            RefreshSelectedWeapon();
-            RefreshSelectedSpell();
-            RefreshSelectedComplexForm();
-
-            if (AutosaveStopWatch.Elapsed.Minutes >= 5 && IsDirty)
-            {
-                AutoSaveCharacter();
-            }
             _blnSkipUpdate = false;
             IsCharacterUpdateRequested = false;
         }
