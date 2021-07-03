@@ -1101,10 +1101,6 @@ namespace Chummer
                     break;
                 case ImprovementType.ArmorEncumbrancePenalty:
                     break;
-                case ImprovementType.Initiation:
-                    break;
-                case ImprovementType.Submersion:
-                    break;
                 case ImprovementType.Art:
                     break;
                 case ImprovementType.Metamagic:
