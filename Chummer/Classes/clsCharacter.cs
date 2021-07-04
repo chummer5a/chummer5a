@@ -294,7 +294,7 @@ namespace Chummer
         private bool _blnClearingInitiations;
         private void InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnClearingInitiations)
+            if (_blnClearingInitiations || IsLoading)
                 return;
             switch (e.Action)
             {
@@ -328,11 +328,11 @@ namespace Chummer
                             intRemoveInitiation += 1;
                     }
 
-                    if (SubmersionGrade - intRemoveSubmersion < 0)
+                    if (SubmersionGrade < intRemoveSubmersion)
                         SubmersionGrade = 0;
                     else
                         SubmersionGrade -= intRemoveSubmersion;
-                    if (InitiateGrade - intRemoveInitiation < 0)
+                    if (InitiateGrade < intRemoveInitiation)
                         InitiateGrade = 0;
                     else
                         InitiateGrade -= intRemoveInitiation;
@@ -11131,13 +11131,15 @@ namespace Chummer
         [HubTag(true)]
         public ObservableCollection<Quality> Qualities => _lstQualities;
 
+        /*
         /// <summary>
         /// Life modules
         /// </summary>
-        //public List<LifeModule> LifeModules
-        //{
-        //    get { return _lstLifeModules; }
-        //}
+        public List<LifeModule> LifeModules
+        {
+            get { return _lstLifeModules; }
+        }
+        */
 
         /// <summary>
         /// Locations.
