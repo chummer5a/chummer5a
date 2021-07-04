@@ -79,13 +79,9 @@ namespace Chummer
             #region Local Methods
             string GetDisplayName()
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append(Name);
-                sb.Append(" ");
-                sb.Append("(");
-                sb.Append(Version.ToString(GlobalOptions.CultureInfo));
-                sb.Append(")");
-                return sb.ToString();
+                string displayName = $"{Name} ({Version.ToString(GlobalOptions.CultureInfo)})";
+
+                return displayName;
             }
             void GetManifestDescriptions(XmlNode xmlDocument)
             {
@@ -240,16 +236,16 @@ namespace Chummer
             {
                 bool blnDefaultedToEng = false;
 
-                DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description);
+                
 
-                if (string.IsNullOrEmpty(description))
+                if (!DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description))
                 {
-                    DescriptionDictionary.TryGetValue("en-us", out description);
+                    if (!DescriptionDictionary.TryGetValue(GlobalOptions.DefaultLanguage, out description))
+                    {
+                        return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing");
+                    }
                     blnDefaultedToEng = true;
                 }
-
-                if (string.IsNullOrEmpty(description))
-                    return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing");
 
                 if (blnDefaultedToEng)
                     description =
@@ -260,7 +256,8 @@ namespace Chummer
             }
             string SetDisplayAuthors()
             {
-                List<string> authorsList = new List<string>();
+                string[] authorsList = new string[AuthorDictionary.Count];
+                int i = 0;
                 foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
                 {
                     string formattedName = kvp.Key;
@@ -268,9 +265,10 @@ namespace Chummer
                     if (kvp.Value)
                         formattedName = kvp.Key + LanguageManager.GetString("IsMainAuthor");
 
-                    authorsList.Add(formattedName);
+                    authorsList[i] = formattedName;
+                    i++;
                 }
-                return string.Join(", ", authorsList.ToArray());
+                return string.Join(", ", authorsList);
             }
         }
 
@@ -320,27 +318,25 @@ namespace Chummer
             StringBuilder sb = new StringBuilder();
             foreach (DirectoryDependency dependency in DependenciesList)
             {
-                if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(enabledDirectory =>
-                    enabledDirectory.Guid != dependency.UniqueIdentifier))
+                if (objCharacterOptions.HashSetEnabledCustomDataDirectoryInfoGuid.Contains(dependency.UniqueIdentifier))
                 {
-                    sb.Append(dependency.DisplayName);
-                    sb.Append(Environment.NewLine);
-
-                    //We don't even need to attempt to check any versions if all guids are mismatched
-                    continue;
-                }
-
-                //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
-                foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == dependency.UniqueIdentifier))
-                {
-                    if (enabledCustomData.Version < dependency.MinimumVersion || enabledCustomData.Version > dependency.MaximumVersion)
+                    //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
+                    foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == dependency.UniqueIdentifier))
                     {
-                        sb.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"), enabledCustomData.DisplayName, dependency.DisplayName);
-                        sb.Append(Environment.NewLine);
+                        if (enabledCustomData.Version < dependency.MinimumVersion || enabledCustomData.Version > dependency.MaximumVersion)
+                        {
+                            sb.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"), enabledCustomData.DisplayName, dependency.DisplayName);
+                            sb.Append(Environment.NewLine);
+                        }
                     }
                 }
+                else
+                {
+                    //We don't even need to attempt to check any versions if all guids are mismatched
+                    sb.AppendLine(dependency.DisplayName);
+                }
             }
-            return string.IsNullOrEmpty(sb.ToString()) ? string.Empty : sb.ToString();
+            return sb.ToString();
         }
 
         /// <summary>
@@ -353,20 +349,21 @@ namespace Chummer
             StringBuilder sb = new StringBuilder();
             foreach (var exclusivity in ExclusivitiesList)
             {
-                //If all IDs are different we don't need to check any further
-                if (objCharacterOptions.EnabledCustomDataDirectoryInfos.All(enabledDirectory => enabledDirectory.Guid != exclusivity.UniqueIdentifier)) continue;
-
-                foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == exclusivity.UniqueIdentifier))
+                //Use the fast HasSet.Contains to determine if any dependency is present
+                if (objCharacterOptions.HashSetEnabledCustomDataDirectoryInfoGuid.Contains(exclusivity.UniqueIdentifier))
                 {
-                    //if the version is within the version range add it to the list.
-                    if (enabledCustomData.Version > exclusivity.MinimumVersion && enabledCustomData.Version < exclusivity.MaximumVersion)
+                    //We still need to filter out all the matching exclusivities from objCharacterOptions.EnabledCustomDataDirectoryInfos to check their versions
+                    foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == exclusivity.UniqueIdentifier))
                     {
-                        sb.Append(string.Format(LanguageManager.GetString("Tooltip_Exclusivity_VersionMismatch"), enabledCustomData.DisplayName, exclusivity.DisplayName));
-                        sb.Append(Environment.NewLine);
+                        //if the version is within the version range add it to the list.
+                        if (enabledCustomData.Version > exclusivity.MinimumVersion && enabledCustomData.Version < exclusivity.MaximumVersion)
+                        {
+                            sb.AppendLine(string.Format(LanguageManager.GetString("Tooltip_Exclusivity_VersionMismatch"), enabledCustomData.DisplayName, exclusivity.DisplayName));
+                        }
                     }
                 }
             }
-            return string.IsNullOrEmpty(sb.ToString()) ? string.Empty : sb.ToString();
+            return sb.ToString();
         }
 
         /// <summary>
@@ -381,20 +378,16 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(missingDependency))
             {
-                sb.Append(LanguageManager.GetString("Tooltip_Dependency_Missing"));
-                sb.Append(Environment.NewLine);
-                sb.Append(missingDependency);
-                sb.Append(Environment.NewLine);
+                sb.AppendLine(LanguageManager.GetString("Tooltip_Dependency_Missing"));
+                sb.AppendLine(missingDependency);
             }
             if (!string.IsNullOrEmpty(presentExclusivities))
             {
-                sb.Append(LanguageManager.GetString("Tooltip_Exclusivity_Present"));
-                sb.Append(Environment.NewLine);
-                sb.Append(presentExclusivities);
+                sb.AppendLine(LanguageManager.GetString("Tooltip_Exclusivity_Present"));
+                sb.AppendLine(presentExclusivities);
             }
-            var formedString = sb.ToString();
 
-            return string.IsNullOrEmpty(formedString) ? string.Empty : formedString;
+            return sb.ToString();
         }
 
 
@@ -541,63 +534,42 @@ namespace Chummer
     /// </summary>
     public class DirectoryDependency
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="name"></param>
-        /// <param name="guid"></param>
-        /// <param name="minimumversion"></param>
-        /// <param name="maximumversion"></param>
-        public DirectoryDependency(string name, Guid guid, decimal minimumversion, decimal maximumversion)
+        public DirectoryDependency(string name, Guid guid, decimal minVersion, decimal maxVersion)
         {
             Name = name;
             UniqueIdentifier = guid;
-            MinimumVersion = minimumversion;
-            MaximumVersion = maximumversion;
+            MinimumVersion = minVersion;
+            MaximumVersion = maxVersion;
             DisplayName = GetDisplayName();
 
             string GetDisplayName()
             {
-                StringBuilder sb = new StringBuilder();
-
                 //If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max
                 if (MinimumVersion == decimal.MinValue && MaximumVersion == decimal.MaxValue)
                 {
                     return Name;
                 }
 
-                //If no maxversion is not given, don't display decimal.max display > instead
+                //If maxversion is not given, don't display decimal.max display > instead
+                string displayName;
                 if (MinimumVersion != decimal.MinValue && MaximumVersion == decimal.MaxValue)
                 {
-                    sb.Append(Name);
-                    sb.Append(" ");
-                    sb.Append("(");
-                    sb.Append(" > ");
-                    sb.Append(MinimumVersion.ToString(GlobalOptions.CultureInfo));
-                    sb.Append(")");
-                    return sb.ToString();
+                    displayName = $"{Name} ( > {MinimumVersion.ToString(GlobalOptions.CultureInfo)})";
+
+                    return displayName;
                 }
 
-                //If no minversion is not given, don't display decimal.min display < instead
+                //If minversion is not given, don't display decimal.min display < instead
                 if (MinimumVersion == decimal.MinValue && MaximumVersion != decimal.MaxValue)
                 {
-                    sb.Append(Name);
-                    sb.Append(" ");
-                    sb.Append("(");
-                    sb.Append(" < ");
-                    sb.Append(MaximumVersion.ToString(GlobalOptions.CultureInfo));
-                    sb.Append(")");
-                    return sb.ToString();
+                    displayName = $"{Name} ( < {MaximumVersion.ToString(GlobalOptions.CultureInfo)})";
+
+                    return displayName;
                 }
 
-                sb.Append(Name);
-                sb.Append(" ");
-                sb.Append("(");
-                sb.Append(MinimumVersion.ToString(GlobalOptions.CultureInfo));
-                sb.Append(" - ");
-                sb.Append(MaximumVersion.ToString(GlobalOptions.CultureInfo));
-                sb.Append(")");
-                return sb.ToString();
+                displayName = $"{Name} ({minVersion.ToString(GlobalOptions.CultureInfo)} - {maxVersion.ToString(GlobalOptions.CultureInfo)})";
+
+                return displayName;
             }
         }
 
