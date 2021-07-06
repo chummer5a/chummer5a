@@ -169,11 +169,15 @@ namespace Chummer
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
             };
-            using (MemoryStream objImageStream = new MemoryStream())
+            // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+            using (Bitmap bmpClone = new Bitmap(imgToConvert))
             {
-                imgToConvert.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
-                objImageStream.Position = 0;
-                return Image.FromStream(objImageStream, true);
+                using (MemoryStream objImageStream = new MemoryStream())
+                {
+                    bmpClone.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
+                    objImageStream.Position = 0;
+                    return Image.FromStream(objImageStream, true);
+                }
             }
         }
 
@@ -194,11 +198,15 @@ namespace Chummer
             };
             return await Task.Run(() =>
             {
-                using (MemoryStream objImageStream = new MemoryStream())
+                // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+                using (Bitmap bmpClone = new Bitmap(imgToConvert))
                 {
-                    imgToConvert.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
-                    objImageStream.Position = 0;
-                    return Image.FromStream(objImageStream, true);
+                    using (MemoryStream objImageStream = new MemoryStream())
+                    {
+                        bmpClone.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
+                        objImageStream.Position = 0;
+                        return Image.FromStream(objImageStream, true);
+                    }
                 }
             });
         }
@@ -321,20 +329,25 @@ namespace Chummer
         {
             if (imgToConvert == null)
                 return string.Empty;
-            using (MemoryStream objImageStream = new MemoryStream())
+            // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+            using (Bitmap bmpClone = new Bitmap(imgToConvert))
             {
-                if (eOverrideFormat == null)
+                using (MemoryStream objImageStream = new MemoryStream())
                 {
-                    // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
-                    if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
-                        eOverrideFormat = ImageFormat.Jpeg;
-                    else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
-                        eOverrideFormat = ImageFormat.Gif;
-                    else
-                        eOverrideFormat = ImageFormat.Png;
+                    if (eOverrideFormat == null)
+                    {
+                        // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
+                        if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                            eOverrideFormat = ImageFormat.Jpeg;
+                        else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                            eOverrideFormat = ImageFormat.Gif;
+                        else
+                            eOverrideFormat = ImageFormat.Png;
+                    }
+
+                    bmpClone.Save(objImageStream, eOverrideFormat);
+                    return Convert.ToBase64String(objImageStream.ToArray());
                 }
-                imgToConvert.Save(objImageStream, eOverrideFormat);
-                return Convert.ToBase64String(objImageStream.ToArray());
             }
         }
 
@@ -350,10 +363,14 @@ namespace Chummer
         {
             if (imgToConvert == null)
                 return string.Empty;
-            using (MemoryStream objImageStream = new MemoryStream())
+            // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+            using (Bitmap bmpClone = new Bitmap(imgToConvert))
             {
-                imgToConvert.Save(objImageStream, objCodecInfo, lstEncoderParameters);
-                return Convert.ToBase64String(objImageStream.ToArray());
+                using (MemoryStream objImageStream = new MemoryStream())
+                {
+                    bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
+                    return Convert.ToBase64String(objImageStream.ToArray());
+                }
             }
         }
 
@@ -370,20 +387,25 @@ namespace Chummer
                 return string.Empty;
             return await Task.Run(() =>
             {
-                using (MemoryStream objImageStream = new MemoryStream())
+                // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+                using (Bitmap bmpClone = new Bitmap(imgToConvert))
                 {
-                    if (eOverrideFormat == null)
+                    using (MemoryStream objImageStream = new MemoryStream())
                     {
-                        // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
-                        if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
-                            eOverrideFormat = ImageFormat.Jpeg;
-                        else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
-                            eOverrideFormat = ImageFormat.Gif;
-                        else
-                            eOverrideFormat = ImageFormat.Png;
+                        if (eOverrideFormat == null)
+                        {
+                            // Need to do this because calling RawFormat on its own will result in the system not finding its encoder
+                            if (Equals(imgToConvert.RawFormat, ImageFormat.Jpeg))
+                                eOverrideFormat = ImageFormat.Jpeg;
+                            else if (Equals(imgToConvert.RawFormat, ImageFormat.Gif))
+                                eOverrideFormat = ImageFormat.Gif;
+                            else
+                                eOverrideFormat = ImageFormat.Png;
+                        }
+
+                        bmpClone.Save(objImageStream, eOverrideFormat);
+                        return Convert.ToBase64String(objImageStream.ToArray());
                     }
-                    imgToConvert.Save(objImageStream, eOverrideFormat);
-                    return Convert.ToBase64String(objImageStream.ToArray());
                 }
             });
         }
@@ -402,10 +424,14 @@ namespace Chummer
                 return string.Empty;
             return await Task.Run(() =>
             {
-                using (MemoryStream objImageStream = new MemoryStream())
+                // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
+                using (Bitmap bmpClone = new Bitmap(imgToConvert))
                 {
-                    imgToConvert.Save(objImageStream, objCodecInfo, lstEncoderParameters);
-                    return Convert.ToBase64String(objImageStream.ToArray());
+                    using (MemoryStream objImageStream = new MemoryStream())
+                    {
+                        bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
+                        return Convert.ToBase64String(objImageStream.ToArray());
+                    }
                 }
             });
         }
