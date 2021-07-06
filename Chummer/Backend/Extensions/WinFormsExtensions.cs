@@ -215,7 +215,7 @@ namespace Chummer
                     }
                 }
                 else
-                    funcToRun.Invoke();
+                    objReturn = funcToRun.Invoke();
             }
             catch (ObjectDisposedException) // e)
             {

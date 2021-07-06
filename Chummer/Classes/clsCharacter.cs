@@ -2880,18 +2880,18 @@ namespace Chummer
 
                                 if (blnShowSelectBP)
                                 {
-                                    DialogResult ePickBPResult = DialogResult.Cancel;
+                                    DialogResult ePickBPResult;
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        Program.MainForm.DoThreadSafe(ShowBP);
+                                        ePickBPResult = Program.MainForm.DoThreadSafeFunc(ShowBP);
                                     else
-                                        await Program.MainForm.DoThreadSafeAsync(ShowBP);
-                                    void ShowBP()
+                                        ePickBPResult = await Program.MainForm.DoThreadSafeFuncAsync(ShowBP);
+                                    DialogResult ShowBP()
                                     {
                                         using (frmSelectBuildMethod frmPickBP = new frmSelectBuildMethod(this, true))
                                         {
                                             frmPickBP.ShowDialog(Program.MainForm);
-                                            ePickBPResult = frmPickBP.DialogResult;
+                                            return frmPickBP.DialogResult;
                                         }
                                     }
                                     if (ePickBPResult != DialogResult.OK)
@@ -6342,6 +6342,43 @@ namespace Chummer
             }
 
             return lstReturn;
+        }
+
+        public bool SwitchBuildMethods(CharacterBuildMethod eOldBuildMethod, CharacterBuildMethod eNewBuildMethod, string strOldCharacterOptionsKey)
+        {
+            DialogResult eResult;
+            if (eNewBuildMethod.UsesPriorityTables())
+            {
+                eResult = Program.MainForm.DoThreadSafeFunc(() =>
+                {
+                    using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(this))
+                    {
+                        frmSelectMetatype.ShowDialog(Program.MainForm);
+                        return frmSelectMetatype.DialogResult;
+                    }
+                });
+            }
+            else
+            {
+                eResult = Program.MainForm.DoThreadSafeFunc(() =>
+                {
+                    using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(this))
+                    {
+                        frmSelectMetatype.ShowDialog(Program.MainForm);
+                        return frmSelectMetatype.DialogResult;
+                    }
+                });
+            }
+            if (eResult != DialogResult.OK)
+            {
+                CharacterOptionsKey = strOldCharacterOptionsKey;
+                return false;
+            }
+            if (eOldBuildMethod == CharacterBuildMethod.LifeModule)
+            {
+                Qualities.RemoveAll(x => x.OriginSource == QualitySource.LifeModule);
+            }
+            return true;
         }
 
         public string CalculateKarmaValue(string strLanguage, out int intReturn)

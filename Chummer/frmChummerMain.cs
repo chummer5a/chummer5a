@@ -1337,6 +1337,7 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
+                List<string> lstFilesToOpen;
                 using (OpenFileDialog openFileDialog = new OpenFileDialog
                 {
                     Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' +
@@ -1347,7 +1348,7 @@ namespace Chummer
                     if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                         return;
                     //Timekeeper.Start("load_sum");
-                    List<string> lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
+                    lstFilesToOpen = new List<string>(openFileDialog.FileNames.Length);
                     foreach (string strFile in openFileDialog.FileNames)
                     {
                         Character objLoopCharacter = OpenCharacters.FirstOrDefault(x => x.FileName == strFile);
@@ -1356,27 +1357,27 @@ namespace Chummer
                         else
                             lstFilesToOpen.Add(strFile);
                     }
-
-                    // Array instead of concurrent bag because we want to preserve order
-                    if (lstFilesToOpen.Count <= 0)
-                        return;
-                    Character[] lstCharacters = new Character[lstFilesToOpen.Count];
-                    using (_frmProgressBar = CreateAndShowProgressBar(
-                        string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
-                        lstFilesToOpen.Count * Character.NumLoadingSections))
-                    {
-                        Dictionary<int, string> dicIndexedStrings =
-                            new Dictionary<int, string>(lstFilesToOpen.Count);
-                        for (int i = 0; i < lstFilesToOpen.Count; ++i)
-                        {
-                            dicIndexedStrings.Add(i, lstFilesToOpen[i]);
-                        }
-
-                        await Task.WhenAll(dicIndexedStrings.Select(x =>
-                            Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
-                    }
-                    OpenCharacterList(lstCharacters);
                 }
+
+                if (lstFilesToOpen.Count <= 0)
+                    return;
+                // Array instead of concurrent bag because we want to preserve order
+                Character[] lstCharacters = new Character[lstFilesToOpen.Count];
+                using (_frmProgressBar = CreateAndShowProgressBar(
+                    string.Join(',' + LanguageManager.GetString("String_Space"), lstFilesToOpen.Select(Path.GetFileName)),
+                    lstFilesToOpen.Count * Character.NumLoadingSections))
+                {
+                    Dictionary<int, string> dicIndexedStrings =
+                        new Dictionary<int, string>(lstFilesToOpen.Count);
+                    for (int i = 0; i < lstFilesToOpen.Count; ++i)
+                    {
+                        dicIndexedStrings.Add(i, lstFilesToOpen[i]);
+                    }
+
+                    await Task.WhenAll(dicIndexedStrings.Select(x =>
+                        Task.Run(() => lstCharacters[x.Key] = LoadCharacter(x.Value))));
+                }
+                OpenCharacterList(lstCharacters);
             }
             
             //Timekeeper.Finish("load_sum");
