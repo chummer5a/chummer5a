@@ -808,7 +808,16 @@ namespace Chummer
 
             int intLevels = Levels;
             if (intLevels > 1)
+            {
                 strReturn += strSpace + intLevels.ToString(objCulture);
+            }
+            else
+            {
+                // Add a "1" to qualities that have levels, but for which we are only at level 1
+                XmlNode xmlMyLimitNode = GetNode(strLanguage)?.SelectSingleNode("limit");
+                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.InnerText, out int _))
+                    strReturn += strSpace + intLevels.ToString(objCulture);
+            }
 
             return strReturn;
         }
