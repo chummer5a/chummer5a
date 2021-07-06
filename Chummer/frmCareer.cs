@@ -3044,6 +3044,7 @@ namespace Chummer
                             CharacterObject.LOG.MetatypeMaximum, 0, CharacterObject.LOG.MetatypeAugmentedMaximum);
                         ImprovementManager.CreateImprovement(objMerge, "CHA", Improvement.ImprovementSource.Metatype, "Possession", Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0, 1, CharacterObject.CHA.MetatypeMinimum,
                             CharacterObject.CHA.MetatypeMaximum, 0, CharacterObject.CHA.MetatypeAugmentedMaximum);
+                        ImprovementManager.Commit(objMerge);
                         XmlDocument xmlPowerDoc = CharacterObject.LoadData("critterpowers.xml");
 
                         // Update the Movement if the Vessel has one.

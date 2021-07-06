@@ -1045,12 +1045,28 @@ namespace Chummer
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
             if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)) && Bonus?.InnerXml.Contains("Rating") == true)
             {
-                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
                 int intTotalRating = TotalRating;
                 if (intTotalRating > 0)
                 {
-                    ImprovementManager.ForcedValue = Extra;
-                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, intTotalRating, DisplayNameShort(GlobalOptions.Language));
+                    if (CharacterObject.Improvements.Any(x =>
+                        x.SourceName == InternalId && x.ImproveSource == Improvement.ImprovementSource.Power))
+                    {
+                        foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x =>
+                            x.SourceName == InternalId && x.ImproveSource == Improvement.ImprovementSource.Power))
+                        {
+                            objImprovement.Rating = intTotalRating;
+                        }
+                    }
+                    else
+                    {
+                        ImprovementManager.ForcedValue = Extra;
+                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power,
+                            InternalId, Bonus, intTotalRating, DisplayNameShort(GlobalOptions.Language));
+                    }
+                }
+                else
+                {
+                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
                 }
             }
 

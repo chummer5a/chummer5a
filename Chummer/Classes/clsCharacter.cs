@@ -1339,6 +1339,7 @@ namespace Chummer
                 {
                     string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                     ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
+                    ImprovementManager.Commit(this);
                     SkillSpecialization spec = new SkillSpecialization(this, strSpec, true);
                     objSkill.Specializations.Add(spec);
                 }
@@ -3434,6 +3435,7 @@ namespace Chummer
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.ContactMakeFree,
                                                     objQuality.DisplayNameShort(GlobalOptions.Language));
+                                                ImprovementManager.Commit(this);
                                             }
 
                                             if (LastSavedVersion <= new Version(5, 212, 43)
@@ -3469,6 +3471,7 @@ namespace Chummer
                                                     Improvement.ImprovementSource.Quality, objQuality.InternalId,
                                                     Improvement.ImprovementType.CyberadeptDaemon,
                                                     objQuality.DisplayNameShort(GlobalOptions.Language));
+                                                ImprovementManager.Commit(this);
                                             }
                                         }
                                     }
@@ -8130,6 +8133,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(this, "Chain Breaker", Improvement.ImprovementSource.AstralReputation,
                     nameof(TotalAstralReputation).ToUpperInvariant(), Improvement.ImprovementType.DisableQuality, Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo),
                     -intCurrentTotalAstralReputation);
+            ImprovementManager.Commit(this);
             return true;
         }
 
@@ -9194,6 +9198,7 @@ namespace Chummer
                         string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
                     ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.Initiation,
                         string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
+                    ImprovementManager.Commit(this);
                     // Update any Metamagic Improvements the character might have.
                     foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Metamagic && x.Bonus?.InnerXml.Contains("Rating") == true))
                     {
@@ -9201,7 +9206,6 @@ namespace Chummer
                             objMetamagic.InternalId, objMetamagic.Bonus, value,
                             objMetamagic.DisplayNameShort(GlobalOptions.Language));
                     }
-                    ImprovementManager.Commit(this);
                 }
                 else
                 {
@@ -9234,7 +9238,6 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
                                 objMetamagic.InternalId, objMetamagic.Bonus, value,
                                 objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                            ImprovementManager.Commit(this);
                         }
                         else
                         {
@@ -9678,6 +9681,7 @@ namespace Chummer
                     // Create the new Improvement.
                     ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.Submersion,
                         string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
+                    ImprovementManager.Commit(this);
                     // Update any Echo Improvements the character might have.
                     foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Echo && x.Bonus?.InnerXml.Contains("Rating") == true))
                     {
@@ -9685,7 +9689,6 @@ namespace Chummer
                             objMetamagic.InternalId, objMetamagic.Bonus, value,
                             objMetamagic.DisplayNameShort(GlobalOptions.Language));
                     }
-                    ImprovementManager.Commit(this);
                 }
                 else
                 {
@@ -9716,7 +9719,6 @@ namespace Chummer
                             ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
                                 objMetamagic.InternalId, objMetamagic.Bonus, value,
                                 objMetamagic.DisplayNameShort(GlobalOptions.Language));
-                            ImprovementManager.Commit(this);
                         }
                         else
                         {
@@ -15346,6 +15348,9 @@ namespace Chummer
                             ImprovementManager.CreateImprovement(this, string.Empty, eEssenceLossSource, string.Empty,
                                 Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -intMagMaxReduction);
                     }
+
+                    if (intMaxReduction != 0 || intMagMaxReduction != 0)
+                        ImprovementManager.Commit(this);
                 }
                 // RAW Career mode: complicated. Similar to RAW Create mode, but with the extra possibility of burning current karma levels and/or PPs instead of pure minima reduction,
                 // plus the need to account for cases where a character will burn "past" 0 (i.e. to a current value that should be negative), but then upgrade to 1 afterwards.
@@ -15490,6 +15495,9 @@ namespace Chummer
                             ImprovementManager.CreateImprovement(this, "DEP", Improvement.ImprovementSource.EssenceLoss,
                                 string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
                                 -intDEPMinimumReduction, -intDEPMaximumReduction);
+                        if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0 ||
+                            intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
+                            ImprovementManager.Commit(this);
                     }
 
                     if(intMagMaxReduction > 0
@@ -15541,9 +15549,12 @@ namespace Chummer
                                     ImprovementManager.ValueOf(this, Improvement.ImprovementType.AdeptPowerPoints));
                                 // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                                 if(decPPBurn != 0)
+                                {
                                     ImprovementManager.CreateImprovement(this, string.Empty,
                                         Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
                                         Improvement.ImprovementType.AdeptPowerPoints, string.Empty, -decPPBurn);
+                                    ImprovementManager.Commit(this);
+                                }
                             }
                         }
                         // If the new MAG reduction is less than our old one, the character doesn't actually get any new values back
@@ -15592,6 +15603,9 @@ namespace Chummer
                                 Improvement.ImprovementSource.EssenceLoss, string.Empty,
                                 Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
                                 -intMAGAdeptMaximumReduction);
+                        if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0 ||
+                            intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
+                            ImprovementManager.Commit(this);
                     }
                 }
                 // RAW Create mode: Reduce maxima based on max ESS - current ESS, reduce minima based on their essence from the most optimal way in which they could have gotten access to special attributes

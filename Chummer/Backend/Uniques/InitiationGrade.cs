@@ -85,6 +85,7 @@ namespace Chummer
                 ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
                     _guiID.ToString("D", GlobalOptions.InvariantCultureInfo),
                     Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
+                ImprovementManager.Commit(_objCharacter);
             }
         }
 
