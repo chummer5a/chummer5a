@@ -79,12 +79,12 @@ namespace Chummer
                         : Math.Floor(_objCharacter.CyberwareEssence)));
                 // Cannot increase RES to be more than what it would be without any Essence loss.
                 intResonanceRecovered = _objCharacter.Options.ESSLossReducesMaximumOnly
-                    ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - _objCharacter.RES.TotalMaximum)
+                    ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
                     // +1 compared to normal because this Grade's effect has not been processed yet.
-                    : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() + 1 - _objCharacter.RES.Value);
+                    : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
                 ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
                     _guiID.ToString("D", GlobalOptions.InvariantCultureInfo),
-                    Improvement.ImprovementType.Attribute, string.Empty, intResonanceRecovered, 1, 0, 0, intResonanceRecovered);
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
             }
         }
 

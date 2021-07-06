@@ -529,7 +529,15 @@ namespace Chummer
                 _objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
             if (objNode["improvementsource"] != null)
                 _objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
-            // Legacy shim
+            // Legacy shims
+            if (_objCharacter.LastSavedVersion <= new Version(5, 214, 112)
+                && (_objImprovementSource == ImprovementSource.Initiation || _objImprovementSource == ImprovementSource.Submersion)
+                && _objImprovementType == ImprovementType.Attribute
+                && _intMax > 1 && _intRating == 1)
+            {
+                _intRating = _intMax;
+                _intMax = 1;
+            }
             if (_objImprovementType == ImprovementType.LimitModifier && string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude))
             {
                 _strCondition = _strExclude;

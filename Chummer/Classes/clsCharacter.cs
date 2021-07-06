@@ -9137,28 +9137,78 @@ namespace Chummer
             {
                 if (_intInitiateGrade == value)
                     return;
+                bool blnFirstInitiation = _intInitiateGrade == 0;
                 _intInitiateGrade = value;
                 // Remove any existing Initiation Improvements.
-                ImprovementManager.RemoveImprovements(this,
-                    Improvement.ImprovementSource.Initiation);
-                if (value != 0)
+                if (value == 0)
                 {
-                    // Create the replacement Improvement.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Initiation);
+                    // Update any Metamagic Improvements the character might have.
+                    foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Metamagic && x.Bonus?.InnerXml.Contains("Rating") == true))
+                    {
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Metamagic,
+                            objMetamagic.InternalId);
+                    }
+                }
+                else if (blnFirstInitiation)
+                {
+                    // Create the new Improvement.
                     ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.Initiation,
-                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, value);
+                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
                     ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.Initiation,
-                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, value);
+                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
+                    // Update any Metamagic Improvements the character might have.
+                    foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Metamagic && x.Bonus?.InnerXml.Contains("Rating") == true))
+                    {
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
+                            objMetamagic.InternalId, objMetamagic.Bonus, value,
+                            objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                    }
                     ImprovementManager.Commit(this);
                 }
-                // Update any Echo Improvements the character might have.
-                foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Metamagic && x.Bonus?.InnerXml.Contains("Rating") == true))
+                else
                 {
-                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Metamagic,
-                        objMetamagic.InternalId);
-                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
-                        objMetamagic.InternalId, objMetamagic.Bonus, value,
-                        objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                    if (Improvements.All(x => x.ImproveSource != Improvement.ImprovementSource.Submersion))
+                    {
+                        // Create the new Improvement.
+                        ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.Initiation,
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
+                        ImprovementManager.CreateImprovement(this, "MAGAdept", Improvement.ImprovementSource.Initiation,
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
+                        ImprovementManager.Commit(this);
+                    }
+                    else
+                    {
+                        foreach (Improvement objImprovement in Improvements.Where(x =>
+                            x.ImproveSource == Improvement.ImprovementSource.Initiation))
+                        {
+                            objImprovement.Rating = value;
+                        }
+                    }
+
+                    // Update any Metamagic Improvements the character might have.
+                    foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Metamagic && x.Bonus?.InnerXml.Contains("Rating") == true))
+                    {
+                        // If the Bonus contains "Rating", refresh ratings of existing Improvements.
+                        if (Improvements.All(x =>
+                            x.ImproveSource != Improvement.ImprovementSource.Metamagic ||
+                            x.SourceName != objMetamagic.InternalId))
+                        {
+                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
+                                objMetamagic.InternalId, objMetamagic.Bonus, value,
+                                objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.Commit(this);
+                        }
+                        else
+                        {
+                            foreach (Improvement objImprovement in Improvements.Where(x =>
+                                x.ImproveSource == Improvement.ImprovementSource.Metamagic &&
+                                x.SourceName == objMetamagic.InternalId))
+                            {
+                                objImprovement.Rating = value;
+                            }
+                        }
+                    }
                 }
                 OnPropertyChanged();
             }
@@ -9573,25 +9623,74 @@ namespace Chummer
             {
                 if (_intSubmersionGrade == value)
                     return;
+                bool blnFirstSubmersion = _intSubmersionGrade == 0;
                 _intSubmersionGrade = value;
                 // Remove any existing Submersion Improvements.
-                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Submersion);
-                if (value != 0)
+                if (value == 0)
                 {
-                    // Create the replacement Improvement.
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Submersion);
+                    // Update any Echo Improvements the character might have.
+                    foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Echo && x.Bonus?.InnerXml.Contains("Rating") == true))
+                    {
+                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Echo,
+                            objMetamagic.InternalId);
+                    }
+                }
+                else if (blnFirstSubmersion)
+                {
+                    // Create the new Improvement.
                     ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.Submersion,
-                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, value);
+                        string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
+                    // Update any Echo Improvements the character might have.
+                    foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Echo && x.Bonus?.InnerXml.Contains("Rating") == true))
+                    {
+                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
+                            objMetamagic.InternalId, objMetamagic.Bonus, value,
+                            objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                    }
                     ImprovementManager.Commit(this);
                 }
-                // Update any Echo Improvements the character might have.
-                foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Echo && x.Bonus?.InnerXml.Contains("Rating") == true))
+                else
                 {
-                    // If the Bonus contains "Rating", remove the existing Improvement and create new ones.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Echo,
-                        objMetamagic.InternalId);
-                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
-                        objMetamagic.InternalId, objMetamagic.Bonus, value,
-                        objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                    if (Improvements.All(x => x.ImproveSource != Improvement.ImprovementSource.Submersion))
+                    {
+                        // Create the new Improvement.
+                        ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.Submersion,
+                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, value, 0, 1);
+                        ImprovementManager.Commit(this);
+                    }
+                    else
+                    {
+                        foreach (Improvement objImprovement in Improvements.Where(x =>
+                            x.ImproveSource == Improvement.ImprovementSource.Submersion))
+                        {
+                            objImprovement.Rating = value;
+                        }
+                    }
+
+                    // Update any Echo Improvements the character might have.
+                    foreach (Metamagic objMetamagic in Metamagics.Where(x => x.SourceType == Improvement.ImprovementSource.Echo && x.Bonus?.InnerXml.Contains("Rating") == true))
+                    {
+                        // If the Bonus contains "Rating", refresh ratings of existing Improvements.
+                        if (Improvements.All(x =>
+                            x.ImproveSource != Improvement.ImprovementSource.Echo ||
+                            x.SourceName != objMetamagic.InternalId))
+                        {
+                            ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
+                                objMetamagic.InternalId, objMetamagic.Bonus, value,
+                                objMetamagic.DisplayNameShort(GlobalOptions.Language));
+                            ImprovementManager.Commit(this);
+                        }
+                        else
+                        {
+                            foreach (Improvement objImprovement in Improvements.Where(x =>
+                                x.ImproveSource == Improvement.ImprovementSource.Echo &&
+                                x.SourceName == objMetamagic.InternalId))
+                            {
+                                objImprovement.Rating = value;
+                            }
+                        }
+                    }
                 }
                 OnPropertyChanged();
             }
