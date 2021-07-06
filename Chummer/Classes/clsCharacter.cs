@@ -2710,7 +2710,7 @@ namespace Chummer
                                     intDummy = Math.Max(setSavedBooks.Count, 1) *
                                                (lstSavedCustomDataDirectoryNames.Count + 1) *
                                                intBaseline;
-                                    if (objOptionsToCheck.BuildMethod == eSavedBuildMethod)
+                                    if (objOptionsToCheck.BuildMethod == eSavedBuildMethod || (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule))
                                     {
                                         intReturn += int.MaxValue / 2 + intDummy.RaiseToPower(2);
                                     }
