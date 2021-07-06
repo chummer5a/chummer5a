@@ -1004,6 +1004,8 @@ namespace Chummer.Backend.Equipment
                 i.CustomGroup = Name;
                 i.Custom = true;
                 i.Enabled = false;
+                // This is initially set to false make sure no property changers are triggered
+                i.SetupComplete = true;
             }
             _objCharacter.Improvements.AddRange(lstImprovements);
         }

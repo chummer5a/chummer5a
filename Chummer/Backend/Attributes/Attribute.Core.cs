@@ -366,7 +366,9 @@ namespace Chummer.Backend.Attributes
             {
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
                 {
-                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen)
+                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
+                        && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
+                        && objImprovement.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon)
                     {
                         intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
                         intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
@@ -426,10 +428,12 @@ namespace Chummer.Backend.Attributes
                     {
                         if (objImprovement.Augmented != 0)
                             return true;
-                        if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss || objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen) &&
+                        if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                             objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                             objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
                             (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
-                            _objCharacter.RESEnabled && Abbrev == "RES" ||
-                            _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                             _objCharacter.RESEnabled && Abbrev == "RES" ||
+                             _objCharacter.DEPEnabled && Abbrev == "DEP"))
                             return true;
                     }
                 }

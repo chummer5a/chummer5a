@@ -3199,6 +3199,8 @@ namespace Chummer
                                     try
                                     {
                                         objImprovement.Load(objXmlImprovement);
+                                        // This is initially set to false make sure no property changers are triggered
+                                        objImprovement.SetupComplete = true;
                                         _lstImprovements.Add(objImprovement);
 
                                         if (objImprovement.ImproveType == Improvement.ImprovementType.SkillsoftAccess &&
