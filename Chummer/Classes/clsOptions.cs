@@ -648,7 +648,7 @@ namespace Chummer
                 using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
                 {
                     if (objRegistry == null)
-                        return;
+                        throw new ArgumentNullException(nameof(Registry));
                     objRegistry.SetValue("autoupdate", AutomaticUpdate.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("liveupdatecleancharacterfiles",
@@ -736,6 +736,14 @@ namespace Chummer
             {
                 Program.MainForm.ShowMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+            }
+            catch (ArgumentNullException e)
+            {
+                if (e.ParamName == nameof(Registry))
+                    Program.MainForm.ShowMessageBox(
+                        LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                else
+                    throw;
             }
         }
         #endregion
