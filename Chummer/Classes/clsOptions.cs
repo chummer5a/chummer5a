@@ -689,8 +689,10 @@ namespace Chummer
                     objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("defaultcharacteroption", DefaultCharacterOption);
                     objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
-                    objRegistry.SetValue("customdateformat", CustomDateFormat);
-                    objRegistry.SetValue("customtimeformat", CustomTimeFormat);
+                    if(CustomDateFormat != null)
+                        objRegistry.SetValue("customdateformat", CustomDateFormat);
+                    if (CustomTimeFormat != null)
+                        objRegistry.SetValue("customtimeformat", CustomTimeFormat);
                     objRegistry.SetValue("savedimagequality", SavedImageQuality.ToString(InvariantCultureInfo));
 
                     //Save the Plugins-Dictionary
