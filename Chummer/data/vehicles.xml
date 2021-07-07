@@ -12944,7 +12944,7 @@
         <weaponmountdetails>
           <control>Manual [SR5]</control>
           <control>Remote [SR5]</control>
-          <flexibility>Fixed [SR5]</flexibility>
+          <flexibility>Flexible [SR5]</flexibility>
           <visibility>External [SR5]</visibility>
         </weaponmountdetails>
       </required>
@@ -12963,7 +12963,7 @@
         <weaponmountdetails>
           <control>Manual [SR5]</control>
           <control>Remote [SR5]</control>
-          <flexibility>Fixed [SR5]</flexibility>
+          <flexibility>Flexible [SR5]</flexibility>
           <visibility>External [SR5]</visibility>
         </weaponmountdetails>
       </required>
@@ -12982,7 +12982,7 @@
         <weaponmountdetails>
           <control>Manual [SR5]</control>
           <control>Remote [SR5]</control>
-          <flexibility>Fixed [SR5]</flexibility>
+          <flexibility>Flexible [SR5]</flexibility>
           <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
@@ -13004,7 +13004,7 @@
         <weaponmountdetails>
           <control>Manual [SR5]</control>
           <control>Remote [SR5]</control>
-          <flexibility>Fixed [SR5]</flexibility>
+          <flexibility>Flexible [SR5]</flexibility>
           <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
@@ -13026,7 +13026,7 @@
         <weaponmountdetails>
           <control>Manual [SR5]</control>
           <control>Remote [SR5]</control>
-          <flexibility>Fixed [SR5]</flexibility>
+          <flexibility>Flexible [SR5]</flexibility>
           <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
@@ -13081,7 +13081,7 @@
     <!-- Region Flexibility -->
     <weaponmount>
       <id>4a020775-9258-486a-a03f-7a48dd5c3bf9</id>
-      <name>Fixed [SR5]</name>
+      <name>Flexible [SR5]</name>
       <page>461</page>
       <source>SR5</source>
       <avail>0</avail>

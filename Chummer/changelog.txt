@@ -121,6 +121,7 @@ Data Changes:
 - Light and Medium Crossbows now properly have a Concealability of +6.
 - Fixed various typos in the recommended specializations for certain knowledge skills.
 - Predictive Analytics now properly increases AR initiative dice.
+- Core rulebook weapon mounts now use Flexible for their flexibility entry to represent the core rulebook saying that its weapon mounts can rotate in an arc.
 
 Changed/New Strings:
 - String_ContactPoints
