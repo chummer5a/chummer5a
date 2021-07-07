@@ -1,5 +1,6 @@
 Future Build 215
 Application Changes:
+- Fixed a crash when no CustomDate/TimeFormat is set.
 - Added the ability for devs to set an action on doubleclick on the char-roster
 - Added the upload of a crash to ApplicationInsights in parallel to the old Crashhandler (Loglevelfilters still apply)
 - Properly split apart settings that can be different for individual characters (e.g. karma costs, enabled sourcebooks, enabled custom data) and those that cannot (e.g. PDF paths, UI language, dark mode). The old Options screen now controls the latter, while the former can be managed through a separate, dedicated screen.
