@@ -360,7 +360,7 @@
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
     <Compile Include="Classes\clsUtils.cs" />
-    <Compile Include="Backend\Extensions\clsXmlExtensions.cs" />
+    <Compile Include="Backend\Extensions\XmlNodeExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />

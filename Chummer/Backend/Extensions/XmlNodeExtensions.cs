@@ -27,7 +27,7 @@ using NLog;
 
 namespace Chummer
 {
-    internal static class XmlExtensions
+    internal static class XmlNodeExtensions
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
