@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Runtime.CompilerServices;
 
@@ -63,7 +64,7 @@ namespace Chummer
             if (intArraySizeModulo32 != 0)
                 intMaskSize += 1;
             // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
-            int[] aintToCountMask = new int[intMaskSize];
+            int[] aintToCountMask = intMaskSize > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(intMaskSize) :  new int[intMaskSize];
             ablnToCount.CopyTo(aintToCountMask, 0);
             // Fix for not truncated bits in last integer that may have been set to true with SetAll()
             aintToCountMask[aintToCountMask.Length - 1] &= ~(-1 << intArraySizeModulo32);
@@ -80,6 +81,8 @@ namespace Chummer
                 }
                 intReturn += intLoopBlock;
             }
+            if (intMaskSize > GlobalOptions.MaxStackLimit)
+                ArrayPool<int>.Shared.Return(aintToCountMask);
             return intReturn;
         }
 

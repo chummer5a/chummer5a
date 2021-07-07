@@ -2413,16 +2413,17 @@ namespace Chummer
                         NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
                     return;
                 }
-                char[] achrNuyenFormat = NuyenFormat.ToCharArray();
                 int intCurrentNuyenDecimals = MinNuyenDecimals;
                 if (intNewNuyenDecimals < intCurrentNuyenDecimals)
                 {
+                    char[] achrNuyenFormat = NuyenFormat.ToCharArray();
                     for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
                         achrNuyenFormat[i] = '0';
                     NuyenFormat = new string(achrNuyenFormat);
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
+                    char[] achrNuyenFormat = NuyenFormat.ToCharArray();
                     for (int i = 1; i < intNewNuyenDecimals; ++i)
                         achrNuyenFormat[intDecimalPlaces + i] = '0';
                     NuyenFormat = new string(achrNuyenFormat);

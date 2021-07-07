@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Text;
 using System.IO;
@@ -323,7 +324,7 @@ namespace Codaxy.WkHtmlToPdf
                 {
                     using (Stream fs = new FileStream(outputPdfFilePath, FileMode.Open))
                     {
-                        byte[] buffer = new byte[32 * 1024];
+                        byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
                         int read;
 
                         if (blnSync)
@@ -338,6 +339,8 @@ namespace Codaxy.WkHtmlToPdf
                             while ((read = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
                                 await woutput.OutputStream.WriteAsync(buffer, 0, read);
                         }
+
+                        ArrayPool<byte>.Shared.Return(buffer);
                     }
                 }
 
