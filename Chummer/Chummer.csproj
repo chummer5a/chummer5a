@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -360,12 +360,12 @@
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
     <Compile Include="Classes\clsUtils.cs" />
-    <Compile Include="Classes\clsXmlExtensions.cs" />
+    <Compile Include="Backend\Extensions\clsXmlExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
-    <Compile Include="Classes\ITranslatable.cs" />
+    <Compile Include="Interfaces\ITranslatable.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="Classes\OptionsManager.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
