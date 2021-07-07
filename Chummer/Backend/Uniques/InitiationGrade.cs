@@ -69,7 +69,7 @@ namespace Chummer
             //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
-            if (intGrade > 0 && blnTechnomancer && _objCharacter.TechnomancerEnabled && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue
+            if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue
                 && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
             {
                 decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
