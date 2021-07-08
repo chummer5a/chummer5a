@@ -654,7 +654,9 @@
       <name>Out For Myself</name>
       <karma>4</karma>
       <category>Positive</category>
-      <bonus />
+      <bonus>
+        <surprise>3</surprise>
+      </bonus>
       <source>AP</source>
       <page>17</page>
     </quality>
