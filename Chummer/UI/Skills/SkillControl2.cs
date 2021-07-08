@@ -157,7 +157,7 @@ namespace Chummer.UI.Skills
                     };
                     lblCareerSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
                     btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
-                    btnAddSpec.DoDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
+                    btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
                     btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
 
                     tlpRight.Controls.Add(lblCareerSpec, 0, 0);
@@ -221,7 +221,7 @@ namespace Chummer.UI.Skills
                     btnAttribute.FlatAppearance.MouseDownBackColor = Color.Transparent;
                     btnAttribute.FlatAppearance.MouseOverBackColor = Color.Transparent;
 
-                    nudSkill.DoDataBinding("Visible", objSkill.CharacterObject,
+                    nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject,
                         nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                     nudSkill.DoDataBinding("Value", objSkill, nameof(Skill.Base));
                     nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.BaseUnlocked));
@@ -273,7 +273,7 @@ namespace Chummer.UI.Skills
                             Name = "chkKarma",
                             UseVisualStyleBackColor = true
                         };
-                        chkKarma.DoDataBinding("Visible", objSkill.CharacterObject,
+                        chkKarma.DoOneWayDataBinding("Visible", objSkill.CharacterObject,
                             nameof(objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables));
                         chkKarma.DoDataBinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
                         chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));

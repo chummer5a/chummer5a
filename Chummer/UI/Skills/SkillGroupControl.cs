@@ -113,7 +113,7 @@ namespace Chummer.UI.Skills
                     nudKarma.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.KarmaUnbroken));
                     nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
-                    nudSkill.DoDataBinding("Visible", _skillGroup.CharacterObject,
+                    nudSkill.DoOneWayDataBinding("Visible", _skillGroup.CharacterObject,
                         nameof(Character.EffectiveBuildMethodUsesPriorityTables));
                     nudSkill.DoDataBinding("Value", _skillGroup, nameof(SkillGroup.Base));
                     nudSkill.DoOneWayDataBinding("Enabled", _skillGroup, nameof(SkillGroup.BaseUnbroken));

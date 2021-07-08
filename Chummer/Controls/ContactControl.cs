@@ -480,7 +480,7 @@ namespace Chummer
             lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
             txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             txtContactLocation.DoDataBinding("Text", _objContact, nameof(_objContact.Location));
-            cmdDelete.DoDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
+            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
@@ -605,9 +605,9 @@ namespace Chummer
                     //Don't present a useless field
                     chkFree.Visible = _objContact?.CharacterObject.Created == false;
                     chkFamily.DoDataBinding("Checked", _objContact, nameof(_objContact.Family));
-                    chkFamily.DoDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
                     chkBlackmail.DoDataBinding("Checked", _objContact, nameof(_objContact.Blackmail));
-                    chkBlackmail.DoDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
                     nudLoyalty.DoDataBinding("Value", _objContact, nameof(_objContact.Loyalty));
                     nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
                     nudConnection.DoDataBinding("Value", _objContact, nameof(_objContact.Connection));

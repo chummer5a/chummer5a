@@ -957,13 +957,13 @@ namespace Chummer
             cmdDelete.DoOneWayNegatableDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
 
             cboBuildMethod.DoDataBinding("SelectedValue", _objCharacterOptions, nameof(CharacterOptions.BuildMethod));
-            lblPriorityTable.DoDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
-            cboPriorityTable.DoDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
-            lblPriorities.DoDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
-            txtPriorities.DoDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
+            lblPriorityTable.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
+            cboPriorityTable.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
+            lblPriorities.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
+            txtPriorities.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
             txtPriorities.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.PriorityArray));
-            lblSumToTen.DoDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
-            nudSumToTen.DoDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
+            lblSumToTen.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
+            nudSumToTen.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
             nudSumToTen.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.SumtoTen));
             nudStartingKarma.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.BuildKarma));
             nudMaxNuyenKarma.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenMaximumBP));

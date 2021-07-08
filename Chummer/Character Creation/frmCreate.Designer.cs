@@ -13179,7 +13179,6 @@ namespace Chummer
             this.btnCreateBackstory.TabIndex = 91;
             this.btnCreateBackstory.Text = "Create Backstory";
             this.btnCreateBackstory.UseVisualStyleBackColor = true;
-            this.btnCreateBackstory.Visible = false;
             this.btnCreateBackstory.Click += new System.EventHandler(this.btnCreateBackstory_Click);
             // 
             // txtGender

@@ -252,7 +252,7 @@ namespace Chummer
                         nudWildReputation.DoDataBinding("Value", CharacterObject, nameof(Character.WildReputation));
                         cmdAddMetamagic.DoOneWayDataBinding("Enabled", CharacterObject,
                             nameof(Character.AddInitiationsAllowed));
-                        lblPossessed.DoDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
+                        lblPossessed.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.Possessed));
                         lblMetatype.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.FormattedMetatype));
 
                         chkPsycheActiveMagician.DoDataBinding("Checked", CharacterObject, nameof(CharacterObject.PsycheActive));
@@ -670,10 +670,10 @@ namespace Chummer
                         lblCMPhysical.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.PhysicalCM));
                         lblCMPhysicalLabel.DoOneWayDataBinding("Text", CharacterObject,
                             nameof(Character.PhysicalCMLabelText));
+                        lblCMStun.Visible = true; // Needed to make sure data bindings go through
                         lblCMStun.DoOneWayDataBinding("ToolTipText", CharacterObject, nameof(Character.StunCMToolTip));
                         lblCMStun.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCM));
-                        lblCMStun.Visible = true; // Needed for some weird reason
-                        lblCMStun.DoDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
+                        lblCMStun.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.StunCMVisible));
                         lblCMStunLabel.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.StunCMLabelText));
 
                         lblESSMax.DoOneWayDataBinding("Text", CharacterObject, nameof(Character.DisplayEssence));
