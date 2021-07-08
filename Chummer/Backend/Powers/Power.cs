@@ -1045,28 +1045,15 @@ namespace Chummer
             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
             if (lstNamesOfChangedProperties.Contains(nameof(TotalRating)) && Bonus?.InnerXml.Contains("Rating") == true)
             {
+                // We cannot actually go with setting a rating here because of a load of technical debt involving bonus nodes feeding into `Value` indirectly through a parser
+                // that uses `Rating` instead of using only `Rating` and having the parser work off of whatever is in the `Rating` field
+                // TODO: Solve this bad code
+                ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
                 int intTotalRating = TotalRating;
                 if (intTotalRating > 0)
                 {
-                    if (CharacterObject.Improvements.Any(x =>
-                        x.SourceName == InternalId && x.ImproveSource == Improvement.ImprovementSource.Power))
-                    {
-                        foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x =>
-                            x.SourceName == InternalId && x.ImproveSource == Improvement.ImprovementSource.Power))
-                        {
-                            objImprovement.Rating = intTotalRating;
-                        }
-                    }
-                    else
-                    {
-                        ImprovementManager.ForcedValue = Extra;
-                        ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power,
-                            InternalId, Bonus, intTotalRating, DisplayNameShort(GlobalOptions.Language));
-                    }
-                }
-                else
-                {
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
+                    ImprovementManager.ForcedValue = Extra;
+                    ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId, Bonus, intTotalRating, DisplayNameShort(GlobalOptions.Language));
                 }
             }
 
