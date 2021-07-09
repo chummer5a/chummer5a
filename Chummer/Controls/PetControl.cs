@@ -71,10 +71,18 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
-        private void cboMetatype_TextChanged(object sender, EventArgs e)
+        private void UpdateMetatype(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+            if (_blnLoading || _objContact.DisplayMetatype == cboMetatype.Text)
+                return;
+            _objContact.DisplayMetatype = cboMetatype.Text;
+            if (_objContact.DisplayMetatype != cboMetatype.Text)
+            {
+                _blnLoading = true;
+                cboMetatype.Text = _objContact.DisplayMetatype;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -240,7 +248,9 @@ namespace Chummer
 
         private void DoDataBindings()
         {
-            cboMetatype.DoDataBinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
+            cboMetatype.SelectedValue = _objContact.Metatype;
+            if (cboMetatype.SelectedIndex < 0)
+                cboMetatype.Text = _objContact.DisplayMetatype;
             txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
