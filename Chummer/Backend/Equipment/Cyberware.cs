@@ -2599,6 +2599,7 @@ namespace Chummer.Backend.Equipment
                 (blnDoGrade || (blnDoRating && (ESS.Contains("Rating") || ESS.Contains("FixedValues")))) &&
                 (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
                 ParentVehicle == null;
+            // ReSharper disable once ConvertIfStatementToSwitchStatement
             if (blnDoMovementUpdate && blnDoEssenceUpdate)
                 _objCharacter.OnMultiplePropertyChanged(nameof(Character.GetMovement), EssencePropertyName);
             else if (blnDoMovementUpdate)

@@ -21,6 +21,8 @@ using System.Runtime.InteropServices;
 
 namespace Chummer
 {
+    [ComVisible(true)]
+    [Serializable]
     public class TextEventArgs : EventArgs
     {
         public TextEventArgs(string strText)

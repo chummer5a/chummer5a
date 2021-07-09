@@ -161,9 +161,11 @@ namespace Chummer.UI.Shared
             // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
             int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count) : null;
             // ReSharper disable once MergeConditionalExpression
+#pragma warning disable IDE0029 // Use coalesce expression
             Span<int> aintOldDisplayIndex = aintSharedOldDisplayIndexes != null
                 ? aintSharedOldDisplayIndexes
                 : stackalloc int[_lstDisplayIndex.Count];
+#pragma warning restore IDE0029 // Use coalesce expression
             for (int i = 0; i < aintOldDisplayIndex.Length; ++i)
                 aintOldDisplayIndex[i] = _lstDisplayIndex[i];
             _lstDisplayIndex.Clear();

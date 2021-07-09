@@ -386,11 +386,14 @@ namespace Chummer
                                 break;
                             }
                         }
-
-                        if (blnIsOrNode && blnOperationChildNodeResult)
-                            return true;
-                        if (!blnIsOrNode && !blnOperationChildNodeResult)
-                            return false;
+                        
+                        switch (blnIsOrNode)
+                        {
+                            case true when blnOperationChildNodeResult:
+                                return true;
+                            case false when !blnOperationChildNodeResult:
+                                return false;
+                        }
                     }
                 }
             }

@@ -70,6 +70,7 @@ namespace Chummer
                 return;
             try
             {
+                // ReSharper disable once InlineTemporaryVariable
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                 if (myControlCopy.InvokeRequired)
                 {

@@ -3362,15 +3362,16 @@ namespace Chummer
         private void chkIsMainMugshot_CheckedChanged(object sender, EventArgs e)
         {
             bool blnStatusChanged = false;
-            if (chkIsMainMugshot.Checked && CharacterObject.MainMugshotIndex != nudMugshotIndex.ValueAsInt - 1)
+            switch (chkIsMainMugshot.Checked)
             {
-                CharacterObject.MainMugshotIndex = nudMugshotIndex.ValueAsInt - 1;
-                blnStatusChanged = true;
-            }
-            else if (!chkIsMainMugshot.Checked && nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex)
-            {
-                CharacterObject.MainMugshotIndex = -1;
-                blnStatusChanged = true;
+                case true when CharacterObject.MainMugshotIndex != nudMugshotIndex.ValueAsInt - 1:
+                    CharacterObject.MainMugshotIndex = nudMugshotIndex.ValueAsInt - 1;
+                    blnStatusChanged = true;
+                    break;
+                case false when nudMugshotIndex.ValueAsInt - 1 == CharacterObject.MainMugshotIndex:
+                    CharacterObject.MainMugshotIndex = -1;
+                    blnStatusChanged = true;
+                    break;
             }
 
             if (blnStatusChanged)
