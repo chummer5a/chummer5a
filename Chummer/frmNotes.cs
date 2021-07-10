@@ -27,17 +27,22 @@ namespace Chummer
     // only support plaintext and not any kind of formatting, frmNotes and Notes items in general have to use
     // plaintext instead of RTF or HTML formatted text.
     public partial class frmNotes : Form
-	{
+    {
         // Set to DPI-based 640 in constructor, needs to be there because of DPI dependency
         private static int _intWidth = int.MinValue;
+
         // Set to DPI-based 360 in constructor, needs to be there because of DPI dependency
         private static int _intHeight = int.MinValue;
-	    private readonly bool _blnLoading;
+
+        private readonly bool _blnLoading;
         private string _strNotes;
         private Color _colNotes;
 
         #region Control Events
-        public frmNotes(string strOldNotes) : this(strOldNotes, ColorManager.HasNotesColor) { }
+
+        public frmNotes(string strOldNotes) : this(strOldNotes, ColorManager.HasNotesColor)
+        {
+        }
 
         public frmNotes(string strOldNotes, Color colNotes)
         {
@@ -56,7 +61,7 @@ namespace Chummer
             }
             _blnLoading = true;
             Width = _intWidth;
-			Height = _intHeight;
+            Height = _intHeight;
             _blnLoading = false;
             txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
 
@@ -76,12 +81,13 @@ namespace Chummer
                 case Keys.Escape:
                     Close();
                     break;
+
                 case Keys.Enter:
-                {
-                    if (e.Control)
-                        btnOK_Click(sender, e);
-                    break;
-                }
+                    {
+                        if (e.Control)
+                            btnOK_Click(sender, e);
+                        break;
+                    }
             }
         }
 
@@ -100,6 +106,7 @@ namespace Chummer
             txtNotes.SelectionLength = 0;
             txtNotes.SelectionStart = txtNotes.TextLength;
         }
+
         private void btnOK_Click(object sender, EventArgs e)
         {
             _strNotes = txtNotes.Text;
@@ -121,12 +128,13 @@ namespace Chummer
                 updateColorRepresentation();
             }
         }
+
         private void txtNotes_TextChanged(object sender, EventArgs e)
         {
             btnColorSelect.Enabled = txtNotes.TextLength > 0;
         }
 
-        #endregion
+        #endregion Control Events
 
         #region Properties
 
@@ -134,9 +142,10 @@ namespace Chummer
         /// Notes.
         /// </summary>
         public string Notes => _strNotes;
+
         public Color NotesColor => _colNotes;
 
-        #endregion
+        #endregion Properties
 
         private void updateColorRepresentation()
         {

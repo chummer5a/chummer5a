@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -28,7 +29,6 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
-
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -47,13 +47,14 @@ namespace Chummer
         private bool _blnMentorMask;
 
         #region Constructor
+
         public MentorSpirit(Character objCharacter, XmlNode xmlNodeMentor = null)
         {
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
             XmlNode namenode = xmlNodeMentor?.SelectSingleNode("name");
-            if(namenode != null)
+            if (namenode != null)
                 Name = namenode.InnerText;
             XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
             if (typenode != null && Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
@@ -240,7 +241,7 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
@@ -292,10 +293,10 @@ namespace Chummer
                 objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Properties
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -481,7 +482,7 @@ namespace Chummer
 
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        #endregion
+        #endregion Properties
 
         public void SetSourceDetail(Control sourceControl)
         {

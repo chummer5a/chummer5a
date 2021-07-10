@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
- using System.Collections.Generic;
- using System.Windows.Forms;
- using Chummer.Backend.Equipment;
+
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -30,6 +31,7 @@ namespace Chummer
         private bool _blnIsSelectLifestyleRefreshing;
 
         #region Control Events
+
         public frmLifestyleNuyen(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -88,7 +90,7 @@ namespace Chummer
                     Lifestyle objPreferredLifestyle = null;
                     ListItem objPreferredLifestyleItem = default;
                     Lifestyle objCurrentlySelectedLifestyle = cboSelectLifestyle.SelectedIndex >= 0
-                        ? ((ListItem) cboSelectLifestyle.SelectedItem).Value as Lifestyle
+                        ? ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle
                         : null;
                     List<ListItem> lstLifestyleItems = new List<ListItem>();
                     foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
@@ -156,9 +158,11 @@ namespace Chummer
                 nudDiceResult.ValueAsInt = intResult;
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Extra number that is added to the dice roll.
         /// </summary>
@@ -174,6 +178,6 @@ namespace Chummer
         /// </summary>
         public Lifestyle SelectedLifestyle => _objLifestyle;
 
-        #endregion
+        #endregion Properties
     }
 }

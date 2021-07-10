@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -27,6 +28,7 @@ namespace Chummer
         private int _intSelectedWeek = 1;
 
         #region Control Events
+
         public frmSelectCalendarStart()
         {
             InitializeComponent();
@@ -68,14 +70,17 @@ namespace Chummer
                 case 12:
                     nudWeek.Maximum = 5;
                     break;
+
                 default:
                     nudWeek.Maximum = 4;
                     break;
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         /// <summary>
         /// Accept the selected values and close the form.
         /// </summary>
@@ -97,9 +102,11 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
+
         /// <summary>
         /// Selected year.
         /// </summary>
@@ -110,6 +117,6 @@ namespace Chummer
         /// </summary>
         public int SelectedWeek => _intSelectedWeek;
 
-        #endregion
+        #endregion Properties
     }
 }

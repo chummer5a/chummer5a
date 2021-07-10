@@ -16,8 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Annotations;
-using Chummer.Backend.Equipment;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +26,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
+using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 
 namespace Chummer.Backend.Attributes
 {
@@ -172,10 +173,12 @@ namespace Chummer.Backend.Attributes
                     if (!_objCharacter.MAGEnabled)
                         return;
                     break;
+
                 case "RES":
                     if (!_objCharacter.RESEnabled)
                         return;
                     break;
+
                 case "DEP":
                     if (!_objCharacter.DEPEnabled)
                         return;
@@ -193,7 +196,9 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Save, Load, and Print Methods
+
         /// <summary>
         /// Type of Attribute.
         /// </summary>
@@ -334,6 +339,7 @@ namespace Chummer.Backend.Attributes
         }
 
         private int _intCachedValue = int.MinValue;
+
         /// <summary>
         /// Current value of the CharacterAttribute before modifiers are applied.
         /// </summary>
@@ -510,6 +516,7 @@ namespace Chummer.Backend.Attributes
                 return intModifier;
             }
         }
+
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
@@ -546,6 +553,7 @@ namespace Chummer.Backend.Attributes
                         case "STR":
                             intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
                             break;
+
                         case "AGI":
                             intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
                             break;
@@ -563,6 +571,7 @@ namespace Chummer.Backend.Attributes
                             case "STR":
                                 intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
                                 break;
+
                             case "AGI":
                                 intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
                                 break;
@@ -594,6 +603,7 @@ namespace Chummer.Backend.Attributes
         }
 
         private int _intCachedTotalValue = int.MinValue;
+
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
@@ -711,9 +721,11 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public string AugmentedMetatypeLimits => string.Format(GlobalOptions.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
             LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
         /// </summary>
@@ -736,6 +748,7 @@ namespace Chummer.Backend.Attributes
                 UpgradeKarmaCost);
 
         private string _strCachedToolTip = string.Empty;
+
         /// <summary>
         /// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
         /// </summary>
@@ -910,6 +923,7 @@ namespace Chummer.Backend.Attributes
                             case Improvement.ImprovementType.AttributePointCost:
                                 decExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
                                 break;
+
                             case Improvement.ImprovementType.AttributePointCostMultiplier:
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                                 break;
@@ -931,6 +945,7 @@ namespace Chummer.Backend.Attributes
         public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
+
         /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
@@ -973,6 +988,7 @@ namespace Chummer.Backend.Attributes
                             case Improvement.ImprovementType.AttributeKarmaCost:
                                 decExtra += objLoopImprovement.Value;
                                 break;
+
                             case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                                 break;
@@ -1028,6 +1044,7 @@ namespace Chummer.Backend.Attributes
                             case Improvement.ImprovementType.AttributeKarmaCost:
                                 decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
                                 break;
+
                             case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
                                 decMultiplier *= objLoopImprovement.Value / 100.0m;
                                 break;
@@ -1045,6 +1062,7 @@ namespace Chummer.Backend.Attributes
 
         // Caching the value prevents calling the event multiple times.
         private int _intCachedCanUpgradeCareer = -1;
+
         public bool CanUpgradeCareer
         {
             get
@@ -1063,22 +1081,24 @@ namespace Chummer.Backend.Attributes
                 case nameof(Character.Karma):
                     OnPropertyChanged(nameof(CanUpgradeCareer));
                     break;
+
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
                     OnPropertyChanged(nameof(BaseUnlocked));
                     break;
-                case nameof(Character.LimbCount):
-                {
-                    if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
-                        (Abbrev == "AGI" || Abbrev == "STR") &&
-                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
-                    {
-                        OnPropertyChanged(nameof(TotalValue));
-                    }
 
-                    break;
-                }
+                case nameof(Character.LimbCount):
+                    {
+                        if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
+                            (Abbrev == "AGI" || Abbrev == "STR") &&
+                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                          && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        {
+                            OnPropertyChanged(nameof(TotalValue));
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -1087,44 +1107,44 @@ namespace Chummer.Backend.Attributes
             switch (e.PropertyName)
             {
                 case nameof(CharacterOptions.DontUseCyberlimbCalculation):
-                {
-                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
-                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                     {
-                        OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                        if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                          && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        {
+                            OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.CyberlimbAttributeBonusCap):
                 case nameof(CharacterOptions.ExcludeLimbSlot):
-                {
-                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
-                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                     {
-                        OnMultiplePropertyChanged(nameof(TotalValue));
+                        if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                          && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        {
+                            OnMultiplePropertyChanged(nameof(TotalValue));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.UnclampAttributeMinimum):
-                {
-                    OnPropertyChanged(nameof(RawMinimum));
-                    break;
-                }
+                    {
+                        OnPropertyChanged(nameof(RawMinimum));
+                        break;
+                    }
                 case nameof(CharacterOptions.KarmaAttribute):
                 case nameof(CharacterOptions.AlternateMetatypeAttributeKarma):
-                {
-                    OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
-                    break;
-                }
+                    {
+                        OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
+                        break;
+                    }
                 case nameof(CharacterOptions.ReverseAttributePriorityOrder):
-                {
-                    OnPropertyChanged(nameof(TotalKarmaCost));
-                    break;
-                }
+                    {
+                        OnPropertyChanged(nameof(TotalKarmaCost));
+                        break;
+                    }
             }
         }
 
@@ -1182,6 +1202,7 @@ namespace Chummer.Backend.Attributes
                 case "MAGAdept":
                 case "RES":
                     return AttributeCategory.Special;
+
                 default:
                     return AttributeCategory.Standard;
             }
@@ -1198,13 +1219,16 @@ namespace Chummer.Backend.Attributes
             {
                 case "Shapeshifter":
                     return AttributeCategory.Shapeshifter;
+
                 default:
                     return AttributeCategory.Standard;
             }
         }
-        #endregion
+
+        #endregion Methods
 
         #region static
+
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
@@ -1330,6 +1354,7 @@ namespace Chummer.Backend.Attributes
                     return;
             }
         }
-        #endregion
+
+        #endregion static
     }
 }

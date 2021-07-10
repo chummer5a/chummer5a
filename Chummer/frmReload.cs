@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Text;
- using System.Windows.Forms;
- using Chummer.Backend.Equipment;
+using System.Text;
+using System.Windows.Forms;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -30,6 +31,7 @@ namespace Chummer
         private readonly List<string> _lstCount = new List<string>(30);
 
         #region Control Events
+
         public frmReload()
         {
             InitializeComponent();
@@ -101,9 +103,11 @@ namespace Chummer
         {
             AcceptForm();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// List of Ammo Gear that the user can selected.
         /// </summary>
@@ -138,9 +142,10 @@ namespace Chummer
         /// </summary>
         public int SelectedCount => Convert.ToInt32(cboType.Text, GlobalOptions.InvariantCultureInfo);
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -148,6 +153,7 @@ namespace Chummer
         {
             DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

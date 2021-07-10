@@ -35,7 +35,6 @@ namespace Chummer
         private string _strSelectedId;
         private Regex _rgxSearchRegex;
 
-
         private string _strWorkStage;
 
         public frmSelectLifeModule(Character objCharacter, int intStage)
@@ -82,7 +81,6 @@ namespace Chummer
 
                 if (!chkLimitList.Checked || xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
                 {
-
                     TreeNode treNode = new TreeNode
                     {
                         Text = xmlNode["name"]?.InnerText ?? string.Empty
@@ -109,7 +107,6 @@ namespace Chummer
                     {
                         lstTreeNodes.Add(treNode);
                     }
-
                 }
             }
 
@@ -135,7 +132,6 @@ namespace Chummer
 
         private void treModules_AfterSelect(object sender, TreeViewEventArgs e)
         {
-
             bool blnSelectAble;
             if (e.Node.Nodes.Count == 0)
             {
@@ -172,7 +168,6 @@ namespace Chummer
                 cmdOK.Enabled = false;
                 cmdOKAdd.Enabled = false;
             }
-
         }
 
         public XmlNode SelectedNode => Quality.GetNodeOverrideable(_strSelectedId, _objCharacter.LoadData("lifemodules.xml"));
@@ -232,14 +227,13 @@ namespace Chummer
 
                         return 0;
                     });
-                    
+
                     cboStage.PopulateWithListItems(Stages);
                 }
 
-                ListItem selectedItem = ((List<ListItem>) cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalOptions.InvariantCultureInfo));
+                ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalOptions.InvariantCultureInfo));
                 if (!string.IsNullOrEmpty(selectedItem.Name))
                     cboStage.SelectedItem = selectedItem;
-
             }
             else
             {
@@ -251,7 +245,7 @@ namespace Chummer
 
         private void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
         {
-            string strSelected = (string) cboStage.SelectedValue;
+            string strSelected = (string)cboStage.SelectedValue;
             if (strSelected == "0")
             {
                 _strWorkStage = string.Empty;
@@ -301,7 +295,6 @@ namespace Chummer
                 strReturn += ") and (stage = " + _strWorkStage.CleanXPath();
             }
             strReturn += ")]";
-
 
             return strReturn;
         }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,8 +29,8 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
-using NLog;
 using Chummer.Classes;
+using NLog;
 
 namespace Chummer.Backend.Equipment
 {
@@ -111,7 +112,6 @@ namespace Chummer.Backend.Equipment
 
             objXmlData.TryGetField("source", out _strSource);
             objXmlData.TryGetField("page", out _strPage);
-
         }
 
         public void Load(XmlNode objXmlData)
@@ -206,7 +206,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", Category);
             if (Grade != null)
                 objWriter.WriteElementString("grade", Grade.DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("qty", Quantity.ToString( "#,0.##", objCulture));
+            objWriter.WriteElementString("qty", Quantity.ToString("#,0.##", objCulture));
             objWriter.WriteElementString("addictionthreshold", AddictionThreshold.ToString(objCulture));
             objWriter.WriteElementString("addictionrating", AddictionRating.ToString(objCulture));
             objWriter.WriteElementString("initiative", Initiative.ToString(objCulture));
@@ -271,8 +271,11 @@ namespace Chummer.Backend.Equipment
 
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
+
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this item.
         /// </summary>
@@ -465,6 +468,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private int _intCachedAddictionRating = int.MinValue;
+
         /// <summary>
         /// Addiction Rating of the Drug.
         /// </summary>
@@ -479,6 +483,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private bool _blnCachedLimitFlag;
+
         public Dictionary<string, int> Limits
         {
             get
@@ -489,11 +494,11 @@ namespace Chummer.Backend.Equipment
                     .GroupBy(x => x.Key).ToDictionary(x => x.Key, x => x.Sum(y => y.Value));
                 _blnCachedLimitFlag = true;
                 return _dicCachedLimits;
-
             }
         }
 
         private bool _blnCachedQualityFlag;
+
         public List<XmlNode> Qualities
         {
             get
@@ -511,6 +516,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private bool _blnCachedInfoFlag;
+
         public List<string> Infos
         {
             get
@@ -540,6 +546,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private int _intCachedInitiativeDice = int.MinValue;
+
         public int InitiativeDice
         {
             get
@@ -551,6 +558,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private int _intCachedSpeed = int.MinValue;
+
         /// <summary>
         /// How quickly the Drug takes effect, in seconds. A Combat Turn is considered
         /// to be 3 seconds, so anything with a Speed below 3 is considered to be Immediate.
@@ -566,6 +574,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private int _intCachedDuration = int.MinValue;
+
         public int Duration
         {
             get
@@ -602,6 +611,7 @@ namespace Chummer.Backend.Equipment
         public CommonFunctions.Timescale DurationTimescale { get; private set; }
 
         private string _strCachedDisplayDuration;
+
         public string DisplayDuration
         {
             get
@@ -630,6 +640,7 @@ namespace Chummer.Backend.Equipment
         public int DurationDice { get; set; }
 
         private int _intCachedCrashDamage = int.MinValue;
+
         public int CrashDamage
         {
             get
@@ -704,11 +715,11 @@ namespace Chummer.Backend.Equipment
                 return _dicCachedAttributes;
             }
         }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.HasNotesColor
                 : ColorManager.WindowText;
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -726,8 +737,10 @@ namespace Chummer.Backend.Equipment
             set => _blnStolen = value;
         }
 
-        #endregion
+        #endregion Properties
+
         #region UI Methods
+
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
@@ -752,8 +765,11 @@ namespace Chummer.Backend.Equipment
 
             return objNode;
         }
-        #endregion
+
+        #endregion UI Methods
+
         #region Methods
+
         public string GenerateDescription(int intLevel = -1, bool blnEffectsOnly = false, string strLanguage = "", CultureInfo objCulture = null, bool blnDoCache = true)
         {
             if (string.IsNullOrEmpty(strLanguage))
@@ -909,9 +925,11 @@ namespace Chummer.Backend.Equipment
                     case "Physical":
                         i.ImproveType = Improvement.ImprovementType.PhysicalLimit;
                         break;
+
                     case "Mental":
                         i.ImproveType = Improvement.ImprovementType.MentalLimit;
                         break;
+
                     case "Social":
                         i.ImproveType = Improvement.ImprovementType.SocialLimit;
                         break;
@@ -1009,6 +1027,7 @@ namespace Chummer.Backend.Equipment
             }
             _objCharacter.Improvements.AddRange(lstImprovements);
         }
+
         public XmlNode GetNode()
         {
             return GetNode(GlobalOptions.Language);
@@ -1039,9 +1058,10 @@ namespace Chummer.Backend.Equipment
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
             return true;
         }
-        #endregion
 
+        #endregion Methods
     }
+
     /// <summary>
     /// Drug Component.
     /// </summary>
@@ -1071,6 +1091,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public void Load(XmlNode objXmlData)
         {
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
@@ -1099,55 +1120,58 @@ namespace Chummer.Backend.Equipment
                             switch (objXmlEffect.Name)
                             {
                                 case "attribute":
-                                {
-                                    int intEffectValue = 0;
-                                    if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
-                                        objDrugEffect.Attributes[strEffectName] = intEffectValue;
-                                }
+                                    {
+                                        int intEffectValue = 0;
+                                        if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
+                                            objDrugEffect.Attributes[strEffectName] = intEffectValue;
+                                    }
                                     break;
+
                                 case "limit":
-                                {
-                                    int intEffectValue = 0;
-                                    if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
-                                        objDrugEffect.Limits[strEffectName] = intEffectValue;
-                                    break;
-                                }
+                                    {
+                                        int intEffectValue = 0;
+                                        if (!string.IsNullOrEmpty(strEffectName) && objXmlEffect.TryGetInt32FieldQuickly("value", ref intEffectValue))
+                                            objDrugEffect.Limits[strEffectName] = intEffectValue;
+                                        break;
+                                    }
                                 case "quality":
                                     objDrugEffect.Qualities.Add(objXmlEffect);
                                     break;
+
                                 case "info":
                                     objDrugEffect.Infos.Add(objXmlEffect.InnerText);
                                     break;
+
                                 case "initiative":
-                                {
-                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
-                                        objDrugEffect.Initiative = intInnerText;
-                                    break;
-                                }
+                                    {
+                                        if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                            objDrugEffect.Initiative = intInnerText;
+                                        break;
+                                    }
                                 case "initiativedice":
-                                {
-                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
-                                        objDrugEffect.InitiativeDice = intInnerText;
-                                    break;
-                                }
+                                    {
+                                        if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                            objDrugEffect.InitiativeDice = intInnerText;
+                                        break;
+                                    }
                                 case "crashdamage":
-                                {
-                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
-                                        objDrugEffect.CrashDamage = intInnerText;
-                                    break;
-                                }
+                                    {
+                                        if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                            objDrugEffect.CrashDamage = intInnerText;
+                                        break;
+                                    }
                                 case "speed":
-                                {
-                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
-                                        objDrugEffect.Speed = intInnerText;
-                                    break;
-                                }
+                                    {
+                                        if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                            objDrugEffect.Speed = intInnerText;
+                                        break;
+                                    }
                                 case "duration":
-                                {
-                                    if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
-                                        objDrugEffect.Duration = intInnerText;
-                                    break;
-                                }
+                                    {
+                                        if (int.TryParse(objXmlEffect.InnerText, out int intInnerText))
+                                            objDrugEffect.Duration = intInnerText;
+                                        break;
+                                    }
                                 default:
                                     Log.Warn("Unknown drug effect " + objXmlEffect.Name + " in component " + strEffectName);
                                     break;
@@ -1229,8 +1253,11 @@ namespace Chummer.Backend.Equipment
             objXmlWriter.WriteElementString("source", _strSource);
             objXmlWriter.WriteElementString("page", _strPage);
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
+
         #region Properties
+
         /// <summary>
         /// Drug Component's English Name
         /// </summary>
@@ -1301,7 +1328,6 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -1455,7 +1481,6 @@ namespace Chummer.Backend.Equipment
             set => _intLimit = value;
         }
 
-
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -1467,8 +1492,11 @@ namespace Chummer.Backend.Equipment
         public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         public string InternalId => _guidId.ToString("D", GlobalOptions.InvariantCultureInfo);
-        #endregion
+
+        #endregion Properties
+
         #region Methods
+
         public string GenerateDescription(int intLevel = -1)
         {
             if (intLevel >= DrugEffects.Count)
@@ -1600,8 +1628,10 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Methods
     }
+
     /// <summary>
     /// Drug Effect
     /// </summary>

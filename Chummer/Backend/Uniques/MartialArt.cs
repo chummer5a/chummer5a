@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -49,6 +50,7 @@ namespace Chummer
         private bool _blnIsQuality;
 
         #region Create, Save, Load, and Print Methods
+
         public MartialArt(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -149,6 +151,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
+
         public SourceString SourceDetail
         {
             get
@@ -276,9 +279,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Name.
         /// </summary>
@@ -347,7 +352,6 @@ namespace Chummer
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -393,6 +397,7 @@ namespace Chummer
         /// Selected Martial Arts Techniques.
         /// </summary>
         public TaggedObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
+
         public TaggedObservableCollection<MartialArtTechnique> Children => Techniques;
 
         /// <summary>
@@ -435,9 +440,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtTechnique)
         {
             if (IsQuality && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -470,7 +477,7 @@ namespace Chummer
         public static bool Purchase(Character objCharacter)
         {
             if (objCharacter == null)
-                throw new ArgumentNullException    (nameof(objCharacter));
+                throw new ArgumentNullException(nameof(objCharacter));
             bool blnAddAgain;
             do
             {
@@ -538,6 +545,7 @@ namespace Chummer
             _objCharacter.MartialArts.Remove(this);
             return true;
         }
+
         public Color PreferredColor
         {
             get
@@ -553,7 +561,8 @@ namespace Chummer
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion Methods
 
         public void SetSourceDetail(Control sourceControl)
         {

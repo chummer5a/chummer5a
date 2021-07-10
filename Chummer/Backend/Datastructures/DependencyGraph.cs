@@ -114,6 +114,7 @@ namespace Chummer
         }
 
         private readonly Dictionary<T, DependencyGraphNode<T, T2>> _dicNodeDictionary = new Dictionary<T, DependencyGraphNode<T, T2>>();
+
         /// <summary>
         /// Dictionary of nodes in the graph. This is where the graph is actually stored, and doubles as a fast way to get any node in the graph.
         /// It's an IReadOnlyDictionary because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.

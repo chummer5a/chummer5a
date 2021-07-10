@@ -336,6 +336,7 @@ namespace Chummer.UI.Shared
             {
                 case ListChangedType.ItemChanged:
                     return;
+
                 case ListChangedType.Reset:
                     bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
                     if (blnIsTopmostSuspendLayout)
@@ -365,17 +366,20 @@ namespace Chummer.UI.Shared
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList;
                     break;
+
                 case ListChangedType.ItemAdded:
                     _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this));
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList.Skip(intNewIndex);
                     break;
+
                 case ListChangedType.ItemDeleted:
                     _lstContentList[intNewIndex].Cleanup();
                     _lstContentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList.Skip(intNewIndex);
                     break;
+
                 case ListChangedType.ItemMoved:
                     // Refresh the underlying lists, but do not refresh any displays
                     int intOldIndex = eventArgs.OldIndex;

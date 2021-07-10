@@ -54,6 +54,7 @@ namespace Chummer
         private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo) + ".htm");
 
         #region Control Events
+
         public frmViewer()
         {
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
@@ -264,6 +265,7 @@ namespace Chummer
                         case DialogResult.Cancel:
                         case DialogResult.Yes when DoPdfPrinterShortcut(strPdfPrinter):
                             return;
+
                         case DialogResult.Yes:
                             Program.MainForm.ShowMessageBox(this,
                                 LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
@@ -318,8 +320,8 @@ namespace Chummer
                         }
                     };
                     PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
-                        {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
-                    PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
+                    { WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe") };
+                    PdfOutput objPdfOutput = new PdfOutput { OutputFilePath = strSaveFile };
                     await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
 
                     if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
@@ -414,9 +416,11 @@ namespace Chummer
                     cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = true));
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
@@ -740,6 +744,7 @@ namespace Chummer
         {
             Task.Run(RefreshCharacters);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

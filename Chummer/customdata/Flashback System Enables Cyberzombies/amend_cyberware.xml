@@ -22,7 +22,7 @@
     <cyberware>
       <name>Flashback System</name>
       <bonus>
-        <enablecyberzombie  amendoperation="addnode"/>
+        <enablecyberzombie  amendoperation="addnode" />
       </bonus>
     </cyberware>
   </cyberwares>

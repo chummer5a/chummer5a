@@ -16,30 +16,31 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections;
- using System.ComponentModel;
- using System.Diagnostics;
- using System.Globalization;
- using System.IO;
-using System.Linq;
- using System.Reflection;
- using System.Runtime;
- using System.Runtime.InteropServices;
- using System.Threading;
- using System.Windows.Forms;
- using Chummer.Backend;
- using Chummer.Plugins;
- using Microsoft.ApplicationInsights;
- using Microsoft.ApplicationInsights.DataContracts;
- using Microsoft.ApplicationInsights.Extensibility;
- using Microsoft.ApplicationInsights.Metrics;
- using Microsoft.ApplicationInsights.NLogTarget;
- using NLog;
- using NLog.Config;
 
+using System;
+using System.Collections;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows.Forms;
+using Chummer.Backend;
+using Chummer.Plugins;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.ApplicationInsights.Metrics;
+using Microsoft.ApplicationInsights.NLogTarget;
+using NLog;
+using NLog.Config;
 
 [assembly: CLSCompliant(true)]
+
 namespace Chummer
 {
     public static class Program
@@ -63,7 +64,7 @@ namespace Chummer
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
             PageViewTelemetry pvt = null;
@@ -113,10 +114,8 @@ namespace Chummer
                 //Various init stuff (that mostly "can" be removed as they serve
                 //debugging more than function
 
-
                 //Needs to be called before Log is setup, as it moves where log might be.
                 FixCwd();
-
 
                 sw.TaskEnd("fixcwd");
 
@@ -143,7 +142,7 @@ namespace Chummer
                         if (e.ExceptionObject is Exception myException)
                         {
                             myException.Data.Add("IsCrash", bool.TrueString);
-                            ExceptionTelemetry et = new ExceptionTelemetry(myException) {SeverityLevel = SeverityLevel.Critical};
+                            ExceptionTelemetry et = new ExceptionTelemetry(myException) { SeverityLevel = SeverityLevel.Critical };
                             //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                             foreach (DictionaryEntry d in myException.Data)
                             {
@@ -228,7 +227,6 @@ namespace Chummer
 
                     if (!Utils.IsUnitTest && GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
                     {
-
 #if DEBUG
                         //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
                         TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = true;
@@ -244,7 +242,7 @@ namespace Chummer
                         //live.Enable();
 
                         //Log an Event with AssemblyVersion and CultureInfo
-                        MetricIdentifier objMetricIdentifier = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name:"AISetting", dimension4Name:"OSVersion");
+                        MetricIdentifier objMetricIdentifier = new MetricIdentifier("Chummer", "Program Start", "Version", "Culture", dimension3Name: "AISetting", dimension4Name: "OSVersion");
                         string strOSVersion = helpers.Application_Insights.OSVersion.GetOSInfo();
                         Metric objMetric = ChummerTelemetryClient.GetMetric(objMetricIdentifier);
                         objMetric.TrackValue(1,
@@ -417,10 +415,12 @@ namespace Chummer
                     {
                         case 2://file not found - that means the alternate data-stream is not present.
                             break;
+
                         case 5:
                             Log.Warn(exception);
                             blnAllUnblocked = false;
                             break;
+
                         default:
                             Log.Error(exception);
                             blnAllUnblocked = false;
@@ -497,6 +497,7 @@ namespace Chummer
                     else
                         NativeMethods.SetProcessDPIAware(); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eMethod), eMethod, null);
             }

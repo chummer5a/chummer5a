@@ -16,21 +16,22 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Forms;
-using System.Xml;
-using Chummer.Backend.Skills;
-using System.Drawing;
-using Chummer.Backend.Attributes;
-using System.Text;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Drawing;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -59,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private string _strWeaponType = string.Empty;
         private int _intConceal;
         private List<Clip> _lstAmmo = new List<Clip>(1);
+
         //private int _intAmmoRemaining = 0;
         //private int _intAmmoRemaining2 = 0;
         //private int _intAmmoRemaining3 = 0;
@@ -68,6 +70,7 @@ namespace Chummer.Backend.Equipment
         //private Guid _guiAmmoLoaded3 = Guid.Empty;
         //private Guid _guiAmmoLoaded4 = Guid.Empty;
         private int _intActiveAmmoSlot = 1;
+
         private string _strAvail = string.Empty;
         private string _strCost = string.Empty;
         private string _strRange = string.Empty;
@@ -138,13 +141,14 @@ namespace Chummer.Backend.Equipment
         private string _strMount;
         private string _strExtraMount;
 
-        private bool _blnAllowSingleShot  = true;
-        private bool _blnAllowShortBurst  = true;
-        private bool _blnAllowLongBurst   = true;
-        private bool _blnAllowFullBurst   = true;
+        private bool _blnAllowSingleShot = true;
+        private bool _blnAllowShortBurst = true;
+        private bool _blnAllowLongBurst = true;
+        private bool _blnAllowFullBurst = true;
         private bool _blnAllowSuppressive = true;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Weapon(Character objCharacter)
         {
             // Create the GUID for the new Weapon.
@@ -163,11 +167,13 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                     this.RefreshMatrixAttributeArray();
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Weapon objOldItem in e.OldItems)
                         objOldItem.Parent = null;
                     this.RefreshMatrixAttributeArray();
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Weapon objOldItem in e.OldItems)
                         objOldItem.Parent = null;
@@ -175,6 +181,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                     this.RefreshMatrixAttributeArray();
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     this.RefreshMatrixAttributeArray();
                     break;
@@ -371,15 +378,15 @@ namespace Chummer.Backend.Equipment
             }
             objXmlWeapon.TryGetStringFieldQuickly("alternaterange", ref _strAlternateRange);
 
-            objXmlWeapon.TryGetInt32FieldQuickly("singleshot",      ref _intSingleShot);
-            objXmlWeapon.TryGetInt32FieldQuickly("shortburst",      ref _intShortBurst);
-            objXmlWeapon.TryGetInt32FieldQuickly("longburst",       ref _intLongBurst);
-            objXmlWeapon.TryGetInt32FieldQuickly("fullburst",       ref _intFullBurst);
-            objXmlWeapon.TryGetInt32FieldQuickly("suppressive",     ref _intSuppressive);
-            objXmlWeapon.TryGetBoolFieldQuickly("allowfullburst",   ref _blnAllowFullBurst);
-            objXmlWeapon.TryGetBoolFieldQuickly("allowlongburst",   ref _blnAllowLongBurst);
-            objXmlWeapon.TryGetBoolFieldQuickly("allowshortburst",  ref _blnAllowShortBurst);
-            objXmlWeapon.TryGetBoolFieldQuickly("allowsingleshot",  ref _blnAllowSingleShot);
+            objXmlWeapon.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
+            objXmlWeapon.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
+            objXmlWeapon.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowfullburst", ref _blnAllowFullBurst);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowlongburst", ref _blnAllowLongBurst);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowshortburst", ref _blnAllowShortBurst);
+            objXmlWeapon.TryGetBoolFieldQuickly("allowsingleshot", ref _blnAllowSingleShot);
             objXmlWeapon.TryGetBoolFieldQuickly("allowsuppressive", ref _blnAllowSuppressive);
 
             objXmlWeapon.TryGetStringFieldQuickly("useskill", ref _strUseSkill);
@@ -597,12 +604,12 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("ammocategory", _strAmmoCategory);
             objWriter.WriteElementString("ammoslots", _intAmmoSlots.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("sizecategory", _strSizeCategory);
-            objWriter.WriteElementString("firingmode",_eFiringMode.ToString());
+            objWriter.WriteElementString("firingmode", _eFiringMode.ToString());
             objWriter.WriteElementString("minrating", _strMinRating);
             objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("accuracy", _strAccuracy?.ToString(GlobalOptions.InvariantCultureInfo));
-            
+
             objWriter.WriteStartElement("clips");
             foreach (Clip clip in _lstAmmo)
             {
@@ -611,7 +618,6 @@ namespace Chummer.Backend.Equipment
                     clip.AmmoName = GetAmmoName(clip.Guid, GlobalOptions.DefaultLanguage);
                     var ammo = GetAmmo(clip.Guid);
                     clip.AmmoType = ammo;
-                    
                 }
                 clip.Save(objWriter);
             }
@@ -715,7 +721,7 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -764,6 +770,7 @@ namespace Chummer.Backend.Equipment
                 case "Hold-Outs":
                     _strCategory = "Holdouts";
                     break;
+
                 case "Cyberware Hold-Outs":
                     _strCategory = "Cyberware Holdouts";
                     break;
@@ -1298,9 +1305,11 @@ namespace Chummer.Backend.Equipment
                     _lstAmmo.Remove(objClip);
             }
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Weapon Accessories.
         /// </summary>
@@ -1458,8 +1467,10 @@ namespace Chummer.Backend.Equipment
                 // If Categories are actually the name of object types, so pull them from the language file.
                 case "Gear":
                     return LanguageManager.GetString("String_SelectPACKSKit_Gear", strLanguage);
+
                 case "Cyberware":
                     return LanguageManager.GetString("String_SelectPACKSKit_Cyberware", strLanguage);
+
                 case "Bioware":
                     return LanguageManager.GetString("String_SelectPACKSKit_Bioware", strLanguage);
             }
@@ -1961,8 +1972,6 @@ namespace Chummer.Backend.Equipment
             set => _intSortOrder = value;
         }
 
-
-
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -2022,9 +2031,11 @@ namespace Chummer.Backend.Equipment
             get => _blnStolen;
             set => _blnStolen = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Weapon's total Concealability including all Accessories and Modifications in the program's current language.
         /// </summary>
@@ -2319,7 +2330,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strDamage, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            int intDamage = (Convert.ToDecimal((double) objProcess) + decImprove).StandardRound();
+                            int intDamage = (Convert.ToDecimal((double)objProcess) + decImprove).StandardRound();
                             if (Name == "Unarmed Attack (Smashing Blow)")
                                 intDamage *= 2;
                             strDamage = intDamage.ToString(objCulture);
@@ -2660,7 +2671,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-                    else if(objGear.WeaponBonus != null)
+                    else if (objGear.WeaponBonus != null)
                     {
                         string strFireMode = objGear.WeaponBonus["firemode"]?.InnerText;
                         if (!string.IsNullOrEmpty(strFireMode))
@@ -3391,38 +3402,46 @@ namespace Chummer.Backend.Equipment
                         case "Crossbows":
                             strSkill = "Archery";
                             break;
+
                         case "Assault Rifles":
                         case "Carbines":
                         case "Machine Pistols":
                         case "Submachine Guns":
                             strSkill = "Automatics";
                             break;
+
                         case "Blades":
                             strSkill = "Blades";
                             break;
+
                         case "Clubs":
                         case "Improvised Weapons":
                             strSkill = "Clubs";
                             break;
+
                         case "Exotic Melee Weapons":
                             strSkill = "Exotic Melee Weapon";
                             if (string.IsNullOrEmpty(strSpec))
                                 strSpec = UseSkillSpec;
                             break;
+
                         case "Exotic Ranged Weapons":
                         case "Special Weapons":
                             strSkill = "Exotic Ranged Weapon";
                             if (string.IsNullOrEmpty(strSpec))
                                 strSpec = UseSkillSpec;
                             break;
+
                         case "Flamethrowers":
                             strSkill = "Exotic Ranged Weapon";
                             strSpec = "Flamethrowers";
                             break;
+
                         case "Laser Weapons":
                             strSkill = "Exotic Ranged Weapon";
                             strSpec = "Laser Weapons";
                             break;
+
                         case "Assault Cannons":
                         case "Grenade Launchers":
                         case "Missile Launchers":
@@ -3431,17 +3450,21 @@ namespace Chummer.Backend.Equipment
                         case "Heavy Machine Guns":
                             strSkill = "Heavy Weapons";
                             break;
+
                         case "Shotguns":
                         case "Sniper Rifles":
                         case "Sporting Rifles":
                             strSkill = "Longarms";
                             break;
+
                         case "Throwing Weapons":
                             strSkill = "Throwing Weapons";
                             break;
+
                         case "Unarmed":
                             strSkill = "Unarmed Combat";
                             break;
+
                         default:
                             strSkill = "Pistols";
                             break;
@@ -3476,6 +3499,7 @@ namespace Chummer.Backend.Equipment
                     intAccuracy, LanguageManager.GetString("String_Space", strLanguage), intTotalAccuracy);
             return intTotalAccuracy.ToString(objCulture);
         }
+
         /// <summary>
         /// The slots the weapon has for modifications.
         /// </summary>
@@ -3510,7 +3534,7 @@ namespace Chummer.Backend.Equipment
                 strRange = Category;
             if (!string.IsNullOrWhiteSpace(strRange) && !strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml",  strLanguage);
+                XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml", strLanguage);
                 XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + "]");
                 XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNode("translate");
                 if (xmlTranslateNode != null)
@@ -3574,7 +3598,6 @@ namespace Chummer.Backend.Equipment
             }
             else if (!string.IsNullOrEmpty(Range))
                 strRangeCategory = Range;
-
 
             XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml");
             XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRangeCategory.CleanXPath() + "]");
@@ -3824,7 +3847,7 @@ namespace Chummer.Backend.Equipment
                 switch (FireMode)
                 {
                     case FiringMode.DogBrain:
-                    {
+                        {
                             intDicePool = ParentVehicle.Pilot;
                             Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Weapon] Targeting Autosoft" && (x.Extra == Name || x.Extra == CurrentDisplayName));
 
@@ -3933,6 +3956,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private string _strRelevantSpec = string.Empty;
+
         internal string RelevantSpecialization
         {
             get
@@ -4007,36 +4031,44 @@ namespace Chummer.Backend.Equipment
                 case "Crossbows":
                     strSkill = "Archery";
                     break;
+
                 case "Assault Rifles":
                 case "Carbines":
                 case "Machine Pistols":
                 case "Submachine Guns":
                     strSkill = "Automatics";
                     break;
+
                 case "Blades":
                     strSkill = "Blades";
                     break;
+
                 case "Clubs":
                 case "Improvised Weapons":
                     strSkill = "Clubs";
                     break;
+
                 case "Exotic Melee Weapons":
                     strSkill = "Exotic Melee Weapon";
                     strSpec = UseSkillSpec;
                     break;
+
                 case "Exotic Ranged Weapons":
                 case "Special Weapons":
                     strSkill = "Exotic Ranged Weapon";
                     strSpec = UseSkillSpec;
                     break;
+
                 case "Flamethrowers":
                     strSkill = "Exotic Ranged Weapon";
                     strSpec = "Flamethrowers";
                     break;
+
                 case "Laser Weapons":
                     strSkill = "Exotic Ranged Weapon";
                     strSpec = "Laser Weapons";
                     break;
+
                 case "Assault Cannons":
                 case "Grenade Launchers":
                 case "Missile Launchers":
@@ -4045,17 +4077,21 @@ namespace Chummer.Backend.Equipment
                 case "Heavy Machine Guns":
                     strSkill = "Heavy Weapons";
                     break;
+
                 case "Shotguns":
                 case "Sniper Rifles":
                 case "Sporting Rifles":
                     strSkill = "Longarms";
                     break;
+
                 case "Throwing Weapons":
                     strSkill = "Throwing Weapons";
                     break;
+
                 case "Unarmed":
                     strSkill = "Unarmed Combat";
                     break;
+
                 default:
                     strSkill = "Pistols";
                     break;
@@ -4075,7 +4111,7 @@ namespace Chummer.Backend.Equipment
                 switch (FireMode)
                 {
                     case FiringMode.DogBrain:
-                    {
+                        {
                             sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}({2})",
                                 strSpace, LanguageManager.GetString("String_Pilot"), ParentVehicle.Pilot);
                             Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
@@ -4113,7 +4149,7 @@ namespace Chummer.Backend.Equipment
                             break;
                         }
                     case FiringMode.RemoteOperated:
-                        //TODO: how/why are these different?
+                    //TODO: how/why are these different?
                     case FiringMode.ManualOperation:
                         {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
@@ -4202,7 +4238,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Improvement objImprovement in _objCharacter.Improvements
                         .Where(objImprovement => objImprovement.Enabled && (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDice &&
                                                  objImprovement.ImprovedName == Category || objImprovement.ImproveType == Improvement.ImprovementType.WeaponSpecificDice &&
-                                                 objImprovement.ImprovedName == InternalId)  && string.IsNullOrEmpty(objImprovement.Condition)))
+                                                 objImprovement.ImprovedName == InternalId) && string.IsNullOrEmpty(objImprovement.Condition)))
                     {
                         sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
                             strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
@@ -4775,7 +4811,7 @@ namespace Chummer.Backend.Equipment
             NumFiringModes // 🡐 This one should always be the last defined enum
         }
 
-        #endregion
+        #endregion Complex Properties
 
         #region Helper Methods
 
@@ -4789,19 +4825,25 @@ namespace Chummer.Backend.Equipment
             {
                 case "DogBrain":
                     return FiringMode.DogBrain;
+
                 case "GunneryCommandDevice":
                     return FiringMode.GunneryCommandDevice;
+
                 case "RemoteOperated":
                     return FiringMode.RemoteOperated;
+
                 case "ManualOperation":
                     return FiringMode.ManualOperation;
+
                 default:
                     return FiringMode.Skill;
             }
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Methods
+
         /// <summary>
         /// Toggle the Wireless Bonus for this weapon accessory.
         /// </summary>
@@ -4906,7 +4948,6 @@ namespace Chummer.Backend.Equipment
 
             return decReturn;
         }
-
 
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
@@ -5016,7 +5057,7 @@ namespace Chummer.Backend.Equipment
                 if (objExternalSource != null)
                     lstAmmo.Add(objExternalSource);
             }
-            catch(ArgumentException ae)
+            catch (ArgumentException ae)
             {
                 Program.MainForm.ShowMessageBox(ae.Message);
                 return;
@@ -5155,6 +5196,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
         /// <summary>
         /// Add a Weapon to the TreeView.
         /// </summary>
@@ -5248,9 +5290,11 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         #region Hero Lab Importing
+
         public bool ImportHeroLabWeapon(XPathNavigator xmlWeaponImportNode, IList<Weapon> lstWeapons)
         {
             if (xmlWeaponImportNode == null)
@@ -5473,8 +5517,10 @@ namespace Chummer.Backend.Equipment
             }
             this.RefreshMatrixAttributeArray();
         }
-        #endregion
-        #endregion
+
+        #endregion Hero Lab Importing
+
+        #endregion Methods
 
         private Clip GetClip(int clip)
         {
@@ -5486,11 +5532,10 @@ namespace Chummer.Backend.Equipment
                 _lstAmmo.Add(new Clip(Guid.Empty, 0));
             }
 
-
             return _lstAmmo[clip];
         }
 
-        IHasMatrixAttributes GetMatrixAttributesOverride
+        private IHasMatrixAttributes GetMatrixAttributesOverride
         {
             get
             {
@@ -5505,7 +5550,7 @@ namespace Chummer.Backend.Equipment
                                 ((_objCharacter.Cyberware.DeepFindById(ParentID) ??
                                   _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)) ??
                                  ((_objCharacter.Weapons.DeepFindById(ParentID) ??
-                                   _objCharacter.Vehicles.FindVehicleWeapon(ParentID)) ?? (IHasMatrixAttributes) _objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == ParentID)));
+                                   _objCharacter.Vehicles.FindVehicleWeapon(ParentID)) ?? (IHasMatrixAttributes)_objCharacter.Vehicles.FirstOrDefault(x => x.InternalId == ParentID)));
                 }
                 return objReturn;
             }
@@ -5542,6 +5587,7 @@ namespace Chummer.Backend.Equipment
                     case "Device Rating":
                         strExpression = "2";
                         break;
+
                     case "Program Limit":
                         if (IsCommlink)
                         {
@@ -5552,12 +5598,14 @@ namespace Chummer.Backend.Equipment
                         else
                             strExpression = "0";
                         break;
+
                     case "Data Processing":
                     case "Firewall":
                         strExpression = this.GetMatrixAttributeString("Device Rating");
                         if (string.IsNullOrEmpty(strExpression))
                             strExpression = "2";
                         break;
+
                     default:
                         strExpression = "0";
                         break;
@@ -5630,7 +5678,6 @@ namespace Chummer.Backend.Equipment
             public string AmmoName { get; internal set; }
             public Gear AmmoType { get; set; }
             public string AmmoLocation { get; set; }
-            
 
             internal static Clip Load(XmlNode node)
             {
@@ -5648,7 +5695,6 @@ namespace Chummer.Backend.Equipment
 
             internal void Save(XmlWriter writer)
             {
-                
                 if (Guid != Guid.Empty || Ammo != 0) //Don't save empty clips, we are recreating them anyway. Save those kb
                 {
                     writer.WriteStartElement("clip");
@@ -5773,6 +5819,7 @@ namespace Chummer.Backend.Equipment
                         XPathNavigator checkNode = GlobalOptions.Clipboard.SelectSingleNode("/character/weaponaccessories/accessory")?.CreateNavigator();
                         if (CheckAccessoryRequirements(checkNode)) return true;
                         break;
+
                     default:
                         return false;
                 }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 
@@ -106,7 +107,6 @@ namespace Chummer.UI.Table
             {
                 _blnUpdating = false;
             }
-
         }
     }
 }

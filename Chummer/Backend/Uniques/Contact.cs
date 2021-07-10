@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Annotations;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
 using NLog;
 
 namespace Chummer
@@ -208,6 +209,7 @@ namespace Chummer
             );
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a ContactType.
         /// </summary>
@@ -220,8 +222,10 @@ namespace Chummer
             {
                 case "Contact":
                     return ContactType.Contact;
+
                 case "Pet":
                     return ContactType.Pet;
+
                 default:
                     return ContactType.Enemy;
             }
@@ -248,9 +252,11 @@ namespace Chummer
             _lstCachedContactArchetypes.Sort(CompareListItems.CompareNames);
             return _lstCachedContactArchetypes;
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Constructor, Save, Load, and Print Methods
+
         public Contact(Character objCharacter, bool blnIsReadOnly = false)
         {
             _objCharacter = objCharacter;
@@ -410,7 +416,8 @@ namespace Chummer
 
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Save, Load, and Print Methods
 
         #region Properties
 
@@ -739,7 +746,6 @@ namespace Chummer
                 Log.Error(e, msg);
                 throw;
             }
-
         }
 
         public string DisplayHobbiesVice
@@ -1100,30 +1106,38 @@ namespace Chummer
                 case nameof(Character.Name):
                     OnPropertyChanged(nameof(Name));
                     break;
+
                 case nameof(Character.Age):
                     OnPropertyChanged(nameof(Age));
                     break;
+
                 case nameof(Character.Gender):
                     OnPropertyChanged(nameof(Gender));
                     break;
+
                 case nameof(Character.Metatype):
                 case nameof(Character.Metavariant):
                     OnPropertyChanged(nameof(Metatype));
                     break;
+
                 case nameof(Character.Mugshots):
                     OnPropertyChanged(nameof(Mugshots));
                     break;
+
                 case nameof(Character.MainMugshot):
                     OnPropertyChanged(nameof(MainMugshot));
                     break;
+
                 case nameof(Character.MainMugshotIndex):
                     OnPropertyChanged(nameof(MainMugshotIndex));
                     break;
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region IHasMugshots
+
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
@@ -1303,6 +1317,7 @@ namespace Chummer
                                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
                 Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
         }
-        #endregion
+
+        #endregion IHasMugshots
     }
 }

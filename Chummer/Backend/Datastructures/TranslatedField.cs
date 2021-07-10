@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 
@@ -59,7 +60,7 @@ namespace Chummer
                 return orginal;
             }
 
-            if(translated != null)
+            if (translated != null)
                 return translated;
 
             if (orginal != null && _translate.TryGetValue(orginal, out translated))
@@ -88,6 +89,5 @@ namespace Chummer
                 translated = value;
             }
         }
-
     }
 }

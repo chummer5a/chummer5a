@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -338,6 +339,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.KnowledgeSkillKarmaCost:
                                     decExtra += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
                                     break;
+
                                 case Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -350,12 +352,15 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.SkillCategoryKarmaCost:
                                     decExtra += objLoopImprovement.Value * (Math.Min(intTotalBaseRating, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intLower, objLoopImprovement.Minimum - 1));
                                     break;
+
                                 case Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
+
                                 case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
                                     decExtraSpecCost += objLoopImprovement.Value * intSpecCount;
                                     break;
+
                                 case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
                                     decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -416,6 +421,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.KnowledgeSkillKarmaCost:
                                     decExtra += objLoopImprovement.Value;
                                     break;
+
                                 case Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -428,6 +434,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.SkillCategoryKarmaCost:
                                     decExtra += objLoopImprovement.Value;
                                     break;
+
                                 case Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -475,6 +482,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.KnowledgeSkillPointCost:
                                     decExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
                                     break;
+
                                 case Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;
@@ -487,6 +495,7 @@ namespace Chummer.Backend.Skills
                                 case Improvement.ImprovementType.SkillCategoryPointCost:
                                     decExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
                                     break;
+
                                 case Improvement.ImprovementType.SkillCategoryPointCostMultiplier:
                                     decMultiplier *= objLoopImprovement.Value / 100.0m;
                                     break;

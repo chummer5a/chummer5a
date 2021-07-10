@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +32,7 @@ using System.Xml.XPath;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
+
 // ReSharper disable SpecifyACultureInStringConversionExplicitly
 
 // ReSharper disable once CheckNamespace
@@ -67,6 +69,7 @@ namespace Chummer
         private int _cachedLearnedRating;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Power(Character objCharacter)
         {
             // Create the GUID for the new Power.
@@ -248,7 +251,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (!(node.TryGetField("id", Guid.TryParse, out _guiSourceID)))
@@ -376,15 +379,18 @@ namespace Chummer
             objWriter.WriteEndElement();
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// The Character object being used by the Power.
         /// </summary>
         public Character CharacterObject { get; }
 
         private CharacterAttrib _objMAGAttribute;
+
         /// <summary>
         /// MAG Attribute this skill primarily depends on
         /// </summary>
@@ -426,7 +432,6 @@ namespace Chummer
         /// Internal identifier which will be used to identify this Power in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -665,6 +670,7 @@ namespace Chummer
         }
 
         private decimal _decCachedPowerPoints = decimal.MinValue;
+
         /// <summary>
         /// Total number of Power Points the Power costs.
         /// </summary>
@@ -736,7 +742,6 @@ namespace Chummer
             get => _strSource;
             set => _strSource = value;
         }
-
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -872,18 +877,23 @@ namespace Chummer
                 case "Auto":
                     strReturn = LanguageManager.GetString("String_ActionAutomatic", strLanguage);
                     break;
+
                 case "Free":
                     strReturn = LanguageManager.GetString("String_ActionFree", strLanguage);
                     break;
+
                 case "Simple":
                     strReturn = LanguageManager.GetString("String_ActionSimple", strLanguage);
                     break;
+
                 case "Complex":
                     strReturn = LanguageManager.GetString("String_ActionComplex", strLanguage);
                     break;
+
                 case "Interrupt":
                     strReturn = LanguageManager.GetString("String_ActionInterrupt", strLanguage);
                     break;
+
                 case "Special":
                     strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
                     break;
@@ -897,7 +907,7 @@ namespace Chummer
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
 
-        #endregion
+        #endregion Properties
 
         #region Complex Properties
 
@@ -1098,19 +1108,19 @@ namespace Chummer
             switch (e.PropertyName)
             {
                 case nameof(CharacterOptions.MysAdeptSecondMAGAttribute):
-                {
-                    MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                        ? CharacterObject.MAGAdept
-                        : CharacterObject.MAG;
-                    break;
-                }
+                    {
+                        MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                            ? CharacterObject.MAGAdept
+                            : CharacterObject.MAG;
+                        break;
+                    }
                 case nameof(CharacterOptions.IncreasedImprovedAbilityMultiplier):
-                {
-                    MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
-                        ? CharacterObject.MAGAdept
-                        : CharacterObject.MAG;
-                    break;
-                }
+                    {
+                        MAGAttributeObject = CharacterObject.Options.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept
+                            ? CharacterObject.MAGAdept
+                            : CharacterObject.MAG;
+                        break;
+                    }
             }
         }
 
@@ -1155,7 +1165,8 @@ namespace Chummer
                 return sbdModifier.ToString();
             }
         }
-        #endregion
+
+        #endregion Complex Properties
 
         public void SetSourceDetail(Control sourceControl)
         {

@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,7 @@ namespace Chummer
         private bool _blnRefresh;
 
         #region Control Events
+
         public frmSelectSpell(Character objCharacter)
         {
             InitializeComponent();
@@ -172,23 +174,23 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down:
-                {
-                    int intNewIndex = lstSpells.SelectedIndex + 1;
-                    if (intNewIndex >= lstSpells.Items.Count)
-                        intNewIndex = 0;
-                    if (lstSpells.Items.Count > 0)
-                        lstSpells.SelectedIndex = intNewIndex;
-                    break;
-                }
+                    {
+                        int intNewIndex = lstSpells.SelectedIndex + 1;
+                        if (intNewIndex >= lstSpells.Items.Count)
+                            intNewIndex = 0;
+                        if (lstSpells.Items.Count > 0)
+                            lstSpells.SelectedIndex = intNewIndex;
+                        break;
+                    }
                 case Keys.Up:
-                {
-                    int intNewIndex = lstSpells.SelectedIndex - 1;
-                    if (intNewIndex <= 0)
-                        intNewIndex = lstSpells.Items.Count - 1;
-                    if (lstSpells.Items.Count > 0)
-                        lstSpells.SelectedIndex = intNewIndex;
-                    break;
-                }
+                    {
+                        int intNewIndex = lstSpells.SelectedIndex - 1;
+                        if (intNewIndex <= 0)
+                            intNewIndex = lstSpells.Items.Count - 1;
+                        if (lstSpells.Items.Count > 0)
+                            lstSpells.SelectedIndex = intNewIndex;
+                        break;
+                    }
             }
         }
 
@@ -204,15 +206,18 @@ namespace Chummer
                 return;
             UpdateSpellInfo();
         }
+
         private void chkLimited_CheckedChanged(object sender, EventArgs e)
         {
             if (_blnRefresh)
                 return;
             UpdateSpellInfo();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -263,9 +268,11 @@ namespace Chummer
         }
 
         public bool FreeBonus { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void BuildSpellList()
         {
             string strSpace = LanguageManager.GetString("String_Space");
@@ -503,22 +510,28 @@ namespace Chummer
                             blnAlchemicalFound = true;
                             objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
                             break;
+
                         case "Extended Area":
                             blnExtendedFound = true;
                             objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea"));
                             break;
+
                         case "Material Link":
                             objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink"));
                             break;
+
                         case "Multi-Sense":
                             objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense"));
                             break;
+
                         case "Organic Link":
                             objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink"));
                             break;
+
                         case "Single-Sense":
                             objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense"));
                             break;
+
                         default:
                             objDescriptors.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim()));
                             break;
@@ -568,6 +581,7 @@ namespace Chummer
                 case "M":
                     lblType.Text = LanguageManager.GetString("String_SpellTypeMana");
                     break;
+
                 default:
                     lblType.Text = LanguageManager.GetString("String_SpellTypePhysical");
                     break;
@@ -579,9 +593,11 @@ namespace Chummer
                 case "P":
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent");
                     break;
+
                 case "S":
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
                     break;
+
                 default:
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant");
                     break;
@@ -626,10 +642,12 @@ namespace Chummer
                     lblDamageLabel.Visible = true;
                     lblDamage.Text = LanguageManager.GetString("String_DamagePhysical");
                     break;
+
                 case "S":
                     lblDamageLabel.Visible = true;
                     lblDamage.Text = LanguageManager.GetString("String_DamageStun");
                     break;
+
                 default:
                     lblDamageLabel.Visible = false;
                     lblDamage.Text = string.Empty;
@@ -718,6 +736,7 @@ namespace Chummer
             tlpRight.Visible = true;
             _blnRefresh = false;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

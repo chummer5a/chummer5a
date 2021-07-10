@@ -16,35 +16,32 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
-
 //Get the latest version of SplitButton at: http://wyday.com/splitbutton/
-
 
 public class SplitButton : Button
 {
-    PushButtonState _state;
+    private PushButtonState _state;
 
-
-    const int SplitSectionWidth = 18;
+    private const int SplitSectionWidth = 18;
 
     private static readonly int BorderSize = SystemInformation.Border3DSize.Width * 2;
-    bool _skipNextOpen;
-    Rectangle _dropDownRectangle;
-    bool _showSplit;
+    private bool _skipNextOpen;
+    private Rectangle _dropDownRectangle;
+    private bool _showSplit;
 
-    bool _isSplitMenuVisible;
+    private bool _isSplitMenuVisible;
 
+    private ContextMenuStrip m_SplitMenuStrip;
+    private ContextMenu m_SplitMenu;
 
-    ContextMenuStrip m_SplitMenuStrip;
-    ContextMenu m_SplitMenu;
-
-    TextFormatFlags _textFormatFlags = TextFormatFlags.Default;
+    private TextFormatFlags _textFormatFlags = TextFormatFlags.Default;
 
     /*
     public sealed override bool AutoSize
@@ -111,7 +108,6 @@ public class SplitButton : Button
             else
                 ShowSplit = false;
 
-
             m_SplitMenuStrip = value;
         }
     }
@@ -177,6 +173,7 @@ public class SplitButton : Button
                 case Keys.Down when !_isSplitMenuVisible:
                     ShowContextMenuStrip();
                     break;
+
                 case Keys.Space when kevent.Modifiers == Keys.None:
                     State = PushButtonState.Pressed;
                     break;
@@ -191,14 +188,14 @@ public class SplitButton : Button
         switch (kevent.KeyCode)
         {
             case Keys.Space:
-            {
-                if (MouseButtons == MouseButtons.None)
                 {
-                    State = PushButtonState.Normal;
-                }
+                    if (MouseButtons == MouseButtons.None)
+                    {
+                        State = PushButtonState.Normal;
+                    }
 
-                break;
-            }
+                    break;
+                }
             case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
                 ShowContextMenuStrip();
                 break;
@@ -228,7 +225,7 @@ public class SplitButton : Button
         }
     }
 
-    bool isMouseEntered;
+    private bool isMouseEntered;
 
     protected override void OnMouseEnter(EventArgs e)
     {
@@ -244,7 +241,6 @@ public class SplitButton : Button
         {
             State = PushButtonState.Hot;
         }
-
     }
 
     protected override void OnMouseLeave(EventArgs e)
@@ -345,7 +341,6 @@ public class SplitButton : Button
                             bounds.Height - (internalBorder * 2) + 2);
 
         bool drawSplitLine = (State == PushButtonState.Hot || State == PushButtonState.Pressed || !Application.RenderWithVisualStyles);
-
 
         if (RightToLeft == RightToLeft.Yes)
         {
@@ -463,11 +458,13 @@ public class SplitButton : Button
                 ret_size.Height = Math.Max(Text.Length == 0 ? 0 : text_size.Height, image_size.Height);
                 ret_size.Width = Math.Max(text_size.Width, image_size.Width);
                 break;
+
             case TextImageRelation.ImageAboveText:
             case TextImageRelation.TextAboveImage:
                 ret_size.Height = text_size.Height + image_size.Height;
                 ret_size.Width = Math.Max(text_size.Width, image_size.Width);
                 break;
+
             case TextImageRelation.ImageBeforeText:
             case TextImageRelation.TextBeforeImage:
                 ret_size.Height = Math.Max(text_size.Height, image_size.Height);
@@ -515,18 +512,22 @@ public class SplitButton : Button
                     imageRectangle = OverlayObjectRect(ref content_rect, ref image_size, ImageAlign);
 
                 break;
+
             case TextImageRelation.ImageAboveText:
                 content_rect.Inflate(-4, -4);
                 LayoutTextAboveOrBelowImage(content_rect, false, text_size, image_size, out textRectangle, out imageRectangle);
                 break;
+
             case TextImageRelation.TextAboveImage:
                 content_rect.Inflate(-4, -4);
                 LayoutTextAboveOrBelowImage(content_rect, true, text_size, image_size, out textRectangle, out imageRectangle);
                 break;
+
             case TextImageRelation.ImageBeforeText:
                 content_rect.Inflate(-4, -4);
                 LayoutTextBeforeOrAfterImage(content_rect, false, text_size, image_size, out textRectangle, out imageRectangle);
                 break;
+
             case TextImageRelation.TextBeforeImage:
                 content_rect.Inflate(-4, -4);
                 LayoutTextBeforeOrAfterImage(content_rect, true, text_size, image_size, out textRectangle, out imageRectangle);
@@ -544,34 +545,42 @@ public class SplitButton : Button
                 x = (container.Width - sizeOfObject.Width) / 2;
                 y = 4;
                 break;
+
             case System.Drawing.ContentAlignment.TopRight:
                 x = container.Width - sizeOfObject.Width - 4;
                 y = 4;
                 break;
+
             case System.Drawing.ContentAlignment.MiddleLeft:
                 x = 4;
                 y = (container.Height - sizeOfObject.Height) / 2;
                 break;
+
             case System.Drawing.ContentAlignment.MiddleCenter:
                 x = (container.Width - sizeOfObject.Width) / 2;
                 y = (container.Height - sizeOfObject.Height) / 2;
                 break;
+
             case System.Drawing.ContentAlignment.MiddleRight:
                 x = container.Width - sizeOfObject.Width - 4;
                 y = (container.Height - sizeOfObject.Height) / 2;
                 break;
+
             case System.Drawing.ContentAlignment.BottomLeft:
                 x = 4;
                 y = container.Height - sizeOfObject.Height - 4;
                 break;
+
             case System.Drawing.ContentAlignment.BottomCenter:
                 x = (container.Width - sizeOfObject.Width) / 2;
                 y = container.Height - sizeOfObject.Height - 4;
                 break;
+
             case System.Drawing.ContentAlignment.BottomRight:
                 x = container.Width - sizeOfObject.Width - 4;
                 y = container.Height - sizeOfObject.Height - 4;
                 break;
+
             default:
                 x = 4;
                 y = 4;
@@ -609,12 +618,15 @@ public class SplitButton : Button
             case HorizontalAlignment.Left:
                 offset = 0;
                 break;
+
             case HorizontalAlignment.Right when h_text == HorizontalAlignment.Right:
                 offset = excess_width;
                 break;
+
             case HorizontalAlignment.Center when (h_text == HorizontalAlignment.Left || h_text == HorizontalAlignment.Center):
                 offset += excess_width / 3;
                 break;
+
             default:
                 offset += 2 * (excess_width / 3);
                 break;
@@ -666,12 +678,15 @@ public class SplitButton : Button
             case VerticalAlignment.Top:
                 offset = 0;
                 break;
+
             case VerticalAlignment.Bottom when v_text == VerticalAlignment.Bottom:
                 offset = excess_height;
                 break;
+
             case VerticalAlignment.Center when (v_text == VerticalAlignment.Top || v_text == VerticalAlignment.Center):
                 offset += excess_height / 3;
                 break;
+
             default:
                 offset += 2 * (excess_height / 3);
                 break;
@@ -703,10 +718,12 @@ public class SplitButton : Button
             case System.Drawing.ContentAlignment.MiddleLeft:
             case System.Drawing.ContentAlignment.TopLeft:
                 return HorizontalAlignment.Left;
+
             case System.Drawing.ContentAlignment.BottomCenter:
             case System.Drawing.ContentAlignment.MiddleCenter:
             case System.Drawing.ContentAlignment.TopCenter:
                 return HorizontalAlignment.Center;
+
             case System.Drawing.ContentAlignment.BottomRight:
             case System.Drawing.ContentAlignment.MiddleRight:
             case System.Drawing.ContentAlignment.TopRight:
@@ -724,10 +741,12 @@ public class SplitButton : Button
             case System.Drawing.ContentAlignment.TopCenter:
             case System.Drawing.ContentAlignment.TopRight:
                 return VerticalAlignment.Top;
+
             case System.Drawing.ContentAlignment.MiddleLeft:
             case System.Drawing.ContentAlignment.MiddleCenter:
             case System.Drawing.ContentAlignment.MiddleRight:
                 return VerticalAlignment.Center;
+
             case System.Drawing.ContentAlignment.BottomLeft:
             case System.Drawing.ContentAlignment.BottomCenter:
             case System.Drawing.ContentAlignment.BottomRight:
@@ -749,11 +768,13 @@ public class SplitButton : Button
             case System.Drawing.ContentAlignment.TopLeft:
                 x = outer.X;
                 break;
+
             case System.Drawing.ContentAlignment.BottomCenter:
             case System.Drawing.ContentAlignment.MiddleCenter:
             case System.Drawing.ContentAlignment.TopCenter:
                 x = Math.Max(outer.X + ((outer.Width - inner.Width) / 2), outer.Left);
                 break;
+
             case System.Drawing.ContentAlignment.BottomRight:
             case System.Drawing.ContentAlignment.MiddleRight:
             case System.Drawing.ContentAlignment.TopRight:
@@ -767,11 +788,13 @@ public class SplitButton : Button
             case System.Drawing.ContentAlignment.TopRight:
                 y = outer.Y;
                 break;
+
             case System.Drawing.ContentAlignment.MiddleCenter:
             case System.Drawing.ContentAlignment.MiddleLeft:
             case System.Drawing.ContentAlignment.MiddleRight:
                 y = outer.Y + (outer.Height - inner.Height) / 2;
                 break;
+
             case System.Drawing.ContentAlignment.BottomCenter:
             case System.Drawing.ContentAlignment.BottomRight:
             case System.Drawing.ContentAlignment.BottomLeft:
@@ -783,7 +806,6 @@ public class SplitButton : Button
     }
 
     #endregion Button Layout Calculations
-
 
     private void ShowContextMenuStrip()
     {
@@ -807,12 +829,12 @@ public class SplitButton : Button
         }
     }
 
-    void SplitMenuStrip_Opening(object sender, CancelEventArgs e)
+    private void SplitMenuStrip_Opening(object sender, CancelEventArgs e)
     {
         _isSplitMenuVisible = true;
     }
 
-    void SplitMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
+    private void SplitMenuStrip_Closing(object sender, ToolStripDropDownClosingEventArgs e)
     {
         _isSplitMenuVisible = false;
 
@@ -824,8 +846,7 @@ public class SplitButton : Button
         }
     }
 
-
-    void SplitMenu_Popup(object sender, EventArgs e)
+    private void SplitMenu_Popup(object sender, EventArgs e)
     {
         _isSplitMenuVisible = true;
     }

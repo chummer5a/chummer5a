@@ -32,7 +32,9 @@ namespace Chummer
         int MainMugshotIndex { get; set; }
 
         void SaveMugshots(XmlTextWriter objWriter);
+
         void LoadMugshots(XPathNavigator xmlSavedNode);
+
         void PrintMugshots(XmlTextWriter objWriter);
     }
 }

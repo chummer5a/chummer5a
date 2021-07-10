@@ -144,15 +144,15 @@ namespace Chummer.UI.Powers
             switch (e.ListChangedType)
             {
                 case ListChangedType.ItemChanged:
-                {
-                    string propertyName = e.PropertyDescriptor?.Name;
-                    if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                     {
-                        // recalculation of power points on rating/free levels change
-                        CalculatePowerPoints();
+                        string propertyName = e.PropertyDescriptor?.Name;
+                        if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                        {
+                            // recalculation of power points on rating/free levels change
+                            CalculatePowerPoints();
+                        }
+                        break;
                     }
-                    break;
-                }
                 case ListChangedType.Reset:
                 case ListChangedType.ItemAdded:
                 case ListChangedType.ItemDeleted:
@@ -292,7 +292,7 @@ namespace Chummer.UI.Powers
                 MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
                 ValueUpdater = (p, newRating) =>
                 {
-                    int delta = ((int) newRating) - p.Rating;
+                    int delta = ((int)newRating) - p.Rating;
                     if (delta != 0)
                     {
                         p.Rating += delta;
@@ -395,7 +395,8 @@ namespace Chummer.UI.Powers
                 Size = GetImageSize(Resources.note_edit),
             })
             {
-                ClickHandler = p => {
+                ClickHandler = p =>
+                {
                     using (frmNotes frmPowerNotes = new frmNotes(p.Notes, p.NotesColor))
                     {
                         frmPowerNotes.ShowDialog(this);
@@ -408,7 +409,8 @@ namespace Chummer.UI.Powers
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (p => {
+                ToolTipExtractor = (p =>
+                {
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
                         strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();

@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections;
- using System.Diagnostics;
- using System.Windows.Forms;
+using System.Diagnostics;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -121,6 +122,7 @@ namespace Chummer
     }
 
     #region Sorting Classes
+
     public static class CompareTreeNodes
     {
         /// <summary>
@@ -325,5 +327,6 @@ namespace Chummer
             set => _objOrderOfSort = value;
         }
     }
-    #endregion
+
+    #endregion Sorting Classes
 }

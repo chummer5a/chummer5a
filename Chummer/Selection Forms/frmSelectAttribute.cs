@@ -16,9 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -29,6 +30,7 @@ namespace Chummer
         private readonly List<ListItem> _lstAttributes;
 
         #region Control Events
+
         public frmSelectAttribute(params string[] lstAttributeAbbrevs)
         {
             InitializeComponent();
@@ -72,9 +74,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Attribute that was selected in the dialogue.
         /// </summary>
@@ -101,6 +105,6 @@ namespace Chummer
         /// </summary>
         public bool DoNotAffectMetatypeMaximum => chkDoNotAffectMetatypeMaximum.Checked;
 
-        #endregion
+        #endregion Properties
     }
 }

@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Skills;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,6 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
 using NLog;
 
 namespace Chummer
@@ -54,6 +55,7 @@ namespace Chummer
         private SourceString _objCachedSourceDetail;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public ComplexForm(Character objCharacter)
         {
             // Create the GUID for the new Complex Form.
@@ -104,7 +106,6 @@ namespace Chummer
             }
         }
 
-
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -136,14 +137,14 @@ namespace Chummer
         /// Load the Complex Form from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public  void Load(XmlNode objNode)
+        public void Load(XmlNode objNode)
         {
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -188,9 +189,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -300,12 +303,16 @@ namespace Chummer
             {
                 case "P":
                     return LanguageManager.GetString("String_SpellDurationPermanent", strLanguage);
+
                 case "S":
                     return LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
+
                 case "I":
                     return LanguageManager.GetString("String_SpellDurationInstant", strLanguage);
+
                 case "Special":
                     return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
+
                 default:
                     return LanguageManager.GetString("String_None", strLanguage);
             }
@@ -453,20 +460,28 @@ namespace Chummer
             {
                 case "Persona":
                     return LanguageManager.GetString("String_ComplexFormTargetPersona", strLanguage);
+
                 case "Device":
                     return LanguageManager.GetString("String_ComplexFormTargetDevice", strLanguage);
+
                 case "File":
                     return LanguageManager.GetString("String_ComplexFormTargetFile", strLanguage);
+
                 case "Self":
                     return LanguageManager.GetString("String_SpellRangeSelf", strLanguage);
+
                 case "Sprite":
                     return LanguageManager.GetString("String_ComplexFormTargetSprite", strLanguage);
+
                 case "Host":
                     return LanguageManager.GetString("String_ComplexFormTargetHost", strLanguage);
+
                 case "IC":
                     return LanguageManager.GetString("String_ComplexFormTargetIC", strLanguage);
+
                 case "Special":
                     return LanguageManager.GetString("String_Special", strLanguage);
+
                 default:
                     return LanguageManager.GetString("String_None", strLanguage);
             }
@@ -489,7 +504,6 @@ namespace Chummer
             get => _strSource;
             set => _strSource = value;
         }
-
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -616,9 +630,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsComplexForm)
         {
             if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -651,7 +667,8 @@ namespace Chummer
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {

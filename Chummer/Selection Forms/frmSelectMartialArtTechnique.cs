@@ -38,6 +38,7 @@ namespace Chummer
         private readonly HashSet<string> _setAllowedTechniques = new HashSet<string>();
 
         #region Control Events
+
         public frmSelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
             InitializeComponent();
@@ -71,11 +72,10 @@ namespace Chummer
                     foreach (XPathNavigator xmlTechnique in objTechniquesList)
                     {
                         if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null) continue;
-                            _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
+                        _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
                     }
                 }
             }
-
         }
 
         private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)
@@ -135,9 +135,11 @@ namespace Chummer
         {
             RefreshTechniquesList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -148,9 +150,10 @@ namespace Chummer
         /// </summary>
         public string SelectedTechnique => _strSelectedTechnique;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -208,6 +211,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

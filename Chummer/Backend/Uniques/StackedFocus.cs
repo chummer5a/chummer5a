@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Equipment;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -41,6 +42,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
+
         public StackedFocus(Character objCharacter)
         {
             // Create the GUID for the new Focus.
@@ -88,9 +90,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, and Load Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Stacked Focus in the Improvement system.
         /// </summary>
@@ -170,51 +174,67 @@ namespace Chummer
                         case "Qi Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaQiFocus;
                             break;
+
                         case "Sustaining Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaSustainingFocus;
                             break;
+
                         case "Counterspelling Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaCounterspellingFocus;
                             break;
+
                         case "Banishing Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaBanishingFocus;
                             break;
+
                         case "Binding Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaBindingFocus;
                             break;
+
                         case "Weapon Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaWeaponFocus;
                             break;
+
                         case "Spellcasting Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaSpellcastingFocus;
                             break;
+
                         case "Summoning Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaSummoningFocus;
                             break;
+
                         case "Alchemical Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaAlchemicalFocus;
                             break;
+
                         case "Centering Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaCenteringFocus;
                             break;
+
                         case "Masking Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaMaskingFocus;
                             break;
+
                         case "Disenchanting Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaDisenchantingFocus;
                             break;
+
                         case "Power Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaPowerFocus;
                             break;
+
                         case "Flexible Signature Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaFlexibleSignatureFocus;
                             break;
+
                         case "Ritual Spellcasting Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaRitualSpellcastingFocus;
                             break;
+
                         case "Spell Shaping Focus":
                             decKarmaMultiplier = _objCharacter.Options.KarmaSpellShapingFocus;
                             break;
+
                         default:
                             decKarmaMultiplier = 1;
                             break;
@@ -227,6 +247,7 @@ namespace Chummer
                             case Improvement.ImprovementType.FocusBindingKarmaCost:
                                 decExtraKarmaCost += objLoopImprovement.Value;
                                 break;
+
                             case Improvement.ImprovementType.FocusBindingKarmaMultiplier:
                                 decKarmaMultiplier += objLoopImprovement.Value;
                                 break;
@@ -264,9 +285,10 @@ namespace Chummer
         /// </summary>
         public List<Gear> Gear => _lstGear;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         public TreeNode CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus)
         {
             if (objGear == null)
@@ -282,6 +304,7 @@ namespace Chummer
 
             return objNode;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

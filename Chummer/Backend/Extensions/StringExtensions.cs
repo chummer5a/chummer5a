@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -152,7 +153,7 @@ namespace Chummer
                     }
 
                     achrNewChars[intCurrent++] = chrLoop;
-                    SkipChar: ;
+                SkipChar:;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
@@ -178,7 +179,7 @@ namespace Chummer
                     }
 
                     achrNewChars[intCurrent++] = chrLoop;
-                    SkipChar:;
+                SkipChar:;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
@@ -1115,7 +1116,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(sbdInput));
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for(int i = 0; i < astrValues.Length; ++i)
+            for (int i = 0; i < astrValues.Length; ++i)
             {
                 string strLoop = astrValues[i];
                 sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
@@ -1301,8 +1302,8 @@ namespace Chummer
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
-            if(string.IsNullOrEmpty(strSearch))
-                return "\"\"" ;
+            if (string.IsNullOrEmpty(strSearch))
+                return "\"\"";
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
@@ -1441,10 +1442,13 @@ namespace Chummer
 
         private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private static readonly Regex rgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private static readonly Regex rgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private static readonly object rtbRtfManipulatorLock = new object();
         private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
     }

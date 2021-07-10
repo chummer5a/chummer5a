@@ -16,9 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections.Generic;
- using System.Windows.Forms;
+
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -30,6 +31,7 @@ namespace Chummer
         private string _strLimitType = string.Empty;
 
         #region Control Events
+
         public frmSelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
             InitializeComponent();
@@ -80,9 +82,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Modifier name that was entered in the dialogue.
         /// </summary>
@@ -102,7 +106,8 @@ namespace Chummer
         /// Modifier limit type that was entered in the dialogue.
         /// </summary>
         public string SelectedLimitType => _strLimitType;
-        #endregion
+
+        #endregion Properties
 
         private void ToggleOKEnabled(object sender, EventArgs e)
         {

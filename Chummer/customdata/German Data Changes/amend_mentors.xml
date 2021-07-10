@@ -22,7 +22,7 @@
     <mentor>
       <id>168a0db8-0676-4a7d-86ce-99a43bf0f2bc</id> <!-- Raven -->
       <choices>
-        <choice xpathfilter="starts-with(name, 'Adept:')" amendoperation="remove"/>
+        <choice xpathfilter="starts-with(name, 'Adept:')" amendoperation="remove" />
         <choice amendoperation="addnode">
           <name>Adept: Free Traceless Walk</name>
           <bonus>

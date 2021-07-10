@@ -37,6 +37,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBasePowerDataNode;
 
         #region Control Events
+
         public frmSelectPower(Character objCharacter)
         {
             InitializeComponent();
@@ -125,27 +126,29 @@ namespace Chummer
                 case Keys.Down when lstPowers.SelectedIndex + 1 < lstPowers.Items.Count:
                     lstPowers.SelectedIndex += 1;
                     break;
-                case Keys.Down:
-                {
-                    if (lstPowers.Items.Count > 0)
-                    {
-                        lstPowers.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstPowers.Items.Count > 0)
+                        {
+                            lstPowers.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstPowers.SelectedIndex - 1 >= 0:
                     lstPowers.SelectedIndex -= 1;
                     break;
-                case Keys.Up:
-                {
-                    if (lstPowers.Items.Count > 0)
-                    {
-                        lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstPowers.Items.Count > 0)
+                        {
+                            lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -154,9 +157,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -171,7 +176,6 @@ namespace Chummer
         /// Power that was selected in the dialogue.
         /// </summary>
         public string SelectedPower { get; private set; } = string.Empty;
-
 
         /// <summary>
         /// Only the provided Powers should be shown in the list.
@@ -194,9 +198,10 @@ namespace Chummer
         /// </summary>
         public decimal PointsPerLevel { set; get; } = 0.25m;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         private void BuildPowerList()
         {
             if (_blnLoading)
@@ -275,6 +280,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

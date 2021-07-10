@@ -16,15 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Reflection;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
- using Chummer.Backend.Skills;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -52,23 +53,29 @@ namespace Chummer
                 case "armor.xml":
                     TestArmor();
                     break;
+
                 case "bioware.xml":
                 case "cyberware.xml":
                     TestCyberware(cboTest.Text);
                     break;
+
                 case "critters.xml":
                 case "metatypes.xml":
                     TestMetatype(cboTest.Text);
                     break;
+
                 case "gear.xml":
                     TestGear();
                     break;
+
                 case "qualities.xml":
                     TestQuality();
                     break;
+
                 case "vehicles.xml":
                     TestVehicles();
                     break;
+
                 case "weapons.xml":
                     TestWeapons();
                     break;
@@ -559,7 +566,7 @@ namespace Chummer
             }
         }
 
-        void TestMetatype(string strFile)
+        private void TestMetatype(string strFile)
         {
             XmlDocument objXmlDocument = XmlManager.Load(strFile);
 
@@ -903,7 +910,6 @@ namespace Chummer
                                 //    objGroup.RatingMaximum = intMaxRating;
 
                                 // Set the MaxSkillRating for the character so it can be used later when they add new Knowledge Skills or Exotic Skills.
-
                             }
 
                             // Add any Complex Forms the Critter comes with (typically Sprites)

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -55,21 +56,21 @@ namespace Chummer.UI.Table
                 if (Sortable)
                 {
                     int intArrowSize = 2 * ArrowPadding + ArrowSize;
-                    int intMinWidth = (int) ((intArrowSize + _intLabelPadding) * g.DpiX / 96.0f) +
+                    int intMinWidth = (int)((intArrowSize + _intLabelPadding) * g.DpiX / 96.0f) +
                                       _lblCellText.Width;
                     int intMinHeight =
-                        Math.Max(_lblCellText.Height + (int) (2 * _intLabelPadding * g.DpiY / 96.0f),
-                            (int) (intArrowSize * g.DpiY / 96.0f));
+                        Math.Max(_lblCellText.Height + (int)(2 * _intLabelPadding * g.DpiY / 96.0f),
+                            (int)(intArrowSize * g.DpiY / 96.0f));
                     MinimumSize = new Size(intMinWidth, intMinHeight);
                 }
                 else
                 {
-                    int intMinWidth = _lblCellText.Width + (int) (_intLabelPadding * g.DpiX / 96.0f);
-                    int intMinHeight = _lblCellText.Height + (int) (2 * _intLabelPadding * g.DpiY / 96.0f);
+                    int intMinWidth = _lblCellText.Width + (int)(_intLabelPadding * g.DpiX / 96.0f);
+                    int intMinHeight = _lblCellText.Height + (int)(2 * _intLabelPadding * g.DpiY / 96.0f);
                     MinimumSize = new Size(intMinWidth, intMinHeight);
                 }
 
-                _lblCellText.Location = new Point((int) (_intLabelPadding * g.DpiX / 96.0f),
+                _lblCellText.Location = new Point((int)(_intLabelPadding * g.DpiX / 96.0f),
                     (MinimumSize.Height - _lblCellText.Height) / 2);
             }
             ResumeLayout(false);
@@ -107,20 +108,23 @@ namespace Chummer.UI.Table
         public SortOrder SortType
         {
             get => _eSortType;
-            set {
+            set
+            {
                 _eSortType = value;
                 Invalidate();
             }
         }
 
-        public object TextTag {
+        public object TextTag
+        {
             get => _lblCellText.Tag;
             set => _lblCellText.Tag = value;
         }
 
         internal bool Sortable { get; set; }
 
-        public virtual event EventHandler HeaderClick {
+        public virtual event EventHandler HeaderClick
+        {
             add
             {
                 Click += value;
@@ -153,7 +157,7 @@ namespace Chummer.UI.Table
                 }
                 using (Brush objBrush = new SolidBrush(ColorManager.ControlLightest))
                     e.Graphics.FillPolygon(objBrush,
-                        new []
+                        new[]
                         {
                             new Point(intLeft, intBottomY),
                             new Point(intTipX, intTipY),

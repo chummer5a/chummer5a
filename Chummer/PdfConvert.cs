@@ -1,11 +1,11 @@
 using System;
 using System.Buffers;
-using System.Diagnostics;
-using System.Text;
-using System.IO;
-using System.Threading;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Chummer;
 
@@ -13,12 +13,16 @@ namespace Codaxy.WkHtmlToPdf
 {
     public class PdfConvertException : Exception
     {
-        public PdfConvertException(string msg) : base(msg) { }
+        public PdfConvertException(string msg) : base(msg)
+        {
+        }
     }
 
     public class PdfConvertTimeoutException : PdfConvertException
     {
-        public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.") { }
+        public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.")
+        {
+        }
     }
 
     public class PdfOutput
@@ -62,7 +66,7 @@ namespace Codaxy.WkHtmlToPdf
         private static PdfConvertEnvironment _e;
 
         public static PdfConvertEnvironment Environment => _e ?? (_e = new PdfConvertEnvironment
-            {WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation()});
+        { WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation() });
 
         private static string GetWkhtmlToPdfExeLocation()
         {
@@ -176,7 +180,6 @@ namespace Codaxy.WkHtmlToPdf
 
             if (!string.IsNullOrEmpty(document.FooterFontName))
                 paramsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
-
 
             if (document.ExtraParams != null)
                 foreach (var extraParam in document.ExtraParams)
@@ -319,7 +322,6 @@ namespace Codaxy.WkHtmlToPdf
                     }
                 }
 
-
                 if (woutput.OutputStream != null)
                 {
                     using (Stream fs = new FileStream(outputPdfFilePath, FileMode.Open))
@@ -349,7 +351,6 @@ namespace Codaxy.WkHtmlToPdf
                     byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
                     woutput.OutputCallback(document, pdfFileBytes);
                 }
-
             }
             finally
             {

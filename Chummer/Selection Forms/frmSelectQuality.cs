@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Windows.Forms;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml.XPath;
 
 namespace Chummer
@@ -41,6 +42,7 @@ namespace Chummer
         private static string s_StrSelectCategory = string.Empty;
 
         #region Control Events
+
         public frmSelectQuality(Character objCharacter)
         {
             InitializeComponent();
@@ -145,6 +147,7 @@ namespace Chummer
                                 case "Positive":
                                     intBP += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
                                     break;
+
                                 case "Negative":
                                     intBP -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
                                     break;
@@ -248,27 +251,29 @@ namespace Chummer
                 case Keys.Down when lstQualities.SelectedIndex + 1 < lstQualities.Items.Count:
                     lstQualities.SelectedIndex += 1;
                     break;
-                case Keys.Down:
-                {
-                    if (lstQualities.Items.Count > 0)
-                    {
-                        lstQualities.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstQualities.Items.Count > 0)
+                        {
+                            lstQualities.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstQualities.SelectedIndex - 1 >= 0:
                     lstQualities.SelectedIndex -= 1;
                     break;
-                case Keys.Up:
-                {
-                    if (lstQualities.Items.Count > 0)
-                    {
-                        lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstQualities.Items.Count > 0)
+                        {
+                            lstQualities.SelectedIndex = lstQualities.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -296,9 +301,11 @@ namespace Chummer
             _blnLoading = false;
             BuildQualityList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Quality that was selected in the dialogue.
         /// </summary>
@@ -336,9 +343,10 @@ namespace Chummer
         /// </summary>
         public bool FreeCost => chkFree.Checked;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Build the list of Qualities.
         /// </summary>
@@ -419,7 +427,7 @@ namespace Chummer
                 sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
 
             string strCategoryLower = strCategory == "Show All" ? "*" : strCategory.ToLowerInvariant();
-            List <ListItem> lstQuality = new List<ListItem>();
+            List<ListItem> lstQuality = new List<ListItem>();
             foreach (XPathNavigator objXmlQuality in _xmlBaseQualityDataNode.Select("qualities/quality[" + sbdFilter + "]"))
             {
                 string strLoopName = objXmlQuality.SelectSingleNode("name")?.Value;
@@ -469,6 +477,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

@@ -73,7 +73,7 @@ namespace Chummer
             }
             return intHash;
         }
-        
+
         /// <summary>
         /// Syntactic sugar to wraps this object instance into an IEnumerable consisting of a single item.
         /// </summary>

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -65,12 +66,13 @@ namespace Chummer
             lock (_objLock)
                 return _stkInternal.Contains(item);
         }
+
         public new void CopyTo(T[] array, int arrayIndex)
         {
             lock (_objLock)
                 _stkInternal.CopyTo(array, arrayIndex);
         }
-        
+
         public new Enumerator GetEnumerator()
         {
             lock (_objLock)

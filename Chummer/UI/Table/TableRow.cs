@@ -38,7 +38,8 @@ namespace Chummer.UI.Table
             Update(Index, Selected);
         }
 
-        protected virtual void DoLayout() {
+        protected virtual void DoLayout()
+        {
         }
 
         protected virtual void Update(int intIndex, bool blnSelected)
@@ -49,7 +50,7 @@ namespace Chummer.UI.Table
             }
             else
             {
-                BackColor = (intIndex & 1 ) == 0 ? ColorManager.ControlLightest : ColorManager.Control;
+                BackColor = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control;
             }
         }
 
@@ -66,7 +67,8 @@ namespace Chummer.UI.Table
             }
         }
 
-        public bool Selected {
+        public bool Selected
+        {
             get => _blnSelected;
             set
             {

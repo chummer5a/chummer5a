@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -40,7 +41,7 @@ namespace Chummer
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
 
-        readonly ToolTip _myToolTip = new ToolTip
+        private readonly ToolTip _myToolTip = new ToolTip
         {
             IsBalloon = true
         };
@@ -58,13 +59,13 @@ namespace Chummer
 
             Paint += panel1_Paint;
 
-            using (var tmrDraw = new Timer {Interval = 100})
+            using (var tmrDraw = new Timer { Interval = 100 })
             {
                 tmrDraw.Tick += tmr_DrawTick;
                 tmrDraw.Start();
             }
 
-            using (var tmrTip = new Timer {Interval = 300000})
+            using (var tmrTip = new Timer { Interval = 300000 })
             {
                 tmrTip.Tick += tmr_TipTick;
                 tmrTip.Start();
@@ -73,7 +74,9 @@ namespace Chummer
             _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(), this, _mouthCenter);
             _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).SelectSingleNode("/chummer/tips");
         }
+
         #region Event Handlers
+
         private void tmr_DrawTick(object sender, EventArgs e)
         {
             // See if the cursor has moved.
@@ -106,13 +109,17 @@ namespace Chummer
                     NativeMethods.ReleaseCapture();
                     NativeMethods.SendMessage(Handle, 0xa1, 0x2, 0);
                     break;
+
                 case MouseButtons.Left:
                     ShowBalloonTip();
                     break;
             }
         }
-        #endregion
+
+        #endregion Event Handlers
+
         #region Draw Eyes
+
         private void DrawEyes(Graphics gr)
         {
             // Convert the cursor position into form units.
@@ -171,7 +178,9 @@ namespace Chummer
                 Log.Warn(e, msg);
             }
         }
-        #endregion
+
+        #endregion Draw Eyes
+
         #region Chat Bubble
 
         private string HelpfulAdvice()
@@ -190,6 +199,7 @@ namespace Chummer
             }
             return string.Empty;
         }
+
         private void ShowBalloonTip()
         {
             _myToolTip.Show(HelpfulAdvice().WordWrap(), this, _mouthCenter);
@@ -199,7 +209,9 @@ namespace Chummer
         {
             _myToolTip.Hide(this);
         }
-        #endregion
+
+        #endregion Chat Bubble
+
         #region Properties
 
         public Character CharacterObject
@@ -212,6 +224,6 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

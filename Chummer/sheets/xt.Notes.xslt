@@ -6,14 +6,14 @@
 
     <xsl:if test="notes != '' or gamenotes != ''">
       <div class="block" id="NotesBlock">
-        <table><tr><td/></tr></table>
+        <table><tr><td /></tr></table>
         <xsl:call-template name="TableTitle">
-          <xsl:with-param name="name" select="$lang.Notes"/>
+          <xsl:with-param name="name" select="$lang.Notes" />
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveHtml">
-              <xsl:with-param name="text" select="notes"/>
+              <xsl:with-param name="text" select="notes" />
             </xsl:call-template>
           </td></tr>
           <xsl:if test="notes != '' and gamenotes != ''">
@@ -30,81 +30,80 @@
                   margin: 0.1em 0;
                   padding: 0;
                   width: 100%;
-              "/>
+              " />
             </td></tr>
           </xsl:if>
           <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveHtml">
-              <xsl:with-param name="text" select="gamenotes"/>
+              <xsl:with-param name="text" select="gamenotes" />
             </xsl:call-template>
           </td></tr>
         </table>
       </div>
       <xsl:call-template name="RowSummary">
-        <xsl:with-param name="text" select="$lang.Notes"/>
-        <xsl:with-param name="blockname" select="'NotesBlock'"/>
+        <xsl:with-param name="text" select="$lang.Notes" />
+        <xsl:with-param name="blockname" select="'NotesBlock'" />
       </xsl:call-template>
     </xsl:if>
 
     <xsl:if test="concept != ''">
       <div class="block" id="ConceptBlock">
-        <table><tr><td/></tr></table>
+        <table><tr><td /></tr></table>
         <xsl:call-template name="TableTitle">
-          <xsl:with-param name="name" select="$lang.Concept"/>
+          <xsl:with-param name="name" select="$lang.Concept" />
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveHtml">
-              <xsl:with-param name="text" select="concept"/>
+              <xsl:with-param name="text" select="concept" />
             </xsl:call-template>
           </td></tr>
         </table>
       </div>
       <xsl:call-template name="RowSummary">
-        <xsl:with-param name="text" select="$lang.Concept"/>
-        <xsl:with-param name="blockname" select="'ConceptBlock'"/>
+        <xsl:with-param name="text" select="$lang.Concept" />
+        <xsl:with-param name="blockname" select="'ConceptBlock'" />
       </xsl:call-template>
     </xsl:if>
 
     <xsl:if test="description != ''">
       <div class="block" id="DescriptionBlock">
-        <table><tr><td/></tr></table>
+        <table><tr><td /></tr></table>
         <xsl:call-template name="TableTitle">
-          <xsl:with-param name="name" select="$lang.Description"/>
+          <xsl:with-param name="name" select="$lang.Description" />
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveHtml">
-              <xsl:with-param name="text" select="description"/>
+              <xsl:with-param name="text" select="description" />
             </xsl:call-template>
           </td></tr>
         </table>
       </div>
       <xsl:call-template name="RowSummary">
-        <xsl:with-param name="text" select="$lang.Description"/>
-        <xsl:with-param name="blockname" select="'DescriptionBlock'"/>
+        <xsl:with-param name="text" select="$lang.Description" />
+        <xsl:with-param name="blockname" select="'DescriptionBlock'" />
       </xsl:call-template>
     </xsl:if>
 
     <xsl:if test="background != ''">
       <div class="block" id="BackgroundBlock">
-        <table><tr><td/></tr></table>
+        <table><tr><td /></tr></table>
         <xsl:call-template name="TableTitle">
-          <xsl:with-param name="name" select="$lang.Background"/>
+          <xsl:with-param name="name" select="$lang.Background" />
         </xsl:call-template>
         <table class="tablestyle">
           <tr><td colspan="100%" class="notesrow">
             <xsl:call-template name="PreserveHtml">
-              <xsl:with-param name="text" select="background"/>
+              <xsl:with-param name="text" select="background" />
             </xsl:call-template>
           </td></tr>
         </table>
       </div>
       <xsl:call-template name="RowSummary">
-        <xsl:with-param name="text" select="$lang.Background"/>
-        <xsl:with-param name="blockname" select="'BackgroundBlock'"/>
+        <xsl:with-param name="text" select="$lang.Background" />
+        <xsl:with-param name="blockname" select="'BackgroundBlock'" />
       </xsl:call-template>
     </xsl:if>
-
   </xsl:template>
 </xsl:stylesheet>

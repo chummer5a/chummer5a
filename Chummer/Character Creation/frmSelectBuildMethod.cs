@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -32,6 +33,7 @@ namespace Chummer
         private readonly bool _blnForExistingCharacter;
 
         #region Control Events
+
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
@@ -156,12 +158,14 @@ namespace Chummer
                         lblBuildMethodParamLabel.Visible = true;
                         lblBuildMethodParam.Visible = true;
                         break;
+
                     case CharacterBuildMethod.SumtoTen:
                         lblBuildMethodParamLabel.Text = LanguageManager.GetString("String_SumtoTen");
                         lblBuildMethodParam.Text = objSelectedGameplayOption.SumtoTen.ToString(GlobalOptions.CultureInfo);
                         lblBuildMethodParamLabel.Visible = true;
                         lblBuildMethodParam.Visible = true;
                         break;
+
                     default:
                         lblBuildMethodParamLabel.Visible = false;
                         lblBuildMethodParam.Visible = false;
@@ -185,10 +189,11 @@ namespace Chummer
                 if (string.IsNullOrEmpty(lblBooks.Text))
                     lblCustomData.Text = LanguageManager.GetString("String_None");
             }
-            
+
             if (!_blnLoading)
                 ResumeLayout();
         }
-        #endregion
+
+        #endregion Control Events
     }
 }

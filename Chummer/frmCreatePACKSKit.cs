@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Text;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -31,6 +32,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
+
         public frmCreatePACKSKit(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
@@ -67,7 +69,7 @@ namespace Chummer
             if (XmlManager.LoadXPath("packs.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths)
                 .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -182,6 +184,7 @@ namespace Chummer
                                 case QualityType.Positive:
                                     blnPositive = true;
                                     break;
+
                                 case QualityType.Negative:
                                     blnNegative = true;
                                     break;
@@ -395,6 +398,7 @@ namespace Chummer
                                 case Improvement.ImprovementSource.Bioware:
                                     blnBioware = true;
                                     break;
+
                                 case Improvement.ImprovementSource.Cyberware:
                                     blnCyberware = true;
                                     break;
@@ -748,7 +752,6 @@ namespace Chummer
                 }
             }
 
-
             Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated"), txtName.Text),
                 LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
@@ -758,9 +761,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-#endregion
 
-#region Methods
+        #endregion Control Events
+
+        #region Methods
+
         /// <summary>
         /// Recursively write out all Gear information since these can be nested pretty deep.
         /// </summary>
@@ -794,6 +799,7 @@ namespace Chummer
             // </gears>
             objWriter.WriteEndElement();
         }
-#endregion
+
+        #endregion Methods
     }
 }

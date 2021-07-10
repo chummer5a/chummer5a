@@ -75,10 +75,13 @@ namespace Chummer
             {
                 case 2: // Extremely common case, so handle it explicitly
                     return decBase * decBase;
+
                 case 1:
                     return decBase;
+
                 case 0: // Yes, even 0^0 should return 1 per IEEE specifications
                     return 1;
+
                 case -1:
                     if (decBase == decimal.Zero)
                         throw new DivideByZeroException();
@@ -88,10 +91,12 @@ namespace Chummer
             {
                 case decimal.One:
                     return 1;
+
                 case decimal.Zero:
                     if (intPower < 0)
                         throw new DivideByZeroException();
                     return 0;
+
                 case decimal.MinusOne:
                     return 1 - 2 * (Math.Abs(intPower) & 1);
             }

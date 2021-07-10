@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Diagnostics;
- using System.Xml;
- using System.Globalization;
+
+using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.Xml;
 
 namespace Chummer
 {
@@ -96,6 +97,7 @@ namespace Chummer
         private string _strExtra = string.Empty;
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a KarmaExpenseType.
         /// </summary>
@@ -113,9 +115,11 @@ namespace Chummer
         {
             return Enum.TryParse(strValue, out NuyenExpenseType result) ? result : NuyenExpenseType.ManualAdd;
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Constructor, Create, Save, and Load Methods
+
         /// <summary>
         /// Create the ExpenseUndo Entry.
         /// </summary>
@@ -178,9 +182,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
         }
 
-        #endregion
+        #endregion Constructor, Create, Save, and Load Methods
 
         #region Properties
+
         /// <summary>
         /// Karma Expense Type.
         /// </summary>
@@ -217,7 +222,8 @@ namespace Chummer
             get => _strExtra;
             set => _strExtra = value;
         }
-        #endregion
+
+        #endregion Properties
     }
 
     /// <summary>
@@ -236,6 +242,7 @@ namespace Chummer
         private bool _blnForceCareerVisible;
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to an ExpenseType.
         /// </summary>
@@ -246,13 +253,16 @@ namespace Chummer
             {
                 case "Nuyen":
                     return ExpenseType.Nuyen;
+
                 default:
                     return ExpenseType.Karma;
             }
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public ExpenseLogEntry(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -345,9 +355,11 @@ namespace Chummer
                 objWriter.WriteEndElement();
             }
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Expense Log Entry.
         /// </summary>
@@ -446,7 +458,7 @@ namespace Chummer
         /// </summary>
         public ExpenseUndo Undo { get; set; }
 
-        #endregion
+        #endregion Properties
 
         public bool Equals(ExpenseLogEntry other)
         {

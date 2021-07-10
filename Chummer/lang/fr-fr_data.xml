@@ -19955,7 +19955,7 @@
                 <id>actiondicepool</id>
                 <name>Action Dice-Pool Modifier</name>
                 <translate>Modificateur du pool de dés d​'action</translate>
-                <altpage>Ajuste le nombre de cases que le personnage possède dans son moniteur de 
+                <altpage>Ajuste le nombre de cases que le personnage possède dans son moniteur de
           condition étourdissant. Les nombres positifs augmentent le nombre de cases du
           moniteur de condition. Les nombres négatifs réduisent le nombre de cases du
           moniteur de condition.</altpage>

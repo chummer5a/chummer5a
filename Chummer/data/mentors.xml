@@ -1695,13 +1695,11 @@
         <choice>
           <name>Magician: Determined by spirit type and gamemaster approval.</name>
           <bonus>
-
           </bonus>
         </choice>
         <choice>
           <name>Adept: Determined by spirit type and gamemaster approval.</name>
           <bonus>
-
           </bonus>
         </choice>
       </choices>
@@ -2865,7 +2863,7 @@
             </specificpower>
           </bonus>
         </choice>
-      </choices>		
+      </choices>
       <source>SOTG</source>
       <page>29</page>
     </mentor>

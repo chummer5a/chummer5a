@@ -102,7 +102,7 @@ namespace Chummer.UI.Skills
 
                 int intMinimumSize;
                 using (Graphics g = CreateGraphics())
-                    intMinimumSize = (int) (25 * g.DpiX / 96.0f);
+                    intMinimumSize = (int)(25 * g.DpiX / 96.0f);
 
                 if (objSkill.CharacterObject.Created)
                 {
@@ -204,7 +204,7 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudSkill"
                     };
                     nudKarma = new NumericUpDownEx
@@ -213,7 +213,7 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudKarma"
                     };
 
@@ -326,11 +326,13 @@ namespace Chummer.UI.Skills
                     if (blnUpdateAll)
                         goto case nameof(Skill.Default);
                     break;
+
                 case nameof(Skill.Default):
                     lblName.Font = !_objSkill.Default ? _fntItalicName : _fntNormalName;
                     if (blnUpdateAll)
                         goto case nameof(Skill.DefaultAttribute);
                     break;
+
                 case nameof(Skill.DefaultAttribute):
                     if (cboSelectAttribute != null)
                     {
@@ -344,6 +346,7 @@ namespace Chummer.UI.Skills
                     if (blnUpdateAll)
                         goto case nameof(Skill.CGLSpecializations);
                     break;
+
                 case nameof(Skill.CGLSpecializations):
                     if (cboSpec?.Visible == true)
                     {
@@ -416,6 +419,7 @@ namespace Chummer.UI.Skills
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
                             decExtraSpecCost += objLoopImprovement.Value;
                             break;
+
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
                             decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
@@ -460,7 +464,7 @@ namespace Chummer.UI.Skills
         {
             btnAttribute.Visible = true;
             cboSelectAttribute.Visible = false;
-            AttributeActive = _objSkill.CharacterObject.GetAttribute((string) cboSelectAttribute.SelectedValue);
+            AttributeActive = _objSkill.CharacterObject.GetAttribute((string)cboSelectAttribute.SelectedValue);
             btnAttribute.Text = cboSelectAttribute.Text;
         }
 
@@ -553,9 +557,10 @@ namespace Chummer.UI.Skills
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
-        ButtonWithToolTip _activeButton;
+        private ButtonWithToolTip _activeButton;
 
         private ButtonWithToolTip ActiveButton
         {
@@ -591,19 +596,19 @@ namespace Chummer.UI.Skills
         {
             ActiveButton = null;
         }
-        #endregion
+
+        #endregion ButtonWithToolTip Visibility workaround
 
         private void SkillControl2_DpiChangedAfterParent(object sender, EventArgs e)
         {
             using (Graphics g = CreateGraphics())
             {
-                pnlAttributes.MinimumSize = new Size((int) (40 * g.DpiX / 96.0f), 0);
+                pnlAttributes.MinimumSize = new Size((int)(40 * g.DpiX / 96.0f), 0);
                 if (lblCareerRating != null)
-                    lblCareerRating.MinimumSize = new Size((int) (25 * g.DpiX / 96.0f), 0);
-                lblModifiedRating.MinimumSize = new Size((int) (50 * g.DpiX / 96.0f), 0);
+                    lblCareerRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
             }
         }
-
 
         /// <summary>
         /// Refreshes the Tooltip and Displayed Dice Pool. Can be used in another Thread

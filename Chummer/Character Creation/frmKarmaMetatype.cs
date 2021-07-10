@@ -16,15 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
- using System.Text;
- using Chummer.Backend.Attributes;
- using Chummer.Backend.Skills;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -43,13 +44,14 @@ namespace Chummer
         private readonly XmlNode _xmlCritterPowerDocumentPowersNode;
 
         #region Form Events
+
         public frmKarmaMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
             _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            
+
             _xmlMetatypeDocumentMetatypesNode = _objCharacter.LoadData(strXmlFile).SelectSingleNode("/chummer/metatypes");
             _xmlBaseMetatypeDataNode = _objCharacter.LoadDataXPath(strXmlFile).SelectSingleNode("/chummer");
             _xmlSkillsDocumentKnowledgeSkillsNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
@@ -126,9 +128,11 @@ namespace Chummer
 
             _blnLoading = false;
         }
-        #endregion
+
+        #endregion Form Events
 
         #region Control Events
+
         private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
@@ -171,9 +175,11 @@ namespace Chummer
         {
             cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Custom Methods
+
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
@@ -291,7 +297,7 @@ namespace Chummer
                     objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strSelectedMetavariant.CleanXPath() + "]");
                 }
             }
-            
+
             if (objXmlMetavariant != null)
             {
                 cmdOK.Enabled = true;
@@ -688,7 +694,7 @@ namespace Chummer
                 lstMetatypes.BeginUpdate();
                 lstMetatypes.DataSource = null;
                 lstMetatypes.EndUpdate();
-                
+
                 chkPossessionBased.Visible = false;
                 chkPossessionBased.Checked = false;
                 cboPossessionMethod.Visible = false;
@@ -699,6 +705,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Custom Methods
     }
 }

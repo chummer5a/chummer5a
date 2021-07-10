@@ -178,15 +178,15 @@
                           <xs:element name="weaponmount" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:sequence>
-                                <xs:element name="control" minOccurs="1" maxOccurs="1"/>
-                                <xs:element name="flexibility" minOccurs="1" maxOccurs="1"/>
-                                <xs:element name="size" minOccurs="1" maxOccurs="1"/>
-                                <xs:element name="visibility" minOccurs="1" maxOccurs="1"/>
+                                <xs:element name="control" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="flexibility" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="size" minOccurs="1" maxOccurs="1" />
+                                <xs:element name="visibility" minOccurs="1" maxOccurs="1" />
                                   <xs:element name="allowedweapons" type="xs:string" minOccurs="0" maxOccurs="1" />
                                   <xs:element name="mods" minOccurs="0" maxOccurs="unbounded">
                                       <xs:complexType>
                                           <xs:sequence>
-                                              <xs:element name="mod" minOccurs="1" maxOccurs="unbounded"/>
+                                              <xs:element name="mod" minOccurs="1" maxOccurs="unbounded" />
                                           </xs:sequence>
                                       </xs:complexType>
                                   </xs:element>
@@ -241,11 +241,10 @@
     </xs:complexType>
   </xs:element>
 
-
   <xs:element name="mod">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1"/>
+        <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="page" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -39,7 +40,8 @@ namespace Chummer.UI.Table
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public TableColumn<T> this[int index] {
+        public TableColumn<T> this[int index]
+        {
             // ReSharper disable once ArrangeAccessorOwnerBody
             get => _lstColumns[index];
             //set => _lstColumns[index] = value;
@@ -47,7 +49,8 @@ namespace Chummer.UI.Table
 
         public int Count => _lstColumns.Count;
 
-        public void Add(TableColumn<T> objColumn) {
+        public void Add(TableColumn<T> objColumn)
+        {
             if (objColumn == null)
             {
                 throw new ArgumentNullException(nameof(objColumn));

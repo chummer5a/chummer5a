@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -33,6 +34,7 @@ namespace Chummer
         private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
+
         public frmSelectWeaponCategory(Character objCharacter)
         {
             InitializeComponent();
@@ -81,9 +83,11 @@ namespace Chummer
             _strSelectedCategory = cboCategory.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Weapon Category that was selected in the dialogue.
         /// </summary>
@@ -109,7 +113,8 @@ namespace Chummer
                     _strForceCategory = "Cyberweapon";
             }
         }
-        #endregion
+
+        #endregion Properties
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {

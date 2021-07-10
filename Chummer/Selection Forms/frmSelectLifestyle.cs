@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
- using NLog;
+using Chummer.Backend.Equipment;
+using NLog;
 
 namespace Chummer
 {
@@ -38,6 +39,7 @@ namespace Chummer
         private bool _blnSkipRefresh = true;
 
         #region Control Events
+
         public frmSelectLifestyle(Character objCharacter)
         {
             InitializeComponent();
@@ -267,7 +269,6 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
-
         private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnSkipRefresh)
@@ -281,9 +282,11 @@ namespace Chummer
                 return;
             RefreshBoroughList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -299,9 +302,10 @@ namespace Chummer
         /// </summary>
         public LifestyleType StyleType { get; set; } = LifestyleType.Standard;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -551,6 +555,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

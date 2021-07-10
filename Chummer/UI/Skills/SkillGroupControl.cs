@@ -52,7 +52,7 @@ namespace Chummer.UI.Skills
 
                 int intMinimumSize;
                 using (Graphics g = CreateGraphics())
-                    intMinimumSize = (int) (25 * g.DpiX / 96.0f);
+                    intMinimumSize = (int)(25 * g.DpiX / 96.0f);
 
                 // Creating these controls outside of the designer saves on handles
                 if (skillGroup.CharacterObject.Created)
@@ -96,7 +96,7 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudKarma"
                     };
                     nudSkill = new NumericUpDownEx
@@ -105,7 +105,7 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudSkill"
                     };
 
@@ -143,6 +143,7 @@ namespace Chummer.UI.Skills
         }
 
         #region Control Events
+
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
@@ -153,13 +154,17 @@ namespace Chummer.UI.Skills
 
             _skillGroup.Upgrade();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         public int NameWidth => lblName.PreferredWidth;
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Update the position of controls.
         /// </summary>
@@ -168,15 +173,18 @@ namespace Chummer.UI.Skills
         {
             lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
         }
-        #endregion
+
+        #endregion Methods
 
         /// <summary>
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
-        ButtonWithToolTip _activeButton;
+        private ButtonWithToolTip _activeButton;
+
         protected ButtonWithToolTip ActiveButton
         {
             get => _activeButton;
@@ -211,7 +219,8 @@ namespace Chummer.UI.Skills
         {
             ActiveButton = null;
         }
-        #endregion
+
+        #endregion ButtonWithToolTip Visibility workaround
 
         private void SkillGroupControl_DpiChangedAfterParent(object sender, EventArgs e)
         {

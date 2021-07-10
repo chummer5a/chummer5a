@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Text;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -30,6 +31,7 @@ namespace Chummer
         private readonly List<DiceRollerListViewItem> _lstResults = new List<DiceRollerListViewItem>(40);
 
         #region Control Events
+
         public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
@@ -76,16 +78,16 @@ namespace Chummer
             switch (cboMethod.SelectedValue.ToString())
             {
                 case "Large":
-                {
-                    intTarget = 3;
-                    break;
-                }
+                    {
+                        intTarget = 3;
+                        break;
+                    }
                 case "ReallyLarge":
-                {
-                    intTarget = 1;
-                    intGlitchMin = 7;
-                    break;
-                }
+                    {
+                        intTarget = 1;
+                        intGlitchMin = 7;
+                        break;
+                    }
             }
 
             for (int intCounter = 1; intCounter <= nudDice.Value; intCounter++)
@@ -211,16 +213,16 @@ namespace Chummer
             switch (cboMethod.SelectedValue.ToString())
             {
                 case "Large":
-                {
-                    intTarget = 3;
-                    break;
-                }
+                    {
+                        intTarget = 3;
+                        break;
+                    }
                 case "ReallyLarge":
-                {
-                    intTarget = 1;
-                    intGlitchMin = 7;
-                    break;
-                }
+                    {
+                        intTarget = 1;
+                        intGlitchMin = 7;
+                        break;
+                    }
             }
 
             foreach (DiceRollerListViewItem objItem in _lstResults)
@@ -328,9 +330,11 @@ namespace Chummer
             }
             lstResults.EndUpdate();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Number of dice to roll.
         /// </summary>
@@ -359,7 +363,7 @@ namespace Chummer
                 }
             }
         }
-        #endregion
 
+        #endregion Properties
     }
 }

@@ -17,11 +17,11 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using NLog;
 using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Windows.Forms;
+using NLog;
 
 namespace Chummer
 {
@@ -178,7 +178,7 @@ namespace Chummer
                 Log.Error("CursorWait for Control \"" + _objControl + "\" with Guid \"" + instance + "\" somehow does not have a CursorWait list defined for it");
                 throw new ArgumentNullException(nameof(lstCursorWaits));
             }
-            
+
             int intMyIndex = lstCursorWaits.FindLastIndex(x => x.Equals(this));
             if (intMyIndex < 0 || !lstCursorWaits.Remove(this))
             {

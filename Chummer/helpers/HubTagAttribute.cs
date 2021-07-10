@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 
@@ -41,9 +42,9 @@ namespace Chummer
             //_ListName = ListName;
             ListInstanceNameFromProperty = listInstanceNameFromProperty;
             DeleteEmptyTags = deleteEmptyTags;
-            if(!string.IsNullOrEmpty(commentProperties))
+            if (!string.IsNullOrEmpty(commentProperties))
                 ListCommentProperties = new List<string>(commentProperties.SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries));
-            if(!string.IsNullOrEmpty(extraProperties))
+            if (!string.IsNullOrEmpty(extraProperties))
                 ListExtraProperties = new List<string>(extraProperties.SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries));
         }
 
@@ -61,7 +62,6 @@ namespace Chummer
     {
         public HubTagAttribute()
         {
-
         }
 
         public HubTagAttribute(string TagName, string TagNameFromProperty, string TagValueFromProperty, bool deleteIfEmpty)
@@ -71,7 +71,6 @@ namespace Chummer
             this.TagValueFromProperty = TagValueFromProperty;
             DeleteIfEmpty = deleteIfEmpty;
         }
-
 
         public HubTagAttribute(string TagName, string TagNameFromProperty)
         {

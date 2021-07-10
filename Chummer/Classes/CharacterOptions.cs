@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -60,6 +61,7 @@ namespace Chummer
         // Settings.
         // ReSharper disable once InconsistentNaming
         private bool _blnAllow2ndMaxAttribute;
+
         private bool _blnAllowBiowareSuites;
         private bool _blnAllowCyberwareESSDiscounts;
         private bool _blnAllowEditPartOfBaseWeapon;
@@ -133,6 +135,7 @@ namespace Chummer
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
+
         private int _intKarmaCarryover = 7;
         private int _intKarmaContact = 1;
         private int _intKarmaEnemy = 1;
@@ -163,25 +166,35 @@ namespace Chummer
         // Karma Foci variables.
         // Enchanting
         private int _intKarmaAlchemicalFocus = 3;
+
         private int _intKarmaDisenchantingFocus = 3;
+
         // Metamagic
         private int _intKarmaCenteringFocus = 3;
+
         private int _intKarmaFlexibleSignatureFocus = 3;
         private int _intKarmaMaskingFocus = 3;
         private int _intKarmaSpellShapingFocus = 3;
+
         // Power
         private int _intKarmaPowerFocus = 6;
+
         // Qi
         private int _intKarmaQiFocus = 2;
+
         // Spell
         private int _intKarmaCounterspellingFocus = 2;
+
         private int _intKarmaRitualSpellcastingFocus = 2;
         private int _intKarmaSpellcastingFocus = 2;
         private int _intKarmaSustainingFocus = 2;
+
         // Spirit
         private int _intKarmaBanishingFocus = 2;
+
         private int _intKarmaBindingFocus = 2;
         private int _intKarmaSummoningFocus = 2;
+
         // Weapon
         private int _intKarmaWeaponFocus = 3;
 
@@ -190,6 +203,7 @@ namespace Chummer
 
         // Build settings.
         private CharacterBuildMethod _eBuildMethod = CharacterBuildMethod.Priority;
+
         private int _intBuildPoints = 25;
         private int _intQualityKarmaLimit = 25;
         private string _strPriorityArray = "ABCDE";
@@ -200,8 +214,10 @@ namespace Chummer
 
         // Dictionary of names of custom data directories, with first value element being load order and second value element being whether or not it's enabled
         private readonly Dictionary<string, Tuple<int, bool>> _dicCustomDataDirectoryNames = new Dictionary<string, Tuple<int, bool>>();
+
         // Cached lists that should be updated every time _dicCustomDataDirectoryNames is updated
         private readonly List<CustomDataDirectoryInfo> _lstEnabledCustomDataDirectories = new List<CustomDataDirectoryInfo>();
+
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
@@ -304,6 +320,7 @@ namespace Chummer
             );
 
         #region Initialization, Save, and Load Methods
+
         public CharacterOptions(CharacterOptions objOther = null)
         {
             if (objOther != null)
@@ -684,17 +701,17 @@ namespace Chummer
                     objWriter.WriteEndElement();
 
                     // <customdatadirectorynames>
-	            	objWriter.WriteStartElement("customdatadirectorynames");
-		            foreach (KeyValuePair<string, Tuple<int, bool>> dicDirectoryName in _dicCustomDataDirectoryNames)
-		            {
-		                objWriter.WriteStartElement("customdatadirectoryname");
-		                objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
+                    objWriter.WriteStartElement("customdatadirectorynames");
+                    foreach (KeyValuePair<string, Tuple<int, bool>> dicDirectoryName in _dicCustomDataDirectoryNames)
+                    {
+                        objWriter.WriteStartElement("customdatadirectoryname");
+                        objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
                         objWriter.WriteElementString("order", dicDirectoryName.Value.Item1.ToString(GlobalOptions.InvariantCultureInfo));
                         objWriter.WriteElementString("enabled", dicDirectoryName.Value.Item2.ToString(GlobalOptions.InvariantCultureInfo));
-		                objWriter.WriteEndElement();
-		            }
-		            // </customdatadirectorynames>
-		            objWriter.WriteEndElement();
+                        objWriter.WriteEndElement();
+                    }
+                    // </customdatadirectorynames>
+                    objWriter.WriteEndElement();
 
                     // <buildmethod />
                     objWriter.WriteElementString("buildmethod", _eBuildMethod.ToString());
@@ -759,8 +776,8 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objXmlDocument = new XPathDocument(objXmlReader);
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        objXmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -1060,8 +1077,8 @@ namespace Chummer
                     try
                     {
                         using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                objXmlDocument = new XPathDocument(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                            objXmlDocument = new XPathDocument(objXmlReader);
                     }
                     catch (XmlException)
                     {
@@ -1088,8 +1105,8 @@ namespace Chummer
                         try
                         {
                             using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                    objXmlDocument = new XPathDocument(objXmlReader);
+                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                                objXmlDocument = new XPathDocument(objXmlReader);
                         }
                         catch (XmlException)
                         {
@@ -1235,9 +1252,11 @@ namespace Chummer
 
             return true;
         }
-        #endregion
+
+        #endregion Initialization, Save, and Load Methods
 
         #region Build Properties
+
         /// <summary>
         /// Method being used to build the character.
         /// </summary>
@@ -1479,9 +1498,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Build Properties
 
         #region Properties and Methods
+
         /// <summary>
         /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
@@ -2331,6 +2352,7 @@ namespace Chummer
         }
 
         private int _intCachedMaxNuyenDecimals = -1;
+
         /// <summary>
         /// Maximum number of decimal places to round to when displaying nuyen values.
         /// </summary>
@@ -2378,6 +2400,7 @@ namespace Chummer
         }
 
         private int _intCachedMinNuyenDecimals = -1;
+
         /// <summary>
         /// Minimum number of decimal places to round to when displaying nuyen values.
         /// </summary>
@@ -2919,6 +2942,7 @@ namespace Chummer
                 }
             }
         }
+
         /// <summary>
         /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
         /// </summary>
@@ -2997,13 +3021,14 @@ namespace Chummer
                 {
                     _intDicePenaltySustaining = value;
                     OnPropertyChanged();
-                    
                 }
             }
         }
-        #endregion
+
+        #endregion Properties and Methods
 
         #region Karma
+
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.
         /// </summary>
@@ -3691,9 +3716,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Karma
 
         #region Default Build
+
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
         /// </summary>
@@ -3724,14 +3751,15 @@ namespace Chummer
         /// </summary>
         public decimal KarmaRESInitiationSchoolingPercent { get; set; } = 0.1m;
 
-        #endregion
+        #endregion Default Build
 
         #region Constant Values
+
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
         public int SpecializationBonus { get; } = 2;
 
-        #endregion
+        #endregion Constant Values
     }
 }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Windows.Forms;
 
@@ -28,6 +29,7 @@ namespace Chummer
 
         //Events
         public event EventHandler SustainedObjectDetailChanged;
+
         public event EventHandler UnsustainObject;
 
         public SustainedObjectControl(SustainedObject objLinkedSustainedObject)
@@ -93,7 +95,9 @@ namespace Chummer
         }
 
         #region Properties
+
         public SustainedObject LinkedSustainedObject => _objLinkedSustainedObject;
-        #endregion
+
+        #endregion Properties
     }
 }

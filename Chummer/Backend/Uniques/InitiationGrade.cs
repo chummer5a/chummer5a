@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -45,6 +46,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
+
         public InitiationGrade(Character objCharacter)
         {
             // Create the GUID for the new InitiationGrade.
@@ -73,7 +75,7 @@ namespace Chummer
                 && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
             {
                 decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
-                int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int) (
+                int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
                     Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
                         ? Math.Ceiling(_objCharacter.CyberwareEssence)
                         : Math.Floor(_objCharacter.CyberwareEssence)));
@@ -129,7 +131,6 @@ namespace Chummer
             String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
-
         }
 
         /// <summary>
@@ -152,9 +153,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, and Load Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Initiation Grade in the Improvement system.
         /// </summary>
@@ -204,9 +207,11 @@ namespace Chummer
             get => _blnTechnomancer;
             set => _blnTechnomancer = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// The Initiation Grade's Karma cost.
         /// </summary>
@@ -296,9 +301,11 @@ namespace Chummer
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsInitiationGrade)
         {
             TreeNode objNode = new TreeNode
@@ -322,7 +329,8 @@ namespace Chummer
         {
             return objGrade == null ? 1 : Grade.CompareTo(objGrade.Grade);
         }
-        #endregion
+
+        #endregion Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {

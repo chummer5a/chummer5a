@@ -9,7 +9,7 @@
   ***  TableTitle
 -->
   <xsl:template name="TableTitle">
-      <xsl:param name="name" select="''"/>
+      <xsl:param name="name" select="''" />
 
     <style type="text/css">
       .tabletitle {
@@ -39,9 +39,8 @@
 
     <table class="tabletitle">
       <tr><td colspan="100%" style="text-align: center; font-size: 125%;">
-        <xsl:value-of select="$name"/>
+        <xsl:value-of select="$name" />
       </td></tr>
     </table>
-
   </xsl:template>
 </xsl:stylesheet>

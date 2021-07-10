@@ -19,7 +19,7 @@
 -->
 <chummer>
   <metatypes>
-    <metatype xpathfilter="contains(name,' Sprite')" >
+    <metatype xpathfilter="contains(name,' Sprite')">
       <bonus>
         <optionalpowers count="{RES} div 3" amendoperation="addnode">
           <optionalpower>Active Analytics</optionalpower>

@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -47,6 +48,7 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
+
         public frmSelectVehicle(Character objCharacter)
         {
             if (objCharacter == null)
@@ -187,27 +189,29 @@ namespace Chummer
                 case Keys.Down when lstVehicle.SelectedIndex + 1 < lstVehicle.Items.Count:
                     lstVehicle.SelectedIndex++;
                     break;
-                case Keys.Down:
-                {
-                    if (lstVehicle.Items.Count > 0)
-                    {
-                        lstVehicle.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstVehicle.Items.Count > 0)
+                        {
+                            lstVehicle.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstVehicle.SelectedIndex - 1 >= 0:
                     lstVehicle.SelectedIndex--;
                     break;
-                case Keys.Up:
-                {
-                    if (lstVehicle.Items.Count > 0)
-                    {
-                        lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstVehicle.Items.Count > 0)
+                        {
+                            lstVehicle.SelectedIndex = lstVehicle.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -216,9 +220,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -259,9 +265,10 @@ namespace Chummer
         /// </summary>
         public decimal Markup => _decMarkup;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Refresh the information for the selected Vehicle.
         /// </summary>
@@ -360,7 +367,6 @@ namespace Chummer
                 lblTest.Text = _objCharacter.AvailTest(decCost, lblVehicleAvail.Text);
                 lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
             }
-
 
             string strSource = objXmlVehicle.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlVehicle.SelectSingleNode("altpage")?.Value ?? objXmlVehicle.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
@@ -501,6 +507,6 @@ namespace Chummer
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
 
-        #endregion
+        #endregion Methods
     }
 }

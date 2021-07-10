@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections.Generic;
- using System.Diagnostics;
+
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
- using System.Linq;
- using System.Runtime.CompilerServices;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.ExceptionServices;
 using System.Text;
 
@@ -32,6 +33,7 @@ namespace Chummer
     {
         private static StreamWriter s_LogWriter;
         private static readonly object s_LogWriterLock = new object();
+
         static Log()
         {
             Stopwatch sw = Stopwatch.StartNew();
@@ -40,6 +42,7 @@ namespace Chummer
         }
 
         private static bool s_blnIsLoggerEnabled;
+
         public static bool IsLoggerEnabled
         {
             get => s_blnIsLoggerEnabled;
@@ -93,7 +96,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Entering
         (
             string info = null,
@@ -113,7 +115,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Exit
         (
             string info = null,
@@ -133,7 +134,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Error
             (
             object[] info = null,
@@ -153,7 +153,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Error
             (
             object info = null,
@@ -173,7 +172,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Debug
         (
             object info = null,
@@ -193,7 +191,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Trace
         (
             string info = null,
@@ -214,7 +211,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Trace
         (
             Exception exception,
@@ -233,10 +229,9 @@ namespace Chummer
         /// <param name="exception">Exception to log.</param>
         /// <param name="message">Message of Exception</param>
         [Obsolete("Use NLog instead: private static readonly Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Exception(Exception exception, string message = "")
         {
-            if(!IsLoggerEnabled)
+            if (!IsLoggerEnabled)
                 return;
             if (exception == null)
                 throw new ArgumentNullException(nameof(exception));
@@ -256,10 +251,9 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Warning
             (
-            object[] info= null,
+            object[] info = null,
             [CallerFilePath] string file = "",
             [CallerMemberName] string method = "",
             [CallerLineNumber] int line = 0
@@ -276,7 +270,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Warning
             (
             object info = null,
@@ -296,7 +289,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Info
             (
             object[] info = null,
@@ -316,7 +308,6 @@ namespace Chummer
         /// <param name="method">Do not use this</param>
         /// <param name="line">Do not use this</param>
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void Info
             (
             string info = null,
@@ -376,7 +367,6 @@ namespace Chummer
         }
 
         [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
-
         public static void FirstChanceException(object sender, FirstChanceExceptionEventArgs e)
         {
             if (IsLoggerEnabled)

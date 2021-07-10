@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Buffers;
 using System.Collections.Generic;
@@ -28,10 +29,8 @@ namespace Chummer.UI.Table
 {
     public partial class TableView<T> : UserControl where T : class, INotifyPropertyChanged
     {
-
         protected class TableLayoutEngine : LayoutEngine
         {
-
             private readonly TableView<T> _table;
 
             public TableLayoutEngine(TableView<T> table)
@@ -307,7 +306,8 @@ namespace Chummer.UI.Table
             return cell;
         }
 
-        private void CreateCellsForColumn(int insertIndex, TableColumn<T> column) {
+        private void CreateCellsForColumn(int insertIndex, TableColumn<T> column)
+        {
             SuspendLayout();
             List<TableCell> cells;
             if (_lstItems != null)
@@ -338,18 +338,21 @@ namespace Chummer.UI.Table
             };
             if (column.Sorter != null)
             {
-                header.HeaderClick += (sender, evt) => {
+                header.HeaderClick += (sender, evt) =>
+                {
                     if (_sortColumn == column)
                     {
                         // cycle through states if column remains the same
-                        switch(_eSortType)
+                        switch (_eSortType)
                         {
                             case SortOrder.None:
                                 _eSortType = SortOrder.Ascending;
                                 break;
+
                             case SortOrder.Ascending:
                                 _eSortType = SortOrder.Descending;
                                 break;
+
                             case SortOrder.Descending:
                                 _eSortType = SortOrder.None;
                                 break;
@@ -382,7 +385,8 @@ namespace Chummer.UI.Table
             ResumeLayout(false);
         }
 
-        internal void ColumnAdded(TableColumn<T> column) {
+        internal void ColumnAdded(TableColumn<T> column)
+        {
             column.MakeLive();
             int index = _columns.Count - 1;
             CreateCellsForColumn(index, column);
@@ -464,7 +468,6 @@ namespace Chummer.UI.Table
             }
         }
 
-
         private void ItemsChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
@@ -496,6 +499,7 @@ namespace Chummer.UI.Table
                         ItemPropertyChanged(e.NewIndex, item, e.PropertyDescriptor.Name);
                     }
                     break;
+
                 case ListChangedType.ItemAdded:
                     item = _lstItems[e.NewIndex];
                     row = CreateRow();
@@ -519,6 +523,7 @@ namespace Chummer.UI.Table
                     Sort(false);
                     RestartLayout(true);
                     break;
+
                 case ListChangedType.ItemDeleted:
                     SuspendLayout();
                     for (int i = 0; i < _columns.Count; i++)
@@ -537,6 +542,7 @@ namespace Chummer.UI.Table
                     Sort(false);
                     RestartLayout(true);
                     break;
+
                 case ListChangedType.ItemMoved:
                     foreach (ColumnHolder col in _lstCells)
                     {
@@ -674,7 +680,8 @@ namespace Chummer.UI.Table
         public SortOrder SortOrder
         {
             get => _eSortType;
-            set {
+            set
+            {
                 _eSortType = value;
                 Sort();
             }

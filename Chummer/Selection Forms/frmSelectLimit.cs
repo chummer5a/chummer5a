@@ -16,9 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -28,6 +29,7 @@ namespace Chummer
         private string _strSelectedDisplayLimit = string.Empty;
 
         #region Control Events
+
         public frmSelectLimit(params string[] lstLimits)
         {
             InitializeComponent();
@@ -73,9 +75,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Limit that was selected in the dialogue.
         /// </summary>
@@ -93,6 +97,7 @@ namespace Chummer
         {
             set => lblDescription.Text = value;
         }
-        #endregion
+
+        #endregion Properties
     }
 }

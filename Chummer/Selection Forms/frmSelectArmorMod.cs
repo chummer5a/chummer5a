@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Text;
- using System.Windows.Forms;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
- using System.Xml.XPath;
- using Chummer.Backend.Equipment;
+using System.Xml.XPath;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -39,6 +40,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
+
         public frmSelectArmorMod(Character objCharacter, Armor objParentNode = null)
         {
             InitializeComponent();
@@ -120,18 +122,20 @@ namespace Chummer
             }
             UpdateSelectedArmor();
         }
-		#endregion
 
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain { get; private set; }
+        #endregion Control Events
 
-		/// <summary>
-		/// Armor's Cost.
-		/// </summary>
-		public decimal ArmorCost
+        #region Properties
+
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain { get; private set; }
+
+        /// <summary>
+        /// Armor's Cost.
+        /// </summary>
+        public decimal ArmorCost
         {
             set => _decArmorCost = value;
         }
@@ -144,55 +148,58 @@ namespace Chummer
             set => _decArmorCapacity = value;
         }
 
-		/// <summary>
-		/// Whether or not the selected Vehicle is used.
-		/// </summary>
-		public bool BlackMarketDiscount { get; private set; }
+        /// <summary>
+        /// Whether or not the selected Vehicle is used.
+        /// </summary>
+        public bool BlackMarketDiscount { get; private set; }
 
-		/// <summary>
-		/// Name of Accessory that was selected in the dialogue.
-		/// </summary>
-		public string SelectedArmorMod { get; private set; } = string.Empty;
+        /// <summary>
+        /// Name of Accessory that was selected in the dialogue.
+        /// </summary>
+        public string SelectedArmorMod { get; private set; } = string.Empty;
 
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
         public int SelectedRating => nudRating.ValueAsInt;
 
-		/// <summary>
-		/// Categories that the Armor allows to be used.
-		/// </summary>
-		public string AllowedCategories { get; set; } = string.Empty;
+        /// <summary>
+        /// Categories that the Armor allows to be used.
+        /// </summary>
+        public string AllowedCategories { get; set; } = string.Empty;
 
-		/// <summary>
-		/// Whether or not the General category should be included.
-		/// </summary>
-		public bool ExcludeGeneralCategory { get; set; }
+        /// <summary>
+        /// Whether or not the General category should be included.
+        /// </summary>
+        public bool ExcludeGeneralCategory { get; set; }
 
-		/// <summary>
-		/// Whether or not the item should be added for free.
-		/// </summary>
-		public bool FreeCost => chkFreeItem.Checked;
+        /// <summary>
+        /// Whether or not the item should be added for free.
+        /// </summary>
+        public bool FreeCost => chkFreeItem.Checked;
 
-		/// <summary>
-		/// Markup percentage.
-		/// </summary>
-		public decimal Markup { get; private set; }
+        /// <summary>
+        /// Markup percentage.
+        /// </summary>
+        public decimal Markup { get; private set; }
 
-		/// <summary>
-		/// Capacity display style.
-		/// </summary>
-		public CapacityStyle CapacityDisplayStyle
+        /// <summary>
+        /// Capacity display style.
+        /// </summary>
+        public CapacityStyle CapacityDisplayStyle
         {
             set => _eCapacityStyle = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             UpdateSelectedArmor();
         }
+
         /// <summary>
         /// Update the information for the selected Armor Mod.
         /// </summary>
@@ -348,7 +355,7 @@ namespace Chummer
 
             // Handle YNT Softweave
             if (_eCapacityStyle == CapacityStyle.Zero || string.IsNullOrEmpty(strCapacity))
-                lblCapacity.Text = '['+ 0.ToString(GlobalOptions.CultureInfo) + ']';
+                lblCapacity.Text = '[' + 0.ToString(GlobalOptions.CultureInfo) + ']';
             else
             {
                 if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -391,7 +398,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         private void RefreshList()
         {
@@ -489,6 +496,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

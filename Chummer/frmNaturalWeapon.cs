@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
- using System.Xml.XPath;
- using Chummer.Backend.Equipment;
+using System.Windows.Forms;
+using System.Xml.XPath;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -33,6 +34,7 @@ namespace Chummer
         private Weapon _objWeapon;
 
         #region Control Events
+
         public frmNaturalWeapon(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -98,9 +100,11 @@ namespace Chummer
         {
             AcceptForm();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         private void MoveControls()
         {
             int intWidth = Math.Max(lblName.Width, lblDV.Width);
@@ -166,14 +170,16 @@ namespace Chummer
                 DialogResult = DialogResult.OK;
             }
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
+
         /// <summary>
         /// Weapon that was created as a result of the dialogue.
         /// </summary>
         public Weapon SelectedWeapon => _objWeapon;
 
-        #endregion
+        #endregion Properties
     }
 }

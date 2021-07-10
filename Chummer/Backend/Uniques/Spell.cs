@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Skills;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,6 +27,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Attributes;
+using Chummer.Backend.Skills;
 using NLog;
 
 namespace Chummer
@@ -66,6 +67,7 @@ namespace Chummer
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Spell;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Spell(Character objCharacter)
         {
             // Create the GUID for the new Spell.
@@ -203,7 +205,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -285,10 +287,10 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -377,26 +379,31 @@ namespace Chummer
                         case "Alchemical Preparation":
                             objReturn.Append(LanguageManager.GetString("String_DescAlchemicalPreparation", strLanguage));
                             break;
+
                         case "Extended Area":
                             objReturn.Append(LanguageManager.GetString("String_DescExtendedArea", strLanguage));
                             break;
+
                         case "Material Link":
                             objReturn.Append(LanguageManager.GetString("String_DescMaterialLink", strLanguage));
                             break;
+
                         case "Multi-Sense":
                             objReturn.Append(LanguageManager.GetString("String_DescMultiSense", strLanguage));
                             break;
+
                         case "Organic Link":
                             objReturn.Append(LanguageManager.GetString("String_DescOrganicLink", strLanguage));
                             break;
+
                         case "Single-Sense":
                             objReturn.Append(LanguageManager.GetString("String_DescSingleSense", strLanguage));
                             break;
+
                         default:
                             objReturn.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim(),
                                 strLanguage));
                             break;
-
                     }
 
                     objReturn.Append(',' + strSpace);
@@ -452,6 +459,7 @@ namespace Chummer
             {
                 case "M":
                     return LanguageManager.GetString("String_SpellTypeMana", strLanguage);
+
                 default:
                     return LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
             }
@@ -594,14 +602,13 @@ namespace Chummer
                 case "P":
                     sBld.Append(LanguageManager.GetString("String_DamagePhysical", strLanguage));
                     break;
+
                 case "S":
                     sBld.Append(LanguageManager.GetString("String_DamageStun", strLanguage));
                     break;
             }
 
-
             return sBld.ToString();
-
         }
 
         /// <summary>
@@ -622,12 +629,16 @@ namespace Chummer
             {
                 case "P":
                     return LanguageManager.GetString("String_SpellDurationPermanent", strLanguage);
+
                 case "S":
                     return LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
+
                 case "I":
                     return LanguageManager.GetString("String_SpellDurationInstant", strLanguage);
+
                 case "Special":
                     return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
+
                 default:
                     return LanguageManager.GetString("String_None", strLanguage);
             }
@@ -849,9 +860,11 @@ namespace Chummer
             get => _blnUsesUnarmed;
             set => _blnUsesUnarmed = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region ComplexProperties
+
         /// <summary>
         /// Skill used by this spell
         /// </summary>
@@ -962,8 +975,6 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
 
-
-
         private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false)
         {
             foreach (Improvement objImprovement in _objCharacter.Improvements.Where(i => i.Enabled && funcWherePredicate?.Invoke(i) == true))
@@ -978,6 +989,7 @@ namespace Chummer
                                 yield break;
                         }
                         break;
+
                     case Improvement.ImprovementType.SpellCategory:
                         if (objImprovement.ImprovedName == Category)
                         {
@@ -1004,6 +1016,7 @@ namespace Chummer
                                 yield break;
                         }
                         break;
+
                     case Improvement.ImprovementType.SpellCategoryDamage:
                     case Improvement.ImprovementType.SpellCategoryDrain:
                         if (objImprovement.ImprovedName == Category)
@@ -1013,6 +1026,7 @@ namespace Chummer
                                 yield break;
                         }
                         break;
+
                     case Improvement.ImprovementType.SpellDescriptorDrain:
                     case Improvement.ImprovementType.SpellDescriptorDamage:
                         if (HashDescriptors.Count > 0)
@@ -1042,12 +1056,13 @@ namespace Chummer
                             }
                         }
                         break;
+
                     case Improvement.ImprovementType.DrainValue:
-                    {
-                        yield return objImprovement;
-                        if (blnExitAfterFirst)
-                            yield break;
-                    }
+                        {
+                            yield return objImprovement;
+                            if (blnExitAfterFirst)
+                                yield break;
+                        }
                         break;
                 }
             }
@@ -1085,9 +1100,10 @@ namespace Chummer
             return objImprovement;
         }
 
-        #endregion
+        #endregion ComplexProperties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsSpell, bool blnAddCategory = false)
         {
             if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -1101,6 +1117,7 @@ namespace Chummer
                     case "Rituals":
                         strText = LanguageManager.GetString("Label_Ritual") + LanguageManager.GetString("String_Space") + strText;
                         break;
+
                     case "Enchantments":
                         strText = LanguageManager.GetString("Label_Enchantment") + LanguageManager.GetString("String_Space") + strText;
                         break;
@@ -1134,7 +1151,8 @@ namespace Chummer
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {

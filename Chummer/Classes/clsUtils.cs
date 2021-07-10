@@ -16,25 +16,27 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.ComponentModel;
- using System.Diagnostics;
-﻿using System.IO;
- using System.Reflection;
- using System.Runtime.CompilerServices;
- using System.Security.AccessControl;
- using System.Security.Principal;
- using System.Text;
- using System.Threading;
- using System.Threading.Tasks;
- using System.Windows.Forms;
- using NLog;
+
+using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Security.AccessControl;
+using System.Security.Principal;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using NLog;
 
 namespace Chummer
 {
     public static class Utils
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         public static void BreakIfDebug()
         {
 #if DEBUG
@@ -117,6 +119,7 @@ namespace Chummer
                     {
                         case AccessControlType.Allow:
                             return true;
+
                         case AccessControlType.Deny:
                             //Deny usually overrides any Allow
                             return false;
@@ -249,17 +252,17 @@ namespace Chummer
                     switch (objResult)
                     {
                         case DialogResult.Yes:
-                        {
-                            // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
-                            bool blnResult = objOpenCharacterForm.SaveCharacter();
-                            if (!blnResult)
-                                return;
-                            // We saved a character as created, which closed the current form and added a new one
-                            // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
-                            if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
-                                i -= 1;
-                            break;
-                        }
+                            {
+                                // Attempt to save the Character. If the user cancels the Save As dialogue that may open, cancel the closing event so that changes are not lost.
+                                bool blnResult = objOpenCharacterForm.SaveCharacter();
+                                if (!blnResult)
+                                    return;
+                                // We saved a character as created, which closed the current form and added a new one
+                                // This works regardless of dispose, because dispose would just set the objOpenCharacterForm pointer to null, so OpenCharacterForms would never contain it
+                                if (!Program.MainForm.OpenCharacterForms.Contains(objOpenCharacterForm))
+                                    i -= 1;
+                                break;
+                            }
                         case DialogResult.Cancel:
                             return;
                     }
@@ -475,7 +478,6 @@ namespace Chummer
         {
             SafeSleep(objTimeSpan.Milliseconds, blnForceDoEvents);
         }
-        
 
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread

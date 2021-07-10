@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -128,7 +129,6 @@ namespace Chummer
 
         internal static string GetDefaultPrinter()
         {
-
             int ptrBuffer = 0;
             if (GetDefaultPrinter(null, ref ptrBuffer))
             {

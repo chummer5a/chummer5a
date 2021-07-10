@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Chummer
 {
@@ -38,6 +39,7 @@ namespace Chummer
             Next = next;
             this.UserProfilePath = UserProfilePath;
         }
+
         public void Process(ITelemetry item)
         {
             ModifyItem(item);
@@ -76,32 +78,32 @@ namespace Chummer
                 case TraceTelemetry trace:
                     trace.Message = trace.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                     return;
-                case RequestTelemetry req:
-                {
-                    string newurl = req.Url?.ToString().Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
-                    if (!string.IsNullOrEmpty(newurl))
-                        req.Url = new Uri(newurl);
-                    return;
-                }
-                case ExceptionTelemetry exception when exception.Exception != null:
-                {
-                    foreach (DictionaryEntry de in exception.Exception.Data)
-                    {
-                        if (!exception.Properties.ContainsKey(de.Key.ToString()))
-                            exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
-                    }
-                    if (exception.Message == null)
-                    {
-                        exception.Message = exception.Exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
-                    }
 
-                    break;
-                }
+                case RequestTelemetry req:
+                    {
+                        string newurl = req.Url?.ToString().Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                        if (!string.IsNullOrEmpty(newurl))
+                            req.Url = new Uri(newurl);
+                        return;
+                    }
+                case ExceptionTelemetry exception when exception.Exception != null:
+                    {
+                        foreach (DictionaryEntry de in exception.Exception.Data)
+                        {
+                            if (!exception.Properties.ContainsKey(de.Key.ToString()))
+                                exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
+                        }
+                        if (exception.Message == null)
+                        {
+                            exception.Message = exception.Exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                        }
+
+                        break;
+                    }
                 case ExceptionTelemetry exception:
                     exception.Message = exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                     break;
             }
         }
-
     }
 }

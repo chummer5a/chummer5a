@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -31,6 +32,7 @@ namespace Chummer
     {
         private static readonly Lazy<ImageCodecInfo> _lzyJpegEncoder =
             new Lazy<ImageCodecInfo>(() => GetEncoder(ImageFormat.Jpeg));
+
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         /// <summary>
@@ -86,8 +88,8 @@ namespace Chummer
             int intImageHeight = imgToConvert.Height;
             if (blnKeepAspectRatio)
             {
-                double dblImageAspectRatio = intImageWidth / (double) intImageHeight;
-                double dblThumbAspectRatio = intThumbWidth / (double) intThumbHeight;
+                double dblImageAspectRatio = intImageWidth / (double)intImageHeight;
+                double dblThumbAspectRatio = intThumbWidth / (double)intThumbHeight;
                 // Too wide, use height as correct measure
                 if (dblThumbAspectRatio > dblImageAspectRatio)
                 {
@@ -449,7 +451,7 @@ namespace Chummer
                 return string.Empty;
             EncoderParameters lstJpegParameters = new EncoderParameters(1)
             {
-                Param = {[0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
+                Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
             };
             return imgToConvert.ToBase64String(_lzyJpegEncoder.Value, lstJpegParameters);
         }

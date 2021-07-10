@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Windows.Forms;
 
 namespace Chummer
@@ -25,6 +26,7 @@ namespace Chummer
         private readonly int _intToolTipWrap;
 
         private ToolTip _tt;
+
         // ReSharper disable once MemberCanBePrivate.Global
         // Used by databinding
         public ToolTip ToolTipObject
@@ -43,6 +45,7 @@ namespace Chummer
         }
 
         private string _strToolTipText = string.Empty;
+
         public string ToolTipText
         {
             // ReSharper disable once UnusedMember.Global
@@ -59,7 +62,9 @@ namespace Chummer
             }
         }
 
-        public LabelWithToolTip() : this(ToolTipFactory.ToolTip) { }
+        public LabelWithToolTip() : this(ToolTipFactory.ToolTip)
+        {
+        }
 
         // ReSharper disable once MemberCanBePrivate.Global
         public LabelWithToolTip(ToolTip objToolTip, int intToolTipWrap = 100)

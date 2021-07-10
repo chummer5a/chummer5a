@@ -55,6 +55,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (Gear objGear in notifyCollectionChangedEventArgs.OldItems)
@@ -64,6 +65,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -84,6 +86,7 @@ namespace Chummer
                         treGear.SelectedNode = treGear.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId = (treGear.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -102,6 +105,7 @@ namespace Chummer
                         treGear.SelectedNode = treGear.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     {
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
@@ -179,6 +183,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (Cyberware objCyberware in notifyCollectionChangedEventArgs.OldItems)
@@ -188,6 +193,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -208,6 +214,7 @@ namespace Chummer
                         treCyberware.SelectedNode = treCyberware.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId = (treCyberware.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -226,6 +233,7 @@ namespace Chummer
                         treCyberware.SelectedNode = treCyberware.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     {
                         VehicleMod objParentAsVehicleMod = objParent as VehicleMod;
@@ -281,6 +289,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (Weapon objWeapon in notifyCollectionChangedEventArgs.OldItems)
@@ -290,6 +299,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -310,6 +320,7 @@ namespace Chummer
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -326,6 +337,7 @@ namespace Chummer
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     {
                         nodParent.Nodes.Clear();
@@ -382,6 +394,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (WeaponAccessory objWeaponAccessory in notifyCollectionChangedEventArgs.OldItems)
@@ -393,6 +406,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -417,6 +431,7 @@ namespace Chummer
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId = (treWeapons.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -435,6 +450,7 @@ namespace Chummer
                         treWeapons.SelectedNode = treWeapons.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     {
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
@@ -493,6 +509,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (VehicleMod objVehicleMod in notifyCollectionChangedEventArgs.OldItems)
@@ -507,6 +524,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -537,6 +555,7 @@ namespace Chummer
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -555,6 +574,7 @@ namespace Chummer
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     {
                         for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
@@ -621,6 +641,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (WeaponMount objWeaponMount in notifyCollectionChangedEventArgs.OldItems)
@@ -647,6 +668,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -690,6 +712,7 @@ namespace Chummer
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Move:
                     {
                         string strSelectedId = (treVehicles.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
@@ -706,6 +729,7 @@ namespace Chummer
                         treVehicles.SelectedNode = treVehicles.FindNode(strSelectedId);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     {
                         if (nodParent != null)

@@ -16,19 +16,20 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
- using System.Runtime.CompilerServices;
- using System.Text;
- using System.Text.RegularExpressions;
- using System.Threading;
- using System.Threading.Tasks;
- using System.Windows.Forms;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -40,6 +41,7 @@ namespace Chummer
         public static string ManagerErrorMessage { get; }
 
         #region Constructor
+
         static LanguageManager()
         {
             if (Utils.IsDesignerMode)
@@ -92,7 +94,8 @@ namespace Chummer
                 ManagerErrorMessage = "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:"
                                       + Environment.NewLine + Environment.NewLine + "File " + strFilePath + " does not exist or cannot be found.";
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Methods
 
@@ -199,100 +202,102 @@ namespace Chummer
                     case Label _:
                     case Button _:
                     case CheckBox _:
-                    {
-                        string strControlTag = objChild.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                            objChild.Text = GetString(strControlTag, strIntoLanguage);
-                        else if (objChild.Text.StartsWith('['))
-                            objChild.Text = string.Empty;
-                        break;
-                    }
+                        {
+                            string strControlTag = objChild.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                objChild.Text = GetString(strControlTag, strIntoLanguage);
+                            else if (objChild.Text.StartsWith('['))
+                                objChild.Text = string.Empty;
+                            break;
+                        }
                     case ToolStrip tssStrip:
-                    {
-                        foreach (ToolStripItem tssItem in tssStrip.Items)
                         {
-                            TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
-                        }
+                            foreach (ToolStripItem tssItem in tssStrip.Items)
+                            {
+                                TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case ListView lstList:
-                    {
-                        foreach (ColumnHeader objHeader in lstList.Columns)
                         {
-                            string strControlTag = objHeader.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                                objHeader.Text = GetString(strControlTag, strIntoLanguage);
-                            else if (objHeader.Text.StartsWith('['))
-                                objHeader.Text = string.Empty;
-                        }
+                            foreach (ColumnHeader objHeader in lstList.Columns)
+                            {
+                                string strControlTag = objHeader.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                    objHeader.Text = GetString(strControlTag, strIntoLanguage);
+                                else if (objHeader.Text.StartsWith('['))
+                                    objHeader.Text = string.Empty;
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                     case TabControl objTabControl:
-                    {
-                        foreach (TabPage tabPage in objTabControl.TabPages)
                         {
-                            string strControlTag = tabPage.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                                tabPage.Text = GetString(strControlTag, strIntoLanguage);
-                            else if (tabPage.Text.StartsWith('['))
-                                tabPage.Text = string.Empty;
+                            foreach (TabPage tabPage in objTabControl.TabPages)
+                            {
+                                string strControlTag = tabPage.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                    tabPage.Text = GetString(strControlTag, strIntoLanguage);
+                                else if (tabPage.Text.StartsWith('['))
+                                    tabPage.Text = string.Empty;
 
-                            UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
+                                UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
+                            }
+
+                            break;
                         }
-
-                        break;
-                    }
                     case SplitContainer objSplitControl:
                         UpdateControls(objSplitControl.Panel1, strIntoLanguage, eIntoRightToLeft);
                         UpdateControls(objSplitControl.Panel2, strIntoLanguage, eIntoRightToLeft);
                         break;
+
                     case GroupBox _:
-                    {
-                        string strControlTag = objChild.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                            objChild.Text = GetString(strControlTag, strIntoLanguage);
-                        else if (objChild.Text.StartsWith('['))
-                            objChild.Text = string.Empty;
-                        UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
-                        break;
-                    }
+                        {
+                            string strControlTag = objChild.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                objChild.Text = GetString(strControlTag, strIntoLanguage);
+                            else if (objChild.Text.StartsWith('['))
+                                objChild.Text = string.Empty;
+                            UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
+                            break;
+                        }
                     case Panel _:
                         UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
                         break;
+
                     case TreeView treTree:
-                    {
-                        foreach (TreeNode objNode in treTree.Nodes)
                         {
-                            if (objNode.Level == 0)
+                            foreach (TreeNode objNode in treTree.Nodes)
                             {
-                                string strControlTag = objNode.Tag?.ToString();
-                                if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                                if (objNode.Level == 0)
                                 {
-                                    objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                    string strControlTag = objNode.Tag?.ToString();
+                                    if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                                    {
+                                        objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                    }
+                                    else if (objNode.Text.StartsWith('['))
+                                        objNode.Text = string.Empty;
                                 }
                                 else if (objNode.Text.StartsWith('['))
                                     objNode.Text = string.Empty;
                             }
-                            else if (objNode.Text.StartsWith('['))
-                                objNode.Text = string.Empty;
-                        }
 
-                        break;
-                    }
+                            break;
+                        }
                     case DataGridView objDataGridView:
-                    {
-                        foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
                         {
-                            if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                            foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
                             {
-                                objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
+                                if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                                {
+                                    objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
+                                }
                             }
-                        }
 
-                        break;
-                    }
+                            break;
+                        }
                     case ITranslatable translatable:
                         // let custom nodes determine how they want to be translated
                         translatable.Translate();
@@ -345,6 +350,7 @@ namespace Chummer
         {
             return GetString(strKey, GlobalOptions.Language, blnReturnError);
         }
+
         /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
@@ -403,7 +409,7 @@ namespace Chummer
                 // Start out with part between start of string and the first set of enclosed curly brackets already added to the list
                 new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
             };
-            
+
             // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
             int intBracketLevel = 1;
             // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
@@ -413,34 +419,34 @@ namespace Chummer
                 switch (chrLoop)
                 {
                     case '{':
-                    {
-                        if (intBracketLevel == 0)
                         {
-                            // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
-                            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
-                            // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
-                            intStartPosition = i;
-                        }
-                        intBracketLevel += 1;
-                        break;
-                    }
-                    case '}':
-                    {
-                        // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
-                        if (intBracketLevel > 0)
-                        {
-                            intBracketLevel -= 1;
                             if (intBracketLevel == 0)
                             {
-                                // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
-                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
-                                // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
+                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
+                                // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
                                 intStartPosition = i;
                             }
+                            intBracketLevel += 1;
+                            break;
                         }
+                    case '}':
+                        {
+                            // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
+                            if (intBracketLevel > 0)
+                            {
+                                intBracketLevel -= 1;
+                                if (intBracketLevel == 0)
+                                {
+                                    // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
+                                    lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
+                                    // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                    intStartPosition = i;
+                                }
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
 
@@ -513,8 +519,8 @@ namespace Chummer
                     {
                         XPathDocument objEnglishDocument;
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                objEnglishDocument = new XPathDocument(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            objEnglishDocument = new XPathDocument(objXmlReader);
                         foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
                         {
                             string strKey = objNode.SelectSingleNode("key")?.Value;
@@ -587,7 +593,7 @@ namespace Chummer
         // List of arrays for XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter.
         // List index indicates priority. Priority tries to avoid issues where an English word has multiple translations, and an unofficial one might get preference over an official one
         private static readonly IReadOnlyList<IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>> s_LstAXPathsToSearch =
-            new []
+            new[]
             {
             new []
             {
@@ -728,63 +734,83 @@ namespace Chummer
                     case "BOD":
                         strReturn = GetString("String_AttributeBODShort", strIntoLanguage);
                         break;
+
                     case "AGI":
                         strReturn = GetString("String_AttributeAGIShort", strIntoLanguage);
                         break;
+
                     case "REA":
                         strReturn = GetString("String_AttributeREAShort", strIntoLanguage);
                         break;
+
                     case "STR":
                         strReturn = GetString("String_AttributeSTRShort", strIntoLanguage);
                         break;
+
                     case "CHA":
                         strReturn = GetString("String_AttributeCHAShort", strIntoLanguage);
                         break;
+
                     case "INT":
                         strReturn = GetString("String_AttributeINTShort", strIntoLanguage);
                         break;
+
                     case "LOG":
                         strReturn = GetString("String_AttributeLOGShort", strIntoLanguage);
                         break;
+
                     case "WIL":
                         strReturn = GetString("String_AttributeWILShort", strIntoLanguage);
                         break;
+
                     case "EDG":
                         strReturn = GetString("String_AttributeEDGShort", strIntoLanguage);
                         break;
+
                     case "MAG":
                         strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
+
                     case "MAGAdept":
                         strReturn = MAGAdeptString(strIntoLanguage);
                         break;
+
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
                         break;
+
                     case "DEP":
                         strReturn = GetString("String_AttributeDEPShort", strIntoLanguage);
                         break;
+
                     case "Physical":
                         strReturn = GetString("Node_Physical", strIntoLanguage);
                         break;
+
                     case "Mental":
                         strReturn = GetString("Node_Mental", strIntoLanguage);
                         break;
+
                     case "Social":
                         strReturn = GetString("Node_Social", strIntoLanguage);
                         break;
+
                     case "Left":
                         strReturn = GetString("String_Improvement_SideLeft", strIntoLanguage);
                         break;
+
                     case "Right":
                         strReturn = GetString("String_Improvement_SideRight", strIntoLanguage);
                         break;
+
                     case "All":
                         strReturn = GetString("String_All", strIntoLanguage);
                         break;
+
                     case "None":
                         strReturn = GetString("String_None", strIntoLanguage);
                         break;
+
                     default:
                         strReturn = strExtra;
                         Match objFileSpecifier = rgxExtraFileSpecifierExpression.Match(strReturn);
@@ -1088,8 +1114,8 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlDocument = new XPathDocument(objXmlReader);
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        xmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -1114,7 +1140,8 @@ namespace Chummer
             lstLanguages.Sort(CompareListItems.CompareNames);
             return lstLanguages;
         }
-        #endregion
+
+        #endregion Methods
     }
 
     public class LanguageData
@@ -1139,8 +1166,8 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                objLanguageDocument = new XPathDocument(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            objLanguageDocument = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)
                     {
@@ -1207,8 +1234,8 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                DataDocument = new XPathDocument(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            DataDocument = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)
                     {

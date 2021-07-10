@@ -38,6 +38,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
+
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
@@ -89,7 +90,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             string strSelectedId = lstMartialArts.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
@@ -114,7 +115,7 @@ namespace Chummer
                                 if (objTechniqueStringBuilder.Length > 0)
                                     objTechniqueStringBuilder.AppendLine(",");
 
-                                objTechniqueStringBuilder.Append(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
+                                objTechniqueStringBuilder.Append(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName : strLoopTechniqueName);
                             }
                         }
                     }
@@ -151,9 +152,11 @@ namespace Chummer
         {
             RefreshArtList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -176,9 +179,11 @@ namespace Chummer
         {
             set => _strForcedValue = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -233,6 +238,7 @@ namespace Chummer
                 lstMartialArts.SelectedIndex = -1;
             lstMartialArts.EndUpdate();
         }
-        #endregion
+
+        #endregion Methods
     }
 }

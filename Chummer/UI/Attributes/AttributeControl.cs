@@ -32,7 +32,9 @@ namespace Chummer.UI.Attributes
     {
         // ConnectionRatingChanged Event Handler.
         public delegate void ValueChangedHandler(object sender, EventArgs e);
+
         public event ValueChangedHandler ValueChanged;
+
         private readonly CharacterAttrib _objAttribute;
         private int _oldBase;
         private int _oldKarma;
@@ -116,7 +118,7 @@ namespace Chummer.UI.Attributes
                     AutoSize = true,
                     InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                     Margin = new Padding(3, 0, 3, 0),
-                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                     MinimumSize = new Size(35, 0),
                     Name = "nudKarma"
                 };
@@ -128,7 +130,7 @@ namespace Chummer.UI.Attributes
                     AutoSize = true,
                     InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                     Margin = new Padding(3, 0, 3, 0),
-                    Maximum = new decimal(new[] {99, 0, 0, 0}),
+                    Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                     MinimumSize = new Size(35, 0),
                     Name = "nudBase"
                 };
@@ -220,9 +222,9 @@ namespace Chummer.UI.Attributes
             }
         }
 
-		private void cmdImproveATT_Click(object sender, EventArgs e)
-		{
-		    CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
+        private void cmdImproveATT_Click(object sender, EventArgs e)
+        {
+            CharacterAttrib attrib = _objCharacter.AttributeSection.GetAttributeByName(AttributeName);
             int intUpgradeKarmaCost = attrib.UpgradeKarmaCost;
 
             if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
@@ -236,8 +238,8 @@ namespace Chummer.UI.Attributes
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-		    attrib.Upgrade();
-	        ValueChanged?.Invoke(this, e);
+            attrib.Upgrade();
+            ValueChanged?.Invoke(this, e);
         }
 
         private void nudBase_ValueChanged(object sender, EventArgs e)
@@ -349,9 +351,9 @@ namespace Chummer.UI.Attributes
             if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BurnEdge"), LanguageManager.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                 return;
 
-			_objAttribute.Degrade(1);
-			ValueChanged?.Invoke(this, e);
-		}
+            _objAttribute.Degrade(1);
+            ValueChanged?.Invoke(this, e);
+        }
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
         {
@@ -387,9 +389,11 @@ namespace Chummer.UI.Attributes
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
-        ButtonWithToolTip _activeButton;
+        private ButtonWithToolTip _activeButton;
+
         protected ButtonWithToolTip ActiveButton
         {
             get => _activeButton;
@@ -424,6 +428,7 @@ namespace Chummer.UI.Attributes
         {
             ActiveButton = null;
         }
-#endregion
+
+        #endregion ButtonWithToolTip Visibility workaround
     }
 }

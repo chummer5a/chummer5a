@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -26,11 +27,12 @@ namespace Chummer
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         // Set session data:
         //private static string Hostname =  Dns.GetHostName();
         private static readonly string Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        private static readonly bool IsMilestone = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
 
+        private static readonly bool IsMilestone = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
 
         public void Initialize(ITelemetry telemetry)
         {
@@ -54,8 +56,8 @@ namespace Chummer
                 telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
                 telemetry.Context.Device.Id = Properties.Settings.Default.UploadClientId.ToString();
             }
-            telemetry.Context.Session.Id = Properties.Settings.Default.UploadClientId.ToString(); 
-            telemetry.Context.User.Id = Properties.Settings.Default.UploadClientId.ToString(); 
+            telemetry.Context.Session.Id = Properties.Settings.Default.UploadClientId.ToString();
+            telemetry.Context.User.Id = Properties.Settings.Default.UploadClientId.ToString();
 
             telemetry.Context.User.Id = telemetry.Context.Device.Id;
             telemetry.Context.Component.Version = Version;

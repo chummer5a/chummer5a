@@ -51,7 +51,7 @@ namespace Chummer
         /// <returns>A Task linked to the process' status code that will complete when the process exits.</returns>
         public static Task<int> StartAsync(this ProcessStartInfo objStartInfo, CancellationToken objCancellationToken = default)
         {
-            Process objProcess = new Process {StartInfo = objStartInfo};
+            Process objProcess = new Process { StartInfo = objStartInfo };
             TaskCompletionSource<int> objTaskCompletionSource = new TaskCompletionSource<int>();
             objProcess.EnableRaisingEvents = true;
             objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);

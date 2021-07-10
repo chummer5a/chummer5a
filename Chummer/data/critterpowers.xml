@@ -259,7 +259,7 @@
       <range>LOS</range>
       <duration>Instant</duration>
       <bonus>
-        <selecttext xml="strings.xml" xpath="/chummer/elements/*" allowedit="True"/>
+        <selecttext xml="strings.xml" xpath="/chummer/elements/*" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>396</page>

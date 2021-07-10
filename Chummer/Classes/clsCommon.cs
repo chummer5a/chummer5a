@@ -16,21 +16,22 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Windows.Forms;
 using System.IO;
 using System.Linq;
-using Chummer.Backend.Equipment;
-using System.Xml;
-using System.Xml.XPath;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
@@ -40,9 +41,11 @@ namespace Chummer
     public static class CommonFunctions
     {
         #region XPath Evaluators
+
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
         private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
+
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
         private static readonly ConcurrentDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
@@ -217,9 +220,11 @@ namespace Chummer
             s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
-        #endregion
+
+        #endregion XPath Evaluators
 
         #region Find Functions
+
         /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
@@ -249,6 +254,7 @@ namespace Chummer
 
             return null;
         }
+
         /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
@@ -439,6 +445,7 @@ namespace Chummer
             objFoundVehicleMod = null;
             return null;
         }
+
         /// <summary>
         /// Locate a Weapon Mount within the character's Vehicles.
         /// </summary>
@@ -467,6 +474,7 @@ namespace Chummer
             objFoundVehicle = null;
             return null;
         }
+
         /// <summary>
         /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
         /// </summary>
@@ -830,7 +838,8 @@ namespace Chummer
             objFoundMartialArt = null;
             return null;
         }
-        #endregion
+
+        #endregion Find Functions
 
         /// <summary>
         /// Book code (using the translated version if applicable).
@@ -1092,6 +1101,7 @@ namespace Chummer
         }
 
         #region PDF Functions
+
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
@@ -1144,9 +1154,9 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                astrSourceParts = new [] { "R5", strSource.Substring(2) };
+                astrSourceParts = new[] { "R5", strSource.Substring(2) };
             else
             {
                 int i = strSource.Length - 1;
@@ -1157,7 +1167,7 @@ namespace Chummer
                         break;
                     }
                 }
-                astrSourceParts = new [] { strSource.Substring(0, i), strSource.Substring(i) };
+                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
             }
             if (astrSourceParts.Length < 2)
                 return;
@@ -1434,6 +1444,7 @@ namespace Chummer
                             case '…':
                                 sbdResultContent.AppendLine(strContentString);
                                 break;
+
                             default:
                                 sbdResultContent.Append(strContentString + ' ');
                                 break;
@@ -1444,9 +1455,11 @@ namespace Chummer
             }
             return string.Empty;
         }
-        #endregion
+
+        #endregion PDF Functions
 
         #region Timescale
+
         public enum Timescale
         {
             Instant = 0,
@@ -1456,6 +1469,7 @@ namespace Chummer
             Hours = 4,
             Days = 5
         }
+
         /// <summary>
         /// Convert a string to a Timescale.
         /// </summary>
@@ -1467,21 +1481,27 @@ namespace Chummer
                 case "INSTANT":
                 case "IMMEDIATE":
                     return Timescale.Instant;
+
                 case "SECOND":
                 case "SECONDS":
                     return Timescale.Seconds;
+
                 case "COMBATTURN":
                 case "COMBATTURNS":
                     return Timescale.CombatTurns;
+
                 case "MINUTE":
                 case "MINUTES":
                     return Timescale.Minutes;
+
                 case "HOUR":
                 case "HOURS":
                     return Timescale.Hours;
+
                 case "DAY":
                 case "DAYS":
                     return Timescale.Days;
+
                 default:
                     return Timescale.Instant;
             }
@@ -1499,30 +1519,42 @@ namespace Chummer
             {
                 case Timescale.Seconds when blnSingle:
                     return LanguageManager.GetString("String_Second", strLanguage);
+
                 case Timescale.Seconds:
                     return LanguageManager.GetString("String_Seconds", strLanguage);
+
                 case Timescale.CombatTurns when blnSingle:
                     return LanguageManager.GetString("String_CombatTurn", strLanguage);
+
                 case Timescale.CombatTurns:
                     return LanguageManager.GetString("String_CombatTurns", strLanguage);
+
                 case Timescale.Minutes when blnSingle:
                     return LanguageManager.GetString("String_Minute", strLanguage);
+
                 case Timescale.Minutes:
                     return LanguageManager.GetString("String_Minutes", strLanguage);
+
                 case Timescale.Hours when blnSingle:
                     return LanguageManager.GetString("String_Hour", strLanguage);
+
                 case Timescale.Hours:
                     return LanguageManager.GetString("String_Hours", strLanguage);
+
                 case Timescale.Days when blnSingle:
                     return LanguageManager.GetString("String_Day", strLanguage);
+
                 case Timescale.Days:
                     return LanguageManager.GetString("String_Days", strLanguage);
+
                 case Timescale.Instant:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
+
                 default:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
             }
         }
-        #endregion
+
+        #endregion Timescale
     }
 }

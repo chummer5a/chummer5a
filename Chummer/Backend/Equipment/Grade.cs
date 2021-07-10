@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,6 +45,7 @@ namespace Chummer.Backend.Equipment
         private readonly Improvement.ImprovementSource _eSource;
 
         #region Constructor and Load Methods
+
         public Grade(Character objCharacter, Improvement.ImprovementSource eSource)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
@@ -63,7 +65,7 @@ namespace Chummer.Backend.Equipment
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(_eSource == Improvement.ImprovementSource.Bioware
                         ? "bioware.xml"
@@ -122,9 +124,11 @@ namespace Chummer.Backend.Equipment
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Constructor and Load Methods
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a Grade.
         /// </summary>
@@ -144,9 +148,11 @@ namespace Chummer.Backend.Equipment
 
             return lstGrades.FirstOrDefault(x => x.Name == "Standard");
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this grade.
         /// </summary>
@@ -232,6 +238,7 @@ namespace Chummer.Backend.Equipment
             get => _intAddictionThreshold;
             set => _intAddictionThreshold = value;
         }
-        #endregion
+
+        #endregion Properties
     }
 }

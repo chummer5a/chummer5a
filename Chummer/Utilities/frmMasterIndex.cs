@@ -33,6 +33,7 @@ namespace Chummer
         private readonly List<ListItem> _lstFileNamesWithItems;
         private readonly ConcurrentDictionary<MasterIndexEntry, string> _dicCachedNotes = new ConcurrentDictionary<MasterIndexEntry, string>();
         private readonly List<ListItem> _lstItems = new List<ListItem>(short.MaxValue);
+
         private readonly List<string> _lstFileNames = new List<string>
         {
             "actions.xml",
@@ -152,14 +153,14 @@ namespace Chummer
                         if (dicHelper.TryGetValue(strKey, out List<ListItem> lstExistingItems))
                         {
                             ListItem objExistingItem = lstExistingItems.FirstOrDefault(x =>
-                                objEntry.DisplaySource.Equals(((MasterIndexEntry) x.Value).DisplaySource));
+                                objEntry.DisplaySource.Equals(((MasterIndexEntry)x.Value).DisplaySource));
                             if (objExistingItem.Value != null)
                             {
                                 ((MasterIndexEntry)objExistingItem.Value).FileNames.UnionWith(objEntry.FileNames);
                             }
                             else
                             {
-                                List<ListItem> lstItemsNeedingNameChanges = lstExistingItems.Where(x => !objEntry.FileNames.IsSubsetOf(((MasterIndexEntry) x.Value).FileNames)).ToList();
+                                List<ListItem> lstItemsNeedingNameChanges = lstExistingItems.Where(x => !objEntry.FileNames.IsSubsetOf(((MasterIndexEntry)x.Value).FileNames)).ToList();
                                 if (lstItemsNeedingNameChanges.Count == 0)
                                 {
                                     _lstItems.Add(objItem); // Not using AddRange because of potential memory issues
@@ -177,7 +178,7 @@ namespace Chummer
                                         _lstItems.Remove(objToRename);
                                         lstExistingItems.Remove(objToRename);
 
-                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry) objToRename.Value;
+                                        MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
                                         objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalOptions.CultureInfo,
                                             strFormat, objExistingEntry.DisplayName, string.Join(',' + strSpace, objExistingEntry.FileNames)));
                                         _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
@@ -251,7 +252,7 @@ namespace Chummer
                     string strSearchFilter = txtSearch.Text;
                     foreach (ListItem objItem in _lstItems)
                     {
-                        MasterIndexEntry objItemEntry = (MasterIndexEntry) objItem.Value;
+                        MasterIndexEntry objItemEntry = (MasterIndexEntry)objItem.Value;
                         if (!string.IsNullOrEmpty(strFileFilter) && !objItemEntry.FileNames.Contains(strFileFilter))
                             continue;
                         if (!string.IsNullOrEmpty(strSearchFilter))
@@ -274,8 +275,8 @@ namespace Chummer
                 _blnSkipRefresh = false;
                 if (objOldSelectedValue != null)
                 {
-                    MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry) objOldSelectedValue;
-                    lstItems.SelectedIndex = lstFilteredItems.FindIndex(x => ((MasterIndexEntry) x.Value).Equals(objOldSelectedEntry));
+                    MasterIndexEntry objOldSelectedEntry = (MasterIndexEntry)objOldSelectedValue;
+                    lstItems.SelectedIndex = lstFilteredItems.FindIndex(x => ((MasterIndexEntry)x.Value).Equals(objOldSelectedEntry));
                 }
                 else
                     lstItems.SelectedIndex = -1;

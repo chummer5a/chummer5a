@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -73,6 +74,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnEncumbrance = true;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Armor(Character objCharacter)
         {
             // Create the GUID for the new piece of Armor.
@@ -119,6 +121,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (ArmorMod objOldItem in e.OldItems)
                     {
@@ -127,6 +130,7 @@ namespace Chummer.Backend.Equipment
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (ArmorMod objOldItem in e.OldItems)
                     {
@@ -141,6 +145,7 @@ namespace Chummer.Backend.Equipment
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     blnDoEncumbranceRefresh = true;
                     break;
@@ -174,6 +179,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.ChangeEquippedStatus(Equipped);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
@@ -181,6 +187,7 @@ namespace Chummer.Backend.Equipment
                         objOldItem.ChangeEquippedStatus(false);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
@@ -772,9 +779,11 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Armor in the Improvement system.
         /// </summary>
@@ -1057,7 +1066,6 @@ namespace Chummer.Backend.Equipment
 
             return strReturn.CheapReplace("Rating", () => LanguageManager.GetString(RatingLabel)) + '¥';
         }
-
 
         private SourceString _objCachedSourceDetail;
 
@@ -1399,9 +1407,11 @@ namespace Chummer.Backend.Equipment
             get => _blnStolen;
             set => _blnStolen = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
@@ -1670,9 +1680,11 @@ namespace Chummer.Backend.Equipment
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         /// <summary>
         /// Method to delete an Armor object. Returns total extra cost removed unrelated to children.
         /// </summary>
@@ -1739,7 +1751,6 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
-
         /// <summary>
         /// Toggle the Wireless Bonus for this armor.
         /// </summary>
@@ -1786,6 +1797,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
@@ -1831,8 +1843,9 @@ namespace Chummer.Backend.Equipment
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
 
-        #endregion
-        #endregion
+        #endregion UI Methods
+
+        #endregion Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
@@ -1865,7 +1878,6 @@ namespace Chummer.Backend.Equipment
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
-
 
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
@@ -1923,33 +1935,33 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.ArmorMod:
-                    {
-                        XmlNode xmlNode = GetNode();
-                        if (xmlNode == null)
-                            return strPasteCategory == "General";
-                        XmlNode xmlForceModCategory = xmlNode["forcemodcategory"];
-                        if (xmlForceModCategory != null)
-                            return xmlForceModCategory.InnerText == strPasteCategory;
-                        if (strPasteCategory == "General")
-                            return true;
-                        using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
                         {
-                            if (!(xmlAddonCategoryList?.Count > 0))
+                            XmlNode xmlNode = GetNode();
+                            if (xmlNode == null)
+                                return strPasteCategory == "General";
+                            XmlNode xmlForceModCategory = xmlNode["forcemodcategory"];
+                            if (xmlForceModCategory != null)
+                                return xmlForceModCategory.InnerText == strPasteCategory;
+                            if (strPasteCategory == "General")
                                 return true;
-                            return xmlAddonCategoryList.Cast<XmlNode>()
-                                .Any(xmlCategory => xmlCategory.InnerText == strPasteCategory);
+                            using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                            {
+                                if (!(xmlAddonCategoryList?.Count > 0))
+                                    return true;
+                                return xmlAddonCategoryList.Cast<XmlNode>()
+                                    .Any(xmlCategory => xmlCategory.InnerText == strPasteCategory);
+                            }
                         }
-                    }
                     case ClipboardContentType.Gear:
-                    {
-                        using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
                         {
-                            if (!(xmlAddonCategoryList?.Count > 0))
-                                return true;
-                            return xmlAddonCategoryList.Cast<XmlNode>()
-                                .Any(xmlCategory => xmlCategory.InnerText == strPasteCategory);
+                            using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                            {
+                                if (!(xmlAddonCategoryList?.Count > 0))
+                                    return true;
+                                return xmlAddonCategoryList.Cast<XmlNode>()
+                                    .Any(xmlCategory => xmlCategory.InnerText == strPasteCategory);
+                            }
                         }
-                    }
                     default:
                         return false;
                 }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -39,7 +40,9 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
+
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Location(Character objCharacter, ObservableCollection<Location> objParent, string strName = "")
         {
             // Create the GUID for the new art.
@@ -112,9 +115,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
@@ -183,9 +188,11 @@ namespace Chummer
         public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
         public ObservableCollection<Location> Parent { get; }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
             string strText = DisplayName(GlobalOptions.Language);
@@ -206,8 +213,8 @@ namespace Chummer
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
-        #endregion
 
+        #endregion UI Methods
 
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -217,16 +224,19 @@ namespace Chummer
                     foreach (IHasLocation objNewItem in e.NewItems)
                         objNewItem.Location = this;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (IHasLocation objOldItem in e.OldItems)
                         objOldItem.Location = null;
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (IHasLocation objOldItem in e.OldItems)
                         objOldItem.Location = null;
                     foreach (IHasLocation objNewItem in e.NewItems)
                         objNewItem.Location = this;
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     foreach (IHasLocation objItem in Children)
                     {

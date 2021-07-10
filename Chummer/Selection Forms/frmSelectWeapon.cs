@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
-using System.Data;
 using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
-using System.Text;
-using System.Linq;
 
 // ReSharper disable LocalizableElement
 
@@ -48,6 +49,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
+
         public frmSelectWeapon(Character objCharacter)
         {
             if (objCharacter == null)
@@ -494,47 +496,47 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down:
-                {
-                    if (lstWeapon.SelectedIndex + 1 < lstWeapon.Items.Count)
                     {
-                        lstWeapon.SelectedIndex++;
-                    }
-                    else if (lstWeapon.Items.Count > 0)
-                    {
-                        lstWeapon.SelectedIndex = 0;
-                    }
-                    if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index + 1)
-                    {
-                        dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index + 1].Selected = true;
-                    }
-                    else if (dgvWeapons.Rows.Count > 0)
-                    {
-                        dgvWeapons.Rows[0].Selected = true;
-                    }
+                        if (lstWeapon.SelectedIndex + 1 < lstWeapon.Items.Count)
+                        {
+                            lstWeapon.SelectedIndex++;
+                        }
+                        else if (lstWeapon.Items.Count > 0)
+                        {
+                            lstWeapon.SelectedIndex = 0;
+                        }
+                        if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index + 1)
+                        {
+                            dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index + 1].Selected = true;
+                        }
+                        else if (dgvWeapons.Rows.Count > 0)
+                        {
+                            dgvWeapons.Rows[0].Selected = true;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
                 case Keys.Up:
-                {
-                    if (lstWeapon.SelectedIndex - 1 >= 0)
                     {
-                        lstWeapon.SelectedIndex--;
-                    }
-                    else if (lstWeapon.Items.Count > 0)
-                    {
-                        lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
-                    }
-                    if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index - 1)
-                    {
-                        dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index - 1].Selected = true;
-                    }
-                    else if (dgvWeapons.Rows.Count > 0)
-                    {
-                        dgvWeapons.Rows[0].Selected = true;
-                    }
+                        if (lstWeapon.SelectedIndex - 1 >= 0)
+                        {
+                            lstWeapon.SelectedIndex--;
+                        }
+                        else if (lstWeapon.Items.Count > 0)
+                        {
+                            lstWeapon.SelectedIndex = lstWeapon.Items.Count - 1;
+                        }
+                        if (dgvWeapons.SelectedRows.Count > 0 && dgvWeapons.Rows.Count > dgvWeapons.SelectedRows[0].Index - 1)
+                        {
+                            dgvWeapons.Rows[dgvWeapons.SelectedRows[0].Index - 1].Selected = true;
+                        }
+                        else if (dgvWeapons.Rows.Count > 0)
+                        {
+                            dgvWeapons.Rows[0].Selected = true;
+                        }
 
-                    break;
-                }
+                        break;
+                    }
             }
         }
 
@@ -548,9 +550,11 @@ namespace Chummer
         {
             UpdateWeaponInfo();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -587,9 +591,11 @@ namespace Chummer
 
         public Weapon ParentWeapon { get; set; }
         public HashSet<string> Mounts { get; } = new HashSet<string>();
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void RefreshList()
         {
             string strCategory = cboCategory.SelectedValue?.ToString();
@@ -636,7 +642,7 @@ namespace Chummer
                     string strSelectedId = lstWeapon.SelectedValue?.ToString();
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
-                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strSelectedId.CleanXPath()+ "]");
+                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strSelectedId.CleanXPath() + "]");
                         if (objNode != null)
                         {
                             s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
@@ -651,6 +657,7 @@ namespace Chummer
                     }
 
                     break;
+
                 case 1:
                     if (dgvWeapons.SelectedRows.Count == 1)
                     {
@@ -690,6 +697,7 @@ namespace Chummer
 
             RefreshList();
         }
-        #endregion
+
+        #endregion Methods
     }
 }

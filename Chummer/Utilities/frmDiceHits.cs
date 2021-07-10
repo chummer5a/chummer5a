@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -24,6 +25,7 @@ namespace Chummer
     public partial class frmDiceHits : Form
     {
         #region Control Events
+
         public frmDiceHits()
         {
             InitializeComponent();
@@ -62,7 +64,8 @@ namespace Chummer
                 nudDiceResult.ValueAsInt = intResult;
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
 
@@ -99,6 +102,7 @@ namespace Chummer
         /// Dice roll result.
         /// </summary>
         public int Result => nudDiceResult.ValueAsInt;
-        #endregion
+
+        #endregion Properties
     }
 }

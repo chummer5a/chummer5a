@@ -19,15 +19,15 @@
 
 using System;
 using System.Collections.Generic;
- using System.Text.RegularExpressions;
- using Chummer.Backend.Equipment;
+using System.Text.RegularExpressions;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     /// <summary>
     /// This class allows to read more advanced Values out of an XmlNode
     /// Such as "FixedValues([523],[42],[421])" or "Rating * 3"
-    /// 
+    ///
     /// Provided it doesn't contain "FixedValues" the expression is evaluated
     /// at runtime as a mathematical expression, allowing stuff such as
     /// "Rating * Rating * 4", "Rating * 5 + 2" or "(Rating / 2) * 4000"
@@ -36,14 +36,16 @@ namespace Chummer
     /// </summary>
     public sealed class ParameterAttribute
     {
-         //Keep a single regex to not create one for each class.
+        //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
         private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
+
         private readonly Gear _gear;
         private readonly string _attribute;
         private readonly double[] fixedDoubles;
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="gear"></param>
         /// <param name="attribute"></param>
@@ -99,12 +101,13 @@ namespace Chummer
                         return fixedDoubles[fixedDoubles.Length - 1];
                     }
                     else  //Structured like this to allow easy disabling of
-                         //above code if IndexOutOfRangeException turns out to be
-                        //preferred. This is an elseif
-                        if(true)
-                        {
-                            return fixedDoubles[_gear.Rating];
-                    /**/}
+                          //above code if IndexOutOfRangeException turns out to be
+                          //preferred. This is an elseif
+                        if (true)
+                    {
+                        return fixedDoubles[_gear.Rating];
+                        /**/
+                    }
                 }
                 else
                 {
@@ -113,6 +116,6 @@ namespace Chummer
             }
         }
 
-        public int AttributeInt => (int) AttributeDouble;
+        public int AttributeInt => (int)AttributeDouble;
     }
 }

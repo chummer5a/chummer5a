@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
- using System.Diagnostics;
- using System.Text;
- using NLog;
+using System.Diagnostics;
+using System.Text;
+using NLog;
 
 namespace Chummer
 {
@@ -32,7 +33,7 @@ namespace Chummer
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
-        static Timekeeper ()
+        static Timekeeper()
         {
             s_Time.Start();
         }
@@ -108,6 +109,5 @@ namespace Chummer
             Debug.WriteLine(strined);
             Logger.Info(strined);
         }
-
     }
 }

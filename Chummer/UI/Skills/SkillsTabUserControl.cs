@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -25,9 +26,9 @@ using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
 using Chummer.UI.Shared;
-using Chummer.Backend.Attributes;
 
 namespace Chummer.UI.Skills
 {
@@ -68,7 +69,7 @@ namespace Chummer.UI.Skills
 
         private Character _objCharacter;
         private List<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
-        private readonly List<Tuple<string, IComparer<Skill>>>  _sortList;
+        private readonly List<Tuple<string, IComparer<Skill>>> _sortList;
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
         private List<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
@@ -773,13 +774,14 @@ namespace Chummer.UI.Skills
                         {
                             case DialogResult.Cancel:
                                 return;
+
                             case DialogResult.Yes:
-                            {
-                                if (!skill.IsLanguage)
-                                    skill.Type = "Language";
-                                skill.IsNativeLanguage = true;
-                                break;
-                            }
+                                {
+                                    if (!skill.IsLanguage)
+                                        skill.Type = "Language";
+                                    skill.IsNativeLanguage = true;
+                                    break;
+                                }
                         }
                     }
 

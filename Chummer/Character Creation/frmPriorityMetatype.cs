@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -50,6 +51,7 @@ namespace Chummer
         private readonly XmlNode _xmlCritterPowerDocumentPowersNode;
 
         #region Form Events
+
         public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
@@ -151,21 +153,25 @@ namespace Chummer
                                 cboHeritage.PopulateWithListItems(lstItems);
                                 cboHeritage.EndUpdate();
                                 break;
+
                             case "Talent":
                                 cboTalent.BeginUpdate();
                                 cboTalent.PopulateWithListItems(lstItems);
                                 cboTalent.EndUpdate();
                                 break;
+
                             case "Attributes":
                                 cboAttributes.BeginUpdate();
                                 cboAttributes.PopulateWithListItems(lstItems);
                                 cboAttributes.EndUpdate();
                                 break;
+
                             case "Skills":
                                 cboSkills.BeginUpdate();
                                 cboSkills.PopulateWithListItems(lstItems);
                                 cboSkills.EndUpdate();
                                 break;
+
                             case "Resources":
                                 cboResources.BeginUpdate();
                                 cboResources.PopulateWithListItems(lstItems);
@@ -259,6 +265,7 @@ namespace Chummer
                     ManagePriorityItems(cboSkills);
                     ManagePriorityItems(cboResources);
                     break;
+
                 case CharacterBuildMethod.SumtoTen:
                     SumToTen();
                     break;
@@ -292,9 +299,11 @@ namespace Chummer
 
             _blnLoading = false;
         }
-        #endregion
+
+        #endregion Form Events
 
         #region Control Events
+
         private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
@@ -356,22 +365,28 @@ namespace Chummer
                             case "magic":
                                 xmlSkillsList = GetMagicalSkillList();
                                 break;
+
                             case "resonance":
                                 xmlSkillsList = GetResonanceSkillList();
                                 break;
+
                             case "matrix":
                                 xmlSkillsList = GetMatrixSkillList();
                                 break;
+
                             case "grouped":
                                 xmlSkillsList = BuildSkillCategoryList(objNodeList);
                                 break;
+
                             case "specific":
                                 xmlSkillsList = BuildSkillList(xmlTalentNode.Select("skillchoices/skill"));
                                 break;
+
                             case "xpath":
                                 xmlSkillsList = GetActiveSkillList(xmlSkillTypeNode?.SelectSingleNode("@xpath")?.Value);
                                 strSkillType = "active";
                                 break;
+
                             default:
                                 xmlSkillsList = GetActiveSkillList();
                                 break;
@@ -453,7 +468,7 @@ namespace Chummer
                                                 intNewIndex = 0;
                                         }
                                         while ((intNewIndex == cboSkill1.SelectedIndex || intNewIndex == cboSkill2.SelectedIndex) && intNewIndex != cboSkill3.SelectedIndex &&
-                                               !ExoticSkill.IsExoticSkillName(((ListItem) cboSkill3.Items[intNewIndex]).Value.ToString()));
+                                               !ExoticSkill.IsExoticSkillName(((ListItem)cboSkill3.Items[intNewIndex]).Value.ToString()));
                                         cboSkill3.SelectedIndex = intNewIndex;
                                     }
                                 }
@@ -462,7 +477,7 @@ namespace Chummer
                                 LanguageManager.GetString("String_MetamagicSkills"));
                             // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                             // So the language file should contain each of those like String_MetamagicSkillType_magic
-                            lblMetatypeSkillSelection.Text = string.Format(GlobalOptions.CultureInfo, strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType), strSkillVal);
+                            lblMetatypeSkillSelection.Text = string.Format(GlobalOptions.CultureInfo, strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType), strSkillVal);
                             lblMetatypeSkillSelection.Visible = true;
                         }
 
@@ -552,6 +567,7 @@ namespace Chummer
                 case CharacterBuildMethod.Priority:
                     ManagePriorityItems(cboHeritage);
                     break;
+
                 case CharacterBuildMethod.SumtoTen:
                     SumToTen();
                     break;
@@ -573,6 +589,7 @@ namespace Chummer
                 case CharacterBuildMethod.Priority:
                     ManagePriorityItems(cboTalent);
                     break;
+
                 case CharacterBuildMethod.SumtoTen:
                     SumToTen();
                     break;
@@ -591,6 +608,7 @@ namespace Chummer
                 case CharacterBuildMethod.Priority:
                     ManagePriorityItems(cboAttributes);
                     break;
+
                 case CharacterBuildMethod.SumtoTen:
                     SumToTen();
                     break;
@@ -608,6 +626,7 @@ namespace Chummer
                 case CharacterBuildMethod.Priority:
                     ManagePriorityItems(cboSkills);
                     break;
+
                 case CharacterBuildMethod.SumtoTen:
                     SumToTen();
                     break;
@@ -625,6 +644,7 @@ namespace Chummer
                 case CharacterBuildMethod.Priority:
                     ManagePriorityItems(cboResources);
                     break;
+
                 case CharacterBuildMethod.SumtoTen:
                     SumToTen();
                     break;
@@ -636,13 +656,15 @@ namespace Chummer
         {
             cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Custom Methods
+
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        void MetatypeSelected()
+        private void MetatypeSelected()
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -815,7 +837,6 @@ namespace Chummer
                             break;
                         }
                     }
-
 
                     switch (cboTalents.SelectedValue)
                     {
@@ -1243,7 +1264,7 @@ namespace Chummer
             return value;
         }
 
-        void RefreshSelectedMetatype()
+        private void RefreshSelectedMetatype()
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
@@ -1601,35 +1622,35 @@ namespace Chummer
                                     switch (objXmlForbidden.Name)
                                     {
                                         case "metatype":
-                                        {
-                                            // Check the Metatype restriction.
-                                            if (objXmlForbidden.Value == lstMetatypes.SelectedValue?.ToString())
                                             {
-                                                blnRequirementForbidden = true;
-                                                goto EndForbiddenLoop;
-                                            }
+                                                // Check the Metatype restriction.
+                                                if (objXmlForbidden.Value == lstMetatypes.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementForbidden = true;
+                                                    goto EndForbiddenLoop;
+                                                }
 
-                                            break;
-                                        }
+                                                break;
+                                            }
                                         // Check the Metavariant restriction.
                                         case "metatypecategory":
-                                        {
-                                            // Check the Metatype Category restriction.
-                                            if (objXmlForbidden.Value == cboCategory.SelectedValue?.ToString())
                                             {
-                                                blnRequirementForbidden = true;
-                                                goto EndForbiddenLoop;
-                                            }
+                                                // Check the Metatype Category restriction.
+                                                if (objXmlForbidden.Value == cboCategory.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementForbidden = true;
+                                                    goto EndForbiddenLoop;
+                                                }
 
-                                            break;
-                                        }
+                                                break;
+                                            }
                                         case "metavariant" when objXmlForbidden.Value == cboMetavariant.SelectedValue?.ToString():
                                             blnRequirementForbidden = true;
                                             goto EndForbiddenLoop;
                                     }
                                 }
                             }
-                            EndForbiddenLoop:
+                        EndForbiddenLoop:
                             if (blnRequirementForbidden)
                                 continue;
                         }
@@ -1649,35 +1670,35 @@ namespace Chummer
                                     switch (objXmlRequired.Name)
                                     {
                                         case "metatype":
-                                        {
-                                            // Check the Metatype restriction.
-                                            if (objXmlRequired.Value == lstMetatypes.SelectedValue?.ToString())
                                             {
-                                                blnRequirementMet = true;
-                                                goto EndRequiredLoop;
-                                            }
+                                                // Check the Metatype restriction.
+                                                if (objXmlRequired.Value == lstMetatypes.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementMet = true;
+                                                    goto EndRequiredLoop;
+                                                }
 
-                                            break;
-                                        }
+                                                break;
+                                            }
                                         // Check the Metavariant restriction.
                                         case "metatypecategory":
-                                        {
-                                            // Check the Metatype Category restriction.
-                                            if (objXmlRequired.Value == cboCategory.SelectedValue?.ToString())
                                             {
-                                                blnRequirementMet = true;
-                                                goto EndRequiredLoop;
-                                            }
+                                                // Check the Metatype Category restriction.
+                                                if (objXmlRequired.Value == cboCategory.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementMet = true;
+                                                    goto EndRequiredLoop;
+                                                }
 
-                                            break;
-                                        }
+                                                break;
+                                            }
                                         case "metavariant" when objXmlRequired.Value == cboMetavariant.SelectedValue?.ToString():
                                             blnRequirementMet = true;
                                             goto EndRequiredLoop;
                                     }
                                 }
                             }
-                            EndRequiredLoop:
+                        EndRequiredLoop:
                             if (!blnRequirementMet)
                                 continue;
                         }
@@ -1921,7 +1942,7 @@ namespace Chummer
                 }
                 // Remove metatypes not covered by heritage
                 lstRemoveCategory.Add(objXmlCategory.Value);
-                NextItem:;
+            NextItem:;
             }
 
             foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.Select("categories/category"))
@@ -2010,7 +2031,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Custom Methods
     }
 }
-

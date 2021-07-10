@@ -39,9 +39,11 @@ namespace Chummer
 
         // Events.
         public event TextEventHandler ContactDetailChanged;
+
         public event EventHandler DeleteContact;
 
         #region Control Events
+
         public ContactControl(Contact objContact)
         {
             _objContact = objContact ?? throw new ArgumentNullException(nameof(objContact));
@@ -126,7 +128,6 @@ namespace Chummer
             if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
-
 
         private void cmdExpand_Click(object sender, EventArgs e)
         {
@@ -404,9 +405,11 @@ namespace Chummer
             if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Contact object this is linked to.
         /// </summary>
@@ -444,9 +447,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void LoadContactList()
         {
             if (_objContact.EntityType == ContactType.Enemy)
@@ -668,13 +673,13 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                cboMetatype = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype"};
-                cboGender = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender"};
-                cboAge = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge"};
-                cboType = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType"};
-                cboPersonalLife = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPersonalLife"};
-                cboPreferredPayment = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPreferredPayment"};
-                cboHobbiesVice = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboHobbiesVice"};
+                cboMetatype = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype" };
+                cboGender = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
+                cboAge = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
+                cboType = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
+                cboPersonalLife = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPersonalLife" };
+                cboPreferredPayment = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPreferredPayment" };
+                cboHobbiesVice = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboHobbiesVice" };
 
                 LoadStatBlockLists();
 
@@ -970,6 +975,7 @@ namespace Chummer
             cboHobbiesVice.PopulateWithListItems(lstHobbiesVices);
             cboHobbiesVice.EndUpdate();
         }
-        #endregion
+
+        #endregion Methods
     }
 }

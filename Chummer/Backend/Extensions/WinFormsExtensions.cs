@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +32,7 @@ namespace Chummer
     public static class WinFormsExtensions
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         #region Controls Extensions
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoThreadSafe(this Control objControl, Action funcToRun)
         {
-             objControl.DoThreadSafeCore(true, funcToRun);
+            objControl.DoThreadSafeCore(true, funcToRun);
         }
 
         /// <summary>
@@ -323,13 +325,15 @@ namespace Chummer
         /// <param name="objControl"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrDisposed([CanBeNull]this Control objControl)
+        public static bool IsNullOrDisposed([CanBeNull] this Control objControl)
         {
             return objControl == null || objControl.Disposing || objControl.IsDisposed;
         }
-        #endregion
+
+        #endregion Controls Extensions
 
         #region ComboBox Extensions
+
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
         {
             if (ReferenceEquals(lsbThis.DataSource, lstItems))
@@ -392,9 +396,11 @@ namespace Chummer
                 cboThis.BindingContext = new BindingContext();
             cboThis.DataSource = lstItemsToSet;
         }
-        #endregion
+
+        #endregion ComboBox Extensions
 
         #region TreeNode Extensions
+
         public static TreeNode GetTopParent(this TreeNode objThis)
         {
             if (objThis == null)
@@ -472,7 +478,8 @@ namespace Chummer
             }
             return intReturn;
         }
-        #endregion
+
+        #endregion TreeNode Extensions
 
         #region TreeView Extensions
 
@@ -684,9 +691,11 @@ namespace Chummer
             }
             return intReturn;
         }
-        #endregion
+
+        #endregion TreeView Extensions
 
         #region TreeNodeCollection Extensions
+
         /// <summary>
         /// Recursive method to clear the background color for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
         /// </summary>
@@ -703,6 +712,7 @@ namespace Chummer
                 objChild.Nodes.ClearNodeBackground(objHighlighted);
             }
         }
-        #endregion
+
+        #endregion TreeNodeCollection Extensions
     }
 }

@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Globalization;
- using System.Linq;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml.XPath;
- using Chummer.Backend.Equipment;
+using System.Xml.XPath;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -45,6 +46,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
+
         public frmSelectWeaponAccessory(Character objCharacter)
         {
             if (objCharacter == null)
@@ -176,7 +178,7 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked  && !chkFreeItem.Checked)
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
                 RefreshList();
             UpdateGearInfo();
         }
@@ -199,13 +201,16 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                 UpdateGearInfo(false);
         }
+
         private void RefreshCurrentList(object sender, EventArgs e)
         {
             RefreshList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -277,9 +282,10 @@ namespace Chummer
         /// </summary>
         public decimal Markup => _decMarkup;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             RefreshList();
@@ -377,7 +383,7 @@ namespace Chummer
 
                 strMounts.Add("None");
 
-                List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
+                List<string> strAllowed = new List<string>(_lstAllowedMounts) { "None" };
                 cboMount.Visible = true;
                 cboMount.Items.Clear();
                 foreach (string strCurrentMount in strMounts)
@@ -508,7 +514,6 @@ namespace Chummer
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
 
-
             if (!chkBlackMarketDiscount.Checked)
             {
                 chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _blnIsParentWeaponBlackMarketAllowed;
@@ -527,6 +532,7 @@ namespace Chummer
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
             tlpRight.Visible = true;
         }
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -547,6 +553,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

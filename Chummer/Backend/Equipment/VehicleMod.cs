@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Attributes;
+
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -78,6 +79,7 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public VehicleMod(Character objCharacter)
         {
             // Create the GUID for the new VehicleMod.
@@ -96,10 +98,12 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objNewItem in e.NewItems)
                         objNewItem.ParentVehicle = Parent;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Cyberware objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Cyberware objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
@@ -117,10 +121,12 @@ namespace Chummer.Backend.Equipment
                     foreach (Weapon objNewItem in e.NewItems)
                         objNewItem.ParentVehicle = Parent;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Weapon objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Weapon objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
@@ -501,9 +507,11 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Weapons.
         /// </summary>
@@ -632,6 +640,7 @@ namespace Chummer.Backend.Equipment
             get => _strRatingLabel;
             set => _strRatingLabel = value;
         }
+
         /// <summary>
         /// Cost.
         /// </summary>
@@ -667,7 +676,6 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -854,9 +862,11 @@ namespace Chummer.Backend.Equipment
             get => _blnStolen;
             set => _blnStolen = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
@@ -1430,9 +1440,11 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         public decimal DeleteVehicleMod()
         {
             decimal decReturn = 0;
@@ -1514,6 +1526,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
@@ -1584,8 +1597,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        #endregion
-        #endregion
+        #endregion UI Methods
+
+        #endregion Methods
 
         public void SetSourceDetail(Control sourceControl)
         {
@@ -1601,10 +1615,10 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.Weapon:
-                    {
-                        // TODO: Make this not depend on string names
-                        return Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) || Name.Contains("Drone Arm");
-                    }
+                        {
+                            // TODO: Make this not depend on string names
+                            return Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) || Name.Contains("Drone Arm");
+                        }
                     default:
                         return false;
                 }

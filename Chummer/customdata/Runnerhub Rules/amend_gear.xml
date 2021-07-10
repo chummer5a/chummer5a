@@ -19,7 +19,7 @@
 -->
 <chummer>
   <categories>
-    <category blackmarket="Electronics" amendoperation="addnode">RCC Programs</category>    
+    <category blackmarket="Electronics" amendoperation="addnode">RCC Programs</category>
   </categories>
   <gears>
     <gear>
@@ -54,9 +54,9 @@
       <costfor>1</costfor>
     </gear>
     <gear>
-      <name>Portable Chemical Injector, Harness</name>      
+      <name>Portable Chemical Injector, Harness</name>
       <capacity>10</capacity>
-      <avail>10R</avail>      
+      <avail>10R</avail>
       <addoncategory>Drugs</addoncategory>
     </gear>
     <gear>
@@ -74,7 +74,7 @@
     <gear>
       <name>Shaman Tuxedo</name>
       <notes>
-        - The conjurer receives one service upon a successful summoning, and the conjurer must continue wearing the outfit in order to command the spirit and to benefit from its services. If the conjurer removes the outfit, the spirit gets upset and will not perform any further services until the conjurer puts the outfit back on and issues a new command. 
+        - The conjurer receives one service upon a successful summoning, and the conjurer must continue wearing the outfit in order to command the spirit and to benefit from its services. If the conjurer removes the outfit, the spirit gets upset and will not perform any further services until the conjurer puts the outfit back on and issues a new command.
       </notes>
     </gear>
     <gear amendoperation="addnode">

@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using System.IO;
-using System.Text;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -36,6 +37,7 @@ namespace Chummer
 
         // Not readonly because content can change while form is up
         private XPathNavigator _xmlBaseChummerNode;
+
         private readonly XPathNavigator _xmlGearsBaseGearsNode;
         private readonly XPathNavigator _xmlBiowareBaseChummerNode;
         private readonly XPathNavigator _xmlCyberwareBaseChummerNode;
@@ -52,6 +54,7 @@ namespace Chummer
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
+
         public frmSelectPACKSKit(Character objCharacter)
         {
             InitializeComponent();
@@ -183,6 +186,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "qualities":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Qualities");
                         treContents.Nodes.Add(objParent);
@@ -201,7 +205,7 @@ namespace Chummer
 
                             string strSelect = objXmlQuality.SelectSingleNode("@select")?.Value;
                             if (!string.IsNullOrEmpty(strSelect))
-                                objChild.Text += strSpace + '('+ _objCharacter.TranslateExtra(strSelect)+ ')';
+                                objChild.Text += strSpace + '(' + _objCharacter.TranslateExtra(strSelect) + ')';
                             objParent.Nodes.Add(objChild);
                             objParent.Expand();
                         }
@@ -226,6 +230,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "nuyenbp":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Nuyen");
                         treContents.Nodes.Add(objParent);
@@ -236,6 +241,7 @@ namespace Chummer
                         objParent.Nodes.Add(objNuyenChild);
                         objParent.Expand();
                         break;
+
                     case "skills":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Skills");
                         treContents.Nodes.Add(objParent);
@@ -271,7 +277,7 @@ namespace Chummer
                             {
                                 Text = objNode.SelectSingleNode("@translate")?.Value ?? strName
                             };
-                            objChild.Text += strSpace + LanguageManager.GetString("String_SelectPACKSKit_Group")+ strSpace + objXmlSkill.SelectSingleNode("rating")?.Value;
+                            objChild.Text += strSpace + LanguageManager.GetString("String_SelectPACKSKit_Group") + strSpace + objXmlSkill.SelectSingleNode("rating")?.Value;
 
                             string strSpec = objXmlSkill.SelectSingleNode("spec")?.Value;
                             if (!string.IsNullOrEmpty(strSpec))
@@ -280,6 +286,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "knowledgeskills":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_KnowledgeSkills");
                         treContents.Nodes.Add(objParent);
@@ -305,6 +312,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "selectmartialart":
                         {
                             objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
@@ -360,6 +368,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "powers":
                         {
                             objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Powers");
@@ -430,6 +439,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "spells":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spells");
                         treContents.Nodes.Add(objParent);
@@ -453,6 +463,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "spirits":
 
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Spirits");
@@ -471,6 +482,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "lifestyles":
 
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Lifestyles");
@@ -492,11 +504,13 @@ namespace Chummer
                                     strIncrementString = LanguageManager.GetString("String_Days");
                                     intPermanentAmount = 3044;
                                     break;
+
                                 case "week":
                                 case "Week":
                                     strIncrementString = LanguageManager.GetString("String_Weeks");
                                     intPermanentAmount = 435;
                                     break;
+
                                 default:
                                     strIncrementString = LanguageManager.GetString("String_Months");
                                     intPermanentAmount = 100;
@@ -527,6 +541,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "cyberwares":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Cyberware");
                         treContents.Nodes.Add(objParent);
@@ -582,6 +597,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "biowares":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Bioware");
                         treContents.Nodes.Add(objParent);
@@ -637,6 +653,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "armors":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Armor");
                         treContents.Nodes.Add(objParent);
@@ -686,6 +703,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "weapons":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Weapons");
                         treContents.Nodes.Add(objParent);
@@ -751,6 +769,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "gears":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Gear");
                         treContents.Nodes.Add(objParent);
@@ -762,6 +781,7 @@ namespace Chummer
                             objParent.Expand();
                         }
                         break;
+
                     case "vehicles":
                         objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_Vehicles");
                         treContents.Nodes.Add(objParent);
@@ -933,9 +953,11 @@ namespace Chummer
             _xmlBaseChummerNode = _objCharacter.LoadDataXPath("packs.xml").SelectSingleNode("/chummer");
             cboCategory_SelectedIndexChanged(sender, e);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -951,9 +973,10 @@ namespace Chummer
         /// </summary>
         public static string SelectedCategory => s_StrSelectCategory;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -1006,6 +1029,7 @@ namespace Chummer
                 objChild.Expand();
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 }

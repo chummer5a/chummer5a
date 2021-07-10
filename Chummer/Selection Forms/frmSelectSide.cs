@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -27,6 +28,7 @@ namespace Chummer
         private string _strSelectedSide = string.Empty;
 
         #region Control Events
+
         public frmSelectSide()
         {
             InitializeComponent();
@@ -56,9 +58,11 @@ namespace Chummer
             // Select the first item in the list.
             cboSide.SelectedIndex = 0;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         // Description to show in the window.
         public string Description
         {
@@ -70,9 +74,10 @@ namespace Chummer
         /// </summary>
         public string SelectedSide => _strSelectedSide;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Force a particular value to be selected in the window.
         /// </summary>
@@ -83,7 +88,8 @@ namespace Chummer
             cboSide.Text = strSide;
             cmdOK_Click(this, null);
         }
-        #endregion
+
+        #endregion Methods
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {

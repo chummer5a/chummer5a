@@ -29,7 +29,7 @@
     </xs:sequence>
   </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="attributes">
     <xs:complexType>
       <xs:sequence>
@@ -46,7 +46,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="skills">
     <xs:complexType>
       <xs:sequence>
@@ -70,7 +70,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="powers">
     <xs:complexType>
       <xs:sequence>
@@ -93,7 +93,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="programs">
     <xs:complexType>
       <xs:sequence>
@@ -108,7 +108,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="spells">
     <xs:complexType>
       <xs:sequence>
@@ -124,7 +124,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="spirits">
     <xs:complexType>
     <xs:sequence>
@@ -140,7 +140,7 @@
     </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="cyberwares">
     <xs:complexType>
     <xs:sequence>
@@ -171,7 +171,7 @@
     </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="biowares">
     <xs:complexType>
     <xs:sequence>
@@ -187,7 +187,7 @@
     </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="armors">
     <xs:complexType>
       <xs:sequence>
@@ -216,7 +216,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="weapons">
     <xs:complexType>
       <xs:sequence>
@@ -258,7 +258,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="gears">
     <xs:complexType>
       <xs:sequence>
@@ -285,7 +285,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="vehicles">
     <xs:complexType>
       <xs:sequence>
@@ -344,7 +344,7 @@
       </xs:sequence>
     </xs:complexType>
   </xs:element>
-  
+
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>

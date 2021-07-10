@@ -81,7 +81,7 @@ namespace Chummer.UI.Skills
 
                 int intMinimumSize;
                 using (Graphics g = CreateGraphics())
-                    intMinimumSize = (int) (25 * g.DpiX / 96.0f);
+                    intMinimumSize = (int)(25 * g.DpiX / 96.0f);
 
                 if (_skill.CharacterObject.Created)
                 {
@@ -165,7 +165,7 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudSkill"
                     };
                     nudKarma = new NumericUpDownEx
@@ -174,7 +174,7 @@ namespace Chummer.UI.Skills
                         AutoSize = true,
                         InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
                         Margin = new Padding(3, 2, 3, 2),
-                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudKarma"
                     };
 
@@ -309,6 +309,7 @@ namespace Chummer.UI.Skills
                     if (blnAll)
                         goto case nameof(KnowledgeSkill.WritableName);
                     break;
+
                 case nameof(KnowledgeSkill.WritableName):
                     if (!_blnUpdatingName)
                     {
@@ -318,6 +319,7 @@ namespace Chummer.UI.Skills
                     if (blnAll)
                         goto case nameof(Skill.IsNativeLanguage);
                     break;
+
                 case nameof(Skill.IsNativeLanguage):
                     if (chkNativeLanguage != null)
                     {
@@ -376,6 +378,7 @@ namespace Chummer.UI.Skills
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
                             decExtraSpecCost += objLoopImprovement.Value;
                             break;
+
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
                             decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
@@ -427,9 +430,10 @@ namespace Chummer.UI.Skills
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
-        ButtonWithToolTip _activeButton;
+        private ButtonWithToolTip _activeButton;
 
         private ButtonWithToolTip ActiveButton
         {
@@ -465,15 +469,16 @@ namespace Chummer.UI.Skills
         {
             ActiveButton = null;
         }
-        #endregion
+
+        #endregion ButtonWithToolTip Visibility workaround
 
         private void KnowledgeSkillControl_DpiChangedAfterParent(object sender, EventArgs e)
         {
             using (Graphics g = CreateGraphics())
             {
                 if (lblRating != null)
-                    lblRating.MinimumSize = new Size((int) (25 * g.DpiX / 96.0f), 0);
-                lblModifiedRating.MinimumSize = new Size((int) (50 * g.DpiX / 96.0f), 0);
+                    lblRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
+                lblModifiedRating.MinimumSize = new Size((int)(50 * g.DpiX / 96.0f), 0);
             }
         }
 

@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.ComponentModel;
- using System.IO;
+using System.ComponentModel;
+using System.IO;
 using System.Linq;
- using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Xml;
- using System.Xml.XPath;
+using System.Xml.XPath;
 using Chummer.Backend.Uniques;
 
 namespace Chummer
@@ -35,9 +36,11 @@ namespace Chummer
 
         // Events.
         public event EventHandler ContactDetailChanged;
+
         public event EventHandler DeleteSpirit;
 
         #region Control Events
+
         public SpiritControl(Spirit objSpirit)
         {
             _objSpirit = objSpirit;
@@ -63,7 +66,7 @@ namespace Chummer
             nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
             nudServices.DoDataBinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
             nudForce.DoDataBinding("Value", _objSpirit, nameof(Spirit.Force));
-            chkFettered.DoOneWayDataBinding("Enabled",_objSpirit, nameof(Spirit.AllowFettering));
+            chkFettered.DoOneWayDataBinding("Enabled", _objSpirit, nameof(Spirit.AllowFettering));
             chkFettered.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Fettered));
             if (blnIsSpirit)
             {
@@ -289,17 +292,20 @@ namespace Chummer
 
             ContactDetailChanged?.Invoke(this, e);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Spirit object this is linked to.
         /// </summary>
         public Spirit SpiritObject => _objSpirit;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
         public void RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e)
         {
@@ -490,11 +496,12 @@ namespace Chummer
                     // Link the newly-created Critter to the Spirit.
                     imgLink.SetToolTip(LanguageManager.GetString(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile"));
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
-                    
+
                     Program.MainForm.OpenCharacter(objCharacter);
                 }
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 }

@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Annotations;
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Annotations;
 
 namespace Chummer
 {
@@ -68,6 +69,7 @@ namespace Chummer
         private int _intMainMugshotIndex = -1;
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a SpiritType.
         /// </summary>
@@ -80,13 +82,16 @@ namespace Chummer
             {
                 case "Spirit":
                     return SpiritType.Spirit;
+
                 default:
                     return SpiritType.Sprite;
             }
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Constructor, Save, Load, and Print Methods
+
         public Spirit(Character objCharacter)
         {
             // Create the GUID for the new Spirit.
@@ -209,15 +214,12 @@ namespace Chummer
 
                 objWriter.WriteEndElement();
 
-                
                 if (_objLinkedCharacter != null)
                 {
                     //Dump skills, (optional)powers if present to output
 
                     XPathNavigator xmlSpiritPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("spiritpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
                     XPathNavigator xmlCritterPowersBaseChummerNode = _objLinkedCharacter.LoadDataXPath("critterpowers.xml", strLanguageToPrint).SelectSingleNode("/chummer");
-
-
 
                     XmlNode xmlPowersNode = objXmlCritterNode["powers"];
                     if (xmlPowersNode != null)
@@ -344,6 +346,7 @@ namespace Chummer
                     case "M":
                         strDisplayType = LanguageManager.GetString("String_SpellTypeMana", strLanguageToPrint);
                         break;
+
                     case "P":
                         strDisplayType = LanguageManager.GetString("String_SpellTypePhysical", strLanguageToPrint);
                         break;
@@ -353,15 +356,19 @@ namespace Chummer
                     case "Auto":
                         strDisplayAction = LanguageManager.GetString("String_ActionAutomatic", strLanguageToPrint);
                         break;
+
                     case "Free":
                         strDisplayAction = LanguageManager.GetString("String_ActionFree", strLanguageToPrint);
                         break;
+
                     case "Simple":
                         strDisplayAction = LanguageManager.GetString("String_ActionSimple", strLanguageToPrint);
                         break;
+
                     case "Complex":
                         strDisplayAction = LanguageManager.GetString("String_ActionComplex", strLanguageToPrint);
                         break;
+
                     case "Special":
                         strDisplayAction = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
                         break;
@@ -371,12 +378,15 @@ namespace Chummer
                     case "Instant":
                         strDisplayDuration = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguageToPrint);
                         break;
+
                     case "Sustained":
                         strDisplayDuration = LanguageManager.GetString("String_SpellDurationSustained", strLanguageToPrint);
                         break;
+
                     case "Always":
                         strDisplayDuration = LanguageManager.GetString("String_SpellDurationAlways", strLanguageToPrint);
                         break;
+
                     case "Special":
                         strDisplayDuration = LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint);
                         break;
@@ -413,9 +423,11 @@ namespace Chummer
             objWriter.WriteElementString("page", strPage);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// The Character object being used by the Spirit.
         /// </summary>
@@ -462,8 +474,10 @@ namespace Chummer
                 {
                     case SpiritType.Spirit:
                         return "String_Force";
+
                     case SpiritType.Sprite:
                         return "String_Level";
+
                     default:
                         return "String_Rating";
                 }
@@ -536,6 +550,7 @@ namespace Chummer
                     case SpiritType.Spirit when value > CharacterObject.MaxSpiritForce:
                         value = CharacterObject.MaxSpiritForce;
                         break;
+
                     case SpiritType.Sprite when value > CharacterObject.MaxSpriteLevel:
                         value = CharacterObject.MaxSpriteLevel;
                         break;
@@ -668,6 +683,7 @@ namespace Chummer
                 return _intCachedAllowFettering > 0;
             }
         }
+
         /// <summary>
         /// Whether the sprite/spirit has unlimited services due to Fettering.
         /// See KC 91 and SG 192 for sprites and spirits, respectively.
@@ -910,15 +926,19 @@ namespace Chummer
                 case nameof(Character.Name):
                     OnPropertyChanged(nameof(CritterName));
                     break;
+
                 case nameof(Character.Mugshots):
                     OnPropertyChanged(nameof(Mugshots));
                     break;
+
                 case nameof(Character.MainMugshot):
                     OnPropertyChanged(nameof(MainMugshot));
                     break;
+
                 case nameof(Character.MainMugshotIndex):
                     OnPropertyChanged(nameof(MainMugshotIndex));
                     break;
+
                 case nameof(Character.AllowSpriteFettering):
                     _intCachedAllowFettering = int.MinValue;
                     OnPropertyChanged(nameof(AllowFettering));
@@ -926,9 +946,11 @@ namespace Chummer
                     break;
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region IHasMugshots
+
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
@@ -1108,6 +1130,7 @@ namespace Chummer
                                             && Program.MainForm.OpenCharacterForms.All(x => x.CharacterObject != _objLinkedCharacter))
                 Program.MainForm.OpenCharacters.Remove(_objLinkedCharacter);
         }
-        #endregion
+
+        #endregion IHasMugshots
     }
 }

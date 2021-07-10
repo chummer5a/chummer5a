@@ -16,9 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.IO;
- using System.Windows.Forms;
+
+using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -27,6 +28,7 @@ namespace Chummer
         private string _strReturnValue = string.Empty;
 
         #region Control Events
+
         public frmSelectText()
         {
             InitializeComponent();
@@ -65,9 +67,11 @@ namespace Chummer
         {
             cmdOK.Enabled = !string.IsNullOrEmpty(txtValue.Text);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Value that was entered in the dialogue.
         /// </summary>
@@ -88,6 +92,7 @@ namespace Chummer
         public bool PreventXPathErrors { get; internal set; }
         public bool PreventFileNameCharErrors { get; internal set; }
         public string DefaultString { get; internal set; }
-        #endregion
+
+        #endregion Properties
     }
 }

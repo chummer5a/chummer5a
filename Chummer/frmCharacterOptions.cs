@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,19 +37,24 @@ namespace Chummer
         private readonly CharacterOptions _objCharacterOptions;
         private CharacterOptions _objReferenceCharacterOptions;
         private readonly List<ListItem> _lstSettings = new List<ListItem>();
+
         // List of custom data directories on the character, in load order. If the character has a directory name for which we have no info, Item1 will be null
         private readonly List<Tuple<object, bool>> _lstCharacterCustomDataDirectoryInfos = new List<Tuple<object, bool>>();
+
         private bool _blnLoading = true;
         private bool _blnSkipLimbCountUpdate;
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
         private bool _blnIsLayoutSuspended = true;
+
         // Used to revert to old selected setting if user cancels out of selecting a different one
         private int _intOldSelectedSettingIndex = -1;
+
         private readonly HashSet<string> _setPermanentSourcebooks = new HashSet<string>();
 
         #region Form Events
+
         public frmCharacterOptions(CharacterOptions objExistingOptions = null)
         {
             InitializeComponent();
@@ -84,14 +90,16 @@ namespace Chummer
             _blnLoading = false;
             _blnIsLayoutSuspended = false;
         }
-        #endregion
+
+        #endregion Form Events
 
         #region Control Events
+
         private void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                using (frmOptions frmOptions = new frmOptions("tabCustomDataDirectories"))
-                    frmOptions.ShowDialog(this);
+            using (frmOptions frmOptions = new frmOptions("tabCustomDataDirectories"))
+                frmOptions.ShowDialog(this);
         }
 
         private void cmdRename_Click(object sender, EventArgs e)
@@ -217,6 +225,7 @@ namespace Chummer
                         {
                             case DialogResult.Cancel:
                                 return;
+
                             case DialogResult.No:
                                 strSelectedName = string.Empty;
                                 break;
@@ -328,7 +337,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
             string strSelectedFile = cboSetting.SelectedValue?.ToString();
-            if(string.IsNullOrEmpty(strSelectedFile) || !OptionsManager.LoadedCharacterOptions.TryGetValue(strSelectedFile, out CharacterOptions objNewOption))
+            if (string.IsNullOrEmpty(strSelectedFile) || !OptionsManager.LoadedCharacterOptions.TryGetValue(strSelectedFile, out CharacterOptions objNewOption))
                 return;
 
             if (IsDirty)
@@ -387,12 +396,12 @@ namespace Chummer
         private void cmdRestoreDefaults_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to reset these values.
-            if(Program.MainForm.ShowMessageBox(
+            if (Program.MainForm.ShowMessageBox(
                 LanguageManager.GetString("Message_Options_RestoreDefaults"),
                 LanguageManager.GetString("MessageTitle_Options_RestoreDefaults"),
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
-            
+
             using (new CursorWait(this))
             {
                 _blnLoading = true;
@@ -585,15 +594,19 @@ namespace Chummer
                 case 'a':
                     e.KeyChar = 'A';
                     break;
+
                 case 'b':
                     e.KeyChar = 'B';
                     break;
+
                 case 'c':
                     e.KeyChar = 'C';
                     break;
+
                 case 'd':
                     e.KeyChar = 'D';
                     break;
+
                 case 'e':
                     e.KeyChar = 'E';
                     break;
@@ -679,7 +692,8 @@ namespace Chummer
                 return;
             _objCharacterOptions.PriorityTable = strNewPriorityTable;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
 
@@ -749,7 +763,7 @@ namespace Chummer
             }
             else
             {
-                for(int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
+                for (int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
                 {
                     TreeNode objNode = treCustomDataDirectories.Nodes[i];
                     (object objUntypedInfo, bool blnDataDirectoryEnabled) = _lstCharacterCustomDataDirectoryInfos[i];
@@ -769,7 +783,7 @@ namespace Chummer
                 }
             }
 
-            if(objOldSelected != null)
+            if (objOldSelected != null)
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
             treCustomDataDirectories.EndUpdate();
         }
@@ -1122,24 +1136,26 @@ namespace Chummer
                     case nameof(CharacterOptions.EnabledCustomDataDirectoryPaths):
                         PopulateOptions();
                         break;
+
                     case nameof(CharacterOptions.PriorityTable):
                         PopulatePriorityTableList();
                         break;
                 }
             }
             else switch (e.PropertyName)
-            {
-                case nameof(CharacterOptions.BuiltInOption):
-                    cmdSave.Enabled = cmdSaveAs.Enabled
-                                      && !_objCharacterOptions.BuiltInOption;
-                    break;
-                case nameof(CharacterOptions.PriorityArray):
-                case nameof(CharacterOptions.BuildMethod):
-                    cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
-                    cmdSave.Enabled = cmdSaveAs.Enabled
-                                      && !_objCharacterOptions.BuiltInOption;
-                    break;
-            }
+                {
+                    case nameof(CharacterOptions.BuiltInOption):
+                        cmdSave.Enabled = cmdSaveAs.Enabled
+                                          && !_objCharacterOptions.BuiltInOption;
+                        break;
+
+                    case nameof(CharacterOptions.PriorityArray):
+                    case nameof(CharacterOptions.BuildMethod):
+                        cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
+                        cmdSave.Enabled = cmdSaveAs.Enabled
+                                          && !_objCharacterOptions.BuiltInOption;
+                        break;
+                }
         }
 
         private bool IsAllTextBoxesLegal
@@ -1202,6 +1218,7 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 }

@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -34,6 +35,7 @@ namespace Chummer
         private bool _blnSkipUpdate;
 
         #region Control Events
+
         public frmSelectContactConnection()
         {
             InitializeComponent();
@@ -142,9 +144,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Membership.
         /// </summary>
@@ -207,9 +211,11 @@ namespace Chummer
             get => _blnFree;
             set => _blnFree = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Refresh the Connection Group information.
         /// </summary>
@@ -227,6 +233,7 @@ namespace Chummer
 
             lblTotalConnectionModifier.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalOptions.CultureInfo);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

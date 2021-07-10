@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -67,6 +68,7 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public WeaponMount(Character character, Vehicle vehicle)
         {
             // Create the GUID for the new VehicleMod.
@@ -237,7 +239,7 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (node != null)
@@ -380,6 +382,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
+
         /// <summary>
         /// Create a weapon mount using names instead of IDs, because user readability is important and untrustworthy.
         /// </summary>
@@ -461,9 +464,11 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Weapons.
         /// </summary>
@@ -473,6 +478,7 @@ namespace Chummer.Backend.Equipment
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -599,7 +605,6 @@ namespace Chummer.Backend.Equipment
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -701,7 +706,7 @@ namespace Chummer.Backend.Equipment
         public Vehicle Parent { get; }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         public List<WeaponMountOption> WeaponMountOptions { get; } = new List<WeaponMountOption>(3);
 
@@ -713,7 +718,8 @@ namespace Chummer.Backend.Equipment
             get => _blnStolen;
             set => _blnStolen = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
 
@@ -779,7 +785,7 @@ namespace Chummer.Backend.Equipment
             {
                 AvailabilityValue objLoopAvailTuple = objWeaponMountOption.TotalAvailTuple;
                 //if (objLoopAvailTuple.Item3)
-                    intAvail += objLoopAvailTuple.Value;
+                intAvail += objLoopAvailTuple.Value;
                 if (objLoopAvailTuple.Suffix == 'F')
                     chrLastAvailChar = 'F';
                 else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
@@ -972,9 +978,11 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         public decimal DeleteWeaponMount()
         {
             decimal decReturn = 0;
@@ -1050,7 +1058,9 @@ namespace Chummer.Backend.Equipment
             blnOutRestrictedGearUsed = blnRestrictedGearUsed;
             strOutRestrictedItem = strRestrictedItem;
         }
+
         #region UI Methods
+
         /// <summary>
         /// Add a Weapon Mount to the TreeView
         /// </summary>
@@ -1112,8 +1122,10 @@ namespace Chummer.Backend.Equipment
                     : ColorManager.WindowText;
             }
         }
-        #endregion
-        #endregion
+
+        #endregion UI Methods
+
+        #endregion Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
@@ -1154,22 +1166,22 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.Weapon:
-                    {
-                        if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
-                            string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("name")?.InnerText;
-                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
-                                return false;
-                        }
-                        if (!string.IsNullOrEmpty(AllowedWeaponCategories))
-                        {
-                            string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("category")?.InnerText;
-                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
-                                return false;
-                        }
+                            if (!string.IsNullOrEmpty(AllowedWeapons))
+                            {
+                                string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("name")?.InnerText;
+                                if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
+                                    return false;
+                            }
+                            if (!string.IsNullOrEmpty(AllowedWeaponCategories))
+                            {
+                                string strCheckValue = GlobalOptions.Clipboard.SelectSingleNode("category")?.InnerText;
+                                if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
+                                    return false;
+                            }
 
-                        return Weapons.Count == 0; //todo: something something sizes
-                    }
+                            return Weapons.Count == 0; //todo: something something sizes
+                        }
                     default:
                         return false;
                 }
@@ -1198,6 +1210,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnIncludedInParent;
 
         #region Constructor, Create, Save and Load Methods
+
         public WeaponMountOption(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -1311,7 +1324,7 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -1324,7 +1337,8 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             objNode.TryGetBoolFieldQuickly("includedinparent", ref _blnIncludedInParent);
         }
-        #endregion
+
+        #endregion Constructor, Create, Save and Load Methods
 
         #region Properties
 
@@ -1370,6 +1384,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public decimal TotalCost => IncludedInParent ? 0 : Cost;
+
         /// <summary>
         /// Slots consumed by the WeaponMountOption.
         /// </summary>
@@ -1401,9 +1416,11 @@ namespace Chummer.Backend.Equipment
             get => _blnIncludedInParent;
             set => _blnIncludedInParent = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Display text for the category of the weapon mount.
         /// </summary>
@@ -1483,7 +1500,9 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Complex Properties
+
         #region Methods
 
         /// <summary>
@@ -1524,6 +1543,7 @@ namespace Chummer.Backend.Equipment
             blnOutRestrictedGearUsed = blnRestrictedGearUsed;
             strOutRestrictedItem = strRestrictedItem;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

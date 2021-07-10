@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,6 +29,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 using NLog;
 
 namespace Chummer
@@ -80,7 +80,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource,INotifyMultiplePropertyChanged
+    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, INotifyMultiplePropertyChanged
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -114,6 +114,7 @@ namespace Chummer
         public string Stage => _strStage;
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a QualityType.
         /// </summary>
@@ -126,8 +127,10 @@ namespace Chummer
             {
                 case "Negative":
                     return QualityType.Negative;
+
                 case "LifeModule":
                     return QualityType.LifeModule;
+
                 default:
                     return QualityType.Positive;
             }
@@ -145,31 +148,41 @@ namespace Chummer
             {
                 case "Metatype":
                     return QualitySource.Metatype;
+
                 case "MetatypeRemovable":
                     return QualitySource.MetatypeRemovable;
+
                 case "LifeModule":
                     return QualitySource.LifeModule;
+
                 case "Built-In":
                     return QualitySource.BuiltIn;
+
                 case "Improvement":
                     return QualitySource.Improvement;
+
                 case "MetatypeRemovedAtChargen":
                     return QualitySource.MetatypeRemovedAtChargen;
+
                 case "Heritage":
                     return QualitySource.Heritage;
+
                 default:
                     return QualitySource.Selected;
             }
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Quality(Character objCharacter)
         {
             // Create the GUID for the new Quality.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
+
         public void SetGUID(Guid guidExisting)
         {
             _guiID = guidExisting;
@@ -244,7 +257,7 @@ namespace Chummer
                                 intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"].InnerText, GlobalOptions.InvariantCultureInfo);
                             }
                             Weapon objGearWeapon = new Weapon(_objCharacter);
-                            objGearWeapon.Create(objXmlWeapon, lstWeapons,true, true,true, intAddWeaponRating);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, true, true, intAddWeaponRating);
                             objGearWeapon.ParentID = InternalId;
                             objGearWeapon.Cost = "0";
 
@@ -357,6 +370,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
+
         public SourceString SourceDetail
         {
             get
@@ -440,7 +454,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -548,9 +562,11 @@ namespace Chummer
                 objWriter.WriteEndElement();
             }
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -748,7 +764,7 @@ namespace Chummer
         /// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
-        /// 
+        ///
         public int BP
         {
             get
@@ -764,6 +780,7 @@ namespace Chummer
                         case QualityType.Positive:
                             intReturn += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
                             break;
+
                         case QualityType.Negative:
                             intReturn -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
                             break;
@@ -895,6 +912,7 @@ namespace Chummer
                 OnPropertyChanged();
             }
         }
+
         /// <summary>
         /// Whether or not the Quality contributes towards the character's Quality BP limits.
         /// </summary>
@@ -979,6 +997,7 @@ namespace Chummer
         }
 
         private string _strCachedNotes = string.Empty;
+
         /// <summary>
         /// Notes.
         /// </summary>
@@ -1020,6 +1039,7 @@ namespace Chummer
         }
 
         private int _intCachedSuppressed = -1;
+
         public bool Suppressed
         {
             get
@@ -1067,9 +1087,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality, TreeView treQualities)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
@@ -1124,10 +1146,10 @@ namespace Chummer
                        || OriginSource == QualitySource.Heritage
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
-                
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         #region Static Methods
 
@@ -1336,7 +1358,8 @@ namespace Chummer
                     new DependencyGraphNode<string, Quality>(nameof(Name))
                 )
             );
-        #endregion
+
+        #endregion Static Methods
 
         /// <summary>
         /// Swaps an old quality for a new one.
@@ -1457,7 +1480,6 @@ namespace Chummer
 
             // Add the new Quality to the character.
             objCharacter.Qualities.Add(this);
-
 
             return true;
         }

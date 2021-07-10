@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -37,6 +38,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
 
         #region Control events
+
         public frmSelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
@@ -146,9 +148,11 @@ namespace Chummer
             lblGrade.Text = objGrade.CurrentDisplayName;
             _decCost = decTotalCost;
         }
-        #endregion
+
+        #endregion Control events
 
         #region Properties
+
         /// <summary>
         /// Name of Suite that was selected in the dialogue.
         /// </summary>
@@ -159,9 +163,10 @@ namespace Chummer
         /// </summary>
         public decimal TotalCost => _decCost;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -185,30 +190,41 @@ namespace Chummer
             {
                 case "Alphaware":
                     return "Alphaware";
+
                 case "Betaware":
                     return "Betaware";
+
                 case "Deltaware":
                     return "Deltaware";
+
                 case "Standard (Used)":
                 case "StandardSecondHand":
                     return "Standard (Used)";
+
                 case "Alphaware (Used)":
                 case "AlphawareSecondHand":
                     return "Alphaware (Used)";
+
                 case "StandardAdapsin":
                     return "Standard (Adapsin)";
+
                 case "AlphawareAdapsin":
                     return "Alphaware (Adapsin)";
+
                 case "BetawareAdapsin":
                     return "Betaware (Adapsin)";
+
                 case "DeltawareAdapsin":
                     return "Deltaware (Adapsin)";
+
                 case "Standard (Used) (Adapsin)":
                 case "StandardSecondHandAdapsin":
                     return "Standard (Used) (Adapsin)";
+
                 case "Alphaware (Used) (Adapsin)":
                 case "AlphawareSecondHandAdapsin":
                     return "Alphaware (Used) (Adapsin)";
+
                 default:
                     return "Standard";
             }
@@ -267,6 +283,7 @@ namespace Chummer
             foreach (Cyberware objPlugin in objCyberware.Children)
                 WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

@@ -16,20 +16,21 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-using System.ComponentModel;
- using System.IO;
- using System.IO.Compression;
- using System.Net;
-using System.Text;
-using System.Windows.Forms;
-using System.Reflection;
- using Application = System.Windows.Forms.Application;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Threading;
- using System.Threading.Tasks;
- using NLog;
+using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using NLog;
+using Application = System.Windows.Forms.Application;
 
 namespace Chummer
 {
@@ -102,6 +103,7 @@ namespace Chummer
         }
 
         private bool _blnFormClosing;
+
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             _blnFormClosing = true;
@@ -654,7 +656,7 @@ namespace Chummer
                     if (!Utils.SafeDeleteFile(strFileToDelete))
                         lstBlocked.Add(strFileToDelete);
                 }
-                
+
                 if (lstBlocked.Count > 0)
                 {
                     Utils.BreakIfDebug();
@@ -719,6 +721,7 @@ namespace Chummer
         }
 
         #region AsyncDownload Events
+
         /// <summary>
         /// Update the download progress for the file.
         /// </summary>
@@ -727,7 +730,6 @@ namespace Chummer
             if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalOptions.InvariantCultureInfo), out int intTmp))
                 pgbOverallProgress.Value = intTmp;
         }
-
 
         /// <summary>
         /// The EXE file is down downloading, so replace the old file with the new one.
@@ -762,6 +764,7 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion AsyncDownload Events
     }
 }

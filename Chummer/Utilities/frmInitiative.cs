@@ -1,4 +1,4 @@
-﻿/*  This file is part of Chummer5a.
+/*  This file is part of Chummer5a.
  *
  *  Chummer5a is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -24,12 +24,13 @@ namespace Chummer
     public partial class frmInitiative : Form
     {
         #region Properties
+
         /// <summary>
         /// The initiative controler for this form
         /// </summary>
         public InitiativeUserControl InitUC => ucInit;
 
-        #endregion
+        #endregion Properties
 
         public frmInitiative()
         {
