@@ -288,7 +288,6 @@ namespace Translator
                         }
                     }
 
-
                     XmlAttribute objAttrib = xmlNodeLocal.Attributes?["translated"];
                     if (objAttrib != null)
                     {
@@ -379,6 +378,7 @@ namespace Translator
                 case Keys.F3:
                     btnSearch.PerformClick();
                     return;
+
                 case Keys.F when e.Modifiers == Keys.Control:
                     txtSearch.Focus();
                     break;
@@ -418,7 +418,7 @@ namespace Translator
                 btnSearch.PerformClick();
         }
 
-        #endregion
+        #endregion Control Events
 
         #region BackgroundWorker Events
 
@@ -473,7 +473,7 @@ namespace Translator
 
                         if (!blnTranslated || !chkOnlyTranslation.Checked)
                         {
-                            object[] objArray = {strKey, strEnglish, strTranslated, blnTranslated};
+                            object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
                             lock (arrayRowsToDisplayLock)
                                 arrayRowsToDisplay[i] = objArray;
                         }
@@ -569,7 +569,6 @@ namespace Translator
                 dataTable.Columns.Add("Translated Advantage");
                 dataTable.Columns.Add("Disadvantage");
                 dataTable.Columns.Add("Translated Disadvantage");
-
             }
 
             dataTable.Columns.Add("Translated?");
@@ -632,15 +631,15 @@ namespace Translator
                             else
                             {
                                 string strName;
-                                string strPage            = string.Empty;
-                                string strSource          = string.Empty;
-                                string strNameOnPage      = string.Empty;
-                                string strAdvantage       = string.Empty;
-                                string strAdvantageAlt    = string.Empty;
-                                string strDisadvantage    = string.Empty;
+                                string strPage = string.Empty;
+                                string strSource = string.Empty;
+                                string strNameOnPage = string.Empty;
+                                string strAdvantage = string.Empty;
+                                string strAdvantageAlt = string.Empty;
+                                string strDisadvantage = string.Empty;
                                 string strDisadvantageAlt = string.Empty;
 
-                                bool blnAdvantage      = strFileName == "mentors.xml" || strFileName == "paragons.xml";
+                                bool blnAdvantage = strFileName == "mentors.xml" || strFileName == "paragons.xml";
                                 XmlNode xmlChildNameNode = xmlChildNode["name"];
                                 if (xmlChildNameNode == null)
                                 {
@@ -665,9 +664,9 @@ namespace Translator
                                         strNameOnPage = xmlChildNode["altnameonpage"]?.InnerText ?? string.Empty;
                                     if (blnAdvantage)
                                     {
-                                        strAdvantage       = xmlNodeLocal?["advantage"]?.InnerText    ?? string.Empty;
-                                        strDisadvantage    = xmlNodeLocal?["disadvantage"]?.InnerText ?? string.Empty;
-                                        strAdvantageAlt    = xmlChildNode["altadvantage"]?.InnerText ?? string.Empty;
+                                        strAdvantage = xmlNodeLocal?["advantage"]?.InnerText ?? string.Empty;
+                                        strDisadvantage = xmlNodeLocal?["disadvantage"]?.InnerText ?? string.Empty;
+                                        strAdvantageAlt = xmlChildNode["altadvantage"]?.InnerText ?? string.Empty;
                                         strDisadvantageAlt = xmlChildNode["altdisadvantage"]?.InnerText ?? string.Empty;
 
                                         blnTranslated =
@@ -704,7 +703,6 @@ namespace Translator
                                                 strId, strName, strTranslated, strSource, strPage, strAdvantage,
                                                 strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated
                                             };
-
                                         }
                                     }
                                     else
@@ -872,14 +870,14 @@ namespace Translator
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
         {
             string strPath = Path.Combine(ApplicationPath, "lang", Code + (blnData ? "_data.xml" : ".xml"));
-            XmlWriterSettings xwsSettings = new XmlWriterSettings {IndentChars = "\t", Indent = true};
+            XmlWriterSettings xwsSettings = new XmlWriterSettings { IndentChars = "\t", Indent = true };
             using (XmlWriter xwWriter = XmlWriter.Create(strPath, xwsSettings))
             {
                 objXmlDocument.Save(xwWriter);
             }
         }
 
-        #endregion
+        #endregion Methods
 
         #region Properties
 
@@ -889,6 +887,6 @@ namespace Translator
 
         public string ApplicationPath { get; }
 
-        #endregion
+        #endregion Properties
     }
 }

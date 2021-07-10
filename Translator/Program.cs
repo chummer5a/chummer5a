@@ -2,11 +2,13 @@ using System;
 using System.Windows.Forms;
 
 [assembly: CLSCompliant(true)]
+
 namespace Translator
 {
-    static class Program
+    internal static class Program
     {
         private static frmTranslatorMain s_FrmMain;
+
         [STAThread]
         private static void Main()
         {
