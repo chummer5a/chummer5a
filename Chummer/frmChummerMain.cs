@@ -26,10 +26,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -51,8 +48,6 @@ namespace Chummer
         private frmUpdate _frmUpdate;
         private readonly ThreadSafeObservableCollection<Character> _lstCharacters = new ThreadSafeObservableCollection<Character>();
         private readonly ObservableCollection<CharacterShared> _lstOpenCharacterForms = new ObservableCollection<CharacterShared>();
-        private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
-        private Task _tskVersionUpdate;
         private readonly Version _objCurrentVersion = Assembly.GetExecutingAssembly().GetName().Version;
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
@@ -576,18 +571,25 @@ namespace Chummer
 
         public frmMasterIndex MasterIndex { get; }
 
+#if !DEBUG
         private Uri UpdateLocation { get; } = new Uri(GlobalOptions.PreferNightlyBuilds
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 
+        private readonly Stopwatch _idleUpdateCheckStopWatch = Stopwatch.StartNew();
+
+        private Task _tskVersionUpdate;
+
+        private System.Threading.CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
+
         private async Task DoCacheGitVersion()
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            HttpWebRequest request;
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
+            System.Net.HttpWebRequest request;
             try
             {
-                WebRequest objTemp = WebRequest.Create(UpdateLocation);
-                request = objTemp as HttpWebRequest;
+                System.Net.WebRequest objTemp = System.Net.WebRequest.Create(UpdateLocation);
+                request = objTemp as System.Net.HttpWebRequest;
             }
             catch (System.Security.SecurityException ex)
             {
@@ -610,7 +612,7 @@ namespace Chummer
             try
             {
                 // Get the response.
-                using (HttpWebResponse response = await request.GetResponseAsync() as HttpWebResponse)
+                using (System.Net.HttpWebResponse response = await request.GetResponseAsync() as System.Net.HttpWebResponse)
                 {
                     if (response == null)
                     {
@@ -634,7 +636,7 @@ namespace Chummer
                             return;
 
                         // Open the stream using a StreamReader for easy access.
-                        using (StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true))
+                        using (StreamReader reader = new StreamReader(dataStream, System.Text.Encoding.UTF8, true))
                         {
                             if (_objVersionUpdaterCancellationTokenSource.IsCancellationRequested)
                                 return;
@@ -677,7 +679,7 @@ namespace Chummer
                     }
                 }
             }
-            catch (WebException ex)
+            catch (System.Net.WebException ex)
             {
                 Utils.CachedGitVersion = null;
                 Log.Error(ex);
@@ -686,7 +688,7 @@ namespace Chummer
 
         private void CheckForUpdate()
         {
-            _objVersionUpdaterCancellationTokenSource = new CancellationTokenSource();
+            _objVersionUpdaterCancellationTokenSource = new System.Threading.CancellationTokenSource();
             _tskVersionUpdate = Task.Run(async () =>
             {
                 await DoCacheGitVersion();
@@ -712,8 +714,6 @@ namespace Chummer
             }, _objVersionUpdaterCancellationTokenSource.Token);
         }
 
-        private readonly Stopwatch _idleUpdateCheckStopWatch = Stopwatch.StartNew();
-
         private void IdleUpdateCheck(object sender, EventArgs e)
         {
             // Automatically check for updates every hour
@@ -722,6 +722,7 @@ namespace Chummer
             _idleUpdateCheckStopWatch.Restart();
             CheckForUpdate();
         }
+#endif
 
         /*
         public sealed override string Text
@@ -1101,7 +1102,9 @@ namespace Chummer
 
         private void frmChummerMain_Closing(object sender, FormClosingEventArgs e)
         {
+#if !DEBUG
             _objVersionUpdaterCancellationTokenSource?.Cancel(false);
+#endif
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
             {
