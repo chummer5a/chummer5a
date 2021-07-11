@@ -2886,6 +2886,10 @@
         <spec>Elven Rap</spec>
         <spec>Neo-J Pop</spec>
         <spec>Nova K Rock</spec>
+        <spec>Beatpace</spec>
+        <spec>Bugstomp</spec>
+        <spec>Fractal</spec>
+        <spec>Plex</spec>
       </specs>
     </skill>
     <skill>
@@ -3297,9 +3301,15 @@
         <spec>Boxing</spec>
         <spec>Combat Biking</spec>
         <spec>Court Ball</spec>
+        <spec>Drone Racing</spec>
+        <spec>Duello Magicae</spec>
+        <spec>E-Sports</spec>
         <spec>Football</spec>
-        <spec>MMA</spec>
         <spec>Hockey</spec>
+        <spec>Hoverball</spec>
+        <spec>Hurling</spec>
+        <spec>Piloted Racing</spec>
+        <spec>MMA</spec>
         <spec>Soccer</spec>
         <spec>Stickball</spec>
         <spec>UFC</spec>
@@ -3545,6 +3555,35 @@
         <spec>Rom-Com</spec>
         <spec>Sci-fi</spec>
         <spec>Thriller</spec>
+        <spec>BattleRun</spec>
+        <spec>Berlin Nights</spec>
+        <spec>Blood Runners</spec>
+        <spec>The Coffee Clutch</spec>
+        <spec>DASH: Star Loner!</spec>
+        <spec>Debonair Dave</spec>
+        <spec>Desert Wars</spec>
+        <spec>Dessert Wars</spec>
+        <spec>Dis is Uz</spec>
+        <spec>Granny Sweetspell’s Magical Kitchen</spec>
+        <!-- ReSharper disable once MarkupTextTypo -->
+        <spec>Karl Kombatmage</spec>
+        <spec>Reloaded</spec>
+        <spec>The Master Wizard</spec>
+        <spec>Max Wild</spec>
+        <spec>A Murder to Kill For</spec>
+        <spec>Ningyo: The Digital</spec>
+        <spec>Geisha Diaries</spec>
+        <spec>On Point</spec>
+        <spec>Ork and Mindy</spec>
+        <spec>Polar Wars</spec>
+        <spec>Porky’s Landing</spec>
+        <spec>Red Samurai Run</spec>
+        <spec>The Runners</spec>
+        <spec>Seas of Death: The Tale of Kane</spec>
+        <spec>Space Fleet</spec>
+        <spec>Street by Street</spec>
+        <spec>Temple Terror</spec>
+        <spec>The Wrong Shift</spec>
       </specs>
     </skill>
     <skill>
@@ -4590,6 +4629,11 @@
       <specs>
         <spec>Dwarven Punkbilly</spec>
         <spec>Modern Punk</spec>
+        <spec>Feathercore</spec>
+        <spec>Beatpace</spec>
+        <spec>Bugstomp</spec>
+        <spec>Fractal</spec>
+        <spec>Plex</spec>
         <spec>[genre]</spec>
       </specs>
     </skill>

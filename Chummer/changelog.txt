@@ -123,6 +123,7 @@ Data Changes:
 - Predictive Analytics now properly increases AR initiative dice.
 - Core rulebook weapon mounts now use Flexible for their flexibility entry to represent the core rulebook saying that its weapon mounts can rotate in an arc.
 - Out for Myself properly gives +3 Surprise dice.
+- Various music genres and trideo shows from No Future have been added as suggested specializations for relevant knowledge skills
 
 Changed/New Strings:
 - String_ContactPoints
