@@ -369,7 +369,7 @@
           </xsl:call-template>
         </xsl:if>
 
-        <xsl:variable name="devicelist" select="//gears/gear[iscommlink = 'True' and (notes != '' or //notes != '')]" />
+        <xsl:variable name="devicelist" select="//*[iscommlink = 'True' and (notes != '' or //notes != '')]" />
         <xsl:if test="$devicelist">
           <div class="block" id="DevicesBlock">
             <table><tr><td /></tr></table>
@@ -383,7 +383,7 @@
                 </th>
                 <th width="10%" />
               </tr>
-              <xsl:for-each select="//gears/gear[(iscommlink = 'True' and (notes != '' or //notes != '')) or //*[iscommlink = 'True']/notes != '']">
+              <xsl:for-each select="//*[(iscommlink = 'True' and (notes != '' or //notes != '')) or //*[iscommlink = 'True']/notes != '']">
                 <xsl:sort select="name" />
                 <xsl:call-template name="gearnotes">
                   <xsl:with-param name="excludeCommlinks" select="False" />

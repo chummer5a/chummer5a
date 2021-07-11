@@ -636,16 +636,10 @@
   <xsl:template name="GetProgramRating">
       <xsl:param name="ProgramName" />
     <xsl:variable name="ProgramStack">
-      <xsl:for-each select="../../gears/gear[name = $ProgramName and (isprogram = 'True')]">
+      <xsl:for-each select="../..//*/gear[name = $ProgramName and isprogram = 'True']">
         <xsl:copy-of select="current()" />
       </xsl:for-each>
-      <xsl:for-each select="../../gears/gear/children/gear[name = $ProgramName and (isprogram = 'True')]">
-        <xsl:copy-of select="current()" />
-      </xsl:for-each>
-      <xsl:for-each select="gears/gear[name = $ProgramName and (isprogram = 'True')]">
-        <xsl:copy-of select="current()" />
-      </xsl:for-each>
-      <xsl:for-each select="gears/gear/children/gear[name = $ProgramName and category = (isprogram = 'True')]">
+      <xsl:for-each select="//*/gear[name = $ProgramName and isprogram = 'True']">
         <xsl:copy-of select="current()" />
       </xsl:for-each>
     </xsl:variable>

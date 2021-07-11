@@ -564,7 +564,7 @@
           <xsl:call-template name="weapons" />
                 </xsl:if>
 
-                <xsl:if test="//gears/gear[iscommlink = 'True']">
+                <xsl:if test="//*[iscommlink = 'True']">
                     <br />
                     <br />
           == <xsl:value-of select="$lang.Commlink" /> ==
@@ -976,7 +976,7 @@
     </xsl:template>
 
     <xsl:template name="commlinks">
-        <xsl:for-each select="//gears/gear[iscommlink = 'True']">
+        <xsl:for-each select="//*[iscommlink = 'True']">
             <xsl:sort select="name" />
             <br /><xsl:value-of select="name" />
         (<xsl:value-of select="$lang.ATT" />: <xsl:value-of select="attack" />,
@@ -1009,24 +1009,34 @@
                         </xsl:for-each>] </xsl:if>
                 </xsl:for-each>
             </xsl:if>
-            <xsl:if test="gears/gear[isprogram = 'True']">
-                <xsl:for-each select="gears/gear[isprogram = 'True']">
-                    <xsl:sort select="name" />
-                    <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-                    <xsl:if test="rating &gt; 0">
-            <xsl:text> </xsl:text><xsl:value-of select="rating" />
-          </xsl:if>
-                    <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-                    <xsl:if test="children/gear"> [<xsl:for-each select="children/gear">
-                            <xsl:sort select="name" />
-                            <xsl:value-of select="name" />
-                            <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-                            <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-                            <xsl:if test="position() != last()">, </xsl:if>
-                        </xsl:for-each>] </xsl:if>
-                </xsl:for-each>
-            </xsl:if>
+            <xsl:for-each select="//*[isprogram = 'True']">
+              <xsl:sort select="name" />
+              <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
+              <xsl:if test="rating &gt; 0">
+                <xsl:text> </xsl:text>
+                <xsl:value-of select="rating" />
+              </xsl:if>
+              <xsl:if test="extra != ''">
+                (<xsl:value-of select="extra" />)
+              </xsl:if>
+              <xsl:if test="*/gear">
+                [<xsl:for-each select="*/gear">
+                  <xsl:sort select="name" />
+                  <xsl:value-of select="name" />
+                  <xsl:if test="rating != 0">
+                    <xsl:text> </xsl:text>
+                    <xsl:value-of select="rating" />
+                  </xsl:if>
+                  <xsl:if test="extra != ''">
+                    (<xsl:value-of select="extra" />)
+                  </xsl:if>
+                  <xsl:if test="qty &gt; 1">
+                    ×<xsl:value-of select="qty" />
+                  </xsl:if>
+                  <xsl:if test="position() != last()">, </xsl:if>
+                </xsl:for-each>]
+              </xsl:if>
+            </xsl:for-each>
         </xsl:for-each>
     </xsl:template>
 

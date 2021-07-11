@@ -382,13 +382,13 @@
             <xsl:call-template name="martialarts" />
           </xsl:if>
 
-          <xsl:if test="gears/gear[iscommlink = 'True'] or armors/armor/gears/gear[iscommlink = 'True'] or cyberwares/cyberware/gears/gear[iscommlink = 'True'] or cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True'] or weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']">
+          <xsl:if test="//*[iscommlink = 'True' or isprogram = 'True']">
             <br />
             <br />== <xsl:value-of select="$lang.Commlink" /> ==
             <xsl:call-template name="commlinks" />
           </xsl:if>
 
-          <xsl:if test="gears/gear[equipped = 'True' and location = '' and iscommlink != 'True']">
+          <xsl:if test="gears/gear[equipped = 'True' and location = '' and iscommlink != 'True' and isprogram != 'True']">
             <br />
             <br />== <xsl:value-of select="$lang.Gear" />: <xsl:value-of select="$lang.Equipped" /> ==
               <xsl:for-each select="gears/gear[equipped = 'True' and location = '' and iscommlink != 'True']">
@@ -765,7 +765,7 @@
   </xsl:template>
 
   <xsl:template name="commlinks">
-    <xsl:for-each select="gears/gear[iscommlink = 'True']">
+    <xsl:for-each select="//*[iscommlink = 'True']">
       <xsl:sort select="name" />
       <br /><xsl:value-of select="name" />
       (<xsl:value-of select="$lang.ATT" />: <xsl:value-of select="attack" />,
@@ -775,8 +775,8 @@
       <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
       <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
       <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-      <xsl:if test="children/gear">
-        <xsl:for-each select="children/gear">
+      <xsl:if test="*/gear">
+        <xsl:for-each select="*/gear">
           <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
           <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
           <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
@@ -793,207 +793,37 @@
           </xsl:if>
         </xsl:for-each>
       </xsl:if>
-      <xsl:if test="gears/gear[isprogram = 'True']">
-        <xsl:for-each select="gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
     </xsl:for-each>
-    <xsl:for-each select="armors/armor/gears/gear[iscommlink = 'True']">
-      <xsl:sort select="name" />
-      <br /><xsl:value-of select="name" />
-      (<xsl:value-of select="$lang.ATT" />: <xsl:value-of select="attack" />,
-      <xsl:value-of select="$lang.SLZ" />: <xsl:value-of select="sleaze" />,
-      <xsl:value-of select="$lang.DP" />: <xsl:value-of select="dataprocessing" />,
-      <xsl:value-of select="$lang.FWL" />: <xsl:value-of select="firewall" />)
-      <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-      <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-      <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-      <xsl:if test="children/gear">
-        <xsl:for-each select="children/gear">
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-      <xsl:if test="gears/gear[isprogram = 'True']">
-        <xsl:for-each select="gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-    </xsl:for-each>
-    <xsl:for-each select="cyberwares/cyberware/gears/gear[iscommlink = 'True']">
-      <xsl:sort select="name" />
-      <br /><xsl:value-of select="name" />
-      (<xsl:value-of select="$lang.ATT" />: <xsl:value-of select="attack" />,
-      <xsl:value-of select="$lang.SLZ" />: <xsl:value-of select="sleaze" />,
-      <xsl:value-of select="$lang.DP" />: <xsl:value-of select="dataprocessing" />,
-      <xsl:value-of select="$lang.FWL" />: <xsl:value-of select="firewall" />)
-      <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-      <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-      <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-      <xsl:if test="children/gear">
-        <xsl:for-each select="children/gear">
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-      <xsl:if test="gears/gear[isprogram = 'True']">
-        <xsl:for-each select="gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-    </xsl:for-each>
-    <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']">
-      <xsl:sort select="name" />
-      <br /><xsl:value-of select="name" />
-      (<xsl:value-of select="$lang.ATT" />: <xsl:value-of select="attack" />,
-      <xsl:value-of select="$lang.SLZ" />: <xsl:value-of select="sleaze" />,
-      <xsl:value-of select="$lang.DP" />: <xsl:value-of select="dataprocessing" />,
-      <xsl:value-of select="$lang.FWL" />: <xsl:value-of select="firewall" />)
-      <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-      <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-      <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-      <xsl:if test="children/gear">
-        <xsl:for-each select="children/gear">
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-      <xsl:if test="gears/gear[isprogram = 'True']">
-        <xsl:for-each select="gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-    </xsl:for-each>
-    <xsl:for-each select="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']">
-      <xsl:sort select="name" />
-      <br /><xsl:value-of select="name" />
-      (<xsl:value-of select="$lang.ATT" />: <xsl:value-of select="attack" />,
-      <xsl:value-of select="$lang.SLZ" />: <xsl:value-of select="sleaze" />,
-      <xsl:value-of select="$lang.DP" />: <xsl:value-of select="dataprocessing" />,
-      <xsl:value-of select="$lang.FWL" />: <xsl:value-of select="firewall" />)
-      <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-      <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-      <xsl:if test="qty &gt; 1"> ×<xsl:value-of select="qty" /></xsl:if>
-      <xsl:if test="children/gear">
-        <xsl:for-each select="children/gear">
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="rating != 0">&#160;<xsl:value-of select="$lang.Rating" />&#160;<xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-      <xsl:if test="gears/gear[isprogram = 'True']">
-        <xsl:for-each select="gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
-          <xsl:if test="rating &gt; 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-          <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-          <xsl:if test="children/gear">
-            [<xsl:for-each select="children/gear">
-              <xsl:sort select="name" />
-              <xsl:value-of select="name" />
-              <xsl:if test="rating != 0"><xsl:text> </xsl:text><xsl:value-of select="rating" /></xsl:if>
-              <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
-              <xsl:if test="position() != last()">, </xsl:if>
-            </xsl:for-each>]
-          </xsl:if>
-        </xsl:for-each>
-      </xsl:if>
-    </xsl:for-each>
+    <xsl:if test="//*[isprogram = 'True']">
+      <xsl:for-each select="//*[isprogram = 'True']">
+        <xsl:sort select="name" />
+        <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
+        <xsl:if test="rating &gt; 0">
+          <xsl:text> </xsl:text>
+          <xsl:value-of select="rating" />
+        </xsl:if>
+        <xsl:if test="extra != ''">
+          (<xsl:value-of select="extra" />)
+        </xsl:if>
+        <xsl:if test="children/gear">
+          [<xsl:for-each select="children/gear">
+            <xsl:sort select="name" />
+            <xsl:value-of select="name" />
+            <xsl:if test="rating != 0">
+              <xsl:text> </xsl:text>
+              <xsl:value-of select="rating" />
+            </xsl:if>
+            <xsl:if test="extra != ''">
+              (<xsl:value-of select="extra" />)
+            </xsl:if>
+            <xsl:if test="qty &gt; 1">
+              ×<xsl:value-of select="qty" />
+            </xsl:if>
+            <xsl:if test="position() != last()">, </xsl:if>
+          </xsl:for-each>]
+        </xsl:if>
+      </xsl:for-each>
+    </xsl:if>
   </xsl:template>
 
   <xsl:template name="weapons">
@@ -1098,7 +928,7 @@
         </xsl:for-each>
       </xsl:if>
       <xsl:if test="gears/gear">
-        <xsl:for-each select="gears/gear[iscommlink != 'True']">
+        <xsl:for-each select="gears/gear[iscommlink != 'True' and isprogram != 'True']">
           <xsl:sort select="name" />
           <br />&#160;&#160;&#160;+ <xsl:value-of select="name" />
             <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>

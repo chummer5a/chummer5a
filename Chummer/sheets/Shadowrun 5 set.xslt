@@ -1058,16 +1058,7 @@
           </xsl:call-template>
         </xsl:if>
 
-        <xsl:if test="gears/gear[iscommlink = 'True']
-             or armors/armor/gears/gear[iscommlink = 'True']
-             or cyberwares/cyberware/gears/gear[iscommlink = 'True']
-             or cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']
-             or weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']
-             or gears/gear[isprogram = 'True']
-             or armors/armor/gears/gear[isprogram = 'True']
-             or cyberwares/cyberware/gears/gear[isprogram = 'True']
-             or cyberwares/cyberware/children/cyberwear/gears/gear[isprogram = 'True']
-             or weapons/weapon/accessories/accessory/gears/gear[isprogram = 'True']">
+        <xsl:if test="//*[iscommlink = 'True' or isprogram = 'True']">
           <div class="block" id="DevicesBlock">
             <table class="tablestyle">
               <tr>
@@ -1947,65 +1938,24 @@
   </xsl:template>
 
   <xsl:template name="commlink">
-    <xsl:for-each select="gears/gear[iscommlink = 'True']">
+    <xsl:for-each select="//*[iscommlink = 'True']">
       <xsl:call-template name="devicedetails" />
     </xsl:for-each>
-    <xsl:for-each select="armors/armor/gears/gear[iscommlink = 'True']">
-      <xsl:call-template name="devicedetails" />
-    </xsl:for-each>
-    <xsl:for-each select="cyberwares/cyberware/gears/gear[iscommlink = 'True']">
-      <xsl:call-template name="devicedetails" />
-    </xsl:for-each>
-    <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[iscommlink = 'True']">
-      <xsl:call-template name="devicedetails" />
-    </xsl:for-each>
-    <xsl:for-each select="weapons/weapon/accessories/accessory/gears/gear[iscommlink = 'True']">
-      <xsl:call-template name="devicedetails" />
-    </xsl:for-each>
-    <xsl:if test="gears/gear[isprogram = 'True']">
-      <tr><td colspan="100%">
-        <span class="title"><xsl:value-of select="Programs" /></span><br />
-        <xsl:for-each select="gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <xsl:call-template name="programdetails" />
-        </xsl:for-each>
-      </td></tr>
-    </xsl:if>
-    <xsl:if test="armors/armor/gears/gear[isprogram = 'True']">
-      <tr><td colspan="100%">
-        <span class="title"><xsl:value-of select="Programs" /></span><br />
-        <xsl:for-each select="armors/armor/gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <xsl:call-template name="programdetails" />
-        </xsl:for-each>
-      </td></tr>
-    </xsl:if>
-    <xsl:if test="cyberwares/cyberware/gears/gear[isprogram = 'True']">
-      <tr><td colspan="100%">
-        <span class="title"><xsl:value-of select="Programs" /></span><br />
-        <xsl:for-each select="cyberwares/cyberware/gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <xsl:call-template name="programdetails" />
-        </xsl:for-each>
-      </td></tr>
-    </xsl:if>
-    <xsl:if test="cyberwares/cyberware/children/cyberware/gears/gear[isprogram = 'True']">
-      <tr><td colspan="100%">
-        <span class="title"><xsl:value-of select="Programs" /></span><br />
-        <xsl:for-each select="cyberwares/cyberware/children/cyberware/gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <xsl:call-template name="programdetails" />
-        </xsl:for-each>
-      </td></tr>
-    </xsl:if>
-    <xsl:if test="weapons/weapon/accessories/accessory/gears/gear[isprogram = 'True']">
-      <tr><td colspan="100%">
-        <span class="title"><xsl:value-of select="Programs" /></span><br />
-        <xsl:for-each select="weapons/weapon/accessories/accessory/gears/gear[isprogram = 'True']">
-          <xsl:sort select="name" />
-          <xsl:call-template name="programdetails" />
-        </xsl:for-each>
-      </td></tr>
+    <xsl:if test="//*[isprogram = 'True']">
+      <tr>
+          <td class="title" colspan="100%">
+            <xsl:value-of select="$lang.Programs" />
+          </td>
+      </tr>
+      <tr>
+          <td colspan="100%">
+              <xsl:for-each select="//*[isprogram = 'True']">
+                  <xsl:sort select="name" />
+                  <xsl:call-template name="programdetails" />
+                  <xsl:if test="last() &gt; 1">; </xsl:if>
+              </xsl:for-each>
+          </td>
+      </tr>
     </xsl:if>
   </xsl:template>
 
