@@ -481,14 +481,16 @@ namespace Chummer
 
         public override int GetHashCode()
         {
+            var dependencyHash = DependenciesList.GetEnsembleHashCode();
+            var exclusivityHash = ExclusivitiesList.GetEnsembleHashCode();
             //Path and Guid should already be enough because they are both unique, but just to be sure.
-            return new { Name, Path, Guid, Version, DependenciesList, ExclusivitiesList }.GetHashCode();
+            return new { Name, Path, Guid, Version, exclusivityHash, dependencyHash }.GetHashCode();
         }
 
         public bool Equals(CustomDataDirectoryInfo other)
         {
             //This should be enough to uniquely identify an object.
-            return other != null && Name == other.Name && Path == other.Path && other.Guid == Guid && other.Version == Version;
+            return other != null && Name == other.Name && Path == other.Path && other.Guid == Guid && other.Version == Version && other.DependenciesList.Equals(DependenciesList) && other.ExclusivitiesList.Equals(ExclusivitiesList);
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
