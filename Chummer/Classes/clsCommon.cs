@@ -1122,7 +1122,7 @@ namespace Chummer
                     }
                     objLoopControl = objLoopControl.Parent;
                 }
-                OpenPdf(objControl.Text, objCharacter);
+                OpenPdf(objControl.Text, objCharacter, null, null, true);
             }
         }
 
@@ -1133,7 +1133,8 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PdfAppPath.</param>
-        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "")
+        /// <param name="bOpenOptions">Should the options-dialog be opened for the user to select the location of the pdf?</param>
+        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool bOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -1186,7 +1187,7 @@ namespace Chummer
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
-            Uri uriPath;
+            Uri uriPath = null;
             try
             {
                 uriPath = new Uri(objBookInfo.Path);
@@ -1194,13 +1195,23 @@ namespace Chummer
             catch (UriFormatException)
             {
                 // Silently swallow the error because PDF fetching is usually done in the background
-                objBookInfo.Path = string.Empty;
-                return;
+               objBookInfo.Path = string.Empty;
             }
 
             // Check if the file actually exists.
-            if (!File.Exists(uriPath.LocalPath))
+            if (uriPath == null || !File.Exists(uriPath.LocalPath))
+            {
+                if (bOpenOptions == true)
+                {
+                    frmOptions options = new frmOptions("tabGlobal");
+                    options.Show();
+                    options.RefreshGlobalSourcebookInfosListView(objBookInfo.Code);
+                    options.cmdPDFLocation_Click(null, null);
+                }
+                    
                 return;
+            }
+                
             intPage += objBookInfo.Offset;
 
             string strParams = strPdfParameters

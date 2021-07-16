@@ -1,5 +1,6 @@
 Future Build 215
 Application Changes:
+- Clicking on "Open PDF" on a MasterIndex Item with no associated pdf now opens the "Choose PDF" Dialog instead of doing nothing.
 - Fixed a crash when no CustomDate/TimeFormat is set.
 - Added the ability for devs to set an action on doubleclick on the char-roster
 - Added the upload of a crash to ApplicationInsights in parallel to the old Crashhandler (Loglevelfilters still apply)
