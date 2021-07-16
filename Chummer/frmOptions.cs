@@ -203,7 +203,7 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
-        private void cmdPDFLocation_Click(object sender, EventArgs e)
+        public void cmdPDFLocation_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
             using (new CursorWait(this))
@@ -694,7 +694,9 @@ namespace Chummer
             PopulateDpiScalingMethods();
         }
 
-        private void RefreshGlobalSourcebookInfosListView()
+        
+
+        public void RefreshGlobalSourcebookInfosListView(string strSelectBook = null)
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
@@ -714,6 +716,8 @@ namespace Chummer
             _blnSkipRefresh = true;
             lstGlobalSourcebookInfos.BeginUpdate();
             string strOldSelected = lstGlobalSourcebookInfos.SelectedValue?.ToString();
+            if (!String.IsNullOrEmpty(strSelectBook))
+                strOldSelected = strSelectBook;
             lstGlobalSourcebookInfos.PopulateWithListItems(lstSourcebookInfos);
             _blnSkipRefresh = blnOldSkipRefresh;
             if (string.IsNullOrEmpty(strOldSelected))
@@ -722,6 +726,8 @@ namespace Chummer
                 lstGlobalSourcebookInfos.SelectedValue = strOldSelected;
             lstGlobalSourcebookInfos.EndUpdate();
         }
+
+        
 
         private void PopulateCustomDataDirectoryListBox()
         {
