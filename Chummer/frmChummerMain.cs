@@ -891,7 +891,22 @@ namespace Chummer
             {
                 objForm.FormClosed -= ActiveMdiChild_FormClosed;
                 objForm.Dispose();
-                (objForm.Tag as TabPage)?.Dispose();
+                if (objForm.Tag is TabPage objTabPage)
+                {
+                    if (tabForms.TabCount > 1)
+                    {
+                        int intSelectTab = tabForms.TabPages.IndexOf(objTabPage);
+                        if (intSelectTab > 0)
+                        {
+                            if (intSelectTab + 1 >= tabForms.TabCount)
+                                intSelectTab -= 1;
+                            else
+                                intSelectTab += 1;
+                            tabForms.SelectedIndex = intSelectTab;
+                        }
+                    }
+                    objTabPage.Dispose();
+                }
             }
 
             // Don't show the tab control if there is only one window open.
@@ -1090,7 +1105,8 @@ namespace Chummer
             {
                 for (int i = 0; i < tabForms.TabCount; ++i)
                 {
-                    if (!tabForms.GetTabRect(i).Contains(e.Location)) continue;
+                    if (!tabForms.GetTabRect(i).Contains(e.Location))
+                        continue;
                     if (tabForms.SelectedTab.Tag is CharacterShared && tabForms.SelectedIndex == i)
                     {
                         mnuProcessFile.Show(this, e.Location);
