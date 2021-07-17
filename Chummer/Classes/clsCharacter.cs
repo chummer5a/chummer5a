@@ -1338,10 +1338,14 @@ namespace Chummer
                 if (objSkill != null) //More or less a safeguard only. Should not be empty at that point any longer.
                 {
                     string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
-                    ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                    ImprovementManager.Commit(this);
-                    SkillSpecialization spec = new SkillSpecialization(this, strSpec, true);
-                    objSkill.Specializations.Add(spec);
+                    if (objSkill.Specializations.All(x => x.Name != strSpec))
+                    {
+                        SkillSpecialization objSpec = new SkillSpecialization(this, strSpec);
+                        objSkill.Specializations.Add(objSpec);
+                        ImprovementManager.CreateImprovement(this, strSkill, Improvement.ImprovementSource.Metatype,
+                            string.Empty, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                        ImprovementManager.Commit(this);
+                    }
                 }
             }
 

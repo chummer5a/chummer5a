@@ -6206,9 +6206,9 @@ namespace Chummer.Classes
                 // Create the Improvement.
                 Log.Info("Calling CreateImprovement");
                 string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization nspec = new SkillSpecialization(_objCharacter, strSpec, true);
-                objSkill.Specializations.Add(nspec);
+                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                objSkill.Specializations.Add(objSpec);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
             }
         }
 
@@ -6248,9 +6248,9 @@ namespace Chummer.Classes
                     CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
                     if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                        SkillSpecialization nspec = new SkillSpecialization(_objCharacter, strSpec, true);
-                        objSkill.Specializations.Add(nspec);
+                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                        objSkill.Specializations.Add(objSpec);
+                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
                     }
                 }
             }
@@ -7445,9 +7445,9 @@ namespace Chummer.Classes
             }
             // Create the Improvement.
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, SelectedValue);
             SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
             objSkill.Specializations.Add(objExpertise);
+            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, objExpertise.InternalId);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

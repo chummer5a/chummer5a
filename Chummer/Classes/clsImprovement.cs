@@ -1848,11 +1848,19 @@ namespace Chummer
                 case ImprovementType.UnarmedReach:
                     break;
 
-                case ImprovementType.SkillSpecialization:
-                    break;
-
                 case ImprovementType.SkillExpertise:
-                    break;
+                case ImprovementType.SkillSpecialization:
+                    {
+                        Skill objTargetSkill =
+                            _objCharacter.SkillsSection.Skills.FirstOrDefault(x => x.DictionaryKey == ImprovedName);
+                        if (objTargetSkill != null)
+                        {
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.Specializations));
+                        }
+
+                        break;
+                    }
 
                 case ImprovementType.SkillSpecializationOption:
                     {
@@ -4941,7 +4949,10 @@ namespace Chummer
                     case Improvement.ImprovementType.SkillExpertise:
                         {
                             Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(objImprovement.ImprovedName);
-                            SkillSpecialization objSkillSpec = objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
+                            SkillSpecialization objSkillSpec = objImprovement.UniqueName.IsGuid()
+                                ? objSkill?.Specializations.FirstOrDefault(x => x.InternalId == objImprovement.UniqueName)
+                                // Kept for legacy reasons
+                                : objSkill?.Specializations.FirstOrDefault(x => x.Name == objImprovement.UniqueName);
                             if (objSkillSpec != null)
                                 objSkill.Specializations.Remove(objSkillSpec);
                         }
