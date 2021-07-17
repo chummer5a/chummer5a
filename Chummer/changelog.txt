@@ -89,6 +89,7 @@ Application Changes:
 - Qualities with levels taken at only level 1 now display their level as "1" instead of not displaying any level.
 - When removing content that has added potentially duplicate specializations to a character, the specialization that was added by said content is now properly always gets removed.
 - A warning is now shown when attempting to open enough characters that it might cause Chummer to silently crash.
+- Added a plural/singular detector to the code that checks if a character has a specialization for a weapon.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -128,6 +129,7 @@ Data Changes:
 - Core rulebook weapon mounts now use Flexible for their flexibility entry to represent the core rulebook saying that its weapon mounts can rotate in an arc.
 - Out for Myself properly gives +3 Surprise dice.
 - Various music genres and trideo shows from No Future have been added as suggested specializations for relevant knowledge skills
+- Fixed specialization entries for crossbows and slingshots.
 
 Changed/New Strings:
 - String_ContactPoints

@@ -1739,6 +1739,7 @@
       <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <range>Harpoon Gun</range>
       <weapontype>harpoongun</weapontype>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>437c30e5-580a-401a-8097-e9fab0dc2b57</id>
@@ -1759,6 +1760,7 @@
       <page>23</page>
       <range>Shuriken</range>
       <weapontype>slingshot</weapontype>
+      <spec>Slingshot</spec>
     </weapon>
     <weapon>
       <id>db213a06-0430-4711-81a3-5790d5152ba3</id>
@@ -1778,6 +1780,7 @@
       <source>SR5</source>
       <page>424</page>
       <range>Heavy Crossbows</range>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>bc9db3ec-6fa2-407d-ad76-e49daac3c06f</id>
@@ -1797,6 +1800,7 @@
       <source>SR5</source>
       <page>424</page>
       <range>Light Crossbows</range>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>0df17331-7631-4f78-b857-0f3929678db2</id>
@@ -1816,6 +1820,7 @@
       <source>SR5</source>
       <page>424</page>
       <range>Medium Crossbows</range>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>28072a3f-5153-444e-83e3-46129b9ff572</id>
@@ -1835,6 +1840,7 @@
       <source>RG</source>
       <page>23</page>
       <range>Heavy Pistols</range>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>d50f0212-490b-44ca-8365-09e62ea69697</id>
@@ -1856,6 +1862,7 @@
       <alternaterange>Harpoon Gun (Underwater)</alternaterange>
       <range>Harpoon Gun</range>
       <weapontype>harpoongun</weapontype>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>a47e8191-869a-456e-b376-ed04ba7a59f0</id>
@@ -8537,6 +8544,7 @@
         </OR>
       </required>
       <useskill>Archery</useskill>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>7914b526-90a1-4691-93bf-1eace51b914f</id>
@@ -12762,6 +12770,7 @@
         <mount>Under</mount>
       </accessorymounts>
       <range>Medium Crossbow</range>
+      <spec>Crossbow</spec>
     </weapon>
     <weapon>
       <id>ced53705-2d9c-4ee6-b612-550f6ae63980</id>

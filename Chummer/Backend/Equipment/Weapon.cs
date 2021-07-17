@@ -4181,12 +4181,16 @@ namespace Chummer.Backend.Equipment
                                     SkillSpecialization spec =
                                         objSkill.GetSpecialization(DisplayNameShort(GlobalOptions.Language)) ??
                                         objSkill.GetSpecialization(Name) ??
-                                        objSkill.GetSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ??
+                                        objSkill.GetSpecialization(DisplayCategory(GlobalOptions.Language)) ??
                                         objSkill.GetSpecialization(Category);
 
-                                    if (spec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
+                                    if (spec == null)
                                     {
-                                        spec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
+                                        spec = objSkill.GetSpecialization(Category.EndsWith('s')
+                                            ? Category.TrimEndOnce('s')
+                                            : (Category + 's'));
+                                        if (spec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
+                                            spec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
                                     }
                                     if (spec != null)
                                     {
