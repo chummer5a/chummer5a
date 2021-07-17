@@ -1146,7 +1146,7 @@ namespace Chummer
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
                 if (!blnOpenOptions || Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoPDFProgramSet"),
-                    LanguageManager.GetString("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    LanguageManager.GetString("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
                 using (frmOptions frmOptions = new frmOptions())
@@ -1211,8 +1211,8 @@ namespace Chummer
             // Check if the file actually exists.
             while (uriPath == null || !File.Exists(uriPath.LocalPath))
             {
-                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoLinkedPDF"),
-                        LanguageManager.GetString("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo) != DialogResult.Yes)
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NoLinkedPDF"), LanguageBookLong(strBook)),
+                        LanguageManager.GetString("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
                 using (new CursorWait(Program.MainForm))
                 using (frmOptions frmOptions = new frmOptions())
