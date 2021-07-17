@@ -27,6 +27,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -42,6 +43,7 @@ namespace Chummer
 {
     public sealed partial class frmChummerMain : Form
     {
+        private bool _blnAbleToReceiveData;
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private frmDiceRoller _frmRoller;
         private frmLoading _frmProgressBar;
@@ -152,6 +154,19 @@ namespace Chummer
                         op_frmChummerMain.tc.TrackPageView(MyStartupPVT);
                     }
 
+                    NativeMethods.CHANGEFILTERSTRUCT changeFilter = new NativeMethods.CHANGEFILTERSTRUCT();
+                    changeFilter.size = (uint)Marshal.SizeOf(changeFilter);
+                    changeFilter.info = 0;
+                    if (NativeMethods.ChangeWindowMessageFilterEx(Handle, NativeMethods.WM_COPYDATA,
+                        NativeMethods.ChangeWindowMessageFilterExAction.Allow, ref changeFilter))
+                        _blnAbleToReceiveData = true;
+                    else
+                    {
+                        int intErrorCode = Marshal.GetLastWin32Error();
+                        Utils.BreakIfDebug();
+                        Log.Error("The error " + intErrorCode + " occurred while attempting to unblock WM_COPYDATA.");
+                    }
+
                     Text = MainTitle;
 
                     //this.toolsMenu.DropDownItems.Add("GM Dashboard").Click += this.dashboardToolStripMenuItem_Click;
@@ -224,75 +239,7 @@ namespace Chummer
                             bool blnShowTest = false;
                             if (!Utils.IsUnitTest)
                             {
-                                HashSet<string> setFilesToLoad = new HashSet<string>();
-                                if (strArgs.Length > 1)
-                                {
-                                    try
-                                    {
-                                        foreach (string strArg in strArgs)
-                                        {
-                                            if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath)))
-                                                continue;
-                                            switch (strArg)
-                                            {
-                                                case "/test":
-                                                    blnShowTest = true;
-                                                    break;
-
-                                                case "/help":
-                                                case "?":
-                                                case "/?":
-                                                    {
-                                                        string msg = "Commandline parameters are either " +
-                                                                     Environment.NewLine + "\t/test" + Environment.NewLine +
-                                                                     "\t/help" + Environment.NewLine +
-                                                                     "\t(filename to open)" +
-                                                                     Environment.NewLine +
-                                                                     "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
-                                                                     Environment.NewLine;
-                                                        Console.WriteLine(msg);
-                                                        break;
-                                                    }
-                                                default:
-                                                    {
-                                                        if (strArg.Contains("/plugin"))
-                                                        {
-                                                            Log.Info(
-                                                                "Encountered command line argument, that should already have been handled in one of the plugins: " +
-                                                                strArg);
-                                                        }
-                                                        else if (!strArg.StartsWith('/'))
-                                                        {
-                                                            if (!File.Exists(strArg))
-                                                            {
-                                                                throw new ArgumentException(
-                                                                    "Chummer started with unknown command line arguments: " +
-                                                                    strArgs.Aggregate((j, k) => j + " " + k));
-                                                            }
-
-                                                            if (Path.GetExtension(strArg) != ".chum5")
-                                                                Utils.BreakIfDebug();
-                                                            if (setFilesToLoad.Contains(strArg))
-                                                                continue;
-                                                            setFilesToLoad.Add(strArg);
-                                                        }
-
-                                                        break;
-                                                    }
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        op_frmChummerMain.SetSuccess(false);
-                                        ExceptionTelemetry ext = new ExceptionTelemetry(ex)
-                                        {
-                                            SeverityLevel = SeverityLevel.Warning
-                                        };
-                                        op_frmChummerMain.tc.TrackException(ext);
-                                        Log.Warn(ex);
-                                    }
-                                }
+                                ProcessCommandLineArguments(strArgs, out blnShowTest, out HashSet<string> setFilesToLoad, op_frmChummerMain);
 
                                 if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                 {
@@ -362,7 +309,7 @@ namespace Chummer
                                     }
                                 }
 
-                                if (setFilesToLoad.Count > 1)
+                                if (setFilesToLoad.Count > 0)
                                     objCharacterLoadingTask = Task.Run(() =>
                                         Parallel.ForEach(setFilesToLoad, x =>
                                         {
@@ -1804,6 +1751,196 @@ namespace Chummer
         private void mnuRestart_Click(object sender, EventArgs e)
         {
             Utils.RestartApplication(string.Empty, "Message_Options_Restart");
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == NativeMethods.WM_SHOWME)
+                ShowMe();
+            else if (m.Msg == NativeMethods.WM_COPYDATA && _blnAbleToReceiveData)
+            {
+                ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
+                Task objCharacterLoadingTask = null;
+
+                using (_frmProgressBar = CreateAndShowProgressBar())
+                using (new CursorWait(this))
+                {
+                    // Extract the file name
+                    NativeMethods.COPYDATASTRUCT objReceivedData = (NativeMethods.COPYDATASTRUCT) Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
+                    if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
+                    {
+                        string strParam = Marshal.PtrToStringUni(objReceivedData.lpData);
+                        string[] strArgs = strParam.Split("<>", StringSplitOptions.RemoveEmptyEntries);
+
+                        ProcessCommandLineArguments(strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad);
+
+                        if (Directory.Exists(Utils.GetAutosavesFolderPath))
+                        {
+                            bool blnAnyAutosaveInMRU = GlobalOptions.MostRecentlyUsedCharacters.Count == 0 &&
+                                                       GlobalOptions.FavoritedCharacters.Count ==
+                                                       0; // Always process newest autosave if all MRUs are empty
+                            FileInfo objMostRecentAutosave = null;
+                            foreach (string strAutosave in Directory.EnumerateFiles(
+                                Utils.GetAutosavesFolderPath,
+                                "*.chum5", SearchOption.AllDirectories))
+                            {
+                                FileInfo objAutosave;
+                                try
+                                {
+                                    objAutosave = new FileInfo(strAutosave);
+                                }
+                                catch (System.Security.SecurityException)
+                                {
+                                    continue;
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    continue;
+                                }
+
+                                if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
+                                    objMostRecentAutosave.LastWriteTimeUtc)
+                                    objMostRecentAutosave = objAutosave;
+                                if (GlobalOptions.MostRecentlyUsedCharacters.Any(x =>
+                                        Path.GetFileName(x) == objAutosave.Name) ||
+                                    GlobalOptions.FavoritedCharacters.Any(x =>
+                                        Path.GetFileName(x) == objAutosave.Name))
+                                    blnAnyAutosaveInMRU = true;
+                            }
+
+                            if (objMostRecentAutosave != null)
+                            {
+                                // Might have had a crash for an unsaved character, so prompt if we want to load them
+                                if (blnAnyAutosaveInMRU &&
+                                    !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
+                                    GlobalOptions.MostRecentlyUsedCharacters.All(x =>
+                                        Path.GetFileName(x) != objMostRecentAutosave.Name) &&
+                                    GlobalOptions.FavoritedCharacters.All(x =>
+                                        Path.GetFileName(x) != objMostRecentAutosave.Name) && ShowMessageBox(
+                                        string.Format(GlobalOptions.CultureInfo,
+                                            LanguageManager.GetString("Message_PossibleCrashAutosaveFound"),
+                                            objMostRecentAutosave.Name,
+                                            objMostRecentAutosave.LastWriteTimeUtc.ToLocalTime()),
+                                        LanguageManager.GetString("MessageTitle_AutosaveFound"),
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                                    setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                            }
+                        }
+
+                        if (setFilesToLoad.Count > 0)
+                            objCharacterLoadingTask = Task.Run(() =>
+                                Parallel.ForEach(setFilesToLoad, x =>
+                                {
+                                    Character objCharacter = LoadCharacter(x);
+                                    lstCharactersToLoad.Add(objCharacter);
+                                }));
+
+                        _frmProgressBar.PerformStep();
+
+                        if (blnShowTest)
+                        {
+                            frmTest frmTestData = new frmTest();
+                            frmTestData.Show();
+                        }
+                    }
+                }
+                Task.Run(async () =>
+                {
+                    if (objCharacterLoadingTask?.IsCompleted == false)
+                        await objCharacterLoadingTask;
+                    if (lstCharactersToLoad.Count > 0)
+                        OpenCharacterList(lstCharactersToLoad);
+                });
+            }
+            base.WndProc(ref m);
+        }
+
+        private void ShowMe()
+        {
+            if (WindowState == FormWindowState.Minimized)
+                WindowState = FormWindowState.Normal;
+            // get our current "TopMost" value (ours will always be false though)
+            bool blnOldTopMost = TopMost;
+            // make our form jump to the top of everything
+            TopMost = true;
+            // set it back to whatever it was
+            TopMost = blnOldTopMost;
+        }
+
+        private void ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity op_LoadActivity = null)
+        {
+            blnShowTest = false;
+            setFilesToLoad = new HashSet<string>(strArgs.Length);
+            if (strArgs.Length <= 0)
+                return;
+            try
+            {
+                foreach (string strArg in strArgs)
+                {
+                    if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath)))
+                        continue;
+                    switch (strArg)
+                    {
+                        case "/test":
+                            blnShowTest = true;
+                            break;
+
+                        case "/help":
+                        case "?":
+                        case "/?":
+                        {
+                            string msg = "Commandline parameters are either " +
+                                         Environment.NewLine + "\t/test" + Environment.NewLine +
+                                         "\t/help" + Environment.NewLine +
+                                         "\t(filename to open)" +
+                                         Environment.NewLine +
+                                         "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
+                                         Environment.NewLine;
+                            Console.WriteLine(msg);
+                            break;
+                        }
+                        default:
+                        {
+                            if (strArg.Contains("/plugin"))
+                            {
+                                Log.Info(
+                                    "Encountered command line argument, that should already have been handled in one of the plugins: " +
+                                    strArg);
+                            }
+                            else if (!strArg.StartsWith('/'))
+                            {
+                                if (!File.Exists(strArg))
+                                {
+                                    throw new ArgumentException(
+                                        "Chummer started with unknown command line arguments: " +
+                                        strArgs.Aggregate((j, k) => j + " " + k));
+                                }
+
+                                if (Path.GetExtension(strArg) != ".chum5")
+                                    Utils.BreakIfDebug();
+                                if (setFilesToLoad.Contains(strArg))
+                                    continue;
+                                setFilesToLoad.Add(strArg);
+                            }
+
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                if (op_LoadActivity != null)
+                {
+                    op_LoadActivity.SetSuccess(false);
+                    ExceptionTelemetry ext = new ExceptionTelemetry(ex)
+                    {
+                        SeverityLevel = SeverityLevel.Warning
+                    };
+                    op_LoadActivity.tc.TrackException(ext);
+                }
+                Log.Warn(ex);
+            }
         }
 
         #endregion Methods

@@ -107,7 +107,7 @@ namespace Chummer
                     // present on left mouse button
                     HideBalloonTip();
                     NativeMethods.ReleaseCapture();
-                    NativeMethods.SendMessage(Handle, 0xa1, 0x2, 0);
+                    NativeMethods.SendMessage(Handle, 0xa1, 0x2, IntPtr.Zero);
                     break;
 
                 case MouseButtons.Left:
