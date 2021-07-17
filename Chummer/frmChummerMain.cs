@@ -1376,6 +1376,15 @@ namespace Chummer
                     _frmProgressBar.PerformStep(objCharacter == null ? strUI : strUI + strSpace + '(' + objCharacter.CharacterName + ')');
                     if (objCharacter == null || OpenCharacterForms.Any(x => x.CharacterObject == objCharacter))
                         continue;
+                    if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500) && ShowMessageBox(
+                        string.Format(LanguageManager.GetString("Message_TooManyHandlesWarning"), objCharacter.CharacterName),
+                        LanguageManager.GetString("MessageTitle_TooManyHandlesWarning"),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    {
+                        if (OpenCharacters.All(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                            Program.MainForm.OpenCharacters.Remove(objCharacter);
+                        continue;
+                    }
                     //Timekeeper.Start("load_event_time");
                     // Show the character forms.
                     this.DoThreadSafe(() =>

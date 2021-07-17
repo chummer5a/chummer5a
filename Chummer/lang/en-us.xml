@@ -1238,6 +1238,14 @@
       <key>MessageTitle_NoPDFProgramSet</key>
       <text>No PDF Reader Found</text>
     </string>
+    <string>
+      <key>Message_TooManyHandlesWarning</key>
+      <text>Because Chummer is built on a very old foundation, it has problems with handling too many characters open at once. The program has detected that it is nearing that threshold and could potentially silently crash if it opens {0}.\n\nDo you wish to continue?</text>
+    </string>
+    <string>
+      <key>MessageTitle_TooManyHandlesWarning</key>
+      <text>Potential Silent Crash Possible</text>
+    </string>
     <!-- End Region -->
     <!-- Region Attributes -->
     <string>

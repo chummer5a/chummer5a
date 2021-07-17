@@ -88,6 +88,7 @@ Application Changes:
 - Closing an opened character that is also not the currently viewed character in the program no longer causes the tool strip of icons at the top to misbehave.
 - Qualities with levels taken at only level 1 now display their level as "1" instead of not displaying any level.
 - When removing content that has added potentially duplicate specializations to a character, the specialization that was added by said content is now properly always gets removed.
+- A warning is now shown when attempting to open enough characters that it might cause Chummer to silently crash.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -237,6 +238,8 @@ Changed/New Strings:
 - MessageTitle_NoLinkedPDF
 - Message_NoPDFProgramSet
 - MessageTitle_NoPDFProgramSet
+- Message_TooManyHandlesWarning
+- MessageTitle_TooManyHandlesWarning
 
 Build 214
 Application Fixes:
