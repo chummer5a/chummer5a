@@ -138,9 +138,9 @@ namespace Chummer
             this.grpAvailablePlugins = new System.Windows.Forms.GroupBox();
             this.clbPlugins = new System.Windows.Forms.CheckedListBox();
             this.pnlPluginOption = new System.Windows.Forms.Panel();
-            this.cmdOK = new System.Windows.Forms.Button();
-            this.cmdCancel = new System.Windows.Forms.Button();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdCancel = new System.Windows.Forms.Button();
+            this.cmdOK = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -1017,7 +1017,7 @@ namespace Chummer
             this.txtPDFAppPath.ReadOnly = true;
             this.txtPDFAppPath.Size = new System.Drawing.Size(154, 20);
             this.txtPDFAppPath.TabIndex = 10;
-            this.txtPDFAppPath.TextChanged += new System.EventHandler(this.OptionsChanged);
+            this.txtPDFAppPath.TextChanged += new System.EventHandler(this.txtPDFAppPath_TextChanged);
             // 
             // cmdPDFAppPath
             // 
@@ -1720,7 +1720,7 @@ namespace Chummer
             this.tabGitHubIssues.Location = new System.Drawing.Point(4, 22);
             this.tabGitHubIssues.Name = "tabGitHubIssues";
             this.tabGitHubIssues.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGitHubIssues.Size = new System.Drawing.Size(1232, 602);
+            this.tabGitHubIssues.Size = new System.Drawing.Size(1232, 596);
             this.tabGitHubIssues.TabIndex = 4;
             this.tabGitHubIssues.Tag = "Tab_Options_GitHubIssues";
             this.tabGitHubIssues.Text = "GitHub Issues";
@@ -1807,36 +1807,6 @@ namespace Chummer
             this.pnlPluginOption.Size = new System.Drawing.Size(911, 578);
             this.pnlPluginOption.TabIndex = 1;
             // 
-            // cmdOK
-            // 
-            this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
-            this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
-            this.cmdOK.TabIndex = 5;
-            this.cmdOK.Tag = "String_OK";
-            this.cmdOK.Text = "OK";
-            this.cmdOK.UseVisualStyleBackColor = true;
-            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
-            // 
-            // cmdCancel
-            // 
-            this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
-            this.cmdCancel.TabIndex = 6;
-            this.cmdCancel.Tag = "String_Cancel";
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
             // tlpButtons
             // 
             this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -1853,6 +1823,36 @@ namespace Chummer
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 5;
+            // 
+            // cmdCancel
+            // 
+            this.cmdCancel.AutoSize = true;
+            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.Name = "cmdCancel";
+            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.TabIndex = 6;
+            this.cmdCancel.Tag = "String_Cancel";
+            this.cmdCancel.Text = "Cancel";
+            this.cmdCancel.UseVisualStyleBackColor = true;
+            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
+            // 
+            // cmdOK
+            // 
+            this.cmdOK.AutoSize = true;
+            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Name = "cmdOK";
+            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.TabIndex = 5;
+            this.cmdOK.Tag = "String_OK";
+            this.cmdOK.Text = "OK";
+            this.cmdOK.UseVisualStyleBackColor = true;
+            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
             // frmOptions
             // 

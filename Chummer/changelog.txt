@@ -231,6 +231,10 @@ Changed/New Strings:
 - Message_UnboundSpiritLimit
 - MessageTitle_UnboundSpiritLimit
 - Message_PossibleCrashAutosaveFound
+- Message_NoLinkedPDF
+- MessageTitle_NoLinkedPDF
+- Message_NoPDFProgramSet
+- MessageTitle_NoPDFProgramSet
 
 Build 214
 Application Fixes:

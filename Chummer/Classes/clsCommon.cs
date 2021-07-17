@@ -1122,7 +1122,7 @@ namespace Chummer
                     }
                     objLoopControl = objLoopControl.Parent;
                 }
-                OpenPdf(objControl.Text, objCharacter, null, null, true);
+                OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
             }
         }
 
@@ -1133,22 +1133,32 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PdfAppPath.</param>
-        /// <param name="bOpenOptions">Should the options-dialog be opened for the user to select the location of the pdf?</param>
-        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool bOpenOptions = false)
+        /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
+        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
             if (string.IsNullOrEmpty(strPdfParameters))
                 strPdfParameters = GlobalOptions.PDFParameters;
-            // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPdfParameters))
-                return;
-
             if (string.IsNullOrEmpty(strPdfAppPath))
                 strPdfAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
-                return;
+            while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+            {
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoPDFProgramSet"),
+                    LanguageManager.GetString("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    return;
+                using (new CursorWait(Program.MainForm))
+                using (frmOptions frmOptions = new frmOptions())
+                {
+                    if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+                        frmOptions.DoLinkPdfReader();
+                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                        return;
+                    strPdfParameters = GlobalOptions.PDFParameters;
+                    strPdfAppPath = GlobalOptions.PDFAppPath;
+                }
+            }
 
             string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
@@ -1199,17 +1209,28 @@ namespace Chummer
             }
 
             // Check if the file actually exists.
-            if (uriPath == null || !File.Exists(uriPath.LocalPath))
+            while (uriPath == null || !File.Exists(uriPath.LocalPath))
             {
-                if (bOpenOptions == true)
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoLinkedPDF"),
+                        LanguageManager.GetString("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo) != DialogResult.Yes)
+                    return;
+                using (new CursorWait(Program.MainForm))
+                using (frmOptions frmOptions = new frmOptions())
                 {
-                    frmOptions options = new frmOptions("tabGlobal");
-                    options.Show();
-                    options.RefreshGlobalSourcebookInfosListView(objBookInfo.Code);
-                    options.cmdPDFLocation_Click(null, null);
+                    frmOptions.DoLinkPdf(objBookInfo.Code);
+                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                        return;
+                    uriPath = null;
+                    try
+                    {
+                        uriPath = new Uri(objBookInfo.Path);
+                    }
+                    catch (UriFormatException)
+                    {
+                        // Silently swallow the error because PDF fetching is usually done in the background
+                        objBookInfo.Path = string.Empty;
+                    }
                 }
-                    
-                return;
             }
                 
             intPage += objBookInfo.Offset;
@@ -1218,12 +1239,12 @@ namespace Chummer
                 .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
                 .Replace("{localpath}", uriPath.LocalPath)
                 .Replace("{absolutepath}", uriPath.AbsolutePath);
-            ProcessStartInfo objProgress = new ProcessStartInfo
+            ProcessStartInfo objProcess = new ProcessStartInfo
             {
                 FileName = strPdfAppPath,
                 Arguments = strParams
             };
-            objProgress.Start();
+            objProcess.Start();
         }
 
         /// <summary>

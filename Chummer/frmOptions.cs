@@ -86,7 +86,22 @@ namespace Chummer
             PopulateXsltList();
             SetDefaultValueForXsltList();
             PopulatePDFParameters();
+
             _blnLoading = false;
+
+            if (_blnPromptPdfReaderOnLoad)
+            {
+                _blnPromptPdfReaderOnLoad = false;
+                PromptPdfAppPath();
+            }
+
+            if (!string.IsNullOrEmpty(_strSelectCodeOnRefresh))
+            {
+                lstGlobalSourcebookInfos.SelectedValue = _strSelectCodeOnRefresh;
+                if (lstGlobalSourcebookInfos.SelectedIndex >= 0)
+                    PromptPdfLocation();
+                _strSelectCodeOnRefresh = string.Empty;
+            }
         }
 
         #endregion Form Events
@@ -178,55 +193,12 @@ namespace Chummer
 
         private void cmdPDFAppPath_Click(object sender, EventArgs e)
         {
-            // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
-            {
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = LanguageManager.GetString("DialogFilter_Exe") + '|' +
-                             LanguageManager.GetString("DialogFilter_All")
-                })
-                {
-                    if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
-                    {
-                        openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
-                        openFileDialog.FileName = Path.GetFileName(txtPDFAppPath.Text);
-                    }
-
-                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                        return;
-                    txtPDFAppPath.Text = openFileDialog.FileName;
-                }
-            }
-            cmdRemovePDFAppPath.Enabled = txtPDFAppPath.TextLength > 0;
-            cmdPDFTest.Enabled = txtPDFAppPath.TextLength > 0 && txtPDFLocation.TextLength > 0;
-            OptionsChanged(sender, e);
+            PromptPdfAppPath();
         }
 
-        public void cmdPDFLocation_Click(object sender, EventArgs e)
+        private void cmdPDFLocation_Click(object sender, EventArgs e)
         {
-            // Prompt the user to select a save file to associate with this Contact.
-            using (new CursorWait(this))
-            {
-                using (OpenFileDialog openFileDialog = new OpenFileDialog
-                {
-                    Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' +
-                             LanguageManager.GetString("DialogFilter_All")
-                })
-                {
-                    if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
-                    {
-                        openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
-                        openFileDialog.FileName = Path.GetFileName(txtPDFLocation.Text);
-                    }
-
-                    if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    {
-                        UpdateSourcebookInfoPath(openFileDialog.FileName);
-                        txtPDFLocation.Text = openFileDialog.FileName;
-                    }
-                }
-            }
+            PromptPdfLocation();
         }
 
         private void lstGlobalSourcebookInfos_SelectedIndexChanged(object sender, EventArgs e)
@@ -669,9 +641,92 @@ namespace Chummer
             }
         }
 
+        private void txtPDFAppPath_TextChanged(object sender, EventArgs e)
+        {
+            cmdRemovePDFAppPath.Enabled = txtPDFAppPath.TextLength > 0;
+            cmdPDFTest.Enabled = txtPDFAppPath.TextLength > 0 && txtPDFLocation.TextLength > 0;
+            OptionsChanged(sender, e);
+        }
+
         #endregion Control Events
 
         #region Methods
+
+        private bool _blnPromptPdfReaderOnLoad;
+
+        public void DoLinkPdfReader()
+        {
+            if (_blnLoading)
+                _blnPromptPdfReaderOnLoad = true;
+            else
+                PromptPdfAppPath();
+        }
+
+        private string _strSelectCodeOnRefresh = string.Empty;
+
+        public void DoLinkPdf(string strCode)
+        {
+            if (_blnLoading)
+                _strSelectCodeOnRefresh = strCode;
+            else
+            {
+                lstGlobalSourcebookInfos.SelectedValue = strCode;
+                if (lstGlobalSourcebookInfos.SelectedIndex >= 0)
+                    PromptPdfLocation();
+            }
+        }
+
+        private void PromptPdfLocation()
+        {
+            if (!txtPDFLocation.Enabled)
+                return;
+            // Prompt the user to select a save file to associate with this Contact.
+            using (new CursorWait(this))
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = LanguageManager.GetString("DialogFilter_Pdf") + '|' +
+                             LanguageManager.GetString("DialogFilter_All")
+                })
+                {
+                    if (!string.IsNullOrEmpty(txtPDFLocation.Text) && File.Exists(txtPDFLocation.Text))
+                    {
+                        openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFLocation.Text);
+                        openFileDialog.FileName = Path.GetFileName(txtPDFLocation.Text);
+                    }
+
+                    if (openFileDialog.ShowDialog(this) == DialogResult.OK)
+                    {
+                        UpdateSourcebookInfoPath(openFileDialog.FileName);
+                        txtPDFLocation.Text = openFileDialog.FileName;
+                    }
+                }
+            }
+        }
+
+        private void PromptPdfAppPath()
+        {
+            // Prompt the user to select a save file to associate with this Contact.
+            using (new CursorWait(this))
+            {
+                using (OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = LanguageManager.GetString("DialogFilter_Exe") + '|' +
+                             LanguageManager.GetString("DialogFilter_All")
+                })
+                {
+                    if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
+                    {
+                        openFileDialog.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
+                        openFileDialog.FileName = Path.GetFileName(txtPDFAppPath.Text);
+                    }
+
+                    if (openFileDialog.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    txtPDFAppPath.Text = openFileDialog.FileName;
+                }
+            }
+        }
 
         private void TranslateForm()
         {
@@ -694,9 +749,7 @@ namespace Chummer
             PopulateDpiScalingMethods();
         }
 
-        
-
-        public void RefreshGlobalSourcebookInfosListView(string strSelectBook = null)
+        private void RefreshGlobalSourcebookInfosListView()
         {
             // Load the Sourcebook information.
             // Put the Sourcebooks into a List so they can first be sorted.
@@ -716,8 +769,6 @@ namespace Chummer
             _blnSkipRefresh = true;
             lstGlobalSourcebookInfos.BeginUpdate();
             string strOldSelected = lstGlobalSourcebookInfos.SelectedValue?.ToString();
-            if (!String.IsNullOrEmpty(strSelectBook))
-                strOldSelected = strSelectBook;
             lstGlobalSourcebookInfos.PopulateWithListItems(lstSourcebookInfos);
             _blnSkipRefresh = blnOldSkipRefresh;
             if (string.IsNullOrEmpty(strOldSelected))
@@ -726,8 +777,6 @@ namespace Chummer
                 lstGlobalSourcebookInfos.SelectedValue = strOldSelected;
             lstGlobalSourcebookInfos.EndUpdate();
         }
-
-        
 
         private void PopulateCustomDataDirectoryListBox()
         {
