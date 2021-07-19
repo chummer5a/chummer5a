@@ -16,21 +16,22 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Windows.Forms;
 using System.IO;
 using System.Linq;
-using Chummer.Backend.Equipment;
-using System.Xml;
-using System.Xml.XPath;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
@@ -40,9 +41,11 @@ namespace Chummer
     public static class CommonFunctions
     {
         #region XPath Evaluators
+
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
         private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
+
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
         private static readonly ConcurrentDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
@@ -217,9 +220,11 @@ namespace Chummer
             s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
-        #endregion
+
+        #endregion XPath Evaluators
 
         #region Find Functions
+
         /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
@@ -249,6 +254,7 @@ namespace Chummer
 
             return null;
         }
+
         /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
@@ -439,6 +445,7 @@ namespace Chummer
             objFoundVehicleMod = null;
             return null;
         }
+
         /// <summary>
         /// Locate a Weapon Mount within the character's Vehicles.
         /// </summary>
@@ -467,6 +474,7 @@ namespace Chummer
             objFoundVehicle = null;
             return null;
         }
+
         /// <summary>
         /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
         /// </summary>
@@ -830,7 +838,8 @@ namespace Chummer
             objFoundMartialArt = null;
             return null;
         }
-        #endregion
+
+        #endregion Find Functions
 
         /// <summary>
         /// Book code (using the translated version if applicable).
@@ -1092,6 +1101,7 @@ namespace Chummer
         }
 
         #region PDF Functions
+
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
@@ -1112,7 +1122,7 @@ namespace Chummer
                     }
                     objLoopControl = objLoopControl.Parent;
                 }
-                OpenPdf(objControl.Text, objCharacter);
+                OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
             }
         }
 
@@ -1123,30 +1133,41 @@ namespace Chummer
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PdfAppPath.</param>
-        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "")
+        /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
+        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
             if (string.IsNullOrEmpty(strPdfParameters))
                 strPdfParameters = GlobalOptions.PDFParameters;
-            // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPdfParameters))
-                return;
-
             if (string.IsNullOrEmpty(strPdfAppPath))
                 strPdfAppPath = GlobalOptions.PDFAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
-                return;
+            while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+            {
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoPDFProgramSet"),
+                    LanguageManager.GetString("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+                using (new CursorWait(Program.MainForm))
+                using (frmOptions frmOptions = new frmOptions())
+                {
+                    if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+                        frmOptions.DoLinkPdfReader();
+                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                        return;
+                    strPdfParameters = GlobalOptions.PDFParameters;
+                    strPdfAppPath = GlobalOptions.PDFAppPath;
+                }
+            }
 
             string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                astrSourceParts = new [] { "R5", strSource.Substring(2) };
+                astrSourceParts = new[] { "R5", strSource.Substring(2) };
             else
             {
                 int i = strSource.Length - 1;
@@ -1157,7 +1178,7 @@ namespace Chummer
                         break;
                     }
                 }
-                astrSourceParts = new [] { strSource.Substring(0, i), strSource.Substring(i) };
+                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
             }
             if (astrSourceParts.Length < 2)
                 return;
@@ -1176,7 +1197,7 @@ namespace Chummer
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
-            Uri uriPath;
+            Uri uriPath = null;
             try
             {
                 uriPath = new Uri(objBookInfo.Path);
@@ -1184,25 +1205,46 @@ namespace Chummer
             catch (UriFormatException)
             {
                 // Silently swallow the error because PDF fetching is usually done in the background
-                objBookInfo.Path = string.Empty;
-                return;
+               objBookInfo.Path = string.Empty;
             }
 
             // Check if the file actually exists.
-            if (!File.Exists(uriPath.LocalPath))
-                return;
+            while (uriPath == null || !File.Exists(uriPath.LocalPath))
+            {
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NoLinkedPDF"), LanguageBookLong(strBook)),
+                        LanguageManager.GetString("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+                using (new CursorWait(Program.MainForm))
+                using (frmOptions frmOptions = new frmOptions())
+                {
+                    frmOptions.DoLinkPdf(objBookInfo.Code);
+                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                        return;
+                    uriPath = null;
+                    try
+                    {
+                        uriPath = new Uri(objBookInfo.Path);
+                    }
+                    catch (UriFormatException)
+                    {
+                        // Silently swallow the error because PDF fetching is usually done in the background
+                        objBookInfo.Path = string.Empty;
+                    }
+                }
+            }
+                
             intPage += objBookInfo.Offset;
 
             string strParams = strPdfParameters
                 .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
                 .Replace("{localpath}", uriPath.LocalPath)
                 .Replace("{absolutepath}", uriPath.AbsolutePath);
-            ProcessStartInfo objProgress = new ProcessStartInfo
+            ProcessStartInfo objProcess = new ProcessStartInfo
             {
                 FileName = strPdfAppPath,
                 Arguments = strParams
             };
-            objProgress.Start();
+            objProcess.Start();
         }
 
         /// <summary>
@@ -1434,6 +1476,7 @@ namespace Chummer
                             case '…':
                                 sbdResultContent.AppendLine(strContentString);
                                 break;
+
                             default:
                                 sbdResultContent.Append(strContentString + ' ');
                                 break;
@@ -1444,9 +1487,11 @@ namespace Chummer
             }
             return string.Empty;
         }
-        #endregion
+
+        #endregion PDF Functions
 
         #region Timescale
+
         public enum Timescale
         {
             Instant = 0,
@@ -1456,6 +1501,7 @@ namespace Chummer
             Hours = 4,
             Days = 5
         }
+
         /// <summary>
         /// Convert a string to a Timescale.
         /// </summary>
@@ -1467,21 +1513,27 @@ namespace Chummer
                 case "INSTANT":
                 case "IMMEDIATE":
                     return Timescale.Instant;
+
                 case "SECOND":
                 case "SECONDS":
                     return Timescale.Seconds;
+
                 case "COMBATTURN":
                 case "COMBATTURNS":
                     return Timescale.CombatTurns;
+
                 case "MINUTE":
                 case "MINUTES":
                     return Timescale.Minutes;
+
                 case "HOUR":
                 case "HOURS":
                     return Timescale.Hours;
+
                 case "DAY":
                 case "DAYS":
                     return Timescale.Days;
+
                 default:
                     return Timescale.Instant;
             }
@@ -1499,30 +1551,42 @@ namespace Chummer
             {
                 case Timescale.Seconds when blnSingle:
                     return LanguageManager.GetString("String_Second", strLanguage);
+
                 case Timescale.Seconds:
                     return LanguageManager.GetString("String_Seconds", strLanguage);
+
                 case Timescale.CombatTurns when blnSingle:
                     return LanguageManager.GetString("String_CombatTurn", strLanguage);
+
                 case Timescale.CombatTurns:
                     return LanguageManager.GetString("String_CombatTurns", strLanguage);
+
                 case Timescale.Minutes when blnSingle:
                     return LanguageManager.GetString("String_Minute", strLanguage);
+
                 case Timescale.Minutes:
                     return LanguageManager.GetString("String_Minutes", strLanguage);
+
                 case Timescale.Hours when blnSingle:
                     return LanguageManager.GetString("String_Hour", strLanguage);
+
                 case Timescale.Hours:
                     return LanguageManager.GetString("String_Hours", strLanguage);
+
                 case Timescale.Days when blnSingle:
                     return LanguageManager.GetString("String_Day", strLanguage);
+
                 case Timescale.Days:
                     return LanguageManager.GetString("String_Days", strLanguage);
+
                 case Timescale.Instant:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
+
                 default:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
             }
         }
-        #endregion
+
+        #endregion Timescale
     }
 }

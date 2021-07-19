@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +28,7 @@ namespace Chummer
     public interface IHasMatrixAttributes
     {
         int GetBaseMatrixAttribute(string strAttributeName);
+
         int GetBonusMatrixAttribute(string strAttributeName);
 
         bool IsProgram { get; }
@@ -60,8 +62,8 @@ namespace Chummer
 
     public static class MatrixAttributes
     {
-        private static readonly string[] s_LstMatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
-        public static ReadOnlyCollection<string> MatrixAttributeStrings => Array.AsReadOnly(s_LstMatrixAttributeStrings);
+        public static readonly ReadOnlyCollection<string> MatrixAttributeStrings = Array.AsReadOnly(new[]
+            { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" });
 
         /// <summary>
         /// Get the total value of a Matrix attribute of this gear after children and Overclocker
@@ -139,24 +141,34 @@ namespace Chummer
             {
                 case "Attack":
                     return objThis.Attack;
+
                 case "Sleaze":
                     return objThis.Sleaze;
+
                 case "Data Processing":
                     return objThis.DataProcessing;
+
                 case "Firewall":
                     return objThis.Firewall;
+
                 case "Mod Attack":
                     return objThis.ModAttack;
+
                 case "Mod Sleaze":
                     return objThis.ModSleaze;
+
                 case "Mod Data Processing":
                     return objThis.ModDataProcessing;
+
                 case "Mod Firewall":
                     return objThis.ModFirewall;
+
                 case "Device Rating":
                     return objThis.DeviceRating;
+
                 case "Program Limit":
                     return objThis.ProgramLimit;
+
                 default:
                     return string.Empty;
             }

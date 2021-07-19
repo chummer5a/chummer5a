@@ -22,23 +22,23 @@
   <priorities>
     <priority xpathfilter="talents">
       <talents>
-        <talent xpathfilter="value = 'Aspected Magician'" >
+        <talent xpathfilter="value = 'Aspected Magician'">
           <skillgroupchoices>
             <skillgroup xpathfilter=". = 'Enchanting'" amendoperation="remove" />
           </skillgroupchoices>
         </talent>
-        <talent xpathfilter="value = 'Aware' or value = 'Explorer'" >
-          <skillchoices amendoperation="replace" >
+        <talent xpathfilter="value = 'Aware' or value = 'Explorer'">
+          <skillchoices amendoperation="replace">
             <skill>Arcana</skill>
             <skill>Astral</skill>
             <skill>Ceremony</skill>
           </skillchoices>
         </talent>
-        <talent xpathfilter="value = 'A.I.'" >
+        <talent xpathfilter="value = 'A.I.'">
           <skilltype amendoperation="replace" xpath="attribute = 'DEP' or skillgroup = 'Computers' or name = 'Electronics'" >xpath</skilltype>
         </talent>
         <talent xpathfilter="value = 'Enchanter'" amendoperation="remove" />
-        <talent xpathfilter="value = 'Technomancer'" >
+        <talent xpathfilter="value = 'Technomancer'">
           <skilltype amendoperation="replace" xpath="attribute = 'RES' or skillgroup = 'Computers' or name = 'Electronics'" >xpath</skilltype>
         </talent>
       </talents>

@@ -25,7 +25,7 @@
         <specificattribute xpathfilter="name = 'STR'">
           <aug addifnotfound="True">1</aug>
         </specificattribute>
-        <attributekarmacost amendoperation="remove"/>
+        <attributekarmacost amendoperation="remove" />
       </bonus>
     </bioware>
   </biowares>

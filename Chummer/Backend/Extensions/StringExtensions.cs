@@ -16,7 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -63,8 +65,7 @@ namespace Chummer
             // intHead already set to the index of the first instance, for loop's initializer can be left empty
             for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
             {
-                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace))
-                    .Append(strNewValue);
+                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace) + strNewValue);
                 intEndPositionOfLastReplace = intHead + strOldValue.Length;
             }
             sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace));
@@ -86,7 +87,7 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
@@ -97,7 +98,9 @@ namespace Chummer
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrent);
+                string strReturn = new string(achrNewChars, 0, intCurrent);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -135,7 +138,7 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
@@ -150,11 +153,13 @@ namespace Chummer
                     }
 
                     achrNewChars[intCurrent++] = chrLoop;
-                    SkipChar: ;
+                SkipChar:;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrent);
+                string strReturn = new string(achrNewChars, 0, intCurrent);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -174,7 +179,7 @@ namespace Chummer
                     }
 
                     achrNewChars[intCurrent++] = chrLoop;
-                    SkipChar:;
+                SkipChar:;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
@@ -273,7 +278,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
+        /// Syntactic sugar for string::Split that uses one separator string in its argument in addition to StringSplitOptions.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="strSeparator">Separator to use.</param>
@@ -406,10 +411,10 @@ namespace Chummer
             if (intLength == 0)
                 return strInput;
             if (funcIsWhiteSpace == null)
-                funcIsWhiteSpace = (x) => char.IsWhiteSpace(x) && !char.IsControl(x);
+                funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                 int intCurrent = 0;
                 int intLoopWhitespaceCount = 0;
@@ -439,7 +444,9 @@ namespace Chummer
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                 // If the last char is whitespace, we don't copy that, either.
-                return new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                string strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -1036,11 +1043,8 @@ namespace Chummer
             bool blnFirst = true;
             foreach (T objValue in lstValues)
             {
-                if (blnFirst)
-                    blnFirst = false;
-                else
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(objValue);
+                sbdInput.Append(blnFirst ? objValue.ToString() : strSeparator + objValue);
+                blnFirst = false;
             }
             return sbdInput;
         }
@@ -1062,11 +1066,8 @@ namespace Chummer
             bool blnFirst = true;
             foreach (string strValue in lstValues)
             {
-                if (blnFirst)
-                    blnFirst = false;
-                else
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(strValue);
+                sbdInput.Append(blnFirst ? strValue : strSeparator + strValue);
+                blnFirst = false;
             }
             return sbdInput;
         }
@@ -1095,9 +1096,8 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             for (int i = 0; i < intCount; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i + intStartIndex]);
+                string strLoop = astrValues[i + intStartIndex];
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1116,11 +1116,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(sbdInput));
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for(int i = 0; i < astrValues.Length; ++i)
+            for (int i = 0; i < astrValues.Length; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i]);
+                string strLoop = astrValues[i];
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1141,9 +1140,8 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(aobjValues));
             for (int i = 0; i < aobjValues.Length; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(aobjValues[i]);
+                string strLoop = aobjValues[i].ToString();
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1304,8 +1302,8 @@ namespace Chummer
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
-            if(string.IsNullOrEmpty(strSearch))
-                return "\"\"" ;
+            if (string.IsNullOrEmpty(strSearch))
+                return "\"\"";
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
@@ -1444,10 +1442,13 @@ namespace Chummer
 
         private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private static readonly Regex rgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private static readonly Regex rgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+
         private static readonly object rtbRtfManipulatorLock = new object();
         private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
     }

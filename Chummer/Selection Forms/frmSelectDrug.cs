@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace Chummer
         private bool _blnLockGrade;
         private bool _blnLoading = true;
 
-        private readonly string _strNodeXPath = "Drugs/Drug";
+        private const string _strNodeXPath = "Drugs/Drug";
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
@@ -55,6 +56,7 @@ namespace Chummer
         }
 
         #region Control Events
+
         public frmSelectDrug(Character objCharacter)
         {
             InitializeComponent();
@@ -143,6 +145,7 @@ namespace Chummer
                 UpdateDrugInfo();
             }
         }
+
         private void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
             if (cboGrade.Enabled != _blnOldGradeEnabled)
@@ -393,27 +396,29 @@ namespace Chummer
                 case Keys.Down when lstDrug.SelectedIndex + 1 < lstDrug.Items.Count:
                     lstDrug.SelectedIndex++;
                     break;
-                case Keys.Down:
-                {
-                    if (lstDrug.Items.Count > 0)
-                    {
-                        lstDrug.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstDrug.Items.Count > 0)
+                        {
+                            lstDrug.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstDrug.SelectedIndex - 1 >= 0:
                     lstDrug.SelectedIndex--;
                     break;
-                case Keys.Up:
-                {
-                    if (lstDrug.Items.Count > 0)
-                    {
-                        lstDrug.SelectedIndex = lstDrug.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstDrug.Items.Count > 0)
+                        {
+                            lstDrug.SelectedIndex = lstDrug.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -422,9 +427,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -484,9 +491,11 @@ namespace Chummer
         /// Default text string to filter by.
         /// </summary>
         public string DefaultSearchText { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Update the Drug's information based on the Drug selected and current Rating.
         /// </summary>
@@ -523,17 +532,19 @@ namespace Chummer
 
                 string strSuffix = string.Empty;
                 char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
-                if (chrSuffix == 'R')
+                switch (chrSuffix)
                 {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted");
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                else if (chrSuffix == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden");
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                    case 'R':
+                        strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                        // Remove the trailing character if it is "F" or "R".
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                        break;
+
+                    case 'F':
+                        strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                        // Remove the trailing character if it is "F" or "R".
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                        break;
                 }
 
                 string strPrefix = string.Empty;
@@ -642,6 +653,7 @@ namespace Chummer
         }
 
         private bool _blnSkipListRefresh;
+
         private List<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
@@ -799,6 +811,7 @@ namespace Chummer
         }
 
         private bool _blnPopulatingGrades;
+
         /// <summary>
         /// Populate the list of Drug Grades.
         /// </summary>
@@ -863,6 +876,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

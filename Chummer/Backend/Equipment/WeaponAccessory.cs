@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -94,6 +95,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnStolen;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public WeaponAccessory(Character objCharacter)
         {
             // Create the GUID for the new Weapon.
@@ -568,9 +570,11 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Weapon.
         /// </summary>
@@ -615,6 +619,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
+
         /// <summary>
         /// The accessory adds to the weapon's ammunition slots.
         /// </summary>
@@ -623,6 +628,7 @@ namespace Chummer.Backend.Equipment
             get => _intAmmoSlots;
             set => _intAmmoSlots = value;
         }
+
         /// <summary>
         /// The accessory modifies the weapon's ammunition capacity.
         /// </summary>
@@ -640,6 +646,7 @@ namespace Chummer.Backend.Equipment
             get => _blnSpecialModification;
             set => _blnSpecialModification = value;
         }
+
         /// <summary>
         /// The accessory adds to the weapon's damage value.
         /// </summary>
@@ -648,6 +655,7 @@ namespace Chummer.Backend.Equipment
             get => _strDamage;
             set => _strDamage = value;
         }
+
         /// <summary>
         /// The Accessory replaces the weapon's damage value.
         /// </summary>
@@ -878,14 +886,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Cost
         {
-            get
-            {
-                // The Accessory has a cost of 0 if it is included in the base weapon configureation.
-                if (_blnIncludedInWeapon)
-                    return "0";
-                else
-                    return _strCost;
-            }
+            // The Accessory has a cost of 0 if it is included in the base weapon configureation.
+            get => _blnIncludedInWeapon ? "0" : _strCost;
             set => _strCost = value;
         }
 
@@ -897,7 +899,6 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -1196,16 +1197,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dice Pool modifier.
         /// </summary>
-        public int DicePool
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(DicePoolString))
-                    return Convert.ToInt32(DicePoolString, GlobalOptions.InvariantCultureInfo);
-
-                return 0;
-            }
-        }
+        public int DicePool => !string.IsNullOrEmpty(DicePoolString) ? Convert.ToInt32(DicePoolString, GlobalOptions.InvariantCultureInfo) : 0;
 
         private string DicePoolString => _strDicePool;
 
@@ -1363,7 +1355,8 @@ namespace Chummer.Backend.Equipment
             get => _blnStolen;
             set => _blnStolen = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
 
@@ -1383,7 +1376,7 @@ namespace Chummer.Backend.Equipment
                                 x.ImproveSource == Improvement.ImprovementSource.WeaponAccessory &&
                                 x.SourceName == InternalId).ToArray());
                     }
-                    
+
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory, InternalId + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
 
                     if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
@@ -1457,6 +1450,7 @@ namespace Chummer.Backend.Equipment
             blnOutRestrictedGearUsed = blnRestrictedGearUsed;
             strOutRestrictedItem = strRestrictedItem;
         }
+
         public decimal DeleteWeaponAccessory()
         {
             decimal decReturn = 0;
@@ -1468,6 +1462,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
         {
             if (IncludedInWeapon && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -1512,8 +1507,10 @@ namespace Chummer.Backend.Equipment
                     : ColorManager.WindowText;
             }
         }
-        #endregion
-        #endregion
+
+        #endregion UI Methods
+
+        #endregion Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
@@ -1576,6 +1573,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         return false;
+
                     default:
                         return false;
                 }

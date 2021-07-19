@@ -705,45 +705,47 @@ namespace Chummer.Classes
                     }
                 }
             }
-            else if (strSelectedSkill.Contains("Exotic Melee Weapon") ||
-                     strSelectedSkill.Contains("Exotic Ranged Weapon") ||
-                     strSelectedSkill.Contains("Pilot Exotic Vehicle"))
+            else if (ExoticSkill.IsExoticSkillName(strSelectedSkill))
             {
-                foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
+                if (!string.IsNullOrEmpty(strVal))
                 {
-                    ExoticSkill objSkill = (ExoticSkill) objLoopSkill;
-                    string strSpecificName = objSkill.Name + " (" + objSkill.Specific + ')';
-                    if (strSpecificName != strSelectedSkill)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
+                    // Make sure we have the exotic skill in the list if we're altering any values
+                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != strSelectedSkill || !s.IsExoticSkill))
                     {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(strSpecificName, _objImprovementSource,
-                            SourceName,
-                            Improvement.ImprovementType.Skill, _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1,
-                            0, 0, 0, 0, string.Empty, blnAddToRating);
+                        string strSkillName = strSelectedSkill;
+                        int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                        {
+                            string strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
+                            strSkillName = strSkillName.Substring(0, intParenthesesIndex);
+                            _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                        }
                     }
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strSelectedSkill, _objImprovementSource,
+                        SourceName,
+                        Improvement.ImprovementType.Skill, _strUnique,
+                        ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1,
+                        0, 0, 0, 0, string.Empty, blnAddToRating);
+                }
 
-                    if (blnDisableSpec)
-                    {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(strSpecificName, _objImprovementSource,
-                            SourceName,
-                            Improvement.ImprovementType.DisableSpecializationEffects,
-                            _strUnique);
-                    }
+                if (blnDisableSpec)
+                {
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strSelectedSkill, _objImprovementSource,
+                        SourceName,
+                        Improvement.ImprovementType.DisableSpecializationEffects,
+                        _strUnique);
+                }
 
-                    if (!string.IsNullOrEmpty(strMax))
-                    {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(strSpecificName, _objImprovementSource,
-                            SourceName,
-                            Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
-                            ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                            blnAddToRating);
-                    }
+                if (!string.IsNullOrEmpty(strMax))
+                {
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(strSelectedSkill, _objImprovementSource,
+                        SourceName,
+                        Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
+                        ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
+                        blnAddToRating);
                 }
             }
             else
@@ -2063,29 +2065,28 @@ namespace Chummer.Classes
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Info("selectcontact");
-            XmlNode nodSelect = bonusNode;
 
             using (frmSelectItem frmSelect = new frmSelectItem())
             {
-                string strMode = nodSelect["type"]?.InnerText ?? "all";
+                string strMode = bonusNode["type"]?.InnerText ?? "all";
 
                 Contact[] lstSelectedContacts;
-                if (strMode == "all")
+                switch (strMode)
                 {
-                    lstSelectedContacts = _objCharacter.Contacts.ToArray();
-                }
-                else if (strMode == "group" || strMode == "nongroup")
-                {
-                    bool blnGroup = strMode == "group";
-
-
-                    //Select any contact where IsGroup equals blnGroup
-                    //and add to a list
-                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToArray();
-                }
-                else
-                {
-                    throw new AbortedException();
+                    case "all":
+                        lstSelectedContacts = _objCharacter.Contacts.ToArray();
+                        break;
+                    case "group":
+                    case "nongroup":
+                    {
+                        bool blnGroup = strMode == "group";
+                        //Select any contact where IsGroup equals blnGroup
+                        //and add to a list
+                        lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToArray();
+                        break;
+                    }
+                    default:
+                        throw new AbortedException();
                 }
 
                 if (lstSelectedContacts.Length == 0)
@@ -2108,18 +2109,18 @@ namespace Chummer.Classes
                     : throw new AbortedException();
 
                 string strTemp = string.Empty;
-                if (nodSelect.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
+                if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
                 {
                     decimal decForcedLoyalty = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
                     CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty);
                 }
 
-                if (nodSelect["free"] != null)
+                if (bonusNode["free"] != null)
                 {
                     CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique);
                 }
 
-                if (nodSelect["forcegroup"] != null)
+                if (bonusNode["forcegroup"] != null)
                 {
                     CreateImprovement(objSelectedContact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique);
                 }
@@ -2341,30 +2342,35 @@ namespace Chummer.Classes
             Log.Info("_strForcedValue = " + strForcedValue);
 
             bool blnDummy = false;
-            SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy) : strForcedValue;
+            SelectedValue = string.IsNullOrEmpty(strForcedValue)
+                ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
+                : strForcedValue;
             if (blnDummy)
                 throw new AbortedException();
 
             string strVal = bonusNode["val"]?.InnerText;
 
-            if (SelectedValue.Contains("Exotic Melee Weapon") ||
-                SelectedValue.Contains("Exotic Ranged Weapon") ||
-                SelectedValue.Contains("Pilot Exotic Vehicle"))
+            if (ExoticSkill.IsExoticSkillName(SelectedValue))
             {
-                foreach (Skill objLoopSkill in _objCharacter.SkillsSection.Skills.Where(s => s.IsExoticSkill))
+                if (!string.IsNullOrEmpty(strVal))
                 {
-                    ExoticSkill objExoticSkill = (ExoticSkill)objLoopSkill;
-                    if (objExoticSkill.Name + " (" + objExoticSkill.Specific + ')' != SelectedValue)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
+                    // Make sure we have the exotic skill in the list if we're adding an activesoft
+                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != SelectedValue || !s.IsExoticSkill))
                     {
-                        Log.Info("Calling CreateImprovement");
-                        CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Activesoft,
-                            _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
+                        string strSkillName = SelectedValue;
+                        int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                        {
+                            string strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
+                            strSkillName = strSkillName.Substring(0, intParenthesesIndex);
+                            _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                        }
                     }
+                    Log.Info("Calling CreateImprovement");
+                    CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.Activesoft,
+                        _strUnique,
+                        ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
                 }
             }
             else
@@ -3655,12 +3661,11 @@ namespace Chummer.Classes
 
             Log.Info("weaponcategorydv");
             Log.Info("weaponcategorydv = " + bonusNode.OuterXml);
-            XmlNode nodWeapon = bonusNode;
 
-            if (nodWeapon["selectskill"] != null)
+            if (bonusNode["selectskill"] != null)
             {
                 bool blnDummy = false;
-                SelectedValue = ImprovementManager.DoSelectSkill(nodWeapon["selectskill"], _objCharacter, _intRating, _strFriendlyName, ref blnDummy);
+                SelectedValue = ImprovementManager.DoSelectSkill(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, ref blnDummy);
 
                 if (blnDummy)
                 {
@@ -3673,9 +3678,9 @@ namespace Chummer.Classes
                 if (objPower != null)
                     objPower.Extra = SelectedValue;
             }
-            else if (nodWeapon["name"] != null)
+            else if (bonusNode["name"] != null)
             {
-                SelectedValue = nodWeapon["name"].InnerText;
+                SelectedValue = bonusNode["name"].InnerText;
             }
             else
             {
@@ -3683,7 +3688,7 @@ namespace Chummer.Classes
             }
             Log.Info("Calling CreateImprovement");
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToDec(_objCharacter, nodWeapon["bonus"]?.InnerXml, _intRating));
+                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating));
         }
 
         public void weaponcategorydice(XmlNode bonusNode)
@@ -4302,32 +4307,6 @@ namespace Chummer.Classes
             Log.Info("Calling CreateImprovement");
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ArmorEncumbrancePenalty, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
-        }
-
-        // Check for Initiation.
-        public void initiation(XmlNode bonusNode)
-        {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("initiation");
-            Log.Info("initiation = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Initiation, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
-            _objCharacter.InitiateGrade += ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
-        }
-
-        // Check for Submersion.
-        public void submersion(XmlNode bonusNode)
-        {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            Log.Info("submersion");
-            Log.Info("submersion = " + bonusNode.OuterXml);
-            Log.Info("Calling CreateImprovement");
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Submersion, _strUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
-            _objCharacter.SubmersionGrade += ImprovementManager.ValueToInt(_objCharacter, bonusNode.InnerText, _intRating);
         }
 
         public void addart(XmlNode bonusNode)
@@ -5993,36 +5972,37 @@ namespace Chummer.Classes
             for (int i = 0; i < options.Length; ++i)
                 options[i] = options[i].Trim();
             string final;
-            if (options.Length == 0)
+            switch (options.Length)
             {
-                Utils.BreakIfDebug();
-                throw new AbortedException();
-            }
-
-            if (options.Length == 1)
-            {
-                final = options[0];
-            }
-            else
-            {
-                using (frmSelectItem frmSelect = new frmSelectItem
+                case 0:
+                    Utils.BreakIfDebug();
+                    throw new AbortedException();
+                case 1:
+                    final = options[0];
+                    break;
+                default:
                 {
-                    AllowAutoSelect = true
-                })
-                {
-                    frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
-
-                    if (_objCharacter.Pushtext.Count > 0)
+                    using (frmSelectItem frmSelect = new frmSelectItem
                     {
-                        frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
+                        AllowAutoSelect = true
+                    })
+                    {
+                        frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
+
+                        if (_objCharacter.Pushtext.Count > 0)
+                        {
+                            frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
+                        }
+
+                        if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        final = frmSelect.SelectedItem;
                     }
 
-                    if (frmSelect.ShowDialog(Program.MainForm) == DialogResult.Cancel)
-                    {
-                        throw new AbortedException();
-                    }
-
-                    final = frmSelect.SelectedItem;
+                    break;
                 }
             }
 
@@ -6226,9 +6206,9 @@ namespace Chummer.Classes
                 // Create the Improvement.
                 Log.Info("Calling CreateImprovement");
                 string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                SkillSpecialization nspec = new SkillSpecialization(_objCharacter, strSpec, true);
-                objSkill.Specializations.Add(nspec);
+                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                objSkill.Specializations.Add(objSpec);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
             }
         }
 
@@ -6268,9 +6248,9 @@ namespace Chummer.Classes
                     CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
                     if (_objCharacter.Options.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, strSpec);
-                        SkillSpecialization nspec = new SkillSpecialization(_objCharacter, strSpec, true);
-                        objSkill.Specializations.Add(nspec);
+                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                        objSkill.Specializations.Add(objSpec);
+                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
                     }
                 }
             }
@@ -7465,9 +7445,9 @@ namespace Chummer.Classes
             }
             // Create the Improvement.
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, SelectedValue);
             SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
             objSkill.Specializations.Add(objExpertise);
+            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, objExpertise.InternalId);
         }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion

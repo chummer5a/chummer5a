@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -24,7 +25,7 @@ using System.Linq;
 
 namespace Chummer
 {
-    public class ConcurrentHashSet<T> : 
+    public class ConcurrentHashSet<T> :
         ISet<T>,
         IReadOnlyCollection<T>
     {

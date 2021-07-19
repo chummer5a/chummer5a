@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
- using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Windows.Forms;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -32,9 +33,11 @@ namespace Chummer
 
         // Events.
         public event TextEventHandler ContactDetailChanged;
+
         public event EventHandler DeleteContact;
 
         #region Control Events
+
         public PetControl(Contact objContact)
         {
             _objContact = objContact;
@@ -71,10 +74,18 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
-        private void cboMetatype_TextChanged(object sender, EventArgs e)
+        private void UpdateMetatype(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+            if (_blnLoading || _objContact.DisplayMetatype == cboMetatype.Text)
+                return;
+            _objContact.DisplayMetatype = cboMetatype.Text;
+            if (_objContact.DisplayMetatype != cboMetatype.Text)
+            {
+                _blnLoading = true;
+                cboMetatype.Text = _objContact.DisplayMetatype;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
         private void cmdDelete_Click(object sender, EventArgs e)
@@ -203,12 +214,14 @@ namespace Chummer
             imgNotes.SetToolTip(strTooltip.WordWrap());
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         private void LoadContactList()
         {
-            List<ListItem> lstMetatypes = new List<ListItem> (30)
+            List<ListItem> lstMetatypes = new List<ListItem>(30)
             {
                 ListItem.Blank
             };
@@ -240,22 +253,26 @@ namespace Chummer
 
         private void DoDataBindings()
         {
-            cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
-            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
+            cboMetatype.SelectedValue = _objContact.Metatype;
+            if (cboMetatype.SelectedIndex < 0)
+                cboMetatype.Text = _objContact.DisplayMetatype;
+            txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
             txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
             cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
+
         /// <summary>
         /// Contact object this is linked to.
         /// </summary>
         public Contact ContactObject => _objContact;
 
-        #endregion
+        #endregion Properties
     }
 }

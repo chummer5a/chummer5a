@@ -262,7 +262,7 @@ namespace ChummerHub.Client.Sinners
                                     if (MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
                                     {
                                         MySINnerFile.SiNnerMetaData.Visibility.UserRights =
-                                            found.MySINner.SiNnerMetaData.Visibility.UserRights;
+                                            found.MySINner?.SiNnerMetaData.Visibility.UserRights;
                                     }
                                 }
                             }

@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Globalization;
- using System.Linq;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
- using Chummer.Backend.Equipment;
-using System.Text;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -36,7 +37,6 @@ namespace Chummer
         private bool _blnSkipUpdate;
         private static string s_StrSelectCategory = string.Empty;
 
-        private static readonly string[] s_LstCategories = { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
         private bool _blnAddAgain;
 
         private readonly XPathNavigator _xmlBaseVehicleDataNode;
@@ -48,6 +48,7 @@ namespace Chummer
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 
         #region Control Events
+
         public frmSelectVehicleMod(Character objCharacter, Vehicle objVehicle, IEnumerable<VehicleMod> lstExistingMods = null)
         {
             InitializeComponent();
@@ -175,27 +176,29 @@ namespace Chummer
                 case Keys.Down when lstMod.SelectedIndex + 1 < lstMod.Items.Count:
                     lstMod.SelectedIndex++;
                     break;
-                case Keys.Down:
-                {
-                    if (lstMod.Items.Count > 0)
-                    {
-                        lstMod.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstMod.Items.Count > 0)
+                        {
+                            lstMod.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstMod.SelectedIndex - 1 >= 0:
                     lstMod.SelectedIndex--;
                     break;
-                case Keys.Up:
-                {
-                    if (lstMod.Items.Count > 0)
-                    {
-                        lstMod.SelectedIndex = lstMod.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstMod.Items.Count > 0)
+                        {
+                            lstMod.SelectedIndex = lstMod.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -204,9 +207,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -250,9 +255,10 @@ namespace Chummer
         /// </summary>
         public bool VehicleMountMods { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Build the list of Mods.
         /// </summary>
@@ -642,7 +648,7 @@ namespace Chummer
                 string strCategory = xmlVehicleMod.SelectSingleNode("category")?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strCategory))
                 {
-                    if (s_LstCategories.Contains(strCategory))
+                    if (Vehicle.ModCategoryStrings.Contains(strCategory))
                     {
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
@@ -714,16 +720,22 @@ namespace Chummer
             {
                 case "Powertrain":
                     return _objVehicle.PowertrainModSlotsUsed(intModSlots);
+
                 case "Protection":
                     return _objVehicle.ProtectionModSlotsUsed(intModSlots);
+
                 case "Weapons":
                     return _objVehicle.WeaponModSlotsUsed(intModSlots);
+
                 case "Body":
                     return _objVehicle.BodyModSlotsUsed(intModSlots);
+
                 case "Electromagnetic":
                     return _objVehicle.ElectromagneticModSlotsUsed(intModSlots);
+
                 case "Cosmetic":
                     return _objVehicle.CosmeticModSlotsUsed(intModSlots);
+
                 default:
                     return string.Empty;
             }
@@ -754,6 +766,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

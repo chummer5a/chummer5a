@@ -16,19 +16,20 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
- using System.Runtime.CompilerServices;
- using System.Text;
- using System.Text.RegularExpressions;
- using System.Threading;
- using System.Threading.Tasks;
- using System.Windows.Forms;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -40,6 +41,7 @@ namespace Chummer
         public static string ManagerErrorMessage { get; }
 
         #region Constructor
+
         static LanguageManager()
         {
             if (Utils.IsDesignerMode)
@@ -92,7 +94,8 @@ namespace Chummer
                 ManagerErrorMessage = "Language strings for the default language (" + GlobalOptions.DefaultLanguage + ") could not be loaded:"
                                       + Environment.NewLine + Environment.NewLine + "File " + strFilePath + " does not exist or cannot be found.";
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Methods
 
@@ -194,95 +197,111 @@ namespace Chummer
                     Utils.BreakIfDebug();
                 }
 
-                if (objChild is Label || objChild is Button || objChild is CheckBox)
+                switch (objChild)
                 {
-                    string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                        objChild.Text = GetString(strControlTag, strIntoLanguage);
-                    else if (objChild.Text.StartsWith('['))
-                        objChild.Text = string.Empty;
-                }
-                else if (objChild is ToolStrip tssStrip)
-                {
-                    foreach (ToolStripItem tssItem in tssStrip.Items)
-                    {
-                        TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
-                    }
-                }
-                else if (objChild is ListView lstList)
-                {
-                    foreach (ColumnHeader objHeader in lstList.Columns)
-                    {
-                        string strControlTag = objHeader.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                            objHeader.Text = GetString(strControlTag, strIntoLanguage);
-                        else if (objHeader.Text.StartsWith('['))
-                            objHeader.Text = string.Empty;
-                    }
-                }
-                else if (objChild is TabControl objTabControl)
-                {
-                    foreach (TabPage tabPage in objTabControl.TabPages)
-                    {
-                        string strControlTag = tabPage.Tag?.ToString();
-                        if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                            tabPage.Text = GetString(strControlTag, strIntoLanguage);
-                        else if (tabPage.Text.StartsWith('['))
-                            tabPage.Text = string.Empty;
-
-                        UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
-                    }
-                }
-                else if (objChild is SplitContainer objSplitControl)
-                {
-                    UpdateControls(objSplitControl.Panel1, strIntoLanguage, eIntoRightToLeft);
-                    UpdateControls(objSplitControl.Panel2, strIntoLanguage, eIntoRightToLeft);
-                }
-                else if (objChild is GroupBox)
-                {
-                    string strControlTag = objChild.Tag?.ToString();
-                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                        objChild.Text = GetString(strControlTag, strIntoLanguage);
-                    else if (objChild.Text.StartsWith('['))
-                        objChild.Text = string.Empty;
-                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
-                }
-                else if (objChild is Panel)
-                {
-                    UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
-                }
-                else if (objChild is TreeView treTree)
-                {
-                    foreach (TreeNode objNode in treTree.Nodes)
-                    {
-                        if (objNode.Level == 0)
+                    case Label _:
+                    case Button _:
+                    case CheckBox _:
                         {
-                            string strControlTag = objNode.Tag?.ToString();
-                            if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                            string strControlTag = objChild.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                objChild.Text = GetString(strControlTag, strIntoLanguage);
+                            else if (objChild.Text.StartsWith('['))
+                                objChild.Text = string.Empty;
+                            break;
+                        }
+                    case ToolStrip tssStrip:
+                        {
+                            foreach (ToolStripItem tssItem in tssStrip.Items)
                             {
-                                objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft);
                             }
-                            else if (objNode.Text.StartsWith('['))
-                                objNode.Text = string.Empty;
+
+                            break;
                         }
-                        else if (objNode.Text.StartsWith('['))
-                            objNode.Text = string.Empty;
-                    }
-                }
-                else if (objChild is DataGridView objDataGridView)
-                {
-                    foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
-                    {
-                        if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                    case ListView lstList:
                         {
-                            objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
+                            foreach (ColumnHeader objHeader in lstList.Columns)
+                            {
+                                string strControlTag = objHeader.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                    objHeader.Text = GetString(strControlTag, strIntoLanguage);
+                                else if (objHeader.Text.StartsWith('['))
+                                    objHeader.Text = string.Empty;
+                            }
+
+                            break;
                         }
-                    }
-                }
-                else if (objChild is ITranslatable translatable)
-                {
-                    // let custom nodes determine how they want to be translated
-                    translatable.Translate();
+                    case TabControl objTabControl:
+                        {
+                            foreach (TabPage tabPage in objTabControl.TabPages)
+                            {
+                                string strControlTag = tabPage.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                    tabPage.Text = GetString(strControlTag, strIntoLanguage);
+                                else if (tabPage.Text.StartsWith('['))
+                                    tabPage.Text = string.Empty;
+
+                                UpdateControls(tabPage, strIntoLanguage, eIntoRightToLeft);
+                            }
+
+                            break;
+                        }
+                    case SplitContainer objSplitControl:
+                        UpdateControls(objSplitControl.Panel1, strIntoLanguage, eIntoRightToLeft);
+                        UpdateControls(objSplitControl.Panel2, strIntoLanguage, eIntoRightToLeft);
+                        break;
+
+                    case GroupBox _:
+                        {
+                            string strControlTag = objChild.Tag?.ToString();
+                            if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _) && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                                objChild.Text = GetString(strControlTag, strIntoLanguage);
+                            else if (objChild.Text.StartsWith('['))
+                                objChild.Text = string.Empty;
+                            UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
+                            break;
+                        }
+                    case Panel _:
+                        UpdateControls(objChild, strIntoLanguage, eIntoRightToLeft);
+                        break;
+
+                    case TreeView treTree:
+                        {
+                            foreach (TreeNode objNode in treTree.Nodes)
+                            {
+                                if (objNode.Level == 0)
+                                {
+                                    string strControlTag = objNode.Tag?.ToString();
+                                    if (!string.IsNullOrEmpty(strControlTag) && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                                    {
+                                        objNode.Text = GetString(strControlTag, strIntoLanguage);
+                                    }
+                                    else if (objNode.Text.StartsWith('['))
+                                        objNode.Text = string.Empty;
+                                }
+                                else if (objNode.Text.StartsWith('['))
+                                    objNode.Text = string.Empty;
+                            }
+
+                            break;
+                        }
+                    case DataGridView objDataGridView:
+                        {
+                            foreach (DataGridViewTextBoxColumn objColumn in objDataGridView.Columns)
+                            {
+                                if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                                {
+                                    objColumn.HeaderText = GetString(objTranslatedColumn.TranslationTag, strIntoLanguage);
+                                }
+                            }
+
+                            break;
+                        }
+                    case ITranslatable translatable:
+                        // let custom nodes determine how they want to be translated
+                        translatable.Translate();
+                        break;
                 }
             }
         }
@@ -331,6 +350,7 @@ namespace Chummer
         {
             return GetString(strKey, GlobalOptions.Language, blnReturnError);
         }
+
         /// <summary>
         /// Retrieve a string from the language file.
         /// </summary>
@@ -358,6 +378,8 @@ namespace Chummer
             }
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
+
+        private static readonly char[] s_CurlyBrackets = "{}".ToCharArray();
 
         /// <summary>
         /// Processes a compound string that contains both plaintext and references to localized strings
@@ -388,44 +410,43 @@ namespace Chummer
                 new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
             };
 
-            char[] achrCurlyBrackets = {'{', '}'};
             // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
             int intBracketLevel = 1;
             // Loop will be jumping to instances of '{' or '}' within strInput until it reaches the last closing curly bracket (at intEndPosition)
-            for (int i = strInput.IndexOfAny(achrCurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(achrCurlyBrackets, i + 1))
+            for (int i = strInput.IndexOfAny(s_CurlyBrackets, intStartPosition + 1); i <= intEndPosition; i = strInput.IndexOfAny(s_CurlyBrackets, i + 1))
             {
                 char chrLoop = strInput[i];
                 switch (chrLoop)
                 {
                     case '{':
-                    {
-                        if (intBracketLevel == 0)
                         {
-                            // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
-                            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
-                            // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
-                            intStartPosition = i;
-                        }
-                        intBracketLevel += 1;
-                        break;
-                    }
-                    case '}':
-                    {
-                        // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
-                        if (intBracketLevel > 0)
-                        {
-                            intBracketLevel -= 1;
                             if (intBracketLevel == 0)
                             {
-                                // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
-                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
-                                // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
+                                lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
+                                // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
                                 intStartPosition = i;
                             }
+                            intBracketLevel += 1;
+                            break;
                         }
+                    case '}':
+                        {
+                            // Makes sure the function doesn't mess up when there's a closing curly bracket without a matching opening curly bracket
+                            if (intBracketLevel > 0)
+                            {
+                                intBracketLevel -= 1;
+                                if (intBracketLevel == 0)
+                                {
+                                    // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
+                                    lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
+                                    // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
+                                    intStartPosition = i;
+                                }
+                            }
 
-                        break;
-                    }
+                            break;
+                        }
                 }
             }
 
@@ -498,8 +519,8 @@ namespace Chummer
                     {
                         XPathDocument objEnglishDocument;
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                objEnglishDocument = new XPathDocument(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            objEnglishDocument = new XPathDocument(objXmlReader);
                         foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator().Select("/chummer/strings/string"))
                         {
                             string strKey = objNode.SelectSingleNode("key")?.Value;
@@ -572,7 +593,7 @@ namespace Chummer
         // List of arrays for XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter.
         // List index indicates priority. Priority tries to avoid issues where an English word has multiple translations, and an unofficial one might get preference over an official one
         private static readonly IReadOnlyList<IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>> s_LstAXPathsToSearch =
-            new []
+            new[]
             {
             new []
             {
@@ -713,63 +734,83 @@ namespace Chummer
                     case "BOD":
                         strReturn = GetString("String_AttributeBODShort", strIntoLanguage);
                         break;
+
                     case "AGI":
                         strReturn = GetString("String_AttributeAGIShort", strIntoLanguage);
                         break;
+
                     case "REA":
                         strReturn = GetString("String_AttributeREAShort", strIntoLanguage);
                         break;
+
                     case "STR":
                         strReturn = GetString("String_AttributeSTRShort", strIntoLanguage);
                         break;
+
                     case "CHA":
                         strReturn = GetString("String_AttributeCHAShort", strIntoLanguage);
                         break;
+
                     case "INT":
                         strReturn = GetString("String_AttributeINTShort", strIntoLanguage);
                         break;
+
                     case "LOG":
                         strReturn = GetString("String_AttributeLOGShort", strIntoLanguage);
                         break;
+
                     case "WIL":
                         strReturn = GetString("String_AttributeWILShort", strIntoLanguage);
                         break;
+
                     case "EDG":
                         strReturn = GetString("String_AttributeEDGShort", strIntoLanguage);
                         break;
+
                     case "MAG":
                         strReturn = GetString("String_AttributeMAGShort", strIntoLanguage);
                         break;
+
                     case "MAGAdept":
                         strReturn = MAGAdeptString(strIntoLanguage);
                         break;
+
                     case "RES":
                         strReturn = GetString("String_AttributeRESShort", strIntoLanguage);
                         break;
+
                     case "DEP":
                         strReturn = GetString("String_AttributeDEPShort", strIntoLanguage);
                         break;
+
                     case "Physical":
                         strReturn = GetString("Node_Physical", strIntoLanguage);
                         break;
+
                     case "Mental":
                         strReturn = GetString("Node_Mental", strIntoLanguage);
                         break;
+
                     case "Social":
                         strReturn = GetString("Node_Social", strIntoLanguage);
                         break;
+
                     case "Left":
                         strReturn = GetString("String_Improvement_SideLeft", strIntoLanguage);
                         break;
+
                     case "Right":
                         strReturn = GetString("String_Improvement_SideRight", strIntoLanguage);
                         break;
+
                     case "All":
                         strReturn = GetString("String_All", strIntoLanguage);
                         break;
+
                     case "None":
                         strReturn = GetString("String_None", strIntoLanguage);
                         break;
+
                     default:
                         strReturn = strExtra;
                         Match objFileSpecifier = rgxExtraFileSpecifierExpression.Match(strReturn);
@@ -785,16 +826,57 @@ namespace Chummer
                         object strReturnLock = new object();
                         if (!string.IsNullOrEmpty(strPreferFile))
                         {
-                            await Task.Run(() =>
+                            try
                             {
-                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                    Func<XPathNavigator, string>>> aobjPaths
-                                in s_LstAXPathsToSearch)
+                                await Task.Run(() =>
                                 {
-                                    Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
-                                        async (objXPathPair, objState) =>
+                                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                        Func<XPathNavigator, string>>> aobjPaths
+                                    in s_LstAXPathsToSearch)
+                                    {
+                                        Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
+                                            async (objXPathPair, objState) =>
+                                            {
+                                                XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
+                                                foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
+                                                {
+                                                    if (objCancellationToken.IsCancellationRequested ||
+                                                        objState.ShouldExitCurrentIteration)
+                                                        return;
+                                                    if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                                        continue;
+                                                    string strTranslate = objXPathPair.Item4(objNode);
+                                                    if (string.IsNullOrEmpty(strTranslate))
+                                                        continue;
+                                                    objState.Break();
+                                                    objCancellationTokenSource.Cancel(false);
+                                                    lock (strReturnLock)
+                                                        strReturn = strTranslate;
+                                                    break;
+                                                }
+                                            });
+                                        if (objCancellationToken.IsCancellationRequested)
+                                            return;
+                                    }
+                                }, objCancellationTokenSource.Token);
+                            }
+                            catch (TaskCanceledException) { }
+                        }
+                        if (!objCancellationToken.IsCancellationRequested)
+                        {
+                            try
+                            {
+                                await Task.Run(() =>
+                                {
+                                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                            Func<XPathNavigator, string>>> aobjPaths
+                                        in s_LstAXPathsToSearch)
+                                    {
+                                        Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
                                         {
-                                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
+                                                objXPathPair.Item1,
                                                 objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
                                             foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                             {
@@ -807,50 +889,18 @@ namespace Chummer
                                                 if (string.IsNullOrEmpty(strTranslate))
                                                     continue;
                                                 objState.Break();
-                                                objCancellationTokenSource.Cancel();
+                                                objCancellationTokenSource.Cancel(false);
                                                 lock (strReturnLock)
                                                     strReturn = strTranslate;
                                                 break;
                                             }
                                         });
-                                    if (objCancellationToken.IsCancellationRequested)
-                                        return;
-                                }
-                            }, objCancellationTokenSource.Token);
-                        }
-                        if (!objCancellationToken.IsCancellationRequested)
-                        {
-                            await Task.Run(() =>
-                            {
-                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
-                                        Func<XPathNavigator, string>>> aobjPaths
-                                    in s_LstAXPathsToSearch)
-                                {
-                                    Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
-                                    {
-                                        XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
-                                            objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
-                                        foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
-                                        {
-                                            if (objCancellationToken.IsCancellationRequested ||
-                                                objState.ShouldExitCurrentIteration)
-                                                return;
-                                            if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                                continue;
-                                            string strTranslate = objXPathPair.Item4(objNode);
-                                            if (string.IsNullOrEmpty(strTranslate))
-                                                continue;
-                                            objState.Break();
-                                            objCancellationTokenSource.Cancel();
-                                            lock (strReturnLock)
-                                                strReturn = strTranslate;
-                                            break;
-                                        }
-                                    });
-                                    if (objCancellationToken.IsCancellationRequested)
-                                        return;
-                                }
-                            }, objCancellationTokenSource.Token);
+                                        if (objCancellationToken.IsCancellationRequested)
+                                            return;
+                                    }
+                                }, objCancellationTokenSource.Token);
+                            }
+                            catch (TaskCanceledException) { }
                         }
                         break;
                 }
@@ -950,70 +1000,83 @@ namespace Chummer
             object strReturnLock = new object();
             if (!string.IsNullOrEmpty(strPreferFile))
             {
-                await Task.Run(() =>
+                try
                 {
-                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>
-                            aobjPaths
-                        in s_LstAXPathsToSearch)
+                    await Task.Run(() =>
                     {
-                        Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile), async (objXPathPair, objState) =>
+                        foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                    Func<XPathNavigator, string>>>
+                                aobjPaths
+                            in s_LstAXPathsToSearch)
                         {
-                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
-                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
-                            foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
-                            {
-                                if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
-                                    return;
-                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                    continue;
-                                string strOriginal = objXPathPair.Item3(objNode);
-                                if (string.IsNullOrEmpty(strOriginal))
-                                    continue;
-                                objState.Break();
-                                objCancellationTokenSource.Cancel();
-                                lock (strReturnLock)
-                                    strReturn = strOriginal;
-                                break;
-                            }
-                        });
-                        if (objCancellationToken.IsCancellationRequested)
-                            return;
-                    }
-                }, objCancellationTokenSource.Token);
+                            Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
+                                async (objXPathPair, objState) =>
+                                {
+                                    XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                        objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                                    foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
+                                    {
+                                        if (objCancellationToken.IsCancellationRequested ||
+                                            objState.ShouldExitCurrentIteration)
+                                            return;
+                                        if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                            continue;
+                                        string strOriginal = objXPathPair.Item3(objNode);
+                                        if (string.IsNullOrEmpty(strOriginal))
+                                            continue;
+                                        objState.Break();
+                                        objCancellationTokenSource.Cancel(false);
+                                        lock (strReturnLock)
+                                            strReturn = strOriginal;
+                                        break;
+                                    }
+                                });
+                            if (objCancellationToken.IsCancellationRequested)
+                                return;
+                        }
+                    }, objCancellationTokenSource.Token);
+                }
+                catch (TaskCanceledException) { }
             }
 
             if (!objCancellationToken.IsCancellationRequested)
             {
-                await Task.Run(() =>
+                try
                 {
-                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>
-                            aobjPaths
-                        in s_LstAXPathsToSearch)
+                    await Task.Run(() =>
                     {
-                        Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
+                        foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                    Func<XPathNavigator, string>>>
+                                aobjPaths
+                            in s_LstAXPathsToSearch)
                         {
-                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
-                                objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
-                            foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
+                            Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
                             {
-                                if (objCancellationToken.IsCancellationRequested || objState.ShouldExitCurrentIteration)
-                                    return;
-                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                    continue;
-                                string strOriginal = objXPathPair.Item3(objNode);
-                                if (string.IsNullOrEmpty(strOriginal))
-                                    continue;
-                                objState.Break();
-                                objCancellationTokenSource.Cancel();
-                                lock (strReturnLock)
-                                    strReturn = strOriginal;
-                                break;
-                            }
-                        });
-                        if (objCancellationToken.IsCancellationRequested)
-                            return;
-                    }
-                }, objCancellationTokenSource.Token);
+                                XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                    objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
+                                foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
+                                {
+                                    if (objCancellationToken.IsCancellationRequested ||
+                                        objState.ShouldExitCurrentIteration)
+                                        return;
+                                    if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                        continue;
+                                    string strOriginal = objXPathPair.Item3(objNode);
+                                    if (string.IsNullOrEmpty(strOriginal))
+                                        continue;
+                                    objState.Break();
+                                    objCancellationTokenSource.Cancel(false);
+                                    lock (strReturnLock)
+                                        strReturn = strOriginal;
+                                    break;
+                                }
+                            });
+                            if (objCancellationToken.IsCancellationRequested)
+                                return;
+                        }
+                    }, objCancellationTokenSource.Token);
+                }
+                catch (TaskCanceledException) { }
             }
 
             return strReturn;
@@ -1044,16 +1107,15 @@ namespace Chummer
         {
             List<ListItem> lstLanguages = new List<ListItem>();
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-            string[] languageFilePaths = Directory.GetFiles(languageDirectoryPath, "*.xml");
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
-            foreach (string filePath in languageFilePaths)
+            foreach (string filePath in Directory.GetFiles(languageDirectoryPath, "*.xml"))
             {
                 XPathDocument xmlDocument;
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(filePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            xmlDocument = new XPathDocument(objXmlReader);
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        xmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -1078,7 +1140,8 @@ namespace Chummer
             lstLanguages.Sort(CompareListItems.CompareNames);
             return lstLanguages;
         }
-        #endregion
+
+        #endregion Methods
     }
 
     public class LanguageData
@@ -1103,8 +1166,8 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                objLanguageDocument = new XPathDocument(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            objLanguageDocument = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)
                     {
@@ -1171,8 +1234,8 @@ namespace Chummer
                     try
                     {
                         using (StreamReader objStreamReader = new StreamReader(strDataPath, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                                DataDocument = new XPathDocument(objXmlReader);
+                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                            DataDocument = new XPathDocument(objXmlReader);
                     }
                     catch (IOException ex)
                     {

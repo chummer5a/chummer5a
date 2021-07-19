@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.IO;
- using System.Linq;
- using System.Threading;
- using System.Threading.Tasks;
+
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -33,6 +34,7 @@ namespace Chummer
         private frmViewer _frmPrintView;
 
         #region Control Events
+
         public frmPrintMultiple()
         {
             InitializeComponent();
@@ -43,7 +45,7 @@ namespace Chummer
 
         private void frmPrintMultiple_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objPrinterCancellationTokenSource?.Cancel();
+            _objPrinterCancellationTokenSource?.Cancel(false);
             CleanUpOldCharacters();
         }
 
@@ -83,13 +85,17 @@ namespace Chummer
 
         private async Task CancelPrint()
         {
-            _objPrinterCancellationTokenSource?.Cancel();
-            if (_tskPrinter?.IsCompleted == false)
-                await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                    prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
-            else
-                await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                    prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+            _objPrinterCancellationTokenSource?.Cancel(false);
+            try
+            {
+                if (_tskPrinter?.IsCompleted == false)
+                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                        prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+                else
+                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
+                        prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+            }
+            catch (TaskCanceledException) { }
         }
 
         private async Task StartPrint()
@@ -120,7 +126,7 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel();
+                            _objPrinterCancellationTokenSource?.Cancel(false);
                             return;
                         }
 
@@ -131,7 +137,7 @@ namespace Chummer
                         {
                             if (!objState.IsStopped)
                                 objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel();
+                            _objPrinterCancellationTokenSource?.Cancel(false);
                             return;
                         }
                         if (blnLoadSuccessful)
@@ -192,6 +198,7 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Control Events
     }
 }

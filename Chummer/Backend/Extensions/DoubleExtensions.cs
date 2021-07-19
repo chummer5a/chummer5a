@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Runtime.CompilerServices;
 
@@ -32,6 +33,18 @@ namespace Chummer
         internal static int StandardRound(this double dblToRound)
         {
             return Convert.ToInt32(dblToRound >= 0 ? Math.Ceiling(dblToRound) : Math.Floor(dblToRound));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for exponentiating a double by another double.
+        /// </summary>
+        /// <param name="dblBase">Number to exponentiate.</param>
+        /// <param name="dblPower">Power to which to raise <paramref name="dblBase"/>.</param>
+        /// <returns><paramref name="dblBase"/> to the power of <paramref name="dblPower"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static double RaiseToPower(this double dblBase, double dblPower)
+        {
+            return Math.Pow(dblBase, dblPower);
         }
     }
 }

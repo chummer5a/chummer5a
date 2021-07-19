@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -42,6 +43,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public MartialArtTechnique(Character objCharacter)
         {
             // Create the GUID for the new Martial Art Technique.
@@ -55,7 +57,7 @@ namespace Chummer
         {
             if (!xmlTechniqueDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warn(new object[] {"Missing id field for xmlnode", xmlTechniqueDataNode});
+                Log.Warn(new object[] { "Missing id field for xmlnode", xmlTechniqueDataNode });
                 Utils.BreakIfDebug();
             }
 
@@ -109,6 +111,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
+
         public SourceString SourceDetail
         {
             get
@@ -152,7 +155,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -186,13 +189,16 @@ namespace Chummer
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Martial Art Technique in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -307,7 +313,8 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
 
@@ -325,9 +332,11 @@ namespace Chummer
             objMartialArt.Techniques.Remove(this);
             return true;
         }
-        #endregion
+
+        #endregion Methods
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
         {
             //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -350,7 +359,8 @@ namespace Chummer
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
-        #endregion
+
+        #endregion UI Methods
 
         public void SetSourceDetail(Control sourceControl)
         {

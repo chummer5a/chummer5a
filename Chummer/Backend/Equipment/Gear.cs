@@ -104,6 +104,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnIsFlechetteAmmo;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Gear(Character objCharacter)
         {
             // Create the GUID for the new piece of Gear.
@@ -122,11 +123,13 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                     this.RefreshMatrixAttributeArray();
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                         objOldItem.Parent = null;
                     this.RefreshMatrixAttributeArray();
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                         objOldItem.Parent = null;
@@ -134,6 +137,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.Parent = this;
                     this.RefreshMatrixAttributeArray();
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     this.RefreshMatrixAttributeArray();
                     break;
@@ -155,7 +159,7 @@ namespace Chummer.Backend.Equipment
             _strForcedValue = strForceValue;
             if (!objXmlGear.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warn(new object[] {"Missing id field for armor xmlnode", objXmlGear});
+                Log.Warn(new object[] { "Missing id field for armor xmlnode", objXmlGear });
                 Utils.BreakIfDebug();
             }
             else
@@ -442,6 +446,7 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
+
         public SourceString SourceDetail
         {
             get
@@ -873,7 +878,7 @@ namespace Chummer.Backend.Equipment
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && !objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && !objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language, objNode["name"]?.InnerText, objNode["category"]?.InnerText);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -1299,7 +1304,8 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
 
@@ -1685,7 +1691,6 @@ namespace Chummer.Backend.Equipment
             set => _strPage = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number using a given language file.
         /// Returns Page if not found or the string is empty.
@@ -1788,6 +1793,7 @@ namespace Chummer.Backend.Equipment
                     case "Device Rating":
                         strExpression = IsCommlink ? "2" : "0";
                         break;
+
                     case "Program Limit":
                         if (IsCommlink)
                         {
@@ -1798,12 +1804,14 @@ namespace Chummer.Backend.Equipment
                         else
                             strExpression = "0";
                         break;
+
                     case "Data Processing":
                     case "Firewall":
                         strExpression = this.GetMatrixAttributeString("Device Rating");
                         if (string.IsNullOrEmpty(strExpression))
                             strExpression = "0";
                         break;
+
                     default:
                         strExpression = "0";
                         break;
@@ -1824,18 +1832,23 @@ namespace Chummer.Backend.Equipment
                     case "Device Rating":
                         strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaDeviceRating && x.Enabled).Select(x => x.ImprovedName));
                         break;
+
                     case "Program Limit":
                         strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaProgramLimit && x.Enabled).Select(x => x.ImprovedName));
                         break;
+
                     case "Attack":
                         strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaAttack && x.Enabled).Select(x => x.ImprovedName));
                         break;
+
                     case "Sleaze":
                         strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaSleaze && x.Enabled).Select(x => x.ImprovedName));
                         break;
+
                     case "Data Processing":
                         strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaDataProcessing && x.Enabled).Select(x => x.ImprovedName));
                         break;
+
                     case "Firewall":
                         strExtraExpression = string.Concat(CharacterObject.Improvements.Where(x => x.ImproveType == Improvement.ImprovementType.LivingPersonaFirewall && x.Enabled).Select(x => x.ImprovedName));
                         break;
@@ -2043,12 +2056,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string Overclocked
         {
-            get
-            {
-                if (!CharacterObject.Overclocker)
-                    return string.Empty;
-                return _strOverclocked;
-            }
+            get => !CharacterObject.Overclocker ? string.Empty : _strOverclocked;
             set => _strOverclocked = value;
         }
 
@@ -2124,9 +2132,11 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
@@ -2265,7 +2275,7 @@ namespace Chummer.Backend.Equipment
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn
                             .CheapReplace("Parent Rating", () => (Parent as IHasRating)?.Rating.ToString(GlobalOptions.InvariantCultureInfo))
                             .Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
-                        double dblNumber = blnIsSuccess ? (double) objProcess : 1;
+                        double dblNumber = blnIsSuccess ? (double)objProcess : 1;
                         if (dblNumber < 1)
                             dblNumber = 1;
                         strReturn = dblNumber.ToString("#,0.##", GlobalOptions.CultureInfo);
@@ -2330,7 +2340,7 @@ namespace Chummer.Backend.Equipment
 
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strReturn.Replace("Rating", Rating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
                     if (blnIsSuccess)
-                        strReturn = ((double) objProcess).ToString("#,0.##", GlobalOptions.CultureInfo);
+                        strReturn = ((double)objProcess).ToString("#,0.##", GlobalOptions.CultureInfo);
                     if (blnSquareBrackets)
                         strReturn = '[' + strReturn + ']';
                 }
@@ -2364,7 +2374,7 @@ namespace Chummer.Backend.Equipment
                 if (Parent != null)
                 {
                     if (strCostExpression.Contains("Gear Cost"))
-                        decGearCost = ((Gear) Parent).CalculatedCost;
+                        decGearCost = ((Gear)Parent).CalculatedCost;
                     if (strCostExpression.Contains("Parent Cost"))
                         decParentCost = ((Gear)Parent).OwnCostPreMultipliers;
                 }
@@ -2444,7 +2454,6 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-
                 decimal decReturn = 0;
                 if (Stolen)
                     decReturn = OwnCostPreMultipliers;
@@ -2489,9 +2498,7 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                if (decimal.TryParse(strCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decReturn))
-                    return decReturn;
-                return 0;
+                return decimal.TryParse(strCapacity, NumberStyles.Any, GlobalOptions.CultureInfo, out decimal decReturn) ? decReturn : 0;
             }
         }
 
@@ -2512,9 +2519,7 @@ namespace Chummer.Backend.Equipment
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
                 strCapacity = strCapacity.StartsWith('[') ? strCapacity.Substring(1, strCapacity.Length - 2) : "0";
-                if (strCapacity == "*")
-                    return 0;
-                return Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
+                return strCapacity == "*" ? 0 : Convert.ToDecimal(strCapacity, GlobalOptions.CultureInfo);
             }
         }
 
@@ -2743,7 +2748,6 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int FlechetteWeaponBonusRange => Convert.ToInt32(_nodFlechetteWeaponBonus?["rangebonus"]?.InnerText, GlobalOptions.InvariantCultureInfo);
 
-
         /// <summary>
         /// Base Matrix Boxes.
         /// </summary>
@@ -2790,9 +2794,11 @@ namespace Chummer.Backend.Equipment
             get => _intMatrixCMFilled;
             set => _intMatrixCMFilled = value;
         }
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         public bool IsIdenticalToOtherGear(Gear objOtherGear, bool blnIgnoreSuperficials = false)
         {
             if (objOtherGear == null)
@@ -2964,38 +2970,46 @@ namespace Chummer.Backend.Equipment
 
             decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId);
 
-            // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
-            if (Category == "Foci" || Category == "Metamagic Foci")
+            switch (Category)
             {
-                HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
-                foreach (Focus objFocus in _objCharacter.Foci)
-                {
-                    if (objFocus.GearObject == this)
-                        lstRemoveFoci.Add(objFocus);
-                }
-                foreach (Focus objFocus in lstRemoveFoci)
-                {
-                    /*
-                    foreach (Power objPower in objCharacter.Powers)
+                // If a Focus is being removed, make sure the actual Focus is being removed from the character as well.
+                case "Foci":
+                case "Metamagic Foci":
                     {
-                        if (objPower.BonusSource == objFocus.GearId)
+                        HashSet<Focus> lstRemoveFoci = new HashSet<Focus>();
+                        foreach (Focus objFocus in _objCharacter.Foci)
                         {
-                            //objPower.FreeLevels -= (objFocus.Rating / 4);
+                            if (objFocus.GearObject == this)
+                                lstRemoveFoci.Add(objFocus);
                         }
+                        foreach (Focus objFocus in lstRemoveFoci)
+                        {
+                            /*
+                            foreach (Power objPower in objCharacter.Powers)
+                            {
+                                if (objPower.BonusSource == objFocus.GearId)
+                                {
+                                    //objPower.FreeLevels -= (objFocus.Rating / 4);
+                                }
+                            }
+                            */
+                            _objCharacter.Foci.Remove(objFocus);
+                        }
+
+                        break;
                     }
-                    */
-                    _objCharacter.Foci.Remove(objFocus);
-                }
-            }
-            // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
-            else if (Category == "Stacked Focus")
-            {
-                StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
-                if (objStack != null)
-                {
-                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
-                    _objCharacter.StackedFoci.Remove(objStack);
-                }
+                // If a Stacked Focus is being removed, make sure the Stacked Foci and its bonuses are being removed.
+                case "Stacked Focus":
+                    {
+                        StackedFocus objStack = _objCharacter.StackedFoci.FirstOrDefault(x => x.GearId == InternalId);
+                        if (objStack != null)
+                        {
+                            decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.StackedFocus, objStack.InternalId);
+                            _objCharacter.StackedFoci.Remove(objStack);
+                        }
+
+                        break;
+                    }
             }
 
             this.SetActiveCommlink(_objCharacter, false);
@@ -3050,7 +3064,6 @@ namespace Chummer.Backend.Equipment
                             }
                         }
                     }
-
                 }
                 else
                 {
@@ -3109,7 +3122,9 @@ namespace Chummer.Backend.Equipment
             blnOutRestrictedGearUsed = blnRestrictedGearUsed;
             strOutRestrictedItem = strRestrictedItem;
         }
+
         #region UI Methods
+
         /// <summary>
         /// Collection of TreeNodes to update when a relevant property is changed
         /// </summary>
@@ -3242,6 +3257,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     break;
+
                 case "Stacked Focus":
                     {
                         for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
@@ -3264,9 +3280,11 @@ namespace Chummer.Backend.Equipment
 
             return true;
         }
-        #endregion
+
+        #endregion UI Methods
 
         #region Hero Lab Importing Methods
+
         public bool ImportHeroLabGear(XPathNavigator xmlGearImportNode, XmlNode xmlParentGearNode, IList<Weapon> lstWeapons)
         {
             if (xmlGearImportNode == null)
@@ -3479,10 +3497,13 @@ namespace Chummer.Backend.Equipment
             }
             this.RefreshMatrixAttributeArray();
         }
-        #endregion
-        #endregion
+
+        #endregion Hero Lab Importing Methods
+
+        #endregion Methods
 
         #region static
+
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
@@ -3508,7 +3529,7 @@ namespace Chummer.Backend.Equipment
                 )
             );
 
-        #endregion
+        #endregion static
 
         /// <summary>
         /// Recursive method to add a Gear's Improvements to a character when moving them from a Vehicle.
@@ -3541,10 +3562,12 @@ namespace Chummer.Backend.Equipment
                     DeleteGear();
                     objHasChildren.GearChildren.Remove(this);
                     break;
+
                 case IHasChildren<Gear> objHasChildren:
                     DeleteGear();
                     objHasChildren.Children.Remove(this);
                     break;
+
                 default:
                     DeleteGear();
                     CharacterObject.Gear.Remove(this);
@@ -3624,14 +3647,14 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.Gear:
-                    {
-                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
-                        if (xmlAddonCategoryList?.Count > 0)
-                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
+                        {
+                            var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                            if (xmlAddonCategoryList?.Count > 0)
+                                return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                    xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
 
-                        return false;
-                    }
+                            return false;
+                        }
                     default:
                         return false;
                 }

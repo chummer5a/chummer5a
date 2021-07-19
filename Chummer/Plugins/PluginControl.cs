@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -40,24 +41,31 @@ namespace Chummer.Plugins
         void CustomInitialize(frmChummerMain mainControl);
 
         IEnumerable<TabPage> GetTabPages(frmCareer input);
+
         IEnumerable<TabPage> GetTabPages(frmCreate input);
+
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
+
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
+
         bool ProcessCommandLine(string parameter);
 
         Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
+
         UserControl GetOptionsControl();
 
         string GetSaveToFileElement(Character input);
+
         void LoadFileElement(Character input, string fileElement);
 
         void SetIsUnitTest(bool isUnitTest);
 
         Assembly GetPluginAssembly();
+
         bool SetCharacterRosterNode(TreeNode objNode);
+
         Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList);
     }
-
 
     public class PluginControl : IDisposable
     {
@@ -117,7 +125,6 @@ namespace Chummer.Plugins
             return true;
         }
 
-
         public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
         {
             RegistryKey Software = null;
@@ -166,7 +173,7 @@ namespace Chummer.Plugins
                 }
 
                 using (RegistryKey keyChummerKey = Classes.OpenSubKey("Chummer", true) //open myApp protocol's subkey
-                                                   //if the protocol is not registered yet...we register it
+                                                                                       //if the protocol is not registered yet...we register it
                                                    ?? Classes.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree))
                 {
                     if (keyChummerKey == null)
@@ -238,7 +245,7 @@ namespace Chummer.Plugins
                     string infofile = Path.Combine(plugindir, "plugin.txt");
                     if (File.Exists(infofile))
                     {
-                        Log.Trace(infofile +  " found: parsing it!");
+                        Log.Trace(infofile + " found: parsing it!");
 
                         using (StreamReader file = new StreamReader(infofile))
                         {
@@ -306,7 +313,7 @@ namespace Chummer.Plugins
                 }
                 Log.Info("Initializing Plugins finished.");
             }
-            catch(System.Security.SecurityException e)
+            catch (System.Security.SecurityException e)
             {
                 string msg = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: " + Environment.NewLine + Environment.NewLine;
                 msg += e.ToString();
@@ -331,7 +338,7 @@ namespace Chummer.Plugins
                 List<IPlugin> result = new List<IPlugin>();
                 if (!GlobalOptions.PluginsEnabled)
                     return result;
-                foreach(IPlugin plugin in MyPlugins)
+                foreach (IPlugin plugin in MyPlugins)
                 {
                     if (!GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled) || enabled)
                         result.Add(plugin);
@@ -339,7 +346,6 @@ namespace Chummer.Plugins
                 return result;
             }
         }
-
 
         private static void StartWatch()
         {
@@ -418,7 +424,7 @@ namespace Chummer.Plugins
 
         internal void CallPlugins(frmCareer frmCareer, CustomActivity parentActivity)
         {
-            foreach(IPlugin plugin in MyActivePlugins)
+            foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))

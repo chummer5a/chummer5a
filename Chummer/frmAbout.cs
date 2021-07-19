@@ -16,9 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Reflection;
- using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -32,6 +33,7 @@ namespace Chummer
         }
 
         #region Assembly Attribute Accessors
+
         public static string AssemblyTitle
         {
             get
@@ -56,11 +58,7 @@ namespace Chummer
             get
             {
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
-                return ((AssemblyDescriptionAttribute)attributes[0]).Description.NormalizeLineEndings();
+                return attributes.Length == 0 ? string.Empty : ((AssemblyDescriptionAttribute)attributes[0]).Description.NormalizeLineEndings();
             }
         }
 
@@ -69,11 +67,7 @@ namespace Chummer
             get
             {
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
-                return ((AssemblyProductAttribute)attributes[0]).Product.NormalizeLineEndings().WordWrap();
+                return attributes.Length == 0 ? string.Empty : ((AssemblyProductAttribute)attributes[0]).Product.NormalizeLineEndings().WordWrap();
             }
         }
 
@@ -82,11 +76,7 @@ namespace Chummer
             get
             {
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
-                return ((AssemblyCopyrightAttribute)attributes[0]).Copyright.NormalizeLineEndings().WordWrap();
+                return attributes.Length == 0 ? string.Empty : ((AssemblyCopyrightAttribute)attributes[0]).Copyright.NormalizeLineEndings().WordWrap();
             }
         }
 
@@ -95,16 +85,14 @@ namespace Chummer
             get
             {
                 object[] attributes = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-                if (attributes.Length == 0)
-                {
-                    return string.Empty;
-                }
-                return ((AssemblyCompanyAttribute)attributes[0]).Company.NormalizeLineEndings().WordWrap();
+                return attributes.Length == 0 ? string.Empty : ((AssemblyCompanyAttribute)attributes[0]).Company.NormalizeLineEndings().WordWrap();
             }
         }
-        #endregion
+
+        #endregion Assembly Attribute Accessors
 
         #region Controls Methods
+
         private void frmAbout_Load(object sender, EventArgs e)
         {
             string strSpace = LanguageManager.GetString("String_Space");
@@ -141,18 +129,20 @@ namespace Chummer
                 case Keys.Escape:
                     DialogResult = DialogResult.OK;
                     break;
-                case Keys.A:
-                {
-                    if (e.Control)
-                    {
-                        e.SuppressKeyPress = true;
-                        (sender as TextBox)?.SelectAll();
-                    }
 
-                    break;
-                }
+                case Keys.A:
+                    {
+                        if (e.Control)
+                        {
+                            e.SuppressKeyPress = true;
+                            (sender as TextBox)?.SelectAll();
+                        }
+
+                        break;
+                    }
             }
         }
-        #endregion
+
+        #endregion Controls Methods
     }
 }

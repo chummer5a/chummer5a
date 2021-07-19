@@ -16,8 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Windows.Forms;
+
+using System;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -60,7 +61,8 @@ namespace Chummer
             get => _progressBarStun.Value;
             set => _progressBarStun.Value = value;
         }
-        #endregion
+
+        #endregion Properties
 
         public ConditionMonitorUserControl()
         {
@@ -90,6 +92,5 @@ namespace Chummer
                 _progressBarStun.Value += val > _progressBarStun.Maximum ?
                     _progressBarStun.Maximum : val;
         }
-
     }
 }

@@ -16,8 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Windows.Forms;
+using System;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -51,9 +51,10 @@ namespace Chummer
             Hide();
         }
 
-        #endregion
+        #endregion Singleton
 
         #region Properties
+
         /// <summary>
         /// The current NPC that the GM is controlling
         /// </summary>
@@ -68,12 +69,12 @@ namespace Chummer
         /// </summary>
         public DiceRollerControl DiceRoller => tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
 
-        #endregion
+        #endregion Properties
 
         #region Events
 
         /*
-         * When the user attempts to close the main Dashboard, hide 
+         * When the user attempts to close the main Dashboard, hide
          * it instead
          */
         void frmGMDashboard_FormClosing(object sender, FormClosingEventArgs e)
@@ -140,12 +141,13 @@ namespace Chummer
         {
             tabControl.SelectedIndex = (int)DashBoardPages.Dice;
         }
-        #endregion
+
+        #endregion Events
 
         #region Private helper methods
 
         /*
-         * Updates the tabs 
+         * Updates the tabs
          */
         private void UpdateTabs()
         {
@@ -164,9 +166,10 @@ namespace Chummer
         private void UpdateControls()
         {
             // tosses the character information relevant to each character
-        #region Condition Monitor
 
-            if (tabControl.TabPages[(int) DashBoardPages.CM].Controls[0] is ConditionMonitorUserControl uc)
+            #region Condition Monitor
+
+            if (tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] is ConditionMonitorUserControl uc)
             {
                 uc.MaxPhysical = CurrentNPC.PhysicalCM;
                 uc.MaxStun = CurrentNPC.StunCM;
@@ -174,21 +177,26 @@ namespace Chummer
                 uc.Stun = uc.MaxStun;
             }
 
-            #endregion
+            #endregion Condition Monitor
 
-        #region Skill tab
+            #region Skill tab
+
             //TODO fix this
-        #endregion
 
-        #region Dice Roller
+            #endregion Skill tab
+
+            #region Dice Roller
+
             /*
-            DiceRollerControl dice = 
+            DiceRollerControl dice =
                 tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
             dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
             */
-        #endregion
+
+            #endregion Dice Roller
         }
-        #endregion
+
+        #endregion Private helper methods
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {

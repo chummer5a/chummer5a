@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,19 +37,24 @@ namespace Chummer
         private readonly CharacterOptions _objCharacterOptions;
         private CharacterOptions _objReferenceCharacterOptions;
         private readonly List<ListItem> _lstSettings = new List<ListItem>();
+
         // List of custom data directories on the character, in load order. If the character has a directory name for which we have no info, Item1 will be null
         private readonly List<Tuple<object, bool>> _lstCharacterCustomDataDirectoryInfos = new List<Tuple<object, bool>>();
+
         private bool _blnLoading = true;
         private bool _blnSkipLimbCountUpdate;
         private bool _blnDirty;
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
         private bool _blnIsLayoutSuspended = true;
+
         // Used to revert to old selected setting if user cancels out of selecting a different one
         private int _intOldSelectedSettingIndex = -1;
+
         private readonly HashSet<string> _setPermanentSourcebooks = new HashSet<string>();
 
         #region Form Events
+
         public frmCharacterOptions(CharacterOptions objExistingOptions = null)
         {
             InitializeComponent();
@@ -84,14 +90,16 @@ namespace Chummer
             _blnLoading = false;
             _blnIsLayoutSuspended = false;
         }
-        #endregion
+
+        #endregion Form Events
 
         #region Control Events
+
         private void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
             using (new CursorWait(this))
-                using (frmOptions frmOptions = new frmOptions("tabCustomDataDirectories"))
-                    frmOptions.ShowDialog(this);
+            using (frmOptions frmOptions = new frmOptions("tabCustomDataDirectories"))
+                frmOptions.ShowDialog(this);
         }
 
         private void cmdRename_Click(object sender, EventArgs e)
@@ -213,10 +221,15 @@ namespace Chummer
                                 strSelectedName),
                             LanguageManager.GetString("MessageTitle_CharacterOptions_DuplicateFileName"),
                             MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
-                        if (eCreateDuplicateSetting == DialogResult.Cancel)
-                            return;
-                        if (eCreateDuplicateSetting == DialogResult.No)
-                            strSelectedName = string.Empty;
+                        switch (eCreateDuplicateSetting)
+                        {
+                            case DialogResult.Cancel:
+                                return;
+
+                            case DialogResult.No:
+                                strSelectedName = string.Empty;
+                                break;
+                        }
                     }
                 } while (string.IsNullOrWhiteSpace(strSelectedName));
 
@@ -324,7 +337,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
             string strSelectedFile = cboSetting.SelectedValue?.ToString();
-            if(string.IsNullOrEmpty(strSelectedFile) || !OptionsManager.LoadedCharacterOptions.TryGetValue(strSelectedFile, out CharacterOptions objNewOption))
+            if (string.IsNullOrEmpty(strSelectedFile) || !OptionsManager.LoadedCharacterOptions.TryGetValue(strSelectedFile, out CharacterOptions objNewOption))
                 return;
 
             if (IsDirty)
@@ -383,12 +396,12 @@ namespace Chummer
         private void cmdRestoreDefaults_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to reset these values.
-            if(Program.MainForm.ShowMessageBox(
+            if (Program.MainForm.ShowMessageBox(
                 LanguageManager.GetString("Message_Options_RestoreDefaults"),
                 LanguageManager.GetString("MessageTitle_Options_RestoreDefaults"),
                 MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
-            
+
             using (new CursorWait(this))
             {
                 _blnLoading = true;
@@ -583,15 +596,19 @@ namespace Chummer
                 case 'a':
                     e.KeyChar = 'A';
                     break;
+
                 case 'b':
                     e.KeyChar = 'B';
                     break;
+
                 case 'c':
                     e.KeyChar = 'C';
                     break;
+
                 case 'd':
                     e.KeyChar = 'D';
                     break;
+
                 case 'e':
                     e.KeyChar = 'E';
                     break;
@@ -772,21 +789,21 @@ namespace Chummer
             {
                 treCustomDataDirectories.Nodes.Clear();
 
-                foreach (Tuple<object, bool> objCustomDataDirectory in _lstCharacterCustomDataDirectoryInfos)
+                foreach ((object objUntypedInfo, bool blnDataDirectoryEnabled) in _lstCharacterCustomDataDirectoryInfos)
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Tag = objCustomDataDirectory.Item1,
-                        Checked = objCustomDataDirectory.Item2
+                        Tag = objUntypedInfo,
+                        Checked = blnDataDirectoryEnabled
                     };
-                    if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
+                    if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
                         objInfo.LazyCreate();
                     }
                     else
                     {
-                        objNode.Text = objCustomDataDirectory.Item1.ToString();
+                        objNode.Text = objUntypedInfo.ToString();
                         objNode.ForeColor = SystemColors.GrayText;
                     }
                     treCustomDataDirectories.Nodes.Add(objNode);
@@ -794,26 +811,25 @@ namespace Chummer
             }
             else
             {
-                for(int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
+                for (int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
                 {
                     TreeNode objNode = treCustomDataDirectories.Nodes[i];
-                    Tuple<object, bool> objCustomDataDirectory = _lstCharacterCustomDataDirectoryInfos[i];
-                    if (objCustomDataDirectory.Item1 != objNode.Tag)
-                        objNode.Tag = objCustomDataDirectory.Item1;
-                    if (objCustomDataDirectory.Item2 != objNode.Checked)
-                        objNode.Checked = objCustomDataDirectory.Item2;
-                    if (objCustomDataDirectory.Item1 is CustomDataDirectoryInfo objInfo)
+                    (object objUntypedInfo, bool blnDataDirectoryEnabled) = _lstCharacterCustomDataDirectoryInfos[i];
+                    if (objUntypedInfo != objNode.Tag)
+                        objNode.Tag = objUntypedInfo;
+                    if (blnDataDirectoryEnabled != objNode.Checked)
+                        objNode.Checked = blnDataDirectoryEnabled;
+                    if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
                     }
                     else
                     {
-                        objNode.Text = objCustomDataDirectory.Item1.ToString();
+                        objNode.Text = objUntypedInfo.ToString();
                         objNode.ForeColor = SystemColors.GrayText;
                     }
                 }
             }
-
 
             if (objOldSelected != null)
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
@@ -1005,7 +1021,7 @@ namespace Chummer
             foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
             {
                 CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
-                if (objLoopInfo != null)
+                if (objLoopInfo != default)
                 {
                     _lstCharacterCustomDataDirectoryInfos.Add(
                         new Tuple<object, bool>(
@@ -1037,134 +1053,134 @@ namespace Chummer
 
         private void SetupDataBindings()
         {
-            cmdRename.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
-            cmdDelete.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
+            cmdRename.DoOneWayNegatableDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
+            cmdDelete.DoOneWayNegatableDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.BuiltInOption));
 
-            cboBuildMethod.DoDatabinding("SelectedValue", _objCharacterOptions, nameof(CharacterOptions.BuildMethod));
-            lblPriorityTable.DoDatabinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
-            cboPriorityTable.DoDatabinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
-            lblPriorities.DoDatabinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
-            txtPriorities.DoDatabinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
-            txtPriorities.DoDatabinding("Text", _objCharacterOptions, nameof(CharacterOptions.PriorityArray));
-            lblSumToTen.DoDatabinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
-            nudSumToTen.DoDatabinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
-            nudSumToTen.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.SumtoTen));
-            nudStartingKarma.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.BuildKarma));
-            nudMaxNuyenKarma.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenMaximumBP));
-            nudMaxAvail.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.MaximumAvailability));
-            nudQualityKarmaLimit.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.QualityKarmaLimit));
-            txtContactPoints.DoDatabinding("Text", _objCharacterOptions, nameof(CharacterOptions.ContactPointsExpression));
-            txtKnowledgePoints.DoDatabinding("Text", _objCharacterOptions, nameof(CharacterOptions.KnowledgePointsExpression));
+            cboBuildMethod.DoDataBinding("SelectedValue", _objCharacterOptions, nameof(CharacterOptions.BuildMethod));
+            lblPriorityTable.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
+            cboPriorityTable.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodUsesPriorityTables));
+            lblPriorities.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
+            txtPriorities.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsPriority));
+            txtPriorities.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.PriorityArray));
+            lblSumToTen.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
+            nudSumToTen.DoOneWayDataBinding("Visible", _objCharacterOptions, nameof(CharacterOptions.BuildMethodIsSumtoTen));
+            nudSumToTen.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.SumtoTen));
+            nudStartingKarma.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.BuildKarma));
+            nudMaxNuyenKarma.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenMaximumBP));
+            nudMaxAvail.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.MaximumAvailability));
+            nudQualityKarmaLimit.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.QualityKarmaLimit));
+            txtContactPoints.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.ContactPointsExpression));
+            txtKnowledgePoints.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.KnowledgePointsExpression));
 
-            chkEnforceCapacity.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.EnforceCapacity));
-            chkLicenseEachRestrictedItem.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.LicenseRestricted));
-            chkReverseAttributePriorityOrder.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ReverseAttributePriorityOrder));
-            chkDronemods.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DroneMods));
-            chkDronemodsMaximumPilot.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DroneModsMaximumPilot));
-            chkRestrictRecoil.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RestrictRecoil));
-            chkStrictSkillGroups.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.StrictSkillGroupsInCreateMode));
-            chkAllowPointBuySpecializationsOnKarmaSkills.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowPointBuySpecializationsOnKarmaSkills));
-            chkAllowFreeGrids.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowFreeGrids));
-            chkEnemyKarmaQualityLimit.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.EnemyKarmaQualityLimit));
+            chkEnforceCapacity.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.EnforceCapacity));
+            chkLicenseEachRestrictedItem.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.LicenseRestricted));
+            chkReverseAttributePriorityOrder.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ReverseAttributePriorityOrder));
+            chkDronemods.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DroneMods));
+            chkDronemodsMaximumPilot.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DroneModsMaximumPilot));
+            chkRestrictRecoil.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RestrictRecoil));
+            chkStrictSkillGroups.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.StrictSkillGroupsInCreateMode));
+            chkAllowPointBuySpecializationsOnKarmaSkills.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowPointBuySpecializationsOnKarmaSkills));
+            chkAllowFreeGrids.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowFreeGrids));
+            chkEnemyKarmaQualityLimit.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.EnemyKarmaQualityLimit));
 
-            chkDontUseCyberlimbCalculation.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontUseCyberlimbCalculation));
-            chkCyberlegMovement.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CyberlegMovement));
-            chkCyberlimbAttributeBonusCap.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CyberlimbAttributeBonusCapOverride));
+            chkDontUseCyberlimbCalculation.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontUseCyberlimbCalculation));
+            chkCyberlegMovement.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CyberlegMovement));
+            chkCyberlimbAttributeBonusCap.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CyberlimbAttributeBonusCapOverride));
             nudCyberlimbAttributeBonusCap.DoOneWayDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.CyberlimbAttributeBonusCapOverride));
-            nudCyberlimbAttributeBonusCap.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.CyberlimbAttributeBonusCap));
-            chkRedlinerLimbsSkull.DoNegatableDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesSkull));
-            chkRedlinerLimbsTorso.DoNegatableDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesTorso));
-            chkRedlinerLimbsArms.DoNegatableDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesArms));
-            chkRedlinerLimbsLegs.DoNegatableDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesLegs));
+            nudCyberlimbAttributeBonusCap.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.CyberlimbAttributeBonusCap));
+            chkRedlinerLimbsSkull.DoNegatableDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesSkull));
+            chkRedlinerLimbsTorso.DoNegatableDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesTorso));
+            chkRedlinerLimbsArms.DoNegatableDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesArms));
+            chkRedlinerLimbsLegs.DoNegatableDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.RedlinerExcludesLegs));
 
-            nudNuyenDecimalsMaximum.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.MaxNuyenDecimals));
-            nudNuyenDecimalsMinimum.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.MinNuyenDecimals));
-            nudEssenceDecimals.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.EssenceDecimals));
-            chkDontRoundEssenceInternally.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontRoundEssenceInternally));
+            nudNuyenDecimalsMaximum.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.MaxNuyenDecimals));
+            nudNuyenDecimalsMinimum.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.MinNuyenDecimals));
+            nudEssenceDecimals.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.EssenceDecimals));
+            chkDontRoundEssenceInternally.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontRoundEssenceInternally));
 
-            chkMoreLethalGameplay.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MoreLethalGameplay));
-            chkNoArmorEncumbrance.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.NoArmorEncumbrance));
-            chkIgnoreArt.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IgnoreArt));
-            chkIgnoreComplexFormLimit.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IgnoreComplexFormLimit));
-            chkUnarmedSkillImprovements.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UnarmedImprovementsApplyToWeapons));
-            chkMysAdPp.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptAllowPPCareer));
-            chkMysAdPp.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
-            chkPrioritySpellsAsAdeptPowers.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.PrioritySpellsAsAdeptPowers));
-            chkPrioritySpellsAsAdeptPowers.DoOneWayNegatableDatabinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
-            chkMysAdeptSecondMAGAttribute.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
+            chkMoreLethalGameplay.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MoreLethalGameplay));
+            chkNoArmorEncumbrance.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.NoArmorEncumbrance));
+            chkIgnoreArt.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IgnoreArt));
+            chkIgnoreComplexFormLimit.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IgnoreComplexFormLimit));
+            chkUnarmedSkillImprovements.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UnarmedImprovementsApplyToWeapons));
+            chkMysAdPp.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptAllowPPCareer));
+            chkMysAdPp.DoOneWayNegatableDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
+            chkPrioritySpellsAsAdeptPowers.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.PrioritySpellsAsAdeptPowers));
+            chkPrioritySpellsAsAdeptPowers.DoOneWayNegatableDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
+            chkMysAdeptSecondMAGAttribute.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
             chkMysAdeptSecondMAGAttribute.DoOneWayDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttributeEnabled));
-            chkUsePointsOnBrokenGroups.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UsePointsOnBrokenGroups));
-            chkSpecialKarmaCost.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.SpecialKarmaCostBasedOnShownValue));
-            chkUseCalculatedPublicAwareness.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UseCalculatedPublicAwareness));
-            chkAlternateMetatypeAttributeKarma.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AlternateMetatypeAttributeKarma));
-            chkCompensateSkillGroupKarmaDifference.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CompensateSkillGroupKarmaDifference));
-            chkFreeMartialArtSpecialization.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.FreeMartialArtSpecialization));
-            chkIncreasedImprovedAbilityModifier.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IncreasedImprovedAbilityMultiplier));
-            chkAllowTechnomancerSchooling.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowTechnomancerSchooling));
-            chkAllowSkillRegrouping.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowSkillRegrouping));
-            chkDontDoubleQualityPurchases.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontDoubleQualityPurchases));
-            chkDontDoubleQualityRefunds.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontDoubleQualityRefunds));
-            chkDroneArmorMultiplier.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DroneArmorMultiplierEnabled));
+            chkUsePointsOnBrokenGroups.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UsePointsOnBrokenGroups));
+            chkSpecialKarmaCost.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.SpecialKarmaCostBasedOnShownValue));
+            chkUseCalculatedPublicAwareness.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UseCalculatedPublicAwareness));
+            chkAlternateMetatypeAttributeKarma.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AlternateMetatypeAttributeKarma));
+            chkCompensateSkillGroupKarmaDifference.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.CompensateSkillGroupKarmaDifference));
+            chkFreeMartialArtSpecialization.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.FreeMartialArtSpecialization));
+            chkIncreasedImprovedAbilityModifier.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IncreasedImprovedAbilityMultiplier));
+            chkAllowTechnomancerSchooling.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowTechnomancerSchooling));
+            chkAllowSkillRegrouping.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowSkillRegrouping));
+            chkDontDoubleQualityPurchases.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontDoubleQualityPurchases));
+            chkDontDoubleQualityRefunds.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DontDoubleQualityRefunds));
+            chkDroneArmorMultiplier.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.DroneArmorMultiplierEnabled));
             nudDroneArmorMultiplier.DoOneWayDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.DroneArmorMultiplierEnabled));
-            nudDroneArmorMultiplier.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.DroneArmorMultiplier));
-            chkESSLossReducesMaximumOnly.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ESSLossReducesMaximumOnly));
-            chkExceedNegativeQualities.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedNegativeQualities));
+            nudDroneArmorMultiplier.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.DroneArmorMultiplier));
+            chkESSLossReducesMaximumOnly.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ESSLossReducesMaximumOnly));
+            chkExceedNegativeQualities.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedNegativeQualities));
             chkExceedNegativeQualitiesLimit.DoOneWayDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.ExceedNegativeQualities));
-            chkExceedNegativeQualitiesLimit.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedNegativeQualitiesLimit));
-            chkExceedPositiveQualities.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedPositiveQualities));
+            chkExceedNegativeQualitiesLimit.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedNegativeQualitiesLimit));
+            chkExceedPositiveQualities.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedPositiveQualities));
             chkExceedPositiveQualitiesCostDoubled.DoOneWayDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.ExceedPositiveQualities));
-            chkExceedPositiveQualitiesCostDoubled.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedPositiveQualitiesCostDoubled));
-            chkExtendAnyDetectionSpell.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExtendAnyDetectionSpell));
-            chkAllowCyberwareESSDiscounts.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowCyberwareESSDiscounts));
-            chkAllowInitiation.DoDatabinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowInitiationInCreateMode));
+            chkExceedPositiveQualitiesCostDoubled.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExceedPositiveQualitiesCostDoubled));
+            chkExtendAnyDetectionSpell.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.ExtendAnyDetectionSpell));
+            chkAllowCyberwareESSDiscounts.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowCyberwareESSDiscounts));
+            chkAllowInitiation.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.AllowInitiationInCreateMode));
 
             // Karma options.
-            nudMetatypeCostsKarmaMultiplier.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.MetatypeCostsKarmaMultiplier));
-            nudKarmaNuyenPer.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenPerBP));
-            nudKarmaAttribute.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaAttribute));
-            nudKarmaQuality.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaQuality));
-            nudKarmaSpecialization.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpecialization));
-            nudKarmaKnowledgeSpecialization.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaKnowledgeSpecialization));
-            nudKarmaNewKnowledgeSkill.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewKnowledgeSkill));
-            nudKarmaNewActiveSkill.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewActiveSkill));
-            nudKarmaNewSkillGroup.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewSkillGroup));
-            nudKarmaImproveKnowledgeSkill.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveKnowledgeSkill));
-            nudKarmaImproveActiveSkill.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveActiveSkill));
-            nudKarmaImproveSkillGroup.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveSkillGroup));
-            nudKarmaSpell.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpell));
-            nudKarmaNewComplexForm.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewComplexForm));
-            nudKarmaNewAIProgram.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewAIProgram));
-            nudKarmaNewAIAdvancedProgram.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewAIAdvancedProgram));
-            nudKarmaMetamagic.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMetamagic));
-            nudKarmaContact.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaContact));
-            nudKarmaEnemy.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaEnemy));
-            nudKarmaCarryover.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCarryover));
-            nudKarmaSpirit.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpirit));
-            nudKarmaSpiritFettering.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpiritFettering));
-            nudKarmaTechnique.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaTechnique));
-            nudKarmaInitiation.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiation));
-            nudKarmaInitiationFlat.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiationFlat));
-            nudKarmaJoinGroup.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaJoinGroup));
-            nudKarmaLeaveGroup.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaLeaveGroup));
-            nudKarmaMysticAdeptPowerPoint.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMysticAdeptPowerPoint));
+            nudMetatypeCostsKarmaMultiplier.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.MetatypeCostsKarmaMultiplier));
+            nudKarmaNuyenPer.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenPerBP));
+            nudKarmaAttribute.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaAttribute));
+            nudKarmaQuality.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaQuality));
+            nudKarmaSpecialization.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpecialization));
+            nudKarmaKnowledgeSpecialization.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaKnowledgeSpecialization));
+            nudKarmaNewKnowledgeSkill.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewKnowledgeSkill));
+            nudKarmaNewActiveSkill.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewActiveSkill));
+            nudKarmaNewSkillGroup.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewSkillGroup));
+            nudKarmaImproveKnowledgeSkill.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveKnowledgeSkill));
+            nudKarmaImproveActiveSkill.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveActiveSkill));
+            nudKarmaImproveSkillGroup.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaImproveSkillGroup));
+            nudKarmaSpell.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpell));
+            nudKarmaNewComplexForm.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewComplexForm));
+            nudKarmaNewAIProgram.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewAIProgram));
+            nudKarmaNewAIAdvancedProgram.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaNewAIAdvancedProgram));
+            nudKarmaMetamagic.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMetamagic));
+            nudKarmaContact.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaContact));
+            nudKarmaEnemy.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaEnemy));
+            nudKarmaCarryover.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCarryover));
+            nudKarmaSpirit.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpirit));
+            nudKarmaSpiritFettering.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpiritFettering));
+            nudKarmaTechnique.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaTechnique));
+            nudKarmaInitiation.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiation));
+            nudKarmaInitiationFlat.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaInitiationFlat));
+            nudKarmaJoinGroup.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaJoinGroup));
+            nudKarmaLeaveGroup.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaLeaveGroup));
+            nudKarmaMysticAdeptPowerPoint.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMysticAdeptPowerPoint));
 
             // Focus costs
-            nudKarmaAlchemicalFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaAlchemicalFocus));
-            nudKarmaBanishingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaBanishingFocus));
-            nudKarmaBindingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaBindingFocus));
-            nudKarmaCenteringFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCenteringFocus));
-            nudKarmaCounterspellingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCounterspellingFocus));
-            nudKarmaDisenchantingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaDisenchantingFocus));
-            nudKarmaFlexibleSignatureFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaFlexibleSignatureFocus));
-            nudKarmaMaskingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMaskingFocus));
-            nudKarmaPowerFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaPowerFocus));
-            nudKarmaQiFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaQiFocus));
-            nudKarmaRitualSpellcastingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaRitualSpellcastingFocus));
-            nudKarmaSpellcastingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpellcastingFocus));
-            nudKarmaSpellShapingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpellShapingFocus));
-            nudKarmaSummoningFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSummoningFocus));
-            nudKarmaSustainingFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSustainingFocus));
-            nudKarmaWeaponFocus.DoDatabinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaWeaponFocus));
+            nudKarmaAlchemicalFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaAlchemicalFocus));
+            nudKarmaBanishingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaBanishingFocus));
+            nudKarmaBindingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaBindingFocus));
+            nudKarmaCenteringFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCenteringFocus));
+            nudKarmaCounterspellingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaCounterspellingFocus));
+            nudKarmaDisenchantingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaDisenchantingFocus));
+            nudKarmaFlexibleSignatureFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaFlexibleSignatureFocus));
+            nudKarmaMaskingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaMaskingFocus));
+            nudKarmaPowerFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaPowerFocus));
+            nudKarmaQiFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaQiFocus));
+            nudKarmaRitualSpellcastingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaRitualSpellcastingFocus));
+            nudKarmaSpellcastingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpellcastingFocus));
+            nudKarmaSpellShapingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpellShapingFocus));
+            nudKarmaSummoningFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSummoningFocus));
+            nudKarmaSustainingFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSustainingFocus));
+            nudKarmaWeaponFocus.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaWeaponFocus));
 
             _objCharacterOptions.PropertyChanged += OptionsChanged;
         }
@@ -1201,23 +1217,31 @@ namespace Chummer
                 IsDirty = !_objCharacterOptions.Equals(_objReferenceCharacterOptions);
                 cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
                 cmdSave.Enabled = cmdSaveAs.Enabled && !_objCharacterOptions.BuiltInOption;
-                if (e.PropertyName == nameof(CharacterOptions.EnabledCustomDataDirectoryPaths))
-                    PopulateOptions();
-                else if (e.PropertyName == nameof(CharacterOptions.PriorityTable))
-                    PopulatePriorityTableList();
+                switch (e.PropertyName)
+                {
+                    case nameof(CharacterOptions.EnabledCustomDataDirectoryPaths):
+                        PopulateOptions();
+                        break;
+
+                    case nameof(CharacterOptions.PriorityTable):
+                        PopulatePriorityTableList();
+                        break;
+                }
             }
-            else if (e.PropertyName == nameof(CharacterOptions.BuiltInOption))
-            {
-                cmdSave.Enabled = cmdSaveAs.Enabled
-                                  && !_objCharacterOptions.BuiltInOption;
-            }
-            else if (e.PropertyName == nameof(CharacterOptions.PriorityArray)
-                     || e.PropertyName == nameof(CharacterOptions.BuildMethod))
-            {
-                cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
-                cmdSave.Enabled = cmdSaveAs.Enabled
-                                  && !_objCharacterOptions.BuiltInOption;
-            }
+            else switch (e.PropertyName)
+                {
+                    case nameof(CharacterOptions.BuiltInOption):
+                        cmdSave.Enabled = cmdSaveAs.Enabled
+                                          && !_objCharacterOptions.BuiltInOption;
+                        break;
+
+                    case nameof(CharacterOptions.PriorityArray):
+                    case nameof(CharacterOptions.BuildMethod):
+                        cmdSaveAs.Enabled = IsDirty && IsAllTextBoxesLegal;
+                        cmdSave.Enabled = cmdSaveAs.Enabled
+                                          && !_objCharacterOptions.BuiltInOption;
+                        break;
+                }
         }
 
         private bool IsAllTextBoxesLegal
@@ -1280,6 +1304,7 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Methods
     }
 }

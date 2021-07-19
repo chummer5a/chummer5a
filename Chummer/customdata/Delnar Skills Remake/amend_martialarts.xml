@@ -22,18 +22,18 @@
   <martialarts>
     <martialart>
       <bonus>
-        <addskillspecializationoption xpathfilter="skill = 'Blades'" >
+        <addskillspecializationoption xpathfilter="skill = 'Blades'">
           <skill>Edged Weapons</skill>
         </addskillspecializationoption>
-        <addskillspecializationoption xpathfilter="skill = 'Clubs'" >
+        <addskillspecializationoption xpathfilter="skill = 'Clubs'">
           <skill>Blunt Weapons</skill>
         </addskillspecializationoption>
-        <addskillspecializationoption xpathfilter="skills" >
-          <skills xpathfilter="skill = 'Automatics'" >
+        <addskillspecializationoption xpathfilter="skills">
+          <skills xpathfilter="skill = 'Automatics'">
             <skill>Heavy Weapons</skill>
           </skills>
         </addskillspecializationoption>
-        <addskillspecializationoption xpathfilter="skill = 'Gymnastics'" >
+        <addskillspecializationoption xpathfilter="skill = 'Gymnastics'">
           <skill>Acrobatics</skill>
         </addskillspecializationoption>
       </bonus>

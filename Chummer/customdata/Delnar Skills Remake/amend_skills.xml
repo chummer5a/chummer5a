@@ -19,7 +19,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <skillgroups amendoperation="replace" >
+  <skillgroups amendoperation="replace">
     <name>Firearms</name>
     <name>Close Combat</name>
     <name>Projectile Weapons</name>
@@ -39,7 +39,7 @@
     <name>Processing</name>
     <name>Tasking</name>
   </skillgroups>
-  <categories amendoperation="replace" >
+  <categories amendoperation="replace">
     <category type="active">Combat Active</category>
     <category type="active">Physical Active</category>
     <category type="active">Social Active</category>

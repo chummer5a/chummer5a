@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-using System.Data;
+
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
-using System.Text;
+using Chummer.Backend.Equipment;
 
 // ReSharper disable LocalizableElement
 
@@ -49,6 +50,7 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
+
         public frmSelectArmor(Character objCharacter)
         {
             InitializeComponent();
@@ -265,27 +267,29 @@ namespace Chummer
                 case Keys.Down when lstArmor.SelectedIndex + 1 < lstArmor.Items.Count:
                     lstArmor.SelectedIndex += 1;
                     break;
-                case Keys.Down:
-                {
-                    if (lstArmor.Items.Count > 0)
-                    {
-                        lstArmor.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstArmor.Items.Count > 0)
+                        {
+                            lstArmor.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstArmor.SelectedIndex - 1 >= 0:
                     lstArmor.SelectedIndex -= 1;
                     break;
-                case Keys.Up:
-                {
-                    if (lstArmor.Items.Count > 0)
-                    {
-                        lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstArmor.Items.Count > 0)
+                        {
+                            lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -307,9 +311,11 @@ namespace Chummer
         {
             AcceptForm();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -335,15 +341,15 @@ namespace Chummer
         /// </summary>
         public decimal Markup => _decMarkup;
 
-
         /// <summary>
         /// Markup percentage.
         /// </summary>
         public int Rating => _intRating;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Refreshes the displayed lists
         /// </summary>
@@ -445,6 +451,7 @@ namespace Chummer
                     dgvArmor.DataSource = set;
                     dgvArmor.DataMember = "armor";
                     break;
+
                 default:
                     List<ListItem> lstArmors = new List<ListItem>();
                     int intOverLimit = 0;
@@ -503,6 +510,7 @@ namespace Chummer
                     break;
             }
         }
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -514,6 +522,7 @@ namespace Chummer
                 case 0:
                     strSelectedId = lstArmor.SelectedValue?.ToString();
                     break;
+
                 case 1:
                     strSelectedId = dgvArmor.SelectedRows[0].Cells[0].Value?.ToString();
                     break;
@@ -546,7 +555,7 @@ namespace Chummer
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
                 _objSelectedArmor.Rating = nudRating.ValueAsInt;
 
-                lblSource.Text =     _objSelectedArmor.SourceDetail.ToString();
+                lblSource.Text = _objSelectedArmor.SourceDetail.ToString();
                 lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
@@ -598,6 +607,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

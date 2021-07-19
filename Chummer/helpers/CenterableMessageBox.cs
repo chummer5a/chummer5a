@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
@@ -136,7 +137,7 @@ namespace Chummer
             public IntPtr wParam;
             public uint message;
             public IntPtr hwnd;
-        };
+        }
 
         static CenterableMessageBox()
         {

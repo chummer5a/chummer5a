@@ -12,7 +12,7 @@ namespace ChummerHub.Services
     {
         private readonly ILogger _logger;
         private const string keyVaultUrl = "https://sinnersvault.vault.azure.net/";
-        private static SecretClient client = null;
+        private static SecretClient client;
 
         public KeyVault(ILogger logger)
         {

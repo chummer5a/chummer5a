@@ -33,15 +33,15 @@ namespace Chummer
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.imgLink = new System.Windows.Forms.PictureBox();
             this.imgNotes = new System.Windows.Forms.PictureBox();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
             this.cboMetatype = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmsContact.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
@@ -79,7 +79,52 @@ namespace Chummer
             this.tsRemoveCharacter,
             this.tsAttachCharacter});
             this.cmsContact.Name = "cmsContact";
-            this.cmsContact.Size = new System.Drawing.Size(181, 92);
+            this.cmsContact.Size = new System.Drawing.Size(172, 70);
+            // 
+            // tsContactOpen
+            // 
+            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go;
+            this.tsContactOpen.ImageDpi120 = null;
+            this.tsContactOpen.ImageDpi144 = null;
+            this.tsContactOpen.ImageDpi192 = global::Chummer.Properties.Resources.link_go1;
+            this.tsContactOpen.ImageDpi288 = null;
+            this.tsContactOpen.ImageDpi384 = null;
+            this.tsContactOpen.ImageDpi96 = global::Chummer.Properties.Resources.link_go;
+            this.tsContactOpen.Name = "tsContactOpen";
+            this.tsContactOpen.Size = new System.Drawing.Size(171, 22);
+            this.tsContactOpen.Tag = "MenuItem_OpenCharacter";
+            this.tsContactOpen.Text = "Open Character";
+            this.tsContactOpen.Click += new System.EventHandler(this.tsContactOpen_Click);
+            // 
+            // tsRemoveCharacter
+            // 
+            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete;
+            this.tsRemoveCharacter.ImageDpi120 = null;
+            this.tsRemoveCharacter.ImageDpi144 = null;
+            this.tsRemoveCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_delete1;
+            this.tsRemoveCharacter.ImageDpi288 = null;
+            this.tsRemoveCharacter.ImageDpi384 = null;
+            this.tsRemoveCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_delete;
+            this.tsRemoveCharacter.Name = "tsRemoveCharacter";
+            this.tsRemoveCharacter.Size = new System.Drawing.Size(171, 22);
+            this.tsRemoveCharacter.Tag = "MenuItem_RemoveCharacter";
+            this.tsRemoveCharacter.Text = "Remove Character";
+            this.tsRemoveCharacter.Click += new System.EventHandler(this.tsRemoveCharacter_Click);
+            // 
+            // tsAttachCharacter
+            // 
+            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.ImageDpi120 = null;
+            this.tsAttachCharacter.ImageDpi144 = null;
+            this.tsAttachCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_add1;
+            this.tsAttachCharacter.ImageDpi288 = null;
+            this.tsAttachCharacter.ImageDpi384 = null;
+            this.tsAttachCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.Name = "tsAttachCharacter";
+            this.tsAttachCharacter.Size = new System.Drawing.Size(171, 22);
+            this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
+            this.tsAttachCharacter.Text = "Attach Character";
+            this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
             // 
             // imgLink
             // 
@@ -144,7 +189,8 @@ namespace Chummer
             this.cboMetatype.Size = new System.Drawing.Size(271, 21);
             this.cboMetatype.TabIndex = 24;
             this.cboMetatype.TooltipText = "";
-            this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
+            this.cboMetatype.SelectedIndexChanged += new System.EventHandler(this.UpdateMetatype);
+            this.cboMetatype.Leave += new System.EventHandler(this.UpdateMetatype);
             // 
             // tlpMain
             // 
@@ -173,51 +219,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(756, 30);
             this.tlpMain.TabIndex = 25;
-            // 
-            // tsContactOpen
-            // 
-            this.tsContactOpen.Image = global::Chummer.Properties.Resources.link_go;
-            this.tsContactOpen.ImageDpi120 = null;
-            this.tsContactOpen.ImageDpi144 = null;
-            this.tsContactOpen.ImageDpi192 = global::Chummer.Properties.Resources.link_go1;
-            this.tsContactOpen.ImageDpi288 = null;
-            this.tsContactOpen.ImageDpi384 = null;
-            this.tsContactOpen.ImageDpi96 = global::Chummer.Properties.Resources.link_go;
-            this.tsContactOpen.Name = "tsContactOpen";
-            this.tsContactOpen.Size = new System.Drawing.Size(180, 22);
-            this.tsContactOpen.Tag = "MenuItem_OpenCharacter";
-            this.tsContactOpen.Text = "Open Character";
-            this.tsContactOpen.Click += new System.EventHandler(this.tsContactOpen_Click);
-            // 
-            // tsRemoveCharacter
-            // 
-            this.tsRemoveCharacter.Image = global::Chummer.Properties.Resources.link_delete;
-            this.tsRemoveCharacter.ImageDpi120 = null;
-            this.tsRemoveCharacter.ImageDpi144 = null;
-            this.tsRemoveCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_delete1;
-            this.tsRemoveCharacter.ImageDpi288 = null;
-            this.tsRemoveCharacter.ImageDpi384 = null;
-            this.tsRemoveCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_delete;
-            this.tsRemoveCharacter.Name = "tsRemoveCharacter";
-            this.tsRemoveCharacter.Size = new System.Drawing.Size(180, 22);
-            this.tsRemoveCharacter.Tag = "MenuItem_RemoveCharacter";
-            this.tsRemoveCharacter.Text = "Remove Character";
-            this.tsRemoveCharacter.Click += new System.EventHandler(this.tsRemoveCharacter_Click);
-            // 
-            // tsAttachCharacter
-            // 
-            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
-            this.tsAttachCharacter.ImageDpi120 = null;
-            this.tsAttachCharacter.ImageDpi144 = null;
-            this.tsAttachCharacter.ImageDpi192 = global::Chummer.Properties.Resources.link_add1;
-            this.tsAttachCharacter.ImageDpi288 = null;
-            this.tsAttachCharacter.ImageDpi384 = null;
-            this.tsAttachCharacter.ImageDpi96 = global::Chummer.Properties.Resources.link_add;
-            this.tsAttachCharacter.Name = "tsAttachCharacter";
-            this.tsAttachCharacter.Size = new System.Drawing.Size(180, 22);
-            this.tsAttachCharacter.Tag = "MenuItem_AttachCharacter";
-            this.tsAttachCharacter.Text = "Attach Character";
-            this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
             // 
             // PetControl
             // 

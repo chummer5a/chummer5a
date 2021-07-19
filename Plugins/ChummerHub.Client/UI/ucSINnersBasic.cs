@@ -306,7 +306,7 @@ namespace ChummerHub.Client.UI
             {
                 gs.MySINnerGroupSearch.OnGroupJoinCallback += async (o, group) =>
                 {
-                    await PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
+                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                 };
                 gs.ShowDialog(Program.MainForm);
             }

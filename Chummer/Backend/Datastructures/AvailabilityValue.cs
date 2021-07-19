@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Globalization;
 
@@ -40,6 +41,7 @@ namespace Chummer
                 case 'R':
                     Suffix = chrSuffix;
                     break;
+
                 default:
                     Suffix = 'Z';
                     break;
@@ -90,6 +92,7 @@ namespace Chummer
             {
                 case 'F':
                     return strBaseAvail + LanguageManager.GetString("String_AvailForbidden", strLanguage);
+
                 case 'R':
                     return strBaseAvail + LanguageManager.GetString("String_AvailRestricted", strLanguage);
             }

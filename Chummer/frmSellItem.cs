@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -24,6 +25,7 @@ namespace Chummer
     public partial class frmSellItem : Form
     {
         #region Control Events
+
         public frmSellItem()
         {
             InitializeComponent();
@@ -40,14 +42,16 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// The percentage the item will be sold at.
         /// </summary>
         public decimal SellPercent => (nudPercent.Value / 100.0m);
 
-        #endregion
+        #endregion Properties
     }
 }

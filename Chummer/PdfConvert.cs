@@ -1,10 +1,11 @@
 using System;
-using System.Diagnostics;
-using System.Text;
-using System.IO;
-using System.Threading;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Chummer;
 
@@ -12,12 +13,16 @@ namespace Codaxy.WkHtmlToPdf
 {
     public class PdfConvertException : Exception
     {
-        public PdfConvertException(string msg) : base(msg) { }
+        public PdfConvertException(string msg) : base(msg)
+        {
+        }
     }
 
     public class PdfConvertTimeoutException : PdfConvertException
     {
-        public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.") { }
+        public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.")
+        {
+        }
     }
 
     public class PdfOutput
@@ -61,7 +66,7 @@ namespace Codaxy.WkHtmlToPdf
         private static PdfConvertEnvironment _e;
 
         public static PdfConvertEnvironment Environment => _e ?? (_e = new PdfConvertEnvironment
-            {WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation()});
+        { WkHtmlToPdfPath = GetWkhtmlToPdfExeLocation() });
 
         private static string GetWkhtmlToPdfExeLocation()
         {
@@ -88,10 +93,7 @@ namespace Codaxy.WkHtmlToPdf
                 return filePath;
 
             filePath = Path.Combine(programFilesPath, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
-            if (File.Exists(filePath))
-                return filePath;
-
-            return Path.Combine(programFilesx86Path, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
+            return File.Exists(filePath) ? filePath : Path.Combine(programFilesx86Path, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
         }
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfOutput output)
@@ -179,7 +181,6 @@ namespace Codaxy.WkHtmlToPdf
             if (!string.IsNullOrEmpty(document.FooterFontName))
                 paramsBuilder.AppendFormat("--footer-font-name \"{0}\" ", document.FooterFontName);
 
-
             if (document.ExtraParams != null)
                 foreach (var extraParam in document.ExtraParams)
                     paramsBuilder.AppendFormat("--{0} {1} ", extraParam.Key, extraParam.Value);
@@ -256,15 +257,19 @@ namespace Codaxy.WkHtmlToPdf
                                     byte[] buffer = Encoding.UTF8.GetBytes(document.Html);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverload
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         stream.BaseStream.Write(buffer, 0, buffer.Length);
                                         // ReSharper disable once MethodHasAsyncOverload
                                         stream.WriteLine();
                                     }
                                     else
                                     {
-                                        await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length);
-                                        await stream.WriteLineAsync();
+                                        try
+                                        {
+                                            await stream.BaseStream.WriteAsync(buffer, 0, buffer.Length, objCancellationTokenSource.Token);
+                                            await stream.WriteLineAsync();
+                                        }
+                                        catch (TaskCanceledException) { }
                                     }
                                 }
                             }
@@ -317,12 +322,11 @@ namespace Codaxy.WkHtmlToPdf
                     }
                 }
 
-
                 if (woutput.OutputStream != null)
                 {
                     using (Stream fs = new FileStream(outputPdfFilePath, FileMode.Open))
                     {
-                        byte[] buffer = new byte[32 * 1024];
+                        byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
                         int read;
 
                         if (blnSync)
@@ -337,6 +341,8 @@ namespace Codaxy.WkHtmlToPdf
                             while ((read = await fs.ReadAsync(buffer, 0, buffer.Length)) > 0)
                                 await woutput.OutputStream.WriteAsync(buffer, 0, read);
                         }
+
+                        ArrayPool<byte>.Shared.Return(buffer);
                     }
                 }
 
@@ -345,7 +351,6 @@ namespace Codaxy.WkHtmlToPdf
                     byte[] pdfFileBytes = File.ReadAllBytes(outputPdfFilePath);
                     woutput.OutputCallback(document, pdfFileBytes);
                 }
-
             }
             finally
             {

@@ -16,19 +16,20 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections.Concurrent;
- using System.Globalization;
- using System.IO;
- using System.Text;
- using System.Text.RegularExpressions;
- using System.Threading;
- using System.Threading.Tasks;
- using System.Windows.Forms;
+
+using System;
+using System.Collections.Concurrent;
+using System.Globalization;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
- using Newtonsoft.Json;
- using Formatting = Newtonsoft.Json.Formatting;
+using Newtonsoft.Json;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Chummer
 {
@@ -48,6 +49,7 @@ namespace Chummer
         private bool _blnLoading = true;
 
         #region Control Events
+
         public frmExport(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -82,8 +84,8 @@ namespace Chummer
 
         private void frmExport_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objXmlGeneratorCancellationTokenSource?.Cancel();
-            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel();
+            _objXmlGeneratorCancellationTokenSource?.Cancel(false);
+            _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -144,10 +146,14 @@ namespace Chummer
                 return;
             if (_objCharacterXml == null)
             {
-                _objCharacterXmlGeneratorCancellationTokenSource?.Cancel();
+                _objCharacterXmlGeneratorCancellationTokenSource?.Cancel(false);
                 _objCharacterXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
-                if (_tskCharacterXmlGenerator?.IsCompleted == false)
-                    await _tskCharacterXmlGenerator;
+                try
+                {
+                    if (_tskCharacterXmlGenerator?.IsCompleted == false)
+                        await _tskCharacterXmlGenerator;
+                }
+                catch (TaskCanceledException) { }
                 _tskCharacterXmlGenerator = Task.Run(GenerateCharacterXml, _objCharacterXmlGeneratorCancellationTokenSource.Token);
                 return;
             }
@@ -165,10 +171,14 @@ namespace Chummer
                 }
                 else
                 {
-                    _objXmlGeneratorCancellationTokenSource?.Cancel();
+                    _objXmlGeneratorCancellationTokenSource?.Cancel(false);
                     _objXmlGeneratorCancellationTokenSource = new CancellationTokenSource();
-                    if (_tskXmlGenerator?.IsCompleted == false)
-                        await _tskXmlGenerator;
+                    try
+                    {
+                        if (_tskXmlGenerator?.IsCompleted == false)
+                            await _tskXmlGenerator;
+                    }
+                    catch (TaskCanceledException) { }
                     _tskXmlGenerator = _strXslt == "Export JSON"
                         ? Task.Run(GenerateJson, _objXmlGeneratorCancellationTokenSource.Token)
                         : Task.Run(GenerateXml, _objXmlGeneratorCancellationTokenSource.Token);
@@ -191,9 +201,10 @@ namespace Chummer
             txtText.SelectAll();
         }
 
-        #endregion
+        #endregion Control Events
 
         #region Methods
+
         private async Task GenerateCharacterXml()
         {
             using (new CursorWait(this))
@@ -211,6 +222,7 @@ namespace Chummer
         }
 
         #region XML
+
         private void ExportNormal(string destination = null)
         {
             string strSaveFile = destination;
@@ -322,7 +334,9 @@ namespace Chummer
             _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt), x => new Tuple<string, string>(strText, strDisplayText), (a, b) => new Tuple<string, string>(strText, strDisplayText));
             txtText.DoThreadSafe(() => txtText.Text = strDisplayText);
         }
-        #endregion
+
+        #endregion XML
+
         #region JSON
 
         private void ExportJson(string destination = null)
@@ -348,8 +362,9 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-        #endregion
 
-        #endregion
+        #endregion JSON
+
+        #endregion Methods
     }
 }

@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
-using Chummer.Backend.Skills;
-using System.Text;
 using System.Xml.XPath;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -47,6 +48,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
+
         public frmSelectSkill(Character objCharacter, string strSource = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
@@ -223,9 +225,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Only Skills of the selected Category should be in the list.
         /// </summary>
@@ -337,6 +341,7 @@ namespace Chummer
         {
             set => _intMaximumRating = value;
         }
-        #endregion
+
+        #endregion Properties
     }
 }

@@ -92,7 +92,7 @@ namespace Chummer
         }
 
         private static readonly ConcurrentDictionary<KeyArray<string>, XmlReference> s_DicXmlDocuments =
-            new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is languge + array of all file paths for the complete combination of data used
+            new ConcurrentDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
         private static bool s_blnSetDataDirectoriesLoaded = true;
         private static readonly object s_SetDataDirectoriesLock = new object();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
@@ -282,7 +282,7 @@ namespace Chummer
         /// <param name="strLanguage">Language in which to load the data document.</param>
         /// <param name="blnLoadFile">Whether to force reloading content even if the file already exists.</param>
         [Annotations.NotNull]
-        private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
+        private static async Task<XmlDocument> LoadCoreAsync(bool blnSync, string strFileName, IReadOnlyCollection<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false)
         {
             bool blnFileFound = false;
             string strPath = string.Empty;
@@ -325,10 +325,11 @@ namespace Chummer
             if (!s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 int intEmergencyRelease = 0;
-                while (true) // Hacky as heck, but it works for now. We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
+                xmlReferenceOfReturn = new XmlReference();
+                // We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
+                for (; intEmergencyRelease <= 1000; ++intEmergencyRelease)
                 {
                     // The file was not found in the reference list, so it must be loaded.
-                    xmlReferenceOfReturn = new XmlReference();
                     if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
                     {
                         blnLoadFile = true;
@@ -337,12 +338,13 @@ namespace Chummer
                     // It somehow got added in the meantime, so let's fetch it again
                     if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
                         break;
-                    if (intEmergencyRelease > 1000) // Shouldn't every happen, but just in case it does, emergency exit out of the loading function
-                    {
-                        Utils.BreakIfDebug();
-                        return new XmlDocument { XmlResolver = null };
-                    }
-                    ++intEmergencyRelease;
+                    // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
+                    xmlReferenceOfReturn = new XmlReference();
+                }
+                if (intEmergencyRelease > 1000) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
+                {
+                    Utils.BreakIfDebug();
+                    return new XmlDocument { XmlResolver = null };
                 }
             }
 
@@ -675,7 +677,7 @@ namespace Chummer
         /// <param name="strFileName">Name of the file that would be modified by custom data files.</param>
         /// <param name="lstPaths">Paths to check for custom data files relevant to <paramref name="strFileName"/>.</param>
         /// <returns>A list of paths with <paramref name="lstPaths"/> that is relevant to <paramref name="strFileName"/>, in the same order that they are in in <paramref name="lstPaths"/>.</returns>
-        private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyList<string> lstPaths)
+        private static List<string> CompileRelevantCustomDataPaths(string strFileName, IReadOnlyCollection<string> lstPaths)
         {
             List<string> lstReturn = new List<string>();
             if (strFileName != "improvements.xml" && lstPaths?.Count > 0)
@@ -795,30 +797,31 @@ namespace Chummer
                                 XmlNode objParentNode = objChild.ParentNode;
                                 if (objParentNode == null)
                                     continue;
-                                StringBuilder sbdFilter = new StringBuilder();
+                                string strFilter = string.Empty;
                                 XmlNode xmlIdNode = objChild["id"];
                                 if (xmlIdNode != null)
-                                    sbdFilter.Append("id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    strFilter = "id = " + xmlIdNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                 XmlNode xmlNameNode = objChild["name"];
                                 if (xmlNameNode != null)
                                 {
-                                    if (sbdFilter.Length > 0)
-                                        sbdFilter.Append(" and ");
-                                    sbdFilter.Append("name = " + xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath());
+                                    strFilter += (string.IsNullOrEmpty(strFilter)
+                                                     ? "name = "
+                                                     : " and name = ") +
+                                                 xmlNameNode.InnerText.Replace("&amp;", "&").CleanXPath();
                                 }
 
                                 // Only do this if the child has the name or id field since this is what we must match on.
-                                if (sbdFilter.Length > 0)
+                                if (!string.IsNullOrEmpty(strFilter))
                                 {
-                                    StringBuilder sbdParentNodeFilter = new StringBuilder();
+                                    string strParentNodeFilter = string.Empty;
                                     if (objParentNode.Attributes?.Count > 0)
                                     {
-                                        sbdParentNodeFilter.AppendJoin(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
+                                        strParentNodeFilter = string.Join(" and ", objParentNode.Attributes.Cast<XmlAttribute>().Select(x =>
                                             "@" + x.Name + " = " + x.Value.Replace("&amp;", "&").CleanXPath()));
-                                        if (sbdParentNodeFilter.Length > 0)
-                                            sbdParentNodeFilter.Insert(0, '[').Append(']');
                                     }
-                                    XmlNode objItem = xmlDataDoc.SelectSingleNode("/chummer/" + objParentNode.Name + sbdParentNodeFilter + '/' + objChild.Name + '[' + sbdFilter + ']');
+                                    XmlNode objItem = xmlDataDoc.SelectSingleNode(string.IsNullOrEmpty(strParentNodeFilter)
+                                        ? "/chummer/" + objParentNode.Name + '/' + objChild.Name + '[' + strFilter + ']'
+                                        : "/chummer/" + objParentNode.Name + '[' + strParentNodeFilter + "]/" + objChild.Name + '[' + strFilter + ']');
                                     if (objItem != null)
                                         lstDelete.Add(objChild);
                                 }
@@ -1129,32 +1132,35 @@ namespace Chummer
                                             {
                                                 XmlNodeType eChildNodeType = xmlChild.NodeType;
 
-                                                // Skip adding comments, they're pointless for the purposes of Chummer5a's code
-                                                if (eChildNodeType == XmlNodeType.Comment)
-                                                    continue;
-
-                                                // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
-                                                if (eChildNodeType == XmlNodeType.Text ||
-                                                    eChildNodeType == XmlNodeType.Attribute ||
-                                                    eChildNodeType == XmlNodeType.CDATA)
+                                                switch (eChildNodeType)
                                                 {
-                                                    bool blnItemFound = false;
-                                                    if (objNodeToEdit.HasChildNodes)
+                                                    // Skip adding comments, they're pointless for the purposes of Chummer5a's code
+                                                    case XmlNodeType.Comment:
+                                                        continue;
+                                                    // Text, Attributes, and CDATA should add their values to existing children of the same type if possible
+                                                    case XmlNodeType.Text:
+                                                    case XmlNodeType.Attribute:
+                                                    case XmlNodeType.CDATA:
                                                     {
-                                                        foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
+                                                        bool blnItemFound = false;
+                                                        if (objNodeToEdit.HasChildNodes)
                                                         {
-                                                            if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
-                                                                objChildToEdit.Name == xmlChild.Name))
+                                                            foreach (XmlNode objChildToEdit in objNodeToEdit.ChildNodes)
                                                             {
-                                                                objChildToEdit.Value += xmlChild.Value;
-                                                                blnItemFound = true;
-                                                                break;
+                                                                if (objChildToEdit.NodeType == eChildNodeType && (eChildNodeType != XmlNodeType.Attribute ||
+                                                                    objChildToEdit.Name == xmlChild.Name))
+                                                                {
+                                                                    objChildToEdit.Value += xmlChild.Value;
+                                                                    blnItemFound = true;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
-                                                    }
 
-                                                    if (blnItemFound)
-                                                        continue;
+                                                        if (blnItemFound)
+                                                            continue;
+                                                        break;
+                                                    }
                                                 }
 
                                                 StripAmendAttributesRecursively(xmlChild);
@@ -1285,16 +1291,15 @@ namespace Chummer
                     {
                         // Because this is a list, foreach will move from oldest element to newest
                         // List used instead of a Queue because the youngest element needs to be retrieved first if no additions were made
-                        foreach (Tuple<XmlNode, string> objDataToAdd in lstExtraNodesToAddIfNotFound)
+                        foreach ((XmlNode xmlNodeToAdd, string strXPathToAdd) in lstExtraNodesToAddIfNotFound)
                         {
-                            using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(objDataToAdd.Item2))
+                            using (XmlNodeList xmlParentNodeList = xmlDoc.SelectNodes(strXPathToAdd))
                             {
-                                if (xmlParentNodeList?.Count > 0)
+                                if (!(xmlParentNodeList?.Count > 0))
+                                    continue;
+                                foreach (XmlNode xmlParentNode in xmlParentNodeList)
                                 {
-                                    foreach (XmlNode xmlParentNode in xmlParentNodeList)
-                                    {
-                                        xmlParentNode.AppendChild(xmlDoc.ImportNode(objDataToAdd.Item1, false));
-                                    }
+                                    xmlParentNode.AppendChild(xmlDoc.ImportNode(xmlNodeToAdd, false));
                                 }
                             }
                         }

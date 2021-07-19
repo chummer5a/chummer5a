@@ -250,6 +250,7 @@
     </book>
     <book>
       <id>e997ea2e-916b-4482-a381-bf8c49cb08ff</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>Krime Katalog</name>
       <code>KK</code>
     </book>
@@ -257,6 +258,11 @@
       <id>2ca3c7ce-3cdb-4bf2-b430-32ecef09fda1</id>
       <name>Shadowrun Missions Season 8</name>
       <code>SRM8</code>
+    </book>
+    <book>
+      <id>6b6e6d3b-4f52-42b3-a58a-142723a59cc1</id>
+      <name>Shadowrun Mission Chicago</name>
+      <code>SRMC</code>
     </book>
     <book>
       <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>

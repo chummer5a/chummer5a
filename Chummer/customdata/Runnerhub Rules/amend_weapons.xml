@@ -31,12 +31,12 @@
     </weapon>
     <weapon>
       <name>Onotari HL-13</name>
-      <notes>Following the pattern of the XM30, configurations may be changed using an "automatics + logic [mental]" (5, 1 minute) extended test.        
+      <notes>Following the pattern of the XM30, configurations may be changed using an "automatics + logic [mental]" (5, 1 minute) extended test.
       </notes>
     </weapon>
     <weapon>
       <name>Stoner-Ares M-22A1</name>
-      <hide/>
+      <hide />
     </weapon>
     <weapon>
       <name>Aztechnology Blood Drinker Combat Axe</name>

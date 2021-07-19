@@ -838,5 +838,25 @@
       <xml forced="True"><![CDATA[{select}]]></xml>
       <page>Adds a free echo to the character. Any echo can be added, even ones for which the character would not be normally eligible.</page>
     </improvement>
+    <improvement>
+      <name>Add Spell</name>
+      <id>addspell</id>
+      <internal>addspell</internal>
+      <fields>
+        <field>SelectSpell</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free spell to the character. Any spell can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
+    <improvement>
+      <name>Add Complex Form</name>
+      <id>addcomplexform</id>
+      <internal>addcomplexform</internal>
+      <fields>
+        <field>SelectComplexForm</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free Complex Form to the character. Any Complex Form can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
   </improvements>
 </chummer>

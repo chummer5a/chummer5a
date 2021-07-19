@@ -32,8 +32,8 @@ namespace ChummerHub.Controllers
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     {
 
-        private readonly UserManager<ApplicationUser> _userManager = null;
-        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
@@ -356,14 +356,12 @@ namespace ChummerHub.Controllers
         }
 
         [HttpGet]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByAuthorization")]
         [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         public async Task<ActionResult<ResultAccountGetUserByAuthorization>> GetUserByAuthorization()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         {
             ResultAccountGetUserByAuthorization res;
             try
@@ -373,9 +371,9 @@ namespace ChummerHub.Controllers
                 if (user == null)
                     return NotFound(res);
 
-                user.PasswordHash = string.Empty;
-                user.SecurityStamp = string.Empty;
-                return Ok(res);
+                res.MyApplicationUser.PasswordHash = string.Empty;
+                res.MyApplicationUser.SecurityStamp = string.Empty;
+                return res;
             }
             catch (Exception e)
             {
@@ -384,7 +382,7 @@ namespace ChummerHub.Controllers
                     var user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)

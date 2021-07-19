@@ -41,7 +41,7 @@ namespace Chummer
 
         public IEnumerator<T> GetEnumerator()
         {
-            return (IEnumerator<T>) _aobjItems.GetEnumerator();
+            return (IEnumerator<T>)_aobjItems.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -92,7 +92,7 @@ namespace Chummer
 
         public override bool Equals(object obj)
         {
-            return obj != null && Equals((KeyArray<T>) obj);
+            return obj != null && Equals((KeyArray<T>)obj);
         }
     }
 }

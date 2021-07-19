@@ -7156,7 +7156,7 @@
     </cyberware>
     <cyberware>
       <id>9e961542-91fd-4ea3-bffc-9e19111610bf</id>
-      <name>Cortexbombe (2050)</name>
+      <name>Cortex Bomb (2050)</name>
       <limit>False</limit>
       <category>Headware</category>
       <ess>0</ess>
@@ -7282,7 +7282,7 @@
     </cyberware>
     <cyberware>
       <id>a94e3b9d-d87e-494b-a898-7a1c40befc3a</id>
-      <name>Cosmetic Modifications Eye (2050)</name>
+      <name>Cosmetic Modifications: Eye (2050)</name>
       <limit>False</limit>
       <category>Eyeware</category>
       <ess>0</ess>
@@ -7294,7 +7294,7 @@
     </cyberware>
     <cyberware>
       <id>23ee3559-2347-4f3f-9ae5-1a3ba3e47edd</id>
-      <name>Cosmetic Modifications Ear (2050)</name>
+      <name>Cosmetic Modifications: Ear (2050)</name>
       <limit>False</limit>
       <category>Earware</category>
       <ess>0</ess>
@@ -7331,7 +7331,7 @@
     </cyberware>
     <cyberware>
       <id>9ac9d78f-6a33-4bd1-bb9c-539b487ae618</id>
-      <name>Vision Magnifcation (2050)</name>
+      <name>Vision Magnification (2050)</name>
       <limit>False</limit>
       <category>Eyeware</category>
       <ess>0.2</ess>
@@ -7367,7 +7367,7 @@
     </cyberware>
     <cyberware>
       <id>75f71536-b34a-452e-9045-17ce7ef02daf</id>
-      <name>Hearing Amplifcation (2050)</name>
+      <name>Hearing Amplification (2050)</name>
       <category>Earware</category>
       <ess>0.2</ess>
       <capacity>[1]</capacity>
@@ -7406,18 +7406,6 @@
       <capacity>[1]</capacity>
       <avail>8R</avail>
       <cost>7000</cost>
-      <source>2050</source>
-      <page>201</page>
-    </cyberware>
-    <cyberware>
-      <id>c6fc9433-b33f-45ac-b05a-6341b4d5accc</id>
-      <name>Cosmetic Modifcations Ear</name>
-      <limit>False</limit>
-      <category>Earware</category>
-      <ess>0</ess>
-      <capacity>0</capacity>
-      <avail>2</avail>
-      <cost>1000</cost>
       <source>2050</source>
       <page>201</page>
     </cyberware>
@@ -7705,7 +7693,7 @@
     </cyberware>
     <cyberware>
       <id>df427266-60ea-4289-94ee-a30bb46ceb89</id>
-      <name>Cosmetic Modifcations (2050)</name>
+      <name>Cosmetic Modifications (2050)</name>
       <limit>False</limit>
       <category>Bodyware</category>
       <ess>0</ess>
@@ -7804,7 +7792,7 @@
     </cyberware>
     <cyberware>
       <id>1fd9fa93-a617-4261-b0ab-9255a4750fcb</id>
-      <name>Boosted Refexes (2050)</name>
+      <name>Boosted Reflexes (2050)</name>
       <category>Bodyware</category>
       <ess>FixedValues(2,3,5)</ess>
       <capacity>0</capacity>

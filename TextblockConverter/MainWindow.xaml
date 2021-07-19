@@ -29,15 +29,15 @@
 	  Margin="80,41,10,0"
 	  AcceptsReturn="True"
 	  TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="26" VerticalAlignment="Top" />
-		<Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="65"/>
-		<Label Content="GUID" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="65"/>
-		<Label Content="Source" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="65"/>
+		<Label Content="Name" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="65" />
+		<Label Content="GUID" HorizontalAlignment="Left" Margin="10,41,0,0" VerticalAlignment="Top" Width="65" />
+		<Label Content="Source" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="65" />
 		<TextBox
 	  x:Name="txtSource"
 	  Margin="80,72,280,0"
 	  AcceptsReturn="True"
 	  TextWrapping="Wrap" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Height="26" VerticalAlignment="Top" />
-		<Label Content="Page" Margin="0,72,172,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="65"/>
+		<Label Content="Page" Margin="0,72,172,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="65" />
 		<TextBox
 	  x:Name="txtPage"
 	  Margin="0,72,10,0"
@@ -48,6 +48,5 @@
 	  Margin="0,0,113,10"
 	  Click="CreateSpirit"
 	  Content="Create as Spirit" HorizontalAlignment="Right" Width="98" Height="20" VerticalAlignment="Bottom" />
-
 	</Grid>
 </Window>

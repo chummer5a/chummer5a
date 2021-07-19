@@ -17,8 +17,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360 
-     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0 
+<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360
+     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0
 -->
 
 <chummer>
@@ -1418,7 +1418,7 @@
       <id>3550fe0d-453d-431f-bd84-d9cd50581f39</id>
       <name>Radiation Tolerance</name>
       <translate></translate>
-    </bioware> 
+    </bioware>
       <bioware>
       <id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
       <name>Immunization</name>
@@ -2775,7 +2775,7 @@
         <id>1f074d5a-af5a-4f9e-9863-5a328da6cec3</id>
         <name>Harrow Spirit</name>
         <translate></translate>
-      </metatype> 
+      </metatype>
       <metatype>
         <id>b82e0b0e-e3c4-4d41-94f2-7a93f8247dbf</id>
         <name>Carnage Spirit</name>
@@ -17033,7 +17033,7 @@
                 <id>35d509e2-f0c7-432f-919a-34e526079097</id>
                 <name>Mana Window</name>
                 <translate>法力窥口</translate>
-            </spell>  
+            </spell>
       <spell>
                 <id>237ee405-062f-4e11-96a8-78336e1d6a0a</id>
                 <name>Astral Window</name>
@@ -17104,7 +17104,7 @@
                 <name>Decrease [Attribute]</name>
                 <translate>降低[属性]</translate>
             </spell>
-            
+
             <spell>
                 <id>3d019dea-b5ae-4f9c-ab14-eb8a329ed9ba</id>
                 <name>Detox</name>
@@ -21337,7 +21337,7 @@
         <name>Grapple Fist</name>
         <translate>射勾手</translate>
       </weapon>
-      
+
     <weapon>
       <id>3a60c3ee-9f6f-46cb-be2f-bec0bccc3318</id>
       <name>Tactical Grapple Gun</name>

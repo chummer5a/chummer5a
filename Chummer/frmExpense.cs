@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -28,6 +29,7 @@ namespace Chummer
         private readonly CharacterOptions _objCharacterOptions;
 
         #region Control Events
+
         public frmExpense(CharacterOptions objCharacterOptions)
         {
             _objCharacterOptions = objCharacterOptions;
@@ -41,7 +43,7 @@ namespace Chummer
             if (GlobalOptions.CustomDateTimeFormats)
             {
                 datDate.CustomFormat = GlobalOptions.DatesIncludeTime
-                    ? GlobalOptions.CustomDateFormat+GlobalOptions.CustomTimeFormat
+                    ? GlobalOptions.CustomDateFormat + GlobalOptions.CustomTimeFormat
                     : GlobalOptions.CustomDateFormat;
             }
             else
@@ -73,9 +75,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Amount gained or spent.
         /// </summary>
@@ -163,9 +167,10 @@ namespace Chummer
         public bool KarmaNuyenExchange { get; set; }
         public string KarmaNuyenExchangeString { get; set; }
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Lock fields on the Form so that only the Date and Reason fields are editable.
         /// </summary>
@@ -178,7 +183,8 @@ namespace Chummer
             if (blnEditAmount && nudAmount.Minimum < 0)
                 nudAmount.Minimum = nudAmount.Maximum * -1;
         }
-        #endregion
+
+        #endregion Methods
 
         private void chkKarmaNuyenExchange_CheckedChanged(object sender, EventArgs e)
         {

@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using System.Text;
 using NLog;
 
 namespace Chummer
@@ -68,6 +69,7 @@ namespace Chummer
         }
 
         #region Control Events
+
         public frmSelectCyberware(Character objCharacter, Improvement.ImprovementSource objWareSource, object objParentNode = null)
         {
             InitializeComponent();
@@ -84,6 +86,7 @@ namespace Chummer
                     _strNodeXPath = "cyberwares/cyberware";
                     Tag = "Title_SelectCyberware";
                     break;
+
                 case Improvement.ImprovementSource.Bioware:
                     _objMode = Mode.Bioware;
                     _xmlBaseCyberwareDataNode = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode("/chummer");
@@ -486,27 +489,29 @@ namespace Chummer
                 case Keys.Down when lstCyberware.SelectedIndex + 1 < lstCyberware.Items.Count:
                     lstCyberware.SelectedIndex++;
                     break;
-                case Keys.Down:
-                {
-                    if (lstCyberware.Items.Count > 0)
-                    {
-                        lstCyberware.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstCyberware.Items.Count > 0)
+                        {
+                            lstCyberware.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstCyberware.SelectedIndex - 1 >= 0:
                     lstCyberware.SelectedIndex--;
                     break;
-                case Keys.Up:
-                {
-                    if (lstCyberware.Items.Count > 0)
-                    {
-                        lstCyberware.SelectedIndex = lstCyberware.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstCyberware.Items.Count > 0)
+                        {
+                            lstCyberware.SelectedIndex = lstCyberware.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -522,9 +527,11 @@ namespace Chummer
                 return;
             UpdateCyberwareInfo();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -659,9 +666,11 @@ namespace Chummer
         /// Default text string to filter by.
         /// </summary>
         public string DefaultSearchText { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Update the Cyberware's information based on the Cyberware selected and current Rating.
         /// </summary>
@@ -909,6 +918,7 @@ namespace Chummer
         }
 
         private bool _blnSkipListRefresh;
+
         private List<ListItem> RefreshList(string strCategory, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
@@ -924,7 +934,7 @@ namespace Chummer
                 return new List<ListItem>();
             }
 
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() +')');
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             StringBuilder sbdCategoryFilter;
             if (strCategory != "Show All" && !Upgrading && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdCategoryFilter = new StringBuilder("category = " + strCategory.CleanXPath() + " or category = \"None\"");
@@ -1020,7 +1030,7 @@ namespace Chummer
                         // Assumes topmost parent is an AND node
                         continue;
                     }
-                    
+
                     if (!string.IsNullOrEmpty(_strHasModularMounts))
                     {
                         string strBlocksMounts = xmlCyberware.SelectSingleNode("blocksmounts")?.Value;
@@ -1045,7 +1055,7 @@ namespace Chummer
                             }
                         }
                     }
-                    
+
                     if (!string.IsNullOrEmpty(_strDisallowedMounts))
                     {
                         string strLoopMount = xmlCyberware.SelectSingleNode("modularmount")?.Value;
@@ -1140,7 +1150,7 @@ namespace Chummer
                     lstCyberwares.Add(new ListItem(xmlCyberware.SelectSingleNode("id")?.Value, xmlCyberware.SelectSingleNode("translate")?.Value ?? xmlCyberware.SelectSingleNode("name")?.Value));
                     if (blnTerminateAfterFirst)
                         break;
-                    NextCyberware: ;
+                    NextCyberware:;
                 }
             }
 
@@ -1169,6 +1179,7 @@ namespace Chummer
 
             return lstCyberwares;
         }
+
         /// <summary>
         /// Is a given piece of ware being Upgraded?
         /// </summary>
@@ -1269,6 +1280,7 @@ namespace Chummer
         }
 
         private bool _blnPopulatingGrades;
+
         /// <summary>
         /// Populate the list of Cyberware Grades.
         /// </summary>
@@ -1360,6 +1372,7 @@ namespace Chummer
         }
 
         private bool _blnPopulatingCategories;
+
         private void PopulateCategories()
         {
             if (_blnPopulatingCategories)
@@ -1417,6 +1430,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

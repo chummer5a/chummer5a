@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -57,6 +58,7 @@ namespace Chummer
         private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public CritterPower(Character objCharacter)
         {
             // Create the GUID for the new Power.
@@ -250,10 +252,9 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        #endregion
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -370,7 +371,6 @@ namespace Chummer
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -445,9 +445,11 @@ namespace Chummer
                 case "M":
                     strReturn = LanguageManager.GetString("String_SpellTypeMana", strLanguage);
                     break;
+
                 case "P":
                     strReturn = LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
                     break;
+
                 default:
                     strReturn = LanguageManager.GetString("String_None", strLanguage);
                     break;
@@ -477,18 +479,23 @@ namespace Chummer
                 case "Auto":
                     strReturn = LanguageManager.GetString("String_ActionAutomatic", strLanguage);
                     break;
+
                 case "Free":
                     strReturn = LanguageManager.GetString("String_ActionFree", strLanguage);
                     break;
+
                 case "Simple":
                     strReturn = LanguageManager.GetString("String_ActionSimple", strLanguage);
                     break;
+
                 case "Complex":
                     strReturn = LanguageManager.GetString("String_ActionComplex", strLanguage);
                     break;
+
                 case "Special":
                     strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
                     break;
+
                 default:
                     strReturn = LanguageManager.GetString("String_None", strLanguage);
                     break;
@@ -545,12 +552,15 @@ namespace Chummer
                 case "Instant":
                     strReturn = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguage);
                     break;
+
                 case "Sustained":
                     strReturn = LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
                     break;
+
                 case "Always":
                     strReturn = LanguageManager.GetString("String_SpellDurationAlways", strLanguage);
                     break;
+
                 case "Special":
                     strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
                     break;
@@ -635,9 +645,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsCritterPower)
         {
             if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -670,7 +682,8 @@ namespace Chummer
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {

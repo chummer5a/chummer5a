@@ -1222,6 +1222,30 @@
       <key>MessageTitle_IncorrectGameVersion</key>
       <text>Incorrect Game Version</text>
     </string>
+    <string>
+      <key>Message_NoLinkedPDF</key>
+      <text>No linked PDF file for {0} was found. Do you wish to open Global Options to link a PDF file?</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoLinkedPDF</key>
+      <text>No PDF File Found</text>
+    </string>
+    <string>
+      <key>Message_NoPDFProgramSet</key>
+      <text>No program for reading PDFs has been set up in Chummer's Global Options. Do you wish to open Global Options to link a program?</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoPDFProgramSet</key>
+      <text>No PDF Reader Found</text>
+    </string>
+    <string>
+      <key>Message_TooManyHandlesWarning</key>
+      <text>Because Chummer is built on a very old foundation, it has problems with handling too many characters open at once. The program has detected that it is nearing that threshold and could potentially silently crash if it opens {0}.\n\nDo you wish to continue?</text>
+    </string>
+    <string>
+      <key>MessageTitle_TooManyHandlesWarning</key>
+      <text>Potential Silent Crash Possible</text>
+    </string>
     <!-- End Region -->
     <!-- Region Attributes -->
     <string>
@@ -9882,6 +9906,10 @@
     <string>
       <key>Message_AutosaveFound</key>
       <text>An autosave for the file {0} was found that was saved more recently ({1}) than the current file being loaded ({2}).\n\nDo you wish to load the autosave instead? If you do, the original {0} will not be altered until you manually save.</text>
+    </string>
+    <string>
+      <key>Message_PossibleCrashAutosaveFound</key>
+      <text>An autosave for the file {0} was found saved on {1} that may have been for an unsaved character lost during an unclean exit.\n\nDo you wish to load this autosave?</text>
     </string>
     <string>
       <key>MessageTitle_AutosaveFound</key>

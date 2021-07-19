@@ -60,18 +60,21 @@ namespace Chummer
                     _strBaseXPath = "art";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
+
                 case Mode.Enhancement:
                     _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/enhancements");
                     _strLocalName = LanguageManager.GetString("String_Enhancement");
                     _strBaseXPath = "enhancement";
                     _strXPathFilter = _objCharacter.Options.BookXPath();
                     break;
+
                 case Mode.Enchantment:
                     _strLocalName = LanguageManager.GetString("String_Enchantment");
                     _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Options.BookXPath() + ")";
                     break;
+
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual");
                     _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
@@ -147,14 +150,16 @@ namespace Chummer
         }
 
         #region Properties
+
         /// <summary>
         /// Id of the Art that was selected in the dialogue.
         /// </summary>
         public string SelectedItem => _strSelectedItem;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
@@ -215,6 +220,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

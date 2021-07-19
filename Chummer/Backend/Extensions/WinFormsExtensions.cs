@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -31,6 +32,7 @@ namespace Chummer
     public static class WinFormsExtensions
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         #region Controls Extensions
 
         /// <summary>
@@ -42,7 +44,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void DoThreadSafe(this Control objControl, Action funcToRun)
         {
-             objControl.DoThreadSafeCore(true, funcToRun);
+            objControl.DoThreadSafeCore(true, funcToRun);
         }
 
         /// <summary>
@@ -70,6 +72,7 @@ namespace Chummer
                 return;
             try
             {
+                // ReSharper disable once InlineTemporaryVariable
                 Control myControlCopy = objControl; //to have the Object for sure, regardless of other threads
                 if (myControlCopy.InvokeRequired)
                 {
@@ -215,7 +218,7 @@ namespace Chummer
                     }
                 }
                 else
-                    funcToRun.Invoke();
+                    objReturn = funcToRun.Invoke();
             }
             catch (ObjectDisposedException) // e)
             {
@@ -268,7 +271,7 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        public static void DoDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
         {
             if (objControl == null)
                 return;
@@ -287,7 +290,7 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoOneWayNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        public static void DoOneWayNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
         {
             if (objControl == null)
                 return;
@@ -305,7 +308,7 @@ namespace Chummer
         /// <param name="strPropertyName">Control's property to which <paramref name="strDataMember"/> is being bound</param>
         /// <param name="objDataSource">Instance owner of <paramref name="strDataMember"/></param>
         /// <param name="strDataMember">Name of the property of <paramref name="objDataSource"/> that is being bound to <paramref name="objControl"/>'s <paramref name="strPropertyName"/> property</param>
-        public static void DoNegatableDatabinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
+        public static void DoNegatableDataBinding(this Control objControl, string strPropertyName, object objDataSource, string strDataMember)
         {
             if (objControl == null)
                 return;
@@ -322,13 +325,15 @@ namespace Chummer
         /// <param name="objControl"></param>
         /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsNullOrDisposed([CanBeNull]this Control objControl)
+        public static bool IsNullOrDisposed([CanBeNull] this Control objControl)
         {
             return objControl == null || objControl.Disposing || objControl.IsDisposed;
         }
-        #endregion
+
+        #endregion Controls Extensions
 
         #region ComboBox Extensions
+
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems)
         {
             if (ReferenceEquals(lsbThis.DataSource, lstItems))
@@ -391,9 +396,11 @@ namespace Chummer
                 cboThis.BindingContext = new BindingContext();
             cboThis.DataSource = lstItemsToSet;
         }
-        #endregion
+
+        #endregion ComboBox Extensions
 
         #region TreeNode Extensions
+
         public static TreeNode GetTopParent(this TreeNode objThis)
         {
             if (objThis == null)
@@ -471,7 +478,8 @@ namespace Chummer
             }
             return intReturn;
         }
-        #endregion
+
+        #endregion TreeNode Extensions
 
         #region TreeView Extensions
 
@@ -626,7 +634,7 @@ namespace Chummer
             if (treTree == null || string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid()) return null;
             foreach (TreeNode objNode in treTree.Nodes)
             {
-                if (objNode?.Tag != null &&  objNode.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
+                if (objNode?.Tag is IHasInternalId node && node.InternalId == strGuid || objNode?.Tag?.ToString() == strGuid)
                     return objNode;
 
                 if (!blnDeep) continue;
@@ -683,9 +691,11 @@ namespace Chummer
             }
             return intReturn;
         }
-        #endregion
+
+        #endregion TreeView Extensions
 
         #region TreeNodeCollection Extensions
+
         /// <summary>
         /// Recursive method to clear the background color for all TreeNodes except the one currently being hovered over during a drag-and-drop operation.
         /// </summary>
@@ -702,6 +712,7 @@ namespace Chummer
                 objChild.Nodes.ClearNodeBackground(objHighlighted);
             }
         }
-        #endregion
+
+        #endregion TreeNodeCollection Extensions
     }
 }

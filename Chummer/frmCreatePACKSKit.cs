@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Text;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -31,12 +32,13 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
+
         public frmCreatePACKSKit(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -67,7 +69,7 @@ namespace Chummer
             if (XmlManager.LoadXPath("packs.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths)
                 .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -177,10 +179,17 @@ namespace Chummer
                         // Determine if Positive or Negative Qualities exist.
                         foreach (Quality objQuality in _objCharacter.Qualities)
                         {
-                            if (objQuality.Type == QualityType.Positive)
-                                blnPositive = true;
-                            if (objQuality.Type == QualityType.Negative)
-                                blnNegative = true;
+                            switch (objQuality.Type)
+                            {
+                                case QualityType.Positive:
+                                    blnPositive = true;
+                                    break;
+
+                                case QualityType.Negative:
+                                    blnNegative = true;
+                                    break;
+                            }
+
                             if (blnPositive && blnNegative)
                                 break;
                         }
@@ -384,10 +393,17 @@ namespace Chummer
                         bool blnBioware = false;
                         foreach (Cyberware objCharacterCyberware in _objCharacter.Cyberware)
                         {
-                            if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                blnBioware = true;
-                            if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                                blnCyberware = true;
+                            switch (objCharacterCyberware.SourceType)
+                            {
+                                case Improvement.ImprovementSource.Bioware:
+                                    blnBioware = true;
+                                    break;
+
+                                case Improvement.ImprovementSource.Cyberware:
+                                    blnCyberware = true;
+                                    break;
+                            }
+
                             if (blnCyberware && blnBioware)
                                 break;
                         }
@@ -736,7 +752,6 @@ namespace Chummer
                 }
             }
 
-
             Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated"), txtName.Text),
                 LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
@@ -746,15 +761,17 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-#endregion
 
-#region Methods
+        #endregion Control Events
+
+        #region Methods
+
         /// <summary>
         /// Recursively write out all Gear information since these can be nested pretty deep.
         /// </summary>
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
-        private void WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
+        private static void WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
         {
             // <gears>
             objWriter.WriteStartElement("gears");
@@ -782,6 +799,7 @@ namespace Chummer
             // </gears>
             objWriter.WriteEndElement();
         }
-#endregion
+
+        #endregion Methods
     }
 }

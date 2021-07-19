@@ -137,8 +137,6 @@ namespace ChummerHub.Services.GoogleDrive
                     ApplicationName = "SINners",
                     GZipEnabled = true,
                 };
-                CancellationToken cancellationToken = new CancellationToken();
-
 
                 // Create Drive API service.
                 var service = new DriveService(initializer);

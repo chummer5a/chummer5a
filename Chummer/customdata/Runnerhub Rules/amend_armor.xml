@@ -31,14 +31,14 @@
       <forcemodcategory>Cloaks</forcemodcategory>
     </armor>
     <armor>
-      <name>Designed Cloak</name>      
+      <name>Designed Cloak</name>
       <forcemodcategory>Cloaks</forcemodcategory>
-    </armor>  
+    </armor>
     <armor>
       <name>Ares Arms Bug Stomper Custom Armor</name>
-      <hide/>
+      <hide />
     </armor>
-    <armor xpathfilter='not(starts-with(armor, "+"))'>      
+    <armor xpathfilter='not(starts-with(armor, "+"))'>
       <addmodcategory amendoperation="addnode">Full Armor Piece</addmodcategory>
     </armor>
   </armors>

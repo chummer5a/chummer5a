@@ -259,7 +259,7 @@
       <range>LOS</range>
       <duration>Instant</duration>
       <bonus>
-        <selecttext xml="strings.xml" xpath="/chummer/elements/*" allowedit="True"/>
+        <selecttext xml="strings.xml" xpath="/chummer/elements/*" allowedit="True" />
       </bonus>
       <source>SR5</source>
       <page>396</page>
@@ -3444,6 +3444,7 @@
     </power>
     <power>
       <id>6cbf07be-1491-46c1-ab67-d5f1dd4aa709</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>Digitigrade Legs</name>
       <category>Paranormal/Infected</category>
       <type>P</type>

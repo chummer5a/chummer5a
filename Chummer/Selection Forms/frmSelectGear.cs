@@ -16,15 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
+using System.Globalization;
+using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
-using System.Text;
-using System.Globalization;
 
 namespace Chummer
 {
@@ -57,6 +58,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
+
         public frmSelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "", string strAllowedNames = "")
         {
             if (objCharacter == null)
@@ -137,8 +139,7 @@ namespace Chummer
                 }
                 if (_lstCategory.All(x => x.Value.ToString() != strCategory) && RefreshList(strCategory, false, true).Count > 0)
                 {
-                    string strInnerText = strCategory;
-                    _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
+                    _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strCategory));
                 }
             }
             _lstCategory.Sort(CompareListItems.CompareNames);
@@ -355,27 +356,29 @@ namespace Chummer
                 case Keys.Down when lstGear.SelectedIndex + 1 < lstGear.Items.Count:
                     lstGear.SelectedIndex += 1;
                     break;
-                case Keys.Down:
-                {
-                    if (lstGear.Items.Count > 0)
-                    {
-                        lstGear.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstGear.Items.Count > 0)
+                        {
+                            lstGear.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstGear.SelectedIndex - 1 >= 0:
                     lstGear.SelectedIndex -= 1;
                     break;
-                case Keys.Up:
-                {
-                    if (lstGear.Items.Count > 0)
-                    {
-                        lstGear.SelectedIndex = lstGear.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstGear.Items.Count > 0)
+                        {
+                            lstGear.SelectedIndex = lstGear.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -384,9 +387,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -516,9 +521,11 @@ namespace Chummer
         /// What weapon type is our gear allowed to have
         /// </summary>
         public string ForceItemAmmoForWeaponType { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Update the Gear's information based on the Gear selected and current Rating.
         /// </summary>
@@ -1083,6 +1090,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

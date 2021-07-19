@@ -9,19 +9,19 @@
         <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
       </xsl:if>
       <td valign="top">
-        <xsl:value-of select="name"/>
+        <xsl:value-of select="name" />
         <xsl:if test="grouped = 'True'">*</xsl:if>
-        <xsl:if test="spec != '' and exotic = 'True'"> (<xsl:value-of select="spec"/>)</xsl:if>
+        <xsl:if test="spec != '' and exotic = 'True'"> (<xsl:value-of select="spec" />)</xsl:if>
         <span style="color: grey; font-size: 6pt; vertical-align: bottom;">
           <xsl:text> </xsl:text>
-          <xsl:value-of select="displayattribute"/>
+          <xsl:value-of select="displayattribute" />
           <xsl:choose>
             <xsl:when test="ratingmod &gt; 0">
-              +<xsl:value-of select="ratingmod"/>
+              +<xsl:value-of select="ratingmod" />
             </xsl:when>
             <xsl:when test="ratingmod &lt; 0">
               <xsl:text> </xsl:text>
-              <xsl:value-of select="ratingmod"/>
+              <xsl:value-of select="ratingmod" />
             </xsl:when>
           </xsl:choose>
         </span>
@@ -31,7 +31,7 @@
               <xsl:if test="position() != 1">
                 <br />
               </xsl:if>
-              (<xsl:value-of select="name"/> +<xsl:value-of select="specbonus"/>)
+              (<xsl:value-of select="name" /> +<xsl:value-of select="specbonus" />)
             </xsl:for-each>
           </p>
         </xsl:if>
@@ -39,19 +39,18 @@
       <xsl:choose>
         <xsl:when test="isnativelanguage = 'True'">
           <td colspan="2" style="valign: top; text-align: center;">
-            <xsl:value-of select="$lang.Native"/>
+            <xsl:value-of select="$lang.Native" />
           </td>
         </xsl:when>
         <xsl:otherwise>
           <td style="valign: top; text-align: center;">
-            <xsl:value-of select="rating"/>
+            <xsl:value-of select="rating" />
           </td>
           <td style="valign: top; text-align: center;">
-            <xsl:value-of select="total"/>
+            <xsl:value-of select="total" />
           </td>
         </xsl:otherwise>
       </xsl:choose>
     </tr>
-
   </xsl:template>
 </xsl:stylesheet>

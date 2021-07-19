@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -28,7 +29,9 @@ namespace Chummer.UI.Shared
     public partial class LimitTabUserControl : UserControl
     {
         private Character _objCharacter;
+
         public event PropertyChangedEventHandler MakeDirty;
+
         public event PropertyChangedEventHandler MakeDirtyWithCharacterUpdate;
 
         public LimitTabUserControl()
@@ -82,7 +85,9 @@ namespace Chummer.UI.Shared
             _objCharacter.LimitModifiers.CollectionChanged += LimitModifierCollectionChanged;
             RefreshLimitModifiers();
         }
+
         #region Click Events
+
         private void cmdAddLimitModifier_Click(object sender, EventArgs e)
         {
             using (frmSelectLimitModifier frmPickLimitModifier = new frmSelectLimitModifier(null, "Physical", "Mental", "Social"))
@@ -155,7 +160,9 @@ namespace Chummer.UI.Shared
         {
             UpdateLimitModifier();
         }
-        #endregion
+
+        #endregion Click Events
+
         #region Methods
 
         /// <summary>
@@ -177,7 +184,7 @@ namespace Chummer.UI.Shared
             }
             treNode.ForeColor = objNotes.PreferredColor;
             treNode.ToolTipText = objNotes.Notes.WordWrap();
-            MakeDirty?.Invoke(null,null);
+            MakeDirty?.Invoke(null, null);
         }
 
         private void RefreshLimitModifiers(NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs = null)
@@ -210,12 +217,15 @@ namespace Chummer.UI.Shared
                         case Improvement.ImprovementType.LimitModifier:
                             intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
                             break;
+
                         case Improvement.ImprovementType.PhysicalLimit:
                             intTargetLimit = (int)LimitType.Physical;
                             break;
+
                         case Improvement.ImprovementType.MentalLimit:
                             intTargetLimit = (int)LimitType.Mental;
                             break;
+
                         case Improvement.ImprovementType.SocialLimit:
                             intTargetLimit = (int)LimitType.Social;
                             break;
@@ -242,12 +252,20 @@ namespace Chummer.UI.Shared
                             };
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
-                                if (objImprovement.ImproveType == Improvement.ImprovementType.SocialLimit)
-                                    objImprovement.ImprovedName = "Social";
-                                else if (objImprovement.ImproveType == Improvement.ImprovementType.MentalLimit)
-                                    objImprovement.ImprovedName = "Mental";
-                                else
-                                    objImprovement.ImprovedName = "Physical";
+                                switch (objImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SocialLimit:
+                                        objImprovement.ImprovedName = "Social";
+                                        break;
+
+                                    case Improvement.ImprovementType.MentalLimit:
+                                        objImprovement.ImprovedName = "Mental";
+                                        break;
+
+                                    default:
+                                        objImprovement.ImprovedName = "Physical";
+                                        break;
+                                }
                             }
 
                             objParentNode.Nodes.Add(objNode);
@@ -292,6 +310,7 @@ namespace Chummer.UI.Shared
                             }
                         }
                         break;
+
                     case NotifyCollectionChangedAction.Remove:
                         {
                             foreach (LimitModifier objLimitModifier in notifyCollectionChangedEventArgs.OldItems)
@@ -307,6 +326,7 @@ namespace Chummer.UI.Shared
                             }
                         }
                         break;
+
                     case NotifyCollectionChangedAction.Replace:
                         {
                             List<TreeNode> lstOldParentNodes = new List<TreeNode>(notifyCollectionChangedEventArgs.OldItems.Count);
@@ -348,6 +368,7 @@ namespace Chummer.UI.Shared
                             }
                         }
                         break;
+
                     case NotifyCollectionChangedAction.Reset:
                         {
                             RefreshLimitModifiers();
@@ -364,31 +385,34 @@ namespace Chummer.UI.Shared
                     switch (intTargetLimit)
                     {
                         case 0:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Physical",
                                 Text = LanguageManager.GetString("Node_Physical")
                             };
                             treLimit.Nodes.Insert(0, objParentNode);
                             break;
+
                         case 1:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Mental",
                                 Text = LanguageManager.GetString("Node_Mental")
                             };
                             treLimit.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode);
                             break;
+
                         case 2:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Social",
                                 Text = LanguageManager.GetString("Node_Social")
                             };
                             treLimit.Nodes.Insert((aobjLimitNodes[0] == null ? 0 : 1) + (aobjLimitNodes[1] == null ? 0 : 1), objParentNode);
                             break;
+
                         case 3:
-                            objParentNode = new TreeNode()
+                            objParentNode = new TreeNode
                             {
                                 Tag = "Node_Astral",
                                 Text = LanguageManager.GetString("Node_Astral")
@@ -445,13 +469,15 @@ namespace Chummer.UI.Shared
         {
             RefreshLimitModifiers(notifyCollectionChangedEventArgs);
         }
-        #endregion
+
+        #endregion Methods
+
         #region Properties
 
         public ContextMenuStrip LimitContextMenuStrip => cmsLimitModifierNotesOnly;
         public TreeView LimitTreeView => treLimit;
 
-        #endregion
+        #endregion Properties
 
         private void treLimit_AfterSelect(object sender, TreeViewEventArgs e)
         {

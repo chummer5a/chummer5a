@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Windows.Forms;
 
 namespace Chummer
@@ -25,6 +26,7 @@ namespace Chummer
         private readonly int _intToolTipWrap;
 
         private ToolTip _tt;
+
         public ToolTip ToolTipObject
         {
             get => _tt;
@@ -39,6 +41,7 @@ namespace Chummer
         }
 
         private string _strToolTipText = string.Empty;
+
         public string ToolTipText
         {
             get => _strToolTipText;
@@ -53,7 +56,9 @@ namespace Chummer
             }
         }
 
-        public ButtonWithToolTip() : this(ToolTipFactory.ToolTip) { }
+        public ButtonWithToolTip() : this(ToolTipFactory.ToolTip)
+        {
+        }
 
         public ButtonWithToolTip(ToolTip objToolTip, int intToolTipWrap = -1)
         {

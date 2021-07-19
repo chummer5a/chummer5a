@@ -18,7 +18,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                _objVersionUpdaterCancellationTokenSource?.Cancel();
                 _frmRoller?.Dispose();
                 _frmUpdate?.Dispose();
                 _mascotChummy?.Dispose();

@@ -39,9 +39,11 @@ namespace Chummer
 
         // Events.
         public event TextEventHandler ContactDetailChanged;
+
         public event EventHandler DeleteContact;
 
         #region Control Events
+
         public ContactControl(Contact objContact)
         {
             _objContact = objContact ?? throw new ArgumentNullException(nameof(objContact));
@@ -126,7 +128,6 @@ namespace Chummer
             if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
-
 
         private void cmdExpand_Click(object sender, EventArgs e)
         {
@@ -404,9 +405,11 @@ namespace Chummer
             if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Contact object this is linked to.
         /// </summary>
@@ -444,9 +447,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void LoadContactList()
         {
             if (_objContact.EntityType == ContactType.Enemy)
@@ -478,9 +483,9 @@ namespace Chummer
         private void DoDataBindings()
         {
             lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
-            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
-            txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
-            cmdDelete.DoDatabinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
+            txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
+            txtContactLocation.DoDataBinding("Text", _objContact, nameof(_objContact.Location));
+            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
@@ -597,20 +602,20 @@ namespace Chummer
                 imgLink.Click += imgLink_Click;
                 if (_objContact != null)
                 {
-                    chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
+                    chkGroup.DoDataBinding("Checked", _objContact, nameof(_objContact.IsGroup));
                     chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
-                    chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
+                    chkFree.DoDataBinding("Checked", _objContact, nameof(_objContact.Free));
                     chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
                     chkFree.Visible = _objContact?.CharacterObject.Created == false;
-                    chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
-                    chkFamily.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-                    chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
-                    chkBlackmail.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-                    nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
+                    chkFamily.DoDataBinding("Checked", _objContact, nameof(_objContact.Family));
+                    chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkBlackmail.DoDataBinding("Checked", _objContact, nameof(_objContact.Blackmail));
+                    chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    nudLoyalty.DoDataBinding("Value", _objContact, nameof(_objContact.Loyalty));
                     nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
-                    nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
+                    nudConnection.DoDataBinding("Value", _objContact, nameof(_objContact.Connection));
                     nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
                     nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
                     if (_objContact.EntityType == ContactType.Enemy)
@@ -668,13 +673,13 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                cboMetatype = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype"};
-                cboGender = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender"};
-                cboAge = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge"};
-                cboType = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType"};
-                cboPersonalLife = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPersonalLife"};
-                cboPreferredPayment = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPreferredPayment"};
-                cboHobbiesVice = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboHobbiesVice"};
+                cboMetatype = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype" };
+                cboGender = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
+                cboAge = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
+                cboType = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
+                cboPersonalLife = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPersonalLife" };
+                cboPreferredPayment = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPreferredPayment" };
+                cboHobbiesVice = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboHobbiesVice" };
 
                 LoadStatBlockLists();
 
@@ -970,6 +975,7 @@ namespace Chummer
             cboHobbiesVice.PopulateWithListItems(lstHobbiesVices);
             cboHobbiesVice.EndUpdate();
         }
-        #endregion
+
+        #endregion Methods
     }
 }

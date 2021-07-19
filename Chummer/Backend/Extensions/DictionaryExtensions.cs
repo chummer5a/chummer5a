@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,9 +47,8 @@ namespace Chummer
         {
             if (dicLeft.Count != dicRight.Count)
                 return false;
-            if (dicLeft.Keys.Any(x => !dicRight.ContainsKey(x)))
-                return false;
-            return dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
+            return dicLeft.Keys.All(dicRight.ContainsKey) &&
+                   dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
         }
 
         public static bool IsAnonymousType(this object objInstance)

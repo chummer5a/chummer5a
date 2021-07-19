@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -40,6 +41,7 @@ namespace Chummer
         private Improvement.ImprovementSource _eLinkedObjectType;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public SustainedObject(Character objCharacter)
         {
             // Create the GUID for the new Spell.
@@ -60,12 +62,15 @@ namespace Chummer
                 case Spell _:
                     _eLinkedObjectType = Improvement.ImprovementSource.Spell;
                     break;
+
                 case ComplexForm _:
                     _eLinkedObjectType = Improvement.ImprovementSource.ComplexForm;
                     break;
+
                 case CritterPower _:
                     _eLinkedObjectType = Improvement.ImprovementSource.CritterPower;
                     break;
+
                 default:
                     throw new ArgumentOutOfRangeException(nameof(objLinkedObject));
             }
@@ -118,12 +123,15 @@ namespace Chummer
                 case Improvement.ImprovementSource.Spell:
                     lstToSearch = _objCharacter.Spells;
                     break;
+
                 case Improvement.ImprovementSource.ComplexForm:
                     lstToSearch = _objCharacter.ComplexForms;
                     break;
+
                 case Improvement.ImprovementSource.CritterPower:
                     lstToSearch = _objCharacter.CritterPowers;
                     break;
+
                 default:
                     _guiID = Guid.Empty;
                     return;
@@ -160,9 +168,10 @@ namespace Chummer
             objWriter.WriteEndElement();
         }
 
-        #endregion
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Is the spell sustained by yourself?
         /// </summary>
@@ -224,8 +233,10 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Spell:
                     return (_objLinkedObject as Spell)?.DisplayNameShort(strLanguage);
+
                 case Improvement.ImprovementSource.ComplexForm:
                     return (_objLinkedObject as ComplexForm)?.DisplayNameShort(strLanguage);
+
                 case Improvement.ImprovementSource.CritterPower:
                     return (_objLinkedObject as CritterPower)?.DisplayNameShort(strLanguage);
             }
@@ -242,8 +253,10 @@ namespace Chummer
             {
                 case Improvement.ImprovementSource.Spell:
                     return (_objLinkedObject as Spell)?.DisplayName(strLanguage);
+
                 case Improvement.ImprovementSource.ComplexForm:
                     return (_objLinkedObject as ComplexForm)?.DisplayName(strLanguage);
+
                 case Improvement.ImprovementSource.CritterPower:
                     return (_objLinkedObject as CritterPower)?.DisplayName(strLanguage);
             }
@@ -261,8 +274,10 @@ namespace Chummer
                 {
                     case Improvement.ImprovementSource.Spell:
                         return (_objLinkedObject as Spell)?.Name;
+
                     case Improvement.ImprovementSource.ComplexForm:
                         return (_objLinkedObject as ComplexForm)?.Name;
+
                     case Improvement.ImprovementSource.CritterPower:
                         return (_objLinkedObject as CritterPower)?.Name;
                 }
@@ -271,7 +286,8 @@ namespace Chummer
         }
 
         public bool HasSustainingPenalty => SelfSustained && LinkedObjectType != Improvement.ImprovementSource.CritterPower;
-        #endregion
+
+        #endregion Properties
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -1,10 +1,10 @@
-using Chummer;
-using Chummer.Plugins;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using Chummer;
+using Chummer.Plugins;
+using Newtonsoft.Json;
 using NLog;
 
 namespace SamplePlugin
@@ -30,7 +30,7 @@ namespace SamplePlugin
                 // If you uncomment the following line as an example, the main title of the entire program gets changed!
                 //mainControl.Text = "SamplePlugin changed the title!";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
             }
@@ -49,7 +49,7 @@ namespace SamplePlugin
 
         public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
         {
-            //here you can add nodes to the character roster. 
+            //here you can add nodes to the character roster.
             return null;
         }
 
@@ -63,7 +63,6 @@ namespace SamplePlugin
         {
             try
             {
-
                 //return the UserControl for you options
                 return new ucOptions();
             }
@@ -82,14 +81,12 @@ namespace SamplePlugin
                 //that is probably bad coding AND we should change it, but for now, just stick with it...
                 return this.GetType().Assembly;
             }
-
             catch (Exception e)
             {
                 Log.Error(e);
             }
             return null;
         }
-
 
         public string GetSaveToFileElement(Character input)
         {
@@ -155,7 +152,6 @@ namespace SamplePlugin
             //here you can tweak telemetry items before they are logged.
             //if you don't know anything about logging or telemetry, just return the object
             return telemetry;
-            
         }
     }
 }

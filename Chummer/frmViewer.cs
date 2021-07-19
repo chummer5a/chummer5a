@@ -54,6 +54,7 @@ namespace Chummer
         private readonly string _strFilePathName = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo) + ".htm");
 
         #region Control Events
+
         public frmViewer()
         {
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
@@ -214,8 +215,8 @@ namespace Chummer
 
         private void frmViewer_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _objRefresherCancellationTokenSource?.Cancel();
-            _objOutputGeneratorCancellationTokenSource?.Cancel();
+            _objRefresherCancellationTokenSource?.Cancel(false);
+            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
 
             // Remove the mugshots directory when the form closes.
             string mugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
@@ -259,14 +260,16 @@ namespace Chummer
                             LanguageManager.GetString("Message_Viewer_FoundPDFPrinter"), strPdfPrinter),
                         LanguageManager.GetString("MessageTitle_Viewer_FoundPDFPrinter"),
                         MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
-                    if (ePdfPrinterDialogResult == DialogResult.Cancel)
-                        return;
-                    if (ePdfPrinterDialogResult == DialogResult.Yes)
+                    switch (ePdfPrinterDialogResult)
                     {
-                        if (DoPdfPrinterShortcut(strPdfPrinter))
+                        case DialogResult.Cancel:
+                        case DialogResult.Yes when DoPdfPrinterShortcut(strPdfPrinter):
                             return;
-                        Program.MainForm.ShowMessageBox(this,
-                            LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
+
+                        case DialogResult.Yes:
+                            Program.MainForm.ShowMessageBox(this,
+                                LanguageManager.GetString("Message_Viewer_PDFPrinterError"));
+                            break;
                     }
                 }
 
@@ -317,8 +320,8 @@ namespace Chummer
                         }
                     };
                     PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
-                        {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
-                    PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
+                    { WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe") };
+                    PdfOutput objPdfOutput = new PdfOutput { OutputFilePath = strSaveFile };
                     await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
 
                     if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
@@ -413,9 +416,11 @@ namespace Chummer
                     cmdSaveAsPdf.DoThreadSafeAsync(() => cmdSaveAsPdf.Enabled = true));
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
@@ -435,11 +440,15 @@ namespace Chummer
         /// </summary>
         public async Task RefreshCharacters()
         {
-            _objOutputGeneratorCancellationTokenSource?.Cancel();
-            _objRefresherCancellationTokenSource?.Cancel();
+            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
+            _objRefresherCancellationTokenSource?.Cancel(false);
             _objRefresherCancellationTokenSource = new CancellationTokenSource();
-            if (_tskRefresher?.IsCompleted == false)
-                await _tskRefresher;
+            try
+            {
+                if (_tskRefresher?.IsCompleted == false)
+                    await _tskRefresher;
+            }
+            catch (TaskCanceledException) { }
             _tskRefresher = Task.Run(RefreshCharacterXml, _objRefresherCancellationTokenSource.Token);
         }
 
@@ -448,10 +457,14 @@ namespace Chummer
         /// </summary>
         private async Task RefreshSheet()
         {
-            _objOutputGeneratorCancellationTokenSource?.Cancel();
+            _objOutputGeneratorCancellationTokenSource?.Cancel(false);
             _objOutputGeneratorCancellationTokenSource = new CancellationTokenSource();
-            if (_tskOutputGenerator?.IsCompleted == false)
-                await _tskOutputGenerator;
+            try
+            {
+                if (_tskOutputGenerator?.IsCompleted == false)
+                    await _tskOutputGenerator;
+            }
+            catch (TaskCanceledException) { }
             _tskOutputGenerator = Task.Run(AsyncGenerateOutput, _objOutputGeneratorCancellationTokenSource.Token);
         }
 
@@ -731,6 +744,7 @@ namespace Chummer
         {
             Task.Run(RefreshCharacters);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

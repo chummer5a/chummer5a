@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 
-namespace Chummer.UI.Table {
-
+namespace Chummer.UI.Table
+{
     [FlagsAttribute]
     public enum Alignment : byte
     {

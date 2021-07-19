@@ -49,6 +49,7 @@ namespace Chummer
         }
 
         #region Control Events
+
         public frmSelectMetamagic(Character objCharacter, Mode objMode)
         {
             InitializeComponent();
@@ -75,6 +76,7 @@ namespace Chummer
                     _objXmlDocument = _objCharacter.LoadDataXPath("metamagic.xml");
                     _strType = LanguageManager.GetString("String_Metamagic");
                     break;
+
                 case Mode.Echo:
                     _strRootXPath = "/chummer/echoes/echo";
                     _objXmlDocument = _objCharacter.LoadDataXPath("echoes.xml");
@@ -147,17 +149,20 @@ namespace Chummer
         {
             BuildMetamagicList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Id of Metamagic that was selected in the dialogue.
         /// </summary>
         public string SelectedMetamagic => _strSelectedMetamagic;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Build the list of Metamagics.
         /// </summary>
@@ -234,6 +239,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

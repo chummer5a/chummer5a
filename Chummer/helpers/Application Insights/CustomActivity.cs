@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using Microsoft.ApplicationInsights;
@@ -28,6 +29,7 @@ namespace Chummer
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
         //public IOperationHolder<RequestTelemetry> myOperationRequestHolder { get; set; }
         public TelemetryClient tc { get; set; }
+
         public DependencyTelemetry MyDependencyTelemetry { get; private set; }
         public RequestTelemetry MyRequestTelemetry { get; private set; }
         public string MyTelemetryTarget { get; private set; }
@@ -50,7 +52,6 @@ namespace Chummer
                 SetParent(operationName, parentActivity);
                 Start();
                 return;
-
             }
             tc = new TelemetryClient();
             Start();
@@ -61,6 +62,7 @@ namespace Chummer
                     MyDependencyTelemetry.Context.Operation.Id = Id;
                     tc.Context.Operation.Id = MyDependencyTelemetry.Context.Operation.Id;
                     break;
+
                 case OperationType.RequestOperation:
                     MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                     MyRequestTelemetry.Context.Operation.Id = Id;
@@ -68,6 +70,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
                         MyRequestTelemetry.Url = Uriresult;
                     break;
+
                 default:
                     throw new NotImplementedException("Implement OperationType " + operationType);
             }
@@ -87,12 +90,14 @@ namespace Chummer
                         MyDependencyTelemetry = new DependencyTelemetry(operationName, null, operationName, null, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                         MyDependencyTelemetry.Context.Operation.ParentId = ParentId;
                         break;
+
                     case OperationType.RequestOperation:
                         MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                         MyRequestTelemetry.Context.Operation.ParentId = ParentId;
                         if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
                             MyRequestTelemetry.Url = Uriresult;
                         break;
+
                     default:
                         throw new NotImplementedException("Implement OperationType " + parentActivity.MyOperationType);
                 }
@@ -134,12 +139,14 @@ namespace Chummer
                         MyDependencyTelemetry.ResultCode = "OK";
                     tc.TrackDependency(MyDependencyTelemetry);
                     break;
+
                 case OperationType.RequestOperation:
                     MyRequestTelemetry.Duration = DateTimeOffset.UtcNow - MyRequestTelemetry.Timestamp;
                     if (MyRequestTelemetry.ResponseCode == "not disposed")
                         MyRequestTelemetry.ResponseCode = "OK";
                     tc.TrackRequest(MyRequestTelemetry);
                     break;
+
                 default:
                     throw new NotImplementedException("Implement OperationType " + OperationName);
             }

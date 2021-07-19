@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Windows.Forms;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -37,6 +38,7 @@ namespace Chummer
         //private bool _blnBiowireEnabled = false;
 
         #region Control Events
+
         public frmSelectComplexForm(Character objCharacter)
         {
             InitializeComponent();
@@ -89,12 +91,15 @@ namespace Chummer
                 case "P":
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent");
                     break;
+
                 case "S":
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
                     break;
+
                 case "Special":
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                     break;
+
                 default:
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant");
                     break;
@@ -105,24 +110,31 @@ namespace Chummer
                 case "Persona":
                     lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetPersona");
                     break;
+
                 case "Device":
                     lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetDevice");
                     break;
+
                 case "File":
                     lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetFile");
                     break;
+
                 case "Self":
                     lblTarget.Text = LanguageManager.GetString("String_SpellRangeSelf");
                     break;
+
                 case "Sprite":
                     lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetSprite");
                     break;
+
                 case "Host":
                     lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetHost");
                     break;
+
                 case "IC":
                     lblTarget.Text = LanguageManager.GetString("String_ComplexFormTargetIC");
                     break;
+
                 default:
                     lblTarget.Text = LanguageManager.GetString("String_None");
                     break;
@@ -189,23 +201,23 @@ namespace Chummer
             switch (e.KeyCode)
             {
                 case Keys.Down:
-                {
-                    int intNewIndex = lstComplexForms.SelectedIndex + 1;
-                    if (intNewIndex >= lstComplexForms.Items.Count)
-                        intNewIndex = 0;
-                    if (lstComplexForms.Items.Count > 0)
-                        lstComplexForms.SelectedIndex = intNewIndex;
-                    break;
-                }
+                    {
+                        int intNewIndex = lstComplexForms.SelectedIndex + 1;
+                        if (intNewIndex >= lstComplexForms.Items.Count)
+                            intNewIndex = 0;
+                        if (lstComplexForms.Items.Count > 0)
+                            lstComplexForms.SelectedIndex = intNewIndex;
+                        break;
+                    }
                 case Keys.Up:
-                {
-                    int intNewIndex = lstComplexForms.SelectedIndex - 1;
-                    if (intNewIndex <= 0)
-                        intNewIndex = lstComplexForms.Items.Count - 1;
-                    if (lstComplexForms.Items.Count > 0)
-                        lstComplexForms.SelectedIndex = intNewIndex;
-                    break;
-                }
+                    {
+                        int intNewIndex = lstComplexForms.SelectedIndex - 1;
+                        if (intNewIndex <= 0)
+                            intNewIndex = lstComplexForms.Items.Count - 1;
+                        if (lstComplexForms.Items.Count > 0)
+                            lstComplexForms.SelectedIndex = intNewIndex;
+                        break;
+                    }
             }
         }
 
@@ -214,9 +226,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -227,9 +241,10 @@ namespace Chummer
         /// </summary>
         public string SelectedComplexForm => _strSelectedComplexForm;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         private void BuildComplexFormList()
         {
             if (_blnLoading)
@@ -287,6 +302,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

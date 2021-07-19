@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -44,7 +45,8 @@ namespace Chummer.UI.Table
         /// </summary>
         /// <param name="newValue">the extracted value, if there is a extractor in the column,
         /// the associated item otherwise</param>
-        protected internal virtual void UpdateValue(object newValue) {
+        protected internal virtual void UpdateValue(object newValue)
+        {
             Value = newValue;
         }
 
@@ -53,7 +55,8 @@ namespace Chummer.UI.Table
         /// </summary>
         /// <param name="width"></param>
         /// <param name="height"></param>
-        protected internal virtual void UpdateAvailableSize(int width, int height) {
+        protected internal virtual void UpdateAvailableSize(int width, int height)
+        {
             if (contentField == null) return;
             Size size = contentField.Size;
             int x;

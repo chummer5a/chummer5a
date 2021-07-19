@@ -79,7 +79,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
                     <xs:element name="forcegrade" minOccurs="0" maxOccurs="1" />
                     <xs:element name="notes" type="xs:string" minOccurs="0" maxOccurs="1" />

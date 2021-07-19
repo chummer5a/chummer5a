@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -37,6 +38,7 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
 
         #region Control events
+
         public frmSelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
@@ -146,9 +148,11 @@ namespace Chummer
             lblGrade.Text = objGrade.CurrentDisplayName;
             _decCost = decTotalCost;
         }
-        #endregion
+
+        #endregion Control events
 
         #region Properties
+
         /// <summary>
         /// Name of Suite that was selected in the dialogue.
         /// </summary>
@@ -159,9 +163,10 @@ namespace Chummer
         /// </summary>
         public decimal TotalCost => _decCost;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -185,30 +190,41 @@ namespace Chummer
             {
                 case "Alphaware":
                     return "Alphaware";
+
                 case "Betaware":
                     return "Betaware";
+
                 case "Deltaware":
                     return "Deltaware";
+
                 case "Standard (Used)":
                 case "StandardSecondHand":
                     return "Standard (Used)";
+
                 case "Alphaware (Used)":
                 case "AlphawareSecondHand":
                     return "Alphaware (Used)";
+
                 case "StandardAdapsin":
                     return "Standard (Adapsin)";
+
                 case "AlphawareAdapsin":
                     return "Alphaware (Adapsin)";
+
                 case "BetawareAdapsin":
                     return "Betaware (Adapsin)";
+
                 case "DeltawareAdapsin":
                     return "Deltaware (Adapsin)";
+
                 case "Standard (Used) (Adapsin)":
                 case "StandardSecondHandAdapsin":
                     return "Standard (Used) (Adapsin)";
+
                 case "Alphaware (Used) (Adapsin)":
                 case "AlphawareSecondHandAdapsin":
                     return "Alphaware (Used) (Adapsin)";
+
                 default:
                     return "Standard";
             }
@@ -220,11 +236,13 @@ namespace Chummer
         /// <param name="xmlSuite">XmlNode to parse.</param>
         /// <param name="objGrade">Grade that the Cyberware should be created with.</param>
         /// <param name="lstChildren">List for children to which child items should be assigned.</param>
-        private void ParseNode(XmlNode xmlSuite, Grade objGrade, IList<Cyberware> lstChildren)
+        private void ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren)
         {
             // Run through all of the items in the Suite list.
             using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
+            {
                 if (xmlChildrenList?.Count > 0)
+                {
                     foreach (XmlNode xmlChildItem in xmlChildrenList)
                     {
                         int intRating = 0;
@@ -245,6 +263,8 @@ namespace Chummer
 
                         ParseNode(xmlChildItem, objGrade, objCyberware.Children);
                     }
+                }
+            }
         }
 
         /// <summary>
@@ -253,7 +273,7 @@ namespace Chummer
         /// <param name="objCyberwareLabelString">StringBuilder into which the cyberware list is written.</param>
         /// <param name="objCyberware">Cyberware to iterate through.</param>
         /// <param name="intDepth">Current dept in the list to determine how many spaces to print.</param>
-        private void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
+        private static void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
         {
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
@@ -263,6 +283,7 @@ namespace Chummer
             foreach (Cyberware objPlugin in objCyberware.Children)
                 WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

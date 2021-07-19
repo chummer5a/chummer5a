@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +38,7 @@ namespace Chummer.Backend.Uniques
         MAG,
         RES
     }
+
     /// <summary>
     /// A Tradition
     /// </summary>
@@ -63,6 +65,7 @@ namespace Chummer.Backend.Uniques
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Tradition(Character objCharacter)
         {
             // Create the GUID for the new piece of Cyberware.
@@ -74,9 +77,7 @@ namespace Chummer.Backend.Uniques
 
         public override string ToString()
         {
-            if (!string.IsNullOrEmpty(_strName))
-                return _strName;
-            return base.ToString();
+            return !string.IsNullOrEmpty(_strName) ? _strName : base.ToString();
         }
 
         public void ResetTradition()
@@ -102,29 +103,28 @@ namespace Chummer.Backend.Uniques
         {
             ResetTradition();
             Type = blnIsTechnomancerTradition ? TraditionType.RES : TraditionType.MAG;
-            if(xmlTraditionNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            if (xmlTraditionNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
                 _xmlCachedMyXmlNode = null;
             xmlTraditionNode.TryGetStringFieldQuickly("name", ref _strName);
             xmlTraditionNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTraditionNode.TryGetStringFieldQuickly("page", ref _strPage);
             string strTemp = string.Empty;
-            if(xmlTraditionNode.TryGetStringFieldQuickly("drain", ref strTemp))
+            if (xmlTraditionNode.TryGetStringFieldQuickly("drain", ref strTemp))
                 DrainExpression = strTemp;
-            if(xmlTraditionNode.TryGetStringFieldQuickly("spiritform", ref strTemp))
+            if (xmlTraditionNode.TryGetStringFieldQuickly("spiritform", ref strTemp))
                 SpiritForm = strTemp;
             _nodBonus = xmlTraditionNode["bonus"];
-            if(_nodBonus != null)
+            if (_nodBonus != null)
             {
-
                 string strOldFocedValue = ImprovementManager.ForcedValue;
                 string strOldSelectedValue = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForcedValue;
-                if(!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, _nodBonus, strFriendlyName: DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Tradition, InternalId, _nodBonus, strFriendlyName: DisplayNameShort(GlobalOptions.Language)))
                 {
                     ImprovementManager.ForcedValue = strOldFocedValue;
                     return false;
                 }
-                if(!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
                 {
                     _strExtra = ImprovementManager.SelectedValue;
                 }
@@ -146,8 +146,6 @@ namespace Chummer.Backend.Uniques
             return true;
         }
 
-
-
         public void RebuildSpiritList(bool blnDoOnPropertyChanged = true)
         {
             _lstAvailableSpirits.Clear();
@@ -156,16 +154,16 @@ namespace Chummer.Backend.Uniques
             _strSpiritHealth = string.Empty;
             _strSpiritIllusion = string.Empty;
             _strSpiritManipulation = string.Empty;
-            if(Type != TraditionType.None)
+            if (Type != TraditionType.None)
             {
                 XmlNode xmlSpiritListNode = GetNode()?["spirits"];
-                if(xmlSpiritListNode != null)
+                if (xmlSpiritListNode != null)
                 {
-                    using(XmlNodeList xmlAlwaysAccessSpirits = xmlSpiritListNode.SelectNodes("spirit"))
+                    using (XmlNodeList xmlAlwaysAccessSpirits = xmlSpiritListNode.SelectNodes("spirit"))
                     {
-                        if(xmlAlwaysAccessSpirits?.Count > 0)
+                        if (xmlAlwaysAccessSpirits?.Count > 0)
                         {
-                            foreach(XmlNode xmlSpiritNode in xmlAlwaysAccessSpirits)
+                            foreach (XmlNode xmlSpiritNode in xmlAlwaysAccessSpirits)
                             {
                                 _lstAvailableSpirits.Add(xmlSpiritNode.InnerText);
                             }
@@ -173,23 +171,23 @@ namespace Chummer.Backend.Uniques
                     }
 
                     XmlNode xmlCombatSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritcombat");
-                    if(xmlCombatSpiritNode != null)
+                    if (xmlCombatSpiritNode != null)
                         _strSpiritCombat = xmlCombatSpiritNode.InnerText;
                     XmlNode xmlDetectionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritdetection");
-                    if(xmlDetectionSpiritNode != null)
+                    if (xmlDetectionSpiritNode != null)
                         _strSpiritDetection = xmlDetectionSpiritNode.InnerText;
                     XmlNode xmlHealthSpiritNode = xmlSpiritListNode.SelectSingleNode("spirithealth");
-                    if(xmlHealthSpiritNode != null)
+                    if (xmlHealthSpiritNode != null)
                         _strSpiritHealth = xmlHealthSpiritNode.InnerText;
                     XmlNode xmlIllusionSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritillusion");
-                    if(xmlIllusionSpiritNode != null)
+                    if (xmlIllusionSpiritNode != null)
                         _strSpiritIllusion = xmlIllusionSpiritNode.InnerText;
                     XmlNode xmlManipulationSpiritNode = xmlSpiritListNode.SelectSingleNode("spiritmanipulation");
-                    if(xmlManipulationSpiritNode != null)
+                    if (xmlManipulationSpiritNode != null)
                         _strSpiritManipulation = xmlManipulationSpiritNode.InnerText;
                 }
             }
-            if(blnDoOnPropertyChanged)
+            if (blnDoOnPropertyChanged)
             {
                 OnMultiplePropertyChanged(nameof(AvailableSpirits), nameof(SpiritCombat), nameof(SpiritDetection), nameof(SpiritHealth), nameof(SpiritIllusion), nameof(SpiritManipulation));
             }
@@ -203,7 +201,7 @@ namespace Chummer.Backend.Uniques
         {
             if (objWriter == null)
                 return;
-            if(_eTraditionType == TraditionType.None)
+            if (_eTraditionType == TraditionType.None)
                 return;
             objWriter.WriteStartElement("tradition");
             objWriter.WriteElementString("sourceid", SourceIDString);
@@ -221,12 +219,12 @@ namespace Chummer.Backend.Uniques
             objWriter.WriteElementString("spiritillusion", _strSpiritIllusion);
             objWriter.WriteElementString("spiritmanipulation", _strSpiritManipulation);
             objWriter.WriteStartElement("spirits");
-            foreach(string strSpirit in _lstAvailableSpirits)
+            foreach (string strSpirit in _lstAvailableSpirits)
             {
                 objWriter.WriteElementString("spirit", strSpirit);
             }
             objWriter.WriteEndElement();
-            if(_nodBonus != null)
+            if (_nodBonus != null)
                 objWriter.WriteRaw(_nodBonus.OuterXml);
             else
                 objWriter.WriteElementString("bonus", string.Empty);
@@ -241,7 +239,7 @@ namespace Chummer.Backend.Uniques
         public void Load(XmlNode xmlNode)
         {
             string strTemp = string.Empty;
-            if(!xmlNode.TryGetStringFieldQuickly("traditiontype", ref strTemp) || !Enum.TryParse(strTemp, out _eTraditionType))
+            if (!xmlNode.TryGetStringFieldQuickly("traditiontype", ref strTemp) || !Enum.TryParse(strTemp, out _eTraditionType))
             {
                 _eTraditionType = TraditionType.None;
                 return;
@@ -282,11 +280,11 @@ namespace Chummer.Backend.Uniques
             xmlNode.TryGetStringFieldQuickly("spirithealth", ref _strSpiritHealth);
             xmlNode.TryGetStringFieldQuickly("spiritillusion", ref _strSpiritIllusion);
             xmlNode.TryGetStringFieldQuickly("spiritmanipulation", ref _strSpiritManipulation);
-            using(XmlNodeList xmlSpiritList = xmlNode.SelectNodes("spirits/spirit"))
+            using (XmlNodeList xmlSpiritList = xmlNode.SelectNodes("spirits/spirit"))
             {
-                if(xmlSpiritList?.Count > 0)
+                if (xmlSpiritList?.Count > 0)
                 {
-                    foreach(XmlNode xmlSpiritNode in xmlSpiritList)
+                    foreach (XmlNode xmlSpiritNode in xmlSpiritList)
                     {
                         _lstAvailableSpirits.Add(xmlSpiritNode.InnerText);
                     }
@@ -301,14 +299,14 @@ namespace Chummer.Backend.Uniques
         /// <param name="xpathCharacterNode">XPathNavigator of the Character from which to load.</param>
         public void LegacyLoad(XPathNavigator xpathCharacterNode)
         {
-            if(_eTraditionType == TraditionType.RES)
+            if (_eTraditionType == TraditionType.RES)
             {
                 xpathCharacterNode.TryGetStringFieldQuickly("stream", ref _strName);
                 xpathCharacterNode.TryGetStringFieldQuickly("streamfading", ref _strDrainExpression);
             }
             else
             {
-                if(IsCustomTradition)
+                if (IsCustomTradition)
                 {
                     xpathCharacterNode.TryGetStringFieldQuickly("traditionname", ref _strName);
                     xpathCharacterNode.TryGetStringFieldQuickly("spiritcombat", ref _strSpiritCombat);
@@ -334,13 +332,13 @@ namespace Chummer.Backend.Uniques
             _strName = xmlHeroLabNode.SelectSingleNode("@name")?.Value;
             XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName)
                 ? _objCharacter.LoadData("traditions.xml").SelectSingleNode("/chummer/traditions/tradition[name = " + _strName.CleanXPath() + "]") : null;
-            if(xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
+            if (xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
             {
                 _guiSourceID = new Guid(CustomMagicalTraditionGuid);
                 xmlTraditionDataNode = GetNode();
             }
             Create(xmlTraditionDataNode);
-            if(IsCustomTradition)
+            if (IsCustomTradition)
             {
                 _strSpiritCombat = xmlHeroLabNode.SelectSingleNode("@combatspirits")?.Value;
                 _strSpiritDetection = xmlHeroLabNode.SelectSingleNode("@detectionspirits")?.Value;
@@ -368,7 +366,7 @@ namespace Chummer.Backend.Uniques
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            if(Type == TraditionType.MAG)
+            if (Type == TraditionType.MAG)
             {
                 objWriter.WriteElementString("spiritcombat", DisplaySpiritCombatMethod(strLanguageToPrint));
                 objWriter.WriteElementString("spiritdetection", DisplaySpiritDetectionMethod(strLanguageToPrint));
@@ -383,10 +381,10 @@ namespace Chummer.Backend.Uniques
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -434,7 +432,7 @@ namespace Chummer.Backend.Uniques
             get => _eTraditionType;
             set
             {
-                if(_eTraditionType != value)
+                if (_eTraditionType != value)
                 {
                     _xmlCachedMyXmlNode = null;
                     _eTraditionType = value;
@@ -469,9 +467,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if(IsCustomTradition)
+            if (IsCustomTradition)
             {
-                if(GlobalOptions.Language != strLanguage)
+                if (GlobalOptions.Language != strLanguage)
                 {
                     string strFile = string.Empty;
                     switch (Type)
@@ -479,6 +477,7 @@ namespace Chummer.Backend.Uniques
                         case TraditionType.MAG:
                             strFile = "traditions.xml";
                             break;
+
                         case TraditionType.RES:
                             strFile = "streams.xml";
                             break;
@@ -491,7 +490,7 @@ namespace Chummer.Backend.Uniques
             }
 
             // Get the translated name if applicable.
-            if(strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -504,7 +503,7 @@ namespace Chummer.Backend.Uniques
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if(!string.IsNullOrEmpty(Extra))
+            if (!string.IsNullOrEmpty(Extra))
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
 
             return strReturn;
@@ -545,7 +544,7 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                if(_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
+                if (_objCharacter.AdeptEnabled && !_objCharacter.MagicianEnabled)
                 {
                     return "{BOD} + {WIL}";
                 }
@@ -556,16 +555,16 @@ namespace Chummer.Backend.Uniques
             {
                 if (_strDrainExpression == value)
                     return;
-                foreach(string strOldDrainAttribute in AttributeSection.AttributeStrings)
+                foreach (string strOldDrainAttribute in AttributeSection.AttributeStrings)
                 {
-                    if(_strDrainExpression.Contains(strOldDrainAttribute))
+                    if (_strDrainExpression.Contains(strOldDrainAttribute))
                         _objCharacter.GetAttribute(strOldDrainAttribute).PropertyChanged -= RefreshDrainValue;
                 }
 
                 _strDrainExpression = value;
-                foreach(string strNewDrainAttribute in AttributeSection.AttributeStrings)
+                foreach (string strNewDrainAttribute in AttributeSection.AttributeStrings)
                 {
-                    if(value.Contains(strNewDrainAttribute))
+                    if (value.Contains(strNewDrainAttribute))
                         _objCharacter.GetAttribute(strNewDrainAttribute).PropertyChanged += RefreshDrainValue;
                 }
 
@@ -595,22 +594,22 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                if(Type == TraditionType.None)
+                if (Type == TraditionType.None)
                     return 0;
                 string strDrainAttributes = DrainExpression;
                 StringBuilder sbdDrain = new StringBuilder(strDrainAttributes);
                 _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdDrain, strDrainAttributes);
 
                 string strDrain = sbdDrain.ToString();
-                if(!decimal.TryParse(strDrain, out decimal decDrain))
+                if (!decimal.TryParse(strDrain, out decimal decDrain))
                 {
                     object objProcess = CommonFunctions.EvaluateInvariantXPath(strDrain, out bool blnIsSuccess);
-                    if(blnIsSuccess)
+                    if (blnIsSuccess)
                         decDrain = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo);
                 }
 
                 // Add any Improvements for Drain Resistance.
-                if(Type == TraditionType.RES)
+                if (Type == TraditionType.RES)
                     decDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.FadingResistance);
                 else
                     decDrain += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.DrainResistance);
@@ -623,16 +622,16 @@ namespace Chummer.Backend.Uniques
         {
             get
             {
-                if(Type == TraditionType.None)
+                if (Type == TraditionType.None)
                     return string.Empty;
                 string strSpace = LanguageManager.GetString("String_Space");
                 StringBuilder sbdToolTip = new StringBuilder(DrainExpression);
                 // Update the Fading CharacterAttribute Value.
                 _objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(sbdToolTip, DrainExpression);
 
-                foreach(Improvement objLoopImprovement in _objCharacter.Improvements)
+                foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
                 {
-                    if((Type == TraditionType.RES && objLoopImprovement.ImproveType == Improvement.ImprovementType.FadingResistance ||
+                    if ((Type == TraditionType.RES && objLoopImprovement.ImproveType == Improvement.ImprovementType.FadingResistance ||
                         Type == TraditionType.MAG && objLoopImprovement.ImproveType == Improvement.ImprovementType.DrainResistance) &&
                         objLoopImprovement.Enabled)
                     {
@@ -647,13 +646,13 @@ namespace Chummer.Backend.Uniques
 
         public void RefreshDrainExpression(object sender, PropertyChangedEventArgs e)
         {
-            if(Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
+            if (Type == TraditionType.MAG && (e?.PropertyName == nameof(Character.AdeptEnabled) || e?.PropertyName == nameof(Character.MagicianEnabled)))
                 OnPropertyChanged(nameof(DrainExpression));
         }
 
         public void RefreshDrainValue(object sender, PropertyChangedEventArgs e)
         {
-            if(Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
+            if (Type != TraditionType.None && e?.PropertyName == nameof(CharacterAttrib.TotalValue))
                 OnPropertyChanged(nameof(DrainValue));
         }
 
@@ -664,15 +663,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritCombat
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritCombat;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritCombat;
             set
             {
-                if(Type != TraditionType.None && _strSpiritCombat != value)
+                if (Type != TraditionType.None && _strSpiritCombat != value)
                 {
                     _strSpiritCombat = value;
                     OnPropertyChanged();
@@ -685,9 +679,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritCombatMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritCombat))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritCombat, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritCombat)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritCombat, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -698,7 +692,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritCombatMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritCombat = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -708,15 +702,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritDetection
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritDetection;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritDetection;
             set
             {
-                if(Type != TraditionType.None && _strSpiritDetection != value)
+                if (Type != TraditionType.None && _strSpiritDetection != value)
                 {
                     _strSpiritDetection = value;
                     OnPropertyChanged();
@@ -729,9 +718,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritDetectionMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritDetection))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritDetection, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritDetection)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritDetection, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -742,7 +731,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritDetectionMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritDetection = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -752,15 +741,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritHealth
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritHealth;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritHealth;
             set
             {
-                if(Type != TraditionType.None && _strSpiritHealth != value)
+                if (Type != TraditionType.None && _strSpiritHealth != value)
                 {
                     _strSpiritHealth = value;
                     OnPropertyChanged();
@@ -773,9 +757,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritHealthMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritHealth))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritHealth, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritHealth)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritHealth, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -786,7 +770,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritHealthMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritHealth = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -796,15 +780,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritIllusion
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritIllusion;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritIllusion;
             set
             {
-                if(Type != TraditionType.None && _strSpiritIllusion != value)
+                if (Type != TraditionType.None && _strSpiritIllusion != value)
                 {
                     _strSpiritIllusion = value;
                     OnPropertyChanged();
@@ -817,9 +796,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritIllusionMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritIllusion))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritIllusion, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritIllusion)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritIllusion, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -830,7 +809,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritIllusionMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritIllusion = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -840,15 +819,10 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string SpiritManipulation
         {
-            get
-            {
-                if(Type == TraditionType.None)
-                    return string.Empty;
-                return _strSpiritManipulation;
-            }
+            get => Type == TraditionType.None ? string.Empty : _strSpiritManipulation;
             set
             {
-                if(Type != TraditionType.None && _strSpiritManipulation != value)
+                if (Type != TraditionType.None && _strSpiritManipulation != value)
                 {
                     _strSpiritManipulation = value;
                     OnPropertyChanged();
@@ -861,9 +835,9 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplaySpiritManipulationMethod(string strLanguage)
         {
-            if(string.IsNullOrEmpty(SpiritManipulation))
-                return LanguageManager.GetString("String_None", strLanguage);
-            return _objCharacter.TranslateExtra(SpiritManipulation, strLanguage, "critters.xml");
+            return string.IsNullOrEmpty(SpiritManipulation)
+                ? LanguageManager.GetString("String_None", strLanguage)
+                : _objCharacter.TranslateExtra(SpiritManipulation, strLanguage, "critters.xml");
         }
 
         /// <summary>
@@ -874,7 +848,7 @@ namespace Chummer.Backend.Uniques
             get => DisplaySpiritManipulationMethod(GlobalOptions.Language);
             set
             {
-                if(Type != TraditionType.None)
+                if (Type != TraditionType.None)
                     SpiritManipulation = _objCharacter.ReverseTranslateExtra(value, GlobalOptions.Language, "critters.xml");
             }
         }
@@ -923,9 +897,9 @@ namespace Chummer.Backend.Uniques
 
         public XmlNode GetNode(string strLanguage)
         {
-            if(Type == TraditionType.None)
+            if (Type == TraditionType.None)
                 return null;
-            if(_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_xmlCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
             {
                 _xmlCachedMyXmlNode = GetTraditionDocument(strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
@@ -944,15 +918,19 @@ namespace Chummer.Backend.Uniques
             {
                 case TraditionType.MAG:
                     return _objCharacter.LoadData("traditions.xml", strLanguage);
+
                 case TraditionType.RES:
                     return _objCharacter.LoadData("streams.xml", strLanguage);
+
                 default:
                     return null;
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region static
+
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
@@ -1018,11 +996,11 @@ namespace Chummer.Backend.Uniques
             return result;
         }
 
-        #endregion
+        #endregion static
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if(_objCachedSourceDetail.Language != GlobalOptions.Language)
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
@@ -1036,21 +1014,21 @@ namespace Chummer.Backend.Uniques
         public void OnMultiplePropertyChanged(params string[] lstPropertyNames)
         {
             ICollection<string> lstNamesOfChangedProperties = null;
-            foreach(string strPropertyName in lstPropertyNames)
+            foreach (string strPropertyName in lstPropertyNames)
             {
-                if(lstNamesOfChangedProperties == null)
+                if (lstNamesOfChangedProperties == null)
                     lstNamesOfChangedProperties = s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach(string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_AttributeDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
 
-            if(lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
+            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
-            foreach(string strPropertyToChange in lstNamesOfChangedProperties)
+            foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }

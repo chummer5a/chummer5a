@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -40,6 +41,7 @@ namespace Chummer
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
+
         public frmSelectCritterPower(Character objCharacter)
         {
             InitializeComponent();
@@ -136,9 +138,11 @@ namespace Chummer
                         case "M":
                             lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana");
                             break;
+
                         case "P":
                             lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical");
                             break;
+
                         default:
                             lblCritterPowerType.Text = string.Empty;
                             break;
@@ -149,18 +153,23 @@ namespace Chummer
                         case "Auto":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic");
                             break;
+
                         case "Free":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree");
                             break;
+
                         case "Simple":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple");
                             break;
+
                         case "Complex":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex");
                             break;
+
                         case "Special":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                             break;
+
                         default:
                             lblCritterPowerAction.Text = string.Empty;
                             break;
@@ -185,15 +194,19 @@ namespace Chummer
                         case "Instant":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong");
                             break;
+
                         case "Sustained":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
                             break;
+
                         case "Always":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways");
                             break;
+
                         case "Special":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                             break;
+
                         default:
                             lblCritterPowerDuration.Text = strDuration;
                             break;
@@ -284,10 +297,17 @@ namespace Chummer
                             bool blnFoundInhabitation = false;
                             foreach (string strCheckPower in lstPowerWhitelist)
                             {
-                                if (strCheckPower == "Possession")
-                                    blnFoundPossession = true;
-                                else if (strCheckPower == "Inhabitation")
-                                    blnFoundInhabitation = true;
+                                switch (strCheckPower)
+                                {
+                                    case "Possession":
+                                        blnFoundPossession = true;
+                                        break;
+
+                                    case "Inhabitation":
+                                        blnFoundInhabitation = true;
+                                        break;
+                                }
+
                                 if (blnFoundInhabitation && blnFoundPossession)
                                     break;
                             }
@@ -360,9 +380,11 @@ namespace Chummer
         {
             cboCategory_SelectedIndexChanged(sender, e);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -401,9 +423,11 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -424,6 +448,6 @@ namespace Chummer
         /// </summary>
         public decimal PowerPoints => _decPowerPoints;
 
-        #endregion
+        #endregion Properties
     }
 }

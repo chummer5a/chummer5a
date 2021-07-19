@@ -32,8 +32,12 @@ namespace ChummerHub.Client.Backend
         public async Task StartServer()
         {
             StopServer();
-            if (_objRunningTask?.IsCompleted == false) // Wait for existing thread to shut down
-                await _objRunningTask;
+            try
+            {
+                if (_objRunningTask?.IsCompleted == false) // Wait for existing thread to shut down
+                    await _objRunningTask;
+            }
+            catch (TaskCanceledException) { }
             _objCancellationTokenSource = new CancellationTokenSource();
             _objRunningTask = Task.Run(RunChummerFilePipeThread, _objCancellationTokenSource.Token);
         }
@@ -49,8 +53,7 @@ namespace ChummerHub.Client.Backend
         /// </summary>
         public void StopServer()
         {
-            if (_objCancellationTokenSource != null)
-                _objCancellationTokenSource.Cancel();
+            _objCancellationTokenSource?.Cancel(false);
             Log.Trace("Sending Exit to PipeServer...");
             Write(EXIT_STRING);
         }

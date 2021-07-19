@@ -17,7 +17,6 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -26,11 +25,11 @@ using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 using NLog;
 
 namespace Chummer
@@ -81,7 +80,7 @@ namespace Chummer
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra;Type")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource,INotifyMultiplePropertyChanged
+    public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, INotifyMultiplePropertyChanged
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -115,6 +114,7 @@ namespace Chummer
         public string Stage => _strStage;
 
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a QualityType.
         /// </summary>
@@ -127,8 +127,10 @@ namespace Chummer
             {
                 case "Negative":
                     return QualityType.Negative;
+
                 case "LifeModule":
                     return QualityType.LifeModule;
+
                 default:
                     return QualityType.Positive;
             }
@@ -146,31 +148,41 @@ namespace Chummer
             {
                 case "Metatype":
                     return QualitySource.Metatype;
+
                 case "MetatypeRemovable":
                     return QualitySource.MetatypeRemovable;
+
                 case "LifeModule":
                     return QualitySource.LifeModule;
+
                 case "Built-In":
                     return QualitySource.BuiltIn;
+
                 case "Improvement":
                     return QualitySource.Improvement;
+
                 case "MetatypeRemovedAtChargen":
                     return QualitySource.MetatypeRemovedAtChargen;
+
                 case "Heritage":
                     return QualitySource.Heritage;
+
                 default:
                     return QualitySource.Selected;
             }
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Quality(Character objCharacter)
         {
             // Create the GUID for the new Quality.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
         }
+
         public void SetGUID(Guid guidExisting)
         {
             _guiID = guidExisting;
@@ -245,7 +257,7 @@ namespace Chummer
                                 intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"].InnerText, GlobalOptions.InvariantCultureInfo);
                             }
                             Weapon objGearWeapon = new Weapon(_objCharacter);
-                            objGearWeapon.Create(objXmlWeapon, lstWeapons,true, true,true, intAddWeaponRating);
+                            objGearWeapon.Create(objXmlWeapon, lstWeapons, true, true, true, intAddWeaponRating);
                             objGearWeapon.ParentID = InternalId;
                             objGearWeapon.Cost = "0";
 
@@ -358,6 +370,7 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
+
         public SourceString SourceDetail
         {
             get
@@ -441,7 +454,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -488,19 +501,21 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("stage", ref _strStage);
             }
-            if (_eQualitySource == QualitySource.Selected && string.IsNullOrEmpty(_nodBonus?.InnerText) && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText) &&
-                (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative) &&
-                GetNode() != null && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType)
+            switch (_eQualitySource)
             {
-                _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
-            }
-            // Legacy shim for priority-given qualities
-            else if (_eQualitySource == QualitySource.Metatype
-                     && _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
-                     && _objCharacter.EffectiveBuildMethodUsesPriorityTables
-                     && GetNode()?["onlyprioritygiven"] != null)
-            {
-                _eQualitySource = QualitySource.Heritage;
+                case QualitySource.Selected when string.IsNullOrEmpty(_nodBonus?.InnerText)
+                                                 && string.IsNullOrEmpty(_nodFirstLevelBonus?.InnerText)
+                                                 && (_eQualityType == QualityType.Positive || _eQualityType == QualityType.Negative)
+                                                 && GetNode() != null
+                                                 && ConvertToQualityType(GetNode()["category"]?.InnerText) != _eQualityType:
+                    _eQualitySource = QualitySource.MetatypeRemovedAtChargen;
+                    break;
+                // Legacy shim for priority-given qualities
+                case QualitySource.Metatype when _objCharacter.LastSavedVersion <= new Version(5, 212, 71)
+                                                 && _objCharacter.EffectiveBuildMethodUsesPriorityTables
+                                                 && GetNode()?["onlyprioritygiven"] != null:
+                    _eQualitySource = QualitySource.Heritage;
+                    break;
             }
         }
 
@@ -547,9 +562,11 @@ namespace Chummer
                 objWriter.WriteEndElement();
             }
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -747,7 +764,7 @@ namespace Chummer
         /// <summary>
         /// Number of Build Points the Quality costs.
         /// </summary>
-        /// 
+        ///
         public int BP
         {
             get
@@ -758,13 +775,15 @@ namespace Chummer
                 int intReturn = _intBP;
                 if (_nodDiscounts.RequirementsMet(_objCharacter))
                 {
-                    if (Type == QualityType.Positive)
+                    switch (Type)
                     {
-                        intReturn += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
-                    }
-                    else if (Type == QualityType.Negative)
-                    {
-                        intReturn -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                        case QualityType.Positive:
+                            intReturn += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                            break;
+
+                        case QualityType.Negative:
+                            intReturn -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                            break;
                     }
                 }
                 return intReturn;
@@ -806,7 +825,16 @@ namespace Chummer
 
             int intLevels = Levels;
             if (intLevels > 1)
+            {
                 strReturn += strSpace + intLevels.ToString(objCulture);
+            }
+            else
+            {
+                // Add a "1" to qualities that have levels, but for which we are only at level 1
+                XmlNode xmlMyLimitNode = GetNode(strLanguage)?.SelectSingleNode("limit");
+                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.InnerText, out int _))
+                    strReturn += strSpace + intLevels.ToString(objCulture);
+            }
 
             return strReturn;
         }
@@ -884,6 +912,7 @@ namespace Chummer
                 OnPropertyChanged();
             }
         }
+
         /// <summary>
         /// Whether or not the Quality contributes towards the character's Quality BP limits.
         /// </summary>
@@ -902,12 +931,9 @@ namespace Chummer
                 if (_strName == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
 
-                if (_objCharacter.Improvements.Any(imp =>
+                return !_objCharacter.Improvements.Any(imp =>
                     imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
-                    imp.ImprovedName == Name) && imp.Enabled))
-                    return false;
-
-                return _blnContributeToLimit;
+                        imp.ImprovedName == Name) && imp.Enabled) && _blnContributeToLimit;
             }
             set
             {
@@ -964,15 +990,14 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 if (Name == "Mentor Spirit" && _objCharacter.Qualities.Any(objQuality => objQuality.Name == "The Beast's Way" || objQuality.Name == "The Spiritual Way"))
                     return false;
-                if (_objCharacter.Improvements.Any(imp =>
+                return !_objCharacter.Improvements.Any(imp =>
                     imp.ImproveType == Improvement.ImprovementType.FreeQuality && (imp.ImprovedName == SourceIDString ||
-                    imp.ImprovedName == Name) && imp.Enabled))
-                    return false;
-                return _blnContributeToBP;
+                        imp.ImprovedName == Name) && imp.Enabled) && _blnContributeToBP;
             }
         }
 
         private string _strCachedNotes = string.Empty;
+
         /// <summary>
         /// Notes.
         /// </summary>
@@ -982,17 +1007,16 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(_strCachedNotes))
                     return _strCachedNotes;
-                StringBuilder sb = new StringBuilder();
+                _strCachedNotes = string.Empty;
                 if (Suppressed)
                 {
-                    sb.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SuppressedBy"),
+                    _strCachedNotes += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SuppressedBy"),
                         _objCharacter.GetObjectName(_objCharacter.Improvements.FirstOrDefault(imp =>
                             imp.ImproveType == Improvement.ImprovementType.DisableQuality
                             && (imp.ImprovedName == SourceIDString || imp.ImprovedName == Name) && imp.Enabled))
-                        ?? LanguageManager.GetString("String_Unknown")).AppendLine();
+                        ?? LanguageManager.GetString("String_Unknown")) + Environment.NewLine;
                 }
-                sb.Append(_strNotes);
-                _strCachedNotes = sb.ToString();
+                _strCachedNotes += _strNotes;
                 return _strCachedNotes;
             }
             set
@@ -1015,6 +1039,7 @@ namespace Chummer
         }
 
         private int _intCachedSuppressed = -1;
+
         public bool Suppressed
         {
             get
@@ -1062,9 +1087,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsQuality, TreeView treQualities)
         {
             if ((OriginSource == QualitySource.BuiltIn ||
@@ -1119,10 +1146,10 @@ namespace Chummer
                        || OriginSource == QualitySource.Heritage
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
-                
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         #region Static Methods
 
@@ -1331,7 +1358,8 @@ namespace Chummer
                     new DependencyGraphNode<string, Quality>(nameof(Name))
                 )
             );
-        #endregion
+
+        #endregion Static Methods
 
         /// <summary>
         /// Swaps an old quality for a new one.
@@ -1452,7 +1480,6 @@ namespace Chummer
 
             // Add the new Quality to the character.
             objCharacter.Qualities.Add(this);
-
 
             return true;
         }

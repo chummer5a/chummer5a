@@ -24,19 +24,19 @@
       <bonus>
         <skilllinkedattribute amendoperation="remove" />
         <specificskill xpathfilter="name = 'Impersonation' or name = 'Disguise' or name = 'Intimidation'" amendoperation="remove" />
-        <specificskill xpathfilter="name = 'Swimming'" >
+        <specificskill xpathfilter="name = 'Swimming'">
           <name>Aquatics</name>
         </specificskill>
-        <specificskill xpathfilter="name = 'Palming'" >
+        <specificskill xpathfilter="name = 'Palming'">
           <name>Sleight of Hand</name>
         </specificskill>
       </bonus>
       <pairbonus>
         <specificskill xpathfilter="name = 'Impersonation' or name = 'Disguise' or name = 'Intimidation'" amendoperation="remove" />
-        <specificskill xpathfilter="name = 'Swimming'" >
+        <specificskill xpathfilter="name = 'Swimming'">
           <name>Aquatics</name>
         </specificskill>
-        <specificskill xpathfilter="name = 'Palming'" >
+        <specificskill xpathfilter="name = 'Palming'">
           <name>Sleight of Hand</name>
         </specificskill>
       </pairbonus>

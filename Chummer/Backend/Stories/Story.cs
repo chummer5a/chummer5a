@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -149,7 +150,7 @@ namespace Chummer
 
             foreach (string strKey in lstPersistentKeysToRemove)
                 _dicPersistentModules.TryRemove(strKey, out StoryModule _);
-            
+
             foreach (StoryModule objModule in Modules)
                 await objModule.TestRunToGeneratePersistents(objCulture, strLanguage);
             _blnNeedToRegeneratePersistents = false;
@@ -160,7 +161,7 @@ namespace Chummer
             if (_blnNeedToRegeneratePersistents)
                 await GeneratePersistents(objCulture, strLanguage);
             string[] strModuleOutputStrings = new string[Modules.Count];
-            for(int i = 0; i < Modules.Count; ++i)
+            for (int i = 0; i < Modules.Count; ++i)
             {
                 strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage);
             }

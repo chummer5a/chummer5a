@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -32,6 +33,7 @@ namespace Chummer
         private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
+
         public frmSelectSpec(Skill skill)
         {
             _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
@@ -124,7 +126,8 @@ namespace Chummer
         {
             cboSpec.DropDownStyle = cboSpec.SelectedValue?.ToString() == "Custom" ? ComboBoxStyle.DropDown : ComboBoxStyle.DropDownList;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
 
@@ -156,7 +159,6 @@ namespace Chummer
         /// </summary>
         public string Mode { get; set; }
 
-
         /// <summary>
         /// Whether or not to force the .
         /// </summary>
@@ -165,9 +167,11 @@ namespace Chummer
             get => chkKarma.Checked;
             set => chkKarma.Checked = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -176,6 +180,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(SelectedItem))
                 DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

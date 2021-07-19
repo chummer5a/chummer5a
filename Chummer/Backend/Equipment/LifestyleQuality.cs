@@ -73,16 +73,20 @@ namespace Chummer.Backend.Equipment
             {
                 case "Negative":
                     return QualityType.Negative;
+
                 case "Positive":
                     return QualityType.Positive;
+
                 case "Contracts":
                     return QualityType.Contracts;
+
                 default:
                     return QualityType.Entertainment;
             }
         }
 
 #if DEBUG
+
         /// <summary>
         /// Convert a string to a LifestyleQualitySource.
         /// </summary>
@@ -104,7 +108,7 @@ namespace Chummer.Backend.Equipment
 #endif
         }
 
-        #endregion
+        #endregion Helper Methods
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -129,7 +133,7 @@ namespace Chummer.Backend.Equipment
             ParentLifestyle = objParentLifestyle;
             if (!objXmlLifestyleQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warn(new object[] {"Missing id field for xmlnode", objXmlLifestyleQuality});
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlLifestyleQuality });
                 Utils.BreakIfDebug();
             }
             else
@@ -175,7 +179,6 @@ namespace Chummer.Backend.Equipment
                         ? strExtra.Substring(intParenthesesIndex + 1).TrimEndOnce(')')
                         : string.Empty;
             }
-
 
             if (string.IsNullOrEmpty(Notes))
             {
@@ -448,7 +451,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
         }
 
-        #endregion
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
 
@@ -503,7 +506,6 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -794,7 +796,7 @@ namespace Chummer.Backend.Equipment
             return _objCachedMyXmlNode;
         }
 
-        #endregion
+        #endregion Properties
 
         #region UI Methods
 
@@ -831,7 +833,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        #endregion
+        #endregion UI Methods
 
         public void SetSourceDetail(Control sourceControl)
         {

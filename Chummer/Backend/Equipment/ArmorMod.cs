@@ -70,6 +70,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public ArmorMod(Character objCharacter)
         {
             // Create the GUID for the new Armor Mod.
@@ -90,6 +91,7 @@ namespace Chummer.Backend.Equipment
                         objNewItem.ChangeEquippedStatus(Equipped);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
@@ -97,6 +99,7 @@ namespace Chummer.Backend.Equipment
                         objOldItem.ChangeEquippedStatus(false);
                     }
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
@@ -494,9 +497,11 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Armor in the Improvement system.
         /// </summary>
@@ -681,6 +686,7 @@ namespace Chummer.Backend.Equipment
             get => _strRatingLabel;
             set => _strRatingLabel = value;
         }
+
         /// <summary>
         /// Mod's Availability.
         /// </summary>
@@ -753,8 +759,6 @@ namespace Chummer.Backend.Equipment
                 return _objCachedSourceDetail;
             }
         }
-
-
 
         /// <summary>
         /// Whether or not an Armor Mod is equipped and should be included in the Armor's totals.
@@ -880,9 +884,10 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
-        #endregion
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
@@ -1166,9 +1171,11 @@ namespace Chummer.Backend.Equipment
                         SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         /// <summary>
         /// Method to delete an Armor object. Returns total extra cost removed unrelated to children.
         /// </summary>
@@ -1274,7 +1281,6 @@ namespace Chummer.Backend.Equipment
                 objGear.RefreshWirelessBonuses();
         }
 
-
         /// <summary>
         /// Checks a nominated piece of gear for Availability requirements.
         /// </summary>
@@ -1319,9 +1325,11 @@ namespace Chummer.Backend.Equipment
             blnOutRestrictedGearUsed = blnRestrictedGearUsed;
             strOutRestrictedItem = strRestrictedItem;
         }
-        #endregion
+
+        #endregion Methods
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear)
         {
             if (IncludedInArmor && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -1365,7 +1373,8 @@ namespace Chummer.Backend.Equipment
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
@@ -1402,7 +1411,31 @@ namespace Chummer.Backend.Equipment
             SourceDetail.SetControl(sourceControl);
         }
 
-        public bool AllowPasteXml { get; }
+        public bool AllowPasteXml
+        {
+            get
+            {
+                string strGearCapacity = CalculatedGearCapacity;
+                if (string.IsNullOrEmpty(strGearCapacity) || strGearCapacity == "0")
+                    return false;
+                switch (GlobalOptions.ClipboardContentType)
+                {
+                    case ClipboardContentType.Gear:
+                        {
+                            using (XmlNodeList xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory"))
+                            {
+                                if (!(xmlAddonCategoryList?.Count > 0))
+                                    return true;
+                                string strGearCategory = GlobalOptions.Clipboard.SelectSingleNode("category")?.Value;
+                                return xmlAddonCategoryList.Cast<XmlNode>()
+                                    .Any(xmlCategory => xmlCategory.InnerText == strGearCategory);
+                            }
+                        }
+                    default:
+                        return false;
+                }
+            }
+        }
 
         bool ICanPaste.AllowPasteObject(object input)
         {

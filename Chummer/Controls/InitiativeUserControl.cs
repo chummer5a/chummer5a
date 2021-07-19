@@ -16,16 +16,18 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Windows.Forms;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Chummer
 {
     public sealed partial class InitiativeUserControl : UserControl
     {
         #region Properties
+
         /// <summary>
         /// Fired when the current character is changed
         /// </summary>
@@ -34,7 +36,8 @@ namespace Chummer
             add => chkBoxChummer.SelectedValueChanged += value;
             remove => chkBoxChummer.SelectedValueChanged -= value;
         }
-        #endregion
+
+        #endregion Properties
 
         private List<Character> characters = new List<Character>(5);
         private int _intIndex;
@@ -56,9 +59,11 @@ namespace Chummer
         }
 
         #region Events
+
         /*
          * Queries the user for the chummer to add to the list
          */
+
         private void btnAdd_Click(object sender, EventArgs e)
         {
             frmAddToken frmAdd = new frmAddToken(this);
@@ -68,6 +73,7 @@ namespace Chummer
         /*
          * Removes the chosen chummer from the list
          */
+
         private void btnRemove_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
@@ -87,6 +93,7 @@ namespace Chummer
         /*
          * Subtracts 1 init
          */
+
         private void btnMinusInit1_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
@@ -101,6 +108,7 @@ namespace Chummer
         /*
          * Subtracts 5 init
          */
+
         private void btnMinus5Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
@@ -115,6 +123,7 @@ namespace Chummer
         /*
          * Subtracts 10 init
          */
+
         private void btnMinus10Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
@@ -129,6 +138,7 @@ namespace Chummer
         /*
          * Adds 1 init
          */
+
         private void btnAdd1Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
@@ -139,9 +149,11 @@ namespace Chummer
             else
                 Program.MainForm.ShowMessageBox("unable to go beyond 0");
         }
+
         /*
          * Adds 5 init
          */
+
         private void btnAdd5Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
@@ -156,6 +168,7 @@ namespace Chummer
         /*
          * Adds 10 init
          */
+
         private void btnAdd10Init_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
@@ -170,6 +183,7 @@ namespace Chummer
         /*
          * Applies the specified interrupt action
          */
+
         private void btnApplyInterrupt_Click(object sender, EventArgs e)
         {
             // TODO edward
@@ -178,6 +192,7 @@ namespace Chummer
         /*
          * goes to the next chummer in the list
          */
+
         private void btnNext_Click(object sender, EventArgs e)
         {
             if (_blnFinishedCombatTurn)
@@ -225,6 +240,7 @@ namespace Chummer
         /*
          * Sorts the characters based on Initiative
          */
+
         private void btnSort_Click(object sender, EventArgs e)
         {
             characters = characters.OrderByDescending(o => o.InitRoll).ToList();
@@ -238,6 +254,7 @@ namespace Chummer
         /*
          * Delays the chosen character
          */
+
         private void btnDelay_Click(object sender, EventArgs e)
         {
             // make sure a chummer is selected
@@ -274,6 +291,7 @@ namespace Chummer
         /*
          * Reset button pressed
          */
+
         private void btnReset_Click(object sender, EventArgs e)
         {
             // for every checked character, we re-roll init
@@ -323,6 +341,7 @@ namespace Chummer
         /*
          * When the index has changed for the check box list
          */
+
         private void listBoxChummers_SelectedIndexChanged(object sender, EventArgs e)
         {
             // confirm if we are delaying the selected chummer, if we are, ask user if they
@@ -330,29 +349,34 @@ namespace Chummer
             if (chkBoxChummer.SelectedIndex < 0)
                 return;
             int index = chkBoxChummer.SelectedIndex;
-            if (characters[index].Delayed && index != _intIndex)
+            if (characters[index].Delayed)
             {
-                DialogResult result = Program.MainForm.ShowMessageBox("Would you like the chummer to perform a delayed action?", "Delayed Action", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
+                if (index != _intIndex)
                 {
-                    // un-delay character, and lock it in the current location
+                    DialogResult result = Program.MainForm.ShowMessageBox(
+                        "Would you like the chummer to perform a delayed action?", "Delayed Action",
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        // un-delay character, and lock it in the current location
+                        Character character = characters[index];
+                        character.Delayed = false;
+
+                        // place the chummer as the current chummer
+                        characters.RemoveAt(index);
+                        characters.Insert(_intIndex, character);
+
+                        ResetListBoxChummers();
+                    }
+                }
+                else
+                {
+                    // it is the chummers turn and we should just turn off the delayed action
                     Character character = characters[index];
                     character.Delayed = false;
-
-                    // place the chummer as the current chummer
-                    characters.RemoveAt(index);
-                    characters.Insert(_intIndex, character);
-
-                    ResetListBoxChummers();
+                    characters[index] = character;
+                    chkBoxChummer.Items[index] = characters[index];
                 }
-            }
-            else if (characters[index].Delayed && index == _intIndex)
-            {
-                // it is the chummers turn and we should just turn off the delayed action
-                Character character = characters[index];
-                character.Delayed = false;
-                characters[index] = character;
-                chkBoxChummer.Items[index] = characters[index];
             }
         }
 
@@ -360,6 +384,7 @@ namespace Chummer
          * Should work...
          * When the user right-clicks somewhere in the check box list.
          */
+
         private void chkBoxChummer_MouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right)
@@ -384,9 +409,11 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion Events
 
         #region Methods
+
         /// <summary>
         /// The current character in the chain of initiatives
         /// </summary>
@@ -424,9 +451,10 @@ namespace Chummer
         }
 
         /*
-         * Applies the specified amount of initiative to the 
+         * Applies the specified amount of initiative to the
          * currently selected player
          */
+
         private void ApplyInitChange(int value)
         {
             // check if we have selected a chummer in the list
@@ -450,12 +478,14 @@ namespace Chummer
         /*
          * Resets the item in the Check Box List
          */
+
         private void ResetListBoxChummers()
         {
             chkBoxChummer.Items.Clear();
             foreach (Character aCharacter in characters)
                 chkBoxChummer.Items.Add(aCharacter);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

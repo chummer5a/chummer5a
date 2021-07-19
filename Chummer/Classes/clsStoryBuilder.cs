@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections.Concurrent;
- using System.Collections.Generic;
+
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -151,34 +152,22 @@ namespace Chummer
                 macroName = macroPool = endString;
             }
 
-            //$DOLLAR is defined elsewhere to prevent recursive calling
-            if (macroName == "street")
+            switch (macroName)
             {
-                if (!string.IsNullOrEmpty(_objCharacter.Alias))
-                {
-                    return _objCharacter.Alias;
-                }
-                return "Alias ";
-            }
-            if(macroName == "real")
-            {
-                if (!string.IsNullOrEmpty(_objCharacter.Name))
-                {
-                    return _objCharacter.Name;
-                }
-                return "Unnamed John Doe ";
-            }
-            if (macroName == "year")
-            {
-                if (int.TryParse(_objCharacter.Age, out int year))
-                {
-                    if (int.TryParse(macroPool, out int age))
-                    {
-                        return (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo);
-                    }
-                    return (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
-                }
-                return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
+                //$DOLLAR is defined elsewhere to prevent recursive calling
+                case "street":
+                    return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
+
+                case "real":
+                    return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
+
+                case "year" when int.TryParse(_objCharacter.Age, out int year):
+                    return int.TryParse(macroPool, out int age)
+                        ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo)
+                        : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
+
+                case "year":
+                    return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
             }
 
             //Did not meet predefined macros, check user defined
@@ -193,44 +182,58 @@ namespace Chummer
                     //Already defined, no need to do anything fancy
                     if (!persistenceDictionary.TryGetValue(macroPool, out string strSelectedNodeName))
                     {
-                        if (xmlUserMacroFirstChild.Name == "random")
+                        switch (xmlUserMacroFirstChild.Name)
                         {
-                            XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
-                            if (xmlPossibleNodeList.Count > 0)
-                            {
-                                string[] strNames = new string[xmlPossibleNodeList.Count];
-                                int i = 0;
-                                foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                            case "random":
                                 {
-                                    strNames[i] = xmlLoopNode.Name;
-                                    ++i;
-                                }
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    if (xmlPossibleNodeList.Count > 0)
+                                    {
+                                        int intUseIndex = xmlPossibleNodeList.Count > 1
+                                            ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            : 0;
+                                        int i = 0;
+                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                        {
+                                            if (i == intUseIndex)
+                                            {
+                                                strSelectedNodeName = xmlLoopNode.Name;
+                                                break;
+                                            }
+                                            ++i;
+                                        }
+                                    }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
-                            }
-                        }
-                        else if (xmlUserMacroFirstChild.Name == "persistent")
-                        {
-                            //Any node not named
-                            XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
-                            if (xmlPossibleNodeList.Count > 0)
-                            {
-                                string[] strNames = new string[xmlPossibleNodeList.Count];
-                                int i = 0;
-                                foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                    break;
+                                }
+                            case "persistent":
                                 {
-                                    strNames[i] = xmlLoopNode.Name;
-                                    ++i;
-                                }
+                                    //Any node not named
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    if (xmlPossibleNodeList.Count > 0)
+                                    {
+                                        int intUseIndex = xmlPossibleNodeList.Count > 1
+                                            ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            : 0;
+                                        int i = 0;
+                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                        {
+                                            if (i == intUseIndex)
+                                            {
+                                                strSelectedNodeName = xmlLoopNode.Name;
+                                                break;
+                                            }
+                                            ++i;
+                                        }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
-                                if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
-                                    persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
-                            }
-                        }
-                        else
-                        {
-                            return "(Formating error in $DOLLAR" + macroName + ")";
+                                        if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
+                                            persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
+                                    }
+
+                                    break;
+                                }
+                            default:
+                                return "(Formating error in $DOLLAR" + macroName + ")";
                         }
                     }
 

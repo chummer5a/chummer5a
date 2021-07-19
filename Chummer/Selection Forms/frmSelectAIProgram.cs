@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,6 +42,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlOptionalAIProgramsNode;
 
         #region Control Events
+
         public frmSelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
             InitializeComponent();
@@ -135,27 +137,29 @@ namespace Chummer
                 case Keys.Down when lstAIPrograms.SelectedIndex + 1 < lstAIPrograms.Items.Count:
                     lstAIPrograms.SelectedIndex += 1;
                     break;
-                case Keys.Down:
-                {
-                    if (lstAIPrograms.Items.Count > 0)
-                    {
-                        lstAIPrograms.SelectedIndex = 0;
-                    }
 
-                    break;
-                }
+                case Keys.Down:
+                    {
+                        if (lstAIPrograms.Items.Count > 0)
+                        {
+                            lstAIPrograms.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
                 case Keys.Up when lstAIPrograms.SelectedIndex - 1 >= 0:
                     lstAIPrograms.SelectedIndex -= 1;
                     break;
-                case Keys.Up:
-                {
-                    if (lstAIPrograms.Items.Count > 0)
-                    {
-                        lstAIPrograms.SelectedIndex = lstAIPrograms.Items.Count - 1;
-                    }
 
-                    break;
-                }
+                case Keys.Up:
+                    {
+                        if (lstAIPrograms.Items.Count > 0)
+                        {
+                            lstAIPrograms.SelectedIndex = lstAIPrograms.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -164,9 +168,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -180,9 +186,11 @@ namespace Chummer
             get => _strSelectedAIProgram;
             set => _strSelectedAIProgram = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Update the Program's information based on the Program selected.
         /// </summary>
@@ -364,6 +372,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

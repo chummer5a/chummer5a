@@ -11,7 +11,7 @@ namespace Chummer.Benchmarks
     /// </summary>
     public class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             // Benchmarks should not be run in a Debug configuration
             Utils.BreakIfDebug();
@@ -32,7 +32,7 @@ namespace Chummer.Benchmarks
 
         private readonly string strLongWord;
 
-        [Params(100,1000,10000)]
+        [Params(100, 1000, 10000)]
         // ReSharper disable once MemberCanBePrivate.Global
         public int N;
 
@@ -59,7 +59,7 @@ namespace Chummer.Benchmarks
         {
             string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
-            foreach (string strWord in strBaseWord.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string strWord in strBaseWord.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 blnDummy = strWord.Length > 3;
             }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
 using System.Globalization;
@@ -23,15 +24,15 @@ using System.Reflection;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Chummer
 {
     public class TranslateExceptionTelemetryProcessor : ITelemetryProcessor
     {
-        private ITelemetryProcessor Next { get; set; }
+        private ITelemetryProcessor Next { get; }
 
         // You can pass values from .config
         public string MyParamFromConfigFile { get; set; }
@@ -39,8 +40,9 @@ namespace Chummer
         // Link processors to each other in a chain.
         public TranslateExceptionTelemetryProcessor(ITelemetryProcessor next)
         {
-            this.Next = next;
+            Next = next;
         }
+
         public void Process(ITelemetry item)
         {
             // To filter out an item, just return
@@ -48,7 +50,7 @@ namespace Chummer
             // Modify the item if required
             ModifyItem(item);
 
-            this.Next.Process(item);
+            Next.Process(item);
         }
 
         // Example: replace with your own criteria.
@@ -58,7 +60,7 @@ namespace Chummer
         }
 
         // Example: replace with your own modifiers.
-        private void ModifyItem(ITelemetry item)
+        private static void ModifyItem(ITelemetry item)
         {
             if (!(item is ExceptionTelemetry exceptionTelemetry)) return;
             var translateCultureInfo = new CultureInfo("en");

@@ -16,15 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
- using System.Xml.XPath;
- using Chummer.Backend.Skills;
+using System.Xml.XPath;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -37,6 +38,7 @@ namespace Chummer
         private readonly string _strCustomGroup;
 
         #region Control Events
+
         public frmCreateImprovement(Character objCharacter, string strCustomGroup = "")
         {
             InitializeComponent();
@@ -144,24 +146,30 @@ namespace Chummer
                             lblVal.Visible = true;
                             nudVal.Visible = true;
                             break;
+
                         case "min":
                             lblMin.Visible = true;
                             nudMin.Visible = true;
                             break;
+
                         case "max":
                             lblMax.Visible = true;
                             nudMax.Visible = true;
                             break;
+
                         case "aug":
                             lblAug.Visible = true;
                             nudAug.Visible = true;
                             break;
+
                         case "applytorating":
                             chkApplyToRating.Visible = true;
                             break;
+
                         case "free":
                             chkFree.Visible = true;
                             break;
+
                         default:
                             if (objNode.InnerText.StartsWith("Select", StringComparison.Ordinal))
                             {
@@ -207,6 +215,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectAttribute":
                     {
                         List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
@@ -239,6 +248,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectEcho":
                     using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Echo))
                     {
@@ -250,6 +260,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectMetamagic":
                     using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Metamagic))
                     {
@@ -261,6 +272,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectMentalAttribute":
                     using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.MentalAttributes.ToArray()))
                     {
@@ -274,6 +286,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectPhysicalAttribute":
                     using (frmSelectAttribute frmPickAttribute = new frmSelectAttribute(Backend.Attributes.AttributeSection.PhysicalAttributes.ToArray()))
                     {
@@ -287,6 +300,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectSpecialAttribute":
                     {
                         List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
@@ -321,6 +335,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectSkill":
                     using (frmSelectSkill frmPickSkill = new frmSelectSkill(_objCharacter))
                     {
@@ -334,6 +349,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectKnowSkill":
                     {
                         List<ListItem> lstDropdownItems = new List<ListItem>(_objCharacter.SkillsSection.KnowledgeSkills.Count);
@@ -381,6 +397,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectSkillCategory":
                     using (frmSelectSkillCategory frmPickSkillCategory = new frmSelectSkillCategory(_objCharacter))
                     {
@@ -394,6 +411,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectSkillGroup":
                     using (frmSelectSkillGroup frmPickSkillGroup = new frmSelectSkillGroup(_objCharacter))
                     {
@@ -407,6 +425,32 @@ namespace Chummer
                         }
                     }
                     break;
+
+                case "SelectComplexForm":
+                    List<ListItem> lstComplexForms = new List<ListItem>();
+                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("complexforms.xml").Select("/chummer/complexforms/complexform"))
+                    {
+                        string strName = xmlSpell.SelectSingleNode("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstComplexForms.Add(new ListItem(strName, xmlSpell.SelectSingleNode("translate")?.Value ?? strName));
+                    }
+
+                    using (frmSelectItem selectComplexForm = new frmSelectItem
+                    {
+                        Description = LanguageManager.GetString("Title_SelectComplexForm")
+                    })
+                    {
+                        selectComplexForm.SetDropdownItemsMode(lstComplexForms);
+                        selectComplexForm.ShowDialog(this);
+
+                        if (selectComplexForm.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = selectComplexForm.SelectedName;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, selectComplexForm.SelectedName);
+                        }
+                    }
+                    break;
+
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
                     foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("spells.xml").Select("/chummer/spells/spell"))
@@ -431,6 +475,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectWeaponCategory":
                     using (frmSelectWeaponCategory frmPickWeaponCategory = new frmSelectWeaponCategory(_objCharacter))
                     {
@@ -444,6 +489,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectSpellCategory":
                     using (frmSelectSpellCategory frmPickSpellCategory = new frmSelectSpellCategory(_objCharacter))
                     {
@@ -457,6 +503,7 @@ namespace Chummer
                         }
                     }
                     break;
+
                 case "SelectAdeptPower":
                     using (frmSelectPower frmPickPower = new frmSelectPower(_objCharacter))
                     {
@@ -472,9 +519,11 @@ namespace Chummer
                     break;
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         /// <summary>
         /// Accept the values on the Form and create the required XML data.
         /// </summary>
@@ -585,7 +634,7 @@ namespace Chummer
                 objImprovement.CustomGroup = _strCustomGroup;
                 NewImprovement = objImprovement;
             }
-            else {Utils.BreakIfDebug();}
+            else { Utils.BreakIfDebug(); }
 
             DialogResult = DialogResult.OK;
         }
@@ -610,9 +659,7 @@ namespace Chummer
                     : LanguageManager.GetString("String_Attribute" + strToTranslate + "Short");
 
                 case "SelectSkill":
-                    if (strToTranslate.Contains("Exotic Melee Weapon") ||
-                        strToTranslate.Contains("Exotic Ranged Weapon") ||
-                        strToTranslate.Contains("Pilot Exotic Vehicle"))
+                    if (ExoticSkill.IsExoticSkillName(strToTranslate))
                     {
                         string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
@@ -657,7 +704,8 @@ namespace Chummer
                     return strToTranslate;
             }
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
 
@@ -668,6 +716,6 @@ namespace Chummer
         /// </summary>
         public Improvement EditImprovementObject { get; set; }
 
-        #endregion
+        #endregion Properties
     }
 }

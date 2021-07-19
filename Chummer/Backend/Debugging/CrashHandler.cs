@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -42,7 +43,7 @@ namespace Chummer.Backend
         {
             public DumpData(Exception ex)
             {
-                _dicPretendFiles = new Dictionary<string, string> {{"exception.txt", ex?.ToString() ?? "No Exception Specified"}};
+                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString() ?? "No Exception Specified" } };
 
                 _dicAttributes = new Dictionary<string, string>
                 {
@@ -137,12 +138,16 @@ namespace Chummer.Backend
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly ConcurrentDictionary<string, string> _dicCapturedFiles = new ConcurrentDictionary<string, string>();
+
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly Dictionary<string, string> _dicPretendFiles;
+
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly Dictionary<string, string> _dicAttributes;
+
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly int _intProcessId = Process.GetCurrentProcess().Id;
+
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
@@ -191,7 +196,6 @@ namespace Chummer.Backend
                     ExceptionTelemetry et = new ExceptionTelemetry(ex)
                     {
                         SeverityLevel = SeverityLevel.Critical
-
                     };
                     //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                     foreach (DictionaryEntry d in ex.Data)
@@ -203,7 +207,7 @@ namespace Chummer.Backend
                     Program.ChummerTelemetryClient.Flush();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
             }
@@ -228,7 +232,7 @@ namespace Chummer.Backend
             catch (Exception nex)
             {
                 Program.MainForm.ShowMessageBox(
-                    "Failed to create crash report." + Environment.NewLine + 
+                    "Failed to create crash report." + Environment.NewLine +
                     "Chummer crashed with version: " + Assembly.GetAssembly(typeof(Program))?.GetName().Version + Environment.NewLine +
                     "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +
                     Environment.NewLine + "Crash information:" + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);

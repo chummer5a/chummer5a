@@ -28,15 +28,15 @@
         <skilldisable amendoperation="addnode">Ceremony</skilldisable>
       </bonus>
       <bonus>
-        <skilldisable xpathfilter=". = 'Ritual Spellcasting'" amendoperation="remove"/>
+        <skilldisable xpathfilter=". = 'Ritual Spellcasting'" amendoperation="remove" />
         <specificskill>
           <name xpathfilter=". = 'Ritual Spellcasting'">Ceremony</name>
         </specificskill>
-        <skilldisable xpathfilter=". = 'Artificing'" amendoperation="remove"/>
-        <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove"/>
-        <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove"/>
-        <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove"/>
-        <skillgroupdisable xpathfilter=". 'Enchanting'" amendoperation="remove"/>
+        <skilldisable xpathfilter=". = 'Artificing'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove" />
+        <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove" />
+        <skillgroupdisable xpathfilter=". 'Enchanting'" amendoperation="remove" />
       </bonus>
     </tradition>
   </traditions>

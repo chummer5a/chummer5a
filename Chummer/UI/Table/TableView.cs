@@ -16,7 +16,9 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -27,10 +29,8 @@ namespace Chummer.UI.Table
 {
     public partial class TableView<T> : UserControl where T : class, INotifyPropertyChanged
     {
-
         protected class TableLayoutEngine : LayoutEngine
         {
-
             private readonly TableView<T> _table;
 
             public TableLayoutEngine(TableView<T> table)
@@ -41,9 +41,11 @@ namespace Chummer.UI.Table
             public override bool Layout(object container, LayoutEventArgs layoutEventArgs)
             {
                 _table.SuspendLayout();
-                Span<int> widths = _table._columns.Count > GlobalOptions.MaxStackLimit
-                    ? new int[_table._columns.Count]
-                    : stackalloc int[_table._columns.Count];
+                int[] aintSharedWidths = _table._columns.Count > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_table._columns.Count) : null;
+                // ReSharper disable once MergeConditionalExpression
+#pragma warning disable IDE0029 // Use coalesce expression
+                Span<int> widths = aintSharedWidths != null ? aintSharedWidths : stackalloc int[_table._columns.Count];
+#pragma warning restore IDE0029 // Use coalesce expression
 
                 int y = 0;
 
@@ -163,6 +165,8 @@ namespace Chummer.UI.Table
                     _table.Height = y;
                 }
                 _table.ResumeLayout(false);
+                if (aintSharedWidths != null)
+                    ArrayPool<int>.Shared.Return(aintSharedWidths);
                 return true;
             }
         }
@@ -191,7 +195,7 @@ namespace Chummer.UI.Table
         private readonly List<TableRow> _lstRowCells = new List<TableRow>();
         private SortOrder _eSortType = SortOrder.None;
         private object _objSortPausedSender;
-        private int _intSelectedIndex = -1;
+        private readonly int _intSelectedIndex = -1;
 
         public TableView()
         {
@@ -302,7 +306,8 @@ namespace Chummer.UI.Table
             return cell;
         }
 
-        private void CreateCellsForColumn(int insertIndex, TableColumn<T> column) {
+        private void CreateCellsForColumn(int insertIndex, TableColumn<T> column)
+        {
             SuspendLayout();
             List<TableCell> cells;
             if (_lstItems != null)
@@ -326,25 +331,28 @@ namespace Chummer.UI.Table
             {
                 cells = new List<TableCell>();
             }
-            HeaderCell header = new HeaderCell()
+            HeaderCell header = new HeaderCell
             {
                 Text = column.Text,
                 TextTag = column.Tag
             };
             if (column.Sorter != null)
             {
-                header.HeaderClick += (sender, evt) => {
+                header.HeaderClick += (sender, evt) =>
+                {
                     if (_sortColumn == column)
                     {
                         // cycle through states if column remains the same
-                        switch(_eSortType)
+                        switch (_eSortType)
                         {
                             case SortOrder.None:
                                 _eSortType = SortOrder.Ascending;
                                 break;
+
                             case SortOrder.Ascending:
                                 _eSortType = SortOrder.Descending;
                                 break;
+
                             case SortOrder.Descending:
                                 _eSortType = SortOrder.None;
                                 break;
@@ -377,18 +385,19 @@ namespace Chummer.UI.Table
             ResumeLayout(false);
         }
 
-        internal void ColumnAdded(TableColumn<T> column) {
+        internal void ColumnAdded(TableColumn<T> column)
+        {
             column.MakeLive();
             int index = _columns.Count - 1;
             CreateCellsForColumn(index, column);
             foreach (string dependency in column.Dependencies)
             {
-                if (!_dicObservedProperties.TryGetValue(dependency, out List<int> lstDependancies))
+                if (!_dicObservedProperties.TryGetValue(dependency, out List<int> lstDependencies))
                 {
-                    lstDependancies = new List<int>();
-                    _dicObservedProperties[dependency] = lstDependancies;
+                    lstDependencies = new List<int>();
+                    _dicObservedProperties[dependency] = lstDependencies;
                 }
-                lstDependancies.Add(index);
+                lstDependencies.Add(index);
             }
         }
 
@@ -459,7 +468,6 @@ namespace Chummer.UI.Table
             }
         }
 
-
         private void ItemsChanged(object sender, ListChangedEventArgs e)
         {
             switch (e.ListChangedType)
@@ -491,6 +499,7 @@ namespace Chummer.UI.Table
                         ItemPropertyChanged(e.NewIndex, item, e.PropertyDescriptor.Name);
                     }
                     break;
+
                 case ListChangedType.ItemAdded:
                     item = _lstItems[e.NewIndex];
                     row = CreateRow();
@@ -514,6 +523,7 @@ namespace Chummer.UI.Table
                     Sort(false);
                     RestartLayout(true);
                     break;
+
                 case ListChangedType.ItemDeleted:
                     SuspendLayout();
                     for (int i = 0; i < _columns.Count; i++)
@@ -532,6 +542,7 @@ namespace Chummer.UI.Table
                     Sort(false);
                     RestartLayout(true);
                     break;
+
                 case ListChangedType.ItemMoved:
                     foreach (ColumnHolder col in _lstCells)
                     {
@@ -669,7 +680,8 @@ namespace Chummer.UI.Table
         public SortOrder SortOrder
         {
             get => _eSortType;
-            set {
+            set
+            {
                 _eSortType = value;
                 Sort();
             }

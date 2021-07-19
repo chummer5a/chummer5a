@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Xml;
@@ -36,6 +36,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
+
         public frmSelectProgramOption(Character objCharacter)
         {
             InitializeComponent();
@@ -131,9 +132,11 @@ namespace Chummer
                 AcceptForm();
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -165,9 +168,10 @@ namespace Chummer
         /// </summary>
         public string SelectedOption => _strSelectedOption;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -182,6 +186,7 @@ namespace Chummer
             lblCommonSkill.Left = lblCommonSkillLabel.Left + lblCommonSkillLabel.Width + 6;
             lblSource.Left = lblSourceLabel.Left + lblSourceLabel.Width + 6;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

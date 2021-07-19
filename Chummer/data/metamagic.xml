@@ -592,7 +592,7 @@
       <bonus>
         <critterpowers>
           <power select="Self-Only × 3">Movement</power>
-        </critterpowers>  
+        </critterpowers>
       </bonus>
       <required>
         <allof>

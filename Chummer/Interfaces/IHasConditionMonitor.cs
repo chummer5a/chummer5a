@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 namespace Chummer
 {
     public interface IHasPhysicalConditionMonitor
@@ -23,6 +24,7 @@ namespace Chummer
         int PhysicalCM { get; }
         int PhysicalCMFilled { get; set; }
     }
+
     public interface IHasStunConditionMonitor
     {
         int StunCM { get; }

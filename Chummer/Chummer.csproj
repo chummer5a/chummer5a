@@ -17,6 +17,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TransformOnBuild>True</TransformOnBuild>
     <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>M:\Chummer 5\</PublishUrl>
     <Install>false</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,14 +29,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -362,12 +361,12 @@
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
     <Compile Include="Classes\clsUtils.cs" />
-    <Compile Include="Classes\clsXmlExtensions.cs" />
+    <Compile Include="Backend\Extensions\XmlNodeExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
-    <Compile Include="Classes\ITranslatable.cs" />
+    <Compile Include="Interfaces\ITranslatable.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="Classes\OptionsManager.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">

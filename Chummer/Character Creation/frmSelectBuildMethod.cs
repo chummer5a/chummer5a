@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -32,6 +33,7 @@ namespace Chummer
         private readonly bool _blnForExistingCharacter;
 
         #region Control Events
+
         public frmSelectBuildMethod(Character objCharacter, bool blnUseCurrentValues = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
@@ -84,43 +86,9 @@ namespace Chummer
                     .First(x => x.Value == objSelectedGameplayOption).Key;
                 // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                 if (_objCharacter.IsLoading)
-                    _objCharacter.PostLoadMethods.Enqueue(SwitchBuildMethods);
-                else if (!SwitchBuildMethods())
+                    _objCharacter.PostLoadMethods.Enqueue(() => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterOptionsKey));
+                else if (!_objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterOptionsKey))
                     return;
-
-                bool SwitchBuildMethods()
-                {
-                    if (eSelectedBuildMethod.UsesPriorityTables())
-                    {
-                        using (frmPriorityMetatype frmSelectMetatype = new frmPriorityMetatype(_objCharacter))
-                        {
-                            frmSelectMetatype.ShowDialog(this);
-                            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                            {
-                                _objCharacter.CharacterOptionsKey = strOldCharacterOptionsKey;
-                                return false;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        using (frmKarmaMetatype frmSelectMetatype = new frmKarmaMetatype(_objCharacter))
-                        {
-                            frmSelectMetatype.ShowDialog(this);
-                            if (frmSelectMetatype.DialogResult == DialogResult.Cancel)
-                            {
-                                _objCharacter.CharacterOptionsKey = strOldCharacterOptionsKey;
-                                return false;
-                            }
-                        }
-                    }
-
-                    if (_eStartingBuildMethod == CharacterBuildMethod.LifeModule)
-                    {
-                        _objCharacter.Qualities.RemoveAll(x => x.OriginSource == QualitySource.LifeModule);
-                    }
-                    return true;
-                }
             }
             else
             {
@@ -190,12 +158,14 @@ namespace Chummer
                         lblBuildMethodParamLabel.Visible = true;
                         lblBuildMethodParam.Visible = true;
                         break;
+
                     case CharacterBuildMethod.SumtoTen:
                         lblBuildMethodParamLabel.Text = LanguageManager.GetString("String_SumtoTen");
                         lblBuildMethodParam.Text = objSelectedGameplayOption.SumtoTen.ToString(GlobalOptions.CultureInfo);
                         lblBuildMethodParamLabel.Visible = true;
                         lblBuildMethodParam.Visible = true;
                         break;
+
                     default:
                         lblBuildMethodParamLabel.Visible = false;
                         lblBuildMethodParam.Visible = false;
@@ -219,10 +189,11 @@ namespace Chummer
                 if (string.IsNullOrEmpty(lblBooks.Text))
                     lblCustomData.Text = LanguageManager.GetString("String_None");
             }
-            
+
             if (!_blnLoading)
                 ResumeLayout();
         }
-        #endregion
+
+        #endregion Control Events
     }
 }

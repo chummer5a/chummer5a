@@ -16,20 +16,21 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-using System.ComponentModel;
- using System.IO;
- using System.IO.Compression;
- using System.Net;
-using System.Text;
-using System.Windows.Forms;
-using System.Reflection;
- using Application = System.Windows.Forms.Application;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Threading;
- using System.Threading.Tasks;
- using NLog;
+using System.ComponentModel;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Net;
+using System.Reflection;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using NLog;
+using Application = System.Windows.Forms.Application;
 
 namespace Chummer
 {
@@ -68,7 +69,7 @@ namespace Chummer
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
         }
 
-        private void frmUpdate_Load(object sender, EventArgs e)
+        private async void frmUpdate_Load(object sender, EventArgs e)
         {
             Log.Info("frmUpdate_Load enter");
             Log.Info("Check Global Mutex for duplicate");
@@ -93,25 +94,34 @@ namespace Chummer
                 Log.Info("frmUpdate_Load exit");
                 Close();
             }
-            if (_tskConnectionLoader?.IsCompleted != false)
+            if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
+                _tskConnectionLoader.IsFaulted)))
             {
-                DownloadChangelog();
+                await DownloadChangelog();
             }
             Log.Info("frmUpdate_Load exit");
         }
 
         private bool _blnFormClosing;
+
         private void frmUpdate_FormClosing(object sender, FormClosingEventArgs e)
         {
             _blnFormClosing = true;
-            _objConnectionLoaderCancellationTokenSource?.Cancel();
+            _objConnectionLoaderCancellationTokenSource?.Cancel(false);
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
         }
 
-        private void DownloadChangelog()
+        private async Task DownloadChangelog()
         {
+            _objConnectionLoaderCancellationTokenSource?.Cancel(false);
             _objConnectionLoaderCancellationTokenSource = new CancellationTokenSource();
+            try
+            {
+                if (_tskConnectionLoader?.IsCompleted == false)
+                    await _tskConnectionLoader;
+            }
+            catch (TaskCanceledException) { }
             _tskConnectionLoader = Task.Run(async () =>
             {
                 await LoadConnection();
@@ -326,9 +336,10 @@ namespace Chummer
             set
             {
                 _blnSilentMode = value;
-                if (value && (_tskConnectionLoader == null || _tskConnectionLoader.IsCompleted))
+                if (value && (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
+                    _tskConnectionLoader.IsFaulted))))
                 {
-                    DownloadChangelog();
+                    Utils.RunWithoutThreadLock(DownloadChangelog);
                 }
             }
         }
@@ -379,13 +390,14 @@ namespace Chummer
             }
             else
             {
-                lblUpdaterStatus.Text = new StringBuilder(LanguageManager.GetString("String_Up_To_Date"))
-                                            .Append(strSpace)
-                                            .AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"),
-                                                CurrentVersion)
-                                            .Append(strSpace)
-                                            .AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Latest_Version"),
-                                                LanguageManager.GetString(_blnPreferNightly ? "String_Nightly" : "String_Stable"), strLatestVersion).ToString();
+                lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date") + strSpace +
+                                        string.Format(GlobalOptions.CultureInfo,
+                                            LanguageManager.GetString("String_Currently_Installed_Version"),
+                                            CurrentVersion) + strSpace + string.Format(GlobalOptions.CultureInfo,
+                                            LanguageManager.GetString("String_Latest_Version"),
+                                            LanguageManager.GetString(_blnPreferNightly
+                                                ? "String_Nightly"
+                                                : "String_Stable"), strLatestVersion);
                 if (intResult < 0)
                 {
                     cmdRestart.Text = LanguageManager.GetString("Button_Up_To_Date");
@@ -402,10 +414,11 @@ namespace Chummer
             Log.Info("cmdUpdate_Click");
             if (_blnIsConnected)
                 await DownloadUpdates();
-            else if (_tskConnectionLoader?.IsCompleted != false)
+            else if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
+                _tskConnectionLoader.IsFaulted)))
             {
                 cmdUpdate.Enabled = false;
-                DownloadChangelog();
+                await DownloadChangelog();
             }
         }
 
@@ -643,7 +656,7 @@ namespace Chummer
                     if (!Utils.SafeDeleteFile(strFileToDelete))
                         lstBlocked.Add(strFileToDelete);
                 }
-                
+
                 if (lstBlocked.Count > 0)
                 {
                     Utils.BreakIfDebug();
@@ -708,6 +721,7 @@ namespace Chummer
         }
 
         #region AsyncDownload Events
+
         /// <summary>
         /// Update the download progress for the file.
         /// </summary>
@@ -716,7 +730,6 @@ namespace Chummer
             if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalOptions.InvariantCultureInfo), out int intTmp))
                 pgbOverallProgress.Value = intTmp;
         }
-
 
         /// <summary>
         /// The EXE file is down downloading, so replace the old file with the new one.
@@ -751,6 +764,7 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        #endregion AsyncDownload Events
     }
 }

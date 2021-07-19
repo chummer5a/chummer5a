@@ -1,6 +1,9 @@
 Future Build 215
 Application Changes:
-- Added the ability for devs to set an action on doubleclick on the char-roster
+- Fixed a lot of buggy behavior related to opening characters with Chummer from outside the program (e.g. with Windows' "Open with..." function).
+- Clicking on "Open PDF" on a Master Index entry with no associated pdf now opens the "Choose PDF" Dialog instead of doing nothing.
+- Fixed a crash when Custom Date and/or Time Formats were set to an empty value.
+- Added the ability for devs to set an action when a user double clicks on an entry in the character roster.
 - Added the upload of a crash to ApplicationInsights in parallel to the old Crashhandler (Loglevelfilters still apply)
 - Properly split apart settings that can be different for individual characters (e.g. karma costs, enabled sourcebooks, enabled custom data) and those that cannot (e.g. PDF paths, UI language, dark mode). The old Options screen now controls the latter, while the former can be managed through a separate, dedicated screen.
 - Settings files that were created for previous versions of Chummer will automatically be converted to character-based settings that use a new format. Characters created for previous versions of Chummer will have their specific entries for certain settings (e.g. character creation karma costs, enabled sourcebooks) converted as well. However, these two changes mean that once settings and/or characters are saved in this version of Chummer, they cannot be opened (properly) with older versions. The Nightlies will therefore show a one-time warning about using the Nightly when one might plan to go back and open up characters with the latest stable (or an earlier build).
@@ -74,6 +77,21 @@ Application Changes:
 - Cyberprograms, Software, Autosofts, et al. are now properly recognized as programs and printed as such.
 - A vehicle weapon mount that comes pre-installed with a vehicle but whose size is from a splatbook that the character does not have enabled now still show up as weapon mounts. However, their sizes are shown as one of the core rulebook weapon mount sizes: Heavy if it can fit heavy weapons, Standard otherwise. Fixes #4477.
 - Chummer no longer allows more than one unbound spirit or sprite on a character at a time, but now also only cares about unbound and unfettered spirits and sprites that have at least one service in their entry.
+- In Create mode, gear can now be pasted into armor mods and armor, and armor mods can now be pasted into armor.
+- Weapons that use External Source ammo now have External Source properly recognized as one of the options with which the weapon can be loaded.
+- In the character roster tool, saves that are present both in the Watch folder and in either the Favorites or Recents lists now also still show up in the Watch folder section.
+- Extended versions of Detection spells that are explicitly allowed by RAW no longer erroneously have drain codes of 2 higher than normal.
+- Picking an exotic skill as a skill in which to get free levels from a Priority selection now works properly and adds the selected exotic skill to the character's skill list at the specified level.
+- Improvements that alter the number of power points available to a character now properly cause power point totals in the Adept Powers tab to be updated with new values. This includes metamagics that add power points.
+- When Chummer is opened, it now tries to automatically detect if there is an autosave for a character that could have been an unsaved character otherwise lost by Chummer crashing or exiting unsafely. If it finds such an autosave, it prompts the user if they want to load said autosave.
+- Chummer now attempts to delete all autosaves older than 90 days that are not linked to any Favorite or Most Recently Used character.
+- Improvements and qualities that affect the linked attribute of a skill now have their effects properly reflected in the UI all the time.
+- Closing an opened character that is also not the currently viewed character in the program no longer causes the tool strip of icons at the top to misbehave.
+- Qualities with levels taken at only level 1 now display their level as "1" instead of not displaying any level.
+- When removing content that has added potentially duplicate specializations to a character, the specialization that was added by said content is now properly always gets removed.
+- A warning is now shown when attempting to open enough characters that it might cause Chummer to silently crash.
+- Added a plural/singular detector to the code that checks if a character has a specialization for a weapon.
+- Added the ability to add spells and complex forms to a character through the Improvements system in career mode. 
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -105,6 +123,15 @@ Data Changes:
 - Vehicles and drones in the core rulebook that come with weapon mounts now use the weapon mount settings written for them in Rigger 5.0 instead of the default core rulebook settings. Players playing without Rigger 5.0 will still see them as their core rulebook weapon sizes however.
 - The Krime Euskaldunak Tankette now uses Rigger 5.0 weapon mounts if Rigger 5.0 is enabled.
 - There are now dedicated options for weapon mount options that are for the weapon mounts that are statted out in the core rulebook. Fixes #4493.
+- The Technomancer quality can no longer be taken after taking an Infected quality.
+- Missiles now properly have 4 higher Availability than their rocket equivalents.
+- Light and Medium Crossbows now properly have a Concealability of +6.
+- Fixed various typos in the recommended specializations for certain knowledge skills.
+- Predictive Analytics now properly increases AR initiative dice.
+- Core rulebook weapon mounts now use Flexible for their flexibility entry to represent the core rulebook saying that its weapon mounts can rotate in an arc.
+- Out for Myself properly gives +3 Surprise dice.
+- Various music genres and trideo shows from No Future have been added as suggested specializations for relevant knowledge skills
+- Fixed specialization entries for crossbows and slingshots.
 
 Changed/New Strings:
 - String_ContactPoints
@@ -210,6 +237,13 @@ Changed/New Strings:
 - Button_Reconnect
 - Message_UnboundSpiritLimit
 - MessageTitle_UnboundSpiritLimit
+- Message_PossibleCrashAutosaveFound
+- Message_NoLinkedPDF
+- MessageTitle_NoLinkedPDF
+- Message_NoPDFProgramSet
+- MessageTitle_NoPDFProgramSet
+- Message_TooManyHandlesWarning
+- MessageTitle_TooManyHandlesWarning
 - Label_SkillGroup_Disabled
 - Label_SkillGroup_DisabledBy
 - Enum_GunneryCommandDevice

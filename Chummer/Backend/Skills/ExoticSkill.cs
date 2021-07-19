@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Xml;
 
@@ -34,9 +35,17 @@ namespace Chummer.Backend.Skills
             node.TryGetStringFieldQuickly("specific", ref _strSpecific);
         }
 
+        public static bool IsExoticSkillName(string strSkillName)
+        {
+            return !string.IsNullOrEmpty(strSkillName) &&
+                   (strSkillName.Contains("Exotic Melee Weapon", StringComparison.OrdinalIgnoreCase) ||
+                    strSkillName.Contains("Exotic Ranged Weapon", StringComparison.OrdinalIgnoreCase) ||
+                    strSkillName.Contains("Pilot Exotic Vehicle", StringComparison.OrdinalIgnoreCase));
+        }
+
         public override bool IsExoticSkill => true;
 
-        public override bool AllowDelete => !CharacterObject.Created;
+        public override bool AllowDelete => !CharacterObject.Created && FreeBase + FreeKarma + RatingModifiers(Attribute) <= 0;
 
         public override int CurrentSpCost => Math.Max(BasePoints, 0);
 
@@ -65,10 +74,9 @@ namespace Chummer.Backend.Skills
 
         public string DisplaySpecific(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return Specific;
-
-            return CharacterObject.TranslateExtra(Specific, strLanguage);
+            return strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                ? Specific
+                : CharacterObject.TranslateExtra(Specific, strLanguage);
         }
 
         public override string DisplaySpecialization(string strLanguage)

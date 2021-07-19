@@ -16,10 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Annotations;
-using Chummer.Backend.Attributes;
+
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
@@ -28,6 +28,8 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -99,10 +101,12 @@ namespace Chummer.Backend.Equipment
 
         // Condition Monitor Progress.
         private int _intPhysicalCMFilled;
+
         private int _intMatrixCMFilled;
         private Guid _guiSourceID;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Vehicle(Character objCharacter)
         {
             // Create the GUID for the new Vehicle.
@@ -667,12 +671,12 @@ namespace Chummer.Backend.Equipment
         {
             if (objNode == null)
                 return;
-            if ( blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -944,7 +948,6 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-
             string strLocation = objNode["location"]?.InnerText;
             if (!string.IsNullOrEmpty(strLocation))
             {
@@ -1075,14 +1078,15 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -1137,7 +1141,6 @@ namespace Chummer.Backend.Equipment
             set => _intHandling = value;
         }
 
-
         /// <summary>
         /// Seats.
         /// </summary>
@@ -1146,7 +1149,6 @@ namespace Chummer.Backend.Equipment
             get => _intSeats;
             set => _intSeats = value;
         }
-
 
         /// <summary>
         /// Offroad Handling.
@@ -1337,7 +1339,6 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set => _strSource = value;
         }
-
 
         /// <summary>
         /// Sourcebook Page Number.
@@ -1668,9 +1669,11 @@ namespace Chummer.Backend.Equipment
             }
             return false;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// The number of Slots on the Vehicle that are used by Mods.
         /// </summary>
@@ -1748,6 +1751,7 @@ namespace Chummer.Backend.Equipment
                                     intActualSlots -= 1;
                                 }
                                 break;
+
                             case "Speed":
                                 intActualSlots -= _intSpeed;
                                 if (!blnSpeed)
@@ -1756,6 +1760,7 @@ namespace Chummer.Backend.Equipment
                                     intActualSlots -= 1;
                                 }
                                 break;
+
                             case "Acceleration":
                                 intActualSlots -= _intAccel;
                                 if (!blnAccel)
@@ -1764,6 +1769,7 @@ namespace Chummer.Backend.Equipment
                                     intActualSlots -= 1;
                                 }
                                 break;
+
                             case "Armor":
                                 int intThird = (objMod.Rating - _intArmor + 2) / 3;
 
@@ -1777,6 +1783,7 @@ namespace Chummer.Backend.Equipment
                                     intActualSlots = intThird;
                                 }
                                 break;
+
                             case "Sensor":
                                 intActualSlots -= _intSensor;
                                 if (!blnSensor)
@@ -1797,7 +1804,6 @@ namespace Chummer.Backend.Equipment
                 return intModSlotsUsed;
             }
         }
-
 
         /// <summary>
         /// Total cost of the Vehicle including all after-market Modification.
@@ -1828,7 +1834,6 @@ namespace Chummer.Backend.Equipment
                 return decCost;
             }
         }
-
 
         /// <summary>
         /// Total cost of the Vehicle including all after-market Modification.
@@ -2626,15 +2631,17 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private static readonly string[] s_LstModCategoryStrings = { "Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic" };
+        public static readonly ReadOnlyCollection<string> ModCategoryStrings = Array.AsReadOnly(new[]
+            {"Powertrain", "Protection", "Weapons", "Body", "Electromagnetic", "Cosmetic"});
+
         /// <summary>
         /// Check if the vehicle is over capacity in any category
         /// </summary>
         public bool OverR5Capacity(string strCheckCapacity = "")
         {
-            return !string.IsNullOrEmpty(strCheckCapacity) && s_LstModCategoryStrings.Contains(strCheckCapacity)
+            return !string.IsNullOrEmpty(strCheckCapacity) && ModCategoryStrings.Contains(strCheckCapacity)
                 ? CalcCategoryUsed(strCheckCapacity) > CalcCategoryAvail(strCheckCapacity)
-                : s_LstModCategoryStrings.Any(strCategory => CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory));
+                : ModCategoryStrings.Any(strCategory => CalcCategoryUsed(strCategory) > CalcCategoryAvail(strCategory));
         }
 
         /// <summary>
@@ -2812,7 +2819,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intCosmetic = _intBody +_intAddCosmeticModSlots;
+                int intCosmetic = _intBody + _intAddCosmeticModSlots;
 
                 foreach (VehicleMod objMod in Mods)
                 {
@@ -2845,11 +2852,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 Gear objGear = GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid());
-                if (objGear != null)
-                {
-                    return objGear.Rating;
-                }
-                return 0;
+                return objGear?.Rating ?? 0;
             }
         }
 
@@ -2865,7 +2868,7 @@ namespace Chummer.Backend.Equipment
         {
             if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalOptions.LiveCustomData)
                 return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml",  strLanguage)
+            _objCachedMyXmlNode = _objCharacter.LoadData("vehicles.xml", strLanguage)
                 .SelectSingleNode(SourceID == Guid.Empty
                     ? "/chummer/vehicles/vehicle[name = " + Name.CleanXPath() + ']'
                     : string.Format(GlobalOptions.InvariantCultureInfo,
@@ -3050,7 +3053,7 @@ namespace Chummer.Backend.Equipment
 
         public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat(Weapons.Cast<IHasMatrixAttributes>());
 
-        #endregion
+        #endregion Complex Properties
 
         #region Methods
 
@@ -3085,18 +3088,23 @@ namespace Chummer.Backend.Equipment
                 case "Powertrain":
                     intBase += _intAddPowertrainModSlots;
                     break;
+
                 case "Weapons":
                     intBase += _intAddWeaponModSlots;
                     break;
+
                 case "Body":
                     intBase += _intAddBodyModSlots;
                     break;
+
                 case "Electromagnetic":
                     intBase += _intAddElectromagneticModSlots;
                     break;
+
                 case "Protection":
                     intBase += _intAddProtectionModSlots;
                     break;
+
                 case "Cosmetic":
                     intBase += _intAddCosmeticModSlots;
                     break;
@@ -3197,6 +3205,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
         /// <summary>
         /// Add a Vehicle to the TreeView.
         /// </summary>
@@ -3325,12 +3334,14 @@ namespace Chummer.Backend.Equipment
                     : ColorManager.WindowText;
             }
         }
+
         public bool Stolen
         {
             get => _blnStolen;
             set => _blnStolen = value;
         }
-        #endregion
+
+        #endregion UI Methods
 
         /// <summary>
         /// Locate a piece of Cyberware within this vehicle based on a predicate.
@@ -3496,6 +3507,7 @@ namespace Chummer.Backend.Equipment
                 {
                     case "Device Rating":
                         return Pilot;
+
                     case "Program Limit":
                     case "Data Processing":
                     case "Firewall":
@@ -3503,6 +3515,7 @@ namespace Chummer.Backend.Equipment
                         if (string.IsNullOrEmpty(strExpression))
                             return Pilot;
                         break;
+
                     default:
                         return 0;
                 }
@@ -3539,9 +3552,7 @@ namespace Chummer.Backend.Equipment
                 return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
-            if (!int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn))
-                return 0;
-            return intReturn;
+            return !int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn) ? 0 : intReturn;
         }
 
         public int GetBonusMatrixAttribute(string strAttributeName)
@@ -3561,6 +3572,7 @@ namespace Chummer.Backend.Equipment
                 case "Device Rating":
                     strAttributeNodeName = "devicerating";
                     break;
+
                 case "Program Limit":
                     strAttributeNodeName = "programs";
                     break;
@@ -3595,7 +3607,8 @@ namespace Chummer.Backend.Equipment
 
             return intReturn;
         }
-        #endregion
+
+        #endregion Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
@@ -3633,14 +3646,14 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.Gear:
-                    {
-                        var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
-                        if (xmlAddonCategoryList?.Count > 0)
-                            return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
-                                xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
+                        {
+                            var xmlAddonCategoryList = GetNode()?.SelectNodes("addoncategory");
+                            if (xmlAddonCategoryList?.Count > 0)
+                                return xmlAddonCategoryList.Cast<XmlNode>().Any(xmlCategory =>
+                                    xmlCategory.InnerText == GlobalOptions.Clipboard.SelectSingleNode("category")?.Value);
 
-                        return false;
-                    }
+                            return false;
+                        }
                     default:
                         return false;
                 }

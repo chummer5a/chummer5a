@@ -227,51 +227,53 @@ namespace Translator
                 {
                     case DialogResult.Cancel:
                         return;
-                    case DialogResult.Yes:
-                    {
-                        XmlDocument objExistingTranslationDoc = new XmlDocument();
-                        objExistingTranslationDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
 
-                        string strToSelect = objExistingTranslationDoc.SelectSingleNode("/chummer/name")?.InnerText;
-                        if (!string.IsNullOrEmpty(strToSelect))
+                    case DialogResult.Yes:
                         {
-                            int intIndexToSelect = cboLanguages.FindStringExact(strToSelect);
-                            if (intIndexToSelect != -1)
+                            XmlDocument objExistingTranslationDoc = new XmlDocument();
+                            objExistingTranslationDoc.Load(Path.Combine(PATH, "lang", strLowerCode + ".xml"));
+
+                            string strToSelect = objExistingTranslationDoc.SelectSingleNode("/chummer/name")?.InnerText;
+                            if (!string.IsNullOrEmpty(strToSelect))
                             {
-                                cboLanguages.SelectedIndex = intIndexToSelect;
-                                cmdRebuild_Click(sender, e);
+                                int intIndexToSelect = cboLanguages.FindStringExact(strToSelect);
+                                if (intIndexToSelect != -1)
+                                {
+                                    cboLanguages.SelectedIndex = intIndexToSelect;
+                                    cmdRebuild_Click(sender, e);
+                                }
                             }
                         }
-                    }
                         return;
-                    case DialogResult.No:
-                    {
-                        try
-                        {
-                            string strPath = Path.Combine(PATH, "lang", strLowerCode + "_data.xml");
-                            if (File.Exists(strPath + ".old"))
-                                File.Delete(strPath + ".old");
-                            File.Move(strPath, strPath + ".old");
-                            strPath = Path.Combine(PATH, "lang", strLowerCode + "xml");
-                            if (File.Exists(strPath + ".old"))
-                                File.Delete(strPath + ".old");
-                            File.Move(strPath, strPath + ".old");
-                        }
-                        catch (IOException)
-                        {
-                            MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
-                                "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
-                                "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
 
-                        break;
-                    }
+                    case DialogResult.No:
+                        {
+                            try
+                            {
+                                string strPath = Path.Combine(PATH, "lang", strLowerCode + "_data.xml");
+                                if (File.Exists(strPath + ".old"))
+                                    File.Delete(strPath + ".old");
+                                File.Move(strPath, strPath + ".old");
+                                strPath = Path.Combine(PATH, "lang", strLowerCode + "xml");
+                                if (File.Exists(strPath + ".old"))
+                                    File.Delete(strPath + ".old");
+                                File.Move(strPath, strPath + ".old");
+                            }
+                            catch (IOException)
+                            {
+                                MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
+                                    "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                MessageBox.Show("An error was encountered while trying to move the existing translation into a backup format. Aborting operation.",
+                                    "File Backup Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                return;
+                            }
+
+                            break;
+                        }
                 }
             }
 
@@ -480,6 +482,7 @@ namespace Translator
         {
             txtLanguageName.RightToLeft = chkRightToLeft.Checked ? RightToLeft.Yes : RightToLeft.No;
         }
+
         #endregion Control Events
 
         #region BackgroundWorker Events
@@ -683,7 +686,7 @@ namespace Translator
             }
         }
 
-        #endregion
+        #endregion BackgroundWorker Events
 
         #region Methods
 
@@ -2811,7 +2814,7 @@ namespace Translator
                 }
             }
 
-            #endregion
+            #endregion Process Drug Components
         }
 
         private static void ProcessEchoes(XmlDocument objDataDoc, BackgroundWorker objWorker, bool blnRemoveTranslationIfSourceNotFound)
@@ -8878,6 +8881,6 @@ namespace Translator
 
         public List<frmTranslate> OpenTranslateWindows => s_LstOpenTranslateWindows;
 
-        #endregion
+        #endregion Properties
     }
 }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Runtime.CompilerServices;
 
@@ -47,8 +48,10 @@ namespace Chummer
             {
                 case 2: // Extremely common case, so handle it explicitly
                     return intBase * intBase;
+
                 case 1:
                     return intBase;
+
                 case 0: // Yes, even 0^0 should return 1 per IEEE specifications
                     return 1;
             }
@@ -56,10 +59,12 @@ namespace Chummer
             {
                 case 1:
                     return 1;
+
                 case 0:
                     if (intPower < 0)
                         throw new DivideByZeroException();
                     return 0;
+
                 case -1:
                     return 1 - 2 * (Math.Abs(intPower) & 1);
             }

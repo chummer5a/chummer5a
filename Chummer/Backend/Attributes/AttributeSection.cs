@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -31,7 +32,6 @@ using Chummer.Annotations;
 
 namespace Chummer.Backend.Attributes
 {
-
     public sealed class AttributeSection : INotifyMultiplePropertyChanged, IDisposable
     {
         public event PropertyChangedEventHandler PropertyChanged;
@@ -70,7 +70,9 @@ namespace Chummer.Backend.Attributes
             );
 
         private ObservableCollection<CharacterAttrib> _colAttributes;
-        public ObservableCollection<CharacterAttrib> Attributes {
+
+        public ObservableCollection<CharacterAttrib> Attributes
+        {
             get
             {
                 if (_colAttributes != null)
@@ -110,14 +112,14 @@ namespace Chummer.Backend.Attributes
             internal set => _colAttributes = value;
         }
 
-        private static readonly string[] s_LstAttributeStrings = { "BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP" };
-        public static ReadOnlyCollection<string> AttributeStrings { get; } = Array.AsReadOnly(s_LstAttributeStrings);
+        public static readonly ReadOnlyCollection<string> AttributeStrings = Array.AsReadOnly(new[]
+            {"BOD", "AGI", "REA", "STR", "CHA", "INT", "LOG", "WIL", "EDG", "MAG", "MAGAdept", "RES", "ESS", "DEP"});
 
-        private static readonly string[] s_LstPhysicalAttributes = { "BOD", "AGI", "REA", "STR" };
-        public static ReadOnlyCollection<string> PhysicalAttributes { get; } = Array.AsReadOnly(s_LstPhysicalAttributes);
+        public static readonly ReadOnlyCollection<string> PhysicalAttributes = Array.AsReadOnly(new[]
+            {"BOD", "AGI", "REA", "STR"});
 
-        private static readonly string[] s_LstMentalAttributes = { "CHA", "INT", "LOG", "WIL" };
-        public static ReadOnlyCollection<string> MentalAttributes { get; } = Array.AsReadOnly(s_LstMentalAttributes);
+        public static readonly ReadOnlyCollection<string> MentalAttributes = Array.AsReadOnly(new[]
+            {"CHA", "INT", "LOG", "WIL"});
 
         public static string GetAttributeEnglishName(string strAbbrev)
         {
@@ -125,32 +127,46 @@ namespace Chummer.Backend.Attributes
             {
                 case "BOD":
                     return "Body";
+
                 case "AGI":
                     return "Agility";
+
                 case "REA":
                     return "Reaction";
+
                 case "STR":
                     return "Strength";
+
                 case "CHA":
                     return "Charisma";
+
                 case "INT":
                     return "Intuition";
+
                 case "LOG":
                     return "Logic";
+
                 case "WIL":
                     return "Willpower";
+
                 case "EDG":
                     return "Edge";
+
                 case "MAG":
                     return "Magic";
+
                 case "MAGAdept":
                     return "Magic (Adept)";
+
                 case "RES":
                     return "Resonance";
+
                 case "ESS":
                     return "Essence";
+
                 case "DEP":
                     return "Depth";
+
                 default:
                     return string.Empty;
             }
@@ -161,6 +177,7 @@ namespace Chummer.Backend.Attributes
         private CharacterAttrib.AttributeCategory _eAttributeCategory = CharacterAttrib.AttributeCategory.Standard;
 
         #region Constructor, Save, Load, Print Methods
+
         public AttributeSection(Character character)
         {
             _objCharacter = character;
@@ -214,7 +231,7 @@ namespace Chummer.Backend.Attributes
             {
                 int intOldBODBase = _objCharacter.BOD.Base;
                 int intOldBODKarma = _objCharacter.BOD.Karma;
-                int intOldAGIBase= _objCharacter.AGI.Base;
+                int intOldAGIBase = _objCharacter.AGI.Base;
                 int intOldAGIKarma = _objCharacter.AGI.Karma;
                 int intOldREABase = _objCharacter.REA.Base;
                 int intOldREAKarma = _objCharacter.REA.Karma;
@@ -253,6 +270,7 @@ namespace Chummer.Backend.Attributes
                                 CharacterAttrib.AttributeCategory.Special);
                             SpecialAttributeList.Add(objAttribute);
                             break;
+
                         case CharacterAttrib.AttributeCategory.Standard:
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                 CharacterAttrib.AttributeCategory.Standard);
@@ -425,6 +443,7 @@ namespace Chummer.Backend.Attributes
                             objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                             SpecialAttributeList.Add(objAttribute);
                             break;
+
                         case CharacterAttrib.AttributeCategory.Standard:
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
                             objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
@@ -440,6 +459,7 @@ namespace Chummer.Backend.Attributes
                         case CharacterAttrib.AttributeCategory.Special:
                             SpecialAttributeList.Add(objAttribute);
                             break;
+
                         case CharacterAttrib.AttributeCategory.Standard:
                             AttributeList.Add(objAttribute);
                             break;
@@ -457,6 +477,7 @@ namespace Chummer.Backend.Attributes
                                 objAttribute.Load(xmlAttributeNode);
                                 SpecialAttributeList.Add(objAttribute);
                                 break;
+
                             case CharacterAttrib.AttributeCategory.Standard:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
                                 objAttribute.Load(xmlAttributeNode);
@@ -498,6 +519,7 @@ namespace Chummer.Backend.Attributes
                             objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
                             SpecialAttributeList.Add(objAttribute);
                             break;
+
                         case CharacterAttrib.AttributeCategory.Standard:
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                 CharacterAttrib.AttributeCategory.Standard);
@@ -516,6 +538,7 @@ namespace Chummer.Backend.Attributes
                                 objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
                                 SpecialAttributeList.Add(objAttribute);
                                 break;
+
                             case CharacterAttrib.AttributeCategory.Shapeshifter:
                                 objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                     CharacterAttrib.AttributeCategory.Shapeshifter);
@@ -752,9 +775,11 @@ namespace Chummer.Backend.Attributes
                 att.Print(objWriter, objCulture, strLanguageToPrint);
             }
         }
-        #endregion
+
+        #endregion Constructor, Save, Load, Print Methods
 
         #region Methods
+
         public CharacterAttrib GetAttributeByName(string abbrev)
         {
             bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created && _objCharacter.AttributeSection.AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
@@ -941,6 +966,7 @@ namespace Chummer.Backend.Attributes
                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Special);
                         SpecialAttributeList.Add(objAttribute);
                         break;
+
                     case CharacterAttrib.AttributeCategory.Standard:
                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute, CharacterAttrib.AttributeCategory.Standard);
                         AttributeList.Add(objAttribute);
@@ -956,8 +982,10 @@ namespace Chummer.Backend.Attributes
             {
                 case "Shapeshifter":
                     return CharacterAttrib.AttributeCategory.Shapeshifter;
+
                 case "Special":
                     return CharacterAttrib.AttributeCategory.Special;
+
                 case "Metahuman":
                 case "Standard":
                     return CharacterAttrib.AttributeCategory.Standard;
@@ -976,9 +1004,11 @@ namespace Chummer.Backend.Attributes
                 objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
             }
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
+
         /// <summary>
         /// Character's Attributes.
         /// </summary>
@@ -1000,6 +1030,7 @@ namespace Chummer.Backend.Attributes
                 OnPropertyChanged();
             }
         }
-        #endregion
+
+        #endregion Properties
     }
 }

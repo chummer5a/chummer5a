@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Globalization;
 using System.Linq;
@@ -35,6 +36,7 @@ namespace Chummer.Backend.Skills
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter;
@@ -67,7 +69,7 @@ namespace Chummer.Backend.Skills
         /// <param name="xmlNode">XmlNode to load.</param>
         public static SkillSpecialization Load(Character objCharacter, XmlNode xmlNode)
         {
-            if (!xmlNode.TryGetField("guid",Guid.TryParse, out Guid guiTemp))
+            if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
             return new SkillSpecialization(objCharacter, xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
@@ -99,7 +101,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteEndElement();
         }
 
-        #endregion
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
 
@@ -178,6 +180,6 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int SpecializationBonus => _objCharacter.Options.SpecializationBonus + (Expertise ? 1 : 0);
 
-        #endregion
+        #endregion Properties
     }
 }

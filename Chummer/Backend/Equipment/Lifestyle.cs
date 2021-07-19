@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -53,10 +54,13 @@ namespace Chummer.Backend.Equipment
     public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyPropertyChanged
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
+
         // ReSharper disable once InconsistentNaming
         private Guid _guiSourceID;
+
         private string _strName = string.Empty;
         private decimal _decCost;
         private int _intDice;
@@ -92,13 +96,12 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private readonly Character _objCharacter;
 
-
         private string _strCity;
         private string _strDistrict;
         private string _strBorough;
 
-
         #region Helper Methods
+
         /// <summary>
         /// Convert a string to a LifestyleType.
         /// </summary>
@@ -109,10 +112,13 @@ namespace Chummer.Backend.Equipment
             {
                 case "BoltHole":
                     return LifestyleType.BoltHole;
+
                 case "Safehouse":
                     return LifestyleType.Safehouse;
+
                 case "Advanced":
                     return LifestyleType.Advanced;
+
                 default:
                     return LifestyleType.Standard;
             }
@@ -129,16 +135,20 @@ namespace Chummer.Backend.Equipment
                 case "day":
                 case "Day":
                     return LifestyleIncrement.Day;
+
                 case "week":
                 case "Week":
                     return LifestyleIncrement.Week;
+
                 default:
                     return LifestyleIncrement.Month;
             }
         }
-        #endregion
+
+        #endregion Helper Methods
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Lifestyle(Character objCharacter)
         {
             // Create the GUID for the new Lifestyle.
@@ -289,8 +299,6 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("district", _strDistrict);
             objWriter.WriteElementString("borough", _strBorough);
 
-
-
             objWriter.WriteStartElement("lifestylequalities");
             foreach (LifestyleQuality objQuality in LifestyleQualities)
             {
@@ -323,7 +331,7 @@ namespace Chummer.Backend.Equipment
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -345,7 +353,6 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("city", ref _strCity);
             objNode.TryGetStringFieldQuickly("district", ref _strDistrict);
             objNode.TryGetStringFieldQuickly("borough", ref _strBorough);
-
 
             objNode.TryGetInt32FieldQuickly("area", ref _intArea);
             objNode.TryGetInt32FieldQuickly("comforts", ref _intComforts);
@@ -638,9 +645,11 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Lifestyle in the Improvement system.
         /// </summary>
@@ -661,6 +670,7 @@ namespace Chummer.Backend.Equipment
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+
         /// <summary>
         /// A custom name for the Lifestyle assigned by the player.
         /// </summary>
@@ -848,6 +858,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
         }
+
         /// <summary>
         /// Base Lifestyle Points awarded by the lifestyle.
         /// </summary>
@@ -886,6 +897,7 @@ namespace Chummer.Backend.Equipment
             get => _intComforts;
             set => _intComforts = value;
         }
+
         /// <summary>
         /// Base level of Comforts.
         /// </summary>
@@ -978,10 +990,13 @@ namespace Chummer.Backend.Equipment
 
         public int TotalComfortsMaximum => ComfortsMaximum + LifestyleQualities.Where(x =>
             x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.ComfortMaximum);
+
         public int TotalSecurityMaximum => SecurityMaximum + LifestyleQualities.Where(x =>
             x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.SecurityMaximum);
-        public int TotalAreaMaximum     => AreaMaximum     + LifestyleQualities.Where(x =>
-            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.AreaMaximum);
+
+        public int TotalAreaMaximum => AreaMaximum + LifestyleQualities.Where(x =>
+    x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.AreaMaximum);
+
         /// <summary>
         /// Advanced Lifestyle Qualities.
         /// </summary>
@@ -1059,8 +1074,10 @@ namespace Chummer.Backend.Equipment
                 case 1:
                 case 4:
                     return strBaseLifestyle == "Medium";
+
                 case 2:
                     return strBaseLifestyle == "Low";
+
                 case 3:
                     return strBaseLifestyle == "High";
             }
@@ -1157,9 +1174,11 @@ namespace Chummer.Backend.Equipment
             get => _strBorough;
             set => _strBorough = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Total cost of the Lifestyle, counting all purchased months.
         /// </summary>
@@ -1201,19 +1220,23 @@ namespace Chummer.Backend.Equipment
         public int TotalSecurity => BaseSecurity + Security + LifestyleQualities.Where(x =>
             x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Security);
 
-        public decimal AreaDelta     => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Where(x =>
-            x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Area)), 0);
+        public decimal AreaDelta => Math.Max(TotalAreaMaximum - (BaseArea + LifestyleQualities.Where(x =>
+        x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Area)), 0);
+
         public decimal ComfortsDelta => Math.Max(TotalComfortsMaximum - (BaseComforts + LifestyleQualities.Where(x =>
             x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Comfort)), 0);
+
         public decimal SecurityDelta => Math.Max(TotalSecurityMaximum - (BaseSecurity + LifestyleQualities.Where(x =>
             x.OriginSource != QualitySource.BuiltIn).Sum(lq => lq.Security)), 0);
 
         public string FormattedArea => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseArea.ToString(GlobalOptions.CultureInfo),
             TotalAreaMaximum.ToString(GlobalOptions.CultureInfo));
+
         public string FormattedComforts => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseComforts.ToString(GlobalOptions.CultureInfo),
             TotalComfortsMaximum.ToString(GlobalOptions.CultureInfo));
+
         public string FormattedSecurity => string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_SelectAdvancedLifestyle_Base"),
             BaseSecurity.ToString(GlobalOptions.CultureInfo),
             TotalSecurityMaximum.ToString(GlobalOptions.CultureInfo));
@@ -1267,13 +1290,14 @@ namespace Chummer.Backend.Equipment
                 {
                     decReturn /= _intRoommates + 1.0m;
                 }
-                decReturn *= Percentage /100;
+                decReturn *= Percentage / 100;
 
                 switch (IncrementType)
                 {
                     case LifestyleIncrement.Day:
                         decContractCost /= (4.34812m * 7);
                         break;
+
                     case LifestyleIncrement.Week:
                         decContractCost /= (4.34812m);
                         break;
@@ -1295,17 +1319,22 @@ namespace Chummer.Backend.Equipment
             {
                 case "Bolt Hole":
                     return "Squatter";
+
                 case "Traveler":
                     return "Low";
+
                 case "Commercial":
                     return "Medium";
+
                 default:
                     return strLifestyle.StartsWith("Hospitalized", StringComparison.Ordinal) ? "High" : strLifestyle;
             }
         }
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         /// <summary>
         /// Set the InternalId for the Lifestyle. Used when editing an Advanced Lifestyle.
         /// </summary>
@@ -1330,7 +1359,7 @@ namespace Chummer.Backend.Equipment
             }
 
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount* -1, LanguageManager.GetString("String_ExpenseLifestyle") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount * -1, LanguageManager.GetString("String_ExpenseLifestyle") + ' ' + DisplayNameShort(GlobalOptions.Language), ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen -= decAmount;
 
@@ -1340,6 +1369,7 @@ namespace Chummer.Backend.Equipment
 
             Increments += 1;
         }
+
         private void QualitiesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move) return;
@@ -1347,6 +1377,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsBasicLifestyle, ContextMenuStrip cmsAdvancedLifestyle)
         {
             //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -1369,8 +1400,9 @@ namespace Chummer.Backend.Equipment
                 ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
 
-        #endregion
-        #endregion
+        #endregion UI Methods
+
+        #endregion Methods
 
         private static readonly DependencyGraph<string, Lifestyle> LifestyleDependencyGraph =
             new DependencyGraph<string, Lifestyle>(

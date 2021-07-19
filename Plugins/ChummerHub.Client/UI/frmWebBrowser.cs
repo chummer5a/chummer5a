@@ -17,15 +17,14 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
         }
 
-        private Uri LoginUrl
+        private static Uri LoginUrl
         {
             get
             {
                 if(string.IsNullOrEmpty(Settings.Default.SINnerUrl))
                 {
                     Settings.Default.SINnerUrl = "https://chummer-stable.azurewebsites.net/";
-                    string msg = "if you are (want to be) a Beta-Tester, change this to http://chummer-beta.azurewebsites.net/!";
-                    Log.Warn(msg);
+                    Log.Warn("if you are (want to be) a Beta-Tester, change this to http://chummer-beta.azurewebsites.net/!");
                     Settings.Default.Save();
                 }
                 string path = Settings.Default.SINnerUrl.TrimEnd('/');
@@ -64,17 +63,16 @@ namespace ChummerHub.Client.UI
                 try
                 {
                     //we are logged in!
-                    GetCookieContainer();
-                    var client = StaticUtils.GetClient();
+                    var client = GetCookieContainer();
                     if (client == null)
                     {
                         Log.Error("Cloud not create an instance of SINnersclient!");
+                        login = false;
                         return;
                     }
-                    //var body = client.GetUserByAuthorizationAsync().Result;
                     var body = await client.GetUserByAuthorizationAsync().ConfigureAwait(false);
                     {
-                     
+
                         if (body?.CallSuccess == true)
                         {
                             login = true;
@@ -82,10 +80,10 @@ namespace ChummerHub.Client.UI
                             {
                                 SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
                                                            ?? new SINnerVisibility
-                                {
-                                    IsGroupVisible = true,
-                                    IsPublic = true
-                                };
+                                                           {
+                                                               IsGroupVisible = true,
+                                                               IsPublic = true
+                                                           };
                                 tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
                                 Close();
                             }));
@@ -96,6 +94,11 @@ namespace ChummerHub.Client.UI
                         }
                     }
                 }
+                catch(ApiException ae)
+                {
+                    Log.Info(ae);
+                    throw;
+                }
                 catch (Exception exception)
                 {
                     Log.Error(exception);
@@ -104,7 +107,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private void GetCookieContainer()
+        private SinnersClient GetCookieContainer()
         {
             try
             {
@@ -115,13 +118,14 @@ namespace ChummerHub.Client.UI
                     var cookies =
                         StaticUtils.AuthorizationCookieContainer?.GetCookies(new Uri(Settings.Default
                             .SINnerUrl));
-                    var client = StaticUtils.GetClient(true);
+                    return StaticUtils.GetClient(true);
                 }
             }
             catch(Exception ex)
             {
                 Log.Warn(ex);
             }
+            return null;
         }
 
         private void FrmWebBrowser_FormClosing(object sender, FormClosingEventArgs e)

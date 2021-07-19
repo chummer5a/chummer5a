@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -50,6 +51,7 @@ namespace Chummer
         private readonly XmlNode _xmlCritterPowerDocumentPowersNode;
 
         #region Form Events
+
         public frmPriorityMetatype(Character objCharacter, string strXmlFile = "metatypes.xml")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
@@ -151,21 +153,25 @@ namespace Chummer
                                 cboHeritage.PopulateWithListItems(lstItems);
                                 cboHeritage.EndUpdate();
                                 break;
+
                             case "Talent":
                                 cboTalent.BeginUpdate();
                                 cboTalent.PopulateWithListItems(lstItems);
                                 cboTalent.EndUpdate();
                                 break;
+
                             case "Attributes":
                                 cboAttributes.BeginUpdate();
                                 cboAttributes.PopulateWithListItems(lstItems);
                                 cboAttributes.EndUpdate();
                                 break;
+
                             case "Skills":
                                 cboSkills.BeginUpdate();
                                 cboSkills.PopulateWithListItems(lstItems);
                                 cboSkills.EndUpdate();
                                 break;
+
                             case "Resources":
                                 cboResources.BeginUpdate();
                                 cboResources.PopulateWithListItems(lstItems);
@@ -204,16 +210,34 @@ namespace Chummer
                 string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
+                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    {
+                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                    }
                     cboSkill1.SelectedValue = strSkill;
                 }
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(1);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
+                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    {
+                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                    }
                     cboSkill2.SelectedValue = strSkill;
                 }
                 strSkill = _lstPrioritySkills.ElementAtOrDefault(2);
                 if (!string.IsNullOrEmpty(strSkill))
                 {
+                    if (ExoticSkill.IsExoticSkillName(strSkill))
+                    {
+                        int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex > 0)
+                            strSkill = strSkill.Substring(0, intParenthesesIndex);
+                    }
                     cboSkill3.SelectedValue = strSkill;
                 }
                 cboTalents_SelectedIndexChanged(null, EventArgs.Empty);
@@ -232,17 +256,19 @@ namespace Chummer
                 RefreshSelectedMetatype();
             }
 
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
+            switch (_objCharacter.EffectiveBuildMethod)
             {
-                ManagePriorityItems(cboHeritage);
-                ManagePriorityItems(cboAttributes);
-                ManagePriorityItems(cboTalent);
-                ManagePriorityItems(cboSkills);
-                ManagePriorityItems(cboResources);
-            }
-            else if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                SumToTen();
+                case CharacterBuildMethod.Priority:
+                    ManagePriorityItems(cboHeritage);
+                    ManagePriorityItems(cboAttributes);
+                    ManagePriorityItems(cboTalent);
+                    ManagePriorityItems(cboSkills);
+                    ManagePriorityItems(cboResources);
+                    break;
+
+                case CharacterBuildMethod.SumtoTen:
+                    SumToTen();
+                    break;
             }
 
             // Set up possession boxes
@@ -273,9 +299,11 @@ namespace Chummer
 
             _blnLoading = false;
         }
-        #endregion
+
+        #endregion Form Events
 
         #region Control Events
+
         private void lstMetatypes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
@@ -337,22 +365,28 @@ namespace Chummer
                             case "magic":
                                 xmlSkillsList = GetMagicalSkillList();
                                 break;
+
                             case "resonance":
                                 xmlSkillsList = GetResonanceSkillList();
                                 break;
+
                             case "matrix":
                                 xmlSkillsList = GetMatrixSkillList();
                                 break;
+
                             case "grouped":
                                 xmlSkillsList = BuildSkillCategoryList(objNodeList);
                                 break;
+
                             case "specific":
                                 xmlSkillsList = BuildSkillList(xmlTalentNode.Select("skillchoices/skill"));
                                 break;
+
                             case "xpath":
-                                xmlSkillsList = GetActiveSkillList(xmlSkillTypeNode.SelectSingleNode("@xpath")?.Value);
+                                xmlSkillsList = GetActiveSkillList(xmlSkillTypeNode?.SelectSingleNode("@xpath")?.Value);
                                 strSkillType = "active";
                                 break;
+
                             default:
                                 xmlSkillsList = GetActiveSkillList();
                                 break;
@@ -402,7 +436,7 @@ namespace Chummer
                                     cboSkill2.SelectedIndex = intOldSelectedIndex;
                                     _blnLoading = blnOldLoading;
                                 }
-                                if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex)
+                                if (cboSkill2.SelectedIndex == cboSkill1.SelectedIndex && ExoticSkill.IsExoticSkillName(cboSkill2.SelectedValue?.ToString()))
                                 {
                                     if (cboSkill2.SelectedIndex + 1 >= cboSkill2.Items.Count)
                                         cboSkill2.SelectedIndex = 0;
@@ -421,7 +455,10 @@ namespace Chummer
                                         cboSkill3.SelectedIndex = intOldSelectedIndex;
                                         _blnLoading = blnOldLoading;
                                     }
-                                    if (cboSkill3.SelectedIndex == cboSkill1.SelectedIndex || cboSkill3.SelectedIndex == cboSkill2.SelectedIndex)
+
+                                    if ((cboSkill3.SelectedIndex == cboSkill1.SelectedIndex ||
+                                         cboSkill3.SelectedIndex == cboSkill2.SelectedIndex) &&
+                                        ExoticSkill.IsExoticSkillName(cboSkill3.SelectedValue?.ToString()))
                                     {
                                         int intNewIndex = cboSkill3.SelectedIndex;
                                         do
@@ -430,7 +467,8 @@ namespace Chummer
                                             if (intNewIndex >= cboSkill3.Items.Count)
                                                 intNewIndex = 0;
                                         }
-                                        while ((intNewIndex == cboSkill1.SelectedIndex || intNewIndex == cboSkill2.SelectedIndex) && intNewIndex != cboSkill3.SelectedIndex);
+                                        while ((intNewIndex == cboSkill1.SelectedIndex || intNewIndex == cboSkill2.SelectedIndex) && intNewIndex != cboSkill3.SelectedIndex &&
+                                               !ExoticSkill.IsExoticSkillName(((ListItem)cboSkill3.Items[intNewIndex]).Value.ToString()));
                                         cboSkill3.SelectedIndex = intNewIndex;
                                     }
                                 }
@@ -439,7 +477,7 @@ namespace Chummer
                                 LanguageManager.GetString("String_MetamagicSkills"));
                             // strSkillType can have the following values: magic, resonance, matrix, active, specific, grouped
                             // So the language file should contain each of those like String_MetamagicSkillType_magic
-                            lblMetatypeSkillSelection.Text = string.Format(GlobalOptions.CultureInfo, strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_"+strSkillType), strSkillVal);
+                            lblMetatypeSkillSelection.Text = string.Format(GlobalOptions.CultureInfo, strMetamagicSkillSelection, strSkillCount, LanguageManager.GetString("String_MetamagicSkillType_" + strSkillType), strSkillVal);
                             lblMetatypeSkillSelection.Visible = true;
                         }
 
@@ -524,13 +562,15 @@ namespace Chummer
             if (_blnLoading)
                 return;
             SuspendLayout();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
+            switch (_objCharacter.EffectiveBuildMethod)
             {
-                ManagePriorityItems(cboHeritage);
-            }
-            else if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                SumToTen();
+                case CharacterBuildMethod.Priority:
+                    ManagePriorityItems(cboHeritage);
+                    break;
+
+                case CharacterBuildMethod.SumtoTen:
+                    SumToTen();
+                    break;
             }
             LoadMetatypes();
             PopulateMetatypes();
@@ -544,13 +584,15 @@ namespace Chummer
             if (_blnLoading)
                 return;
             SuspendLayout();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
+            switch (_objCharacter.EffectiveBuildMethod)
             {
-                ManagePriorityItems(cboTalent);
-            }
-            else if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                SumToTen();
+                case CharacterBuildMethod.Priority:
+                    ManagePriorityItems(cboTalent);
+                    break;
+
+                case CharacterBuildMethod.SumtoTen:
+                    SumToTen();
+                    break;
             }
             PopulateTalents();
             ResumeLayout();
@@ -561,13 +603,15 @@ namespace Chummer
             if (_blnLoading)
                 return;
             SuspendLayout();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
+            switch (_objCharacter.EffectiveBuildMethod)
             {
-                ManagePriorityItems(cboAttributes);
-            }
-            else if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                SumToTen();
+                case CharacterBuildMethod.Priority:
+                    ManagePriorityItems(cboAttributes);
+                    break;
+
+                case CharacterBuildMethod.SumtoTen:
+                    SumToTen();
+                    break;
             }
             ResumeLayout();
         }
@@ -577,13 +621,15 @@ namespace Chummer
             if (_blnLoading)
                 return;
             SuspendLayout();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
+            switch (_objCharacter.EffectiveBuildMethod)
             {
-                ManagePriorityItems(cboSkills);
-            }
-            else if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                SumToTen();
+                case CharacterBuildMethod.Priority:
+                    ManagePriorityItems(cboSkills);
+                    break;
+
+                case CharacterBuildMethod.SumtoTen:
+                    SumToTen();
+                    break;
             }
             ResumeLayout();
         }
@@ -593,13 +639,15 @@ namespace Chummer
             if (_blnLoading)
                 return;
             SuspendLayout();
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
+            switch (_objCharacter.EffectiveBuildMethod)
             {
-                ManagePriorityItems(cboResources);
-            }
-            else if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
-            {
-                SumToTen();
+                case CharacterBuildMethod.Priority:
+                    ManagePriorityItems(cboResources);
+                    break;
+
+                case CharacterBuildMethod.SumtoTen:
+                    SumToTen();
+                    break;
             }
             ResumeLayout();
         }
@@ -608,13 +656,15 @@ namespace Chummer
         {
             cboPossessionMethod.Enabled = chkPossessionBased.Checked;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Custom Methods
+
         /// <summary>
         /// A Metatype has been selected, so fill in all of the necessary Character information.
         /// </summary>
-        void MetatypeSelected()
+        private void MetatypeSelected()
         {
             if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
             {
@@ -642,6 +692,37 @@ namespace Chummer
             {
                 Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Metatype_SelectSkill"), LanguageManager.GetString("MessageTitle_Metatype_SelectSkill"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
+            }
+
+            if (ExoticSkill.IsExoticSkillName(strSkill1))
+            {
+                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                {
+                    frmSelectExotic.ForceSkill(strSkill1);
+                    if (frmSelectExotic.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strSkill1 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                }
+            }
+            if (ExoticSkill.IsExoticSkillName(strSkill2))
+            {
+                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                {
+                    frmSelectExotic.ForceSkill(strSkill2);
+                    if (frmSelectExotic.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strSkill2 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                }
+            }
+            if (ExoticSkill.IsExoticSkillName(strSkill3))
+            {
+                using (frmSelectExoticSkill frmSelectExotic = new frmSelectExoticSkill(_objCharacter))
+                {
+                    frmSelectExotic.ForceSkill(strSkill3);
+                    if (frmSelectExotic.ShowDialog(this) != DialogResult.OK)
+                        return;
+                    strSkill3 += " (" + frmSelectExotic.SelectedExoticSkillSpecialisation + ')';
+                }
             }
 
             if ((cboSkill1.Visible && cboSkill2.Visible && strSkill1 == strSkill2)
@@ -757,14 +838,12 @@ namespace Chummer
                         }
                     }
 
-
-                    if ("Aspected Magician".Equals(cboTalents.SelectedValue))
+                    switch (cboTalents.SelectedValue)
                     {
-                        _objCharacter.Pushtext.Push(strSkill1);
-                    }
-                    else if ("Enchanter".Equals(cboTalents.SelectedValue))
-                    {
-                        _objCharacter.Pushtext.Push(strSkill1);
+                        case "Aspected Magician":
+                        case "Enchanter":
+                            _objCharacter.Pushtext.Push(strSkill1);
+                            break;
                     }
 
                     XmlNode charNode =
@@ -777,7 +856,6 @@ namespace Chummer
                     {
                         List<Quality> lstOldPriorityQualities = _objCharacter.Qualities.Where(x => x.OriginSource == QualitySource.Heritage).ToList();
                         List<Weapon> lstWeapons = new List<Weapon>(1);
-                        int intMaxModifier = 0;
                         bool blnRemoveFreeSkills = true;
                         XPathNodeIterator xmlBaseTalentPriorityList = _xmlBasePriorityDataNode.Select("priorities/priority[category = \"Talent\" and value = " + _objCharacter.SpecialPriority.CleanXPath() +
                                                                                                       " and (not(prioritytable) or prioritytable = " + _objCharacter.Options.PriorityTable.CleanXPath() + ")]");
@@ -816,20 +894,20 @@ namespace Chummer
                                     _objCharacter.FreeSpells = xmlTalentPriorityNode.TryGetInt32FieldQuickly("spells", ref intTemp) ? intTemp : 0;
                                     _objCharacter.MAG.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxmagic", ref intTemp)
                                         ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intForce, intMaxModifier);
+                                        : CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intForce);
                                     // Set starting resonance
                                     _objCharacter.RES.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("resonance", ref intTemp) ? intTemp : 1;
                                     _objCharacter.CFPLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("cfp", ref intTemp) ? intTemp : 0;
                                     _objCharacter.RES.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxresonance", ref intTemp)
                                         ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intForce, intMaxModifier);
+                                        : CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intForce);
                                     // Set starting depth
                                     _objCharacter.DEP.MetatypeMinimum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("depth", ref intTemp) ? intTemp : 1;
                                     _objCharacter.AINormalProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("ainormalprogramlimit", ref intTemp) ? intTemp : 0;
                                     _objCharacter.AIAdvancedProgramLimit = xmlTalentPriorityNode.TryGetInt32FieldQuickly("aiadvancedprogramlimit", ref intTemp) ? intTemp : 0;
                                     _objCharacter.DEP.MetatypeMaximum = xmlTalentPriorityNode.TryGetInt32FieldQuickly("maxdepth", ref intTemp)
                                         ? intTemp
-                                        : CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intForce, intMaxModifier);
+                                        : CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intForce);
 
                                     // Set Free Skills/Skill Groups
                                     int intFreeLevels = 0;
@@ -845,7 +923,7 @@ namespace Chummer
                                     }
 
                                     blnRemoveFreeSkills = false;
-                                    AddFreeSkills(intFreeLevels, eType);
+                                    AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3);
                                 }
 
                                 break;
@@ -1054,61 +1132,52 @@ namespace Chummer
             }
         }
 
-        private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type)
+        private void AddFreeSkills(int intFreeLevels, Improvement.ImprovementType type, string strSkill1, string strSkill2, string strSkill3)
         {
             List<Improvement> lstOldFreeSkillImprovements = _objCharacter.Improvements.Where(x => x.ImproveSource == Improvement.ImprovementSource.Heritage
                                                                                                   && x.ImproveType == type).ToList();
             if (intFreeLevels != 0)
             {
                 bool blnCommit = false;
-                if (cboSkill1.Visible)
+                if (!string.IsNullOrEmpty(strSkill1))
                 {
-                    string strSkill = cboSkill1.SelectedValue.ToString();
-                    if (!string.IsNullOrEmpty(strSkill))
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill1 && x.Value == intFreeLevels);
+                    if (objOldSkillImprovement != null)
+                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                    else
                     {
-                        Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill && x.Value == intFreeLevels);
-                        if (objOldSkillImprovement != null)
-                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                        else
-                        {
-                            blnCommit = true;
-                            ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
-                                type, string.Empty, intFreeLevels);
-                        }
+                        blnCommit = true;
+                        AddExoticSkillIfNecessary(strSkill1);
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
+                            type, string.Empty, intFreeLevels);
                     }
                 }
 
-                if (cboSkill2.Visible)
+                if (!string.IsNullOrEmpty(strSkill2))
                 {
-                    string strSkill = cboSkill2.SelectedValue.ToString();
-                    if (!string.IsNullOrEmpty(strSkill))
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill2 && x.Value == intFreeLevels);
+                    if (objOldSkillImprovement != null)
+                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                    else
                     {
-                        Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill && x.Value == intFreeLevels);
-                        if (objOldSkillImprovement != null)
-                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                        else
-                        {
-                            blnCommit = true;
-                            ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
-                                type, string.Empty, intFreeLevels);
-                        }
+                        blnCommit = true;
+                        AddExoticSkillIfNecessary(strSkill2);
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
+                            type, string.Empty, intFreeLevels);
                     }
                 }
 
-                if (cboSkill3.Visible)
+                if (!string.IsNullOrEmpty(strSkill3))
                 {
-                    string strSkill = cboSkill3.SelectedValue.ToString();
-                    if (!string.IsNullOrEmpty(strSkill))
+                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill3 && x.Value == intFreeLevels);
+                    if (objOldSkillImprovement != null)
+                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                    else
                     {
-                        Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.FirstOrDefault(x => x.ImprovedName == strSkill && x.Value == intFreeLevels);
-                        if (objOldSkillImprovement != null)
-                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                        else
-                        {
-                            blnCommit = true;
-                            ImprovementManager.CreateImprovement(_objCharacter, strSkill, Improvement.ImprovementSource.Heritage, string.Empty,
-                                type, string.Empty, intFreeLevels);
-                        }
+                        blnCommit = true;
+                        AddExoticSkillIfNecessary(strSkill3);
+                        ImprovementManager.CreateImprovement(_objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
+                            type, string.Empty, intFreeLevels);
                     }
                 }
 
@@ -1116,6 +1185,23 @@ namespace Chummer
                     ImprovementManager.RemoveImprovements(_objCharacter, lstOldFreeSkillImprovements);
                 if (blnCommit)
                     ImprovementManager.Commit(_objCharacter);
+
+                void AddExoticSkillIfNecessary(string strDictionaryKey)
+                {
+                    // Add exotic skills if we are increasing their base level
+                    if (!ExoticSkill.IsExoticSkillName(strDictionaryKey) ||
+                        _objCharacter.SkillsSection.GetActiveSkill(strDictionaryKey) != null)
+                        return;
+                    string strSkillName = strDictionaryKey;
+                    string strSkillSpecific = string.Empty;
+                    int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                    if (intParenthesesIndex > 0)
+                    {
+                        strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
+                        strSkillName = strSkillName.Substring(0, intParenthesesIndex);
+                    }
+                    _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                }
             }
             else
                 ImprovementManager.RemoveImprovements(_objCharacter, lstOldFreeSkillImprovements);
@@ -1178,7 +1264,7 @@ namespace Chummer
             return value;
         }
 
-        void RefreshSelectedMetatype()
+        private void RefreshSelectedMetatype()
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strSelectedMetatype = lstMetatypes.SelectedValue?.ToString();
@@ -1533,33 +1619,38 @@ namespace Chummer
 
                                 foreach (XPathNavigator objXmlForbidden in objXmlOneOfList)
                                 {
-                                    if (objXmlForbidden.Name == "metatype")
+                                    switch (objXmlForbidden.Name)
                                     {
-                                        // Check the Metatype restriction.
-                                        if (objXmlForbidden.Value == lstMetatypes.SelectedValue?.ToString())
-                                        {
+                                        case "metatype":
+                                            {
+                                                // Check the Metatype restriction.
+                                                if (objXmlForbidden.Value == lstMetatypes.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementForbidden = true;
+                                                    goto EndForbiddenLoop;
+                                                }
+
+                                                break;
+                                            }
+                                        // Check the Metavariant restriction.
+                                        case "metatypecategory":
+                                            {
+                                                // Check the Metatype Category restriction.
+                                                if (objXmlForbidden.Value == cboCategory.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementForbidden = true;
+                                                    goto EndForbiddenLoop;
+                                                }
+
+                                                break;
+                                            }
+                                        case "metavariant" when objXmlForbidden.Value == cboMetavariant.SelectedValue?.ToString():
                                             blnRequirementForbidden = true;
                                             goto EndForbiddenLoop;
-                                        }
-                                    }
-                                    else if (objXmlForbidden.Name == "metatypecategory")
-                                    {
-                                        // Check the Metatype Category restriction.
-                                        if (objXmlForbidden.Value == cboCategory.SelectedValue?.ToString())
-                                        {
-                                            blnRequirementForbidden = true;
-                                            goto EndForbiddenLoop;
-                                        }
-                                    }
-                                    // Check the Metavariant restriction.
-                                    else if (objXmlForbidden.Name == "metavariant" && objXmlForbidden.Value == cboMetavariant.SelectedValue?.ToString())
-                                    {
-                                        blnRequirementForbidden = true;
-                                        goto EndForbiddenLoop;
                                     }
                                 }
                             }
-                            EndForbiddenLoop:
+                        EndForbiddenLoop:
                             if (blnRequirementForbidden)
                                 continue;
                         }
@@ -1576,33 +1667,38 @@ namespace Chummer
 
                                 foreach (XPathNavigator objXmlRequired in objXmlOneOfList)
                                 {
-                                    if (objXmlRequired.Name == "metatype")
+                                    switch (objXmlRequired.Name)
                                     {
-                                        // Check the Metatype restriction.
-                                        if (objXmlRequired.Value == lstMetatypes.SelectedValue?.ToString())
-                                        {
+                                        case "metatype":
+                                            {
+                                                // Check the Metatype restriction.
+                                                if (objXmlRequired.Value == lstMetatypes.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementMet = true;
+                                                    goto EndRequiredLoop;
+                                                }
+
+                                                break;
+                                            }
+                                        // Check the Metavariant restriction.
+                                        case "metatypecategory":
+                                            {
+                                                // Check the Metatype Category restriction.
+                                                if (objXmlRequired.Value == cboCategory.SelectedValue?.ToString())
+                                                {
+                                                    blnRequirementMet = true;
+                                                    goto EndRequiredLoop;
+                                                }
+
+                                                break;
+                                            }
+                                        case "metavariant" when objXmlRequired.Value == cboMetavariant.SelectedValue?.ToString():
                                             blnRequirementMet = true;
                                             goto EndRequiredLoop;
-                                        }
-                                    }
-                                    else if (objXmlRequired.Name == "metatypecategory")
-                                    {
-                                        // Check the Metatype Category restriction.
-                                        if (objXmlRequired.Value == cboCategory.SelectedValue?.ToString())
-                                        {
-                                            blnRequirementMet = true;
-                                            goto EndRequiredLoop;
-                                        }
-                                    }
-                                    // Check the Metavariant restriction.
-                                    else if (objXmlRequired.Name == "metavariant" && objXmlRequired.Value == cboMetavariant.SelectedValue?.ToString())
-                                    {
-                                        blnRequirementMet = true;
-                                        goto EndRequiredLoop;
                                     }
                                 }
                             }
-                            EndRequiredLoop:
+                        EndRequiredLoop:
                             if (!blnRequirementMet)
                                 continue;
                         }
@@ -1846,7 +1942,7 @@ namespace Chummer
                 }
                 // Remove metatypes not covered by heritage
                 lstRemoveCategory.Add(objXmlCategory.Value);
-                NextItem:;
+            NextItem:;
             }
 
             foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode.Select("categories/category"))
@@ -1893,9 +1989,9 @@ namespace Chummer
 
         private XPathNodeIterator GetActiveSkillList(string strXPathFilter = "")
         {
-            if (string.IsNullOrEmpty(strXPathFilter))
-                return _xmlBaseSkillDataNode.Select("skills/skill");
-            return _xmlBaseSkillDataNode.Select("skills/skill[" + strXPathFilter + ']');
+            return _xmlBaseSkillDataNode.Select(!string.IsNullOrEmpty(strXPathFilter)
+                ? "skills/skill[" + strXPathFilter + ']'
+                : "skills/skill");
         }
 
         private XPathNodeIterator BuildSkillCategoryList(XPathNodeIterator objSkillList)
@@ -1935,7 +2031,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Custom Methods
     }
 }
-
