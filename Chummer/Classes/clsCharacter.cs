@@ -7339,7 +7339,10 @@ namespace Chummer
         #region Basic Properties
 
         private CharacterOptions _objOptions = Utils.IsDesignerMode || Utils.IsRunningInVisualStudio // Need this because ExpenseCharts is WPF and needs a Character in design mode.
-            ? new CharacterOptions() : OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption];
+            ? new CharacterOptions()
+            : OptionsManager.LoadedCharacterOptions.ContainsKey(GlobalOptions.DefaultCharacterOption)
+                ? OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption]
+                : OptionsManager.LoadedCharacterOptions[GlobalOptions.DefaultCharacterOptionDefaultValue];
 
         /// <summary>
         /// Character Options object.
