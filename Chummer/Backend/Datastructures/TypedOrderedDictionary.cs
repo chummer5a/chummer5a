@@ -25,6 +25,11 @@ using System.Runtime.Serialization;
 
 namespace Chummer
 {
+    /// <summary>
+    /// Like OrderedDictionary, but with key and value types explicitly defined, therefore allowing it to be used in extension/interface methods for dictionaries and lists
+    /// </summary>
+    /// <typeparam name="TKey">Type used for unique keys in the internal dictionary</typeparam>
+    /// <typeparam name="TValue">Type used for values in the internal dictionary</typeparam>
     public class TypedOrderedDictionary<TKey, TValue> :
         IDictionary<TKey, TValue>,
         IList<KeyValuePair<TKey, TValue>>,
@@ -277,9 +282,7 @@ namespace Chummer
                     for (int i = intOriginalIndex; i < _lstIndexes.Count - 2; ++i)
                     {
                         if (i != index)
-                        {
                             _lstIndexes[i] = _lstIndexes[i + 1];
-                        }
                     }
                     _lstIndexes.RemoveAt(_lstIndexes.Count - 1);
                     if (objKeyToRemove != null)
