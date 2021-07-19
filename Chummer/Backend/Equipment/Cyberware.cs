@@ -4755,7 +4755,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                EndGradeCheck:;
+                    EndGradeCheck:;
                 }
 
                 XmlDocument xmlCyberwareDocument = _objCharacter.LoadData("cyberware.xml");

@@ -1142,7 +1142,9 @@ namespace Chummer
                         break;
                 }
             }
-            else switch (e.PropertyName)
+            else
+            {
+                switch (e.PropertyName)
                 {
                     case nameof(CharacterOptions.BuiltInOption):
                         cmdSave.Enabled = cmdSaveAs.Enabled
@@ -1156,6 +1158,7 @@ namespace Chummer
                                           && !_objCharacterOptions.BuiltInOption;
                         break;
                 }
+            }
         }
 
         private bool IsAllTextBoxesLegal
