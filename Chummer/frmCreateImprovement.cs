@@ -426,6 +426,31 @@ namespace Chummer
                     }
                     break;
 
+                case "SelectComplexForm":
+                    List<ListItem> lstComplexForms = new List<ListItem>();
+                    foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("complexforms.xml").Select("/chummer/complexforms/complexform"))
+                    {
+                        string strName = xmlSpell.SelectSingleNode("name")?.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                            lstComplexForms.Add(new ListItem(strName, xmlSpell.SelectSingleNode("translate")?.Value ?? strName));
+                    }
+
+                    using (frmSelectItem selectComplexForm = new frmSelectItem
+                    {
+                        Description = LanguageManager.GetString("Title_SelectComplexForm")
+                    })
+                    {
+                        selectComplexForm.SetDropdownItemsMode(lstComplexForms);
+                        selectComplexForm.ShowDialog(this);
+
+                        if (selectComplexForm.DialogResult == DialogResult.OK)
+                        {
+                            txtSelect.Text = selectComplexForm.SelectedName;
+                            txtTranslateSelection.Text = TranslateField(_strSelect, selectComplexForm.SelectedName);
+                        }
+                    }
+                    break;
+
                 case "SelectSpell":
                     List<ListItem> lstSpells = new List<ListItem>();
                     foreach (XPathNavigator xmlSpell in _objCharacter.LoadDataXPath("spells.xml").Select("/chummer/spells/spell"))

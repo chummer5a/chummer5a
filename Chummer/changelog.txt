@@ -90,6 +90,7 @@ Application Changes:
 - When removing content that has added potentially duplicate specializations to a character, the specialization that was added by said content is now properly always gets removed.
 - A warning is now shown when attempting to open enough characters that it might cause Chummer to silently crash.
 - Added a plural/singular detector to the code that checks if a character has a specialization for a weapon.
+- Added the ability to add spells and complex forms to a character through the Improvements system in career mode. 
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
