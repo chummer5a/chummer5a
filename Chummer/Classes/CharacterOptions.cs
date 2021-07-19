@@ -216,7 +216,7 @@ namespace Chummer
         private readonly Dictionary<string, Tuple<int, bool>> _dicCustomDataDirectoryNames = new Dictionary<string, Tuple<int, bool>>();
 
         // Cached lists that should be updated every time _dicCustomDataDirectoryNames is updated
-        private readonly List<CustomDataDirectoryInfo> _lstEnabledCustomDataDirectories = new List<CustomDataDirectoryInfo>();
+        private readonly TypedOrderedDictionary<Guid, CustomDataDirectoryInfo> _lstEnabledCustomDataDirectories = new TypedOrderedDictionary<Guid, CustomDataDirectoryInfo>();
 
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
@@ -1677,7 +1677,7 @@ namespace Chummer
         /// <summary>
         /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
         /// </summary>
-        public HashSet<Guid> HashSetEnabledCustomDataDirectoryInfoGuid { get; private set; }
+        public IReadOnlyCollection<Guid> EnabledCustomDataDirectoryInfoGuids => _lstEnabledCustomDataDirectories.ReadOnlyKeys;
 
         public void RecalculateEnabledCustomDataDirectories()
         {
@@ -1688,23 +1688,11 @@ namespace Chummer
                 CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == strEnabledCustomDataDirectoryName);
                 if (objInfoToAdd != default)
                 {
-                    _lstEnabledCustomDataDirectories.Add(objInfoToAdd);
-                    _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.Path);
+                    _lstEnabledCustomDataDirectories.Add(objInfoToAdd.Guid, objInfoToAdd);
+                    _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
                 }
                 else
                     Utils.BreakIfDebug();
-            }
-
-            ReformEnabledCustomDataDirectoriesHashSet();
-
-            //This ensures, that the HashSet and the List are always identical.
-            void ReformEnabledCustomDataDirectoriesHashSet()
-            {
-                HashSetEnabledCustomDataDirectoryInfoGuid = new HashSet<Guid>();
-                foreach (var enabledCustomData in _lstEnabledCustomDataDirectories)
-                {
-                    HashSetEnabledCustomDataDirectoryInfoGuid.Add(enabledCustomData.Guid);
-                }
             }
         }
 

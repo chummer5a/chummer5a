@@ -61,13 +61,31 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just that 
+        /// </summary>
+        /// <param name="first">First collection to compare.</param>
+        /// <param name="second">Second collection to compare.</param>
+        /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
+        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second)
+        {
+            if (first.Count != second.Count)
+                return false;
+            // Use built-in, faster implementations if they are available
+            if (first is ISet<T> setFirst)
+                return setFirst.SetEquals(second);
+            if (second is ISet<T> setSecond)
+                return setSecond.SetEquals(first);
+            return first.Concat(second).Distinct().All(objItem => first.Count(x => x.Equals(objItem)) == second.Count(x => x.Equals(objItem)));
+        }
+
+        /// <summary>
         /// Deep searches two collections to make sure matching elements between the two fulfill some predicate. Each item in the target list can only be matched once.
         /// </summary>
         /// <param name="objParentList">Base list to check.</param>
         /// <param name="objTargetList">Target list against which we're checking</param>
         /// <param name="funcGetChildrenMethod">Method used to get children of both the base list and the target list against which we're checking.</param>
         /// <param name="predicate">Two-argument function that takes its first argument from the base list and the second from the target list. If it does not return true on any available pair, the method returns false.</param>
-        public static bool DeepMatch<T>(this ICollection<T> objParentList, ICollection<T> objTargetList, Func<T, ICollection<T>> funcGetChildrenMethod, Func<T, T, bool> predicate)
+        public static bool DeepMatch<T>(this IReadOnlyCollection<T> objParentList, IReadOnlyCollection<T> objTargetList, Func<T, IReadOnlyCollection<T>> funcGetChildrenMethod, Func<T, T, bool> predicate)
         {
             if (objParentList == null || objTargetList == null)
                 return objParentList == null && objTargetList == null;

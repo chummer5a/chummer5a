@@ -97,7 +97,7 @@ namespace Chummer
         private static readonly object s_SetDataDirectoriesLock = new object();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
             .Combine(Utils.GetStartupPath, "data").Yield()
-            .Concat(GlobalOptions.CustomDataDirectoryInfos.Select(x => x.Path)));
+            .Concat(GlobalOptions.CustomDataDirectoryInfos.Select(x => x.DirectoryPath)));
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         #region Methods
@@ -113,7 +113,7 @@ namespace Chummer
                 s_SetDataDirectories.Add(Path.Combine(Utils.GetStartupPath, "data"));
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in customDirectories)
                 {
-                    s_SetDataDirectories.Add(objCustomDataDirectory.Path);
+                    s_SetDataDirectories.Add(objCustomDataDirectory.DirectoryPath);
                 }
                 s_blnSetDataDirectoriesLoaded = true;
             }

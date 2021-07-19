@@ -798,8 +798,7 @@ namespace Chummer
                     };
                     if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
                     {
-                        objNode.Text = objInfo.Name;
-                        objInfo.LazyCreate();
+                        objNode.Text = objInfo.DisplayName;
                     }
                     else
                     {
@@ -821,7 +820,7 @@ namespace Chummer
                         objNode.Checked = blnDataDirectoryEnabled;
                     if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
                     {
-                        objNode.Text = objInfo.Name;
+                        objNode.Text = objInfo.DisplayName;
                     }
                     else
                     {

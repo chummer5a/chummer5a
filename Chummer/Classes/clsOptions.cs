@@ -26,6 +26,7 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using iText.Kernel.Pdf;
@@ -592,6 +593,16 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(strPath) && Directory.Exists(strPath))
                         {
                             CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(strDirectoryName, strPath);
+                            if (objCustomDataDirectory.XmlException != default)
+                            {
+                                Program.MainForm.ShowMessageBox(
+                                    string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                        objCustomDataDirectory.XmlException.Message),
+                                    string.Format(CultureInfo,
+                                        LanguageManager.GetString("MessageTitle_FailedLoad") +
+                                        LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
                             _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
                         }
                     }
@@ -606,9 +617,19 @@ namespace Chummer
                 foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
                 {
                     // Only add directories for which we don't already have entries loaded from registry
-                    if (_setCustomDataDirectoryInfo.All(x => x.Path != strLoopDirectoryPath))
+                    if (_setCustomDataDirectoryInfo.All(x => x.DirectoryPath != strLoopDirectoryPath))
                     {
                         CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
+                        if (objCustomDataDirectory.XmlException != default)
+                        {
+                            Program.MainForm.ShowMessageBox(
+                                string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
+                                    objCustomDataDirectory.XmlException.Message),
+                                string.Format(CultureInfo,
+                                    LanguageManager.GetString("MessageTitle_FailedLoad") +
+                                    LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                         _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
                     }
                 }
@@ -735,7 +756,7 @@ namespace Chummer
                                     objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name))
                                 {
                                     objLoopKey?.SetValue("Path",
-                                        objCustomDataDirectory.Path.Replace(Utils.GetStartupPath, "$CHUMMER"));
+                                        objCustomDataDirectory.DirectoryPath.Replace(Utils.GetStartupPath, "$CHUMMER"));
                                 }
                             }
                         }

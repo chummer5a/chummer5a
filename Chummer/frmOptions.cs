@@ -477,7 +477,16 @@ namespace Chummer
                     if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK)
                         return;
                     CustomDataDirectoryInfo objNewCustomDataDirectory = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, dlgSelectFolder.SelectedPath);
-
+                    if (objNewCustomDataDirectory.XmlException != default)
+                    {
+                        Program.MainForm.ShowMessageBox(this,
+                            string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FailedLoad", _strSelectedLanguage),
+                                objNewCustomDataDirectory.XmlException.Message),
+                            string.Format(_objSelectedCultureInfo,
+                                LanguageManager.GetString("MessageTitle_FailedLoad", _strSelectedLanguage) +
+                                LanguageManager.GetString("String_Space", _strSelectedLanguage) + objNewCustomDataDirectory.Name),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     if (_setCustomDataDirectoryInfos.Any(x => x.Name == objNewCustomDataDirectory.Name))
                     {
                         Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName", _strSelectedLanguage),
@@ -525,7 +534,17 @@ namespace Chummer
                 }
                 else
                 {
-                    CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.Path);
+                    CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
+                    if (objNewInfo.XmlException != default)
+                    {
+                        Program.MainForm.ShowMessageBox(this,
+                            string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FailedLoad", _strSelectedLanguage),
+                                objNewInfo.XmlException.Message),
+                            string.Format(_objSelectedCultureInfo,
+                                LanguageManager.GetString("MessageTitle_FailedLoad", _strSelectedLanguage) +
+                                LanguageManager.GetString("String_Space", _strSelectedLanguage) + objNewInfo.Name),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                     _setCustomDataDirectoryInfos.Remove(objInfoToRename);
                     _setCustomDataDirectoryInfos.Add(objNewInfo);
                     PopulateCustomDataDirectoryListBox();
@@ -791,7 +810,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem(objCustomDataDirectory,
                         string.Format(_objSelectedCultureInfo, strNameFormat, objCustomDataDirectory.Name,
-                            objCustomDataDirectory.Path));
+                            objCustomDataDirectory.DirectoryPath));
                     lsbCustomDataDirectories.Items.Add(objItem);
                 }
             }
@@ -811,7 +830,7 @@ namespace Chummer
                 {
                     ListItem objItem = new ListItem(objCustomDataDirectory,
                         string.Format(_objSelectedCultureInfo, strNameFormat, objCustomDataDirectory.Name,
-                            objCustomDataDirectory.Path));
+                            objCustomDataDirectory.DirectoryPath));
                     lsbCustomDataDirectories.Items.Add(objItem);
                 }
             }
