@@ -582,6 +582,8 @@ namespace Chummer
                 _objCharacterOptions.RecalculateEnabledCustomDataDirectories();
                 _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             }
+            //Each time one item is checked or unchecked, we need to see if any dependencies or exclusivities changed
+            CheckForDependenciesAndExclusivities();
         }
 
         private void txtPriorities_KeyPress(object sender, KeyPressEventArgs e)
@@ -693,7 +695,52 @@ namespace Chummer
             _objCharacterOptions.PriorityTable = strNewPriorityTable;
         }
 
-        #endregion Control Events
+        private void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (!(treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo objSelected)) return;
+
+            gbpDirectoryInfo.SuspendLayout();
+            tboxDirectoryDescription.Text = objSelected.DisplayDescription;
+            lblDirectoryVersion.Text = objSelected.Version.ToString(GlobalOptions.CultureInfo);
+            lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
+            lblDirectoryName.Text = objSelected.Name;
+
+            if (objSelected.DependenciesList.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var dependency in objSelected.DependenciesList)
+                {
+                    sb.Append(dependency.DisplayName);
+                    sb.Append(Environment.NewLine);
+                }
+                lblDependencyList.Text = sb.ToString();
+            }
+            else
+            {
+                //Make sure all old information is discarded
+                lblDependencyList.Text = string.Empty;
+            }
+
+            if (objSelected.ExclusivitiesList.Count > 0)
+            {
+                //We only need a Stringbuilder if we got anything
+                StringBuilder sb = new StringBuilder();
+
+                foreach (var exclusivity in objSelected.ExclusivitiesList)
+                {
+                    sb.Append(exclusivity.DisplayName);
+                    sb.Append(Environment.NewLine);
+                }
+                lblExclusivityList.Text = sb.ToString();
+            }
+            else
+            {
+                lblExclusivityList.Text = string.Empty;
+            }
+            gbpDirectoryInfo.ResumeLayout();
+        }
+        #endregion
 
         #region Methods
 
@@ -752,6 +799,7 @@ namespace Chummer
                     if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.Name;
+                        objInfo.LazyCreate();
                     }
                     else
                     {
@@ -785,7 +833,45 @@ namespace Chummer
 
             if (objOldSelected != null)
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
+            treCustomDataDirectories.ShowNodeToolTips = true;
             treCustomDataDirectories.EndUpdate();
+        }
+
+        private void CheckForDependenciesAndExclusivities()
+        {
+            foreach (TreeNode directoryNode in treCustomDataDirectories.Nodes)
+            {
+                if (!(directoryNode.Tag is CustomDataDirectoryInfo customDataDirectory)) continue;
+                if (directoryNode.Checked)
+                {
+                    // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
+                    string missingDirectories = string.Empty;
+                    if (customDataDirectory.DependenciesList.Count>0)
+                        missingDirectories = customDataDirectory.CheckDependency(_objCharacterOptions);
+
+                    string prohibitedDirectories = string.Empty;
+                    if (customDataDirectory.ExclusivitiesList.Count>0)
+                        prohibitedDirectories = customDataDirectory.CheckExclusivity(_objCharacterOptions);
+
+                    if (string.IsNullOrEmpty(missingDirectories) && string.IsNullOrEmpty(prohibitedDirectories))
+                    {
+                        directoryNode.ToolTipText = string.Empty;
+                        directoryNode.ForeColor = Color.Empty;
+                        continue;
+                    }
+
+                    string tooltip =
+                        CustomDataDirectoryInfo.BuildExclusivityDependencyString(missingDirectories, prohibitedDirectories);
+
+                    directoryNode.ToolTipText = tooltip;
+                    directoryNode.ForeColor = ColorManager.ErrorColor;
+                }
+                else
+                {
+                    directoryNode.ToolTipText = string.Empty;
+                    directoryNode.ForeColor = Color.Empty;
+                }
+            }
         }
 
         /// <summary>

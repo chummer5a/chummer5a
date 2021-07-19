@@ -7972,6 +7972,66 @@
       <key>MessageTitle_CharacterOptions_SettingFileNameTooLongError</key>
       <text>No Valid Settings Name Possible</text>
     </string>
+    <string>
+      <key>Tooltip_CharacterOptions_ManifestMissing</key>
+      <text>There is no or an inaccessible manifest.xml present for this Custom Data Directory.</text>
+    </string>
+    <string>
+      <key>Tooltip_CharacterOptions_LanguageSpecificManifestMissing</key>
+      <text>There was no description present in your language.</text>
+    </string>
+    <string>
+      <key>Tooltip_CharacterOptions_ManifestDescriptionMissing</key>
+      <text>The manifest.xml for this custom data directory is missing a description!</text>
+    </string>
+    <string>
+      <key>Title_CustomDataDirectoryInfo</key>
+      <text>Custom Data Directory Infos</text>
+    </string>
+    <string>
+      <key>Label_DirectoryName</key>
+      <text>Directory Name:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryAuthors</key>
+      <text>Authors:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryVersion</key>
+      <text>Version:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryDescription</key>
+      <text>Description</text>
+    </string>
+    <string>
+      <key>Title_DirectoryDependencies</key>
+      <text>Dependencies</text>
+    </string>
+    <string>
+      <key>Title_DirectoryExclusivities</key>
+      <text>Exclusivities</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_Missing</key>
+      <text>Missing dependencies:</text>
+    </string>
+    <string>
+      <key>Tooltip_Exclusivity_Present</key>
+      <text>Present exclusivities:</text>
+    </string>
+    <string>
+      <key>Tooltip_Dependency_VersionMismatch</key>
+      <text>{0} version does not meet the required version range of {1}</text>
+    </string>
+    <string>
+      <key>Tooltip_Exclusivity_VersionMismatch</key>
+      <text>{0} is incompatible with {1}</text>
+    </string>
+    <string>
+      <key>IsMainAuthor</key>
+      <text> (Main)</text>
+    </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->
     <string>

@@ -1674,6 +1674,11 @@ namespace Chummer
 
         public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _lstEnabledCustomDataDirectories;
 
+        /// <summary>
+        /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
+        /// </summary>
+        public HashSet<Guid> HashSetEnabledCustomDataDirectoryInfoGuid { get; private set; }
+
         public void RecalculateEnabledCustomDataDirectories()
         {
             _lstEnabledCustomDataDirectories.Clear();
@@ -1688,6 +1693,18 @@ namespace Chummer
                 }
                 else
                     Utils.BreakIfDebug();
+            }
+
+            ReformEnabledCustomDataDirectoriesHashSet();
+
+            //This ensures, that the HashSet and the List are always identical.
+            void ReformEnabledCustomDataDirectoriesHashSet()
+            {
+                HashSetEnabledCustomDataDirectoryInfoGuid = new HashSet<Guid>();
+                foreach (var enabledCustomData in _lstEnabledCustomDataDirectories)
+                {
+                    HashSetEnabledCustomDataDirectoryInfoGuid.Add(enabledCustomData.Guid);
+                }
             }
         }
 

@@ -345,6 +345,7 @@
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\CharacterOptions.cs" />
+    <Compile Include="Classes\clsCustomDataDirectoryInfo.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
@@ -544,6 +545,9 @@
     <Compile Include="frmCreateSpell.Designer.cs">
       <DependentUpon>frmCreateSpell.cs</DependentUpon>
     </Compile>
+    <None Include="customdata\manifest.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="data\drugcomponents.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -648,6 +652,9 @@
     <Content Include="customdata\Ammo Skip Internal Mount\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Bone Lacing Adds to Body\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\amend_encumbrance_armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -712,6 +719,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">

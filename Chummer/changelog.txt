@@ -40,6 +40,7 @@ Application Changes:
 - When calculating the karma value of a character in Priority or Sum-to-Ten, the karma amount displayed for comparison to Point Buy now uses the Point Buy costs for the character's metatype instead of the value of their combined attribute adjustments and qualities.
 - Added the ability to manually set Chummer's display scaling method in the Global Options screen, though a restart is required to see any changes. The default display scaling method is now also Zoom (i.e. System) instead of Rescale (i.e. PerMonitorV2).
 - For mentor spirits that do not allow the user to select from multiple bonuses, the entire bonus is now shown as regular text instead of it being cut off in a grayed-out dropdown box.
+- Custom data directories can now implement a manifest.xml files to serve as an explanation for the custom data. This explanation is also displayed in the Custom Data Directory selection. This .xml can also hold additional information about the author, version or dependencies/exclusivities. For details see chummer/customdata/manifest.xsd
 - Trust Fund can now be selected for non-advanced lifestyles.
 - Skill pool tooltips no longer sometimes show the skill's category as its specialization.
 - Spell and Complex Form pool tooltips are no longer combine the contribution of their linked attribute and their linked skill.
@@ -243,6 +244,24 @@ Changed/New Strings:
 - MessageTitle_NoPDFProgramSet
 - Message_TooManyHandlesWarning
 - MessageTitle_TooManyHandlesWarning
+- Label_SkillGroup_Disabled
+- Label_SkillGroup_DisabledBy
+- Enum_GunneryCommandDevice
+- Tooltip_CharacterOptions_ManifestMissing
+- Tooltip_CharacterOptions_LanguageSpecificManifestMissing
+- Tooltip_CharacterOptions_ManifestDescriptionMissing
+- Title_CustomDataDirectoryInfo
+- Label_DirectoryName
+- Label_DirectoryAuthors
+- Label_DirectoryVersion
+- Label_DirectoryDescription
+- Title_DirectoryDependencies
+- Title_DirectoryExclusivities
+- Tooltip_Dependency_Missing
+- Tooltip_Exclusivity_Present
+- IsMainAuthor
+- Tooltip_Exclusivity_VersionMismatch
+- Tooltip_Dependency_VersionMismatch
 
 Build 214
 Application Fixes:

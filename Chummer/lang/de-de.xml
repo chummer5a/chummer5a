@@ -2542,6 +2542,14 @@
         <key>Tab_Options_CustomDataDirectories</key>
         <text>Dateipfad der Custom Data Files</text>
       </string>
+      <string>
+        <key>Tooltip_CharacterOptions_LanguageSpecificManifestMissing</key>
+        <string>Es gibt kein Manifest in deiner Sprache.</string>
+      </string>
+      <string>
+        <key>Tooltip_CharacterOptions_ManifestMissing</key>
+        <string>Für diesen Custom Data Ordner wurde kein oder ein leeres Manifest gefunden.</string>
+      </string>
         <!-- End Region -->
         <!-- Region  Martial Arts Tab -->
         <string>

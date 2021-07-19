@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <guid>b422724d-42d5-4ef4-bbb3-9dfa3c40cb61</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>Unknown</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>Dieser Custom Data Ordner versucht alle durch Pegasus in den Deutschen Regelwerken eingeführten Regeländerungen zu implementieren. Hierbei werden die Deutschen Bücher als errata betrachtet und überschreiben alte Objekte.</text>
+      <lang>de-de</lang>
+    </description>
+    <description>
+      <text>This folder tries to implement all changes, that are made by Pegasus in the German Sourcebooks. Old English objects will be overridden by the new German rules.</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>

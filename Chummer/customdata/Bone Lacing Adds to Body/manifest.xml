@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<manifest>
+  <guid>091a9694-4186-4c2d-96fc-d4dc2ae62505</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>Unknown</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>With this custom data change, the cyberware bone lacing will add it's rating to your BOD attribute, instead of only counting as BOD for damage resistance purposes.</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>
