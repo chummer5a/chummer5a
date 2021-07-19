@@ -9213,7 +9213,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (Improvements.All(x => x.ImproveSource != Improvement.ImprovementSource.Submersion))
+                    if (Improvements.All(x => x.ImproveSource != Improvement.ImprovementSource.Initiation))
                     {
                         // Create the new Improvement.
                         ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.Initiation,
