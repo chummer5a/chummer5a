@@ -79,6 +79,20 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just that 
+        /// </summary>
+        /// <param name="first">First collection to compare.</param>
+        /// <param name="second">Second collection to compare.</param>
+        /// <param name="comparer">Special equality comparer to use instead of the default one.</param>
+        /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
+        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, IEqualityComparer<T> comparer)
+        {
+            // Sets do not have IEqualityComparer versions for SetEquals, so we always need to do this the slow way
+            return first.Count == second.Count && first.Concat(second).Distinct().All(objItem =>
+                first.Count(x => comparer.Equals(x, objItem)) == second.Count(x => comparer.Equals(x, objItem)));
+        }
+
+        /// <summary>
         /// Deep searches two collections to make sure matching elements between the two fulfill some predicate. Each item in the target list can only be matched once.
         /// </summary>
         /// <param name="objParentList">Base list to check.</param>
