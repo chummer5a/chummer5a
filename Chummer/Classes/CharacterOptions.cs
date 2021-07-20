@@ -1149,7 +1149,7 @@ namespace Chummer
                     continue;
                 // Only load in directories that are either present in our GlobalOptions or are enabled
                 bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
-                if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
+                if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Values.Any(x => x.Name == strDirectoryName))
                 {
                     string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
                     if (!string.IsNullOrEmpty(strOrder)
@@ -1189,7 +1189,7 @@ namespace Chummer
                     {
                         // Only load in directories that are either present in our GlobalOptions or are enabled
                         bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
-                        if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
+                        if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Values.Any(x => x.Name == strDirectoryName))
                         {
                             _dicCustomDataDirectoryNames.Add(strDirectoryName,
                                 new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
@@ -1209,7 +1209,7 @@ namespace Chummer
             }
 
             // Add in any directories that are in GlobalOptions but are not present in the settings so that we may enable them if we want to
-            foreach (CustomDataDirectoryInfo objMissingDirectory in GlobalOptions.CustomDataDirectoryInfos)
+            foreach (CustomDataDirectoryInfo objMissingDirectory in GlobalOptions.CustomDataDirectoryInfos.Values)
             {
                 if (!_dicCustomDataDirectoryNames.Keys.Contains(objMissingDirectory.Name))
                 {
@@ -1685,7 +1685,7 @@ namespace Chummer
             _lstEnabledCustomDataDirectoryPaths.Clear();
             foreach (string strEnabledCustomDataDirectoryName in _dicCustomDataDirectoryNames.Where(x => x.Value.Item2).OrderBy(x => x.Value.Item1).Select(x => x.Key))
             {
-                CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == strEnabledCustomDataDirectoryName);
+                CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.Values.FirstOrDefault(x => x.Name == strEnabledCustomDataDirectoryName);
                 if (objInfoToAdd != default)
                 {
                     _lstEnabledCustomDataDirectories.Add(objInfoToAdd.Guid, objInfoToAdd);

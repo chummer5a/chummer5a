@@ -8021,7 +8021,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Répertoires de données personnalisés à utiliser (les modifications ne sont appliquées qu'après un redémarrage)</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Dupliquer le nom d'un répertoire de données personnalisé</text>
     </string>
     <string>

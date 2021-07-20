@@ -9721,11 +9721,19 @@
     </string>
     <string>
       <key>Message_Duplicate_CustomDataDirectoryName</key>
-      <text>Custom data directory of this name already exists.</text>
+      <text>There is already a custom data directory called {0}. Please use a different name.</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Duplicate Custom Data Directory Name</text>
+    </string>
+    <string>
+      <key>Message_Duplicate_CustomDataDirectoryGuid</key>
+      <text>A custom data directory with an identical Guid to {0} has already been added. Please edit the data directory's manifest and give it a different Guid.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryGuid</key>
+      <text>Duplicate Custom Data Directory Guid</text>
     </string>
     <string>
       <key>Label_CustomDataDirectories</key>

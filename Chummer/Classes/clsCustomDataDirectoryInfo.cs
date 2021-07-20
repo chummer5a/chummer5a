@@ -31,10 +31,12 @@ namespace Chummer
     /// </summary>
     public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>
     {
-        private readonly decimal _version;
-        private readonly Guid _guid;
+        private readonly Version _objMyVersion = new Version(1, 0);
+        private Guid _guid = Guid.NewGuid();
 
         public Exception XmlException { get; }
+
+        public bool HasManifest { get; }
 
         private readonly List<DirectoryDependency> _lstDependencies = new List<DirectoryDependency>();
         private readonly List<DirectoryDependency> _lstIncompatibilities = new List<DirectoryDependency>();
@@ -54,11 +56,12 @@ namespace Chummer
 
                 if (File.Exists(strFullDirectory))
                 {
+                    HasManifest = true;
                     XmlDocument xmlObjManifest = new XmlDocument();
                     xmlObjManifest.LoadStandard(strFullDirectory);
                     var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
 
-                    xmlNode.TryGetDecFieldQuickly("version", ref _version);
+                    xmlNode.TryGetField("version", Version.TryParse, out _objMyVersion, new Version(1, 0));
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
                     GetManifestDescriptions(xmlNode);
@@ -69,8 +72,9 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                //we save the exception to show it when opening CharacterOptions, see comment in LazyCreate() for the reasoning.
+                // Save the exception to show it later
                 XmlException = ex;
+                HasManifest = false;
             }
 
             #region Local Methods
@@ -129,24 +133,21 @@ namespace Chummer
 
                 foreach (XmlNode objXmlNode in xmlDependencies)
                 {
-                    Guid depGuid = Guid.Empty;
-                    var newMaximumVersion = decimal.MaxValue; //If no upper limit is given, assume the maximum possible version
-                    var newMinimumVersion = decimal.MinValue; //If no lower limit is given, assume the lowest possible version
+                    Guid guidId = Guid.Empty;
+                    string strDependencyName = string.Empty;
 
-                    string newName = string.Empty;
-
-                    objXmlNode.TryGetStringFieldQuickly("name", ref newName);
-                    objXmlNode.TryGetDecFieldQuickly("maxversion", ref newMaximumVersion);
-                    objXmlNode.TryGetDecFieldQuickly("minversion", ref newMinimumVersion);
-                    objXmlNode.TryGetGuidFieldQuickly("guid", ref depGuid);
+                    objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
+                    objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
 
                     //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
-                    if (string.IsNullOrEmpty(newName) || depGuid == Guid.Empty)
+                    if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                         continue;
 
-                    DirectoryDependency newDependency = new DirectoryDependency(newName, depGuid, newMinimumVersion, newMaximumVersion);
+                    objXmlNode.TryGetField("maxversion", Version.TryParse, out Version objNewMaximumVersion);
+                    objXmlNode.TryGetField("minversion", Version.TryParse, out Version objNewMinimumVersion);
 
-                    _lstDependencies.Add(newDependency);
+                    DirectoryDependency objDependency = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
+                    _lstDependencies.Add(objDependency);
                 }
             }
             void GetIncompatibilities(XmlNode xmlDocument)
@@ -158,22 +159,21 @@ namespace Chummer
 
                 foreach (XmlNode objXmlNode in xmlIncompatibilities)
                 {
-                    Guid depGuid = Guid.Empty;
-                    var newMaximumVersion = decimal.MaxValue; //If no upper limit is given, assume the maximum possible version
-                    var newMinimumVersion = decimal.MinValue; //If no lower limit is given, assume the lowest possible version
-                    string newName = string.Empty;
+                    Guid guidId = Guid.Empty;
+                    string strDependencyName = string.Empty;
 
-                    objXmlNode.TryGetStringFieldQuickly("name", ref newName);
-                    objXmlNode.TryGetDecFieldQuickly("maxversion", ref newMaximumVersion);
-                    objXmlNode.TryGetDecFieldQuickly("minversion", ref newMinimumVersion);
-                    objXmlNode.TryGetGuidFieldQuickly("guid", ref depGuid);
+                    objXmlNode.TryGetStringFieldQuickly("name", ref strDependencyName);
+                    objXmlNode.TryGetGuidFieldQuickly("guid", ref guidId);
 
                     //If there is no name any displays based on this are worthless and if there isn't a ID no comparisons will work
-                    if (string.IsNullOrEmpty(newName) || depGuid == Guid.Empty)
+                    if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                         continue;
 
-                    DirectoryDependency newIncompatibility = new DirectoryDependency(newName, depGuid, newMinimumVersion, newMaximumVersion);
-                    _lstIncompatibilities.Add(newIncompatibility);
+                    objXmlNode.TryGetField("maxversion", Version.TryParse, out Version objNewMaximumVersion);
+                    objXmlNode.TryGetField("minversion", Version.TryParse, out Version objNewMinimumVersion);
+
+                    DirectoryDependency objIncompatibility = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
+                    _lstIncompatibilities.Add(objIncompatibility);
                 }
             }
 
@@ -230,7 +230,7 @@ namespace Chummer
                     //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
                     foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == dependency.UniqueIdentifier))
                     {
-                        if (enabledCustomData.Version < dependency.MinimumVersion || enabledCustomData.Version > dependency.MaximumVersion)
+                        if (enabledCustomData.MyVersion < dependency.MinimumVersion || enabledCustomData.MyVersion > dependency.MaximumVersion)
                         {
                             sbdReturn.AppendLine(string.Format(
                                 LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
@@ -264,7 +264,7 @@ namespace Chummer
                     foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == incompatibility.UniqueIdentifier))
                     {
                         //if the version is within the version range add it to the list.
-                        if (enabledCustomData.Version > incompatibility.MinimumVersion && enabledCustomData.Version < incompatibility.MaximumVersion)
+                        if (enabledCustomData.MyVersion > incompatibility.MinimumVersion && enabledCustomData.MyVersion < incompatibility.MaximumVersion)
                         {
                             sbdReturn.AppendLine(string.Format(
                                 LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
@@ -315,7 +315,7 @@ namespace Chummer
         /// <summary>
         /// The version of the custom data directory
         /// </summary>
-        public decimal Version => _version;
+        public Version MyVersion => _objMyVersion;
 
         // /// <summary>
         // /// The Sha512 Hash of all non manifest.xml files in the directory
@@ -407,7 +407,7 @@ namespace Chummer
                         string formattedName = kvp.Key;
 
                         if (kvp.Value)
-                            formattedName = string.Format(GlobalOptions.CultureInfo, kvp.Key, LanguageManager.GetString("String_IsMainAuthor")) ;
+                            formattedName = string.Format(GlobalOptions.CultureInfo, kvp.Key, LanguageManager.GetString("String_IsMainAuthor"));
 
                         authorsList[i] = formattedName;
                         i++;
@@ -421,11 +421,27 @@ namespace Chummer
 
         public Guid Guid => _guid;
 
+        public void RandomizeGuid()
+        {
+            // We should not be randomizing Guids for infos that have a manifest with a set Guid
+            if (HasManifest)
+                throw new NotSupportedException();
+            _guid = Guid.NewGuid();
+        }
+
+        public void CopyGuid(CustomDataDirectoryInfo other)
+        {
+            // We should not be copying Guids for infos that have a manifest with a set Guid
+            if (HasManifest)
+                throw new NotSupportedException();
+            _guid = other._guid;
+        }
+
         /// <summary>
         /// The name including the Version in this format "NAME (Version)"
         /// </summary>
-        public string DisplayName => Version == default ? Name : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", Name,
-            LanguageManager.GetString("String_Space"), Version);
+        public string DisplayName => MyVersion == default ? Name : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", Name,
+            LanguageManager.GetString("String_Space"), MyVersion);
 
         #endregion Properties
 
@@ -446,8 +462,7 @@ namespace Chummer
                 intReturn = string.Compare(DirectoryPath, other.DirectoryPath, StringComparison.Ordinal);
                 //Should basically never happen, because paths are supposed to be unique. But this "future proofs" it.
                 if (intReturn == 0)
-                    intReturn = string.Compare(Version.ToString(GlobalOptions.CultureInfo),
-                        other.Version.ToString(GlobalOptions.CultureInfo), StringComparison.Ordinal);
+                    intReturn = MyVersion.CompareTo(other.MyVersion);
             }
             return intReturn;
         }
@@ -463,15 +478,16 @@ namespace Chummer
         {
             var dependencyHash = DependenciesList.GetEnsembleHashCode();
             var incompatibilityHash = IncompatibilitiesList.GetEnsembleHashCode();
+            var guid = HasManifest ? Guid : Guid.Empty;
             //Path and Guid should already be enough because they are both unique, but just to be sure.
-            return (Name, DirectoryPath, Guid, Version, incompatibilityHash, dependencyHash).GetHashCode();
+            return (Name, guid, DirectoryPath, MyVersion, incompatibilityHash, dependencyHash).GetHashCode();
         }
 
         public bool Equals(CustomDataDirectoryInfo other)
         {
             //This should be enough to uniquely identify an object.
-            return other != null && Name == other.Name && DirectoryPath == other.DirectoryPath && other.Guid == Guid &&
-                   other.Version == Version && other.DependenciesList.CollectionEqual(DependenciesList) &&
+            return other != null && Name == other.Name && DirectoryPath == other.DirectoryPath && (other.Guid == Guid || (!other.HasManifest && !HasManifest)) &&
+                   other.MyVersion.Equals(MyVersion) && other.DependenciesList.CollectionEqual(DependenciesList) &&
                    other.IncompatibilitiesList.CollectionEqual(IncompatibilitiesList);
         }
 
@@ -518,7 +534,7 @@ namespace Chummer
     /// </summary>
     public class DirectoryDependency
     {
-        public DirectoryDependency(string name, Guid guid, decimal minVersion, decimal maxVersion)
+        public DirectoryDependency(string name, Guid guid, Version minVersion, Version maxVersion)
         {
             Name = name;
             UniqueIdentifier = guid;
@@ -530,9 +546,9 @@ namespace Chummer
 
         public Guid UniqueIdentifier { get; }
 
-        public decimal MinimumVersion { get; }
+        public Version MinimumVersion { get; }
 
-        public decimal MaximumVersion { get; }
+        public Version MaximumVersion { get; }
 
         public string DisplayName
         {
@@ -540,14 +556,14 @@ namespace Chummer
             {
                 string strSpace = LanguageManager.GetString("String_Space");
 
-                if (MinimumVersion > decimal.MinValue)
+                if (MinimumVersion != default)
                 {
-                    return MaximumVersion < decimal.MaxValue
+                    return MaximumVersion != default
                         ? string.Format(GlobalOptions.CultureInfo, "{0}{1}({2}{1}-{1}{3})", Name, strSpace, MinimumVersion, MaximumVersion)
                         // If maxversion is not given, don't display decimal.max display > instead
                         : string.Format(GlobalOptions.CultureInfo, "{0}{1}({1}>{1}{2})", Name, strSpace, MinimumVersion);
                 }
-                return MaximumVersion < decimal.MaxValue
+                return MaximumVersion != default
                     // If minversion is not given, don't display decimal.min display < instead
                     ? string.Format(GlobalOptions.CultureInfo, "{0}{1}({1}<{1}{2})", Name, strSpace, MaximumVersion)
                     // If neither min and max version are given, just display the Name instead of the decimal.min and decimal.max

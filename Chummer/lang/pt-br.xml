@@ -8209,7 +8209,7 @@
       <text>Diretório de dados personalizados com este nome já existe.</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Nome de Diretório de Dados Personalizados Duplicado</text>
     </string>
     <string>

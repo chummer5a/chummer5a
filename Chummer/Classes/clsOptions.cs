@@ -225,7 +225,7 @@ namespace Chummer
         private static string _strImageFolder = string.Empty;
 
         // Custom Data Directory information.
-        private static readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfo = new HashSet<CustomDataDirectoryInfo>();
+        private static readonly Dictionary<Guid, CustomDataDirectoryInfo> _dicCustomDataDirectoryInfo = new Dictionary<Guid, CustomDataDirectoryInfo>();
 
         #region Constructor
 
@@ -600,10 +600,27 @@ namespace Chummer
                                         objCustomDataDirectory.XmlException.Message),
                                     string.Format(CultureInfo,
                                         LanguageManager.GetString("MessageTitle_FailedLoad") +
-                                        LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name),
+                                        LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                             }
-                            _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
+                            if (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid))
+                            {
+                                if (objCustomDataDirectory.HasManifest)
+                                {
+                                    Program.MainForm.ShowMessageBox(
+                                        string.Format(
+                                            LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryGuid"),
+                                            objCustomDataDirectory.Name),
+                                        LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryGuid"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    continue;
+                                }
+                                do
+                                {
+                                    objCustomDataDirectory.RandomizeGuid();
+                                } while (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid));
+                            }
+                            _dicCustomDataDirectoryInfo.Add(objCustomDataDirectory.Guid, objCustomDataDirectory);
                         }
                     }
                 }
@@ -617,7 +634,7 @@ namespace Chummer
                 foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
                 {
                     // Only add directories for which we don't already have entries loaded from registry
-                    if (_setCustomDataDirectoryInfo.All(x => x.DirectoryPath != strLoopDirectoryPath))
+                    if (_dicCustomDataDirectoryInfo.All(x => x.Value.DirectoryPath != strLoopDirectoryPath))
                     {
                         CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
                         if (objCustomDataDirectory.XmlException != default)
@@ -627,15 +644,32 @@ namespace Chummer
                                     objCustomDataDirectory.XmlException.Message),
                                 string.Format(CultureInfo,
                                     LanguageManager.GetString("MessageTitle_FailedLoad") +
-                                    LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name),
+                                    LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                        _setCustomDataDirectoryInfo.Add(objCustomDataDirectory);
+                        if (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid))
+                        {
+                            if (objCustomDataDirectory.HasManifest)
+                            {
+                                Program.MainForm.ShowMessageBox(
+                                    string.Format(
+                                        LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryGuid"),
+                                        objCustomDataDirectory.Name),
+                                    LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryGuid"),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                continue;
+                            }
+                            do
+                            {
+                                objCustomDataDirectory.RandomizeGuid();
+                            } while (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid));
+                        }
+                        _dicCustomDataDirectoryInfo.Add(objCustomDataDirectory.Guid, objCustomDataDirectory);
                     }
                 }
             }
 
-            XmlManager.RebuildDataDirectoryInfo(_setCustomDataDirectoryInfo);
+            XmlManager.RebuildDataDirectoryInfo(_dicCustomDataDirectoryInfo.Values);
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
@@ -750,7 +784,7 @@ namespace Chummer
                     {
                         if (objCustomDataDirectoryRegistry != null)
                         {
-                            foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos)
+                            foreach (CustomDataDirectoryInfo objCustomDataDirectory in CustomDataDirectoryInfos.Values)
                             {
                                 using (RegistryKey objLoopKey =
                                     objCustomDataDirectoryRegistry.CreateSubKey(objCustomDataDirectory.Name))
@@ -1278,7 +1312,7 @@ namespace Chummer
         /// <summary>
         /// List of CustomDataDirectoryInfo.
         /// </summary>
-        public static HashSet<CustomDataDirectoryInfo> CustomDataDirectoryInfos => _setCustomDataDirectoryInfo;
+        public static Dictionary<Guid, CustomDataDirectoryInfo> CustomDataDirectoryInfos => _dicCustomDataDirectoryInfo;
 
         /// <summary>
         /// Should the updater check for Release builds, or Nightly builds

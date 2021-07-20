@@ -261,6 +261,9 @@ Changed/New Strings:
 - String_IsMainAuthor
 - Tooltip_Incompatibility_VersionMismatch
 - Tooltip_Dependency_VersionMismatch
+- Message_Duplicate_CustomDataDirectoryGuid
+- MessageTitle_Duplicate_CustomDataDirectoryGuid
+- Message_Duplicate_CustomDataDirectoryName
 
 Build 214
 Application Fixes:

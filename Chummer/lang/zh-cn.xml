@@ -8113,7 +8113,7 @@
             <text>该名称的个性化数据目录已存在。</text>
         </string>
         <string>
-            <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+            <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
             <text>个性化数据目录名称重复</text>
         </string>
         <string>

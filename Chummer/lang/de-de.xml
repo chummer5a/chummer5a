@@ -8666,7 +8666,7 @@
             <text>Ein benutzerdefiniertes Datenverzeichnis dieses Namens ist bereits vorhanden.</text>
         </string>
         <string>
-            <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+            <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
             <text>Doppelter Name eines benutzerdefinierten Datenverzeichnisses</text>
         </string>
         <string>

@@ -705,7 +705,7 @@ namespace Chummer
 
             gbpDirectoryInfo.SuspendLayout();
             txtDirectoryDescription.Text = objSelected.DisplayDescription;
-            lblDirectoryVersion.Text = objSelected.Version.ToString(GlobalOptions.CultureInfo);
+            lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
             lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
             lblDirectoryName.Text = objSelected.Name;
 
@@ -1017,7 +1017,7 @@ namespace Chummer
             _lstCharacterCustomDataDirectoryInfos.Clear();
             foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
             {
-                CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
+                CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.Values.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
                 if (objLoopInfo != default)
                 {
                     _lstCharacterCustomDataDirectoryInfos.Add(

@@ -114,7 +114,7 @@ namespace Chummer
                     return ContainsKey(objKey);
 
                 case KeyValuePair<TKey, TValue> objKeyValuePair:
-                    return TryGetValue(objKeyValuePair.Key, out TValue objValue) && objValue.Equals(objKeyValuePair.Value);
+                    return Contains(objKeyValuePair);
 
                 default:
                     return false;
@@ -254,12 +254,10 @@ namespace Chummer
             {
                 switch (value)
                 {
-                    case TValue objValue:
-                        {
-                            if (key is TKey objKey)
-                                this[objKey] = objValue;
-                            break;
-                        }
+                    case TValue objValue when key is TKey objKey:
+                        this[objKey] = objValue;
+                        break;
+
                     case KeyValuePair<TKey, TValue> objKeyValuePair when key is int intKey:
                         this[intKey] = objKeyValuePair;
                         break;
@@ -339,19 +337,13 @@ namespace Chummer
         private class TypedOrderedDictionaryEnumerator : IDictionaryEnumerator
         {
             // A copy of the SimpleDictionary object's key/value pairs.
-            private readonly DictionaryEntry[] items;
+            private readonly TypedOrderedDictionary<object, object> dicMyDictionary;
 
-            private int index = -1;
+            private int intIndex = -1;
 
             public TypedOrderedDictionaryEnumerator(TypedOrderedDictionary<TKey, TValue> dictionary)
             {
-                // Make a copy of the dictionary entries currently in the SimpleDictionary object.
-                items = new DictionaryEntry[dictionary.Count];
-                for (int i = 0; i < dictionary.Count; ++i)
-                {
-                    KeyValuePair<TKey, TValue> kvpLoop = dictionary[i];
-                    items[i] = new DictionaryEntry(kvpLoop.Key, kvpLoop.Value);
-                }
+                dicMyDictionary = dictionary as TypedOrderedDictionary<object, object>;
             }
 
             // Return the current item.
@@ -360,7 +352,7 @@ namespace Chummer
                 get
                 {
                     ValidateIndex();
-                    return items[index];
+                    return dicMyDictionary[intIndex];
                 }
             }
 
@@ -373,7 +365,7 @@ namespace Chummer
                 get
                 {
                     ValidateIndex();
-                    return items[index].Key;
+                    return dicMyDictionary[intIndex].Key;
                 }
             }
 
@@ -383,30 +375,30 @@ namespace Chummer
                 get
                 {
                     ValidateIndex();
-                    return items[index].Value;
+                    return dicMyDictionary[intIndex].Value;
                 }
             }
 
             // Advance to the next item.
             public bool MoveNext()
             {
-                if (index >= items.Length - 1)
+                if (intIndex >= dicMyDictionary.Count - 1)
                     return false;
-                index++;
+                intIndex += 1;
                 return true;
             }
 
             // Validate the enumeration index and throw an exception if the index is out of range.
             private void ValidateIndex()
             {
-                if (index < 0 || index >= items.Length)
+                if (intIndex < 0 || intIndex >= dicMyDictionary.Count)
                     throw new InvalidOperationException("Enumerator is before or after the collection.");
             }
 
             // Reset the index to restart the enumeration.
             public void Reset()
             {
-                index = -1;
+                intIndex = -1;
             }
         }
     }
