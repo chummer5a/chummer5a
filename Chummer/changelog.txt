@@ -254,13 +254,12 @@ Changed/New Strings:
 - Label_DirectoryName
 - Label_DirectoryAuthors
 - Label_DirectoryVersion
-- Label_DirectoryDescription
 - Title_DirectoryDependencies
-- Title_DirectoryExclusivities
+- Title_DirectoryIncompatibilities
 - Tooltip_Dependency_Missing
-- Tooltip_Exclusivity_Present
-- IsMainAuthor
-- Tooltip_Exclusivity_VersionMismatch
+- Tooltip_Incompatibility_Present
+- String_IsMainAuthor
+- Tooltip_Incompatibility_VersionMismatch
 - Tooltip_Dependency_VersionMismatch
 
 Build 214

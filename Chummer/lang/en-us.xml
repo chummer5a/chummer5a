@@ -7990,47 +7990,43 @@
     </string>
     <string>
       <key>Label_DirectoryName</key>
-      <text>Directory Name:</text>
+      <text>Name:</text>
     </string>
     <string>
       <key>Label_DirectoryAuthors</key>
-      <text>Authors:</text>
+      <text>Authors</text>
     </string>
     <string>
       <key>Label_DirectoryVersion</key>
       <text>Version:</text>
     </string>
     <string>
-      <key>Label_DirectoryDescription</key>
-      <text>Description</text>
-    </string>
-    <string>
       <key>Title_DirectoryDependencies</key>
       <text>Dependencies</text>
     </string>
     <string>
-      <key>Title_DirectoryExclusivities</key>
-      <text>Exclusivities</text>
+      <key>Title_DirectoryIncompatibilities</key>
+      <text>Incompatibilities</text>
     </string>
     <string>
       <key>Tooltip_Dependency_Missing</key>
-      <text>Missing dependencies:</text>
+      <text>Missing Dependencies:</text>
     </string>
     <string>
-      <key>Tooltip_Exclusivity_Present</key>
-      <text>Present exclusivities:</text>
+      <key>Tooltip_Incompatibility_Present</key>
+      <text>Present Incompatibilities:</text>
     </string>
     <string>
       <key>Tooltip_Dependency_VersionMismatch</key>
       <text>{0} version does not meet the required version range of {1}</text>
     </string>
     <string>
-      <key>Tooltip_Exclusivity_VersionMismatch</key>
+      <key>Tooltip_Incompatibility_VersionMismatch</key>
       <text>{0} is incompatible with {1}</text>
     </string>
     <string>
-      <key>IsMainAuthor</key>
-      <text> (Main)</text>
+      <key>String_IsMainAuthor</key>
+      <text>{0} (Main)</text>
     </string>
     <!-- End Region -->
     <!-- Region Print Multiple Window -->

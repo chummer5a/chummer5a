@@ -233,13 +233,11 @@ namespace Chummer
             this.lblDirectoryName = new System.Windows.Forms.Label();
             this.lblDirectoryNameLabel = new System.Windows.Forms.Label();
             this.lblDirectoryVersionLabel = new System.Windows.Forms.Label();
-            this.lblDirectoryAuthorsLabel = new System.Windows.Forms.Label();
             this.gbpDirectoryInfoDependencies = new System.Windows.Forms.GroupBox();
-            this.flpDirectoryDependencies = new System.Windows.Forms.FlowLayoutPanel();
-            this.gbpDirectoryInfoExclusivities = new System.Windows.Forms.GroupBox();
-            this.flpExclusivities = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblDirectoryDescriptionLabel = new System.Windows.Forms.Label();
-            this.tboxDirectoryDescription = new System.Windows.Forms.TextBox();
+            this.lblDependencies = new System.Windows.Forms.Label();
+            this.gbpDirectoryInfoIncompatibilities = new System.Windows.Forms.GroupBox();
+            this.lblIncompatibilities = new System.Windows.Forms.Label();
+            this.txtDirectoryDescription = new System.Windows.Forms.TextBox();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
             this.flpHouseRules = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbHouseRulesQualities = new System.Windows.Forms.GroupBox();
@@ -251,7 +249,7 @@ namespace Chummer
             this.chkExceedPositiveQualitiesCostDoubled = new Chummer.ColorableCheckBox(this.components);
             this.chkExceedNegativeQualitiesLimit = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesAttributes = new System.Windows.Forms.GroupBox();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpHouseRulesAttributes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkESSLossReducesMaximumOnly = new Chummer.ColorableCheckBox(this.components);
             this.chkAllowCyberwareESSDiscounts = new Chummer.ColorableCheckBox(this.components);
             this.chkAlternateMetatypeAttributeKarma = new Chummer.ColorableCheckBox(this.components);
@@ -269,7 +267,7 @@ namespace Chummer
             this.chkFreeMartialArtSpecialization = new Chummer.ColorableCheckBox(this.components);
             this.chkUsePointsOnBrokenGroups = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesCombat = new System.Windows.Forms.GroupBox();
-            this.bufferedTableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpHouseRulesCombat = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkNoArmorEncumbrance = new Chummer.ColorableCheckBox(this.components);
             this.chkMoreLethalGameplay = new Chummer.ColorableCheckBox(this.components);
             this.chkUnarmedSkillImprovements = new Chummer.ColorableCheckBox(this.components);
@@ -293,8 +291,12 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.lblDependencyList = new System.Windows.Forms.Label();
-            this.lblExclusivityList = new System.Windows.Forms.Label();
+            this.pnlDirectoryDependencies = new System.Windows.Forms.Panel();
+            this.pnlDirectoryIncompatibilities = new System.Windows.Forms.Panel();
+            this.tlpOptionalRulesButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDirectoryInfoLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.gpbDirectoryAuthors = new System.Windows.Forms.GroupBox();
+            this.pnlDirectoryAuthors = new System.Windows.Forms.Panel();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -373,24 +375,28 @@ namespace Chummer
             this.gbpDirectoryInfo.SuspendLayout();
             this.tlpDirectoryInfo.SuspendLayout();
             this.gbpDirectoryInfoDependencies.SuspendLayout();
-            this.flpDirectoryDependencies.SuspendLayout();
-            this.gbpDirectoryInfoExclusivities.SuspendLayout();
-            this.flpExclusivities.SuspendLayout();
+            this.gbpDirectoryInfoIncompatibilities.SuspendLayout();
             this.tabHouseRules.SuspendLayout();
             this.flpHouseRules.SuspendLayout();
             this.gpbHouseRulesQualities.SuspendLayout();
             this.tlpHouseRulesQualities.SuspendLayout();
             this.gpbHouseRulesAttributes.SuspendLayout();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
+            this.tlpHouseRulesAttributes.SuspendLayout();
             this.flpDroneArmorMultiplier.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
             this.gpbHouseRulesSkills.SuspendLayout();
             this.tlpHouseRulesSkills.SuspendLayout();
             this.gpbHouseRulesCombat.SuspendLayout();
-            this.bufferedTableLayoutPanel2.SuspendLayout();
+            this.tlpHouseRulesCombat.SuspendLayout();
             this.gpbHouseRulesMagicResonance.SuspendLayout();
             this.tlpHouseRulesMagicResonance.SuspendLayout();
             this.tlpButtons.SuspendLayout();
+            this.pnlDirectoryDependencies.SuspendLayout();
+            this.pnlDirectoryIncompatibilities.SuspendLayout();
+            this.tlpOptionalRulesButtons.SuspendLayout();
+            this.tlpDirectoryInfoLeft.SuspendLayout();
+            this.gpbDirectoryAuthors.SuspendLayout();
+            this.pnlDirectoryAuthors.SuspendLayout();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -3450,23 +3456,23 @@ namespace Chummer
             // 
             this.tlpOptionalRules.AutoSize = true;
             this.tlpOptionalRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptionalRules.ColumnCount = 4;
+            this.tlpOptionalRules.ColumnCount = 2;
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpOptionalRules.Controls.Add(this.treCustomDataDirectories, 0, 1);
-            this.tlpOptionalRules.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder, 2, 0);
-            this.tlpOptionalRules.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 3, 0);
-            this.tlpOptionalRules.Controls.Add(this.cmdGlobalOptionsCustomData, 1, 0);
-            this.tlpOptionalRules.Controls.Add(this.gbpDirectoryInfo, 1, 1);
+            this.tlpOptionalRules.Controls.Add(this.gbpDirectoryInfo, 1, 0);
+            this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
+            this.tlpOptionalRules.Controls.Add(this.tlpOptionalRulesButtons, 0, 2);
             this.tlpOptionalRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOptionalRules.Location = new System.Drawing.Point(9, 9);
             this.tlpOptionalRules.Name = "tlpOptionalRules";
-            this.tlpOptionalRules.RowCount = 2;
+            this.tlpOptionalRules.RowCount = 3;
             this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptionalRules.Size = new System.Drawing.Size(1214, 584);
             this.tlpOptionalRules.TabIndex = 44;
             // 
@@ -3474,7 +3480,7 @@ namespace Chummer
             // 
             this.lblCustomDataDirectoriesLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCustomDataDirectoriesLabel.AutoSize = true;
-            this.lblCustomDataDirectoriesLabel.Location = new System.Drawing.Point(3, 8);
+            this.lblCustomDataDirectoriesLabel.Location = new System.Drawing.Point(3, 6);
             this.lblCustomDataDirectoriesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCustomDataDirectoriesLabel.Name = "lblCustomDataDirectoriesLabel";
             this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(155, 13);
@@ -3487,12 +3493,12 @@ namespace Chummer
             // 
             this.treCustomDataDirectories.CheckBoxes = true;
             this.treCustomDataDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treCustomDataDirectories.Location = new System.Drawing.Point(3, 32);
+            this.treCustomDataDirectories.Location = new System.Drawing.Point(3, 28);
             this.treCustomDataDirectories.Name = "treCustomDataDirectories";
             this.treCustomDataDirectories.ShowLines = false;
             this.treCustomDataDirectories.ShowPlusMinus = false;
             this.treCustomDataDirectories.ShowRootLines = false;
-            this.treCustomDataDirectories.Size = new System.Drawing.Size(722, 549);
+            this.treCustomDataDirectories.Size = new System.Drawing.Size(722, 524);
             this.treCustomDataDirectories.TabIndex = 40;
             this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterCheck);
             this.treCustomDataDirectories.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterSelect);
@@ -3502,9 +3508,9 @@ namespace Chummer
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(973, 3);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(161, 3);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
-            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(115, 23);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(152, 23);
             this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
             this.cmdIncreaseCustomDirectoryLoadOrder.Tag = "Button_IncreaseCustomDirectoryLoadOrder";
             this.cmdIncreaseCustomDirectoryLoadOrder.Text = "Increase Load Order";
@@ -3516,9 +3522,9 @@ namespace Chummer
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(1094, 3);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(319, 3);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
-            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(117, 23);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(155, 23);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
             this.cmdDecreaseCustomDirectoryLoadOrder.Tag = "Button_DecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Text = "Decrease Load Order";
@@ -3530,9 +3536,9 @@ namespace Chummer
             this.cmdGlobalOptionsCustomData.AutoSize = true;
             this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(731, 3);
+            this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(3, 3);
             this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
-            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(236, 23);
+            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(152, 23);
             this.cmdGlobalOptionsCustomData.TabIndex = 44;
             this.cmdGlobalOptionsCustomData.Text = "Change Custom Data Entries";
             this.cmdGlobalOptionsCustomData.UseVisualStyleBackColor = true;
@@ -3541,56 +3547,49 @@ namespace Chummer
             // gbpDirectoryInfo
             // 
             this.gbpDirectoryInfo.AutoSize = true;
-            this.tlpOptionalRules.SetColumnSpan(this.gbpDirectoryInfo, 3);
+            this.gbpDirectoryInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gbpDirectoryInfo.Controls.Add(this.tlpDirectoryInfo);
             this.gbpDirectoryInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbpDirectoryInfo.Location = new System.Drawing.Point(731, 32);
+            this.gbpDirectoryInfo.Location = new System.Drawing.Point(731, 3);
             this.gbpDirectoryInfo.Name = "gbpDirectoryInfo";
-            this.gbpDirectoryInfo.Size = new System.Drawing.Size(480, 549);
+            this.tlpOptionalRules.SetRowSpan(this.gbpDirectoryInfo, 3);
+            this.gbpDirectoryInfo.Size = new System.Drawing.Size(480, 578);
             this.gbpDirectoryInfo.TabIndex = 45;
             this.gbpDirectoryInfo.TabStop = false;
             this.gbpDirectoryInfo.Tag = "Title_CustomDataDirectoryInfo";
-            this.gbpDirectoryInfo.Text = "CustomDataDirectoryInfo";
+            this.gbpDirectoryInfo.Text = "Custom Data Directory Info";
+            this.gbpDirectoryInfo.Visible = false;
             // 
             // tlpDirectoryInfo
             // 
+            this.tlpDirectoryInfo.AutoSize = true;
+            this.tlpDirectoryInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpDirectoryInfo.ColumnCount = 2;
-            this.tlpDirectoryInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpDirectoryInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpDirectoryInfo.Controls.Add(this.lblDirectoryAuthors, 1, 2);
-            this.tlpDirectoryInfo.Controls.Add(this.lblDirectoryVersion, 1, 1);
-            this.tlpDirectoryInfo.Controls.Add(this.lblDirectoryName, 1, 0);
-            this.tlpDirectoryInfo.Controls.Add(this.lblDirectoryNameLabel, 0, 0);
-            this.tlpDirectoryInfo.Controls.Add(this.lblDirectoryVersionLabel, 0, 1);
-            this.tlpDirectoryInfo.Controls.Add(this.lblDirectoryAuthorsLabel, 0, 2);
-            this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoDependencies, 0, 7);
-            this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoExclusivities, 1, 7);
-            this.tlpDirectoryInfo.Controls.Add(this.lblDirectoryDescriptionLabel, 0, 5);
-            this.tlpDirectoryInfo.Controls.Add(this.tboxDirectoryDescription, 0, 6);
+            this.tlpDirectoryInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpDirectoryInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoDependencies, 0, 2);
+            this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoIncompatibilities, 1, 2);
+            this.tlpDirectoryInfo.Controls.Add(this.txtDirectoryDescription, 0, 1);
+            this.tlpDirectoryInfo.Controls.Add(this.tlpDirectoryInfoLeft, 0, 0);
+            this.tlpDirectoryInfo.Controls.Add(this.gpbDirectoryAuthors, 1, 0);
             this.tlpDirectoryInfo.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpDirectoryInfo.Location = new System.Drawing.Point(3, 16);
             this.tlpDirectoryInfo.Name = "tlpDirectoryInfo";
-            this.tlpDirectoryInfo.RowCount = 8;
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 76.43172F));
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 23.56828F));
-            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpDirectoryInfo.Size = new System.Drawing.Size(474, 530);
+            this.tlpDirectoryInfo.RowCount = 3;
+            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpDirectoryInfo.Size = new System.Drawing.Size(474, 559);
             this.tlpDirectoryInfo.TabIndex = 0;
             // 
             // lblDirectoryAuthors
             // 
-            this.lblDirectoryAuthors.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDirectoryAuthors.AutoSize = true;
-            this.lblDirectoryAuthors.Location = new System.Drawing.Point(238, 38);
+            this.lblDirectoryAuthors.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblDirectoryAuthors.Location = new System.Drawing.Point(3, 6);
+            this.lblDirectoryAuthors.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDirectoryAuthors.Name = "lblDirectoryAuthors";
-            this.lblDirectoryAuthors.Padding = new System.Windows.Forms.Padding(3);
-            this.lblDirectoryAuthors.Size = new System.Drawing.Size(100, 19);
+            this.lblDirectoryAuthors.Size = new System.Drawing.Size(94, 13);
             this.lblDirectoryAuthors.TabIndex = 6;
             this.lblDirectoryAuthors.Tag = "";
             this.lblDirectoryAuthors.Text = "[Directory Authors]";
@@ -3598,12 +3597,11 @@ namespace Chummer
             // 
             // lblDirectoryVersion
             // 
-            this.lblDirectoryVersion.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDirectoryVersion.AutoSize = true;
-            this.lblDirectoryVersion.Location = new System.Drawing.Point(238, 19);
+            this.lblDirectoryVersion.Location = new System.Drawing.Point(54, 31);
+            this.lblDirectoryVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDirectoryVersion.Name = "lblDirectoryVersion";
-            this.lblDirectoryVersion.Padding = new System.Windows.Forms.Padding(3);
-            this.lblDirectoryVersion.Size = new System.Drawing.Size(99, 19);
+            this.lblDirectoryVersion.Size = new System.Drawing.Size(93, 13);
             this.lblDirectoryVersion.TabIndex = 5;
             this.lblDirectoryVersion.Tag = "";
             this.lblDirectoryVersion.Text = "[Directory Version]";
@@ -3613,23 +3611,23 @@ namespace Chummer
             // 
             this.lblDirectoryName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDirectoryName.AutoSize = true;
-            this.lblDirectoryName.Location = new System.Drawing.Point(238, 0);
+            this.lblDirectoryName.Location = new System.Drawing.Point(54, 6);
+            this.lblDirectoryName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDirectoryName.Name = "lblDirectoryName";
-            this.lblDirectoryName.Padding = new System.Windows.Forms.Padding(3);
-            this.lblDirectoryName.Size = new System.Drawing.Size(89, 19);
+            this.lblDirectoryName.Size = new System.Drawing.Size(86, 13);
             this.lblDirectoryName.TabIndex = 4;
             this.lblDirectoryName.Tag = "";
-            this.lblDirectoryName.Text = "[DirectoryName]";
+            this.lblDirectoryName.Text = "[Directory Name]";
             this.lblDirectoryName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblDirectoryNameLabel
             // 
             this.lblDirectoryNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDirectoryNameLabel.AutoSize = true;
-            this.lblDirectoryNameLabel.Location = new System.Drawing.Point(188, 0);
+            this.lblDirectoryNameLabel.Location = new System.Drawing.Point(10, 6);
+            this.lblDirectoryNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDirectoryNameLabel.Name = "lblDirectoryNameLabel";
-            this.lblDirectoryNameLabel.Padding = new System.Windows.Forms.Padding(3);
-            this.lblDirectoryNameLabel.Size = new System.Drawing.Size(44, 19);
+            this.lblDirectoryNameLabel.Size = new System.Drawing.Size(38, 13);
             this.lblDirectoryNameLabel.TabIndex = 0;
             this.lblDirectoryNameLabel.Tag = "Label_DirectoryName";
             this.lblDirectoryNameLabel.Text = "Name:";
@@ -3637,104 +3635,78 @@ namespace Chummer
             // 
             // lblDirectoryVersionLabel
             // 
-            this.lblDirectoryVersionLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDirectoryVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDirectoryVersionLabel.AutoSize = true;
-            this.lblDirectoryVersionLabel.Location = new System.Drawing.Point(142, 19);
+            this.lblDirectoryVersionLabel.Location = new System.Drawing.Point(3, 31);
+            this.lblDirectoryVersionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDirectoryVersionLabel.Name = "lblDirectoryVersionLabel";
-            this.lblDirectoryVersionLabel.Padding = new System.Windows.Forms.Padding(3);
-            this.lblDirectoryVersionLabel.Size = new System.Drawing.Size(90, 19);
+            this.lblDirectoryVersionLabel.Size = new System.Drawing.Size(45, 13);
             this.lblDirectoryVersionLabel.TabIndex = 2;
             this.lblDirectoryVersionLabel.Tag = "Label_DirectoryVersion";
-            this.lblDirectoryVersionLabel.Text = "DirectoryVersion";
+            this.lblDirectoryVersionLabel.Text = "Version:";
             this.lblDirectoryVersionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblDirectoryAuthorsLabel
-            // 
-            this.lblDirectoryAuthorsLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblDirectoryAuthorsLabel.AutoSize = true;
-            this.lblDirectoryAuthorsLabel.Location = new System.Drawing.Point(138, 38);
-            this.lblDirectoryAuthorsLabel.Name = "lblDirectoryAuthorsLabel";
-            this.lblDirectoryAuthorsLabel.Padding = new System.Windows.Forms.Padding(3);
-            this.lblDirectoryAuthorsLabel.Size = new System.Drawing.Size(94, 19);
-            this.lblDirectoryAuthorsLabel.TabIndex = 12;
-            this.lblDirectoryAuthorsLabel.Tag = "Label_DirectoryAuthors";
-            this.lblDirectoryAuthorsLabel.Text = "Directory Authors";
             // 
             // gbpDirectoryInfoDependencies
             // 
+            this.gbpDirectoryInfoDependencies.AutoSize = true;
             this.gbpDirectoryInfoDependencies.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbpDirectoryInfoDependencies.Controls.Add(this.flpDirectoryDependencies);
+            this.gbpDirectoryInfoDependencies.Controls.Add(this.pnlDirectoryDependencies);
             this.gbpDirectoryInfoDependencies.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbpDirectoryInfoDependencies.Location = new System.Drawing.Point(3, 425);
+            this.gbpDirectoryInfoDependencies.Location = new System.Drawing.Point(3, 421);
             this.gbpDirectoryInfoDependencies.Name = "gbpDirectoryInfoDependencies";
-            this.gbpDirectoryInfoDependencies.Size = new System.Drawing.Size(229, 102);
+            this.gbpDirectoryInfoDependencies.Size = new System.Drawing.Size(231, 135);
             this.gbpDirectoryInfoDependencies.TabIndex = 8;
             this.gbpDirectoryInfoDependencies.TabStop = false;
             this.gbpDirectoryInfoDependencies.Tag = "Title_DirectoryDependencies";
             this.gbpDirectoryInfoDependencies.Text = "Dependencies";
             // 
-            // flpDirectoryDependencies
+            // lblDependencies
             // 
-            this.flpDirectoryDependencies.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpDirectoryDependencies.Controls.Add(this.lblDependencyList);
-            this.flpDirectoryDependencies.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpDirectoryDependencies.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpDirectoryDependencies.Location = new System.Drawing.Point(3, 16);
-            this.flpDirectoryDependencies.Name = "flpDirectoryDependencies";
-            this.flpDirectoryDependencies.Size = new System.Drawing.Size(223, 83);
-            this.flpDirectoryDependencies.TabIndex = 0;
-            this.flpDirectoryDependencies.Tag = "";
+            this.lblDependencies.AutoSize = true;
+            this.lblDependencies.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblDependencies.Location = new System.Drawing.Point(3, 6);
+            this.lblDependencies.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDependencies.Name = "lblDependencies";
+            this.lblDependencies.Size = new System.Drawing.Size(82, 13);
+            this.lblDependencies.TabIndex = 0;
+            this.lblDependencies.Text = "[Dependencies]";
             // 
-            // gbpDirectoryInfoExclusivities
+            // gbpDirectoryInfoIncompatibilities
             // 
-            this.gbpDirectoryInfoExclusivities.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbpDirectoryInfoExclusivities.Controls.Add(this.flpExclusivities);
-            this.gbpDirectoryInfoExclusivities.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbpDirectoryInfoExclusivities.Location = new System.Drawing.Point(238, 425);
-            this.gbpDirectoryInfoExclusivities.Name = "gbpDirectoryInfoExclusivities";
-            this.gbpDirectoryInfoExclusivities.Size = new System.Drawing.Size(233, 102);
-            this.gbpDirectoryInfoExclusivities.TabIndex = 9;
-            this.gbpDirectoryInfoExclusivities.TabStop = false;
-            this.gbpDirectoryInfoExclusivities.Tag = "Title_DirectoryExclusivities";
-            this.gbpDirectoryInfoExclusivities.Text = "Exclusivities";
+            this.gbpDirectoryInfoIncompatibilities.AutoSize = true;
+            this.gbpDirectoryInfoIncompatibilities.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gbpDirectoryInfoIncompatibilities.Controls.Add(this.pnlDirectoryIncompatibilities);
+            this.gbpDirectoryInfoIncompatibilities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbpDirectoryInfoIncompatibilities.Location = new System.Drawing.Point(240, 421);
+            this.gbpDirectoryInfoIncompatibilities.Name = "gbpDirectoryInfoIncompatibilities";
+            this.gbpDirectoryInfoIncompatibilities.Size = new System.Drawing.Size(231, 135);
+            this.gbpDirectoryInfoIncompatibilities.TabIndex = 9;
+            this.gbpDirectoryInfoIncompatibilities.TabStop = false;
+            this.gbpDirectoryInfoIncompatibilities.Tag = "Title_DirectoryIncompatibilities";
+            this.gbpDirectoryInfoIncompatibilities.Text = "Incompatibilities";
             // 
-            // flpExclusivities
+            // lblIncompatibilities
             // 
-            this.flpExclusivities.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpExclusivities.Controls.Add(this.lblExclusivityList);
-            this.flpExclusivities.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpExclusivities.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpExclusivities.Location = new System.Drawing.Point(3, 16);
-            this.flpExclusivities.Name = "flpExclusivities";
-            this.flpExclusivities.Size = new System.Drawing.Size(227, 83);
-            this.flpExclusivities.TabIndex = 1;
-            this.flpExclusivities.Tag = "";
+            this.lblIncompatibilities.AutoSize = true;
+            this.lblIncompatibilities.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblIncompatibilities.Location = new System.Drawing.Point(3, 6);
+            this.lblIncompatibilities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblIncompatibilities.Name = "lblIncompatibilities";
+            this.lblIncompatibilities.Size = new System.Drawing.Size(87, 13);
+            this.lblIncompatibilities.TabIndex = 0;
+            this.lblIncompatibilities.Text = "[Incompatibilities]";
             // 
-            // lblDirectoryDescriptionLabel
+            // txtDirectoryDescription
             // 
-            this.lblDirectoryDescriptionLabel.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.lblDirectoryDescriptionLabel.AutoSize = true;
-            this.tlpDirectoryInfo.SetColumnSpan(this.lblDirectoryDescriptionLabel, 2);
-            this.lblDirectoryDescriptionLabel.Location = new System.Drawing.Point(183, 57);
-            this.lblDirectoryDescriptionLabel.Name = "lblDirectoryDescriptionLabel";
-            this.lblDirectoryDescriptionLabel.Padding = new System.Windows.Forms.Padding(3);
-            this.lblDirectoryDescriptionLabel.Size = new System.Drawing.Size(108, 19);
-            this.lblDirectoryDescriptionLabel.TabIndex = 3;
-            this.lblDirectoryDescriptionLabel.Tag = "Label_DirectoryDescription";
-            this.lblDirectoryDescriptionLabel.Text = "DirectoryDescription";
-            this.lblDirectoryDescriptionLabel.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
-            // 
-            // tboxDirectoryDescription
-            // 
-            this.tboxDirectoryDescription.BackColor = System.Drawing.SystemColors.Control;
-            this.tlpDirectoryInfo.SetColumnSpan(this.tboxDirectoryDescription, 2);
-            this.tboxDirectoryDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tboxDirectoryDescription.Location = new System.Drawing.Point(3, 79);
-            this.tboxDirectoryDescription.Multiline = true;
-            this.tboxDirectoryDescription.Name = "tboxDirectoryDescription";
-            this.tboxDirectoryDescription.ReadOnly = true;
-            this.tboxDirectoryDescription.Size = new System.Drawing.Size(468, 340);
-            this.tboxDirectoryDescription.TabIndex = 13;
+            this.txtDirectoryDescription.BackColor = System.Drawing.SystemColors.Control;
+            this.tlpDirectoryInfo.SetColumnSpan(this.txtDirectoryDescription, 2);
+            this.txtDirectoryDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDirectoryDescription.Location = new System.Drawing.Point(3, 142);
+            this.txtDirectoryDescription.Multiline = true;
+            this.txtDirectoryDescription.Name = "txtDirectoryDescription";
+            this.txtDirectoryDescription.ReadOnly = true;
+            this.txtDirectoryDescription.Size = new System.Drawing.Size(468, 273);
+            this.txtDirectoryDescription.TabIndex = 13;
             // 
             // tabHouseRules
             // 
@@ -3890,7 +3862,7 @@ namespace Chummer
             // 
             this.gpbHouseRulesAttributes.AutoSize = true;
             this.gpbHouseRulesAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbHouseRulesAttributes.Controls.Add(this.bufferedTableLayoutPanel1);
+            this.gpbHouseRulesAttributes.Controls.Add(this.tlpHouseRulesAttributes);
             this.gpbHouseRulesAttributes.Location = new System.Drawing.Point(544, 3);
             this.gpbHouseRulesAttributes.Name = "gpbHouseRulesAttributes";
             this.gpbHouseRulesAttributes.Size = new System.Drawing.Size(423, 183);
@@ -3899,32 +3871,32 @@ namespace Chummer
             this.gpbHouseRulesAttributes.Tag = "Label_Attributes";
             this.gpbHouseRulesAttributes.Text = "Attributes";
             // 
-            // bufferedTableLayoutPanel1
+            // tlpHouseRulesAttributes
             // 
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel1.ColumnCount = 1;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkESSLossReducesMaximumOnly, 0, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkAllowCyberwareESSDiscounts, 0, 2);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkAlternateMetatypeAttributeKarma, 0, 4);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkReverseAttributePriorityOrder, 0, 3);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.flpDroneArmorMultiplier, 0, 6);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkUseCalculatedPublicAwareness, 0, 5);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkUnclampAttributeMinimum, 0, 1);
-            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 7;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(417, 164);
-            this.bufferedTableLayoutPanel1.TabIndex = 0;
+            this.tlpHouseRulesAttributes.AutoSize = true;
+            this.tlpHouseRulesAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRulesAttributes.ColumnCount = 1;
+            this.tlpHouseRulesAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkESSLossReducesMaximumOnly, 0, 0);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkAllowCyberwareESSDiscounts, 0, 2);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkAlternateMetatypeAttributeKarma, 0, 4);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkReverseAttributePriorityOrder, 0, 3);
+            this.tlpHouseRulesAttributes.Controls.Add(this.flpDroneArmorMultiplier, 0, 6);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkUseCalculatedPublicAwareness, 0, 5);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkUnclampAttributeMinimum, 0, 1);
+            this.tlpHouseRulesAttributes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRulesAttributes.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRulesAttributes.Name = "tlpHouseRulesAttributes";
+            this.tlpHouseRulesAttributes.RowCount = 7;
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesAttributes.Size = new System.Drawing.Size(417, 164);
+            this.tlpHouseRulesAttributes.TabIndex = 0;
             // 
             // chkESSLossReducesMaximumOnly
             // 
@@ -4158,7 +4130,7 @@ namespace Chummer
             // 
             this.gpbHouseRulesCombat.AutoSize = true;
             this.gpbHouseRulesCombat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbHouseRulesCombat.Controls.Add(this.bufferedTableLayoutPanel2);
+            this.gpbHouseRulesCombat.Controls.Add(this.tlpHouseRulesCombat);
             this.gpbHouseRulesCombat.Location = new System.Drawing.Point(461, 192);
             this.gpbHouseRulesCombat.Name = "gpbHouseRulesCombat";
             this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 88);
@@ -4167,24 +4139,24 @@ namespace Chummer
             this.gpbHouseRulesCombat.Tag = "Label_CharacterOptions_Combat";
             this.gpbHouseRulesCombat.Text = "Combat";
             // 
-            // bufferedTableLayoutPanel2
+            // tlpHouseRulesCombat
             // 
-            this.bufferedTableLayoutPanel2.AutoSize = true;
-            this.bufferedTableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel2.ColumnCount = 1;
-            this.bufferedTableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel2.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
-            this.bufferedTableLayoutPanel2.Controls.Add(this.chkMoreLethalGameplay, 0, 2);
-            this.bufferedTableLayoutPanel2.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
-            this.bufferedTableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bufferedTableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
-            this.bufferedTableLayoutPanel2.Name = "bufferedTableLayoutPanel2";
-            this.bufferedTableLayoutPanel2.RowCount = 3;
-            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel2.Size = new System.Drawing.Size(378, 69);
-            this.bufferedTableLayoutPanel2.TabIndex = 0;
+            this.tlpHouseRulesCombat.AutoSize = true;
+            this.tlpHouseRulesCombat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRulesCombat.ColumnCount = 1;
+            this.tlpHouseRulesCombat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesCombat.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
+            this.tlpHouseRulesCombat.Controls.Add(this.chkMoreLethalGameplay, 0, 2);
+            this.tlpHouseRulesCombat.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
+            this.tlpHouseRulesCombat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRulesCombat.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRulesCombat.Name = "tlpHouseRulesCombat";
+            this.tlpHouseRulesCombat.RowCount = 3;
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 69);
+            this.tlpHouseRulesCombat.TabIndex = 0;
             // 
             // chkNoArmorEncumbrance
             // 
@@ -4531,23 +4503,92 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // lblDependencyList
+            // pnlDirectoryDependencies
             // 
-            this.lblDependencyList.AutoSize = true;
-            this.lblDependencyList.Location = new System.Drawing.Point(3, 0);
-            this.lblDependencyList.Name = "lblDependencyList";
-            this.lblDependencyList.Size = new System.Drawing.Size(97, 13);
-            this.lblDependencyList.TabIndex = 0;
-            this.lblDependencyList.Text = "[DEPENDENCIES]";
+            this.pnlDirectoryDependencies.AutoScroll = true;
+            this.pnlDirectoryDependencies.Controls.Add(this.lblDependencies);
+            this.pnlDirectoryDependencies.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDirectoryDependencies.Location = new System.Drawing.Point(3, 16);
+            this.pnlDirectoryDependencies.Name = "pnlDirectoryDependencies";
+            this.pnlDirectoryDependencies.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlDirectoryDependencies.Size = new System.Drawing.Size(225, 116);
+            this.pnlDirectoryDependencies.TabIndex = 1;
             // 
-            // lblExclusivityList
+            // pnlDirectoryIncompatibilities
             // 
-            this.lblExclusivityList.AutoSize = true;
-            this.lblExclusivityList.Location = new System.Drawing.Point(3, 0);
-            this.lblExclusivityList.Name = "lblExclusivityList";
-            this.lblExclusivityList.Size = new System.Drawing.Size(92, 13);
-            this.lblExclusivityList.TabIndex = 0;
-            this.lblExclusivityList.Text = "[EXCLUSIVITIES]";
+            this.pnlDirectoryIncompatibilities.AutoScroll = true;
+            this.pnlDirectoryIncompatibilities.Controls.Add(this.lblIncompatibilities);
+            this.pnlDirectoryIncompatibilities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDirectoryIncompatibilities.Location = new System.Drawing.Point(3, 16);
+            this.pnlDirectoryIncompatibilities.Name = "pnlDirectoryIncompatibilities";
+            this.pnlDirectoryIncompatibilities.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlDirectoryIncompatibilities.Size = new System.Drawing.Size(225, 116);
+            this.pnlDirectoryIncompatibilities.TabIndex = 2;
+            // 
+            // tlpOptionalRulesButtons
+            // 
+            this.tlpOptionalRulesButtons.AutoSize = true;
+            this.tlpOptionalRulesButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpOptionalRulesButtons.ColumnCount = 3;
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 2, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder, 1, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdGlobalOptionsCustomData, 0, 0);
+            this.tlpOptionalRulesButtons.Location = new System.Drawing.Point(0, 555);
+            this.tlpOptionalRulesButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpOptionalRulesButtons.Name = "tlpOptionalRulesButtons";
+            this.tlpOptionalRulesButtons.RowCount = 1;
+            this.tlpOptionalRulesButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpOptionalRulesButtons.Size = new System.Drawing.Size(477, 29);
+            this.tlpOptionalRulesButtons.TabIndex = 46;
+            // 
+            // tlpDirectoryInfoLeft
+            // 
+            this.tlpDirectoryInfoLeft.AutoSize = true;
+            this.tlpDirectoryInfoLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpDirectoryInfoLeft.ColumnCount = 2;
+            this.tlpDirectoryInfoLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpDirectoryInfoLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryNameLabel, 0, 0);
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryVersion, 1, 1);
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryName, 1, 0);
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryVersionLabel, 0, 1);
+            this.tlpDirectoryInfoLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpDirectoryInfoLeft.Location = new System.Drawing.Point(0, 0);
+            this.tlpDirectoryInfoLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpDirectoryInfoLeft.Name = "tlpDirectoryInfoLeft";
+            this.tlpDirectoryInfoLeft.RowCount = 2;
+            this.tlpDirectoryInfoLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDirectoryInfoLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDirectoryInfoLeft.Size = new System.Drawing.Size(237, 139);
+            this.tlpDirectoryInfoLeft.TabIndex = 14;
+            // 
+            // gpbDirectoryAuthors
+            // 
+            this.gpbDirectoryAuthors.AutoSize = true;
+            this.gpbDirectoryAuthors.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbDirectoryAuthors.Controls.Add(this.pnlDirectoryAuthors);
+            this.gpbDirectoryAuthors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbDirectoryAuthors.Location = new System.Drawing.Point(240, 3);
+            this.gpbDirectoryAuthors.Name = "gpbDirectoryAuthors";
+            this.gpbDirectoryAuthors.Size = new System.Drawing.Size(231, 133);
+            this.gpbDirectoryAuthors.TabIndex = 16;
+            this.gpbDirectoryAuthors.TabStop = false;
+            this.gpbDirectoryAuthors.Tag = "Label_DirectoryAuthors";
+            this.gpbDirectoryAuthors.Text = "Authors";
+            // 
+            // pnlDirectoryAuthors
+            // 
+            this.pnlDirectoryAuthors.AutoScroll = true;
+            this.pnlDirectoryAuthors.Controls.Add(this.lblDirectoryAuthors);
+            this.pnlDirectoryAuthors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDirectoryAuthors.Location = new System.Drawing.Point(3, 16);
+            this.pnlDirectoryAuthors.Name = "pnlDirectoryAuthors";
+            this.pnlDirectoryAuthors.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlDirectoryAuthors.Size = new System.Drawing.Size(225, 114);
+            this.pnlDirectoryAuthors.TabIndex = 0;
             // 
             // frmCharacterOptions
             // 
@@ -4663,14 +4704,11 @@ namespace Chummer
             this.tlpOptionalRules.ResumeLayout(false);
             this.tlpOptionalRules.PerformLayout();
             this.gbpDirectoryInfo.ResumeLayout(false);
+            this.gbpDirectoryInfo.PerformLayout();
             this.tlpDirectoryInfo.ResumeLayout(false);
             this.tlpDirectoryInfo.PerformLayout();
             this.gbpDirectoryInfoDependencies.ResumeLayout(false);
-            this.flpDirectoryDependencies.ResumeLayout(false);
-            this.flpDirectoryDependencies.PerformLayout();
-            this.gbpDirectoryInfoExclusivities.ResumeLayout(false);
-            this.flpExclusivities.ResumeLayout(false);
-            this.flpExclusivities.PerformLayout();
+            this.gbpDirectoryInfoIncompatibilities.ResumeLayout(false);
             this.tabHouseRules.ResumeLayout(false);
             this.flpHouseRules.ResumeLayout(false);
             this.flpHouseRules.PerformLayout();
@@ -4680,8 +4718,8 @@ namespace Chummer
             this.tlpHouseRulesQualities.PerformLayout();
             this.gpbHouseRulesAttributes.ResumeLayout(false);
             this.gpbHouseRulesAttributes.PerformLayout();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
+            this.tlpHouseRulesAttributes.ResumeLayout(false);
+            this.tlpHouseRulesAttributes.PerformLayout();
             this.flpDroneArmorMultiplier.ResumeLayout(false);
             this.flpDroneArmorMultiplier.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
@@ -4691,14 +4729,25 @@ namespace Chummer
             this.tlpHouseRulesSkills.PerformLayout();
             this.gpbHouseRulesCombat.ResumeLayout(false);
             this.gpbHouseRulesCombat.PerformLayout();
-            this.bufferedTableLayoutPanel2.ResumeLayout(false);
-            this.bufferedTableLayoutPanel2.PerformLayout();
+            this.tlpHouseRulesCombat.ResumeLayout(false);
+            this.tlpHouseRulesCombat.PerformLayout();
             this.gpbHouseRulesMagicResonance.ResumeLayout(false);
             this.gpbHouseRulesMagicResonance.PerformLayout();
             this.tlpHouseRulesMagicResonance.ResumeLayout(false);
             this.tlpHouseRulesMagicResonance.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            this.pnlDirectoryDependencies.ResumeLayout(false);
+            this.pnlDirectoryDependencies.PerformLayout();
+            this.pnlDirectoryIncompatibilities.ResumeLayout(false);
+            this.pnlDirectoryIncompatibilities.PerformLayout();
+            this.tlpOptionalRulesButtons.ResumeLayout(false);
+            this.tlpOptionalRulesButtons.PerformLayout();
+            this.tlpDirectoryInfoLeft.ResumeLayout(false);
+            this.tlpDirectoryInfoLeft.PerformLayout();
+            this.gpbDirectoryAuthors.ResumeLayout(false);
+            this.pnlDirectoryAuthors.ResumeLayout(false);
+            this.pnlDirectoryAuthors.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -4943,11 +4992,11 @@ namespace Chummer
         private System.Windows.Forms.GroupBox gpbHouseRulesQualities;
         private BufferedTableLayoutPanel tlpHouseRulesQualities;
         private System.Windows.Forms.GroupBox gpbHouseRulesAttributes;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private BufferedTableLayoutPanel tlpHouseRulesAttributes;
         private System.Windows.Forms.GroupBox gpbHouseRulesSkills;
         private BufferedTableLayoutPanel tlpHouseRulesSkills;
         private System.Windows.Forms.GroupBox gpbHouseRulesCombat;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel2;
+        private BufferedTableLayoutPanel tlpHouseRulesCombat;
         private System.Windows.Forms.GroupBox gpbHouseRulesMagicResonance;
         private BufferedTableLayoutPanel tlpHouseRulesMagicResonance;
         private System.Windows.Forms.Button cmdGlobalOptionsCustomData;
@@ -4961,15 +5010,17 @@ namespace Chummer
         private System.Windows.Forms.Label lblDirectoryVersion;
         private System.Windows.Forms.Label lblDirectoryName;
         private System.Windows.Forms.Label lblDirectoryVersionLabel;
-        private System.Windows.Forms.Label lblDirectoryDescriptionLabel;
-        private System.Windows.Forms.GroupBox gbpDirectoryInfoExclusivities;
-        private System.Windows.Forms.FlowLayoutPanel flpExclusivities;
+        private System.Windows.Forms.GroupBox gbpDirectoryInfoIncompatibilities;
         private System.Windows.Forms.Label lblDirectoryAuthors;
         private System.Windows.Forms.GroupBox gbpDirectoryInfoDependencies;
-        private System.Windows.Forms.FlowLayoutPanel flpDirectoryDependencies;
-        private System.Windows.Forms.Label lblDirectoryAuthorsLabel;
-        private System.Windows.Forms.TextBox tboxDirectoryDescription;
-        private System.Windows.Forms.Label lblDependencyList;
-        private System.Windows.Forms.Label lblExclusivityList;
+        private System.Windows.Forms.TextBox txtDirectoryDescription;
+        private System.Windows.Forms.Label lblDependencies;
+        private System.Windows.Forms.Label lblIncompatibilities;
+        private System.Windows.Forms.Panel pnlDirectoryDependencies;
+        private System.Windows.Forms.Panel pnlDirectoryIncompatibilities;
+        private BufferedTableLayoutPanel tlpOptionalRulesButtons;
+        private BufferedTableLayoutPanel tlpDirectoryInfoLeft;
+        private System.Windows.Forms.GroupBox gpbDirectoryAuthors;
+        private System.Windows.Forms.Panel pnlDirectoryAuthors;
     }
 }

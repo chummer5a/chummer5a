@@ -14,7 +14,7 @@
       <lang>de-de</lang>
     </description>
     <description>
-      <text>This folder tries to implement all changes, that are made by Pegasus in the German Sourcebooks. Old English objects will be overridden by the new German rules.</text>
+      <text>This ruleset tries to implement all changes made by Pegasus in their German versions of official sourcebooks. Existing English versions of items are overwritten by alternate versions found in the German versions of sourcebooks.</text>
       <lang>en-us</lang>
     </description>
   </descriptions>

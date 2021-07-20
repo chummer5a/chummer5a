@@ -10,7 +10,7 @@
   </authors>
   <descriptions>
     <description>
-      <text>With this custom data change, the cyberware bone lacing will add it's rating to your BOD attribute, instead of only counting as BOD for damage resistance purposes.</text>
+      <text>This ruleset causes Bone Lacing cyberware to add its rating to characters' Body attribute instead of having it count as extra Body only for damage resistance tests.</text>
       <lang>en-us</lang>
     </description>
   </descriptions>

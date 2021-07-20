@@ -37,7 +37,7 @@ namespace Chummer
         public Exception XmlException { get; }
 
         private readonly List<DirectoryDependency> _lstDependencies = new List<DirectoryDependency>();
-        private readonly List<DirectoryDependency> _lstExclusivities = new List<DirectoryDependency>();
+        private readonly List<DirectoryDependency> _lstIncompatibilities = new List<DirectoryDependency>();
 
         private readonly Dictionary<string, bool> _authorDictionary = new Dictionary<string, bool>();
         private readonly Dictionary<string, string> _descriptionDictionary = new Dictionary<string, string>();
@@ -64,7 +64,7 @@ namespace Chummer
                     GetManifestDescriptions(xmlNode);
                     GetManifestAuthors(xmlNode);
                     GetDependencies(xmlNode);
-                    GetExclusivities(xmlNode);
+                    GetIncompatibilities(xmlNode);
                 }
             }
             catch (Exception ex)
@@ -149,14 +149,14 @@ namespace Chummer
                     _lstDependencies.Add(newDependency);
                 }
             }
-            void GetExclusivities(XmlNode xmlDocument)
+            void GetIncompatibilities(XmlNode xmlDocument)
             {
-                XmlNodeList xmlExclusivities = xmlDocument.SelectNodes("exclusivities/exclusivity");
+                XmlNodeList xmlIncompatibilities = xmlDocument.SelectNodes("incompatibilities/incompatibility");
 
-                if (xmlExclusivities == null)
+                if (xmlIncompatibilities == null)
                     return;
 
-                foreach (XmlNode objXmlNode in xmlExclusivities)
+                foreach (XmlNode objXmlNode in xmlIncompatibilities)
                 {
                     Guid depGuid = Guid.Empty;
                     var newMaximumVersion = decimal.MaxValue; //If no upper limit is given, assume the maximum possible version
@@ -172,8 +172,8 @@ namespace Chummer
                     if (string.IsNullOrEmpty(newName) || depGuid == Guid.Empty)
                         continue;
 
-                    DirectoryDependency newExclusivity = new DirectoryDependency(newName, depGuid, newMinimumVersion, newMaximumVersion);
-                    _lstExclusivities.Add(newExclusivity);
+                    DirectoryDependency newIncompatibility = new DirectoryDependency(newName, depGuid, newMinimumVersion, newMaximumVersion);
+                    _lstIncompatibilities.Add(newIncompatibility);
                 }
             }
 
@@ -252,23 +252,23 @@ namespace Chummer
         /// </summary>
         /// <param name="objCharacterOptions"></param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public string CheckExclusivity(CharacterOptions objCharacterOptions)
+        public string CheckIncompatibility(CharacterOptions objCharacterOptions)
         {
             StringBuilder sbdReturn = new StringBuilder();
-            foreach (var exclusivity in ExclusivitiesList)
+            foreach (var incompatibility in IncompatibilitiesList)
             {
                 //Use the fast HasSet.Contains to determine if any dependency is present
-                if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(exclusivity.UniqueIdentifier))
+                if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
                 {
-                    //We still need to filter out all the matching exclusivities from objCharacterOptions.EnabledCustomDataDirectoryInfos to check their versions
-                    foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == exclusivity.UniqueIdentifier))
+                    //We still need to filter out all the matching incompatibilities from objCharacterOptions.EnabledCustomDataDirectoryInfos to check their versions
+                    foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == incompatibility.UniqueIdentifier))
                     {
                         //if the version is within the version range add it to the list.
-                        if (enabledCustomData.Version > exclusivity.MinimumVersion && enabledCustomData.Version < exclusivity.MaximumVersion)
+                        if (enabledCustomData.Version > incompatibility.MinimumVersion && enabledCustomData.Version < incompatibility.MaximumVersion)
                         {
                             sbdReturn.AppendLine(string.Format(
-                                LanguageManager.GetString("Tooltip_Exclusivity_VersionMismatch"),
-                                enabledCustomData.DisplayName, exclusivity.DisplayName));
+                                LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                                enabledCustomData.DisplayName, incompatibility.DisplayName));
                         }
                     }
                 }
@@ -280,9 +280,9 @@ namespace Chummer
         /// Creates a string that displays which dependencies are missing or shouldn't be active to be displayed a tooltip.
         /// </summary>
         /// <param name="missingDependency">The string of all missing Dependencies</param>
-        /// <param name="presentExclusivities">The string of all exclusivities that are active</param>
+        /// <param name="presentIncompatibilities">The string of all incompatibilities that are active</param>
         /// <returns></returns>
-        public static string BuildExclusivityDependencyString(string missingDependency = "", string presentExclusivities = "")
+        public static string BuildIncompatibilityDependencyString(string missingDependency = "", string presentIncompatibilities = "")
         {
             string strReturn = string.Empty;
 
@@ -290,11 +290,11 @@ namespace Chummer
             {
                 strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing") + Environment.NewLine + missingDependency;
             }
-            if (!string.IsNullOrEmpty(presentExclusivities))
+            if (!string.IsNullOrEmpty(presentIncompatibilities))
             {
                 if (!string.IsNullOrEmpty(strReturn))
                     strReturn += Environment.NewLine;
-                strReturn += LanguageManager.GetString("Tooltip_Exclusivity_Present") + Environment.NewLine + presentExclusivities;
+                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present") + Environment.NewLine + presentIncompatibilities;
             }
 
             return strReturn;
@@ -328,9 +328,9 @@ namespace Chummer
         public IReadOnlyList<DirectoryDependency> DependenciesList => _lstDependencies;
 
         /// <summary>
-        /// A list of all exclusivities each formatted as Tuple(int guid, str name, int version, bool ignoreVersion).
+        /// A list of all incompatibilities each formatted as Tuple(int guid, str name, int version, bool ignoreVersion).
         /// </summary>
-        public IReadOnlyList<DirectoryDependency> ExclusivitiesList => _lstExclusivities;
+        public IReadOnlyList<DirectoryDependency> IncompatibilitiesList => _lstIncompatibilities;
 
         /// <summary>
         /// A Dictionary containing all Descriptions, which uses the language code as key
@@ -407,7 +407,7 @@ namespace Chummer
                         string formattedName = kvp.Key;
 
                         if (kvp.Value)
-                            formattedName = kvp.Key + LanguageManager.GetString("IsMainAuthor");
+                            formattedName = string.Format(GlobalOptions.CultureInfo, kvp.Key, LanguageManager.GetString("String_IsMainAuthor")) ;
 
                         authorsList[i] = formattedName;
                         i++;
@@ -462,9 +462,9 @@ namespace Chummer
         public override int GetHashCode()
         {
             var dependencyHash = DependenciesList.GetEnsembleHashCode();
-            var exclusivityHash = ExclusivitiesList.GetEnsembleHashCode();
+            var incompatibilityHash = IncompatibilitiesList.GetEnsembleHashCode();
             //Path and Guid should already be enough because they are both unique, but just to be sure.
-            return (Name, DirectoryPath, Guid, Version, exclusivityHash, dependencyHash).GetHashCode();
+            return (Name, DirectoryPath, Guid, Version, incompatibilityHash, dependencyHash).GetHashCode();
         }
 
         public bool Equals(CustomDataDirectoryInfo other)
@@ -472,7 +472,7 @@ namespace Chummer
             //This should be enough to uniquely identify an object.
             return other != null && Name == other.Name && DirectoryPath == other.DirectoryPath && other.Guid == Guid &&
                    other.Version == Version && other.DependenciesList.CollectionEqual(DependenciesList) &&
-                   other.ExclusivitiesList.CollectionEqual(ExclusivitiesList);
+                   other.IncompatibilitiesList.CollectionEqual(IncompatibilitiesList);
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
@@ -514,7 +514,7 @@ namespace Chummer
     }
 
     /// <summary>
-    /// Holds all information about an Dependency or Exclusivity
+    /// Holds all information about an Dependency or Incompatibility
     /// </summary>
     public class DirectoryDependency
     {

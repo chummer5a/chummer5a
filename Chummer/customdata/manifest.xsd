@@ -55,10 +55,10 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="exclusivities" minOccurs="0" maxOccurs="1">
+      <xs:element name="incompatibilities" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
-            <xs:element name="exclusivity" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="incompatibility" minOccurs="0" maxOccurs="unbounded">
               <xs:complexType>
                 <xs:sequence>
                   <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />

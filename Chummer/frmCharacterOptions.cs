@@ -583,7 +583,7 @@ namespace Chummer
                 _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             }
             //Each time one item is checked or unchecked, we need to see if any dependencies or exclusivities changed
-            CheckForDependenciesAndExclusivities();
+            CheckForDependenciesAndIncompatibilities();
         }
 
         private void txtPriorities_KeyPress(object sender, KeyPressEventArgs e)
@@ -697,10 +697,14 @@ namespace Chummer
 
         private void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (!(treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo objSelected)) return;
+            if (!(treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo objSelected))
+            {
+                gbpDirectoryInfo.Visible = false;
+                return;
+            }
 
             gbpDirectoryInfo.SuspendLayout();
-            tboxDirectoryDescription.Text = objSelected.DisplayDescription;
+            txtDirectoryDescription.Text = objSelected.DisplayDescription;
             lblDirectoryVersion.Text = objSelected.Version.ToString(GlobalOptions.CultureInfo);
             lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
             lblDirectoryName.Text = objSelected.Name;
@@ -708,36 +712,29 @@ namespace Chummer
             if (objSelected.DependenciesList.Count > 0)
             {
                 StringBuilder sb = new StringBuilder();
-
                 foreach (var dependency in objSelected.DependenciesList)
-                {
-                    sb.Append(dependency.DisplayName);
-                    sb.Append(Environment.NewLine);
-                }
-                lblDependencyList.Text = sb.ToString();
+                    sb.AppendLine(dependency.DisplayName);
+                lblDependencies.Text = sb.ToString();
             }
             else
             {
                 //Make sure all old information is discarded
-                lblDependencyList.Text = string.Empty;
+                lblDependencies.Text = string.Empty;
             }
 
-            if (objSelected.ExclusivitiesList.Count > 0)
+            if (objSelected.IncompatibilitiesList.Count > 0)
             {
                 //We only need a Stringbuilder if we got anything
                 StringBuilder sb = new StringBuilder();
-
-                foreach (var exclusivity in objSelected.ExclusivitiesList)
-                {
-                    sb.Append(exclusivity.DisplayName);
-                    sb.Append(Environment.NewLine);
-                }
-                lblExclusivityList.Text = sb.ToString();
+                foreach (var exclusivity in objSelected.IncompatibilitiesList)
+                    sb.AppendLine(exclusivity.DisplayName);
+                lblIncompatibilities.Text = sb.ToString();
             }
             else
             {
-                lblExclusivityList.Text = string.Empty;
+                lblIncompatibilities.Text = string.Empty;
             }
+            gbpDirectoryInfo.Visible = true;
             gbpDirectoryInfo.ResumeLayout();
         }
         #endregion
@@ -836,11 +833,12 @@ namespace Chummer
             treCustomDataDirectories.EndUpdate();
         }
 
-        private void CheckForDependenciesAndExclusivities()
+        private void CheckForDependenciesAndIncompatibilities()
         {
             foreach (TreeNode directoryNode in treCustomDataDirectories.Nodes)
             {
-                if (!(directoryNode.Tag is CustomDataDirectoryInfo customDataDirectory)) continue;
+                if (!(directoryNode.Tag is CustomDataDirectoryInfo customDataDirectory))
+                    continue;
                 if (directoryNode.Checked)
                 {
                     // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
@@ -849,8 +847,8 @@ namespace Chummer
                         missingDirectories = customDataDirectory.CheckDependency(_objCharacterOptions);
 
                     string prohibitedDirectories = string.Empty;
-                    if (customDataDirectory.ExclusivitiesList.Count>0)
-                        prohibitedDirectories = customDataDirectory.CheckExclusivity(_objCharacterOptions);
+                    if (customDataDirectory.IncompatibilitiesList.Count>0)
+                        prohibitedDirectories = customDataDirectory.CheckIncompatibility(_objCharacterOptions);
 
                     if (string.IsNullOrEmpty(missingDirectories) && string.IsNullOrEmpty(prohibitedDirectories))
                     {
@@ -860,7 +858,7 @@ namespace Chummer
                     }
 
                     string tooltip =
-                        CustomDataDirectoryInfo.BuildExclusivityDependencyString(missingDirectories, prohibitedDirectories);
+                        CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(missingDirectories, prohibitedDirectories);
 
                     directoryNode.ToolTipText = tooltip;
                     directoryNode.ForeColor = ColorManager.ErrorColor;
