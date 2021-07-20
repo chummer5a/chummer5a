@@ -4374,7 +4374,7 @@
     </string>
     <string>
       <key>Tip_CommonNuyen</key>
-      <text>The amount of Nuyen your character has to purchase equipment. 1 Karma = {0}¥.</text>
+      <text>The amount of Nuyen your character has to purchase equipment. {0}.</text>
     </string>
     <string>
       <key>Tip_CommonAIRating</key>
@@ -7919,6 +7919,10 @@
     <string>
       <key>Label_CharacterOptions_PriorityTable</key>
       <text>Priority Table</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_NuyenExpression</key>
+      <text>Nuyen Expression</text>
     </string>
     <string>
       <key>Label_CharacterOptions_AllowedCyberwareGrades</key>

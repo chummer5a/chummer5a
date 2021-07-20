@@ -3610,7 +3610,7 @@
     </string>
     <string>
       <key>Tip_CommonNuyen</key>
-      <text>O total de Neoienes que seu personagem tem para comprar equipamento. 1 Carma = {0}¥.</text>
+      <text>O total de Neoienes que seu personagem tem para comprar equipamento. {0}.</text>
     </string>
     <string>
       <key>Tip_CommonAIRating</key>

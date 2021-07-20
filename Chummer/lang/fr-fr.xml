@@ -3297,7 +3297,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_CommonNuyen</key>
-      <text>La quantité de Nuyen que votre personnage a pour acheter de l'équipment. 1 PC = 5,000¥.</text>
+      <text>La quantité de Nuyen que votre personnage a pour acheter de l'équipment. {0}.</text>
     </string>
     <string>
       <key>Tip_CommonAIRating</key>

@@ -1080,7 +1080,7 @@ namespace Chummer
                 case ImprovementType.Nuyen:
                     {
                         yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
-                            nameof(Character.StartingNuyenModifiers));
+                            nameof(Character.TotalStartingNuyen));
                     }
                     break;
 

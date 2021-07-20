@@ -105,6 +105,7 @@ namespace Chummer
         private bool _blnUsePointsOnBrokenGroups;
         private string _strContactPointsExpression = "{CHAUnaug} * 3";
         private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
+        private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000";
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnemyKarmaQualityLimit = true;
         private string _strEssenceFormat = "#,0.00";
@@ -484,6 +485,8 @@ namespace Chummer
                     objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
                     // <knowledgepointsexpression />
                     objWriter.WriteElementString("knowledgepointsexpression", _strKnowledgePointsExpression);
+                    // <chargenkarmatonuyenexpression />
+                    objWriter.WriteElementString("chargenkarmatonuyenexpression", _strChargenKarmaToNuyenExpression);
                     // <dronearmormultiplierenabled />
                     objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronearmorflatnumber />
@@ -869,6 +872,12 @@ namespace Chummer
                 if (objXmlNode.TryGetBoolFieldQuickly("freekarmaknowledgemultiplierenabled", ref blnTemp) && blnTemp)
                     objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref intTemp);
                 _strKnowledgePointsExpression = strTemp + " * " + intTemp.ToString(GlobalOptions.InvariantCultureInfo);
+            }
+            // XPath expression for nuyen at chargen
+            if (!objXmlNode.TryGetStringFieldQuickly("chargenkarmatonuyenexpression", ref _strChargenKarmaToNuyenExpression))
+            {
+                // Legacy shim
+                _strChargenKarmaToNuyenExpression = "{Karma} * " + _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo);
             }
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
@@ -1979,6 +1988,23 @@ namespace Chummer
                 if (_strKnowledgePointsExpression != strNewValue)
                 {
                     _strKnowledgePointsExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how much nuyen the character gets at character creation
+        /// </summary>
+        public string ChargenKarmaToNuyenExpression
+        {
+            get => _strChargenKarmaToNuyenExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strChargenKarmaToNuyenExpression != strNewValue)
+                {
+                    _strChargenKarmaToNuyenExpression = strNewValue;
                     OnPropertyChanged();
                 }
             }

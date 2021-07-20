@@ -264,6 +264,7 @@ Changed/New Strings:
 - Message_Duplicate_CustomDataDirectoryGuid
 - MessageTitle_Duplicate_CustomDataDirectoryGuid
 - Message_Duplicate_CustomDataDirectoryName
+- Label_CharacterOptions_NuyenExpression
 
 Build 214
 Application Fixes:

@@ -2673,7 +2673,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>装備購入のためにキャラクターが使える新円の額. 1 BP = {0} \.</text>
+            <text>装備購入のためにキャラクターが使える新円の額. {0}.</text>
         </string>
         <string>
             <key>Tip_CommonAIRating</key>

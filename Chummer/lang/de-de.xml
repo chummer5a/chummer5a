@@ -2392,7 +2392,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>Die Menge Nuyen die Ihr Charakter für den Kauf von Ausrüstung zur Verfügung hat. 1 GP = 5.000¥.</text>
+            <text>Die Menge Nuyen die Ihr Charakter für den Kauf von Ausrüstung zur Verfügung hat. {0}.</text>
         </string>
         <string>
             <key>Tip_CommonAIRating</key>

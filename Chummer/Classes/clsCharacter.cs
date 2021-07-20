@@ -519,7 +519,7 @@ namespace Chummer
                 case nameof(CharacterOptions.AutomaticBackstory):
                     OnPropertyChanged(nameof(EnableAutomaticStoryButton));
                     break;
-                case nameof(CharacterOptions.NuyenPerBP):
+                case nameof(CharacterOptions.ChargenKarmaToNuyenExpression):
                     OnPropertyChanged(nameof(TotalStartingNuyen));
                     break;
                 case nameof(CharacterOptions.LimbCount):
@@ -12948,10 +12948,39 @@ namespace Chummer
             }
         }
 
-        public decimal StartingNuyenModifiers =>
-            Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen));
+        private decimal _decCachedTotalStartingNuyen = decimal.MinValue;
 
-        public decimal TotalStartingNuyen => StartingNuyen + StartingNuyenModifiers + (NuyenBP * Options.NuyenPerBP);
+        public decimal TotalStartingNuyen
+        {
+            get
+            {
+                if (_decCachedTotalStartingNuyen == decimal.MinValue)
+                {
+                    decimal decFromKarma = 0.0m;
+                    string strExpression = Options.ChargenKarmaToNuyenExpression.Replace("{Karma}",
+                        Math.Min(NuyenBP, TotalNuyenMaximumBP).ToString(GlobalOptions.InvariantCultureInfo));
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess =
+                            CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        if (blnIsSuccess)
+                            decFromKarma = Convert.ToDecimal((double) objProcess);
+                    }
+                    else
+                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                            out decFromKarma);
+
+                    _decCachedTotalStartingNuyen = decFromKarma + StartingNuyen +
+                                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen);
+                }
+
+                return _decCachedTotalStartingNuyen;
+            }
+        }
 
         public string DisplayTotalStartingNuyen =>
             '=' + LanguageManager.GetString("String_Space") +
@@ -12978,8 +13007,7 @@ namespace Chummer
         {
             get
             {
-                // Ensures there is no overflow in character nuyen even with max karma to nuyen and in debt quality
-                const decimal decMaxValue = int.MaxValue / 2000 - 75000;
+                const decimal decMaxValue = int.MaxValue;
                 // If UnrestrictedNuyen is enabled, return the maximum possible value
                 if(IgnoreRules || Options.UnrestrictedNuyen)
                 {
@@ -15841,19 +15869,35 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseBOD),
                         nameof(SpellDefenseManipulationPhysical)
                     };
-                    if (Options.ContactPointsExpression.Contains("{BOD}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{BOD}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{BOD}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{BOD}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{BOD}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{BODUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{BODUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{BODUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{BODUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
                 case nameof(CharacterAttrib.MetatypeMaximum):
@@ -15875,19 +15919,35 @@ namespace Chummer
                     {
                         nameof(SpellDefenseDecreaseAGI)
                     };
-                    if (Options.ContactPointsExpression.Contains("{AGI}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{AGI}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{AGI}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{AGI}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{AGI}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{AGIUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{AGIUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{AGIUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{AGIUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -15907,19 +15967,35 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseREA),
                         nameof(Surprise)
                     };
-                    if (Options.ContactPointsExpression.Contains("{REA}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{REA}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{REA}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{REA}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{REA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{REAUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{REAUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{REAUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{REAUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -15940,19 +16016,35 @@ namespace Chummer
                         nameof(SpellDefenseDecreaseSTR),
                         nameof(SpellDefenseManipulationPhysical)
                     };
-                    if (Options.ContactPointsExpression.Contains("{STR}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{STR}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{STR}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{STR}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{STR}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{STRUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{STRUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{STRUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{STRUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -15972,19 +16064,35 @@ namespace Chummer
                         nameof(JudgeIntentionsResist),
                         nameof(SpellDefenseDecreaseCHA)
                     };
-                    if (Options.ContactPointsExpression.Contains("{CHA}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{CHA}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{CHA}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{CHA}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{CHA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{CHAUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{CHAUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{CHAUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{CHAUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16010,19 +16118,35 @@ namespace Chummer
                         nameof(SpellDefenseIllusionPhysical),
                         nameof(Surprise)
                     };
-                    if (Options.ContactPointsExpression.Contains("{INT}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{INT}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{INT}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{INT}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{INT}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{INTUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{INTUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{INTUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{INTUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16046,19 +16170,35 @@ namespace Chummer
                         nameof(SpellDefenseIllusionPhysical),
                         nameof(SpellDefenseManipulationMental)
                     };
-                    if (Options.ContactPointsExpression.Contains("{LOG}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{LOG}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{LOG}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{LOG}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{LOG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{LOGUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{LOGUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{LOGUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{LOGUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16099,19 +16239,35 @@ namespace Chummer
                         nameof(SpellDefenseIllusionMana),
                         nameof(SpellDefenseManipulationMental)
                     };
-                    if (Options.ContactPointsExpression.Contains("{WIL}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{WIL}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{WIL}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{WIL}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{WIL}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{WILUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{WILUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{WILUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{WILUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16123,26 +16279,40 @@ namespace Chummer
             {
                 case nameof(CharacterAttrib.TotalValue):
                 {
+                    List<string> lstProperties = new List<string>(3);
                     if (EdgeUsed > EDG.TotalValue)
-                    {
                         EdgeUsed = EDG.TotalValue;
-                        if (Options.ContactPointsExpression.Contains("{EDG}"))
-                            OnPropertyChanged(nameof(ContactPoints));
-                    }
-                    else if (Options.ContactPointsExpression.Contains("{EDG}"))
-                        OnMultiplePropertyChanged(nameof(ContactPoints), nameof(EdgeRemaining));
                     else
-                        OnPropertyChanged(nameof(EdgeRemaining));
-                    if (Options.KnowledgePointsExpression.Contains("{EDG}"))
+                        lstProperties.Add(nameof(EdgeRemaining));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{EDG}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{EDG}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
+                    OnMultiplePropertyChanged(lstProperties.ToArray());
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{EDG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{EDGUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{EDGUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{EDGUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{EDGUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16170,10 +16340,15 @@ namespace Chummer
                         lstProperties.Add(nameof(PowerPointsTotal));
                     if (AnyPowerAdeptWayDiscountEnabled)
                         lstProperties.Add(nameof(AllowAdeptWayPowerDiscount));
-                    if (Options.ContactPointsExpression.Contains("{MAG}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{MAG}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{MAG}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{MAG}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{MAG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
@@ -16182,10 +16357,15 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(2);
                     if (!Options.SpiritForceBasedOnTotalMAG)
                         lstProperties.Add(nameof(MaxSpiritForce));
-                    if (Options.ContactPointsExpression.Contains("{MAGUnaug}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{MAGUnaug}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{MAGUnaug}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
@@ -16204,19 +16384,36 @@ namespace Chummer
                     List<string> lstProperties = new List<string>(2);
                     if (!UseMysticAdeptPPs)
                         lstProperties.Add(nameof(MaxSpiritForce));
-                    if (Options.ContactPointsExpression.Contains("{MAGAdept}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{MAGAdept}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{MAGAdept}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{MAGAdeptUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{MAGAdeptUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{MAGAdeptUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+
+                        if (Options.KnowledgePointsExpression.Contains("{MAGAdeptUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16232,19 +16429,35 @@ namespace Chummer
                     {
                         nameof(MaxSpriteLevel)
                     };
-                    if (Options.ContactPointsExpression.Contains("{RES}"))
-                        lstProperties.Add(nameof(ContactPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{RES}"))
+                            lstProperties.Add(nameof(ContactPoints));
+                        if (Options.ChargenKarmaToNuyenExpression.Contains("{RES}"))
+                            lstProperties.Add(nameof(TotalStartingNuyen));
+                    }
                     OnMultiplePropertyChanged(lstProperties.ToArray());
-                    if (Options.KnowledgePointsExpression.Contains("{RES}"))
+                    if (!Created && Options.KnowledgePointsExpression.Contains("{RES}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{RESUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{RESUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{RESUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{RESUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{RESUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{RESUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16258,18 +16471,40 @@ namespace Chummer
                 {
                     if (IsAI)
                         EDG.OnPropertyChanged(nameof(CharacterAttrib.MetatypeMaximum));
-                    if (Options.ContactPointsExpression.Contains("{DEP}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{DEP}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{DEP}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{DEP}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{DEP}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{DEP}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{DEPUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{DEPUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{DEPUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{DEPUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{DEPUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{DEPUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
             }
@@ -16285,18 +16520,39 @@ namespace Chummer
                     break;
                 case nameof(CharacterAttrib.TotalValue):
                 {
-                    if (Options.ContactPointsExpression.Contains("{ESS}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{ESS}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{ESS}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{ESS}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{ESS}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{ESS}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
+
                     break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
-                    if (Options.ContactPointsExpression.Contains("{ESSUnaug}"))
-                        OnPropertyChanged(nameof(ContactPoints));
-                    if (Options.KnowledgePointsExpression.Contains("{ESSUnaug}"))
-                        SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    if (!Created)
+                    {
+                        if (Options.ContactPointsExpression.Contains("{ESSUnaug}"))
+                        {
+                            if (Options.ChargenKarmaToNuyenExpression.Contains("{ESSUnaug}"))
+                                OnMultiplePropertyChanged(nameof(ContactPoints), nameof(TotalStartingNuyen));
+                            else
+                                OnPropertyChanged(nameof(ContactPoints));
+                        }
+                        else if (Options.ChargenKarmaToNuyenExpression.Contains("{ESSUnaug}"))
+                            OnPropertyChanged(nameof(TotalStartingNuyen));
+                        if (Options.KnowledgePointsExpression.Contains("{ESSUnaug}"))
+                            SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
+                    }
                     break;
                 }
             }
@@ -16930,12 +17186,10 @@ namespace Chummer
                     new DependencyGraphNode<string, Character>(nameof(DisplayTotalStartingNuyen),
                         new DependencyGraphNode<string, Character>(nameof(TotalStartingNuyen),
                             new DependencyGraphNode<string, Character>(nameof(StartingNuyen)),
-                            new DependencyGraphNode<string, Character>(nameof(StartingNuyenModifiers)),
-                            new DependencyGraphNode<string, Character>(nameof(NuyenBP),
-                                new DependencyGraphNode<string, Character>(nameof(TotalNuyenMaximumBP),
-                                    new DependencyGraphNode<string, Character>(nameof(StolenNuyen)),
-                                    new DependencyGraphNode<string, Character>(nameof(IgnoreRules))
-                                )
+                            new DependencyGraphNode<string, Character>(nameof(NuyenBP)),
+                            new DependencyGraphNode<string, Character>(nameof(TotalNuyenMaximumBP),
+                                new DependencyGraphNode<string, Character>(nameof(StolenNuyen)),
+                                new DependencyGraphNode<string, Character>(nameof(IgnoreRules))
                             )
                         )
                     ),
@@ -17149,7 +17403,12 @@ namespace Chummer
                 _strCachedCharacterGrammaticGender = string.Empty;
             }
 
-            if(lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
+            if (lstNamesOfChangedProperties.Contains(nameof(TotalStartingNuyen)))
+            {
+                _decCachedTotalStartingNuyen = decimal.MinValue;
+            }
+
+            if (lstNamesOfChangedProperties.Contains(nameof(ContactPoints)))
             {
                 _intCachedContactPoints = int.MinValue;
             }

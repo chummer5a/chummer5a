@@ -39,6 +39,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -188,6 +189,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -337,6 +339,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 6</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -486,6 +489,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -635,6 +639,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -784,6 +789,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -933,6 +939,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1083,6 +1090,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1233,6 +1241,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1383,6 +1392,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1538,6 +1548,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1694,6 +1705,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1850,6 +1862,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2034,6 +2047,7 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000</chargenkarmatonuyenexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>

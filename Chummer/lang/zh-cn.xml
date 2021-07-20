@@ -2669,7 +2669,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>你角色用来购买装备的新円数量。1业力＝{0}¥。</text>
+            <text>你角色用来购买装备的新円数量。{0}。</text>
         </string>
         <string>
             <key>Tip_CommonContacts</key>
