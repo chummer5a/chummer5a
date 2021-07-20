@@ -1205,7 +1205,7 @@ namespace Chummer
             catch (UriFormatException)
             {
                 // Silently swallow the error because PDF fetching is usually done in the background
-               objBookInfo.Path = string.Empty;
+                objBookInfo.Path = string.Empty;
             }
 
             // Check if the file actually exists.
@@ -1232,7 +1232,7 @@ namespace Chummer
                     }
                 }
             }
-                
+
             intPage += objBookInfo.Offset;
 
             string strParams = strPdfParameters

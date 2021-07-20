@@ -61,7 +61,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just that 
+        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just the two collections' contents.
         /// </summary>
         /// <param name="first">First collection to compare.</param>
         /// <param name="second">Second collection to compare.</param>
@@ -79,7 +79,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just that 
+        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just the two collections' contents.
         /// </summary>
         /// <param name="first">First collection to compare.</param>
         /// <param name="second">Second collection to compare.</param>

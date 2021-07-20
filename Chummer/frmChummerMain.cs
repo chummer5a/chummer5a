@@ -1791,7 +1791,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     // Extract the file name
-                    NativeMethods.COPYDATASTRUCT objReceivedData = (NativeMethods.COPYDATASTRUCT) Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
+                    NativeMethods.COPYDATASTRUCT objReceivedData = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
                     if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                     {
                         string strParam = Marshal.PtrToStringUni(objReceivedData.lpData);
@@ -1913,43 +1913,43 @@ namespace Chummer
                         case "/help":
                         case "?":
                         case "/?":
-                        {
-                            string msg = "Commandline parameters are either " +
-                                         Environment.NewLine + "\t/test" + Environment.NewLine +
-                                         "\t/help" + Environment.NewLine +
-                                         "\t(filename to open)" +
-                                         Environment.NewLine +
-                                         "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
-                                         Environment.NewLine;
-                            Console.WriteLine(msg);
-                            break;
-                        }
-                        default:
-                        {
-                            if (strArg.Contains("/plugin"))
                             {
-                                Log.Info(
-                                    "Encountered command line argument, that should already have been handled in one of the plugins: " +
-                                    strArg);
+                                string msg = "Commandline parameters are either " +
+                                             Environment.NewLine + "\t/test" + Environment.NewLine +
+                                             "\t/help" + Environment.NewLine +
+                                             "\t(filename to open)" +
+                                             Environment.NewLine +
+                                             "\t/plugin:pluginname (like \"SINners\") to trigger (with additional parameters following the symbol \":\")" +
+                                             Environment.NewLine;
+                                Console.WriteLine(msg);
+                                break;
                             }
-                            else if (!strArg.StartsWith('/'))
+                        default:
                             {
-                                if (!File.Exists(strArg))
+                                if (strArg.Contains("/plugin"))
                                 {
-                                    throw new ArgumentException(
-                                        "Chummer started with unknown command line arguments: " +
-                                        strArgs.Aggregate((j, k) => j + " " + k));
+                                    Log.Info(
+                                        "Encountered command line argument, that should already have been handled in one of the plugins: " +
+                                        strArg);
+                                }
+                                else if (!strArg.StartsWith('/'))
+                                {
+                                    if (!File.Exists(strArg))
+                                    {
+                                        throw new ArgumentException(
+                                            "Chummer started with unknown command line arguments: " +
+                                            strArgs.Aggregate((j, k) => j + " " + k));
+                                    }
+
+                                    if (Path.GetExtension(strArg) != ".chum5")
+                                        Utils.BreakIfDebug();
+                                    if (setFilesToLoad.Contains(strArg))
+                                        continue;
+                                    setFilesToLoad.Add(strArg);
                                 }
 
-                                if (Path.GetExtension(strArg) != ".chum5")
-                                    Utils.BreakIfDebug();
-                                if (setFilesToLoad.Contains(strArg))
-                                    continue;
-                                setFilesToLoad.Add(strArg);
+                                break;
                             }
-
-                            break;
-                        }
                     }
                 }
             }

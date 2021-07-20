@@ -53,7 +53,7 @@ namespace Chummer
         private static PluginControl _objPluginLoader;
         public static PluginControl PluginLoader => _objPluginLoader = _objPluginLoader ?? new PluginControl();
 
-        internal static IntPtr CommandLineArgsDataTypeId = (IntPtr) 7593599;
+        internal static IntPtr CommandLineArgsDataTypeId = (IntPtr)7593599;
 
         /// <summary>
         /// Check this to see if we are currently in the Main Thread.
@@ -202,7 +202,7 @@ namespace Chummer
                             {
                                 myException.Data.Add("IsCrash", bool.TrueString);
                                 ExceptionTelemetry et = new ExceptionTelemetry(myException)
-                                    {SeverityLevel = SeverityLevel.Critical};
+                                { SeverityLevel = SeverityLevel.Critical };
                                 //we have to enable the uploading of THIS message, so it isn't filtered out in the DropUserdataTelemetryProcessos
                                 foreach (DictionaryEntry d in myException.Data)
                                 {

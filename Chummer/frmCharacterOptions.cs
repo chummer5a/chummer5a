@@ -759,7 +759,8 @@ namespace Chummer
             gbpDirectoryInfo.Visible = true;
             gbpDirectoryInfo.ResumeLayout();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
 
@@ -865,11 +866,11 @@ namespace Chummer
                 {
                     // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
                     string missingDirectories = string.Empty;
-                    if (customDataDirectory.DependenciesList.Count>0)
+                    if (customDataDirectory.DependenciesList.Count > 0)
                         missingDirectories = customDataDirectory.CheckDependency(_objCharacterOptions);
 
                     string prohibitedDirectories = string.Empty;
-                    if (customDataDirectory.IncompatibilitiesList.Count>0)
+                    if (customDataDirectory.IncompatibilitiesList.Count > 0)
                         prohibitedDirectories = customDataDirectory.CheckIncompatibility(_objCharacterOptions);
 
                     if (string.IsNullOrEmpty(missingDirectories) && string.IsNullOrEmpty(prohibitedDirectories))

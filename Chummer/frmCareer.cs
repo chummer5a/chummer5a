@@ -6692,50 +6692,50 @@ namespace Chummer
                         switch (objMod.Category)
                         {
                             case "Handling":
-                            {
-                                if (objMod.Rating > objVehicle.MaxHandling)
                                 {
-                                    objMod.Rating = objVehicle.MaxHandling;
-                                }
+                                    if (objMod.Rating > objVehicle.MaxHandling)
+                                    {
+                                        objMod.Rating = objVehicle.MaxHandling;
+                                    }
 
-                                break;
-                            }
+                                    break;
+                                }
                             case "Speed":
-                            {
-                                if (objMod.Rating > objVehicle.MaxSpeed)
                                 {
-                                    objMod.Rating = objVehicle.MaxSpeed;
-                                }
+                                    if (objMod.Rating > objVehicle.MaxSpeed)
+                                    {
+                                        objMod.Rating = objVehicle.MaxSpeed;
+                                    }
 
-                                break;
-                            }
+                                    break;
+                                }
                             case "Acceleration":
-                            {
-                                if (objMod.Rating > objVehicle.MaxAcceleration)
                                 {
-                                    objMod.Rating = objVehicle.MaxAcceleration;
-                                }
+                                    if (objMod.Rating > objVehicle.MaxAcceleration)
+                                    {
+                                        objMod.Rating = objVehicle.MaxAcceleration;
+                                    }
 
-                                break;
-                            }
+                                    break;
+                                }
                             case "Sensor":
-                            {
-                                if (objMod.Rating > objVehicle.MaxSensor)
                                 {
-                                    objMod.Rating = objVehicle.MaxSensor;
-                                }
+                                    if (objMod.Rating > objVehicle.MaxSensor)
+                                    {
+                                        objMod.Rating = objVehicle.MaxSensor;
+                                    }
 
-                                break;
-                            }
+                                    break;
+                                }
                             default:
-                            {
-                                if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal) && objMod.Rating > objVehicle.MaxPilot)
                                 {
-                                    objMod.Rating = objVehicle.MaxPilot;
-                                }
+                                    if (objMod.Name.StartsWith("Pilot Program", StringComparison.Ordinal) && objMod.Rating > objVehicle.MaxPilot)
+                                    {
+                                        objMod.Rating = objVehicle.MaxPilot;
+                                    }
 
-                                break;
-                            }
+                                    break;
+                                }
                         }
                     }
 
@@ -14092,93 +14092,64 @@ namespace Chummer
                 switch (treArmor.SelectedNode?.Tag)
                 {
                     case Gear objSelectedGear:
-                    {
-                        gpbArmorCommon.Visible = true;
-                        gpbArmorMatrix.Visible = true;
-                        gpbArmorLocation.Visible = false;
-
-                        // Buttons
-                        cmdDeleteArmor.Enabled = !objSelectedGear.IncludedInParent;
-
-                        // gpbArmorCommon
-                        lblArmorValueLabel.Visible = false;
-                        flpArmorValue.Visible = false;
-                        lblArmorAvail.Text = objSelectedGear.DisplayTotalAvail;
-                        CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor, out objArmorMod);
-                        if (objArmorMod != null)
-                            lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
-                        else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
-                            lblArmorCapacity.Text = '[' + 0.ToString(GlobalOptions.CultureInfo) + ']';
-                        else
-                            lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
-                        int intMaxRatingValue = objSelectedGear.MaxRatingValue;
-                        if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
                         {
-                            lblArmorRatingLabel.Visible = true;
-                            lblArmorRating.Visible = true;
-                            lblArmorRating.Text = objSelectedGear.Rating.ToString(GlobalOptions.CultureInfo);
-                        }
-                        else
-                        {
-                            lblArmorRatingLabel.Visible = false;
-                            lblArmorRating.Visible = false;
-                        }
-                        lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
-                        chkArmorEquipped.Visible = true;
-                        chkArmorEquipped.Checked = objSelectedGear.Equipped;
-                        chkArmorEquipped.Enabled = true;
-                        chkIncludedInArmor.Visible = true;
-                        chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
+                            gpbArmorCommon.Visible = true;
+                            gpbArmorMatrix.Visible = true;
+                            gpbArmorLocation.Visible = false;
 
-                        // gpbArmorMatrix
-                        lblArmorDeviceRating.Text = objSelectedGear.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
-                        lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
-                        lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
-                        lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
-                        lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
-                        break;
-                    }
+                            // Buttons
+                            cmdDeleteArmor.Enabled = !objSelectedGear.IncludedInParent;
+
+                            // gpbArmorCommon
+                            lblArmorValueLabel.Visible = false;
+                            flpArmorValue.Visible = false;
+                            lblArmorAvail.Text = objSelectedGear.DisplayTotalAvail;
+                            CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor, out objArmorMod);
+                            if (objArmorMod != null)
+                                lblArmorCapacity.Text = objSelectedGear.CalculatedCapacity;
+                            else if (objArmor.CapacityDisplayStyle == CapacityStyle.Zero)
+                                lblArmorCapacity.Text = '[' + 0.ToString(GlobalOptions.CultureInfo) + ']';
+                            else
+                                lblArmorCapacity.Text = objSelectedGear.CalculatedArmorCapacity;
+                            int intMaxRatingValue = objSelectedGear.MaxRatingValue;
+                            if (intMaxRatingValue > 1 && intMaxRatingValue != int.MaxValue)
+                            {
+                                lblArmorRatingLabel.Visible = true;
+                                lblArmorRating.Visible = true;
+                                lblArmorRating.Text = objSelectedGear.Rating.ToString(GlobalOptions.CultureInfo);
+                            }
+                            else
+                            {
+                                lblArmorRatingLabel.Visible = false;
+                                lblArmorRating.Visible = false;
+                            }
+                            lblArmorCost.Text = objSelectedGear.TotalCost.ToString(CharacterObjectOptions.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                            chkArmorEquipped.Visible = true;
+                            chkArmorEquipped.Checked = objSelectedGear.Equipped;
+                            chkArmorEquipped.Enabled = true;
+                            chkIncludedInArmor.Visible = true;
+                            chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
+
+                            // gpbArmorMatrix
+                            lblArmorDeviceRating.Text = objSelectedGear.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                            lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
+                            lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
+                            lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
+                            lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
+                            break;
+                        }
                     case Location objLocation:
-                    {
-                        gpbArmorCommon.Visible = false;
-                        gpbArmorMatrix.Visible = false;
-                        gpbArmorLocation.Visible = true;
-
-                        // Buttons
-                        cmdDeleteArmor.Enabled = true;
-
-                        // gpbArmorLocation
-                        StringBuilder sbdArmorEquipped = new StringBuilder();
-                        foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
-                        {
-                            sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName);
-                            sbdArmorEquipped.Append(strSpace + '(');
-                            sbdArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
-                            sbdArmorEquipped.AppendLine(")");
-                        }
-                        if (sbdArmorEquipped.Length > 0)
-                        {
-                            sbdArmorEquipped.Length -= 1;
-                            lblArmorEquipped.Text = sbdArmorEquipped.ToString();
-                        }
-                        else
-                            lblArmorEquipped.Text = LanguageManager.GetString("String_None");
-
-                        break;
-                    }
-                    default:
-                    {
-                        if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
                         {
                             gpbArmorCommon.Visible = false;
                             gpbArmorMatrix.Visible = false;
                             gpbArmorLocation.Visible = true;
 
                             // Buttons
-                            cmdDeleteArmor.Enabled = false;
+                            cmdDeleteArmor.Enabled = true;
 
+                            // gpbArmorLocation
                             StringBuilder sbdArmorEquipped = new StringBuilder();
-                            foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
+                            foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                             {
                                 sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName);
                                 sbdArmorEquipped.Append(strSpace + '(');
@@ -14192,19 +14163,48 @@ namespace Chummer
                             }
                             else
                                 lblArmorEquipped.Text = LanguageManager.GetString("String_None");
+
+                            break;
                         }
-                        else
+                    default:
                         {
-                            gpbArmorCommon.Visible = false;
-                            gpbArmorMatrix.Visible = false;
-                            gpbArmorLocation.Visible = false;
+                            if (treArmor.SelectedNode?.Tag.ToString() == "Node_SelectedArmor")
+                            {
+                                gpbArmorCommon.Visible = false;
+                                gpbArmorMatrix.Visible = false;
+                                gpbArmorLocation.Visible = true;
 
-                            // Buttons
-                            cmdDeleteArmor.Enabled = false;
+                                // Buttons
+                                cmdDeleteArmor.Enabled = false;
+
+                                StringBuilder sbdArmorEquipped = new StringBuilder();
+                                foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                {
+                                    sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName);
+                                    sbdArmorEquipped.Append(strSpace + '(');
+                                    sbdArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
+                                    sbdArmorEquipped.AppendLine(")");
+                                }
+                                if (sbdArmorEquipped.Length > 0)
+                                {
+                                    sbdArmorEquipped.Length -= 1;
+                                    lblArmorEquipped.Text = sbdArmorEquipped.ToString();
+                                }
+                                else
+                                    lblArmorEquipped.Text = LanguageManager.GetString("String_None");
+                            }
+                            else
+                            {
+                                gpbArmorCommon.Visible = false;
+                                gpbArmorMatrix.Visible = false;
+                                gpbArmorLocation.Visible = false;
+
+                                // Buttons
+                                cmdDeleteArmor.Enabled = false;
+                            }
+
+                            break;
                         }
-
-                        break;
-                    }
                 }
             }
 

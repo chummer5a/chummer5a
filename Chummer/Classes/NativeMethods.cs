@@ -77,7 +77,7 @@ namespace Chummer
         /// <param name="Msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        /// <returns>The return value specifies the result of the message processing; 
+        /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, StringBuilder lParam);
@@ -91,7 +91,7 @@ namespace Chummer
         /// <param name="Msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        /// <returns>The return value specifies the result of the message processing; 
+        /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
@@ -105,7 +105,7 @@ namespace Chummer
         /// <param name="Msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        /// <returns>The return value specifies the result of the message processing; 
+        /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
@@ -119,7 +119,7 @@ namespace Chummer
         /// <param name="Msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        /// <returns>The return value specifies the result of the message processing; 
+        /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, ref IntPtr lParam);
@@ -133,7 +133,7 @@ namespace Chummer
         /// <param name="Msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        /// <returns>The return value specifies the result of the message processing; 
+        /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
@@ -147,7 +147,7 @@ namespace Chummer
         /// <param name="Msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        /// <returns>The return value specifies the result of the message processing; 
+        /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
         internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
@@ -197,9 +197,9 @@ namespace Chummer
         /// <param name="msg">The message that the message filter allows through or blocks.</param>
         /// <param name="action">The action to be performed, and can take one of the following values
         /// <see cref="MessageFilterInfo"/></param>
-        /// <param name="changeInfo">Optional pointer to a 
+        /// <param name="changeInfo">Optional pointer to a
         /// <see cref="CHANGEFILTERSTRUCT"/> structure.</param>
-        /// <returns>If the function succeeds, it returns TRUE; otherwise, it returns FALSE. 
+        /// <returns>If the function succeeds, it returns TRUE; otherwise, it returns FALSE.
         /// To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
@@ -276,23 +276,23 @@ namespace Chummer
         internal enum MessageFilterInfo : uint
         {
             /// <summary>
-            /// Certain messages whose value is smaller than WM_USER are required to pass 
-            /// through the filter, regardless of the filter setting. 
-            /// There will be no effect when you attempt to use this function to 
+            /// Certain messages whose value is smaller than WM_USER are required to pass
+            /// through the filter, regardless of the filter setting.
+            /// There will be no effect when you attempt to use this function to
             /// allow or block such messages.
             /// </summary>
             None = 0,
 
             /// <summary>
-            /// The message has already been allowed by this window's message filter, 
-            /// and the function thus succeeded with no change to the window's message filter. 
+            /// The message has already been allowed by this window's message filter,
+            /// and the function thus succeeded with no change to the window's message filter.
             /// Applies to MSGFLT_ALLOW.
             /// </summary>
             AlreadyAllowed = 1,
 
             /// <summary>
-            /// The message has already been blocked by this window's message filter, 
-            /// and the function thus succeeded with no change to the window's message filter. 
+            /// The message has already been blocked by this window's message filter,
+            /// and the function thus succeeded with no change to the window's message filter.
             /// Applies to MSGFLT_DISALLOW.
             /// </summary>
             AlreadyDisAllowed = 2,
@@ -318,36 +318,36 @@ namespace Chummer
             Reset = 0,
 
             /// <summary>
-            /// Allows the message through the filter. 
-            /// This enables the message to be received by hWnd, 
-            /// regardless of the source of the message, 
+            /// Allows the message through the filter.
+            /// This enables the message to be received by hWnd,
+            /// regardless of the source of the message,
             /// even it comes from a lower privileged process.
             /// </summary>
             Allow = 1,
 
             /// <summary>
             /// Blocks the message to be delivered to hWnd if it comes from
-            /// a lower privileged process, unless the message is allowed process-wide 
+            /// a lower privileged process, unless the message is allowed process-wide
             /// by using the ChangeWindowMessageFilter function or globally.
             /// </summary>
             DisAllow = 2
         }
 
         /// <summary>
-        /// Contains extended result information obtained by calling 
+        /// Contains extended result information obtained by calling
         /// the ChangeWindowMessageFilterEx function.
         /// </summary>
         [StructLayout(LayoutKind.Sequential)]
         internal struct CHANGEFILTERSTRUCT
         {
             /// <summary>
-            /// The size of the structure, in bytes. Must be set to sizeof(CHANGEFILTERSTRUCT), 
+            /// The size of the structure, in bytes. Must be set to sizeof(CHANGEFILTERSTRUCT),
             /// otherwise the function fails with ERROR_INVALID_PARAMETER.
             /// </summary>
             internal uint size;
 
             /// <summary>
-            /// If the function succeeds, this field contains one of the following values, 
+            /// If the function succeeds, this field contains one of the following values,
             /// <see cref="MessageFilterInfo"/>
             /// </summary>
             internal MessageFilterInfo info;
