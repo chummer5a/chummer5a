@@ -9227,10 +9227,12 @@ namespace Chummer
                     }
                     else
                     {
-                        foreach (Improvement objImprovement in Improvements.Where(x =>
-                            x.ImproveSource == Improvement.ImprovementSource.Initiation))
+                        // ReSharper disable once ForCanBeConvertedToForeach
+                        for (int i = 0; i < Improvements.Count; ++i)
                         {
-                            objImprovement.Rating = value;
+                            Improvement objImprovement = Improvements[i];
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
+                                objImprovement.Rating = value;
                         }
                     }
 
@@ -9248,11 +9250,13 @@ namespace Chummer
                         }
                         else
                         {
-                            foreach (Improvement objImprovement in Improvements.Where(x =>
-                                x.ImproveSource == Improvement.ImprovementSource.Metamagic &&
-                                x.SourceName == objMetamagic.InternalId))
+                            // ReSharper disable once ForCanBeConvertedToForeach
+                            for (int i = 0; i < Improvements.Count; ++i)
                             {
-                                objImprovement.Rating = value;
+                                Improvement objImprovement = Improvements[i];
+                                if (objImprovement.SourceName == objMetamagic.InternalId &&
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Metamagic)
+                                    objImprovement.Rating = value;
                             }
                         }
                     }
@@ -9708,10 +9712,12 @@ namespace Chummer
                     }
                     else
                     {
-                        foreach (Improvement objImprovement in Improvements.Where(x =>
-                            x.ImproveSource == Improvement.ImprovementSource.Submersion))
+                        // ReSharper disable once ForCanBeConvertedToForeach
+                        for (int i = 0; i < Improvements.Count; ++i)
                         {
-                            objImprovement.Rating = value;
+                            Improvement objImprovement = Improvements[i];
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
+                                objImprovement.Rating = value;
                         }
                     }
 
@@ -9729,11 +9735,13 @@ namespace Chummer
                         }
                         else
                         {
-                            foreach (Improvement objImprovement in Improvements.Where(x =>
-                                x.ImproveSource == Improvement.ImprovementSource.Echo &&
-                                x.SourceName == objMetamagic.InternalId))
+                            // ReSharper disable once ForCanBeConvertedToForeach
+                            for (int i = 0; i < Improvements.Count; ++i)
                             {
-                                objImprovement.Rating = value;
+                                Improvement objImprovement = Improvements[i];
+                                if (objImprovement.SourceName == objMetamagic.InternalId &&
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Echo)
+                                    objImprovement.Rating = value;
                             }
                         }
                     }
