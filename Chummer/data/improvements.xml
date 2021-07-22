@@ -58,13 +58,13 @@
     <improvement>
       <name>Replace Attribute</name>
       <id>replaceattribute</id>
-      <internal>replaceattribute</internal>
+      <internal>replaceattributes</internal>
       <fields>
         <field>SelectAttribute</field>
         <field>min</field>
         <field>max</field>
       </fields>
-      <xml><![CDATA[<name>{select}</name><min>{min}</min><max>{max}</max>]]></xml>
+      <xml><![CDATA[<replaceattribute><name>{select}</name><min>{min}</min><max>{max}</max></replaceattribute>]]></xml>
       <page>Overrides the Metatype limitations for an attribute. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum.</page>
     </improvement>
     <improvement>

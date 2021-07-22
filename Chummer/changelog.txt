@@ -132,6 +132,7 @@ Data Changes:
 - Out for Myself properly gives +3 Surprise dice.
 - Various music genres and trideo shows from No Future have been added as suggested specializations for relevant knowledge skills
 - Fixed specialization entries for crossbows and slingshots.
+- The Replace Attribute improvement now works properly. Fixes #4512.
 
 Changed/New Strings:
 - String_ContactPoints

@@ -311,38 +311,34 @@ namespace Chummer.Classes
                 throw new ArgumentNullException(nameof(bonusNode));
             using (XmlNodeList objXmlAttributes = bonusNode.SelectNodes("replaceattribute"))
             {
-                if (objXmlAttributes != null)
+                if (objXmlAttributes == null)
+                    return;
+                foreach (XmlNode objXmlAttribute in objXmlAttributes)
                 {
-                    foreach (XmlNode objXmlAttribute in objXmlAttributes)
+                    Log.Info("replaceattribute");
+                    Log.Info("replaceattribute = " + bonusNode.OuterXml);
+                    // Record the improvement.
+                    string strAttribute = string.Empty;
+                    if (objXmlAttribute.TryGetStringFieldQuickly("name", ref strAttribute))
                     {
-                        Log.Info("replaceattribute");
-                        Log.Info("replaceattribute = " + bonusNode.OuterXml);
-                        // Record the improvement.
+                        // Extract the modifiers.
                         int intMin = 0;
                         int intMax = 0;
                         int intAug = 0;
                         int intAugMax = 0;
-                        string strAttribute = string.Empty;
+                        objXmlAttribute.TryGetInt32FieldQuickly("min", ref intMin);
+                        objXmlAttribute.TryGetInt32FieldQuickly("max", ref intMax);
+                        objXmlAttribute.TryGetInt32FieldQuickly("val", ref intAug);
+                        objXmlAttribute.TryGetInt32FieldQuickly("aug", ref intAugMax);
 
-                        // Extract the modifiers.
-
-
-                        if (!objXmlAttribute.TryGetStringFieldQuickly("name", ref strAttribute))
-                        {
-                            Utils.BreakIfDebug();
-                        }
-                        else
-                        {
-                            objXmlAttribute.TryGetInt32FieldQuickly("min", ref intMin);
-                            objXmlAttribute.TryGetInt32FieldQuickly("max", ref intMax);
-                            objXmlAttribute.TryGetInt32FieldQuickly("val", ref intAug);
-                            objXmlAttribute.TryGetInt32FieldQuickly("aug", ref intAugMax);
-
-                            Log.Info("Calling CreateImprovement");
-                            CreateImprovement(strAttribute, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.ReplaceAttribute,
-                                _strUnique, 0, 1, intMin, intMax, intAug, intAugMax);
-                        }
+                        Log.Info("Calling CreateImprovement");
+                        CreateImprovement(strAttribute, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.ReplaceAttribute,
+                            _strUnique, 0, 1, intMin, intMax, intAug, intAugMax);
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
                     }
                 }
             }
