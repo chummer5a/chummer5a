@@ -611,7 +611,7 @@ namespace Chummer
                 byte[] bytes;
                 try
                 {
-                    bytes = await wb.UploadValuesTaskAsync("http://pastebin.com/api/api_post.php", data);
+                    bytes = await wb.UploadValuesTaskAsync("https://pastebin.com/api/api_post.php", data);
                 }
                 catch (System.Net.WebException)
                 {

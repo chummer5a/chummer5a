@@ -424,9 +424,9 @@ namespace Chummer
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
-        private async Task SetDocumentText(string strText)
+        private Task SetDocumentText(string strText)
         {
-            await webViewer.DoThreadSafeFuncAsync(() => webViewer.Height)
+            return webViewer.DoThreadSafeFuncAsync(() => webViewer.Height)
                 .ContinueWith(x =>
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
                     x.Result.ToString(GlobalOptions.InvariantCultureInfo) +
