@@ -11381,15 +11381,12 @@ namespace Chummer
             Armor objHighestArmor = null;
             int intHighest = 0;
             int intHighestNoCustomStack = 0;
-            int intTotalClothing = 0;
-            int intHighestClothingBonus = 0;
             // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
             // This is used for Custom-Fit armour's stacking.
             foreach (Armor objArmor in lstArmorsToConsider)
             {
-                if ((objArmor.ArmorValue.StartsWith('+')
+                if (objArmor.ArmorValue.StartsWith('+')
                      || objArmor.ArmorValue.StartsWith('-'))
-                    && objArmor.Category != "Clothing")
                     continue;
                 int intCustomStackBonus = 0;
                 string strArmorName = objArmor.Name;
@@ -11405,36 +11402,19 @@ namespace Chummer
                         intCustomStackBonus += objInnerArmor.TotalOverrideArmor;
                 }
 
-                if (objArmor.Category == "Clothing")
+                int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
+                if (intArmorValue + intCustomStackBonus > intHighest)
                 {
-                    int intSpecialArmor = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
-                    intTotalClothing += objArmor.TotalArmor + intCustomStackBonus;
-                    if (intSpecialArmor > intHighestClothingBonus)
-                        intHighestClothingBonus = intSpecialArmor;
-                }
-                else
-                {
-                    int intArmorValue = objArmor.TotalArmor + dicArmorImprovementValues[objArmor].StandardRound();
-                    if (intArmorValue + intCustomStackBonus > intHighest)
-                    {
-                        intHighest = intArmorValue + intCustomStackBonus;
-                        intFromEquippedArmorImprovements = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
-                        intHighestNoCustomStack = intArmorValue;
-                        objHighestArmor = objArmor;
-                    }
+                    intHighest = intArmorValue + intCustomStackBonus;
+                    intFromEquippedArmorImprovements = (dicArmorImprovementValues[objArmor] - decGeneralArmorImprovementValue).StandardRound();
+                    intHighestNoCustomStack = intArmorValue;
+                    objHighestArmor = objArmor;
                 }
             }
 
             int intArmor = intHighestNoCustomStack;
-            int intHighestClothing = intTotalClothing + intHighestClothingBonus + decGeneralArmorImprovementValue.StandardRound();
-            if (intHighestClothing > intHighest)
-            {
-                objHighestArmor = null;
-                intArmor = intHighestClothing;
-                intFromEquippedArmorImprovements = intHighestClothingBonus;
-            }
 
-            // Run through the list of Armor currently worn again and look at non-Clothing items that start with '+' since they stack with the highest Armor.
+            // Run through the list of Armor currently worn again and look at armors that start with '+' since they stack with the highest Armor.
             int intStacking = 0;
             foreach (Armor objArmor in lstArmorsToConsider)
             {
@@ -11442,7 +11422,6 @@ namespace Chummer
                     && !objArmor.ArmorValue.StartsWith('-')
                     && !objArmor.ArmorOverrideValue.StartsWith('+')
                     && !objArmor.ArmorOverrideValue.StartsWith('-')
-                    || objArmor.Category == "Clothing"
                     || objArmor == objHighestArmor)
                     continue;
                 bool blnDoAdd = true;
@@ -12323,15 +12302,12 @@ namespace Chummer
                     return 0;
                 Armor objHighestArmor = null;
                 int intHighest = 0;
-                int intTotalClothing = 0;
-                int intTotalClothingEncumbrance = 0;
                 // Run through the list of Armor currently worn and retrieve the highest total Armor rating.
                 // This is used for Custom-Fit armour's stacking.
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
-                    if ((objArmor.ArmorValue.StartsWith('+')
-                         || objArmor.ArmorValue.StartsWith('-'))
-                        && objArmor.Category != "Clothing")
+                    if (objArmor.ArmorValue.StartsWith('+')
+                        || objArmor.ArmorValue.StartsWith('-'))
                         continue;
                     int intLoopTotal = objArmor.TotalArmor;
                     string strArmorName = objArmor.Name;
@@ -12347,13 +12323,7 @@ namespace Chummer
                             intLoopTotal += objInnerArmor.TotalOverrideArmor;
                     }
 
-                    if (objArmor.Category == "Clothing")
-                    {
-                        intTotalClothing += intLoopTotal;
-                        if (objArmor.Encumbrance)
-                            intTotalClothingEncumbrance += intLoopTotal;
-                    }
-                    else if (intLoopTotal > intHighest)
+                    if (intLoopTotal > intHighest)
                     {
                         intHighest = intLoopTotal;
                         objHighestArmor = objArmor;
@@ -12361,12 +12331,6 @@ namespace Chummer
                 }
 
                 int intTotalA = 0;
-                // Highest armor was overwritten by Clothing '+' values, so factor those '+' values into encumbrance
-                if (intTotalClothing > intHighest)
-                {
-                    objHighestArmor = null;
-                    intTotalA = intTotalClothingEncumbrance; // Only count clothes that have encumbrance
-                }
 
                 foreach (Armor objArmor in lstArmorsToConsider)
                 {
@@ -12375,7 +12339,6 @@ namespace Chummer
                             && !objArmor.ArmorValue.StartsWith('-')
                             && !objArmor.ArmorOverrideValue.StartsWith('+')
                             && !objArmor.ArmorOverrideValue.StartsWith('-'))
-                        || objArmor.Category == "Clothing"
                         || objArmor == objHighestArmor)
                         continue;
                     bool blnDoAdd = true;
