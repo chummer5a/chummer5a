@@ -93,6 +93,7 @@ Application Changes:
 - Added a plural/singular detector to the code that checks if a character has a specialization for a weapon.
 - Added the ability to add spells and complex forms to a character through the Improvements system in career mode.
 - Armor items classified as Clothing but without a + or - in their armor codes are now treated as regular armor instead of armor extras.
+- Qualities with a rating can now be added at higher ratings from the quality selector, and the quality selector's karma filters now also take qualities with multiple ratings into account.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

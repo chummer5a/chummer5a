@@ -5067,6 +5067,7 @@ namespace Chummer
             {
                 bool blnFreeCost;
                 XmlNode objXmlQuality;
+                int intRatingToAdd;
                 using (frmSelectQuality frmPickQuality = new frmSelectQuality(CharacterObject))
                 {
                     frmPickQuality.ShowDialog(this);
@@ -5078,6 +5079,14 @@ namespace Chummer
                     blnFreeCost = frmPickQuality.FreeCost;
 
                     objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.SelectedQuality.CleanXPath() + "]");
+                    intRatingToAdd = frmPickQuality.SelectedRating;
+                    int intDummy = 0;
+                    if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
+                    {
+                        intRatingToAdd -= CharacterObject.Qualities.Count(x =>
+                            x.SourceIDString.Equals(frmPickQuality.SelectedQuality,
+                                StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName));
+                    }
                 }
 
                 if (objXmlQuality == null)
@@ -5088,108 +5097,135 @@ namespace Chummer
                 if (objXmlQuality.TryGetStringFieldQuickly("category", ref strTemp))
                     eQualityType = Quality.ConvertToQualityType(strTemp);
 
-                // Positive Metagenetic Qualities are free if you're a Changeling.
-                if (CharacterObject.MetagenicLimit > 0 && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
-                    blnFreeCost = true;
-                // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
-                else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" && CharacterObject.Qualities.Any(x => x.Name == "The Beast's Way" || x.Name == "The Spiritual Way"))
-                    blnFreeCost = true;
-
-                int intQualityBP = 0;
-                if (!blnFreeCost)
+                for (int i = 1; i <= intRatingToAdd; ++i)
                 {
-                    objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
-                    XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
-                    if (xmlDiscountNode != null && xmlDiscountNode.CreateNavigator().RequirementsMet(CharacterObject))
-                    {
-                        int intTemp = 0;
-                        xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
-                        switch (eQualityType)
-                        {
-                            case QualityType.Positive:
-                                intQualityBP += intTemp;
-                                break;
+                    // Positive Metagenetic Qualities are free if you're a Changeling.
+                    if (CharacterObject.MetagenicLimit > 0 && objXmlQuality["metagenic"]?.InnerText == bool.TrueString)
+                        blnFreeCost = true;
+                    // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
+                    else if (objXmlQuality["name"]?.InnerText == "Mentor Spirit" &&
+                             CharacterObject.Qualities.Any(x =>
+                                 x.Name == "The Beast's Way" || x.Name == "The Spiritual Way"))
+                        blnFreeCost = true;
+                    else
+                        blnFreeCost = false;
 
-                            case QualityType.Negative:
-                                intQualityBP -= intTemp;
-                                break;
-                        }
-                    }
-                }
-
-                int intKarmaCost = intQualityBP * CharacterObjectOptions.KarmaQuality;
-                if (!CharacterObjectOptions.DontDoubleQualityPurchases && objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
-                    intKarmaCost *= 2;
-
-                // Make sure the character has enough Karma to pay for the Quality.
-                if (eQualityType == QualityType.Positive)
-                {
+                    int intQualityBP = 0;
                     if (!blnFreeCost)
                     {
-                        if (intKarmaCost > CharacterObject.Karma && objXmlQuality["stagedpurchase"]?.InnerText != bool.TrueString)
+                        objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
+                        XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
+                        if (xmlDiscountNode != null &&
+                            xmlDiscountNode.CreateNavigator().RequirementsMet(CharacterObject))
                         {
-                            Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                            continue;
+                            int intTemp = 0;
+                            xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
+                            switch (eQualityType)
+                            {
+                                case QualityType.Positive:
+                                    intQualityBP += intTemp;
+                                    break;
+
+                                case QualityType.Negative:
+                                    intQualityBP -= intTemp;
+                                    break;
+                            }
                         }
-
-                        string strDisplayName = objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend"), strDisplayName, intKarmaCost.ToString(GlobalOptions.CultureInfo))))
-                            continue;
                     }
-                }
-                else if (Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_AddNegativeQuality"), LanguageManager.GetString("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                    continue;
 
-                List<Weapon> lstWeapons = new List<Weapon>(1);
-                Quality objQuality = new Quality(CharacterObject);
+                    int intKarmaCost = intQualityBP * CharacterObjectOptions.KarmaQuality;
+                    if (!CharacterObjectOptions.DontDoubleQualityPurchases &&
+                        objXmlQuality["doublecareer"]?.InnerText != bool.FalseString)
+                        intKarmaCost *= 2;
 
-                objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
-                if (objQuality.InternalId.IsEmptyGuid())
-                {
-                    // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                    continue;
-                }
-
-                // Make sure the character has enough Karma to pay for the Quality.
-                if (objQuality.Type == QualityType.Positive)
-                {
-                    if (objQuality.ContributeToBP)
+                    // Make sure the character has enough Karma to pay for the Quality.
+                    if (eQualityType == QualityType.Positive)
                     {
-                        // Create the Karma expense.
+                        if (!blnFreeCost)
+                        {
+                            if (intKarmaCost > CharacterObject.Karma &&
+                                objXmlQuality["stagedpurchase"]?.InnerText != bool.TrueString)
+                            {
+                                Program.MainForm.ShowMessageBox(this,
+                                    LanguageManager.GetString("Message_NotEnoughKarma"),
+                                    LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                break;
+                            }
+
+                            string strDisplayName = objXmlQuality["translate"]?.InnerText ??
+                                                    objXmlQuality["name"]?.InnerText ??
+                                                    LanguageManager.GetString("String_Unknown");
+                            if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo,
+                                LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend"), strDisplayName,
+                                intKarmaCost.ToString(GlobalOptions.CultureInfo))))
+                                break;
+                        }
+                    }
+                    else if (Program.MainForm.ShowMessageBox(this,
+                        LanguageManager.GetString("Message_AddNegativeQuality"),
+                        LanguageManager.GetString("MessageTitle_AddNegativeQuality"), MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+                        break;
+
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Quality objQuality = new Quality(CharacterObject);
+
+                    objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                    if (objQuality.InternalId.IsEmptyGuid())
+                    {
+                        // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                        ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality,
+                            objQuality.InternalId);
+                        break;
+                    }
+
+                    // Make sure the character has enough Karma to pay for the Quality.
+                    if (objQuality.Type == QualityType.Positive)
+                    {
+                        if (objQuality.ContributeToBP)
+                        {
+                            // Create the Karma expense.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(intKarmaCost * -1,
+                                LanguageManager.GetString("String_ExpenseAddPositiveQuality") +
+                                LanguageManager.GetString("String_Space") +
+                                objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                            CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+                            CharacterObject.Karma -= intKarmaCost;
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+                    }
+                    else
+                    {
+                        // Create a Karma Expense for the Negative Quality.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseAddPositiveQuality") + LanguageManager.GetString("String_Space") + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
+                        objExpense.Create(0,
+                            LanguageManager.GetString("String_ExpenseAddNegativeQuality") +
+                            LanguageManager.GetString("String_Space") +
+                            objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-                        CharacterObject.Karma -= intKarmaCost;
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
                         objExpense.Undo = objUndo;
                     }
+
+                    CharacterObject.Qualities.Add(objQuality);
+
+                    // Add any created Weapons to the character.
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        CharacterObject.Weapons.Add(objWeapon);
+                    }
+
+                    IsCharacterUpdateRequested = true;
+
+                    IsDirty = true;
                 }
-                else
-                {
-                    // Create a Karma Expense for the Negative Quality.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(0, LanguageManager.GetString("String_ExpenseAddNegativeQuality") + LanguageManager.GetString("String_Space") + objQuality.DisplayNameShort(GlobalOptions.Language), ExpenseType.Karma, DateTime.Now);
-                    CharacterObject.ExpenseEntries.AddWithSort(objExpense);
-
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
-                    objExpense.Undo = objUndo;
-                }
-
-                CharacterObject.Qualities.Add(objQuality);
-
-                // Add any created Weapons to the character.
-                foreach (Weapon objWeapon in lstWeapons)
-                {
-                    CharacterObject.Weapons.Add(objWeapon);
-                }
-
-                IsCharacterUpdateRequested = true;
-
-                IsDirty = true;
             }
             while (blnAddAgain);
         }
@@ -5233,6 +5269,7 @@ namespace Chummer
             }
 
             XmlNode objXmlQuality;
+            int intRatingToAdd;
             using (frmSelectQuality frmPickQuality = new frmSelectQuality(CharacterObject)
             {
                 ForceCategory = objQuality.Type.ToString(),
@@ -5246,14 +5283,25 @@ namespace Chummer
                     return;
 
                 objXmlQuality = CharacterObject.LoadData("qualities.xml").SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.SelectedQuality.CleanXPath() + "]");
+                intRatingToAdd = frmPickQuality.SelectedRating;
+                int intDummy = 0;
+                if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
+                {
+                    intRatingToAdd -= CharacterObject.Qualities.Count(x =>
+                        x.SourceIDString.Equals(frmPickQuality.SelectedQuality,
+                            StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName));
+                }
             }
 
-            Quality objNewQuality = new Quality(CharacterObject);
-
-            if (objNewQuality.Swap(objQuality, CharacterObject, objXmlQuality))
+            if (intRatingToAdd > 0)
             {
-                IsCharacterUpdateRequested = true;
-                IsDirty = true;
+                Quality objNewQuality = new Quality(CharacterObject);
+
+                if (objNewQuality.Swap(objQuality, objXmlQuality, intRatingToAdd))
+                {
+                    IsCharacterUpdateRequested = true;
+                    IsDirty = true;
+                }
             }
         }
 

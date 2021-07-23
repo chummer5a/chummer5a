@@ -53,11 +53,15 @@ namespace Chummer
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpLowerRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
             this.gpbKarmaFilter = new System.Windows.Forms.GroupBox();
             this.tlpKarmaFilter = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
+            this.nudRating = new Chummer.NumericUpDownEx();
+            this.lblRatingNALabel = new System.Windows.Forms.Label();
+            this.lblRatingLabel = new System.Windows.Forms.Label();
             this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudMinimumBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudValueBP)).BeginInit();
@@ -65,10 +69,12 @@ namespace Chummer
             this.tlpMain.SuspendLayout();
             this.tableLayoutPanel2.SuspendLayout();
             this.tlpButtons.SuspendLayout();
-            this.tlpRight.SuspendLayout();
             this.tlpLowerRight.SuspendLayout();
             this.gpbKarmaFilter.SuspendLayout();
             this.tlpKarmaFilter.SuspendLayout();
+            this.tlpRight.SuspendLayout();
+            this.flpRating.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             this.bufferedTableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -114,7 +120,7 @@ namespace Chummer
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(53, 56);
+            this.lblSource.Location = new System.Drawing.Point(53, 82);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -127,7 +133,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(3, 56);
+            this.lblSourceLabel.Location = new System.Drawing.Point(3, 82);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -208,7 +214,7 @@ namespace Chummer
             this.chkFree.AutoSize = true;
             this.tlpRight.SetColumnSpan(this.chkFree, 2);
             this.chkFree.DefaultColorScheme = true;
-            this.chkFree.Location = new System.Drawing.Point(3, 29);
+            this.chkFree.Location = new System.Drawing.Point(3, 55);
             this.chkFree.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFree.Name = "chkFree";
             this.chkFree.Size = new System.Drawing.Size(50, 17);
@@ -216,7 +222,7 @@ namespace Chummer
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
             this.chkFree.UseVisualStyleBackColor = true;
-            this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
+            this.chkFree.CheckedChanged += new System.EventHandler(this.CostControl_Changed);
             // 
             // chkMetagenic
             // 
@@ -433,30 +439,6 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(234, 29);
             this.tlpButtons.TabIndex = 27;
             // 
-            // tlpRight
-            // 
-            this.tlpRight.AutoSize = true;
-            this.tlpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpRight.ColumnCount = 2;
-            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Controls.Add(this.lblSource, 1, 2);
-            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 2);
-            this.tlpRight.Controls.Add(this.lblBPLabel, 0, 0);
-            this.tlpRight.Controls.Add(this.lblBP, 1, 0);
-            this.tlpRight.Controls.Add(this.chkFree, 0, 1);
-            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpRight.Location = new System.Drawing.Point(303, 26);
-            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpRight.Name = "tlpRight";
-            this.tlpRight.RowCount = 3;
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpRight.Size = new System.Drawing.Size(303, 75);
-            this.tlpRight.TabIndex = 28;
-            // 
             // tlpLowerRight
             // 
             this.tlpLowerRight.AutoSize = true;
@@ -532,6 +514,98 @@ namespace Chummer
             this.tlpKarmaFilter.Size = new System.Drawing.Size(107, 78);
             this.tlpKarmaFilter.TabIndex = 0;
             // 
+            // tlpRight
+            // 
+            this.tlpRight.AutoSize = true;
+            this.tlpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.ColumnCount = 2;
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Controls.Add(this.flpRating, 1, 1);
+            this.tlpRight.Controls.Add(this.lblRatingLabel, 0, 1);
+            this.tlpRight.Controls.Add(this.lblSource, 1, 3);
+            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 3);
+            this.tlpRight.Controls.Add(this.lblBPLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.lblBP, 1, 0);
+            this.tlpRight.Controls.Add(this.chkFree, 0, 2);
+            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRight.Location = new System.Drawing.Point(303, 26);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpRight.Name = "tlpRight";
+            this.tlpRight.RowCount = 4;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.Size = new System.Drawing.Size(303, 101);
+            this.tlpRight.TabIndex = 28;
+            // 
+            // flpRating
+            // 
+            this.flpRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpRating.AutoSize = true;
+            this.flpRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpRating.Controls.Add(this.nudRating);
+            this.flpRating.Controls.Add(this.lblRatingNALabel);
+            this.flpRating.Location = new System.Drawing.Point(50, 25);
+            this.flpRating.Margin = new System.Windows.Forms.Padding(0);
+            this.flpRating.Name = "flpRating";
+            this.flpRating.Size = new System.Drawing.Size(80, 26);
+            this.flpRating.TabIndex = 68;
+            this.flpRating.WrapContents = false;
+            // 
+            // nudRating
+            // 
+            this.nudRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudRating.AutoSize = true;
+            this.nudRating.Location = new System.Drawing.Point(3, 3);
+            this.nudRating.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudRating.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudRating.Name = "nudRating";
+            this.nudRating.Size = new System.Drawing.Size(41, 20);
+            this.nudRating.TabIndex = 11;
+            this.nudRating.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudRating.ValueChanged += new System.EventHandler(this.CostControl_Changed);
+            // 
+            // lblRatingNALabel
+            // 
+            this.lblRatingNALabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblRatingNALabel.AutoSize = true;
+            this.lblRatingNALabel.Location = new System.Drawing.Point(50, 6);
+            this.lblRatingNALabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblRatingNALabel.Name = "lblRatingNALabel";
+            this.lblRatingNALabel.Size = new System.Drawing.Size(27, 13);
+            this.lblRatingNALabel.TabIndex = 12;
+            this.lblRatingNALabel.Tag = "String_NotApplicable";
+            this.lblRatingNALabel.Text = "N/A";
+            this.lblRatingNALabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblRatingNALabel.Visible = false;
+            // 
+            // lblRatingLabel
+            // 
+            this.lblRatingLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblRatingLabel.AutoSize = true;
+            this.lblRatingLabel.Location = new System.Drawing.Point(6, 31);
+            this.lblRatingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblRatingLabel.Name = "lblRatingLabel";
+            this.lblRatingLabel.Size = new System.Drawing.Size(41, 13);
+            this.lblRatingLabel.TabIndex = 11;
+            this.lblRatingLabel.Tag = "Label_Rating";
+            this.lblRatingLabel.Text = "Rating:";
+            this.lblRatingLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // bufferedTableLayoutPanel1
             // 
             this.bufferedTableLayoutPanel1.AutoSize = true;
@@ -579,14 +653,17 @@ namespace Chummer
             this.tableLayoutPanel2.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            this.tlpRight.ResumeLayout(false);
-            this.tlpRight.PerformLayout();
             this.tlpLowerRight.ResumeLayout(false);
             this.tlpLowerRight.PerformLayout();
             this.gpbKarmaFilter.ResumeLayout(false);
             this.gpbKarmaFilter.PerformLayout();
             this.tlpKarmaFilter.ResumeLayout(false);
             this.tlpKarmaFilter.PerformLayout();
+            this.tlpRight.ResumeLayout(false);
+            this.tlpRight.PerformLayout();
+            this.flpRating.ResumeLayout(false);
+            this.flpRating.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
             this.bufferedTableLayoutPanel1.ResumeLayout(false);
             this.bufferedTableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
@@ -626,5 +703,9 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpRight;
         private BufferedTableLayoutPanel tlpLowerRight;
         private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.Label lblRatingLabel;
+        private System.Windows.Forms.FlowLayoutPanel flpRating;
+        private NumericUpDownEx nudRating;
+        private System.Windows.Forms.Label lblRatingNALabel;
     }
 }

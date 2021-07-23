@@ -849,7 +849,9 @@ namespace Chummer
         {
             get
             {
-                return _objCharacter.Qualities.Count(objExistingQuality => objExistingQuality.SourceIDString == SourceIDString && objExistingQuality.Extra == Extra && objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
+                return _objCharacter.Qualities.Count(objExistingQuality =>
+                    objExistingQuality.SourceIDString == SourceIDString && objExistingQuality.Extra == Extra &&
+                    objExistingQuality.SourceName == SourceName && objExistingQuality.Type == Type);
             }
         }
 
@@ -1365,29 +1367,27 @@ namespace Chummer
         /// Swaps an old quality for a new one.
         /// </summary>
         /// <param name="objOldQuality">Old quality that's being removed.</param>
-        /// <param name="objCharacter">Character object that the quality will be removed from.</param>
         /// <param name="objXmlQuality">XML entry for the new quality.</param>
-        /// <param name="source">QualitySource type. Expected to be QualitySource.Selected in most cases.</param>
+        /// <param name="intNewQualityRating">Rating of the new quality to add. All of the old quality's ratings will be removed</param>
         /// <returns></returns>
-        public bool Swap(Quality objOldQuality, Character objCharacter, XmlNode objXmlQuality, QualitySource source = QualitySource.Selected)
+        public bool Swap(Quality objOldQuality, XmlNode objXmlQuality, int intNewQualityRating)
         {
             if (objOldQuality == null)
                 throw new ArgumentNullException(nameof(objOldQuality));
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
             List<Weapon> lstWeapons = new List<Weapon>(1);
-            Create(objXmlQuality, source, lstWeapons);
+            Create(objXmlQuality, QualitySource.Selected, lstWeapons);
 
             bool blnAddItem = true;
-            int intKarmaCost = (BP - objOldQuality.BP) * objCharacter.Options.KarmaQuality;
+            int intKarmaCost = (BP * intNewQualityRating - objOldQuality.BP * objOldQuality.Levels) * _objCharacter.Options.KarmaQuality;
+
             // Make sure the character has enough Karma to pay for the Quality.
             if (Type == QualityType.Positive)
             {
-                if (objCharacter.Created && !objCharacter.Options.DontDoubleQualityPurchases)
+                if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                 {
                     intKarmaCost *= 2;
                 }
-                if (intKarmaCost > objCharacter.Karma)
+                if (intKarmaCost > _objCharacter.Karma)
                 {
                     Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     blnAddItem = false;
@@ -1400,29 +1400,19 @@ namespace Chummer
                     blnAddItem = false;
                 }
 
-                if (!blnAddItem) return false;
-                if (objCharacter.Created)
-                {
-                    // Create the Karma expense.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-                    objExpense.Create(intKarmaCost * -1,
-                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_ExpenseSwapPositiveQuality")
-                            , DisplayNameShort(GlobalOptions.Language)
-                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
-                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                    objCharacter.Karma -= intKarmaCost;
-                }
+                if (!blnAddItem)
+                    return false;
             }
             else
             {
-                if (!objCharacter.Options.DontDoubleQualityRefunds)
+                if (!_objCharacter.Options.DontDoubleQualityRefunds)
                 {
                     intKarmaCost *= 2;
                 }
                 // This should only happen when a character is trading up to a less-costly Quality.
                 if (intKarmaCost > 0)
                 {
-                    if (intKarmaCost > objCharacter.Karma)
+                    if (intKarmaCost > _objCharacter.Karma)
                     {
                         Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         blnAddItem = false;
@@ -1439,34 +1429,18 @@ namespace Chummer
                     intKarmaCost = 0;
                 }
 
-                if (!blnAddItem) return false;
-                if (objCharacter.Created)
-                {
-                    // Create the Karma expense.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-                    objExpense.Create(intKarmaCost * -1,
-                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_ExpenseSwapNegativeQuality")
-                            , DisplayNameShort(GlobalOptions.Language)
-                            , DisplayNameShort(GlobalOptions.Language)), ExpenseType.Karma, DateTime.Now);
-                    objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                    objCharacter.Karma -= intKarmaCost;
-                }
-            }
-
-            // Add any created Weapons to the character.
-            foreach (Weapon objWeapon in lstWeapons)
-            {
-                objCharacter.Weapons.Add(objWeapon);
+                if (!blnAddItem)
+                    return false;
             }
 
             // Remove any Improvements for the old Quality.
-            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.Quality, objOldQuality.InternalId);
-            objCharacter.Qualities.Remove(objOldQuality);
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objOldQuality.InternalId);
+            _objCharacter.Qualities.Remove(objOldQuality);
 
             // Remove any Weapons created by the old Quality if applicable.
             if (!objOldQuality.WeaponID.IsEmptyGuid())
             {
-                List<Weapon> lstOldWeapons = objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objOldQuality.InternalId).ToList();
+                List<Weapon> lstOldWeapons = _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objOldQuality.InternalId).ToList();
                 foreach (Weapon objWeapon in lstOldWeapons)
                 {
                     objWeapon.DeleteWeapon();
@@ -1474,12 +1448,62 @@ namespace Chummer
                     if (objWeapon.Parent != null)
                         objWeapon.Parent.Children.Remove(objWeapon);
                     else
-                        objCharacter.Weapons.Remove(objWeapon);
+                        _objCharacter.Weapons.Remove(objWeapon);
+                }
+            }
+
+            foreach (Quality objOldQualityLevels in _objCharacter.Qualities.Where(x =>
+                x.SourceIDString == SourceIDString && x.Extra == Extra &&
+                x.SourceName == SourceName && x.Type == Type).ToList())
+            {
+                // Remove any Improvements for the old Quality.
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, objOldQualityLevels.InternalId);
+                _objCharacter.Qualities.Remove(objOldQualityLevels);
+
+                // Remove any Weapons created by the old Quality if applicable.
+                if (!objOldQualityLevels.WeaponID.IsEmptyGuid())
+                {
+                    List<Weapon> lstOldWeapons = _objCharacter.Weapons.DeepWhere(x => x.Children, x => x.ParentID == objOldQualityLevels.InternalId).ToList();
+                    foreach (Weapon objWeapon in lstOldWeapons)
+                    {
+                        objWeapon.DeleteWeapon();
+                        // We can remove here because lstWeapons is separate from the Weapons that were yielded through DeepWhere
+                        if (objWeapon.Parent != null)
+                            objWeapon.Parent.Children.Remove(objWeapon);
+                        else
+                            _objCharacter.Weapons.Remove(objWeapon);
+                    }
                 }
             }
 
             // Add the new Quality to the character.
-            objCharacter.Qualities.Add(this);
+            _objCharacter.Qualities.Add(this);
+
+            for (int i = 2; i <= intNewQualityRating; ++i)
+            {
+                Quality objNewQualityLevel = new Quality(_objCharacter);
+                objNewQualityLevel.Create(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra, _strSourceName);
+                _objCharacter.Qualities.Add(objNewQualityLevel);
+            }
+
+            // Add any created Weapons to the character.
+            foreach (Weapon objWeapon in lstWeapons)
+            {
+                _objCharacter.Weapons.Add(objWeapon);
+            }
+
+            if (_objCharacter.Created)
+            {
+                // Create the Karma expense.
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+                objExpense.Create(intKarmaCost * -1,
+                    string.Format(GlobalOptions.CultureInfo,
+                        LanguageManager.GetString(Type == QualityType.Positive ? "String_ExpenseSwapPositiveQuality" : "String_ExpenseSwapNegativeQuality")
+                        , objOldQuality.CurrentDisplayName
+                        , CurrentDisplayName), ExpenseType.Karma, DateTime.Now);
+                _objCharacter.ExpenseEntries.AddWithSort(objExpense);
+                _objCharacter.Karma -= intKarmaCost;
+            }
 
             return true;
         }

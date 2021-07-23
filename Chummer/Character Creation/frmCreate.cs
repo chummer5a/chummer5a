@@ -3635,88 +3635,113 @@ namespace Chummer
                             break;
 
                         blnAddAgain = frmPickQuality.AddAgain;
-
+                        int intRatingToAdd = frmPickQuality.SelectedRating;
+                        
                         XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmPickQuality.SelectedQuality.CleanXPath() + "]");
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        Quality objQuality = new Quality(CharacterObject);
-
-                        objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
-                        if (objQuality.InternalId.IsEmptyGuid())
+                        int intDummy = 0;
+                        if (objXmlQuality != null && objXmlQuality["nolevels"] == null && objXmlQuality.TryGetInt32FieldQuickly("limit", ref intDummy))
                         {
-                            // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
-                            continue;
+                            intRatingToAdd -= CharacterObject.Qualities.Count(x =>
+                                x.SourceIDString.Equals(frmPickQuality.SelectedQuality,
+                                    StringComparison.InvariantCultureIgnoreCase) && string.IsNullOrEmpty(x.SourceName));
                         }
-
-                        if (frmPickQuality.FreeCost)
-                            objQuality.BP = 0;
-
-                        // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                        string strAmount = CharacterObjectOptions.QualityKarmaLimit.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") +
-                                           LanguageManager.GetString("String_Karma");
-                        int intMaxQualityAmount = CharacterObjectOptions.QualityKarmaLimit;
-
-                        // Make sure that adding the Quality would not cause the character to exceed their BP limits.
-                        bool blnAddItem = true;
-                        if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                        for (int i = 1; i <= intRatingToAdd; ++i)
                         {
-                            // Add the cost of the Quality that is being added.
-                            int intBP = objQuality.BP;
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            Quality objQuality = new Quality(CharacterObject);
 
-                            if (objQuality.Type == QualityType.Negative)
+                            objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                            if (objQuality.InternalId.IsEmptyGuid())
                             {
+                                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                                ImprovementManager.RemoveImprovements(CharacterObject,
+                                    Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                                break;
+                            }
+
+                            if (frmPickQuality.FreeCost)
+                                objQuality.BP = 0;
+
+                            // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+                            string strAmount =
+                                CharacterObjectOptions.QualityKarmaLimit.ToString(GlobalOptions.CultureInfo) +
+                                LanguageManager.GetString("String_Space") +
+                                LanguageManager.GetString("String_Karma");
+                            int intMaxQualityAmount = CharacterObjectOptions.QualityKarmaLimit;
+
+                            // Make sure that adding the Quality would not cause the character to exceed their BP limits.
+                            bool blnAddItem = true;
+                            if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                            {
+                                // Add the cost of the Quality that is being added.
+                                int intBP = objQuality.BP;
+
+                                if (objQuality.Type == QualityType.Negative)
+                                {
+                                    // Check if adding this Quality would put the character over their limit.
+                                    if (!CharacterObjectOptions.ExceedNegativeQualities)
+                                    {
+                                        intBP += CharacterObject.NegativeQualityLimitKarma;
+                                        if (intBP < intMaxQualityAmount * -1)
+                                        {
+                                            Program.MainForm.ShowMessageBox(this,
+                                                string.Format(GlobalOptions.CultureInfo,
+                                                    LanguageManager.GetString("Message_NegativeQualityLimit"),
+                                                    strAmount),
+                                                LanguageManager.GetString("MessageTitle_NegativeQualityLimit"),
+                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            blnAddItem = false;
+                                        }
+                                        else if (CharacterObject.MetatypeBP < 0
+                                                 && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
+                                        {
+                                            Program.MainForm.ShowMessageBox(this,
+                                                string.Format(GlobalOptions.CultureInfo,
+                                                    LanguageManager.GetString(
+                                                        "Message_NegativeQualityAndMetatypeLimit"), strAmount),
+                                                LanguageManager.GetString("MessageTitle_NegativeQualityLimit"),
+                                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                            blnAddItem = false;
+                                        }
+                                    }
+                                }
                                 // Check if adding this Quality would put the character over their limit.
-                                if (!CharacterObjectOptions.ExceedNegativeQualities)
+                                else if (!CharacterObjectOptions.ExceedPositiveQualities)
                                 {
-                                    intBP += CharacterObject.NegativeQualityLimitKarma;
-                                    if (intBP < intMaxQualityAmount * -1)
+                                    intBP += CharacterObject.PositiveQualityKarma;
+                                    if (intBP > intMaxQualityAmount)
                                     {
-                                        Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityLimit"), strAmount),
-                                            LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                        blnAddItem = false;
-                                    }
-                                    else if (CharacterObject.MetatypeBP < 0
-                                             && intBP + CharacterObject.MetatypeBP < intMaxQualityAmount * -1)
-                                    {
-                                        Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NegativeQualityAndMetatypeLimit"), strAmount),
-                                            LanguageManager.GetString("MessageTitle_NegativeQualityLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                        Program.MainForm.ShowMessageBox(this,
+                                            string.Format(GlobalOptions.CultureInfo,
+                                                LanguageManager.GetString("Message_PositiveQualityLimit"), strAmount),
+                                            LanguageManager.GetString("MessageTitle_PositiveQualityLimit"),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                                         blnAddItem = false;
                                     }
                                 }
                             }
-                            // Check if adding this Quality would put the character over their limit.
-                            else if (!CharacterObjectOptions.ExceedPositiveQualities)
+
+                            if (blnAddItem)
                             {
-                                intBP += CharacterObject.PositiveQualityKarma;
-                                if (intBP > intMaxQualityAmount)
+                                CharacterObject.Qualities.Add(objQuality);
+
+                                // Add any created Weapons to the character.
+                                foreach (Weapon objWeapon in lstWeapons)
                                 {
-                                    Program.MainForm.ShowMessageBox(this,
-                                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_PositiveQualityLimit"), strAmount),
-                                        LanguageManager.GetString("MessageTitle_PositiveQualityLimit"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                    blnAddItem = false;
+                                    CharacterObject.Weapons.Add(objWeapon);
                                 }
+
+                                IsCharacterUpdateRequested = true;
+
+                                IsDirty = true;
                             }
-                        }
-
-                        if (blnAddItem)
-                        {
-                            CharacterObject.Qualities.Add(objQuality);
-
-                            // Add any created Weapons to the character.
-                            foreach (Weapon objWeapon in lstWeapons)
+                            else
                             {
-                                CharacterObject.Weapons.Add(objWeapon);
+                                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                                ImprovementManager.RemoveImprovements(CharacterObject,
+                                    Improvement.ImprovementSource.Quality, objQuality.InternalId);
+                                break;
                             }
-
-                            IsCharacterUpdateRequested = true;
-
-                            IsDirty = true;
-                        }
-                        else
-                        {
-                            // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                            ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Quality, objQuality.InternalId);
                         }
                     }
                 }
