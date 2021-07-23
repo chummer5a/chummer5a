@@ -61,7 +61,7 @@ namespace Chummer
                     xmlObjManifest.LoadStandard(strFullDirectory);
                     var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
 
-                    xmlNode.TryGetField("version", Version.TryParse, out _objMyVersion, new Version(1, 0));
+                    xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion, new Version(1, 0));
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
                     GetManifestDescriptions(xmlNode);
@@ -143,8 +143,8 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                         continue;
 
-                    objXmlNode.TryGetField("maxversion", Version.TryParse, out Version objNewMaximumVersion);
-                    objXmlNode.TryGetField("minversion", Version.TryParse, out Version objNewMinimumVersion);
+                    objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
+                    objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
 
                     DirectoryDependency objDependency = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
                     _lstDependencies.Add(objDependency);
@@ -169,8 +169,8 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                         continue;
 
-                    objXmlNode.TryGetField("maxversion", Version.TryParse, out Version objNewMaximumVersion);
-                    objXmlNode.TryGetField("minversion", Version.TryParse, out Version objNewMinimumVersion);
+                    objXmlNode.TryGetField("maxversion", VersionExtensions.TryParse, out Version objNewMaximumVersion);
+                    objXmlNode.TryGetField("minversion", VersionExtensions.TryParse, out Version objNewMinimumVersion);
 
                     DirectoryDependency objIncompatibility = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
                     _lstIncompatibilities.Add(objIncompatibility);
@@ -230,7 +230,8 @@ namespace Chummer
                     //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
                     foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == dependency.UniqueIdentifier))
                     {
-                        if (enabledCustomData.MyVersion < dependency.MinimumVersion || enabledCustomData.MyVersion > dependency.MaximumVersion)
+                        if ((dependency.MinimumVersion != default && enabledCustomData.MyVersion < dependency.MinimumVersion)
+                            || (dependency.MaximumVersion != default && enabledCustomData.MyVersion > dependency.MaximumVersion))
                         {
                             sbdReturn.AppendLine(string.Format(
                                 LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
@@ -264,7 +265,8 @@ namespace Chummer
                     foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == incompatibility.UniqueIdentifier))
                     {
                         //if the version is within the version range add it to the list.
-                        if (enabledCustomData.MyVersion > incompatibility.MinimumVersion && enabledCustomData.MyVersion < incompatibility.MaximumVersion)
+                        if ((incompatibility.MinimumVersion == default || enabledCustomData.MyVersion > incompatibility.MinimumVersion)
+                             && (incompatibility.MaximumVersion == default || enabledCustomData.MyVersion < incompatibility.MaximumVersion))
                         {
                             sbdReturn.AppendLine(string.Format(
                                 LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),

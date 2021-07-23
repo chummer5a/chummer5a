@@ -2616,7 +2616,7 @@ namespace Chummer
                                 {
                                     strVersion = strVersion.TrimStartOnce("0.");
 
-                                    if (!Version.TryParse(strVersion, out _verSavedVersion))
+                                    if (!VersionExtensions.TryParse(strVersion, out _verSavedVersion))
                                     {
                                         _verSavedVersion = Utils.IsUnitTest
                                             ? new Version(int.MaxValue, int.MaxValue, int.MaxValue)
