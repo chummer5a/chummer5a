@@ -265,8 +265,8 @@ namespace Chummer
                     foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == incompatibility.UniqueIdentifier))
                     {
                         //if the version is within the version range add it to the list.
-                        if ((incompatibility.MinimumVersion == default || enabledCustomData.MyVersion > incompatibility.MinimumVersion)
-                             && (incompatibility.MaximumVersion == default || enabledCustomData.MyVersion < incompatibility.MaximumVersion))
+                        if ((incompatibility.MinimumVersion == default || enabledCustomData.MyVersion >= incompatibility.MinimumVersion)
+                             && (incompatibility.MaximumVersion == default || enabledCustomData.MyVersion <= incompatibility.MaximumVersion))
                         {
                             sbdReturn.AppendLine(string.Format(
                                 LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
