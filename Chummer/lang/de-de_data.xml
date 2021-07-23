@@ -45649,6 +45649,12 @@
                 <altpage>39</altpage>
             </weapon>
             <weapon>
+                <id>6cfbb0cf-16e1-40b7-b2b8-9822c5642198</id>
+                <name>Onotari HL-13 (Sniper Rifle)</name>
+                <translate>Onotari HL-13 (Scharfschützengewehr)</translate>
+                <altpage>39</altpage>
+            </weapon>
+            <weapon>
                 <id>75a192ee-b109-4c68-a139-65de302f622d</id>
                 <name>PSG Enforcer</name>
                 <translate>HK PSG Enforcer</translate>
