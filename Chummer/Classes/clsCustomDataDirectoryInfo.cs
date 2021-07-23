@@ -61,8 +61,10 @@ namespace Chummer
                     xmlObjManifest.LoadStandard(strFullDirectory);
                     var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
 
-                    xmlNode.TryGetField("version", Version.TryParse, out _objMyVersion, new Version(1, 0));
+                    xmlNode.TryGetVersionFieldQuickly("version", ref _objMyVersion);
+
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
+                    
 
                     GetManifestDescriptions(xmlNode);
                     GetManifestAuthors(xmlNode);
@@ -143,8 +145,10 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                         continue;
 
-                    objXmlNode.TryGetField("maxversion", Version.TryParse, out Version objNewMaximumVersion);
-                    objXmlNode.TryGetField("minversion", Version.TryParse, out Version objNewMinimumVersion);
+                    Version objNewMaximumVersion = new Version(1, 0);
+                    Version objNewMinimumVersion = new Version(1, 0);
+                    objXmlNode.TryGetVersionFieldQuickly("maxversion", ref objNewMaximumVersion);
+                    objXmlNode.TryGetVersionFieldQuickly("maxversion", ref objNewMinimumVersion);
 
                     DirectoryDependency objDependency = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
                     _lstDependencies.Add(objDependency);
@@ -169,8 +173,10 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strDependencyName) || guidId == Guid.Empty)
                         continue;
 
-                    objXmlNode.TryGetField("maxversion", Version.TryParse, out Version objNewMaximumVersion);
-                    objXmlNode.TryGetField("minversion", Version.TryParse, out Version objNewMinimumVersion);
+                    Version objNewMaximumVersion = new Version(1, 0);
+                    Version objNewMinimumVersion = new Version(1, 0);
+                    objXmlNode.TryGetVersionFieldQuickly("maxversion", ref objNewMaximumVersion);
+                    objXmlNode.TryGetVersionFieldQuickly("maxversion", ref objNewMinimumVersion);
 
                     DirectoryDependency objIncompatibility = new DirectoryDependency(strDependencyName, guidId, objNewMinimumVersion, objNewMaximumVersion);
                     _lstIncompatibilities.Add(objIncompatibility);

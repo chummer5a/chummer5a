@@ -526,6 +526,39 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Like TryGetField for Version, but taking advantage of version.TryParse... boo, no TryParse interface! :(
+        /// If TryParse outputs null it will to try to use int.TryParse and use the output as a major. e.g. 1 becomes 1.0
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="field"></param>
+        /// <param name="read"></param>
+        /// <param name="objCulture"></param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetVersionFieldQuickly(this XmlNode node, string field, ref Version read, IFormatProvider objCulture = null)
+        {
+            XmlElement objField = node?[field];
+            if (objField == null)
+                return false;
+            if (objCulture == null)
+                objCulture = GlobalOptions.InvariantCultureInfo;
+
+            if (!Version.TryParse(objField.InnerText, out Version tmpVersion))
+            {
+                if (tmpVersion == null)
+                {
+                    if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int tmpMajor))
+                        return false;
+
+                    tmpVersion = new Version(tmpMajor, 0);
+                }
+            }
+
+            read = tmpVersion;
+            return true;
+        }
+
+        /// <summary>
         /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty.
         /// </summary>
         /// <param name="node">XPathNavigator node of the object.</param>
