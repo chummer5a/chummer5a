@@ -235,9 +235,10 @@ namespace Chummer
 
                 string strBaseFileName = strSelectedName.FastEscape(Path.GetInvalidFileNameChars()).TrimEndOnce(".xml");
                 // Make sure our file name isn't too long, otherwise we run into problems on Windows
-                // We can assume that Chummer's startup path minus 16 is within the limit, otherwise the user would have had problems installing Chummer with its data files in the first place
-                if (strBaseFileName.Length > Application.StartupPath.Length - 16)
-                    strBaseFileName = strBaseFileName.Substring(0, Application.StartupPath.Length - 16);
+                // We can assume that Chummer's startup path plus 16 is within the limit, otherwise the user would have had problems installing Chummer with its data files in the first place
+                int intStartupPathLimit = Application.StartupPath.Length + 16;
+                if (strBaseFileName.Length > intStartupPathLimit)
+                    strBaseFileName = strBaseFileName.Substring(0, intStartupPathLimit);
                 strSelectedFullFileName = strBaseFileName + ".xml";
                 int intMaxNameLength = char.MaxValue - Application.StartupPath.Length - "settings".Length - 6;
                 uint uintAccumulator = 1;
