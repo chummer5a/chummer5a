@@ -651,21 +651,33 @@
     <Compile Include="UI\Shared\LimitTabUserControl.Designer.cs">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </Compile>
-    <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\manifest.xml" />
+    <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Ammo Skip Internal Mount\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Ammo Skip Internal Mount\manifest.xml" />
+    <Content Include="customdata\Ammo Skip Internal Mount\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Bone Lacing Adds to Body\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\College Education Qualities Stack\manifest.xml" />
+    <Content Include="customdata\College Education Qualities Stack\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\amend_encumbrance_armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\manifest.xml" />
-    <Content Include="customdata\Cyberlimb Customisation Does Not Incur Grade Costs\manifest.xml" />
-    <Content Include="customdata\Cyberlimbs Cannot Add Headware\manifest.xml" />
+    <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimb Customisation Does Not Incur Grade Costs\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimbs Cannot Add Headware\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -675,12 +687,16 @@
     <Content Include="customdata\Delnar Skills Remake\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\manifest.xml" />
+    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Exclude German Sourcebooks\manifest.xml" />
     <Content Include="customdata\Flashback System Enables Cyberzombies\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Flashback System Enables Cyberzombies\manifest.xml" />
+    <Content Include="customdata\Flashback System Enables Cyberzombies\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes\amend_armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -738,40 +754,66 @@
     <Content Include="customdata\German Data Changes\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Hand-Based Cyberware Can Go Anywhere\manifest.xml" />
-    <Content Include="customdata\Helmets Are Mods, SWAT and MilSpec Are FBA\manifest.xml" />
-    <Content Include="customdata\Herolab Vehicle Ram Plate Stats\manifest.xml" />
-    <Content Include="customdata\In Debt Does Not Contribute to BP\manifest.xml" />
+    <Content Include="customdata\Hand-Based Cyberware Can Go Anywhere\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Helmets Are Mods, SWAT and MilSpec Are FBA\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Herolab Vehicle Ram Plate Stats\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\In Debt Does Not Contribute to BP\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Kill Code Sprite Optional Powers\manifest.xml" />
-    <Content Include="customdata\Legal SIN and Licenses\manifest.xml" />
+    <Content Include="customdata\Kill Code Sprite Optional Powers\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Legal SIN and Licenses\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Liminal Centaur Legs Prevent Digigrade\amend_digigradeleg_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Liminal Centaur Legs Prevent Digigrade\manifest.xml" />
+    <Content Include="customdata\Liminal Centaur Legs Prevent Digigrade\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Morrissey Alta Availability\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Morrissey Alta Availability\manifest.xml" />
+    <Content Include="customdata\Morrissey Alta Availability\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Orks Have Natural Weapon Tusks\amend_orktusk_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Orks Have Natural Weapon Tusks\custom_orktusk_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Orks Have Natural Weapon Tusks\manifest.xml" />
+    <Content Include="customdata\Orks Have Natural Weapon Tusks\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Point Priority Chargen\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Purchasable X-Ray Sensor Function\amend_purchasablexraysensorfunction_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Purchasable X-Ray Sensor Function\manifest.xml" />
-    <Content Include="customdata\Radar Sensor as Sensor Function\manifest.xml" />
-    <Content Include="customdata\Rainforest Carbine Missions Errata\manifest.xml" />
-    <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\manifest.xml" />
+    <Content Include="customdata\Purchasable X-Ray Sensor Function\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Radar Sensor as Sensor Function\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Rainforest Carbine Missions Errata\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Remove Automatics as a Skill\amend_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -793,12 +835,18 @@
     <Content Include="customdata\Remove Automatics as a Skill\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Remove Automatics as a Skill\manifest.xml" />
-    <Content Include="customdata\Rigger 5 Weapon Mounts - Allow Sporting Rifles\manifest.xml" />
+    <Content Include="customdata\Remove Automatics as a Skill\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Rigger 5 Weapon Mounts - Allow Sporting Rifles\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Shapeshifter Initiative Bonus\manifest.xml" />
+    <Content Include="customdata\Shapeshifter Initiative Bonus\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -814,27 +862,39 @@
     <Content Include="customdata\Stolen Gear Contributes to BP\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Stolen Gear Contributes to BP\manifest.xml" />
+    <Content Include="customdata\Stolen Gear Contributes to BP\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\amend_mentors.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\manifest.xml" />
+    <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Toxic Tradition Has No Requirement\amend_traditions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Toxic Tradition Has No Requirement\manifest.xml" />
-    <Content Include="customdata\Trolls Have Natural Weapon Horns\manifest.xml" />
+    <Content Include="customdata\Toxic Tradition Has No Requirement\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Trolls Have Natural Weapon Horns\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Unrestricted Kill Code Qualities\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Unrestricted Kill Code Qualities\manifest.xml" />
+    <Content Include="customdata\Unrestricted Kill Code Qualities\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Visible Rigid Stock\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Rigger 5 Weapon Mounts - Allow Sporting Rifles\amend_r5_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Visible Rigid Stock\manifest.xml" />
+    <Content Include="customdata\Visible Rigid Stock\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\actions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

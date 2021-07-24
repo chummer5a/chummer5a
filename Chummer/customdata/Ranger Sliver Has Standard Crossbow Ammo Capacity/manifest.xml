@@ -1,17 +1,35 @@
-<?xml version="1.0" encoding="utf-8" ?>
-  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
-    <guid>C1F6D3AD-A38B-453A-97B6-B73945C33A45</guid>
-    <version>1</version>
-    <authors>
-      <author>
-        <name>chummer5a</name>
-        <main>true</main>
-      </author>
-    </authors>
-    <descriptions>
-      <description>
-        <text>This ruleset replaces the Rainforest Carbine from Gun H(e)aven 3 with the rules specified in Missions.</text>
-        <lang>en-us</lang>
-      </description>
-    </descriptions>
-  </manifest>
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>C1F6D3AD-A38B-453A-97B6-B73945C33A45</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>chummer5a</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset replaces the Ranger Sliver's ammunition capacity with 4(m). RAW, the Ranger Sliver has '-' Ammo, but Crossbows are otherwise listed as 4(m). Unclear which takes precedence.</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>

@@ -8,8 +8,8 @@
 >
   <xs:complexType name ="manifest">
     <xs:sequence>
-      <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1"/>
-      <xs:element name="version" type="xs:decimal" minOccurs="0" maxOccurs="1"/>
+      <xs:element name="guid" type="xs:string" minOccurs="1" maxOccurs="1" />
+      <xs:element name="version" type="xs:decimal" minOccurs="0" maxOccurs="1" />
       <xs:element name="authors" minOccurs="0" maxOccurs="1">
         <xs:complexType>
           <xs:sequence>
