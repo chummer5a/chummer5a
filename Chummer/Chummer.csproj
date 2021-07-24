@@ -274,6 +274,7 @@
     <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
+    <Compile Include="Backend\Extensions\VersionExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Extensions\XmlDocumentExtensions.cs" />
     <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />

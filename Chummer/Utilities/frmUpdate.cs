@@ -378,7 +378,7 @@ namespace Chummer
             }
 
             int intResult = 0;
-            if (Version.TryParse(strLatestVersion, out Version objLatestVersion))
+            if (VersionExtensions.TryParse(strLatestVersion, out Version objLatestVersion))
                 intResult = objLatestVersion?.CompareTo(_objCurrentVersion) ?? 0;
 
             string strSpace = LanguageManager.GetString("String_Space");

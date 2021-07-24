@@ -3144,7 +3144,7 @@
     <armor>
       <id>efa1f97d-1408-4f75-befe-4e0b22f9f2c5</id>
       <name>Rockblood Old School Line</name>
-      <category>Clothing</category>
+      <category>Armor</category>
       <armor>8</armor>
       <armorcapacity>10</armorcapacity>
       <avail>8</avail>
@@ -3162,7 +3162,7 @@
     <armor>
       <id>74ccca34-925c-4149-a58b-501e69cabe46</id>
       <name>Rockblood Signature Armored Shirt</name>
-      <category>Clothing</category>
+      <category>Armor</category>
       <armor>6</armor>
       <armorcapacity>4</armorcapacity>
       <avail>14</avail>

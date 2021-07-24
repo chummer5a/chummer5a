@@ -835,9 +835,9 @@ namespace Chummer
                                     in s_LstAXPathsToSearch)
                                     {
                                         Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
-                                            async (objXPathPair, objState) =>
+                                            (objXPathPair, objState) =>
                                             {
-                                                XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                                XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
                                                     objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
                                                 foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                                 {
@@ -873,9 +873,9 @@ namespace Chummer
                                             Func<XPathNavigator, string>>> aobjPaths
                                         in s_LstAXPathsToSearch)
                                     {
-                                        Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
+                                        Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
                                         {
-                                            XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
+                                            XPathNavigator xmlDocument = XmlManager.LoadXPath(
                                                 objXPathPair.Item1,
                                                 objCharacter?.Options.EnabledCustomDataDirectoryPaths, strIntoLanguage);
                                             foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
@@ -1010,9 +1010,9 @@ namespace Chummer
                             in s_LstAXPathsToSearch)
                         {
                             Parallel.ForEach(aobjPaths.Where(x => x.Item1 == strPreferFile),
-                                async (objXPathPair, objState) =>
+                                (objXPathPair, objState) =>
                                 {
-                                    XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                    XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
                                         objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
                                     foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                     {
@@ -1050,9 +1050,9 @@ namespace Chummer
                                 aobjPaths
                             in s_LstAXPathsToSearch)
                         {
-                            Parallel.ForEach(aobjPaths, async (objXPathPair, objState) =>
+                            Parallel.ForEach(aobjPaths, (objXPathPair, objState) =>
                             {
-                                XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(objXPathPair.Item1,
+                                XPathNavigator xmlDocument = XmlManager.LoadXPath(objXPathPair.Item1,
                                     objCharacter?.Options.EnabledCustomDataDirectoryPaths, strFromLanguage);
                                 foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                 {

@@ -10464,17 +10464,22 @@
       <category>Assault Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
-      <accuracy>0</accuracy>
+      <accuracy>5</accuracy>
       <reach>0</reach>
-      <damage>0</damage>
-      <ap>0</ap>
-      <mode>0</mode>
+      <damage>9P</damage>
+      <ap>-2</ap>
+      <mode>SA/BF/FA</mode>
       <rc>0</rc>
       <ammo>40(c)</ammo>
       <avail>10F</avail>
       <cost>4500</cost>
       <source>2050</source>
       <page>184</page>
+      <accessories>
+        <accessory>
+          <name>Gas-Vent 1 System</name>
+        </accessory>
+      </accessories>
       <accessorymounts>
         <mount>Stock</mount>
         <mount>Side</mount>
@@ -10483,12 +10488,9 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <underbarrels>
-        <underbarrel>Steyr AUG-CSL SMG (2050)</underbarrel>
-        <underbarrel>Steyr AUG-CSL Carbine (2050)</underbarrel>
-        <underbarrel>Steyr AUG-CSL Assault Rifles (2050)</underbarrel>
-        <underbarrel>Steyr AUG-CSL LMG (2050)</underbarrel>
-      </underbarrels>
+      <addweapon>Steyr AUG-CSL SMG (2050)</addweapon>
+      <addweapon>Steyr AUG-CSL Carbine (2050)</addweapon>
+      <addweapon>Steyr AUG-CSL LMG (2050)</addweapon>
     </weapon>
     <weapon>
       <id>5e116545-08b4-4eae-8dab-6f1546786296</id>
@@ -10525,7 +10527,7 @@
     <weapon>
       <id>ef76228b-c339-4262-b8e3-597de652d9b4</id>
       <name>Steyr AUG-CSL Carbine (2050)</name>
-      <category>Sniper Rifles</category>
+      <category>Sporting Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>5</accuracy>
@@ -10533,38 +10535,6 @@
       <damage>8P</damage>
       <ap>0</ap>
       <mode>SA/BF</mode>
-      <rc>0</rc>
-      <ammo>40(c)</ammo>
-      <avail>0</avail>
-      <cost>0</cost>
-      <source>2050</source>
-      <page>184</page>
-      <accessories>
-        <accessory>
-          <name>Gas-Vent 1 System</name>
-        </accessory>
-      </accessories>
-      <accessorymounts>
-        <mount>Stock</mount>
-        <mount>Side</mount>
-        <mount>Internal</mount>
-        <mount>Barrel</mount>
-        <mount>Top</mount>
-        <mount>Under</mount>
-      </accessorymounts>
-      <hide />
-    </weapon>
-    <weapon>
-      <id>4c09761e-d2a2-4958-9113-5b61db145a20</id>
-      <name>Steyr AUG-CSL Assault Rifles (2050)</name>
-      <category>Assault Rifles</category>
-      <type>Ranged</type>
-      <conceal>6</conceal>
-      <accuracy>5</accuracy>
-      <reach>0</reach>
-      <damage>9P</damage>
-      <ap>-2</ap>
-      <mode>SA/BF/FA</mode>
       <rc>0</rc>
       <ammo>40(c)</ammo>
       <avail>0</avail>
@@ -10617,6 +10587,9 @@
         <mount>Under</mount>
       </accessorymounts>
       <hide />
+      <range>Light Machine Guns</range>
+      <spec>Machine Guns</spec>
+      <useskill>Heavy Weapons</useskill>
     </weapon>
     <!-- Grenade -->
     <weapon>
@@ -11618,11 +11591,9 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <underbarrels>
-        <underbarrel>Steyr AUG-CSL III (Carbine)</underbarrel>
-        <underbarrel>Steyr AUG-CSL III (LMG)</underbarrel>
-        <underbarrel>Steyr AUG-CSL III (Sniper Rifle)</underbarrel>
-      </underbarrels>
+      <addweapon>Steyr AUG-CSL III (Carbine)</addweapon>
+      <addweapon>Steyr AUG-CSL III (LMG)</addweapon>
+      <addweapon>Steyr AUG-CSL III (Sniper Rifle)</addweapon>
     </weapon>
     <weapon>
       <id>037bfd07-2130-4fcf-bbd5-2413f74ca23f</id>
@@ -13599,6 +13570,7 @@
       </accessorymounts>
       <addweapon>Onotari HL-13 Personal Defense Weapon</addweapon>
       <addweapon>Onotari HL-13 Urban Assault</addweapon>
+	  <addweapon>Onotari HL-13 (Sniper Rifle)</addweapon>
     </weapon>
     <weapon>
       <id>19d63a61-29f4-4892-a6eb-8042cd171676</id>
@@ -13612,9 +13584,9 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>100(belt)</ammo>
+      <ammo>30(c)</ammo>
       <avail>6F</avail>
-      <cost>500</cost>
+      <cost>0</cost>
       <source>SL</source>
       <page>38</page>
       <accessories>
@@ -13632,6 +13604,9 @@
         <mount>Top</mount>
       </accessorymounts>
       <hide />
+      <range>Submachine Guns</range>
+      <spec>Submachine Guns</spec>
+      <useskill>Automatics</useskill>
     </weapon>
     <weapon>
       <id>6704239c-42c0-43c2-8d4c-3f8ff6c01212</id>
@@ -13645,9 +13620,9 @@
       <ap>-2</ap>
       <mode>FA</mode>
       <rc>0</rc>
-      <ammo>100(belt)</ammo>
+      <ammo>30(c)</ammo>
       <avail>6F</avail>
-      <cost>500</cost>
+      <cost>0</cost>
       <source>SL</source>
       <page>38</page>
       <accessories>
@@ -13669,6 +13644,49 @@
         <mount>Top</mount>
       </accessorymounts>
       <hide />
+      <range>Submachine Guns</range>
+      <spec>Submachine Guns</spec>
+      <useskill>Automatics</useskill>
+	    </weapon>
+	<weapon>
+      <id>6cfbb0cf-16e1-40b7-b2b8-9822c5642198</id>
+      <name>Onotari HL-13 (Sniper Rifle)</name>
+      <category>Sniper Rifles</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>11P</damage>
+      <ap>-2</ap>
+      <mode>SA/BF</mode>
+      <rc>0</rc>
+      <ammo>30(c)</ammo>
+      <avail>6F</avail>
+      <cost>0</cost>
+      <source>SL</source>
+      <page>39</page>
+      <accessories>
+        <accessory>
+          <name>Slide Mount</name>
+          <mount>Under</mount>
+        </accessory>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+          <mount>Internal</mount>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Internal</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <hide />
+      <range>Sniper Rifles</range>
+      <spec>Sniper Rifles</spec>
+      <useskill>Longarms</useskill>
     </weapon>
     <weapon>
       <id>75a192ee-b109-4c68-a139-65de302f622d</id>

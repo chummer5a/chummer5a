@@ -355,7 +355,8 @@ namespace Chummer
         public static Task StartSTATask(Task func)
         {
             var tcs = new TaskCompletionSource<bool>();
-            Thread thread = new Thread(async () =>
+            Thread thread = new Thread(RunFunction);
+            async void RunFunction()
             {
                 try
                 {
@@ -371,7 +372,7 @@ namespace Chummer
                 {
                     tcs.SetException(e);
                 }
-            });
+            }
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             return tcs.Task;
@@ -386,7 +387,8 @@ namespace Chummer
         public static Task<T> StartSTATask<T>(Task<T> func)
         {
             var tcs = new TaskCompletionSource<T>();
-            Thread thread = new Thread(async () =>
+            Thread thread = new Thread(RunFunction);
+            async void RunFunction()
             {
                 try
                 {
@@ -396,7 +398,7 @@ namespace Chummer
                 {
                     tcs.SetException(e);
                 }
-            });
+            }
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             return tcs.Task;

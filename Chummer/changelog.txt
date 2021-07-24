@@ -91,7 +91,10 @@ Application Changes:
 - When removing content that has added potentially duplicate specializations to a character, the specialization that was added by said content is now properly always gets removed.
 - A warning is now shown when attempting to open enough characters that it might cause Chummer to silently crash.
 - Added a plural/singular detector to the code that checks if a character has a specialization for a weapon.
-- Added the ability to add spells and complex forms to a character through the Improvements system in career mode. 
+- Added the ability to add spells and complex forms to a character through the Improvements system in career mode.
+- Armor items classified as Clothing but without a + or - in their armor codes are now treated as regular armor instead of armor extras.
+- Qualities with a rating can now be added at higher ratings from the quality selector, and the quality selector's karma filters now also take qualities with multiple ratings into account.
+- In Create mode, the sidebar section that tracks the number of spells, rituals, and preparations learned with priority points now properly reflects the maximum number of each as points are spent in either of the other categories.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -132,6 +135,8 @@ Data Changes:
 - Out for Myself properly gives +3 Surprise dice.
 - Various music genres and trideo shows from No Future have been added as suggested specializations for relevant knowledge skills
 - Fixed specialization entries for crossbows and slingshots.
+- The Replace Attribute improvement now works properly. Fixes #4512.
+- Rockblood Old School Line and Rockblood Signature Armored Shirt are categorized as Armor instead of Clothing.
 
 Changed/New Strings:
 - String_ContactPoints

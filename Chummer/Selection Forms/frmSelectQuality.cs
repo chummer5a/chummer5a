@@ -102,7 +102,8 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            _blnLoading = true;
+
             XPathNavigator xmlQuality = null;
             string strSelectedQuality = lstQualities.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedQuality))
@@ -112,76 +113,21 @@ namespace Chummer
 
             if (xmlQuality != null)
             {
-                if (chkFree.Checked)
-                    lblBP.Text = 0.ToString(GlobalOptions.CultureInfo);
+                nudRating.ValueAsInt = nudRating.MinimumAsInt;
+                int intMaxRating = int.MaxValue;
+                if (xmlQuality.TryGetInt32FieldQuickly("limit", ref intMaxRating) && xmlQuality.SelectSingleNode("nolevels") == null)
+                {
+                    lblRatingNALabel.Visible = false;
+                    nudRating.MaximumAsInt = intMaxRating;
+                    nudRating.Visible = true;
+                }
                 else
                 {
-                    string strKarma = xmlQuality.SelectSingleNode("karma")?.Value ?? string.Empty;
-                    if (strKarma.StartsWith("Variable(", StringComparison.Ordinal))
-                    {
-                        int intMin;
-                        int intMax = int.MaxValue;
-                        string strCost = strKarma.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                        if (strCost.Contains('-'))
-                        {
-                            string[] strValues = strCost.Split('-');
-                            int.TryParse(strValues[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMin);
-                            int.TryParse(strValues[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMax);
-                        }
-                        else
-                            int.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intMin);
-
-                        lblBP.Text = intMax == int.MaxValue
-                            ? intMin.ToString(GlobalOptions.CultureInfo)
-                            : string.Format(GlobalOptions.CultureInfo, "{0}{1}-{1}{2}", intMin, strSpace, intMax);
-                    }
-                    else
-                    {
-                        int.TryParse(strKarma, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intBP);
-
-                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter))
-                        {
-                            string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
-                            switch (xmlQuality.SelectSingleNode("category")?.Value)
-                            {
-                                case "Positive":
-                                    intBP += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
-                                    break;
-
-                                case "Negative":
-                                    intBP -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
-                                    break;
-                            }
-                        }
-                        if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
-                        {
-                            string strDoubleCostCareer = xmlQuality.SelectSingleNode("doublecareer")?.Value;
-                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
-                            {
-                                intBP *= 2;
-                            }
-                        }
-                        lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString(GlobalOptions.CultureInfo);
-                        if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(xmlQuality.SelectSingleNode("canbuywithspellpoints")?.Value, GlobalOptions.InvariantCultureInfo))
-                        {
-                            int i = (intBP * _objCharacter.Options.KarmaQuality);
-                            int spellPoints = 0;
-                            while (i > 0)
-                            {
-                                i -= 5;
-                                spellPoints++;
-                            }
-
-                            lblBP.Text += string.Format(GlobalOptions.CultureInfo, "{0}/{0}{1}{0}{2}", LanguageManager.GetString("String_Space"), spellPoints, LanguageManager.GetString("String_SpellPoints"));
-                            lblBP.ToolTipText = LanguageManager.GetString("Tip_SelectSpell_MasteryQuality");
-                        }
-                        else
-                        {
-                            lblBP.ToolTipText = string.Empty;
-                        }
-                    }
+                    nudRating.Visible = false;
+                    lblRatingNALabel.Visible = true;
                 }
-                lblBPLabel.Visible = lblBP.Visible = !string.IsNullOrEmpty(lblBP.Text);
+
+                UpdateCostLabel(xmlQuality);
 
                 string strSource = xmlQuality.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlQuality.SelectSingleNode("altpage")?.Value ?? xmlQuality.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
@@ -196,6 +142,8 @@ namespace Chummer
             {
                 tlpRight.Visible = false;
             }
+
+            _blnLoading = false;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -220,9 +168,24 @@ namespace Chummer
             BuildQualityList();
         }
 
-        private void chkFree_CheckedChanged(object sender, EventArgs e)
+        private void CostControl_Changed(object sender, EventArgs e)
         {
-            lstQualities_SelectedIndexChanged(sender, e);
+            if (_blnLoading)
+                return;
+
+            _blnLoading = true;
+
+            XPathNavigator xmlQuality = null;
+            string strSelectedQuality = lstQualities.SelectedValue?.ToString();
+            if (!string.IsNullOrEmpty(strSelectedQuality))
+            {
+                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + "]");
+            }
+
+            if (xmlQuality != null)
+                UpdateCostLabel(xmlQuality);
+
+            _blnLoading = false;
         }
 
         private void chkMetagenic_CheckedChanged(object sender, EventArgs e)
@@ -285,6 +248,9 @@ namespace Chummer
 
         private void KarmaFilter(object sender, EventArgs e)
         {
+            if (_blnLoading)
+                return;
+
             _blnLoading = true;
             if (string.IsNullOrWhiteSpace(nudMinimumBP.Text))
             {
@@ -298,7 +264,17 @@ namespace Chummer
             {
                 nudMaximumBP.Value = 0;
             }
+
+            if (nudMaximumBP.Value < nudMinimumBP.Value)
+            {
+                if (sender == nudMaximumBP)
+                    nudMinimumBP.Value = nudMaximumBP.Value;
+                else
+                    nudMaximumBP.Value = nudMinimumBP.Value;
+            }
+
             _blnLoading = false;
+
             BuildQualityList();
         }
 
@@ -310,6 +286,8 @@ namespace Chummer
         /// Quality that was selected in the dialogue.
         /// </summary>
         public string SelectedQuality => _strSelectedQuality;
+
+        public int SelectedRating => nudRating.Visible ? nudRating.ValueAsInt : 1;
 
         /// <summary>
         /// Forcefully add a Category to the list.
@@ -346,6 +324,96 @@ namespace Chummer
         #endregion Properties
 
         #region Methods
+
+        private void UpdateCostLabel(XPathNavigator xmlQuality)
+        {
+            if (xmlQuality != null)
+            {
+                if (chkFree.Checked)
+                    lblBP.Text = 0.ToString(GlobalOptions.CultureInfo);
+                else
+                {
+                    string strKarma = xmlQuality.SelectSingleNode("karma")?.Value ?? string.Empty;
+                    if (strKarma.StartsWith("Variable(", StringComparison.Ordinal))
+                    {
+                        int intMin;
+                        int intMax = int.MaxValue;
+                        string strCost = strKarma.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                        if (strCost.Contains('-'))
+                        {
+                            string[] strValues = strCost.Split('-');
+                            int.TryParse(strValues[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                                out intMin);
+                            int.TryParse(strValues[1], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                                out intMax);
+                        }
+                        else
+                            int.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                                out intMin);
+
+                        lblBP.Text = intMax == int.MaxValue
+                            ? intMin.ToString(GlobalOptions.CultureInfo)
+                            : string.Format(GlobalOptions.CultureInfo, "{0}{1}-{1}{2}", intMin,
+                                LanguageManager.GetString("String_Space"), intMax);
+                    }
+                    else
+                    {
+                        int.TryParse(strKarma, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intBP);
+
+                        if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter))
+                        {
+                            string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
+                            switch (xmlQuality.SelectSingleNode("category")?.Value)
+                            {
+                                case "Positive":
+                                    intBP += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                                    break;
+
+                                case "Negative":
+                                    intBP -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                                    break;
+                            }
+                        }
+
+                        if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
+                        {
+                            string strDoubleCostCareer = xmlQuality.SelectSingleNode("doublecareer")?.Value;
+                            if (string.IsNullOrEmpty(strDoubleCostCareer) || strDoubleCostCareer != bool.FalseString)
+                            {
+                                intBP *= 2;
+                            }
+                        }
+
+                        if (nudRating.Visible && nudRating.ValueAsInt != 1)
+                            intBP *= nudRating.ValueAsInt;
+                        lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString(GlobalOptions.CultureInfo);
+                        if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(
+                            xmlQuality.SelectSingleNode("canbuywithspellpoints")?.Value,
+                            GlobalOptions.InvariantCultureInfo))
+                        {
+                            int i = (intBP * _objCharacter.Options.KarmaQuality);
+                            int spellPoints = 0;
+                            while (i > 0)
+                            {
+                                i -= 5;
+                                spellPoints++;
+                            }
+
+                            lblBP.Text += string.Format(GlobalOptions.CultureInfo, "{0}/{0}{1}{0}{2}",
+                                LanguageManager.GetString("String_Space"), spellPoints,
+                                LanguageManager.GetString("String_SpellPoints"));
+                            lblBP.ToolTipText = LanguageManager.GetString("Tip_SelectSpell_MasteryQuality");
+                        }
+                        else
+                        {
+                            lblBP.ToolTipText = string.Empty;
+                        }
+                    }
+                }
+            }
+
+            lblBPLabel.Visible = lblBP.Visible = !string.IsNullOrEmpty(lblBP.Text);
+        }
 
         /// <summary>
         /// Build the list of Qualities.
@@ -387,40 +455,62 @@ namespace Chummer
             {
                 if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && nudValueBP.Value > 0)
                 {
-                    sbdFilter.Append(" and ((doublecareer = 'False' and karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                        + ") or (not(doublecareer = 'False') and karma = " + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo) + "))");
+                    sbdFilter.Append(" and ((doublecareer = 'False' and (karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                        + " or (not(nolevels) and limit != 'False' and karma mod " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                        + " = 0 and abs(karma * limit) <= abs(" + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                        + ")))) or (not(doublecareer = 'False') and (karma = " + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)
+                        + " or (not(nolevels) and limit != 'False' and karma mod " + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)
+                        + " = 0 and abs(karma * limit) <= abs(" + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)
+                        + ")))))");
                 }
                 else
                 {
-                    sbdFilter.Append(" and karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                    sbdFilter.Append(" and (karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                                                      + " or (not(nolevels) and limit != 'False' and karma mod "
+                                                      + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
+                                                      + " = 0 and abs(karma * limit) <= abs("
+                                                      + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo) + ")))");
                 }
             }
-            else
+            else if (nudMinimumBP.Value != 0 || nudMaximumBP.Value != 0)
             {
-                if (nudMinimumBP.Value != 0)
+                if (nudMinimumBP.Value < 0 == nudMaximumBP.Value < 0)
                 {
-                    if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
-                    {
-                        sbdFilter.Append(" and (((doublecareer = 'False' or karma < 0) and karma >= " + nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                            + ") or (not(doublecareer = 'False' or karma < 0) and karma >= " + (nudMinimumBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo) + "))");
-                    }
-                    else
-                    {
-                        sbdFilter.Append(" and karma >= " + nudMinimumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
+                    sbdFilter.Append(" and (" + GetKarmaRangeString(nudMaximumBP.ValueAsInt, nudMinimumBP.ValueAsInt) + ")");
+                }
+                else
+                {
+                    sbdFilter.Append("and ((" + GetKarmaRangeString(nudMaximumBP.ValueAsInt, 0)
+                                              + ") or (" + GetKarmaRangeString(-1, nudMinimumBP.ValueAsInt) + "))");
                 }
 
-                if (nudMaximumBP.Value != 0)
+                string GetKarmaRangeString(int intMax, int intMin)
                 {
-                    if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && nudMaximumBP.Value > 0)
+                    int intMostExtremeValue = intMax > 0 ? intMax : intMin;
+                    int intValueDiff = intMax > 0 ? intMax - intMin : intMin - intMax;
+                    if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                     {
-                        sbdFilter.Append(" and (((doublecareer = 'False' or karma < 0) and karma <= " + nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                            + ") or (not(doublecareer = 'False' or karma < 0) and karma <= " + (nudMaximumBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo) + "))");
+                        return "((doublecareer = 'False' or karma < 0) and ((karma >= " + intMin.ToString(GlobalOptions.InvariantCultureInfo) + " and karma <= " + intMax.ToString(GlobalOptions.InvariantCultureInfo)
+                               + ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
+                               + " and (karma * (" + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
+                               + " mod karma) <= karma * " + intValueDiff.ToString(GlobalOptions.InvariantCultureInfo) + ") and ((karma >= 0 and karma * limit >= "
+                               + intMin.ToString(GlobalOptions.InvariantCultureInfo) + ") or (karma < 0 and karma * limit <= "
+                               + intMax.ToString(GlobalOptions.InvariantCultureInfo)
+                               + "))))) or (not(doublecareer = 'False' or karma < 0) and ((2 * karma >= " + intMin.ToString(GlobalOptions.InvariantCultureInfo)
+                               + " and 2 * karma <= " + intMax.ToString(GlobalOptions.InvariantCultureInfo)
+                               + ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= 2 * karma * " + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
+                               + " and (2 * karma * (" + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
+                               + " mod (2 * karma)) <= 2 * karma * " + intValueDiff.ToString(GlobalOptions.InvariantCultureInfo) + ") and ((karma >= 0 and 2 * karma * limit >= "
+                               + intMin.ToString(GlobalOptions.InvariantCultureInfo) + ") or (karma < 0 and 2 * karma * limit <= "
+                               + intMax.ToString(GlobalOptions.InvariantCultureInfo) + ")))))";
                     }
-                    else
-                    {
-                        sbdFilter.Append(" and karma <= " + nudMaximumBP.Value.ToString(GlobalOptions.InvariantCultureInfo));
-                    }
+
+                    return "(karma >= " + intMin.ToString(GlobalOptions.InvariantCultureInfo) + " and karma <= " + intMax.ToString(GlobalOptions.InvariantCultureInfo)
+                           + ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
+                           + " and (karma * (" + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
+                           + " mod karma) <= karma * " + intValueDiff.ToString(GlobalOptions.InvariantCultureInfo) + ") and ((karma >= 0 and karma * limit >= "
+                           + intMin.ToString(GlobalOptions.InvariantCultureInfo) + ") or (karma < 0 and karma * limit <= "
+                           + intMax.ToString(GlobalOptions.InvariantCultureInfo) + ")))";
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
