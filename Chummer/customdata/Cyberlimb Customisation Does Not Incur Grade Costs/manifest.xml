@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>45E51F3A-FA85-4A8F-94B4-8A66529A5454</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>Unknown</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset sets Cyberware Customization to not use the Grade of its parent cyberware. This reduces the net cost of customization as no nuyen modifier is applied.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

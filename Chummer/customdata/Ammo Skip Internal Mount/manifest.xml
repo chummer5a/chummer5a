@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>458BCD54-7241-4930-A3A8-6F15ABBE4F4F</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>Unknown</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset sets the Ammo Skip weapon mod to use the Internal slot instead of Under, as most weapons that would be able to take the mod do not possess that slot.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

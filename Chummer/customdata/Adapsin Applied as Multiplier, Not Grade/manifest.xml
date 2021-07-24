@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>3C9636B8-F5F6-49D4-AE8F-12F8F8371334</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>Unknown</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset changes Adapsin to act as an Improvement Type instead of a Cyberware Grade. This causes it to stack differently with other sources like Biocompatibility.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

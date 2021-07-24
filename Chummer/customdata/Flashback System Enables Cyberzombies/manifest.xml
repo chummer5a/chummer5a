@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>E84F943C-CC46-472B-B28A-5E15C9975F4C</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>chummer5a</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset allows the use of the legacy Cyberzombie conversion procedure from Shadowrun 4th Edition by allowing the Flashback System cyberware to be treated as equivalent to the Invoked Memory Stimulator cyberware.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

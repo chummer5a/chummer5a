@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>54ADB8F0-329B-4916-9BC2-706690056737</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>chummer5a</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset modifies SWAT, Milspec, Security Armor, Stattkrieg and equivalent armor items to be Full Body Armor, allowing them to equip the equivalent Full Body Armor Modifications. Also converts Helmets provided for these armor pieces into modifications rather than separate armor items.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

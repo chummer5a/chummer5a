@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>69B64A23-2ACC-4D14-829E-6115D0E0C555</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>Unknown</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset allows College Education, Linguist, School of Hard Knocks and Technical School Education to provide discounts to knowledge skill karma costs during character creation.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

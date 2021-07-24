@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>904D24D1-ED02-484B-9CD4-871B3EB82697</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>Unknown</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset excludes all Cyberware in the Headware category from being added to items in the Cyberlimb category.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>B85CAD4F-5BAB-46A7-AF23-A0B92C55CCC1</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>chummer5a</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset allows installation of modular cyberware intended to attach to the wrist to connect to any modular connector.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

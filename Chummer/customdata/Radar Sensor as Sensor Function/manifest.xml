@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>889464C5-95C0-4CD6-BFD0-F15DFBB6D7CD</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>chummer5a</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset adds the Radar Sensor as an available Sensor Function for Sensor Arrays. </text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

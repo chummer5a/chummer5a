@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>E79D6439-0552-4BB4-99E0-A65E4ED0BB6C</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>Unknown</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset modifies all Armor that uses the Custom Fit (Stack) rules to not count towards when being used for its positive armor values.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>
