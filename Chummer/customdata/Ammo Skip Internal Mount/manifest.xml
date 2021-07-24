@@ -18,11 +18,11 @@
     https://github.com/chummer5a/chummer5a
 -->
   <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
-    <guid>458BCD54-7241-4930-A3A8-6F15ABBE4F4F</guid>
+    <guid>1255df46-9edb-4d90-8611-deff595017e3</guid>
     <version>1</version>
     <authors>
       <author>
-        <name>Unknown</name>
+        <name>chummer5a</name>
         <main>true</main>
       </author>
     </authors>
