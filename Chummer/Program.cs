@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
@@ -588,14 +589,27 @@ namespace Chummer
             }
         }
 
+        private static frmChummerMain _frmMainForm;
+
         /// <summary>
         /// Main application form.
         /// </summary>
         public static frmChummerMain MainForm
         {
-            get;
-            set;
+            get => _frmMainForm;
+            set
+            {
+                _frmMainForm = value;
+                foreach (Action<frmChummerMain> funcToRun in MainFormOnAssignActions)
+                    funcToRun(_frmMainForm);
+                MainFormOnAssignActions.Clear();
+            }
         }
+
+        /// <summary>
+        /// Queue of Actions to run after MainForm is assgined
+        /// </summary>
+        public static List<Action<frmChummerMain>> MainFormOnAssignActions { get; } = new List<Action<frmChummerMain>>();
 
         /// <summary>
         /// Whether the application is running under Mono (true) or .NET (false)
