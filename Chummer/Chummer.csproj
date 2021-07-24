@@ -672,6 +672,9 @@
     <Content Include="customdata\Delnar Skills Remake\amend_lifemodules.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Delnar Skills Remake\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\manifest.xml" />
     <Content Include="customdata\Exclude German Sourcebooks\manifest.xml" />
     <Content Include="customdata\Flashback System Enables Cyberzombies\amend_cyberware.xml">
@@ -759,6 +762,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Orks Have Natural Weapon Tusks\manifest.xml" />
+    <Content Include="customdata\Point Priority Chargen\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Purchasable X-Ray Sensor Function\amend_purchasablexraysensorfunction_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
