@@ -9087,21 +9087,21 @@ namespace Chummer
                     {
                         if (lblBuildPrepsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints, strOf, limit + intLimitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, spellPoints + ritualPoints - (limit + intLimitMod));
                             if (intPrepPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intPrepPointsUsed, strPoints);
                             lblBuildPrepsBP.Text = strText;
                         }
                         if (lblSpellsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", spellPoints, strOf, limit + intLimitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + ritualPoints - (limit + intLimitMod));
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intSpellPointsUsed, strPoints);
                             lblSpellsBP.Text = strText;
                         }
                         if (lblBuildRitualsBP != null)
                         {
-                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", ritualPoints, strOf, limit + intLimitMod);
+                            string strText = string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}", prepPoints + spellPoints + ritualPoints - 2 * (limit + intLimitMod), strOf, prepPoints + spellPoints - (limit + intLimitMod));
                             if (intRitualPointsUsed > 0)
                                 strText += string.Format(GlobalOptions.CultureInfo, "{0}{1}{2}{1}{3}", strColon, strSpace, intRitualPointsUsed, strPoints);
                             lblBuildRitualsBP.Text = strText;
@@ -9122,16 +9122,16 @@ namespace Chummer
                     else
                     {
                         //TODO: Make the costs render better, currently looks wrong as hell
-                        strFormat = "{0}" + strOf + intLimitMod.ToString(GlobalOptions.CultureInfo) + strColon + strSpace + "{1}" + strSpace + strPoints;
+                        strFormat = "{0}" + strOf + "{1}" + strColon + strSpace + "{2}" + strSpace + strPoints;
                         if (lblBuildPrepsBP != null)
                             lblBuildPrepsBP.Text =
-                                string.Format(GlobalOptions.CultureInfo, strFormat, prepPoints, intPrepPointsUsed);
+                                string.Format(GlobalOptions.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, spellPoints + ritualPoints - intLimitMod, intPrepPointsUsed);
                         if (lblSpellsBP != null)
                             lblSpellsBP.Text =
-                                string.Format(GlobalOptions.CultureInfo, strFormat, spellPoints, intSpellPointsUsed);
+                                string.Format(GlobalOptions.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + ritualPoints - intLimitMod, intSpellPointsUsed);
                         if (lblBuildRitualsBP != null)
                             lblBuildRitualsBP.Text =
-                                string.Format(GlobalOptions.CultureInfo, strFormat, ritualPoints, intRitualPointsUsed);
+                                string.Format(GlobalOptions.CultureInfo, strFormat, prepPoints + spellPoints + ritualPoints - 2 * intLimitMod, prepPoints + spellPoints - intLimitMod, intRitualPointsUsed);
                     }
                 }
             }

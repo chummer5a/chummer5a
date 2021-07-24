@@ -94,6 +94,7 @@ Application Changes:
 - Added the ability to add spells and complex forms to a character through the Improvements system in career mode.
 - Armor items classified as Clothing but without a + or - in their armor codes are now treated as regular armor instead of armor extras.
 - Qualities with a rating can now be added at higher ratings from the quality selector, and the quality selector's karma filters now also take qualities with multiple ratings into account.
+- In Create mode, the sidebar section that tracks the number of spells, rituals, and preparations learned with priority points now properly reflects the maximum number of each as points are spent in either of the other categories.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
