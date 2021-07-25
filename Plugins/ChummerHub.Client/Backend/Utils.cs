@@ -989,11 +989,15 @@ namespace ChummerHub.Client.Backend
                 throw new ArgumentNullException(nameof(objCache));
             objCache.MyPluginDataDic.Add("SINnerId", sinner.Id);
             objCache.OnMyDoubleClick = null;
-            objCache.OnMyDoubleClick += async (sender, e) => await OnMyDoubleClick(sinner, objCache);
+            objCache.OnMyDoubleClick += OnObjCacheOnMyDoubleClick;
+            async void OnObjCacheOnMyDoubleClick(object sender, EventArgs e) => await OnMyDoubleClick(sinner, objCache);
             objCache.OnMyAfterSelect = null;
-            objCache.OnMyAfterSelect += async (sender, treeViewEventArgs) => await OnMyAfterSelect(sinner, objCache, treeViewEventArgs);
+            objCache.OnMyAfterSelect += OnObjCacheOnMyAfterSelect;
+            async void OnObjCacheOnMyAfterSelect(object sender, TreeViewEventArgs treeViewEventArgs) => await OnMyAfterSelect(sinner, objCache, treeViewEventArgs);
             objCache.OnMyKeyDown = null;
-            objCache.OnMyKeyDown += async (sender, args) =>
+            objCache.OnMyKeyDown += OnObjCacheOnMyKeyDown;
+
+            async void OnObjCacheOnMyKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
             {
                 try
                 {
@@ -1006,12 +1010,13 @@ namespace ChummerHub.Client.Backend
                             {
                                 await client.DeleteAsync(sinner.Id.Value).ConfigureAwait(false);
                             }
+
                             objCache.ErrorText = "deleted!";
                             await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                         }
                     }
                 }
-                catch(HttpOperationException e)
+                catch (HttpOperationException e)
                 {
                     objCache.ErrorText = e.Message;
                     objCache.ErrorText += Environment.NewLine + e.Response.Content;
@@ -1022,10 +1027,12 @@ namespace ChummerHub.Client.Backend
                     objCache.ErrorText = e.Message;
                     Log.Error(e);
                 }
-            };
+            }
 
             objCache.OnMyContextMenuDeleteClick = null;
-            objCache.OnMyContextMenuDeleteClick += async (sender, args) =>
+            objCache.OnMyContextMenuDeleteClick += OnObjCacheOnMyContextMenuDeleteClick;
+
+            async void OnObjCacheOnMyContextMenuDeleteClick(object sender, EventArgs args)
             {
                 try
                 {
@@ -1049,14 +1056,13 @@ namespace ChummerHub.Client.Backend
                     objCache.ErrorText = ex.Message;
                     objCache.ErrorText += Environment.NewLine + ex.Response.Content;
                     Log.Error(ex, objCache.ErrorText);
-
                 }
                 catch (Exception ex)
                 {
                     objCache.ErrorText = ex.Message;
                     Log.Error(ex);
                 }
-            };
+            }
         }
 
         private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)

@@ -295,7 +295,7 @@ namespace ChummerHub.Client.UI
         {
             tlpOptions.Enabled = Settings.Default.UserModeRegistered;
             var mail = await GetUserEmail();
-            this.QueueThreadSafe(async () =>
+            await this.DoThreadSafeAsync(async () =>
             {
                 try
                 {

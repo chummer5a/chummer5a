@@ -1156,7 +1156,7 @@ namespace ChummerHub.Controllers.V1
             if (user == null)
                 throw new NoUserRightException("Could not verify ApplicationUser!");
             bool candelete = false;
-            var members = _context.SINners.Where(a => a.MyGroup == mygroup).ToList();
+            var members = await _context.SINners.Where(a => a.MyGroup == mygroup).ToListAsync();
             if (mygroup.IsPublic == false)
             {
                 if (mygroup.GroupCreatorUserName?.ToUpperInvariant() != user.NormalizedEmail

@@ -53,9 +53,9 @@ namespace ChummerHub.Services.GoogleDrive
         /// Remove all items
         /// </summary>
         /// <returns></returns>
-        public async Task ClearAsync()
+        public Task ClearAsync()
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 _store.Clear();
             });
@@ -111,9 +111,9 @@ namespace ChummerHub.Services.GoogleDrive
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public async Task DeleteAsync<T>(string key)
+        public Task DeleteAsync<T>(string key)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 // check type
                 AssertCorrectType<T>();

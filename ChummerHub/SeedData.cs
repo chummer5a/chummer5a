@@ -24,7 +24,7 @@ namespace ChummerHub
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>(), env))
             {
 
-                if (context.Users.Any())
+                if (await context.Users.AnyAsync())
                 {
                     return;   // DB has been seeded
                 }

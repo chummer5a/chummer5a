@@ -49,16 +49,16 @@ namespace ChummerHub.Client.UI
             public int ProgressSteps { get; internal set; }
         }
 
-        private async Task<MyUserState> ShareChummer_DoWork()
+        private Task<MyUserState> ShareChummer_DoWork()
         {
             if (MySINnerSearchGroup != null)
             {
-                return await ShareChummerGroup();
+                return ShareChummerGroup();
             }
 
             if (MyCharacterCache != null)
             {
-                return await ShareSingleChummer();
+                return ShareSingleChummer();
             }
 
             throw new ArgumentException("Either MySINnerSearchGroup or MyCharacterCache must be set!");

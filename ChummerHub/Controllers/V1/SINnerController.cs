@@ -780,7 +780,7 @@ namespace ChummerHub.Controllers.V1
                         sinner.MyGroup = oldgroup;
 
 
-                        var alltags = _context.Tags.Where(a => a != null && a.SINnerId == dbsinner.Id).ToArray();
+                        var alltags = await _context.Tags.Where(a => a != null && a.SINnerId == dbsinner.Id).ToArrayAsync();
 
                         _context.Tags.RemoveRange(alltags);
                         _context.UserRights.RemoveRange(dbsinner.SINnerMetaData.Visibility.UserRights);
@@ -1215,7 +1215,7 @@ namespace ChummerHub.Controllers.V1
                 return null;
             string normEmail = user?.NormalizedEmail;
             string userName = user?.UserName;
-            var ur = _context.UserRights.AsNoTracking().Where(a => a.SINnerId == id).ToList();
+            var ur = await _context.UserRights.AsNoTracking().Where(a => a.SINnerId == id).ToListAsync();
             if (ur.Any(a => ((!string.IsNullOrEmpty(a.EMail)
                               && a.EMail.ToUpperInvariant() == normEmail)
                              || a.EMail == null)
@@ -1248,7 +1248,7 @@ namespace ChummerHub.Controllers.V1
                     .Include(a => a.SINnerMetaData.Visibility.UserRights).AsNoTracking()
                     //.Include(a => a.MyExtendedAttributes)
                     .Include(a => a.MyGroup).AsNoTracking().Where(a => a.Id == id).FirstOrDefaultAsync();
-                ur2 = _context.UserRights.AsNoTracking().Where(a => a.SINnerId == id).ToList();
+                ur2 = await _context.UserRights.AsNoTracking().Where(a => a.SINnerId == id).ToListAsync();
                 if (ur2.Any(a => ((!string.IsNullOrEmpty(a.EMail)
                                   && a.EMail.ToUpperInvariant() == normEmail)
                                  || a.EMail == null)

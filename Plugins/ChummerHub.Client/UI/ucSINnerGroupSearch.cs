@@ -261,7 +261,7 @@ namespace ChummerHub.Client.UI
                                 await this.DoThreadSafeAsync(() => TlpGroupSearch_VisibleChanged(null, new EventArgs()));
                                 await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
                             }
-                        });
+                        }).Unwrap();
                     }
                 }
             }
@@ -515,9 +515,9 @@ namespace ChummerHub.Client.UI
             });
         }
 
-        private void BGroupFoundLoadInCharacterRoster_Click(object sender, EventArgs e)
+        private async void BGroupFoundLoadInCharacterRoster_Click(object sender, EventArgs e)
         {
-            PluginHandler.MainForm.DoThreadSafe(async () =>
+            await PluginHandler.MainForm.DoThreadSafeAsync(async () =>
             {
                 TreeNode selectedNode = tvGroupSearchResult.SelectedNode;
                 var item = selectedNode?.Tag as SINnerSearchGroup;

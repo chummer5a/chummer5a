@@ -304,10 +304,12 @@ namespace ChummerHub.Client.UI
         {
             using (frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE, this))
             {
-                gs.MySINnerGroupSearch.OnGroupJoinCallback += async (o, group) =>
+                async void OnGroupJoinCallback(object o, SINnerGroup group)
                 {
                     await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
-                };
+                }
+
+                gs.MySINnerGroupSearch.OnGroupJoinCallback += OnGroupJoinCallback;
                 gs.ShowDialog(Program.MainForm);
             }
         }
