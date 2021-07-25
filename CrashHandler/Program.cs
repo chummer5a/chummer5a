@@ -10,10 +10,11 @@ namespace CrashHandler
 {
     internal static class Program
     {
-        private static readonly Dictionary<string, Action<string[]>> s_DictionaryFunctions = new Dictionary<string, Action<string[]>>()
-        {
-            {"crash", ShowCrashReport }
-        };
+        private static readonly Dictionary<string, Action<string[]>> s_DictionaryFunctions =
+            new Dictionary<string, Action<string[]>>()
+            {
+                {"crash", ShowCrashReport}
+            };
 
         private static void ShowCrashReport(string[] args)
         {
@@ -21,6 +22,7 @@ namespace CrashHandler
             {
                 Debugger.Launch();
             }
+
             CrashDumper dmper = null;
             try
             {

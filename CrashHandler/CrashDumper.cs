@@ -48,7 +48,7 @@ namespace CrashHandler
         ///
         /// </summary>
         /// <param name="b64Json">String path of the text file that contains our JSON package.</param>
-		public CrashDumper(string b64Json)
+        public CrashDumper(string b64Json)
         {
             CrashLogWriter = new StreamWriter(
                 Path.ChangeExtension(
@@ -61,7 +61,8 @@ namespace CrashHandler
             CrashLogWriter.WriteLine("This file contains information on a crash report for Chummer5A.");
             CrashLogWriter.WriteLine("You can safely delete this file, but a developer might want to look at it.");
 
-            if (!Deserialize(b64Json, out _procId, out _lstFilePaths, out _lstPretendFilePaths, out _attributes, out _threadId, out _exceptionPrt))
+            if (!Deserialize(b64Json, out _procId, out _lstFilePaths, out _lstPretendFilePaths, out _attributes,
+                out _threadId, out _exceptionPrt))
             {
                 throw new ArgumentException("Could not deserialize");
             }
@@ -179,12 +180,13 @@ namespace CrashHandler
                 Attributes["visible-key"] = MakeStringKey(iv, key);
                 Attributes["visible-location"] = location;
 
-                UploadToAws();
+                Task tskUpload = UploadToAws();
 
                 await CrashLogWriter.WriteLineAsync("Key saved");
                 await CrashLogWriter.FlushAsync();
 
                 SetProgress(CrashDumperProgress.Cleanup);
+
                 if (DoCleanUp)
                 {
                     Clean();
@@ -192,6 +194,8 @@ namespace CrashHandler
                     await CrashLogWriter.WriteLineAsync("Cleanup done");
                     await CrashLogWriter.FlushAsync();
                 }
+
+                await tskUpload;
 
                 SetProgress(CrashDumperProgress.FinishedSending);
                 Process.Kill();
@@ -202,7 +206,9 @@ namespace CrashHandler
 
                 MessageBox.Show("Upload service had an error."
                                 + Environment.NewLine + "Reason: " + rex.Message
-                                + Environment.NewLine + Environment.NewLine + "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
+                                + Environment.NewLine + Environment.NewLine +
+                                "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" +
+                                _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
                 Process?.Kill();
             }
             catch (RemoteServiceException rex)
@@ -211,7 +217,9 @@ namespace CrashHandler
 
                 MessageBox.Show("Upload service had an error."
                                 + Environment.NewLine + "Reason: " + rex.Message
-                                + Environment.NewLine + Environment.NewLine + "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" + _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
+                                + Environment.NewLine + Environment.NewLine +
+                                "Please manually submit an issue to https://github.com/chummer5a/chummer5a/issues and attach the file \"" +
+                                _strLatestDumpName + "\" found in \"" + WorkingDirectory + "\".");
                 Process?.Kill();
             }
             catch (Exception ex)
@@ -237,20 +245,22 @@ namespace CrashHandler
                 };
 
                 const MINIDUMP_TYPE dtype = MINIDUMP_TYPE.MiniDumpWithPrivateReadWriteMemory |
-                                      MINIDUMP_TYPE.MiniDumpWithDataSegs |
-                                      MINIDUMP_TYPE.MiniDumpWithHandleData |
-                                      MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
-                                      MINIDUMP_TYPE.MiniDumpWithThreadInfo |
-                                      MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
+                                            MINIDUMP_TYPE.MiniDumpWithDataSegs |
+                                            MINIDUMP_TYPE.MiniDumpWithHandleData |
+                                            MINIDUMP_TYPE.MiniDumpWithFullMemoryInfo |
+                                            MINIDUMP_TYPE.MiniDumpWithThreadInfo |
+                                            MINIDUMP_TYPE.MiniDumpWithUnloadedModules;
 
                 bool extraInfo = !(exceptionInfo == IntPtr.Zero || threadId == 0 || !debugger);
 
                 if (extraInfo)
                 {
-                    ret = !NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
+                    ret = !NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
+                        file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
                         dtype, ref info, IntPtr.Zero, IntPtr.Zero);
                 }
-                else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId, file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
+                else if (NativeMethods.MiniDumpWriteDump(process.Handle, _procId,
+                    file.SafeFileHandle?.DangerousGetHandle() ?? IntPtr.Zero,
                     dtype, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero))
                 {
                     ret = false;
@@ -275,12 +285,9 @@ namespace CrashHandler
             StringBuilder sb = new StringBuilder();
             foreach (KeyValuePair<string, string> keyValuePair in Attributes)
             {
-                sb.Append('\"');
-                sb.Append(keyValuePair.Key);
-                sb.Append("\"-\"");
-                sb.Append(keyValuePair.Value);
-                sb.AppendLine("\"");
+                sb.AppendLine('\"' + keyValuePair.Key + "\"-\"" + keyValuePair.Value + "\"");
             }
+
             _lstPretendFilePaths.Add("attributes.txt", sb.ToString());
 
             foreach (KeyValuePair<string, string> pair in _lstPretendFilePaths)
@@ -321,6 +328,7 @@ namespace CrashHandler
                     objReturn = mem.ToArray();
                 }
             }
+
             return objReturn;
         }
 
@@ -359,7 +367,8 @@ namespace CrashHandler
                     using (StreamContent content = new StreamContent(stream))
                     {
                         content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/octet-stream");
-                        using (HttpResponseMessage response = await client.PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content))
+                        using (HttpResponseMessage response =
+                            await client.PostAsync(@"http://crashdump.chummer.net/api/crashdumper/upload", content))
                         {
                             string resp = await response.Content.ReadAsStringAsync();
 
@@ -374,13 +383,15 @@ namespace CrashHandler
         {
             try
             {
-                Dictionary<string, object> top = new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
+                Dictionary<string, object> top =
+                    new JavaScriptSerializer().Deserialize<Dictionary<string, object>>(input);
                 if ("success".Equals(top["status"]))
                 {
-                    Dictionary<string, object> files = (Dictionary<string, object>)((ArrayList)top["files"])[0];
-                    string ret = (string)files["url"];
+                    Dictionary<string, object> files = (Dictionary<string, object>) ((ArrayList) top["files"])[0];
+                    string ret = (string) files["url"];
                     return ret;
                 }
+
                 throw new RemoteServiceException(top["reason"].ToString());
             }
             catch (ArgumentException)
@@ -389,16 +400,20 @@ namespace CrashHandler
             }
         }
 
-        private void UploadToAws()
+        private async Task UploadToAws()
         {
-            Dictionary<string, string> upload = Attributes.Where(x => x.Key.StartsWith("visible-", StringComparison.Ordinal)).ToDictionary(x => x.Key.Replace("visible-", "").Replace('-', '_'), x => x.Value);
+            Dictionary<string, string> upload = Attributes
+                .Where(x => x.Key.StartsWith("visible-", StringComparison.Ordinal))
+                .ToDictionary(x => x.Key.Replace("visible-", string.Empty).Replace('-', '_'), x => x.Value);
             string payload = new JavaScriptSerializer().Serialize(upload);
 
             using (HttpClient client = new HttpClient())
             {
                 using (StringContent payloadString = new StringContent(payload))
                 {
-                    client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", payloadString);
+                    await client.PostAsync(
+                        "https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService",
+                        payloadString);
                     //HttpResponseMessage msg = client.PostAsync("https://ccbysveroa.execute-api.eu-central-1.amazonaws.com/prod/ChummerCrashService", new StringContent(payload)).Result;
 
                     //string result = msg.Content.ReadAsStringAsync().Result;
@@ -458,10 +473,14 @@ namespace CrashHandler
             if (parts?["_intProcessId"] is int pid)
             {
                 filesList = parts["_dicCapturedFiles"] as List<string>;
-                attributes = ((Dictionary<string, object>)parts["_dicAttributes"]).ToDictionary(x => x.Key, y => y.Value.ToString());
-                pretendFiles = ((Dictionary<string, object>)parts["_dicPretendFiles"]).ToDictionary(x => x.Key, y => y.Value.ToString());
+                attributes =
+                    ((Dictionary<string, object>) parts["_dicAttributes"]).ToDictionary(x => x.Key,
+                        y => y.Value.ToString());
+                pretendFiles =
+                    ((Dictionary<string, object>) parts["_dicPretendFiles"]).ToDictionary(x => x.Key,
+                        y => y.Value.ToString());
 
-                processId = (short)pid;
+                processId = (short) pid;
                 string s = "0";
                 if (parts.ContainsKey("exceptionPrt"))
                 {
@@ -486,7 +505,8 @@ namespace CrashHandler
 
         private static string MakeStringKey(IEnumerable<byte> iv, IEnumerable<byte> key)
         {
-            return string.Join(string.Empty, iv.Select(x => x.ToString("X2"))) + ":" + string.Join(string.Empty, key.Select(x => x.ToString("X2")));
+            return string.Join(string.Empty, iv.Select(x => x.ToString("X2"))) + ":" +
+                   string.Join(string.Empty, key.Select(x => x.ToString("X2")));
         }
 
         #region IDisposable Support
@@ -545,8 +565,7 @@ namespace CrashHandler
         [Description("Started collecting error information")]
         Started,
 
-        [Description("Attaching Debugger")]
-        Debugger,
+        [Description("Attaching Debugger")] Debugger,
 
         [Description("Saving crash dump (this might take a while)")]
         CreateDmp,
@@ -569,14 +588,12 @@ namespace CrashHandler
         [Description("Uploading (this might take a while)")]
         Uploading,
 
-        [Description("Saving and verifying")]
-        Saving,
+        [Description("Saving and verifying")] Saving,
 
         [Description("Cleaning temporary files")]
         Cleanup,
 
-        [Description("Finished")]
-        FinishedSending,
+        [Description("Finished")] FinishedSending,
 
         [Description("An error happened while collecting crash information")]
         Error
