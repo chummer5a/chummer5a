@@ -419,20 +419,17 @@ namespace Chummer
             this.lblMartialArtSourceLabel = new System.Windows.Forms.Label();
             this.lblMartialArtSource = new System.Windows.Forms.Label();
             this.tabMagician = new System.Windows.Forms.TabPage();
-            this.tlpSpells = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.treSpells = new System.Windows.Forms.TreeView();
-            this.flpSustainedSpells = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddSpirit = new System.Windows.Forms.Button();
-            this.chkPsycheActiveMagician = new Chummer.ColorableCheckBox(this.components);
             this.tlpMagician = new Chummer.BufferedTableLayoutPanel(this.components);
             this.flpMagician = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbMagicianSpell = new System.Windows.Forms.GroupBox();
             this.tlpMagicianSpell = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblSpellDescriptors = new System.Windows.Forms.Label();
             this.lblSpellDescriptorsLabel = new System.Windows.Forms.Label();
-            this.cmdQuickenSpell = new System.Windows.Forms.Button();
             this.lblSpellCategoryLabel = new System.Windows.Forms.Label();
             this.lblSpellCategory = new System.Windows.Forms.Label();
+            this.flpMagicianSpellButtons = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdQuickenSpell = new System.Windows.Forms.Button();
+            this.cmdAddSustainedSpell = new System.Windows.Forms.Button();
             this.lblSpellRangeLabel = new System.Windows.Forms.Label();
             this.lblSpellTypeLabel = new System.Windows.Forms.Label();
             this.lblSpellType = new System.Windows.Forms.Label();
@@ -447,7 +444,6 @@ namespace Chummer
             this.lblSpellDicePoolLabel = new System.Windows.Forms.Label();
             this.lblSpellDV = new System.Windows.Forms.Label();
             this.dpcSpellDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
-            this.cmdAddSustainedSpell = new System.Windows.Forms.Button();
             this.gpbMagicianTradition = new System.Windows.Forms.GroupBox();
             this.tlpMagicianTradition = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblTraditionLabel = new System.Windows.Forms.Label();
@@ -481,13 +477,13 @@ namespace Chummer
             this.cmdAddSpell = new SplitButton();
             this.cmdDeleteSpell = new System.Windows.Forms.Button();
             this.panSpirits = new System.Windows.Forms.Panel();
+            this.tlpSpells = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.treSpells = new System.Windows.Forms.TreeView();
+            this.flpSustainedSpells = new System.Windows.Forms.FlowLayoutPanel();
+            this.cmdAddSpirit = new System.Windows.Forms.Button();
+            this.chkPsycheActiveMagician = new Chummer.ColorableCheckBox(this.components);
             this.tabAdept = new System.Windows.Forms.TabPage();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
-            this.tlpComplexForms = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdAddSprite = new System.Windows.Forms.Button();
-            this.treComplexForms = new System.Windows.Forms.TreeView();
-            this.flpSustainedComplexForms = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkPsycheActiveTechnomancer = new Chummer.ColorableCheckBox(this.components);
             this.tlpTechnomancer = new Chummer.BufferedTableLayoutPanel(this.components);
             this.panSprites = new System.Windows.Forms.Panel();
             this.flpTechnomancer = new System.Windows.Forms.FlowLayoutPanel();
@@ -495,15 +491,15 @@ namespace Chummer
             this.tlpTechnomancerComplexForm = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblTargetLabel = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
-            this.lblDurationLabel = new System.Windows.Forms.Label();
-            this.lblDuration = new System.Windows.Forms.Label();
-            this.lblFVLabel = new System.Windows.Forms.Label();
-            this.lblFV = new System.Windows.Forms.Label();
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
             this.lblComplexFormSource = new System.Windows.Forms.Label();
             this.lblComplexFormDicePoolLabel = new System.Windows.Forms.Label();
             this.dpcComplexFormDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
+            this.lblDurationLabel = new System.Windows.Forms.Label();
             this.cmdAddSustainedForm = new System.Windows.Forms.Button();
+            this.lblDuration = new System.Windows.Forms.Label();
+            this.lblFVLabel = new System.Windows.Forms.Label();
+            this.lblFV = new System.Windows.Forms.Label();
             this.gpbTechnomancerStream = new System.Windows.Forms.GroupBox();
             this.tlpTechnomancerStream = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblStreamLabel = new System.Windows.Forms.Label();
@@ -523,6 +519,11 @@ namespace Chummer
             this.tlpTechnomancerButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdAddComplexForm = new System.Windows.Forms.Button();
             this.cmdDeleteComplexForm = new System.Windows.Forms.Button();
+            this.tlpComplexForms = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdAddSprite = new System.Windows.Forms.Button();
+            this.treComplexForms = new System.Windows.Forms.TreeView();
+            this.flpSustainedComplexForms = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkPsycheActiveTechnomancer = new Chummer.ColorableCheckBox(this.components);
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
             this.tlpAdvancedPrograms = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treAIPrograms = new System.Windows.Forms.TreeView();
@@ -1324,7 +1325,6 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.flpMagicianSpellButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1394,11 +1394,11 @@ namespace Chummer
             this.tlpMartialArtsButtons.SuspendLayout();
             this.tlpMartialArtsRight.SuspendLayout();
             this.tabMagician.SuspendLayout();
-            this.tlpSpells.SuspendLayout();
             this.tlpMagician.SuspendLayout();
             this.flpMagician.SuspendLayout();
             this.gpbMagicianSpell.SuspendLayout();
             this.tlpMagicianSpell.SuspendLayout();
+            this.flpMagicianSpellButtons.SuspendLayout();
             this.gpbMagicianTradition.SuspendLayout();
             this.tlpMagicianTradition.SuspendLayout();
             this.tlpDrainAttributesValue.SuspendLayout();
@@ -1406,9 +1406,9 @@ namespace Chummer
             this.tlpMagicianMentorSpirit.SuspendLayout();
             this.tlpMagicianMentorSpiritHeader.SuspendLayout();
             this.tlpMagicianButtons.SuspendLayout();
+            this.tlpSpells.SuspendLayout();
             this.tabAdept.SuspendLayout();
             this.tabTechnomancer.SuspendLayout();
-            this.tlpComplexForms.SuspendLayout();
             this.tlpTechnomancer.SuspendLayout();
             this.flpTechnomancer.SuspendLayout();
             this.gpbTechnomancerComplexForm.SuspendLayout();
@@ -1420,6 +1420,7 @@ namespace Chummer
             this.tlpTechnomancerParagon.SuspendLayout();
             this.tlpTechnomancerParagonHeader.SuspendLayout();
             this.tlpTechnomancerButtons.SuspendLayout();
+            this.tlpComplexForms.SuspendLayout();
             this.tabAdvancedPrograms.SuspendLayout();
             this.tlpAdvancedPrograms.SuspendLayout();
             this.tlpAdvancedProgramsButtons.SuspendLayout();
@@ -1597,7 +1598,6 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
-            this.flpMagicianSpellButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -6765,114 +6765,6 @@ namespace Chummer
             this.tabMagician.Tag = "Tab_Magician";
             this.tabMagician.Text = "Spells and Spirits";
             // 
-            // tlpSpells
-            // 
-            this.tlpSpells.AutoSize = true;
-            this.tlpSpells.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpSpells.ColumnCount = 2;
-            this.tlpSpells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpSpells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpSpells.Controls.Add(this.treSpells, 0, 0);
-            this.tlpSpells.Controls.Add(this.flpSustainedSpells, 0, 1);
-            this.tlpSpells.Controls.Add(this.cmdAddSpirit, 0, 2);
-            this.tlpSpells.Controls.Add(this.chkPsycheActiveMagician, 1, 2);
-            this.tlpSpells.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpSpells.Location = new System.Drawing.Point(0, 29);
-            this.tlpSpells.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpSpells.Name = "tlpSpells";
-            this.tlpSpells.RowCount = 3;
-            this.tlpSpells.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 67F));
-            this.tlpSpells.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33F));
-            this.tlpSpells.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpSpells.Size = new System.Drawing.Size(310, 408);
-            this.tlpSpells.TabIndex = 171;
-            // 
-            // treSpells
-            // 
-            this.tlpSpells.SetColumnSpan(this.treSpells, 2);
-            this.treSpells.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treSpells.HideSelection = false;
-            this.treSpells.Location = new System.Drawing.Point(3, 3);
-            this.treSpells.Name = "treSpells";
-            treeNode5.Name = "nodSpellCombatRoot";
-            treeNode5.Tag = "Node_SelectedCombatSpells";
-            treeNode5.Text = "Selected Combat Spells";
-            treeNode6.Name = "nodSpellDetectionRoot";
-            treeNode6.Tag = "Node_SelectedDetectionSpells";
-            treeNode6.Text = "Selected Detection Spells";
-            treeNode7.Name = "nodSpellHealthRoot";
-            treeNode7.Tag = "Node_SelectedHealthSpells";
-            treeNode7.Text = "Selected Health Spells";
-            treeNode8.Name = "nodSpellIllusionRoot";
-            treeNode8.Tag = "Node_SelectedIllusionSpells";
-            treeNode8.Text = "Selected Illusion Spells";
-            treeNode9.Name = "nodSpellManipulationRoot";
-            treeNode9.Tag = "Node_SelectedManipulationSpells";
-            treeNode9.Text = "Selected Manipulation Spells";
-            treeNode10.Name = "nodSpellGeomancyRoot";
-            treeNode10.Tag = "Node_SelectedGeomancyRituals";
-            treeNode10.Text = "Selected Rituals";
-            treeNode11.Name = "nodSpellEnchantmentRoot";
-            treeNode11.Tag = "Node_SelectedEnchantments";
-            treeNode11.Text = "Selected Enchantments";
-            this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode5,
-            treeNode6,
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10,
-            treeNode11});
-            this.treSpells.ShowNodeToolTips = true;
-            this.treSpells.ShowRootLines = false;
-            this.treSpells.Size = new System.Drawing.Size(304, 247);
-            this.treSpells.TabIndex = 70;
-            this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
-            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treSpells_KeyDown);
-            this.treSpells.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
-            // 
-            // flpSustainedSpells
-            // 
-            this.flpSustainedSpells.AutoScroll = true;
-            this.flpSustainedSpells.AutoSize = true;
-            this.flpSustainedSpells.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpSustainedSpells.BackColor = System.Drawing.SystemColors.Window;
-            this.tlpSpells.SetColumnSpan(this.flpSustainedSpells, 2);
-            this.flpSustainedSpells.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpSustainedSpells.Location = new System.Drawing.Point(3, 256);
-            this.flpSustainedSpells.Name = "flpSustainedSpells";
-            this.flpSustainedSpells.Size = new System.Drawing.Size(304, 119);
-            this.flpSustainedSpells.TabIndex = 71;
-            // 
-            // cmdAddSpirit
-            // 
-            this.cmdAddSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdAddSpirit.AutoSize = true;
-            this.cmdAddSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdAddSpirit.Location = new System.Drawing.Point(3, 381);
-            this.cmdAddSpirit.Name = "cmdAddSpirit";
-            this.cmdAddSpirit.Size = new System.Drawing.Size(62, 23);
-            this.cmdAddSpirit.TabIndex = 23;
-            this.cmdAddSpirit.Tag = "Button_AddSpirit";
-            this.cmdAddSpirit.Text = "A&dd Spirit";
-            this.cmdAddSpirit.UseVisualStyleBackColor = true;
-            this.cmdAddSpirit.Click += new System.EventHandler(this.cmdAddSpirit_Click);
-            // 
-            // chkPsycheActiveMagician
-            // 
-            this.chkPsycheActiveMagician.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPsycheActiveMagician.AutoSize = true;
-            this.chkPsycheActiveMagician.DefaultColorScheme = true;
-            this.chkPsycheActiveMagician.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.chkPsycheActiveMagician.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkPsycheActiveMagician.Location = new System.Drawing.Point(71, 384);
-            this.chkPsycheActiveMagician.Name = "chkPsycheActiveMagician";
-            this.chkPsycheActiveMagician.Size = new System.Drawing.Size(94, 17);
-            this.chkPsycheActiveMagician.TabIndex = 72;
-            this.chkPsycheActiveMagician.Tag = "Label_PsycheActive";
-            this.chkPsycheActiveMagician.Text = "Psyche Active";
-            this.chkPsycheActiveMagician.UseVisualStyleBackColor = true;
-            // 
             // tlpMagician
             // 
             this.tlpMagician.AutoSize = true;
@@ -6988,21 +6880,6 @@ namespace Chummer
             this.lblSpellDescriptorsLabel.Tag = "Label_Descriptors";
             this.lblSpellDescriptorsLabel.Text = "Descriptors:";
             // 
-            // cmdQuickenSpell
-            // 
-            this.cmdQuickenSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdQuickenSpell.AutoSize = true;
-            this.cmdQuickenSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdQuickenSpell.Location = new System.Drawing.Point(3, 3);
-            this.cmdQuickenSpell.Name = "cmdQuickenSpell";
-            this.cmdQuickenSpell.Size = new System.Drawing.Size(83, 23);
-            this.cmdQuickenSpell.TabIndex = 108;
-            this.cmdQuickenSpell.Tag = "Button_QuickenSpell";
-            this.cmdQuickenSpell.Text = "Quicken Spell";
-            this.cmdQuickenSpell.UseVisualStyleBackColor = true;
-            this.cmdQuickenSpell.Visible = false;
-            this.cmdQuickenSpell.Click += new System.EventHandler(this.cmdQuickenSpell_Click);
-            // 
             // lblSpellCategoryLabel
             // 
             this.lblSpellCategoryLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -7025,6 +6902,49 @@ namespace Chummer
             this.lblSpellCategory.Size = new System.Drawing.Size(55, 13);
             this.lblSpellCategory.TabIndex = 74;
             this.lblSpellCategory.Text = "[Category]";
+            // 
+            // flpMagicianSpellButtons
+            // 
+            this.flpMagicianSpellButtons.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpMagicianSpellButtons.AutoSize = true;
+            this.flpMagicianSpellButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMagicianSpell.SetColumnSpan(this.flpMagicianSpellButtons, 2);
+            this.flpMagicianSpellButtons.Controls.Add(this.cmdQuickenSpell);
+            this.flpMagicianSpellButtons.Controls.Add(this.cmdAddSustainedSpell);
+            this.flpMagicianSpellButtons.Location = new System.Drawing.Point(311, 100);
+            this.flpMagicianSpellButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.flpMagicianSpellButtons.Name = "flpMagicianSpellButtons";
+            this.flpMagicianSpellButtons.Size = new System.Drawing.Size(147, 29);
+            this.flpMagicianSpellButtons.TabIndex = 174;
+            this.flpMagicianSpellButtons.WrapContents = false;
+            // 
+            // cmdQuickenSpell
+            // 
+            this.cmdQuickenSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdQuickenSpell.AutoSize = true;
+            this.cmdQuickenSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdQuickenSpell.Location = new System.Drawing.Point(3, 3);
+            this.cmdQuickenSpell.Name = "cmdQuickenSpell";
+            this.cmdQuickenSpell.Size = new System.Drawing.Size(83, 23);
+            this.cmdQuickenSpell.TabIndex = 108;
+            this.cmdQuickenSpell.Tag = "Button_QuickenSpell";
+            this.cmdQuickenSpell.Text = "Quicken Spell";
+            this.cmdQuickenSpell.UseVisualStyleBackColor = true;
+            this.cmdQuickenSpell.Visible = false;
+            this.cmdQuickenSpell.Click += new System.EventHandler(this.cmdQuickenSpell_Click);
+            // 
+            // cmdAddSustainedSpell
+            // 
+            this.cmdAddSustainedSpell.AutoSize = true;
+            this.cmdAddSustainedSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddSustainedSpell.Location = new System.Drawing.Point(92, 3);
+            this.cmdAddSustainedSpell.Name = "cmdAddSustainedSpell";
+            this.cmdAddSustainedSpell.Size = new System.Drawing.Size(52, 23);
+            this.cmdAddSustainedSpell.TabIndex = 110;
+            this.cmdAddSustainedSpell.Tag = "Button_Sustain";
+            this.cmdAddSustainedSpell.Text = "Sustain";
+            this.cmdAddSustainedSpell.UseVisualStyleBackColor = true;
+            this.cmdAddSustainedSpell.Click += new System.EventHandler(this.cmdAddSustainedSpell_Click);
             // 
             // lblSpellRangeLabel
             // 
@@ -7194,19 +7114,6 @@ namespace Chummer
             this.dpcSpellDicePool.Size = new System.Drawing.Size(64, 24);
             this.dpcSpellDicePool.TabIndex = 109;
             this.dpcSpellDicePool.ToolTipText = "";
-            // 
-            // cmdAddSustainedSpell
-            // 
-            this.cmdAddSustainedSpell.AutoSize = true;
-            this.cmdAddSustainedSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdAddSustainedSpell.Location = new System.Drawing.Point(92, 3);
-            this.cmdAddSustainedSpell.Name = "cmdAddSustainedSpell";
-            this.cmdAddSustainedSpell.Size = new System.Drawing.Size(52, 23);
-            this.cmdAddSustainedSpell.TabIndex = 110;
-            this.cmdAddSustainedSpell.Tag = "Button_Sustain";
-            this.cmdAddSustainedSpell.Text = "Sustain";
-            this.cmdAddSustainedSpell.UseVisualStyleBackColor = true;
-            this.cmdAddSustainedSpell.Click += new System.EventHandler(this.cmdAddSustainedSpell_Click);
             // 
             // gpbMagicianTradition
             // 
@@ -7676,6 +7583,114 @@ namespace Chummer
             this.panSpirits.Size = new System.Drawing.Size(965, 182);
             this.panSpirits.TabIndex = 4;
             // 
+            // tlpSpells
+            // 
+            this.tlpSpells.AutoSize = true;
+            this.tlpSpells.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpSpells.ColumnCount = 2;
+            this.tlpSpells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpSpells.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpSpells.Controls.Add(this.treSpells, 0, 0);
+            this.tlpSpells.Controls.Add(this.flpSustainedSpells, 0, 1);
+            this.tlpSpells.Controls.Add(this.cmdAddSpirit, 0, 2);
+            this.tlpSpells.Controls.Add(this.chkPsycheActiveMagician, 1, 2);
+            this.tlpSpells.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpSpells.Location = new System.Drawing.Point(0, 29);
+            this.tlpSpells.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpSpells.Name = "tlpSpells";
+            this.tlpSpells.RowCount = 3;
+            this.tlpSpells.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 67F));
+            this.tlpSpells.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33F));
+            this.tlpSpells.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpSpells.Size = new System.Drawing.Size(310, 408);
+            this.tlpSpells.TabIndex = 171;
+            // 
+            // treSpells
+            // 
+            this.tlpSpells.SetColumnSpan(this.treSpells, 2);
+            this.treSpells.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treSpells.HideSelection = false;
+            this.treSpells.Location = new System.Drawing.Point(3, 3);
+            this.treSpells.Name = "treSpells";
+            treeNode5.Name = "nodSpellCombatRoot";
+            treeNode5.Tag = "Node_SelectedCombatSpells";
+            treeNode5.Text = "Selected Combat Spells";
+            treeNode6.Name = "nodSpellDetectionRoot";
+            treeNode6.Tag = "Node_SelectedDetectionSpells";
+            treeNode6.Text = "Selected Detection Spells";
+            treeNode7.Name = "nodSpellHealthRoot";
+            treeNode7.Tag = "Node_SelectedHealthSpells";
+            treeNode7.Text = "Selected Health Spells";
+            treeNode8.Name = "nodSpellIllusionRoot";
+            treeNode8.Tag = "Node_SelectedIllusionSpells";
+            treeNode8.Text = "Selected Illusion Spells";
+            treeNode9.Name = "nodSpellManipulationRoot";
+            treeNode9.Tag = "Node_SelectedManipulationSpells";
+            treeNode9.Text = "Selected Manipulation Spells";
+            treeNode10.Name = "nodSpellGeomancyRoot";
+            treeNode10.Tag = "Node_SelectedGeomancyRituals";
+            treeNode10.Text = "Selected Rituals";
+            treeNode11.Name = "nodSpellEnchantmentRoot";
+            treeNode11.Tag = "Node_SelectedEnchantments";
+            treeNode11.Text = "Selected Enchantments";
+            this.treSpells.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode5,
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10,
+            treeNode11});
+            this.treSpells.ShowNodeToolTips = true;
+            this.treSpells.ShowRootLines = false;
+            this.treSpells.Size = new System.Drawing.Size(304, 247);
+            this.treSpells.TabIndex = 70;
+            this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
+            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treSpells_KeyDown);
+            this.treSpells.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            // 
+            // flpSustainedSpells
+            // 
+            this.flpSustainedSpells.AutoScroll = true;
+            this.flpSustainedSpells.AutoSize = true;
+            this.flpSustainedSpells.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpSustainedSpells.BackColor = System.Drawing.SystemColors.Window;
+            this.tlpSpells.SetColumnSpan(this.flpSustainedSpells, 2);
+            this.flpSustainedSpells.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpSustainedSpells.Location = new System.Drawing.Point(3, 256);
+            this.flpSustainedSpells.Name = "flpSustainedSpells";
+            this.flpSustainedSpells.Size = new System.Drawing.Size(304, 119);
+            this.flpSustainedSpells.TabIndex = 71;
+            // 
+            // cmdAddSpirit
+            // 
+            this.cmdAddSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdAddSpirit.AutoSize = true;
+            this.cmdAddSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddSpirit.Location = new System.Drawing.Point(3, 381);
+            this.cmdAddSpirit.Name = "cmdAddSpirit";
+            this.cmdAddSpirit.Size = new System.Drawing.Size(62, 23);
+            this.cmdAddSpirit.TabIndex = 23;
+            this.cmdAddSpirit.Tag = "Button_AddSpirit";
+            this.cmdAddSpirit.Text = "A&dd Spirit";
+            this.cmdAddSpirit.UseVisualStyleBackColor = true;
+            this.cmdAddSpirit.Click += new System.EventHandler(this.cmdAddSpirit_Click);
+            // 
+            // chkPsycheActiveMagician
+            // 
+            this.chkPsycheActiveMagician.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkPsycheActiveMagician.AutoSize = true;
+            this.chkPsycheActiveMagician.DefaultColorScheme = true;
+            this.chkPsycheActiveMagician.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.chkPsycheActiveMagician.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
+            this.chkPsycheActiveMagician.Location = new System.Drawing.Point(71, 384);
+            this.chkPsycheActiveMagician.Name = "chkPsycheActiveMagician";
+            this.chkPsycheActiveMagician.Size = new System.Drawing.Size(94, 17);
+            this.chkPsycheActiveMagician.TabIndex = 72;
+            this.chkPsycheActiveMagician.Tag = "Label_PsycheActive";
+            this.chkPsycheActiveMagician.Text = "Psyche Active";
+            this.chkPsycheActiveMagician.UseVisualStyleBackColor = true;
+            // 
             // tabAdept
             // 
             this.tabAdept.BackColor = System.Drawing.SystemColors.Control;
@@ -7698,90 +7713,6 @@ namespace Chummer
             this.tabTechnomancer.TabIndex = 3;
             this.tabTechnomancer.Tag = "Tab_Technomancer";
             this.tabTechnomancer.Text = "Sprites and Complex Forms";
-            // 
-            // tlpComplexForms
-            // 
-            this.tlpComplexForms.AutoSize = true;
-            this.tlpComplexForms.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpComplexForms.ColumnCount = 2;
-            this.tlpComplexForms.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpComplexForms.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpComplexForms.Controls.Add(this.cmdAddSprite, 0, 2);
-            this.tlpComplexForms.Controls.Add(this.treComplexForms, 0, 0);
-            this.tlpComplexForms.Controls.Add(this.flpSustainedComplexForms, 0, 1);
-            this.tlpComplexForms.Controls.Add(this.chkPsycheActiveTechnomancer, 1, 2);
-            this.tlpComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpComplexForms.Location = new System.Drawing.Point(0, 29);
-            this.tlpComplexForms.Margin = new System.Windows.Forms.Padding(0);
-            this.tlpComplexForms.Name = "tlpComplexForms";
-            this.tlpComplexForms.RowCount = 3;
-            this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
-            this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpComplexForms.Size = new System.Drawing.Size(310, 392);
-            this.tlpComplexForms.TabIndex = 183;
-            // 
-            // cmdAddSprite
-            // 
-            this.cmdAddSprite.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdAddSprite.AutoSize = true;
-            this.cmdAddSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdAddSprite.Location = new System.Drawing.Point(3, 365);
-            this.cmdAddSprite.Name = "cmdAddSprite";
-            this.cmdAddSprite.Size = new System.Drawing.Size(66, 23);
-            this.cmdAddSprite.TabIndex = 26;
-            this.cmdAddSprite.Tag = "Button_AddSprite";
-            this.cmdAddSprite.Text = "&Add Sprite";
-            this.cmdAddSprite.UseVisualStyleBackColor = true;
-            this.cmdAddSprite.Click += new System.EventHandler(this.cmdAddSprite_Click);
-            // 
-            // treComplexForms
-            // 
-            this.tlpComplexForms.SetColumnSpan(this.treComplexForms, 2);
-            this.treComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treComplexForms.HideSelection = false;
-            this.treComplexForms.Location = new System.Drawing.Point(3, 3);
-            this.treComplexForms.Name = "treComplexForms";
-            treeNode12.Name = "nodProgramAdvancedRoot";
-            treeNode12.Tag = "Node_SelectedAdvancedComplexForms";
-            treeNode12.Text = "Selected Complex Forms";
-            this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode12});
-            this.treComplexForms.ShowNodeToolTips = true;
-            this.treComplexForms.ShowRootLines = false;
-            this.treComplexForms.Size = new System.Drawing.Size(304, 235);
-            this.treComplexForms.TabIndex = 94;
-            this.treComplexForms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treComplexForms_AfterSelect);
-            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treComplexForms_KeyDown);
-            this.treComplexForms.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
-            // 
-            // flpSustainedComplexForms
-            // 
-            this.flpSustainedComplexForms.AutoScroll = true;
-            this.flpSustainedComplexForms.AutoSize = true;
-            this.flpSustainedComplexForms.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpSustainedComplexForms.BackColor = System.Drawing.SystemColors.Window;
-            this.tlpComplexForms.SetColumnSpan(this.flpSustainedComplexForms, 2);
-            this.flpSustainedComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpSustainedComplexForms.Location = new System.Drawing.Point(3, 244);
-            this.flpSustainedComplexForms.Name = "flpSustainedComplexForms";
-            this.flpSustainedComplexForms.Size = new System.Drawing.Size(304, 114);
-            this.flpSustainedComplexForms.TabIndex = 95;
-            // 
-            // chkPsycheActiveTechnomancer
-            // 
-            this.chkPsycheActiveTechnomancer.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkPsycheActiveTechnomancer.AutoSize = true;
-            this.chkPsycheActiveTechnomancer.DefaultColorScheme = true;
-            this.chkPsycheActiveTechnomancer.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.chkPsycheActiveTechnomancer.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
-            this.chkPsycheActiveTechnomancer.Location = new System.Drawing.Point(75, 368);
-            this.chkPsycheActiveTechnomancer.Name = "chkPsycheActiveTechnomancer";
-            this.chkPsycheActiveTechnomancer.Size = new System.Drawing.Size(91, 17);
-            this.chkPsycheActiveTechnomancer.TabIndex = 96;
-            this.chkPsycheActiveTechnomancer.Tag = "Label_PsycheActive";
-            this.chkPsycheActiveTechnomancer.Text = "PsycheActive";
-            this.chkPsycheActiveTechnomancer.UseVisualStyleBackColor = true;
             // 
             // tlpTechnomancer
             // 
@@ -7904,52 +7835,6 @@ namespace Chummer
             this.lblTarget.TabIndex = 176;
             this.lblTarget.Text = "[None]";
             // 
-            // lblDurationLabel
-            // 
-            this.lblDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblDurationLabel.AutoSize = true;
-            this.lblDurationLabel.Location = new System.Drawing.Point(135, 31);
-            this.lblDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDurationLabel.Name = "lblDurationLabel";
-            this.lblDurationLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblDurationLabel.TabIndex = 177;
-            this.lblDurationLabel.Tag = "Label_SelectComplexForm_Duration";
-            this.lblDurationLabel.Text = "Duration:";
-            // 
-            // lblDuration
-            // 
-            this.lblDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblDuration.AutoSize = true;
-            this.lblDuration.Location = new System.Drawing.Point(191, 31);
-            this.lblDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDuration.Name = "lblDuration";
-            this.lblDuration.Size = new System.Drawing.Size(39, 13);
-            this.lblDuration.TabIndex = 178;
-            this.lblDuration.Text = "[None]";
-            // 
-            // lblFVLabel
-            // 
-            this.lblFVLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblFVLabel.AutoSize = true;
-            this.lblFVLabel.Location = new System.Drawing.Point(162, 6);
-            this.lblFVLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblFVLabel.Name = "lblFVLabel";
-            this.lblFVLabel.Size = new System.Drawing.Size(23, 13);
-            this.lblFVLabel.TabIndex = 179;
-            this.lblFVLabel.Tag = "Label_SelectComplexForm_FV";
-            this.lblFVLabel.Text = "FV:";
-            // 
-            // lblFV
-            // 
-            this.lblFV.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblFV.AutoSize = true;
-            this.lblFV.Location = new System.Drawing.Point(191, 6);
-            this.lblFV.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblFV.Name = "lblFV";
-            this.lblFV.Size = new System.Drawing.Size(39, 13);
-            this.lblFV.TabIndex = 180;
-            this.lblFV.Text = "[None]";
-            // 
             // lblComplexFormSourceLabel
             // 
             this.lblComplexFormSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -8004,6 +7889,18 @@ namespace Chummer
             this.dpcComplexFormDicePool.TabIndex = 182;
             this.dpcComplexFormDicePool.ToolTipText = "";
             // 
+            // lblDurationLabel
+            // 
+            this.lblDurationLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDurationLabel.AutoSize = true;
+            this.lblDurationLabel.Location = new System.Drawing.Point(135, 31);
+            this.lblDurationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDurationLabel.Name = "lblDurationLabel";
+            this.lblDurationLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblDurationLabel.TabIndex = 177;
+            this.lblDurationLabel.Tag = "Label_SelectComplexForm_Duration";
+            this.lblDurationLabel.Text = "Duration:";
+            // 
             // cmdAddSustainedForm
             // 
             this.cmdAddSustainedForm.AutoSize = true;
@@ -8017,6 +7914,40 @@ namespace Chummer
             this.cmdAddSustainedForm.Text = "Sustain";
             this.cmdAddSustainedForm.UseVisualStyleBackColor = true;
             this.cmdAddSustainedForm.Click += new System.EventHandler(this.cmdAddSustainedForm_Click);
+            // 
+            // lblDuration
+            // 
+            this.lblDuration.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblDuration.AutoSize = true;
+            this.lblDuration.Location = new System.Drawing.Point(191, 31);
+            this.lblDuration.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDuration.Name = "lblDuration";
+            this.lblDuration.Size = new System.Drawing.Size(39, 13);
+            this.lblDuration.TabIndex = 178;
+            this.lblDuration.Text = "[None]";
+            // 
+            // lblFVLabel
+            // 
+            this.lblFVLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblFVLabel.AutoSize = true;
+            this.lblFVLabel.Location = new System.Drawing.Point(162, 6);
+            this.lblFVLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblFVLabel.Name = "lblFVLabel";
+            this.lblFVLabel.Size = new System.Drawing.Size(23, 13);
+            this.lblFVLabel.TabIndex = 179;
+            this.lblFVLabel.Tag = "Label_SelectComplexForm_FV";
+            this.lblFVLabel.Text = "FV:";
+            // 
+            // lblFV
+            // 
+            this.lblFV.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblFV.AutoSize = true;
+            this.lblFV.Location = new System.Drawing.Point(191, 6);
+            this.lblFV.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblFV.Name = "lblFV";
+            this.lblFV.Size = new System.Drawing.Size(39, 13);
+            this.lblFV.TabIndex = 180;
+            this.lblFV.Text = "[None]";
             // 
             // gpbTechnomancerStream
             // 
@@ -8288,6 +8219,90 @@ namespace Chummer
             this.cmdDeleteComplexForm.Text = "Delete";
             this.cmdDeleteComplexForm.UseVisualStyleBackColor = true;
             this.cmdDeleteComplexForm.Click += new System.EventHandler(this.cmdDeleteComplexForm_Click);
+            // 
+            // tlpComplexForms
+            // 
+            this.tlpComplexForms.AutoSize = true;
+            this.tlpComplexForms.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpComplexForms.ColumnCount = 2;
+            this.tlpComplexForms.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpComplexForms.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpComplexForms.Controls.Add(this.cmdAddSprite, 0, 2);
+            this.tlpComplexForms.Controls.Add(this.treComplexForms, 0, 0);
+            this.tlpComplexForms.Controls.Add(this.flpSustainedComplexForms, 0, 1);
+            this.tlpComplexForms.Controls.Add(this.chkPsycheActiveTechnomancer, 1, 2);
+            this.tlpComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpComplexForms.Location = new System.Drawing.Point(0, 29);
+            this.tlpComplexForms.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpComplexForms.Name = "tlpComplexForms";
+            this.tlpComplexForms.RowCount = 3;
+            this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
+            this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpComplexForms.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpComplexForms.Size = new System.Drawing.Size(310, 392);
+            this.tlpComplexForms.TabIndex = 183;
+            // 
+            // cmdAddSprite
+            // 
+            this.cmdAddSprite.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdAddSprite.AutoSize = true;
+            this.cmdAddSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddSprite.Location = new System.Drawing.Point(3, 366);
+            this.cmdAddSprite.Name = "cmdAddSprite";
+            this.cmdAddSprite.Size = new System.Drawing.Size(66, 23);
+            this.cmdAddSprite.TabIndex = 26;
+            this.cmdAddSprite.Tag = "Button_AddSprite";
+            this.cmdAddSprite.Text = "&Add Sprite";
+            this.cmdAddSprite.UseVisualStyleBackColor = true;
+            this.cmdAddSprite.Click += new System.EventHandler(this.cmdAddSprite_Click);
+            // 
+            // treComplexForms
+            // 
+            this.tlpComplexForms.SetColumnSpan(this.treComplexForms, 2);
+            this.treComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treComplexForms.HideSelection = false;
+            this.treComplexForms.Location = new System.Drawing.Point(3, 3);
+            this.treComplexForms.Name = "treComplexForms";
+            treeNode12.Name = "nodProgramAdvancedRoot";
+            treeNode12.Tag = "Node_SelectedAdvancedComplexForms";
+            treeNode12.Text = "Selected Complex Forms";
+            this.treComplexForms.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            treeNode12});
+            this.treComplexForms.ShowNodeToolTips = true;
+            this.treComplexForms.ShowRootLines = false;
+            this.treComplexForms.Size = new System.Drawing.Size(304, 236);
+            this.treComplexForms.TabIndex = 94;
+            this.treComplexForms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treComplexForms_AfterSelect);
+            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treComplexForms_KeyDown);
+            this.treComplexForms.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
+            // 
+            // flpSustainedComplexForms
+            // 
+            this.flpSustainedComplexForms.AutoScroll = true;
+            this.flpSustainedComplexForms.AutoSize = true;
+            this.flpSustainedComplexForms.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpSustainedComplexForms.BackColor = System.Drawing.SystemColors.Window;
+            this.tlpComplexForms.SetColumnSpan(this.flpSustainedComplexForms, 2);
+            this.flpSustainedComplexForms.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.flpSustainedComplexForms.Location = new System.Drawing.Point(3, 245);
+            this.flpSustainedComplexForms.Name = "flpSustainedComplexForms";
+            this.flpSustainedComplexForms.Size = new System.Drawing.Size(304, 115);
+            this.flpSustainedComplexForms.TabIndex = 95;
+            // 
+            // chkPsycheActiveTechnomancer
+            // 
+            this.chkPsycheActiveTechnomancer.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkPsycheActiveTechnomancer.AutoSize = true;
+            this.chkPsycheActiveTechnomancer.DefaultColorScheme = true;
+            this.chkPsycheActiveTechnomancer.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.chkPsycheActiveTechnomancer.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
+            this.chkPsycheActiveTechnomancer.Location = new System.Drawing.Point(75, 369);
+            this.chkPsycheActiveTechnomancer.Name = "chkPsycheActiveTechnomancer";
+            this.chkPsycheActiveTechnomancer.Size = new System.Drawing.Size(91, 17);
+            this.chkPsycheActiveTechnomancer.TabIndex = 96;
+            this.chkPsycheActiveTechnomancer.Tag = "Label_PsycheActive";
+            this.chkPsycheActiveTechnomancer.Text = "PsycheActive";
+            this.chkPsycheActiveTechnomancer.UseVisualStyleBackColor = true;
             // 
             // tabAdvancedPrograms
             // 
@@ -19788,21 +19803,6 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
-            // flpMagicianSpellButtons
-            // 
-            this.flpMagicianSpellButtons.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flpMagicianSpellButtons.AutoSize = true;
-            this.flpMagicianSpellButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMagicianSpell.SetColumnSpan(this.flpMagicianSpellButtons, 2);
-            this.flpMagicianSpellButtons.Controls.Add(this.cmdQuickenSpell);
-            this.flpMagicianSpellButtons.Controls.Add(this.cmdAddSustainedSpell);
-            this.flpMagicianSpellButtons.Location = new System.Drawing.Point(311, 100);
-            this.flpMagicianSpellButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.flpMagicianSpellButtons.Name = "flpMagicianSpellButtons";
-            this.flpMagicianSpellButtons.Size = new System.Drawing.Size(147, 29);
-            this.flpMagicianSpellButtons.TabIndex = 174;
-            this.flpMagicianSpellButtons.WrapContents = false;
-            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -19919,8 +19919,6 @@ namespace Chummer
             this.tlpMartialArtsRight.PerformLayout();
             this.tabMagician.ResumeLayout(false);
             this.tabMagician.PerformLayout();
-            this.tlpSpells.ResumeLayout(false);
-            this.tlpSpells.PerformLayout();
             this.tlpMagician.ResumeLayout(false);
             this.tlpMagician.PerformLayout();
             this.flpMagician.ResumeLayout(false);
@@ -19929,6 +19927,8 @@ namespace Chummer
             this.gpbMagicianSpell.PerformLayout();
             this.tlpMagicianSpell.ResumeLayout(false);
             this.tlpMagicianSpell.PerformLayout();
+            this.flpMagicianSpellButtons.ResumeLayout(false);
+            this.flpMagicianSpellButtons.PerformLayout();
             this.gpbMagicianTradition.ResumeLayout(false);
             this.gpbMagicianTradition.PerformLayout();
             this.tlpMagicianTradition.ResumeLayout(false);
@@ -19943,12 +19943,12 @@ namespace Chummer
             this.tlpMagicianMentorSpiritHeader.PerformLayout();
             this.tlpMagicianButtons.ResumeLayout(false);
             this.tlpMagicianButtons.PerformLayout();
+            this.tlpSpells.ResumeLayout(false);
+            this.tlpSpells.PerformLayout();
             this.tabAdept.ResumeLayout(false);
             this.tabAdept.PerformLayout();
             this.tabTechnomancer.ResumeLayout(false);
             this.tabTechnomancer.PerformLayout();
-            this.tlpComplexForms.ResumeLayout(false);
-            this.tlpComplexForms.PerformLayout();
             this.tlpTechnomancer.ResumeLayout(false);
             this.tlpTechnomancer.PerformLayout();
             this.flpTechnomancer.ResumeLayout(false);
@@ -19971,6 +19971,8 @@ namespace Chummer
             this.tlpTechnomancerParagonHeader.PerformLayout();
             this.tlpTechnomancerButtons.ResumeLayout(false);
             this.tlpTechnomancerButtons.PerformLayout();
+            this.tlpComplexForms.ResumeLayout(false);
+            this.tlpComplexForms.PerformLayout();
             this.tabAdvancedPrograms.ResumeLayout(false);
             this.tabAdvancedPrograms.PerformLayout();
             this.tlpAdvancedPrograms.ResumeLayout(false);
@@ -20284,8 +20286,6 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
-            this.flpMagicianSpellButtons.ResumeLayout(false);
-            this.flpMagicianSpellButtons.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 

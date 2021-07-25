@@ -47,22 +47,24 @@ namespace Chummer
             this.lblPriorityTable = new System.Windows.Forms.Label();
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
-            this.lblMaxNuyenKarma = new System.Windows.Forms.Label();
             this.lblMaxAvail = new System.Windows.Forms.Label();
-            this.nudMaxNuyenKarma = new Chummer.NumericUpDownEx();
             this.flpAllowedCyberwareGrades = new System.Windows.Forms.FlowLayoutPanel();
             this.lblKnowledgePoints = new Chummer.LabelWithToolTip();
-            this.lblContactPoints = new Chummer.LabelWithToolTip();
             this.txtKnowledgePoints = new System.Windows.Forms.TextBox();
-            this.lblQualityKarmaLimit = new System.Windows.Forms.Label();
-            this.txtContactPoints = new System.Windows.Forms.TextBox();
-            this.nudQualityKarmaLimit = new Chummer.NumericUpDownEx();
             this.lblStartingKarma = new System.Windows.Forms.Label();
             this.nudStartingKarma = new Chummer.NumericUpDownEx();
             this.lblPriorities = new Chummer.LabelWithToolTip();
             this.txtPriorities = new System.Windows.Forms.TextBox();
             this.nudSumToTen = new Chummer.NumericUpDownEx();
             this.lblSumToTen = new System.Windows.Forms.Label();
+            this.lblMaxNuyenKarma = new System.Windows.Forms.Label();
+            this.lblQualityKarmaLimit = new System.Windows.Forms.Label();
+            this.nudMaxNuyenKarma = new Chummer.NumericUpDownEx();
+            this.nudQualityKarmaLimit = new Chummer.NumericUpDownEx();
+            this.lblNuyenExpression = new Chummer.LabelWithToolTip();
+            this.txtNuyenExpression = new System.Windows.Forms.TextBox();
+            this.lblContactPoints = new Chummer.LabelWithToolTip();
+            this.txtContactPoints = new System.Windows.Forms.TextBox();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.chkEnemyKarmaQualityLimit = new Chummer.ColorableCheckBox(this.components);
@@ -297,8 +299,6 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.lblNuyenExpression = new Chummer.LabelWithToolTip();
-            this.txtNuyenExpression = new System.Windows.Forms.TextBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -308,10 +308,10 @@ namespace Chummer
             this.gpbBasicOptionsCreateSettings.SuspendLayout();
             this.tlpBasicOptionsCreateSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
             this.tlpBasicOptionsOfficialRules.SuspendLayout();
             this.gpbBasicOptionsCyberlimbs.SuspendLayout();
@@ -680,19 +680,6 @@ namespace Chummer
             this.cboBuildMethod.TabIndex = 1;
             this.cboBuildMethod.TooltipText = "";
             // 
-            // lblMaxNuyenKarma
-            // 
-            this.lblMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxNuyenKarma.AutoSize = true;
-            this.lblMaxNuyenKarma.Location = new System.Drawing.Point(296, 111);
-            this.lblMaxNuyenKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxNuyenKarma.Name = "lblMaxNuyenKarma";
-            this.lblMaxNuyenKarma.Size = new System.Drawing.Size(94, 13);
-            this.lblMaxNuyenKarma.TabIndex = 16;
-            this.lblMaxNuyenKarma.Tag = "Label_SelectBP_MaxNuyen";
-            this.lblMaxNuyenKarma.Text = "Nuyen Karma Max";
-            this.lblMaxNuyenKarma.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // lblMaxAvail
             // 
             this.lblMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -705,25 +692,6 @@ namespace Chummer
             this.lblMaxAvail.Tag = "Label_SelectBP_MaxAvail";
             this.lblMaxAvail.Text = "Maximum Availability";
             this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMaxNuyenKarma
-            // 
-            this.nudMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxNuyenKarma.AutoSize = true;
-            this.nudMaxNuyenKarma.Location = new System.Drawing.Point(396, 108);
-            this.nudMaxNuyenKarma.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudMaxNuyenKarma.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxNuyenKarma.Name = "nudMaxNuyenKarma";
-            this.nudMaxNuyenKarma.Size = new System.Drawing.Size(59, 20);
-            this.nudMaxNuyenKarma.TabIndex = 25;
             // 
             // flpAllowedCyberwareGrades
             // 
@@ -754,20 +722,6 @@ namespace Chummer
             this.lblKnowledgePoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblKnowledgePoints.ToolTipText = "";
             // 
-            // lblContactPoints
-            // 
-            this.lblContactPoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblContactPoints.AutoSize = true;
-            this.lblContactPoints.Location = new System.Drawing.Point(19, 137);
-            this.lblContactPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblContactPoints.Name = "lblContactPoints";
-            this.lblContactPoints.Size = new System.Drawing.Size(76, 13);
-            this.lblContactPoints.TabIndex = 0;
-            this.lblContactPoints.Tag = "String_ContactPoints";
-            this.lblContactPoints.Text = "Contact Points";
-            this.lblContactPoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblContactPoints.ToolTipText = "";
-            // 
             // txtKnowledgePoints
             // 
             this.txtKnowledgePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -777,48 +731,6 @@ namespace Chummer
             this.txtKnowledgePoints.TabIndex = 3;
             this.txtKnowledgePoints.Text = "({INTUnaug} + {LOGUnaug}) * 2";
             this.txtKnowledgePoints.TextChanged += new System.EventHandler(this.txtKnowledgePoints_TextChanged);
-            // 
-            // lblQualityKarmaLimit
-            // 
-            this.lblQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblQualityKarmaLimit.AutoSize = true;
-            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(294, 85);
-            this.lblQualityKarmaLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblQualityKarmaLimit.Name = "lblQualityKarmaLimit";
-            this.lblQualityKarmaLimit.Size = new System.Drawing.Size(96, 13);
-            this.lblQualityKarmaLimit.TabIndex = 30;
-            this.lblQualityKarmaLimit.Tag = "Label_SelectBP_QualityKarmaLimit";
-            this.lblQualityKarmaLimit.Text = "Quality Karma Limit";
-            this.lblQualityKarmaLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtContactPoints
-            // 
-            this.txtContactPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtContactPoints.Location = new System.Drawing.Point(101, 134);
-            this.txtContactPoints.Name = "txtContactPoints";
-            this.txtContactPoints.Size = new System.Drawing.Size(180, 20);
-            this.txtContactPoints.TabIndex = 2;
-            this.txtContactPoints.Text = "{CHAUnaug} * 3";
-            this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
-            // 
-            // nudQualityKarmaLimit
-            // 
-            this.nudQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudQualityKarmaLimit.AutoSize = true;
-            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(396, 82);
-            this.nudQualityKarmaLimit.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudQualityKarmaLimit.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudQualityKarmaLimit.Name = "nudQualityKarmaLimit";
-            this.nudQualityKarmaLimit.Size = new System.Drawing.Size(59, 20);
-            this.nudQualityKarmaLimit.TabIndex = 31;
             // 
             // lblStartingKarma
             // 
@@ -908,6 +820,118 @@ namespace Chummer
             this.lblSumToTen.Tag = "Label_SelectBP_SumToX";
             this.lblSumToTen.Text = "Sum to Ten";
             this.lblSumToTen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblMaxNuyenKarma
+            // 
+            this.lblMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxNuyenKarma.AutoSize = true;
+            this.lblMaxNuyenKarma.Location = new System.Drawing.Point(296, 111);
+            this.lblMaxNuyenKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxNuyenKarma.Name = "lblMaxNuyenKarma";
+            this.lblMaxNuyenKarma.Size = new System.Drawing.Size(94, 13);
+            this.lblMaxNuyenKarma.TabIndex = 16;
+            this.lblMaxNuyenKarma.Tag = "Label_SelectBP_MaxNuyen";
+            this.lblMaxNuyenKarma.Text = "Nuyen Karma Max";
+            this.lblMaxNuyenKarma.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblQualityKarmaLimit
+            // 
+            this.lblQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblQualityKarmaLimit.AutoSize = true;
+            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(294, 85);
+            this.lblQualityKarmaLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblQualityKarmaLimit.Name = "lblQualityKarmaLimit";
+            this.lblQualityKarmaLimit.Size = new System.Drawing.Size(96, 13);
+            this.lblQualityKarmaLimit.TabIndex = 30;
+            this.lblQualityKarmaLimit.Tag = "Label_SelectBP_QualityKarmaLimit";
+            this.lblQualityKarmaLimit.Text = "Quality Karma Limit";
+            this.lblQualityKarmaLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxNuyenKarma
+            // 
+            this.nudMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxNuyenKarma.AutoSize = true;
+            this.nudMaxNuyenKarma.Location = new System.Drawing.Point(396, 108);
+            this.nudMaxNuyenKarma.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudMaxNuyenKarma.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxNuyenKarma.Name = "nudMaxNuyenKarma";
+            this.nudMaxNuyenKarma.Size = new System.Drawing.Size(59, 20);
+            this.nudMaxNuyenKarma.TabIndex = 25;
+            // 
+            // nudQualityKarmaLimit
+            // 
+            this.nudQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudQualityKarmaLimit.AutoSize = true;
+            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(396, 82);
+            this.nudQualityKarmaLimit.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudQualityKarmaLimit.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudQualityKarmaLimit.Name = "nudQualityKarmaLimit";
+            this.nudQualityKarmaLimit.Size = new System.Drawing.Size(59, 20);
+            this.nudQualityKarmaLimit.TabIndex = 31;
+            // 
+            // lblNuyenExpression
+            // 
+            this.lblNuyenExpression.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblNuyenExpression.AutoSize = true;
+            this.lblNuyenExpression.Location = new System.Drawing.Point(3, 111);
+            this.lblNuyenExpression.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblNuyenExpression.Name = "lblNuyenExpression";
+            this.lblNuyenExpression.Size = new System.Drawing.Size(92, 13);
+            this.lblNuyenExpression.TabIndex = 32;
+            this.lblNuyenExpression.Tag = "Label_CharacterOptions_NuyenExpression";
+            this.lblNuyenExpression.Text = "Nuyen Expression";
+            this.lblNuyenExpression.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblNuyenExpression.ToolTipText = "";
+            // 
+            // txtNuyenExpression
+            // 
+            this.txtNuyenExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNuyenExpression.Location = new System.Drawing.Point(101, 108);
+            this.txtNuyenExpression.Name = "txtNuyenExpression";
+            this.txtNuyenExpression.Size = new System.Drawing.Size(180, 20);
+            this.txtNuyenExpression.TabIndex = 33;
+            this.txtNuyenExpression.Text = "{Karma} * 2000";
+            this.txtNuyenExpression.TextChanged += new System.EventHandler(this.txtNuyenExpression_TextChanged);
+            // 
+            // lblContactPoints
+            // 
+            this.lblContactPoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblContactPoints.AutoSize = true;
+            this.lblContactPoints.Location = new System.Drawing.Point(19, 137);
+            this.lblContactPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblContactPoints.Name = "lblContactPoints";
+            this.lblContactPoints.Size = new System.Drawing.Size(76, 13);
+            this.lblContactPoints.TabIndex = 0;
+            this.lblContactPoints.Tag = "String_ContactPoints";
+            this.lblContactPoints.Text = "Contact Points";
+            this.lblContactPoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblContactPoints.ToolTipText = "";
+            // 
+            // txtContactPoints
+            // 
+            this.txtContactPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtContactPoints.Location = new System.Drawing.Point(101, 134);
+            this.txtContactPoints.Name = "txtContactPoints";
+            this.txtContactPoints.Size = new System.Drawing.Size(180, 20);
+            this.txtContactPoints.TabIndex = 2;
+            this.txtContactPoints.Text = "{CHAUnaug} * 3";
+            this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
             // 
             // gpbBasicOptionsOfficialRules
             // 
@@ -4593,30 +4617,6 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // lblNuyenExpression
-            // 
-            this.lblNuyenExpression.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblNuyenExpression.AutoSize = true;
-            this.lblNuyenExpression.Location = new System.Drawing.Point(3, 111);
-            this.lblNuyenExpression.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblNuyenExpression.Name = "lblNuyenExpression";
-            this.lblNuyenExpression.Size = new System.Drawing.Size(92, 13);
-            this.lblNuyenExpression.TabIndex = 32;
-            this.lblNuyenExpression.Tag = "Label_CharacterOptions_NuyenExpression";
-            this.lblNuyenExpression.Text = "Nuyen Expression";
-            this.lblNuyenExpression.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblNuyenExpression.ToolTipText = "";
-            // 
-            // txtNuyenExpression
-            // 
-            this.txtNuyenExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtNuyenExpression.Location = new System.Drawing.Point(101, 108);
-            this.txtNuyenExpression.Name = "txtNuyenExpression";
-            this.txtNuyenExpression.Size = new System.Drawing.Size(180, 20);
-            this.txtNuyenExpression.TabIndex = 33;
-            this.txtNuyenExpression.Text = "{Karma} * 2000";
-            this.txtNuyenExpression.TextChanged += new System.EventHandler(this.txtNuyenExpression_TextChanged);
-            // 
             // frmCharacterOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4650,10 +4650,10 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.ResumeLayout(false);
             this.tlpBasicOptionsCreateSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             this.gpbBasicOptionsOfficialRules.ResumeLayout(false);
             this.gpbBasicOptionsOfficialRules.PerformLayout();
             this.tlpBasicOptionsOfficialRules.ResumeLayout(false);

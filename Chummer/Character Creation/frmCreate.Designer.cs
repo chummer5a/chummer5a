@@ -136,6 +136,7 @@ namespace Chummer
             this.tsMartialArtsAddTechnique = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsMartialArtsNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmsSpellButton = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsCreateSpell = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmsComplexForm = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsComplexFormNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmsCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1045,7 +1046,6 @@ namespace Chummer
             this.tsGearAllowRenameName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsGearAllowRenameExtra = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsCreateSpell = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -2152,7 +2152,23 @@ namespace Chummer
             this.cmsSpellButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsCreateSpell});
             this.cmsSpellButton.Name = "cmsSpellButton";
-            this.cmsSpellButton.Size = new System.Drawing.Size(181, 48);
+            this.cmsSpellButton.Size = new System.Drawing.Size(137, 26);
+            // 
+            // tsCreateSpell
+            // 
+            this.tsCreateSpell.Image = null;
+            this.tsCreateSpell.ImageDpi120 = null;
+            this.tsCreateSpell.ImageDpi144 = null;
+            this.tsCreateSpell.ImageDpi192 = null;
+            this.tsCreateSpell.ImageDpi288 = null;
+            this.tsCreateSpell.ImageDpi384 = null;
+            this.tsCreateSpell.ImageDpi96 = null;
+            this.tsCreateSpell.Name = "tsCreateSpell";
+            this.tsCreateSpell.Size = new System.Drawing.Size(136, 22);
+            this.tsCreateSpell.Tag = "Menu_CreateSpell";
+            this.tsCreateSpell.Text = "&Create Spell";
+            this.tsCreateSpell.Visible = false;
+            this.tsCreateSpell.Click += new System.EventHandler(this.tsCreateSpell_Click);
             // 
             // cmsComplexForm
             // 
@@ -15026,22 +15042,6 @@ namespace Chummer
             this.tsGearAllowRenameExtra.Tag = "Menu_RenameExtraText";
             this.tsGearAllowRenameExtra.Text = "&Rename Extra Text";
             this.tsGearAllowRenameExtra.Click += new System.EventHandler(this.tsGearRename_Click);
-            // 
-            // tsCreateSpell
-            // 
-            this.tsCreateSpell.Image = null;
-            this.tsCreateSpell.ImageDpi120 = null;
-            this.tsCreateSpell.ImageDpi144 = null;
-            this.tsCreateSpell.ImageDpi192 = null;
-            this.tsCreateSpell.ImageDpi288 = null;
-            this.tsCreateSpell.ImageDpi384 = null;
-            this.tsCreateSpell.ImageDpi96 = null;
-            this.tsCreateSpell.Name = "tsCreateSpell";
-            this.tsCreateSpell.Size = new System.Drawing.Size(180, 22);
-            this.tsCreateSpell.Tag = "Menu_CreateSpell";
-            this.tsCreateSpell.Text = "&Create Spell";
-            this.tsCreateSpell.Visible = false;
-            this.tsCreateSpell.Click += new System.EventHandler(this.tsCreateSpell_Click);
             // 
             // frmCreate
             // 

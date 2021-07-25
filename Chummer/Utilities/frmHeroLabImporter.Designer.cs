@@ -340,7 +340,7 @@ namespace Chummer
             this.panCharacterConcept.Location = new System.Drawing.Point(4, 22);
             this.panCharacterConcept.Name = "panCharacterConcept";
             this.panCharacterConcept.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterConcept.Size = new System.Drawing.Size(451, 176);
+            this.panCharacterConcept.Size = new System.Drawing.Size(446, 176);
             this.panCharacterConcept.TabIndex = 1;
             this.panCharacterConcept.Tag = "Tab_Roster_Concept";
             this.panCharacterConcept.Text = "Concept";
@@ -356,7 +356,7 @@ namespace Chummer
             this.txtCharacterConcept.Name = "txtCharacterConcept";
             this.txtCharacterConcept.ReadOnly = true;
             this.txtCharacterConcept.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterConcept.Size = new System.Drawing.Size(445, 170);
+            this.txtCharacterConcept.Size = new System.Drawing.Size(440, 170);
             this.txtCharacterConcept.TabIndex = 2;
             this.txtCharacterConcept.Tag = "";
             // 
@@ -366,7 +366,7 @@ namespace Chummer
             this.panCharacterBackground.Location = new System.Drawing.Point(4, 22);
             this.panCharacterBackground.Name = "panCharacterBackground";
             this.panCharacterBackground.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterBackground.Size = new System.Drawing.Size(451, 176);
+            this.panCharacterBackground.Size = new System.Drawing.Size(446, 176);
             this.panCharacterBackground.TabIndex = 2;
             this.panCharacterBackground.Tag = "Tab_Roster_Background";
             this.panCharacterBackground.Text = "Background";
@@ -382,7 +382,7 @@ namespace Chummer
             this.txtCharacterBackground.Name = "txtCharacterBackground";
             this.txtCharacterBackground.ReadOnly = true;
             this.txtCharacterBackground.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterBackground.Size = new System.Drawing.Size(445, 170);
+            this.txtCharacterBackground.Size = new System.Drawing.Size(440, 170);
             this.txtCharacterBackground.TabIndex = 0;
             this.txtCharacterBackground.Tag = "";
             // 
@@ -392,7 +392,7 @@ namespace Chummer
             this.panCharacterNotes.Location = new System.Drawing.Point(4, 22);
             this.panCharacterNotes.Name = "panCharacterNotes";
             this.panCharacterNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterNotes.Size = new System.Drawing.Size(451, 176);
+            this.panCharacterNotes.Size = new System.Drawing.Size(446, 176);
             this.panCharacterNotes.TabIndex = 3;
             this.panCharacterNotes.Tag = "Tab_Roster_CharacterNotes";
             this.panCharacterNotes.Text = "Character Notes";
@@ -408,7 +408,7 @@ namespace Chummer
             this.txtCharacterNotes.Name = "txtCharacterNotes";
             this.txtCharacterNotes.ReadOnly = true;
             this.txtCharacterNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtCharacterNotes.Size = new System.Drawing.Size(445, 170);
+            this.txtCharacterNotes.Size = new System.Drawing.Size(440, 170);
             this.txtCharacterNotes.TabIndex = 2;
             this.txtCharacterNotes.Tag = "";
             // 
@@ -418,7 +418,7 @@ namespace Chummer
             this.panGameNotes.Location = new System.Drawing.Point(4, 22);
             this.panGameNotes.Name = "panGameNotes";
             this.panGameNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panGameNotes.Size = new System.Drawing.Size(451, 176);
+            this.panGameNotes.Size = new System.Drawing.Size(446, 176);
             this.panGameNotes.TabIndex = 4;
             this.panGameNotes.Tag = "Tab_Roster_GameNotes";
             this.panGameNotes.Text = "Game Notes";
@@ -434,7 +434,7 @@ namespace Chummer
             this.txtGameNotes.Name = "txtGameNotes";
             this.txtGameNotes.ReadOnly = true;
             this.txtGameNotes.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtGameNotes.Size = new System.Drawing.Size(445, 170);
+            this.txtGameNotes.Size = new System.Drawing.Size(440, 170);
             this.txtGameNotes.TabIndex = 3;
             this.txtGameNotes.Tag = "";
             // 

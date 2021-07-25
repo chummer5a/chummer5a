@@ -36,13 +36,13 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cboLanguage = new Chummer.ElasticComboBox();
+            this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtText = new System.Windows.Forms.TextBox();
-            this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
-            this.cboLanguage = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();
-            this.tlpButtons.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).BeginInit();
+            this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblExport
@@ -131,6 +131,30 @@ namespace Chummer
             this.tlpMain.TabIndex = 5;
             this.tlpMain.UseWaitCursor = true;
             // 
+            // cboLanguage
+            // 
+            this.cboLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboLanguage.FormattingEnabled = true;
+            this.cboLanguage.Location = new System.Drawing.Point(83, 4);
+            this.cboLanguage.Name = "cboLanguage";
+            this.cboLanguage.Size = new System.Drawing.Size(177, 21);
+            this.cboLanguage.TabIndex = 107;
+            this.cboLanguage.TooltipText = "";
+            this.cboLanguage.UseWaitCursor = true;
+            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
+            // 
+            // imgSheetLanguageFlag
+            // 
+            this.imgSheetLanguageFlag.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.imgSheetLanguageFlag.Location = new System.Drawing.Point(61, 3);
+            this.imgSheetLanguageFlag.Name = "imgSheetLanguageFlag";
+            this.imgSheetLanguageFlag.Size = new System.Drawing.Size(16, 23);
+            this.imgSheetLanguageFlag.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.imgSheetLanguageFlag.TabIndex = 106;
+            this.imgSheetLanguageFlag.TabStop = false;
+            this.imgSheetLanguageFlag.UseWaitCursor = true;
+            // 
             // tlpButtons
             // 
             this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -169,28 +193,6 @@ namespace Chummer
             this.txtText.Leave += new System.EventHandler(this.txtText_Leave);
             this.txtText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.txtText_MouseUp);
             // 
-            // imgSheetLanguageFlag
-            // 
-            this.imgSheetLanguageFlag.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imgSheetLanguageFlag.Location = new System.Drawing.Point(61, 3);
-            this.imgSheetLanguageFlag.Name = "imgSheetLanguageFlag";
-            this.imgSheetLanguageFlag.Size = new System.Drawing.Size(16, 23);
-            this.imgSheetLanguageFlag.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.imgSheetLanguageFlag.TabIndex = 106;
-            this.imgSheetLanguageFlag.TabStop = false;
-            // 
-            // cboLanguage
-            // 
-            this.cboLanguage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboLanguage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboLanguage.FormattingEnabled = true;
-            this.cboLanguage.Location = new System.Drawing.Point(83, 4);
-            this.cboLanguage.Name = "cboLanguage";
-            this.cboLanguage.Size = new System.Drawing.Size(177, 21);
-            this.cboLanguage.TabIndex = 107;
-            this.cboLanguage.TooltipText = "";
-            this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
-            // 
             // frmExport
             // 
             this.AcceptButton = this.cmdOK;
@@ -215,9 +217,9 @@ namespace Chummer
             this.Load += new System.EventHandler(this.frmExport_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

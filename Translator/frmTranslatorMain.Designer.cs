@@ -37,9 +37,9 @@ namespace Translator
             this.lblName = new System.Windows.Forms.Label();
             this.txtLanguageName = new System.Windows.Forms.TextBox();
             this.flpLanguageCode = new System.Windows.Forms.FlowLayoutPanel();
-            this.txtLanguageCode = new System.Windows.Forms.TextBox();
-            this.lblDash = new System.Windows.Forms.Label();
             this.txtRegionCode = new System.Windows.Forms.TextBox();
+            this.lblDash = new System.Windows.Forms.Label();
+            this.txtLanguageCode = new System.Windows.Forms.TextBox();
             this.gbxEdit = new System.Windows.Forms.GroupBox();
             this.tlpEdit = new System.Windows.Forms.TableLayoutPanel();
             this.cmdRebuild = new System.Windows.Forms.Button();
@@ -173,15 +173,16 @@ namespace Translator
             this.flpLanguageCode.Size = new System.Drawing.Size(121, 25);
             this.flpLanguageCode.TabIndex = 147;
             // 
-            // txtLanguageCode
+            // txtRegionCode
             // 
-            this.txtLanguageCode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLanguageCode.Location = new System.Drawing.Point(32, 3);
-            this.txtLanguageCode.Name = "txtLanguageCode";
-            this.txtLanguageCode.Size = new System.Drawing.Size(32, 20);
-            this.txtLanguageCode.TabIndex = 1;
-            this.txtLanguageCode.TextChanged += new System.EventHandler(this.txtLanguageCode_TextChanged);
-            this.txtLanguageCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtLanguageCode_KeyDown);
+            this.txtRegionCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtRegionCode.Location = new System.Drawing.Point(86, 3);
+            this.txtRegionCode.MaxLength = 2;
+            this.txtRegionCode.Name = "txtRegionCode";
+            this.txtRegionCode.Size = new System.Drawing.Size(32, 20);
+            this.txtRegionCode.TabIndex = 2;
+            this.txtRegionCode.TextChanged += new System.EventHandler(this.txtRegionCode_TextChanged);
+            this.txtRegionCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtRegionCode_KeyDown);
             // 
             // lblDash
             // 
@@ -195,16 +196,15 @@ namespace Translator
             this.lblDash.Tag = "";
             this.lblDash.Text = "-";
             // 
-            // txtRegionCode
+            // txtLanguageCode
             // 
-            this.txtRegionCode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRegionCode.Location = new System.Drawing.Point(86, 3);
-            this.txtRegionCode.MaxLength = 2;
-            this.txtRegionCode.Name = "txtRegionCode";
-            this.txtRegionCode.Size = new System.Drawing.Size(32, 20);
-            this.txtRegionCode.TabIndex = 2;
-            this.txtRegionCode.TextChanged += new System.EventHandler(this.txtRegionCode_TextChanged);
-            this.txtRegionCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtRegionCode_KeyDown);
+            this.txtLanguageCode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLanguageCode.Location = new System.Drawing.Point(32, 3);
+            this.txtLanguageCode.Name = "txtLanguageCode";
+            this.txtLanguageCode.Size = new System.Drawing.Size(32, 20);
+            this.txtLanguageCode.TabIndex = 1;
+            this.txtLanguageCode.TextChanged += new System.EventHandler(this.txtLanguageCode_TextChanged);
+            this.txtLanguageCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtLanguageCode_KeyDown);
             // 
             // gbxEdit
             // 

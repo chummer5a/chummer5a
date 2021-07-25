@@ -120,7 +120,7 @@ namespace Chummer
             this.panCharacterConcept.Location = new System.Drawing.Point(4, 22);
             this.panCharacterConcept.Name = "panCharacterConcept";
             this.panCharacterConcept.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterConcept.Size = new System.Drawing.Size(440, 199);
+            this.panCharacterConcept.Size = new System.Drawing.Size(446, 205);
             this.panCharacterConcept.TabIndex = 1;
             this.panCharacterConcept.Tag = "Tab_Roster_Concept";
             this.panCharacterConcept.Text = "Concept";
@@ -134,7 +134,7 @@ namespace Chummer
             this.txtCharacterConcept.Multiline = true;
             this.txtCharacterConcept.Name = "txtCharacterConcept";
             this.txtCharacterConcept.ReadOnly = true;
-            this.txtCharacterConcept.Size = new System.Drawing.Size(434, 193);
+            this.txtCharacterConcept.Size = new System.Drawing.Size(440, 199);
             this.txtCharacterConcept.TabIndex = 0;
             // 
             // panCharacterBackground
@@ -143,7 +143,7 @@ namespace Chummer
             this.panCharacterBackground.Location = new System.Drawing.Point(4, 22);
             this.panCharacterBackground.Name = "panCharacterBackground";
             this.panCharacterBackground.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterBackground.Size = new System.Drawing.Size(440, 199);
+            this.panCharacterBackground.Size = new System.Drawing.Size(446, 205);
             this.panCharacterBackground.TabIndex = 2;
             this.panCharacterBackground.Tag = "Tab_Roster_Background";
             this.panCharacterBackground.Text = "Background";
@@ -157,7 +157,7 @@ namespace Chummer
             this.txtCharacterBackground.Multiline = true;
             this.txtCharacterBackground.Name = "txtCharacterBackground";
             this.txtCharacterBackground.ReadOnly = true;
-            this.txtCharacterBackground.Size = new System.Drawing.Size(434, 193);
+            this.txtCharacterBackground.Size = new System.Drawing.Size(440, 199);
             this.txtCharacterBackground.TabIndex = 0;
             // 
             // panCharacterNotes
@@ -166,7 +166,7 @@ namespace Chummer
             this.panCharacterNotes.Location = new System.Drawing.Point(4, 22);
             this.panCharacterNotes.Name = "panCharacterNotes";
             this.panCharacterNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panCharacterNotes.Size = new System.Drawing.Size(440, 199);
+            this.panCharacterNotes.Size = new System.Drawing.Size(446, 205);
             this.panCharacterNotes.TabIndex = 3;
             this.panCharacterNotes.Tag = "Tab_Roster_CharacterNotes";
             this.panCharacterNotes.Text = "Character Notes";
@@ -180,7 +180,7 @@ namespace Chummer
             this.txtCharacterNotes.Multiline = true;
             this.txtCharacterNotes.Name = "txtCharacterNotes";
             this.txtCharacterNotes.ReadOnly = true;
-            this.txtCharacterNotes.Size = new System.Drawing.Size(434, 193);
+            this.txtCharacterNotes.Size = new System.Drawing.Size(440, 199);
             this.txtCharacterNotes.TabIndex = 0;
             // 
             // panGameNotes
@@ -189,7 +189,7 @@ namespace Chummer
             this.panGameNotes.Location = new System.Drawing.Point(4, 22);
             this.panGameNotes.Name = "panGameNotes";
             this.panGameNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.panGameNotes.Size = new System.Drawing.Size(440, 199);
+            this.panGameNotes.Size = new System.Drawing.Size(446, 205);
             this.panGameNotes.TabIndex = 4;
             this.panGameNotes.Tag = "Tab_Roster_GameNotes";
             this.panGameNotes.Text = "Game Notes";
@@ -203,7 +203,7 @@ namespace Chummer
             this.txtGameNotes.Multiline = true;
             this.txtGameNotes.Name = "txtGameNotes";
             this.txtGameNotes.ReadOnly = true;
-            this.txtGameNotes.Size = new System.Drawing.Size(434, 193);
+            this.txtGameNotes.Size = new System.Drawing.Size(440, 199);
             this.txtGameNotes.TabIndex = 0;
             // 
             // lblCharacterName

@@ -63,17 +63,16 @@ namespace CrashHandler
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusCollectionProgess});
-            this.statusStrip1.Location = new System.Drawing.Point(12, 506);
+            this.statusStrip1.Location = new System.Drawing.Point(9, 410);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(808, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(606, 22);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip";
             // 
             // statusCollectionProgess
             // 
             this.statusCollectionProgess.Name = "statusCollectionProgess";
-            this.statusCollectionProgess.Size = new System.Drawing.Size(70, 20);
+            this.statusCollectionProgess.Size = new System.Drawing.Size(57, 17);
             this.statusCollectionProgess.Text = "Starting...";
             // 
             // btnNo
@@ -81,11 +80,10 @@ namespace CrashHandler
             this.btnNo.AutoSize = true;
             this.btnNo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnNo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnNo.Location = new System.Drawing.Point(4, 4);
-            this.btnNo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnNo.MaximumSize = new System.Drawing.Size(133, 43);
+            this.btnNo.Location = new System.Drawing.Point(3, 3);
+            this.btnNo.MaximumSize = new System.Drawing.Size(100, 35);
             this.btnNo.Name = "btnNo";
-            this.btnNo.Size = new System.Drawing.Size(132, 43);
+            this.btnNo.Size = new System.Drawing.Size(99, 35);
             this.btnNo.TabIndex = 4;
             this.btnNo.Text = "Close";
             this.btnNo.UseVisualStyleBackColor = true;
@@ -96,11 +94,10 @@ namespace CrashHandler
             this.btnSend.AutoSize = true;
             this.btnSend.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnSend.Enabled = false;
-            this.btnSend.Location = new System.Drawing.Point(285, 4);
-            this.btnSend.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.btnSend.MaximumSize = new System.Drawing.Size(133, 43);
+            this.btnSend.Location = new System.Drawing.Point(214, 3);
+            this.btnSend.MaximumSize = new System.Drawing.Size(100, 35);
             this.btnSend.Name = "btnSend";
-            this.btnSend.Size = new System.Drawing.Size(133, 43);
+            this.btnSend.Size = new System.Drawing.Size(100, 35);
             this.btnSend.TabIndex = 5;
             this.btnSend.Text = "Send Error Report and Close";
             this.btnSend.UseVisualStyleBackColor = true;
@@ -117,22 +114,20 @@ namespace CrashHandler
             this.tabUserStory.Controls.Add(this.tabGeneral);
             this.tabUserStory.Controls.Add(this.yabUserStory);
             this.tabUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabUserStory.Location = new System.Drawing.Point(4, 4);
-            this.tabUserStory.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabUserStory.Location = new System.Drawing.Point(3, 3);
             this.tabUserStory.Name = "tabUserStory";
             this.tabUserStory.SelectedIndex = 0;
-            this.tabUserStory.Size = new System.Drawing.Size(800, 428);
+            this.tabUserStory.Size = new System.Drawing.Size(600, 346);
             this.tabUserStory.TabIndex = 11;
             // 
             // tabGeneral
             // 
             this.tabGeneral.BackColor = System.Drawing.SystemColors.Control;
             this.tabGeneral.Controls.Add(this.tableLayoutPanel2);
-            this.tabGeneral.Location = new System.Drawing.Point(4, 25);
-            this.tabGeneral.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tabGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabGeneral.Name = "tabGeneral";
-            this.tabGeneral.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.tabGeneral.Size = new System.Drawing.Size(792, 399);
+            this.tabGeneral.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.tabGeneral.Size = new System.Drawing.Size(592, 320);
             this.tabGeneral.TabIndex = 0;
             this.tabGeneral.Text = "General";
             // 
@@ -146,8 +141,7 @@ namespace CrashHandler
             this.tableLayoutPanel2.Controls.Add(this.llblContents, 0, 1);
             this.tableLayoutPanel2.Controls.Add(this.lblIntroText, 0, 0);
             this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(4, 4);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 3);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 5;
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -155,7 +149,7 @@ namespace CrashHandler
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(784, 391);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(586, 314);
             this.tableLayoutPanel2.TabIndex = 21;
             // 
             // lblDesc
@@ -163,10 +157,10 @@ namespace CrashHandler
             this.lblDesc.AutoSize = true;
             this.lblDesc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDesc.Location = new System.Drawing.Point(4, 268);
-            this.lblDesc.Margin = new System.Windows.Forms.Padding(4, 7, 4, 7);
+            this.lblDesc.Location = new System.Drawing.Point(3, 214);
+            this.lblDesc.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDesc.Name = "lblDesc";
-            this.lblDesc.Size = new System.Drawing.Size(776, 116);
+            this.lblDesc.Size = new System.Drawing.Size(580, 94);
             this.lblDesc.TabIndex = 16;
             this.lblDesc.Text = "[DESC]";
             // 
@@ -175,11 +169,11 @@ namespace CrashHandler
             this.txtIdSelectable.BackColor = System.Drawing.SystemColors.Control;
             this.txtIdSelectable.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtIdSelectable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtIdSelectable.Location = new System.Drawing.Point(4, 239);
-            this.txtIdSelectable.Margin = new System.Windows.Forms.Padding(4, 7, 4, 7);
+            this.txtIdSelectable.Location = new System.Drawing.Point(3, 189);
+            this.txtIdSelectable.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.txtIdSelectable.Name = "txtIdSelectable";
             this.txtIdSelectable.ReadOnly = true;
-            this.txtIdSelectable.Size = new System.Drawing.Size(776, 15);
+            this.txtIdSelectable.Size = new System.Drawing.Size(580, 13);
             this.txtIdSelectable.TabIndex = 20;
             this.txtIdSelectable.TabStop = false;
             this.txtIdSelectable.Text = "[ID]";
@@ -188,20 +182,20 @@ namespace CrashHandler
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(4, 205);
-            this.label3.Margin = new System.Windows.Forms.Padding(4, 7, 4, 7);
+            this.label3.Location = new System.Drawing.Point(3, 160);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(75, 20);
+            this.label3.Size = new System.Drawing.Size(63, 17);
             this.label3.TabIndex = 17;
             this.label3.Text = "Details:";
             // 
             // llblContents
             // 
             this.llblContents.AutoSize = true;
-            this.llblContents.Location = new System.Drawing.Point(4, 174);
-            this.llblContents.Margin = new System.Windows.Forms.Padding(4, 7, 4, 7);
+            this.llblContents.Location = new System.Drawing.Point(3, 135);
+            this.llblContents.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.llblContents.Name = "llblContents";
-            this.llblContents.Size = new System.Drawing.Size(200, 17);
+            this.llblContents.Size = new System.Drawing.Size(151, 13);
             this.llblContents.TabIndex = 19;
             this.llblContents.TabStop = true;
             this.llblContents.Text = "What does the report contain?";
@@ -211,21 +205,20 @@ namespace CrashHandler
             // 
             this.lblIntroText.AutoSize = true;
             this.lblIntroText.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblIntroText.Location = new System.Drawing.Point(4, 7);
-            this.lblIntroText.Margin = new System.Windows.Forms.Padding(4, 7, 4, 7);
+            this.lblIntroText.Location = new System.Drawing.Point(3, 6);
+            this.lblIntroText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblIntroText.Name = "lblIntroText";
-            this.lblIntroText.Size = new System.Drawing.Size(776, 153);
+            this.lblIntroText.Size = new System.Drawing.Size(580, 117);
             this.lblIntroText.TabIndex = 18;
             this.lblIntroText.Text = resources.GetString("lblIntroText.Text");
             // 
             // yabUserStory
             // 
             this.yabUserStory.Controls.Add(this.txtUserStory);
-            this.yabUserStory.Location = new System.Drawing.Point(4, 25);
-            this.yabUserStory.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.yabUserStory.Location = new System.Drawing.Point(4, 22);
             this.yabUserStory.Name = "yabUserStory";
-            this.yabUserStory.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.yabUserStory.Size = new System.Drawing.Size(792, 389);
+            this.yabUserStory.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.yabUserStory.Size = new System.Drawing.Size(592, 324);
             this.yabUserStory.TabIndex = 2;
             this.yabUserStory.Text = "Error Description";
             this.yabUserStory.UseVisualStyleBackColor = true;
@@ -233,11 +226,10 @@ namespace CrashHandler
             // txtUserStory
             // 
             this.txtUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtUserStory.Location = new System.Drawing.Point(4, 4);
-            this.txtUserStory.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtUserStory.Location = new System.Drawing.Point(3, 3);
             this.txtUserStory.Multiline = true;
             this.txtUserStory.Name = "txtUserStory";
-            this.txtUserStory.Size = new System.Drawing.Size(784, 381);
+            this.txtUserStory.Size = new System.Drawing.Size(586, 318);
             this.txtUserStory.TabIndex = 0;
             this.txtUserStory.Text = "\r\n### Expected behaviour\r\n(Enter text here)\r\n\r\n### Actual behaviour\r\n(Enter text " +
     "here)\r\n\r\n### Steps to reproduce the behaviour\r\n(Enter text here)";
@@ -248,11 +240,10 @@ namespace CrashHandler
             this.cmdSubmitIssue.AutoSize = true;
             this.cmdSubmitIssue.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSubmitIssue.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdSubmitIssue.Location = new System.Drawing.Point(144, 4);
-            this.cmdSubmitIssue.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.cmdSubmitIssue.MaximumSize = new System.Drawing.Size(133, 43);
+            this.cmdSubmitIssue.Location = new System.Drawing.Point(108, 3);
+            this.cmdSubmitIssue.MaximumSize = new System.Drawing.Size(100, 35);
             this.cmdSubmitIssue.Name = "cmdSubmitIssue";
-            this.cmdSubmitIssue.Size = new System.Drawing.Size(133, 43);
+            this.cmdSubmitIssue.Size = new System.Drawing.Size(100, 35);
             this.cmdSubmitIssue.TabIndex = 12;
             this.cmdSubmitIssue.Text = "Create New Issue";
             this.cmdSubmitIssue.UseVisualStyleBackColor = true;
@@ -263,10 +254,10 @@ namespace CrashHandler
             this.lblDescriptionWarning.AutoSize = true;
             this.lblDescriptionWarning.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.lblDescriptionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDescriptionWarning.Location = new System.Drawing.Point(4, 443);
-            this.lblDescriptionWarning.Margin = new System.Windows.Forms.Padding(4, 7, 4, 7);
+            this.lblDescriptionWarning.Location = new System.Drawing.Point(3, 358);
+            this.lblDescriptionWarning.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescriptionWarning.Name = "lblDescriptionWarning";
-            this.lblDescriptionWarning.Size = new System.Drawing.Size(377, 40);
+            this.lblDescriptionWarning.Size = new System.Drawing.Size(282, 34);
             this.lblDescriptionWarning.TabIndex = 11;
             this.lblDescriptionWarning.Text = "Please describe the error on the \r\nDescription Tab before submitting";
             // 
@@ -281,14 +272,13 @@ namespace CrashHandler
             this.tableLayoutPanel1.Controls.Add(this.lblDescriptionWarning, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.tableLayoutPanel3, 1, 1);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 11);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(9, 9);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 31);
+            this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(0, 0, 0, 25);
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(808, 521);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(606, 423);
             this.tableLayoutPanel1.TabIndex = 13;
             // 
             // tableLayoutPanel3
@@ -303,28 +293,27 @@ namespace CrashHandler
             this.tableLayoutPanel3.Controls.Add(this.cmdSubmitIssue, 1, 0);
             this.tableLayoutPanel3.Controls.Add(this.btnNo, 0, 0);
             this.tableLayoutPanel3.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.tableLayoutPanel3.Location = new System.Drawing.Point(385, 439);
+            this.tableLayoutPanel3.Location = new System.Drawing.Point(288, 357);
             this.tableLayoutPanel3.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel3.Name = "tableLayoutPanel3";
             this.tableLayoutPanel3.RowCount = 1;
             this.tableLayoutPanel3.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel3.Size = new System.Drawing.Size(423, 51);
+            this.tableLayoutPanel3.Size = new System.Drawing.Size(318, 41);
             this.tableLayoutPanel3.TabIndex = 14;
             // 
             // frmCrashReporter
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(832, 543);
+            this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "frmCrashReporter";
-            this.Padding = new System.Windows.Forms.Padding(12, 11, 12, 11);
+            this.Padding = new System.Windows.Forms.Padding(9, 9, 9, 9);
             this.Text = "Chummer5a Crash Reporter";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmCrashReporter_FormClosing);
             this.Load += new System.EventHandler(this.frmCrashReporter_Load);
