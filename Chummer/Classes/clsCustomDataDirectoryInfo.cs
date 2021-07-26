@@ -341,6 +341,8 @@ namespace Chummer
         /// </summary>
         public IReadOnlyDictionary<string, string> DescriptionDictionary => _descriptionDictionary;
 
+        private string _strDisplayDescriptionLanguage = GlobalOptions.Language;
+
         private string _strDisplayDescription;
 
         /// <summary>
@@ -355,8 +357,9 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalOptions.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterOptions are opened.
-                if (_strDisplayDescription == null)
+                if (_strDisplayDescription == null || _strDisplayDescriptionLanguage != GlobalOptions.Language)
                 {
+                    _strDisplayDescriptionLanguage = GlobalOptions.Language;
                     if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
                     {
                         _strDisplayDescription = LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
