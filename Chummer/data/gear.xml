@@ -378,7 +378,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>75</cost>
       <costfor>10</costfor>
-      <ammoforweapontype noextra="True">dartgun</ammoforweapontype>
+      <ammoforweapontype>dartgun</ammoforweapontype>
     </gear>
     <gear>
       <id>63AA2CA3-E0B7-4193-8B15-290F6B5DD21E</id>
@@ -566,7 +566,7 @@
       <addoncategory>Custom</addoncategory>
       <cost>20</cost>
       <costfor>10</costfor>
-      <ammoforweapontype noextra="True">squirtgun</ammoforweapontype>
+      <ammoforweapontype>squirtgun</ammoforweapontype>
     </gear>
     <gear>
       <id>9e7a685f-e612-4b6b-955c-a7bc42b23682</id>
@@ -1064,7 +1064,7 @@
       <addweapon>Bola</addweapon>
       <cost>75</cost>
       <costfor>1</costfor>
-      <ammoforweapontype noextra="True">bola</ammoforweapontype>
+      <ammoforweapontype>bola</ammoforweapontype>
     </gear>
     <gear>
       <id>f7b819d7-9f6a-446e-b916-82b5973883d6</id>
@@ -1077,7 +1077,7 @@
       <addweapon>Monofilament Bola</addweapon>
       <cost>4000</cost>
       <costfor>1</costfor>
-      <ammoforweapontype noextra="True">bola</ammoforweapontype>
+      <ammoforweapontype>bola</ammoforweapontype>
     </gear>
     <gear>
       <id>f4b92e14-fe1f-4be4-ad73-aed10e1f73b4</id>
@@ -1465,7 +1465,7 @@
       <avail>16F</avail>
       <cost>20</cost>
       <costfor>10</costfor>
-      <ammoforweapontype noextra="True">supermach</ammoforweapontype>
+      <ammoforweapontype>supermach</ammoforweapontype>
     </gear>
     <gear>
       <id>78babb62-e0f1-4561-9e2d-05b0b5fbb2ad</id>
@@ -1476,7 +1476,7 @@
       <page>16</page>
       <avail>0</avail>
       <cost>0</cost>
-      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
+      <ammoforweapontype>firefighting cannons</ammoforweapontype>
     </gear>
     <gear>
       <id>767ecc1c-1f47-4684-b36f-0bbe0868ceac</id>
@@ -1491,7 +1491,7 @@
       <weaponbonus>
         <damage>-1</damage>
       </weaponbonus>
-      <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
+      <ammoforweapontype>firefighting cannons</ammoforweapontype>
     </gear>
     <!-- Region Kill Code-->
 
@@ -1881,7 +1881,7 @@
       <avail>18F</avail>
       <addweapon>Micro-Torpedo: Chemical</addweapon>
       <cost>3000</cost>
-      <ammoforweapontype noextra="True">microtorpedo</ammoforweapontype>
+      <ammoforweapontype>microtorpedo</ammoforweapontype>
     </gear>
     <gear>
       <id>0e1ec849-e332-4683-aabb-a94e46512c22</id>
@@ -1893,7 +1893,7 @@
       <avail>18F</avail>
       <addweapon>Micro-Torpedo: Explosive</addweapon>
       <cost>2500</cost>
-      <ammoforweapontype noextra="True">microtorpedo</ammoforweapontype>
+      <ammoforweapontype>microtorpedo</ammoforweapontype>
     </gear>
     <!-- End Region -->
     <!-- End Region -->
@@ -12420,7 +12420,7 @@
       <avail>0</avail>
       <cost>5</cost>
       <!-- ReSharper disable once MarkupTextTypo -->
-      <ammoforweapontype noextra="True">pepperpunch</ammoforweapontype>
+      <ammoforweapontype>pepperpunch</ammoforweapontype>
     </gear>
     <gear>
       <id>189c3bb8-357b-412a-afc4-ce931ea8871d</id>
