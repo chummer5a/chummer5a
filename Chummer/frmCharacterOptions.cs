@@ -720,7 +720,7 @@ namespace Chummer
 
         private void treCustomDataDirectories_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (!(treCustomDataDirectories.SelectedNode.Tag is CustomDataDirectoryInfo objSelected))
+            if (!(e.Node?.Tag is CustomDataDirectoryInfo objSelected))
             {
                 gbpDirectoryInfo.Visible = false;
                 return;

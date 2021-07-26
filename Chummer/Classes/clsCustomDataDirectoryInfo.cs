@@ -61,7 +61,8 @@ namespace Chummer
                     xmlObjManifest.LoadStandard(strFullDirectory);
                     var xmlNode = xmlObjManifest.SelectSingleNode("manifest");
 
-                    xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion, new Version(1, 0));
+                    if (!xmlNode.TryGetField("version", VersionExtensions.TryParse, out _objMyVersion))
+                        _objMyVersion = new Version(1, 0);
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
                     GetManifestDescriptions(xmlNode);
@@ -88,14 +89,15 @@ namespace Chummer
 
                 foreach (XmlNode descriptionNode in xmlDescriptionNodes)
                 {
-                    string text = string.Empty;
                     string language = string.Empty;
-
-                    descriptionNode.TryGetStringFieldQuickly("text", ref text);
                     descriptionNode.TryGetStringFieldQuickly("lang", ref language);
 
                     if (!string.IsNullOrEmpty(language))
-                        _descriptionDictionary.Add(language, text);
+                    {
+                        string text = string.Empty;
+                        if (descriptionNode.TryGetStringFieldQuickly("text", ref text))
+                            _descriptionDictionary.Add(language, text);
+                    }
                 }
             }
             //Must be called after DisplayDictionary was populated!
@@ -370,11 +372,11 @@ namespace Chummer
                         {
                             _strDisplayDescription =
                                 LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
-                                Environment.NewLine + Environment.NewLine + description;
+                                Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
                         }
                     }
                     else
-                        _strDisplayDescription = description;
+                        _strDisplayDescription = description.NormalizeLineEndings(true);
                 }
 
                 return _strDisplayDescription;
