@@ -403,7 +403,7 @@ namespace Chummer.Backend.Skills
         {
             if (xmlNode == null)
                 return;
-            if (xmlNode.TryGetField("id", Guid.TryParse, out Guid g))
+            if (xmlNode.TryGetField("id", Guid.TryParse, out Guid g) && g != Guid.Empty)
                 _guidId = g;
             xmlNode.TryGetStringFieldQuickly("name", ref _strGroupName);
             xmlNode.TryGetInt32FieldQuickly("karma", ref _intSkillFromKarma);
@@ -628,8 +628,10 @@ namespace Chummer.Backend.Skills
         }
 
         private Guid _guidId = Guid.NewGuid();
+
         public Guid Id => _guidId;
-        public string InternalId => _guidId.ToString("D", GlobalOptions.InvariantCultureInfo);
+
+        public string InternalId => Id.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         #region HasWhateverSkills
 
