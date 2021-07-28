@@ -566,6 +566,12 @@ namespace Chummer
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}{3}",
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Cyberware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
                         }
+                        if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                        {
+                            if (objParent is Cyberware objCyberware)
+                                return objCyberware.Children.Any(mod => mod.Name == strNodeInnerText);
+                            return false;
+                        }
                         string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name == strNodeInnerText &&
                                 objCyberware.SourceType == Improvement.ImprovementSource.Cyberware && string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount) &&
