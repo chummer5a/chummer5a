@@ -2688,6 +2688,9 @@ namespace Chummer
                                 foreach (XPathNavigator xmlBook in xmlCharacterNavigator.Select("sources/source"))
                                     if (!string.IsNullOrEmpty(xmlBook.Value))
                                         setSavedBooks.Add(xmlBook.Value);
+                                if (setSavedBooks.Count == 0)
+                                    setSavedBooks = OptionsManager
+                                        .LoadedCharacterOptions[GlobalOptions.DefaultCharacterOption].Books;
                                 List<string> lstSavedCustomDataDirectoryNames = new List<string>();
                                 foreach (XPathNavigator xmlCustomDataDirectoryName in xmlCharacterNavigator.Select(
                                     "customdatadirectorynames/directoryname"))
@@ -2712,7 +2715,7 @@ namespace Chummer
                                     intReturn -= intDummy.RaiseToPower(2);
                                     int intBaseline = decLegacyMaxNuyen.StandardRound().RaiseToPower(2) +
                                                       intLegacyMaxKarma.RaiseToPower(2);
-                                    intDummy = Math.Max(setSavedBooks.Count, 1) *
+                                    intDummy = setSavedBooks.Count *
                                                (lstSavedCustomDataDirectoryNames.Count + 1) *
                                                intBaseline;
                                     if (objOptionsToCheck.BuildMethod == eSavedBuildMethod || (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule))
