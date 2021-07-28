@@ -10921,6 +10921,19 @@ namespace Chummer
             }
         }
 
+        private void chkArmorHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (treArmor.SelectedNode?.Tag is IHasMatrixAttributes objCommlink)
+            {
+                objCommlink.SetHomeNode(CharacterObject, chkGearHomeNode.Checked);
+
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+        }
+
         private void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
@@ -11113,6 +11126,17 @@ namespace Chummer
             IsDirty = true;
         }
 
+        private void chkArmorActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink)) return;
+
+            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
         private void chkCyberwareActiveCommlink_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
@@ -11279,6 +11303,82 @@ namespace Chummer
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
                 return;
             if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboVehicleDataProcessing, cboVehicleAttack, cboVehicleSleaze, cboVehicleDataProcessing, cboVehicleFirewall))
+            {
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+
+            IsRefreshing = false;
+        }
+
+        private void cboArmorAttack_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboCyberwareAttack.Enabled)
+                return;
+
+            IsRefreshing = true;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboArmorAttack, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
+            {
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+
+            IsRefreshing = false;
+        }
+
+        private void cboArmorSleaze_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboCyberwareAttack.Enabled)
+                return;
+
+            IsRefreshing = true;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboArmorSleaze, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
+            {
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+
+            IsRefreshing = false;
+        }
+
+        private void cboArmorDataProcessing_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboCyberwareAttack.Enabled)
+                return;
+
+            IsRefreshing = true;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboArmorDataProcessing, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
+            {
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+
+            IsRefreshing = false;
+        }
+
+        private void cboArmorFirewall_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || !cboCyberwareAttack.Enabled)
+                return;
+
+            IsRefreshing = true;
+
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objTarget))
+                return;
+
+            if (objTarget.ProcessMatrixAttributeCBOChange(CharacterObject, cboArmorFirewall, cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall))
             {
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -13129,6 +13229,15 @@ namespace Chummer
                 ProcessConditionMonitorCheckedChanged(objBox, i => objGear.MatrixCMFilled = i, false);
         }
 
+        private void chkArmorMatrixCM_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+
+            if (treArmor.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
+                ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
+        }
+
         private void chkWeaponCM_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
@@ -13143,25 +13252,18 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            // Locate the selected Vehicle.
-            TreeNode objVehicleNode = treVehicles.SelectedNode;
-            while (objVehicleNode?.Level > 1)
-                objVehicleNode = objVehicleNode.Parent;
-
-            if (!(objVehicleNode?.Tag is Vehicle objVehicle))
-                return;
-
-            if (sender is CheckBox objBox)
+            if (panVehicleCM.SelectedIndex == 0)
             {
-                if (panVehicleCM.SelectedIndex == 0)
-                {
+                // Locate the selected Vehicle.
+                TreeNode objVehicleNode = treVehicles.SelectedNode;
+                while (objVehicleNode?.Level > 1)
+                    objVehicleNode = objVehicleNode.Parent;
+                
+                if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle && sender is CheckBox objBox)
                     ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i);
-                }
-                else
-                {
-                    ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.MatrixCMFilled = i);
-                }
             }
+            else if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
+                ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
         #endregion Condition Monitors
@@ -14061,7 +14163,6 @@ namespace Chummer
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
                 gpbArmorCommon.Visible = true;
-                gpbArmorMatrix.Visible = false;
                 gpbArmorLocation.Visible = false;
 
                 // Buttons
@@ -14089,7 +14190,6 @@ namespace Chummer
             else if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
             {
                 gpbArmorCommon.Visible = true;
-                gpbArmorMatrix.Visible = false;
                 gpbArmorLocation.Visible = false;
 
                 // Buttons
@@ -14142,7 +14242,6 @@ namespace Chummer
                     case Gear objSelectedGear:
                         {
                             gpbArmorCommon.Visible = true;
-                            gpbArmorMatrix.Visible = true;
                             gpbArmorLocation.Visible = false;
 
                             // Buttons
@@ -14177,19 +14276,12 @@ namespace Chummer
                             chkArmorEquipped.Enabled = true;
                             chkIncludedInArmor.Visible = true;
                             chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
-
-                            // gpbArmorMatrix
-                            lblArmorDeviceRating.Text = objSelectedGear.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
-                            lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
-                            lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
-                            lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
-                            lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
+                            
                             break;
                         }
                     case Location objLocation:
                         {
                             gpbArmorCommon.Visible = false;
-                            gpbArmorMatrix.Visible = false;
                             gpbArmorLocation.Visible = true;
 
                             // Buttons
@@ -14199,10 +14291,7 @@ namespace Chummer
                             StringBuilder sbdArmorEquipped = new StringBuilder();
                             foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                             {
-                                sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName);
-                                sbdArmorEquipped.Append(strSpace + '(');
-                                sbdArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
-                                sbdArmorEquipped.AppendLine(")");
+                                sbdArmorEquipped.AppendLine(objLoopArmor.CurrentDisplayName + strSpace + '(' + objLoopArmor.DisplayArmorValue + ')');
                             }
                             if (sbdArmorEquipped.Length > 0)
                             {
@@ -14228,10 +14317,7 @@ namespace Chummer
                                 StringBuilder sbdArmorEquipped = new StringBuilder();
                                 foreach (Armor objLoopArmor in CharacterObject.Armor.Where(objLoopArmor => objLoopArmor.Equipped && objLoopArmor.Location == null))
                                 {
-                                    sbdArmorEquipped.Append(objLoopArmor.CurrentDisplayName);
-                                    sbdArmorEquipped.Append(strSpace + '(');
-                                    sbdArmorEquipped.Append(objLoopArmor.DisplayArmorValue);
-                                    sbdArmorEquipped.AppendLine(")");
+                                    sbdArmorEquipped.AppendLine(objLoopArmor.CurrentDisplayName + strSpace + '(' + objLoopArmor.DisplayArmorValue + ')');
                                 }
                                 if (sbdArmorEquipped.Length > 0)
                                 {
@@ -14256,8 +14342,92 @@ namespace Chummer
                 }
             }
 
-            gpbArmorMatrix.Visible = treArmor.SelectedNode.Tag is IHasMatrixAttributes ||
-                                     treArmor.SelectedNode.Tag is IHasWirelessBonus;
+            if (treArmor.SelectedNode.Tag is IHasMatrixAttributes objHasMatrixAttributes)
+            {
+                int intDeviceRating = objHasMatrixAttributes.GetTotalMatrixAttribute("Device Rating");
+                lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
+                objHasMatrixAttributes.RefreshMatrixAttributeCBOs(cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall);
+                if (CharacterObject.IsAI)
+                {
+                    chkArmorHomeNode.Visible = true;
+                    chkArmorHomeNode.Checked = objHasMatrixAttributes.IsHomeNode(CharacterObject);
+                    chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
+                                               objHasMatrixAttributes.GetTotalMatrixAttribute("Program Limit") >=
+                                              (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                }
+                else
+                    chkArmorHomeNode.Visible = false;
+                chkArmorActiveCommlink.Checked = objHasMatrixAttributes.IsActiveCommlink(CharacterObject);
+                chkArmorActiveCommlink.Visible = objHasMatrixAttributes.IsCommlink;
+                cboArmorOverclocker.BeginUpdate();
+                if (CharacterObject.Overclocker && objHasMatrixAttributes is Gear objGear && objGear.Category == "Cyberdecks")
+                {
+                    List<ListItem> lstOverclocker = new List<ListItem>(5)
+                    {
+                        new ListItem("None", LanguageManager.GetString("String_None")),
+                        new ListItem("Attack", LanguageManager.GetString("String_Attack")),
+                        new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze")),
+                        new ListItem("Data Processing",
+                            LanguageManager.GetString("String_DataProcessing")),
+                        new ListItem("Firewall",
+                            LanguageManager.GetString("String_Firewall"))
+                    };
+
+                    cboArmorOverclocker.BeginUpdate();
+                    cboArmorOverclocker.PopulateWithListItems(lstOverclocker);
+                    cboArmorOverclocker.SelectedValue = objHasMatrixAttributes.Overclocked;
+                    if (cboArmorOverclocker.SelectedIndex == -1)
+                        cboArmorOverclocker.SelectedIndex = 0;
+                    cboArmorOverclocker.EndUpdate();
+                    cboArmorOverclocker.Visible = true;
+                    lblArmorOverclockerLabel.Visible = true;
+                }
+                else
+                {
+                    cboArmorOverclocker.Visible = false;
+                    lblArmorOverclockerLabel.Visible = false;
+                }
+
+                tabArmorMatrixCM.Visible = true;
+                ProcessEquipmentConditionMonitorBoxDisplays(panArmorMatrixCM, objHasMatrixAttributes.MatrixCM, objHasMatrixAttributes.MatrixCMFilled);
+                lblArmorDeviceRatingLabel.Visible = true;
+                lblArmorDeviceRating.Visible = true;
+                lblArmorAttackLabel.Visible = true;
+                lblArmorSleazeLabel.Visible = true;
+                lblArmorDataProcessingLabel.Visible = true;
+                lblArmorFirewallLabel.Visible = true;
+                cboArmorAttack.Visible = true;
+                cboArmorSleaze.Visible = true;
+                cboArmorDataProcessing.Visible = true;
+                cboArmorFirewall.Visible = true;
+                chkArmorWireless.Visible = treArmor.SelectedNode.Tag is IHasWirelessBonus;
+                gpbArmorMatrix.Visible = true;
+            }
+            else
+            {
+                tabArmorMatrixCM.Visible = false;
+                if (treArmor.SelectedNode.Tag is IHasWirelessBonus)
+                {
+                    cboArmorOverclocker.Visible = false;
+                    lblArmorOverclockerLabel.Visible = false;
+                    chkArmorHomeNode.Visible = false;
+                    lblArmorDeviceRatingLabel.Visible = false;
+                    lblArmorDeviceRating.Visible = false;
+                    lblArmorAttackLabel.Visible = false;
+                    lblArmorSleazeLabel.Visible = false;
+                    lblArmorDataProcessingLabel.Visible = false;
+                    lblArmorFirewallLabel.Visible = false;
+                    cboArmorAttack.Visible = false;
+                    cboArmorSleaze.Visible = false;
+                    cboArmorDataProcessing.Visible = false;
+                    cboArmorFirewall.Visible = false;
+                    chkArmorWireless.Visible = true;
+                    gpbArmorMatrix.Visible = true;
+                }
+                else
+                    gpbArmorMatrix.Visible = false;
+            }
+            
 
             IsRefreshing = false;
             flpArmor.ResumeLayout();
@@ -17263,6 +17433,16 @@ namespace Chummer
             objCommlink.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
         }
 
+        private void cboArmorOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
+                return;
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
+                return;
+            objCommlink.Overclocked = cboArmorOverclocker.SelectedValue.ToString();
+            objCommlink.RefreshMatrixAttributeCBOs(cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall);
+        }
+
         private void cboCyberwareOverclocker_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
@@ -17273,7 +17453,7 @@ namespace Chummer
             {
                 lstGearToSearch.AddRange(objCyberware.Gear);
             }*/
-            if (!(treCyberware.SelectedNode?.Tag is Gear objCommlink))
+            if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
                 return;
             objCommlink.Overclocked = cboCyberwareOverclocker.SelectedValue.ToString();
             objCommlink.RefreshMatrixAttributeCBOs(cboCyberwareAttack, cboCyberwareSleaze, cboCyberwareDataProcessing, cboCyberwareFirewall);

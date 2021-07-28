@@ -782,17 +782,49 @@ namespace Chummer
             this.chkIncludedInArmor = new Chummer.ColorableCheckBox(this.components);
             this.gpbArmorMatrix = new System.Windows.Forms.GroupBox();
             this.tlpArmorMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkArmorWireless = new Chummer.ColorableCheckBox(this.components);
+            this.cboArmorFirewall = new Chummer.ElasticComboBox();
+            this.cboArmorOverclocker = new Chummer.ElasticComboBox();
+            this.lblArmorOverclockerLabel = new System.Windows.Forms.Label();
             this.lblArmorSleazeLabel = new System.Windows.Forms.Label();
             this.lblArmorAttackLabel = new System.Windows.Forms.Label();
             this.lblArmorDataProcessingLabel = new System.Windows.Forms.Label();
             this.lblArmorFirewallLabel = new System.Windows.Forms.Label();
             this.lblArmorDeviceRatingLabel = new System.Windows.Forms.Label();
             this.lblArmorDeviceRating = new System.Windows.Forms.Label();
-            this.lblArmorFirewall = new System.Windows.Forms.Label();
-            this.lblArmorAttack = new System.Windows.Forms.Label();
-            this.lblArmorDataProcessing = new System.Windows.Forms.Label();
-            this.lblArmorSleaze = new System.Windows.Forms.Label();
+            this.flpArmorMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkArmorHomeNode = new Chummer.ColorableCheckBox(this.components);
+            this.chkArmorActiveCommlink = new Chummer.ColorableCheckBox(this.components);
+            this.chkArmorWireless = new Chummer.ColorableCheckBox(this.components);
+            this.cboArmorAttack = new Chummer.ElasticComboBox();
+            this.cboArmorSleaze = new Chummer.ElasticComboBox();
+            this.cboArmorDataProcessing = new Chummer.ElasticComboBox();
+            this.tabArmorMatrixCM = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.panArmorMatrixCM = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkArmorMatrixCM1 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM2 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM3 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM4 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM5 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM6 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM7 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM8 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM9 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM10 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM11 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM12 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM13 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM14 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM15 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM16 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM17 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM18 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM19 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM20 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM21 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM22 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM23 = new System.Windows.Forms.CheckBox();
+            this.chkArmorMatrixCM24 = new System.Windows.Forms.CheckBox();
             this.gpbArmorLocation = new System.Windows.Forms.GroupBox();
             this.tlpArmorLocation = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblArmorEquipped = new System.Windows.Forms.Label();
@@ -1478,6 +1510,10 @@ namespace Chummer
             this.flpArmorCommonCheckBoxes.SuspendLayout();
             this.gpbArmorMatrix.SuspendLayout();
             this.tlpArmorMatrix.SuspendLayout();
+            this.flpArmorMatrixCheckBoxes.SuspendLayout();
+            this.tabArmorMatrixCM.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.panArmorMatrixCM.SuspendLayout();
             this.gpbArmorLocation.SuspendLayout();
             this.tlpArmorLocation.SuspendLayout();
             this.tlpArmorButtons.SuspendLayout();
@@ -11739,7 +11775,7 @@ namespace Chummer
             this.tabArmor.Location = new System.Drawing.Point(4, 22);
             this.tabArmor.Name = "tabArmor";
             this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArmor.Size = new System.Drawing.Size(184, 48);
+            this.tabArmor.Size = new System.Drawing.Size(969, 605);
             this.tabArmor.TabIndex = 1;
             this.tabArmor.Tag = "Tab_Armor";
             this.tabArmor.Text = "Armor";
@@ -11760,7 +11796,7 @@ namespace Chummer
             this.tlpArmor.RowCount = 2;
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmor.Size = new System.Drawing.Size(178, 42);
+            this.tlpArmor.Size = new System.Drawing.Size(963, 599);
             this.tlpArmor.TabIndex = 186;
             // 
             // treArmor
@@ -11776,7 +11812,7 @@ namespace Chummer
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode20});
             this.treArmor.ShowNodeToolTips = true;
-            this.treArmor.Size = new System.Drawing.Size(50, 7);
+            this.treArmor.Size = new System.Drawing.Size(302, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
@@ -11788,13 +11824,14 @@ namespace Chummer
             this.flpArmor.AutoScroll = true;
             this.flpArmor.Controls.Add(this.gpbArmorCommon);
             this.flpArmor.Controls.Add(this.gpbArmorMatrix);
+            this.flpArmor.Controls.Add(this.tabArmorMatrixCM);
             this.flpArmor.Controls.Add(this.gpbArmorLocation);
             this.flpArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpArmor.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpArmor.Location = new System.Drawing.Point(56, 29);
+            this.flpArmor.Location = new System.Drawing.Point(308, 29);
             this.flpArmor.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmor.Name = "flpArmor";
-            this.flpArmor.Size = new System.Drawing.Size(122, 13);
+            this.flpArmor.Size = new System.Drawing.Size(655, 570);
             this.flpArmor.TabIndex = 186;
             this.flpArmor.WrapContents = false;
             // 
@@ -11806,7 +11843,7 @@ namespace Chummer
             this.gpbArmorCommon.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbArmorCommon.Location = new System.Drawing.Point(3, 3);
             this.gpbArmorCommon.Name = "gpbArmorCommon";
-            this.gpbArmorCommon.Size = new System.Drawing.Size(426, 124);
+            this.gpbArmorCommon.Size = new System.Drawing.Size(501, 124);
             this.gpbArmorCommon.TabIndex = 0;
             this.gpbArmorCommon.TabStop = false;
             this.gpbArmorCommon.Tag = "String_Info";
@@ -11842,7 +11879,7 @@ namespace Chummer
             this.tlpArmorCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmorCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmorCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpArmorCommon.Size = new System.Drawing.Size(420, 105);
+            this.tlpArmorCommon.Size = new System.Drawing.Size(495, 105);
             this.tlpArmorCommon.TabIndex = 0;
             // 
             // lblArmorValueLabel
@@ -11937,7 +11974,7 @@ namespace Chummer
             // 
             this.lblArmorAvailLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblArmorAvailLabel.AutoSize = true;
-            this.lblArmorAvailLabel.Location = new System.Drawing.Point(222, 36);
+            this.lblArmorAvailLabel.Location = new System.Drawing.Point(259, 36);
             this.lblArmorAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorAvailLabel.Name = "lblArmorAvailLabel";
             this.lblArmorAvailLabel.Size = new System.Drawing.Size(33, 13);
@@ -11949,7 +11986,7 @@ namespace Chummer
             // 
             this.lblArmorAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblArmorAvail.AutoSize = true;
-            this.lblArmorAvail.Location = new System.Drawing.Point(261, 36);
+            this.lblArmorAvail.Location = new System.Drawing.Point(298, 36);
             this.lblArmorAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorAvail.Name = "lblArmorAvail";
             this.lblArmorAvail.Size = new System.Drawing.Size(36, 13);
@@ -11960,7 +11997,7 @@ namespace Chummer
             // 
             this.lblArmorCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblArmorCostLabel.AutoSize = true;
-            this.lblArmorCostLabel.Location = new System.Drawing.Point(224, 61);
+            this.lblArmorCostLabel.Location = new System.Drawing.Point(261, 61);
             this.lblArmorCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorCostLabel.Name = "lblArmorCostLabel";
             this.lblArmorCostLabel.Size = new System.Drawing.Size(31, 13);
@@ -11972,7 +12009,7 @@ namespace Chummer
             // 
             this.lblArmorCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblArmorCost.AutoSize = true;
-            this.lblArmorCost.Location = new System.Drawing.Point(261, 61);
+            this.lblArmorCost.Location = new System.Drawing.Point(298, 61);
             this.lblArmorCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorCost.Name = "lblArmorCost";
             this.lblArmorCost.Size = new System.Drawing.Size(34, 13);
@@ -12035,7 +12072,7 @@ namespace Chummer
             this.tlpArmorCommon.SetColumnSpan(this.flpArmorCommonCheckBoxes, 2);
             this.flpArmorCommonCheckBoxes.Controls.Add(this.chkArmorEquipped);
             this.flpArmorCommonCheckBoxes.Controls.Add(this.chkIncludedInArmor);
-            this.flpArmorCommonCheckBoxes.Location = new System.Drawing.Point(219, 81);
+            this.flpArmorCommonCheckBoxes.Location = new System.Drawing.Point(256, 81);
             this.flpArmorCommonCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmorCommonCheckBoxes.Name = "flpArmorCommonCheckBoxes";
             this.flpArmorCommonCheckBoxes.Size = new System.Drawing.Size(196, 23);
@@ -12079,7 +12116,7 @@ namespace Chummer
             this.gpbArmorMatrix.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbArmorMatrix.Location = new System.Drawing.Point(3, 133);
             this.gpbArmorMatrix.Name = "gpbArmorMatrix";
-            this.gpbArmorMatrix.Size = new System.Drawing.Size(426, 94);
+            this.gpbArmorMatrix.Size = new System.Drawing.Size(501, 96);
             this.gpbArmorMatrix.TabIndex = 1;
             this.gpbArmorMatrix.TabStop = false;
             this.gpbArmorMatrix.Tag = "String_Matrix";
@@ -12095,17 +12132,19 @@ namespace Chummer
             this.tlpArmorMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpArmorMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpArmorMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpArmorMatrix.Controls.Add(this.chkArmorWireless, 0, 0);
+            this.tlpArmorMatrix.Controls.Add(this.cboArmorFirewall, 4, 2);
+            this.tlpArmorMatrix.Controls.Add(this.cboArmorOverclocker, 1, 0);
+            this.tlpArmorMatrix.Controls.Add(this.lblArmorOverclockerLabel, 0, 0);
             this.tlpArmorMatrix.Controls.Add(this.lblArmorSleazeLabel, 2, 1);
             this.tlpArmorMatrix.Controls.Add(this.lblArmorAttackLabel, 1, 1);
             this.tlpArmorMatrix.Controls.Add(this.lblArmorDataProcessingLabel, 3, 1);
             this.tlpArmorMatrix.Controls.Add(this.lblArmorFirewallLabel, 4, 1);
             this.tlpArmorMatrix.Controls.Add(this.lblArmorDeviceRatingLabel, 0, 1);
             this.tlpArmorMatrix.Controls.Add(this.lblArmorDeviceRating, 0, 2);
-            this.tlpArmorMatrix.Controls.Add(this.lblArmorFirewall, 4, 2);
-            this.tlpArmorMatrix.Controls.Add(this.lblArmorAttack, 1, 2);
-            this.tlpArmorMatrix.Controls.Add(this.lblArmorDataProcessing, 3, 2);
-            this.tlpArmorMatrix.Controls.Add(this.lblArmorSleaze, 2, 2);
+            this.tlpArmorMatrix.Controls.Add(this.flpArmorMatrixCheckBoxes, 2, 0);
+            this.tlpArmorMatrix.Controls.Add(this.cboArmorAttack, 1, 2);
+            this.tlpArmorMatrix.Controls.Add(this.cboArmorSleaze, 2, 2);
+            this.tlpArmorMatrix.Controls.Add(this.cboArmorDataProcessing, 3, 2);
             this.tlpArmorMatrix.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpArmorMatrix.Location = new System.Drawing.Point(3, 16);
             this.tlpArmorMatrix.Name = "tlpArmorMatrix";
@@ -12113,29 +12152,51 @@ namespace Chummer
             this.tlpArmorMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 25F));
             this.tlpArmorMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmorMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpArmorMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpArmorMatrix.Size = new System.Drawing.Size(420, 75);
+            this.tlpArmorMatrix.Size = new System.Drawing.Size(495, 77);
             this.tlpArmorMatrix.TabIndex = 0;
             // 
-            // chkArmorWireless
+            // cboArmorFirewall
             // 
-            this.chkArmorWireless.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkArmorWireless.AutoSize = true;
-            this.chkArmorWireless.DefaultColorScheme = true;
-            this.chkArmorWireless.Location = new System.Drawing.Point(3, 4);
-            this.chkArmorWireless.Name = "chkArmorWireless";
-            this.chkArmorWireless.Size = new System.Drawing.Size(66, 17);
-            this.chkArmorWireless.TabIndex = 212;
-            this.chkArmorWireless.Tag = "String_Wireless";
-            this.chkArmorWireless.Text = "Wireless";
-            this.chkArmorWireless.UseVisualStyleBackColor = true;
-            this.chkArmorWireless.CheckedChanged += new System.EventHandler(this.chkArmorWireless_CheckedChanged);
+            this.cboArmorFirewall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboArmorFirewall.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboArmorFirewall.FormattingEnabled = true;
+            this.cboArmorFirewall.Location = new System.Drawing.Point(399, 53);
+            this.cboArmorFirewall.Name = "cboArmorFirewall";
+            this.cboArmorFirewall.Size = new System.Drawing.Size(93, 21);
+            this.cboArmorFirewall.TabIndex = 219;
+            this.cboArmorFirewall.TooltipText = "";
+            this.cboArmorFirewall.SelectedIndexChanged += new System.EventHandler(this.cboArmorFirewall_SelectedIndexChanged);
+            // 
+            // cboArmorOverclocker
+            // 
+            this.cboArmorOverclocker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboArmorOverclocker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboArmorOverclocker.FormattingEnabled = true;
+            this.cboArmorOverclocker.Location = new System.Drawing.Point(102, 3);
+            this.cboArmorOverclocker.Name = "cboArmorOverclocker";
+            this.cboArmorOverclocker.Size = new System.Drawing.Size(93, 21);
+            this.cboArmorOverclocker.TabIndex = 214;
+            this.cboArmorOverclocker.TooltipText = "";
+            this.cboArmorOverclocker.Visible = false;
+            this.cboArmorOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboArmorOverclocker_SelectedIndexChanged);
+            // 
+            // lblArmorOverclockerLabel
+            // 
+            this.lblArmorOverclockerLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblArmorOverclockerLabel.AutoSize = true;
+            this.lblArmorOverclockerLabel.Location = new System.Drawing.Point(28, 6);
+            this.lblArmorOverclockerLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblArmorOverclockerLabel.Name = "lblArmorOverclockerLabel";
+            this.lblArmorOverclockerLabel.Size = new System.Drawing.Size(68, 13);
+            this.lblArmorOverclockerLabel.TabIndex = 213;
+            this.lblArmorOverclockerLabel.Text = "Overclocker:";
+            this.lblArmorOverclockerLabel.Visible = false;
             // 
             // lblArmorSleazeLabel
             // 
             this.lblArmorSleazeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblArmorSleazeLabel.AutoSize = true;
-            this.lblArmorSleazeLabel.Location = new System.Drawing.Point(171, 31);
+            this.lblArmorSleazeLabel.Location = new System.Drawing.Point(201, 31);
             this.lblArmorSleazeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorSleazeLabel.Name = "lblArmorSleazeLabel";
             this.lblArmorSleazeLabel.Size = new System.Drawing.Size(42, 13);
@@ -12147,7 +12208,7 @@ namespace Chummer
             // 
             this.lblArmorAttackLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblArmorAttackLabel.AutoSize = true;
-            this.lblArmorAttackLabel.Location = new System.Drawing.Point(87, 31);
+            this.lblArmorAttackLabel.Location = new System.Drawing.Point(102, 31);
             this.lblArmorAttackLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorAttackLabel.Name = "lblArmorAttackLabel";
             this.lblArmorAttackLabel.Size = new System.Drawing.Size(41, 13);
@@ -12159,7 +12220,7 @@ namespace Chummer
             // 
             this.lblArmorDataProcessingLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblArmorDataProcessingLabel.AutoSize = true;
-            this.lblArmorDataProcessingLabel.Location = new System.Drawing.Point(255, 31);
+            this.lblArmorDataProcessingLabel.Location = new System.Drawing.Point(300, 31);
             this.lblArmorDataProcessingLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorDataProcessingLabel.Name = "lblArmorDataProcessingLabel";
             this.lblArmorDataProcessingLabel.Size = new System.Drawing.Size(61, 13);
@@ -12171,7 +12232,7 @@ namespace Chummer
             // 
             this.lblArmorFirewallLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblArmorFirewallLabel.AutoSize = true;
-            this.lblArmorFirewallLabel.Location = new System.Drawing.Point(339, 31);
+            this.lblArmorFirewallLabel.Location = new System.Drawing.Point(399, 31);
             this.lblArmorFirewallLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorFirewallLabel.Name = "lblArmorFirewallLabel";
             this.lblArmorFirewallLabel.Size = new System.Drawing.Size(45, 13);
@@ -12195,56 +12256,549 @@ namespace Chummer
             // 
             this.lblArmorDeviceRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblArmorDeviceRating.AutoSize = true;
-            this.lblArmorDeviceRating.Location = new System.Drawing.Point(3, 56);
+            this.lblArmorDeviceRating.Location = new System.Drawing.Point(3, 57);
             this.lblArmorDeviceRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorDeviceRating.Name = "lblArmorDeviceRating";
             this.lblArmorDeviceRating.Size = new System.Drawing.Size(19, 13);
             this.lblArmorDeviceRating.TabIndex = 177;
             this.lblArmorDeviceRating.Text = "[0]";
             // 
-            // lblArmorFirewall
+            // flpArmorMatrixCheckBoxes
             // 
-            this.lblArmorFirewall.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblArmorFirewall.AutoSize = true;
-            this.lblArmorFirewall.Location = new System.Drawing.Point(339, 56);
-            this.lblArmorFirewall.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblArmorFirewall.Name = "lblArmorFirewall";
-            this.lblArmorFirewall.Size = new System.Drawing.Size(19, 13);
-            this.lblArmorFirewall.TabIndex = 185;
-            this.lblArmorFirewall.Text = "[0]";
+            this.flpArmorMatrixCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpArmorMatrixCheckBoxes.AutoSize = true;
+            this.flpArmorMatrixCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpArmorMatrix.SetColumnSpan(this.flpArmorMatrixCheckBoxes, 3);
+            this.flpArmorMatrixCheckBoxes.Controls.Add(this.chkArmorHomeNode);
+            this.flpArmorMatrixCheckBoxes.Controls.Add(this.chkArmorActiveCommlink);
+            this.flpArmorMatrixCheckBoxes.Controls.Add(this.chkArmorWireless);
+            this.flpArmorMatrixCheckBoxes.Location = new System.Drawing.Point(198, 1);
+            this.flpArmorMatrixCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpArmorMatrixCheckBoxes.Name = "flpArmorMatrixCheckBoxes";
+            this.flpArmorMatrixCheckBoxes.Size = new System.Drawing.Size(271, 23);
+            this.flpArmorMatrixCheckBoxes.TabIndex = 215;
+            this.flpArmorMatrixCheckBoxes.WrapContents = false;
             // 
-            // lblArmorAttack
+            // chkArmorHomeNode
             // 
-            this.lblArmorAttack.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblArmorAttack.AutoSize = true;
-            this.lblArmorAttack.Location = new System.Drawing.Point(87, 56);
-            this.lblArmorAttack.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblArmorAttack.Name = "lblArmorAttack";
-            this.lblArmorAttack.Size = new System.Drawing.Size(19, 13);
-            this.lblArmorAttack.TabIndex = 179;
-            this.lblArmorAttack.Text = "[0]";
+            this.chkArmorHomeNode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkArmorHomeNode.AutoSize = true;
+            this.chkArmorHomeNode.DefaultColorScheme = true;
+            this.chkArmorHomeNode.Location = new System.Drawing.Point(3, 3);
+            this.chkArmorHomeNode.Name = "chkArmorHomeNode";
+            this.chkArmorHomeNode.Size = new System.Drawing.Size(83, 17);
+            this.chkArmorHomeNode.TabIndex = 114;
+            this.chkArmorHomeNode.Tag = "Checkbox_HomeNode";
+            this.chkArmorHomeNode.Text = "Home Node";
+            this.chkArmorHomeNode.UseVisualStyleBackColor = true;
+            this.chkArmorHomeNode.Visible = false;
+            this.chkArmorHomeNode.CheckedChanged += new System.EventHandler(this.chkArmorHomeNode_CheckedChanged);
             // 
-            // lblArmorDataProcessing
+            // chkArmorActiveCommlink
             // 
-            this.lblArmorDataProcessing.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblArmorDataProcessing.AutoSize = true;
-            this.lblArmorDataProcessing.Location = new System.Drawing.Point(255, 56);
-            this.lblArmorDataProcessing.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblArmorDataProcessing.Name = "lblArmorDataProcessing";
-            this.lblArmorDataProcessing.Size = new System.Drawing.Size(19, 13);
-            this.lblArmorDataProcessing.TabIndex = 183;
-            this.lblArmorDataProcessing.Text = "[0]";
+            this.chkArmorActiveCommlink.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkArmorActiveCommlink.AutoSize = true;
+            this.chkArmorActiveCommlink.DefaultColorScheme = true;
+            this.chkArmorActiveCommlink.Location = new System.Drawing.Point(92, 3);
+            this.chkArmorActiveCommlink.Name = "chkArmorActiveCommlink";
+            this.chkArmorActiveCommlink.Size = new System.Drawing.Size(104, 17);
+            this.chkArmorActiveCommlink.TabIndex = 118;
+            this.chkArmorActiveCommlink.Tag = "Checkbox_ActiveCommlink";
+            this.chkArmorActiveCommlink.Text = "Active Commlink";
+            this.chkArmorActiveCommlink.UseVisualStyleBackColor = true;
+            this.chkArmorActiveCommlink.CheckedChanged += new System.EventHandler(this.chkArmorActiveCommlink_CheckedChanged);
             // 
-            // lblArmorSleaze
+            // chkArmorWireless
             // 
-            this.lblArmorSleaze.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblArmorSleaze.AutoSize = true;
-            this.lblArmorSleaze.Location = new System.Drawing.Point(171, 56);
-            this.lblArmorSleaze.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblArmorSleaze.Name = "lblArmorSleaze";
-            this.lblArmorSleaze.Size = new System.Drawing.Size(19, 13);
-            this.lblArmorSleaze.TabIndex = 181;
-            this.lblArmorSleaze.Text = "[0]";
+            this.chkArmorWireless.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkArmorWireless.AutoSize = true;
+            this.chkArmorWireless.DefaultColorScheme = true;
+            this.chkArmorWireless.Location = new System.Drawing.Point(202, 3);
+            this.chkArmorWireless.Name = "chkArmorWireless";
+            this.chkArmorWireless.Size = new System.Drawing.Size(66, 17);
+            this.chkArmorWireless.TabIndex = 212;
+            this.chkArmorWireless.Tag = "String_Wireless";
+            this.chkArmorWireless.Text = "Wireless";
+            this.chkArmorWireless.UseVisualStyleBackColor = true;
+            this.chkArmorWireless.CheckedChanged += new System.EventHandler(this.chkArmorWireless_CheckedChanged);
+            // 
+            // cboArmorAttack
+            // 
+            this.cboArmorAttack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboArmorAttack.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboArmorAttack.FormattingEnabled = true;
+            this.cboArmorAttack.Location = new System.Drawing.Point(102, 53);
+            this.cboArmorAttack.Name = "cboArmorAttack";
+            this.cboArmorAttack.Size = new System.Drawing.Size(93, 21);
+            this.cboArmorAttack.TabIndex = 216;
+            this.cboArmorAttack.TooltipText = "";
+            this.cboArmorAttack.SelectedIndexChanged += new System.EventHandler(this.cboArmorAttack_SelectedIndexChanged);
+            // 
+            // cboArmorSleaze
+            // 
+            this.cboArmorSleaze.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboArmorSleaze.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboArmorSleaze.FormattingEnabled = true;
+            this.cboArmorSleaze.Location = new System.Drawing.Point(201, 53);
+            this.cboArmorSleaze.Name = "cboArmorSleaze";
+            this.cboArmorSleaze.Size = new System.Drawing.Size(93, 21);
+            this.cboArmorSleaze.TabIndex = 217;
+            this.cboArmorSleaze.TooltipText = "";
+            this.cboArmorSleaze.SelectedIndexChanged += new System.EventHandler(this.cboArmorSleaze_SelectedIndexChanged);
+            // 
+            // cboArmorDataProcessing
+            // 
+            this.cboArmorDataProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboArmorDataProcessing.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboArmorDataProcessing.FormattingEnabled = true;
+            this.cboArmorDataProcessing.Location = new System.Drawing.Point(300, 53);
+            this.cboArmorDataProcessing.Name = "cboArmorDataProcessing";
+            this.cboArmorDataProcessing.Size = new System.Drawing.Size(93, 21);
+            this.cboArmorDataProcessing.TabIndex = 218;
+            this.cboArmorDataProcessing.TooltipText = "";
+            this.cboArmorDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboArmorDataProcessing_SelectedIndexChanged);
+            // 
+            // tabArmorMatrixCM
+            // 
+            this.tabArmorMatrixCM.Controls.Add(this.tabPage1);
+            this.tabArmorMatrixCM.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tabArmorMatrixCM.Location = new System.Drawing.Point(3, 235);
+            this.tabArmorMatrixCM.Name = "tabArmorMatrixCM";
+            this.tabArmorMatrixCM.SelectedIndex = 0;
+            this.tabArmorMatrixCM.Size = new System.Drawing.Size(501, 113);
+            this.tabArmorMatrixCM.TabIndex = 204;
+            this.tabArmorMatrixCM.Visible = false;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.panArmorMatrixCM);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(493, 87);
+            this.tabPage1.TabIndex = 1;
+            this.tabPage1.Tag = "Tab_MatrixConditionMonitor";
+            this.tabPage1.Text = "Matrix Condition Monitor";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // panArmorMatrixCM
+            // 
+            this.panArmorMatrixCM.AutoSize = true;
+            this.panArmorMatrixCM.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM1);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM2);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM3);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM4);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM5);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM6);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM7);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM8);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM9);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM10);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM11);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM12);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM13);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM14);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM15);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM16);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM17);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM18);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM19);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM20);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM21);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM22);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM23);
+            this.panArmorMatrixCM.Controls.Add(this.chkArmorMatrixCM24);
+            this.panArmorMatrixCM.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panArmorMatrixCM.Location = new System.Drawing.Point(3, 3);
+            this.panArmorMatrixCM.Name = "panArmorMatrixCM";
+            this.panArmorMatrixCM.Size = new System.Drawing.Size(487, 81);
+            this.panArmorMatrixCM.TabIndex = 75;
+            // 
+            // chkArmorMatrixCM1
+            // 
+            this.chkArmorMatrixCM1.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM1.AutoSize = true;
+            this.chkArmorMatrixCM1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.chkArmorMatrixCM1.Location = new System.Drawing.Point(1, 1);
+            this.chkArmorMatrixCM1.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM1.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM1.Name = "chkArmorMatrixCM1";
+            this.chkArmorMatrixCM1.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM1.TabIndex = 49;
+            this.chkArmorMatrixCM1.Tag = "1";
+            this.chkArmorMatrixCM1.Text = " ";
+            this.chkArmorMatrixCM1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM1.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM1.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM2
+            // 
+            this.chkArmorMatrixCM2.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM2.AutoSize = true;
+            this.chkArmorMatrixCM2.Location = new System.Drawing.Point(27, 1);
+            this.chkArmorMatrixCM2.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM2.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM2.Name = "chkArmorMatrixCM2";
+            this.chkArmorMatrixCM2.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM2.TabIndex = 50;
+            this.chkArmorMatrixCM2.Tag = "2";
+            this.chkArmorMatrixCM2.Text = " ";
+            this.chkArmorMatrixCM2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM2.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM2.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM3
+            // 
+            this.chkArmorMatrixCM3.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM3.AutoSize = true;
+            this.chkArmorMatrixCM3.Location = new System.Drawing.Point(53, 1);
+            this.chkArmorMatrixCM3.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM3.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM3.Name = "chkArmorMatrixCM3";
+            this.chkArmorMatrixCM3.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM3.TabIndex = 51;
+            this.chkArmorMatrixCM3.Tag = "3";
+            this.chkArmorMatrixCM3.Text = " ";
+            this.chkArmorMatrixCM3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM3.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM3.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM4
+            // 
+            this.chkArmorMatrixCM4.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM4.AutoSize = true;
+            this.chkArmorMatrixCM4.Location = new System.Drawing.Point(79, 1);
+            this.chkArmorMatrixCM4.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM4.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM4.Name = "chkArmorMatrixCM4";
+            this.chkArmorMatrixCM4.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM4.TabIndex = 52;
+            this.chkArmorMatrixCM4.Tag = "4";
+            this.chkArmorMatrixCM4.Text = " ";
+            this.chkArmorMatrixCM4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM4.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM4.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM5
+            // 
+            this.chkArmorMatrixCM5.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM5.AutoSize = true;
+            this.chkArmorMatrixCM5.Location = new System.Drawing.Point(105, 1);
+            this.chkArmorMatrixCM5.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM5.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM5.Name = "chkArmorMatrixCM5";
+            this.chkArmorMatrixCM5.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM5.TabIndex = 53;
+            this.chkArmorMatrixCM5.Tag = "5";
+            this.chkArmorMatrixCM5.Text = " ";
+            this.chkArmorMatrixCM5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM5.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM5.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM6
+            // 
+            this.chkArmorMatrixCM6.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM6.AutoSize = true;
+            this.chkArmorMatrixCM6.Location = new System.Drawing.Point(131, 1);
+            this.chkArmorMatrixCM6.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM6.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM6.Name = "chkArmorMatrixCM6";
+            this.chkArmorMatrixCM6.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM6.TabIndex = 54;
+            this.chkArmorMatrixCM6.Tag = "6";
+            this.chkArmorMatrixCM6.Text = " ";
+            this.chkArmorMatrixCM6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM6.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM6.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM7
+            // 
+            this.chkArmorMatrixCM7.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM7.AutoSize = true;
+            this.chkArmorMatrixCM7.Location = new System.Drawing.Point(157, 1);
+            this.chkArmorMatrixCM7.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM7.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM7.Name = "chkArmorMatrixCM7";
+            this.chkArmorMatrixCM7.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM7.TabIndex = 55;
+            this.chkArmorMatrixCM7.Tag = "7";
+            this.chkArmorMatrixCM7.Text = " ";
+            this.chkArmorMatrixCM7.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM7.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM7.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM8
+            // 
+            this.chkArmorMatrixCM8.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM8.AutoSize = true;
+            this.chkArmorMatrixCM8.Location = new System.Drawing.Point(183, 1);
+            this.chkArmorMatrixCM8.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM8.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM8.Name = "chkArmorMatrixCM8";
+            this.chkArmorMatrixCM8.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM8.TabIndex = 56;
+            this.chkArmorMatrixCM8.Tag = "8";
+            this.chkArmorMatrixCM8.Text = " ";
+            this.chkArmorMatrixCM8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM8.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM8.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM9
+            // 
+            this.chkArmorMatrixCM9.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM9.AutoSize = true;
+            this.chkArmorMatrixCM9.Location = new System.Drawing.Point(209, 1);
+            this.chkArmorMatrixCM9.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM9.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM9.Name = "chkArmorMatrixCM9";
+            this.chkArmorMatrixCM9.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM9.TabIndex = 57;
+            this.chkArmorMatrixCM9.Tag = "9";
+            this.chkArmorMatrixCM9.Text = " ";
+            this.chkArmorMatrixCM9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM9.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM9.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM10
+            // 
+            this.chkArmorMatrixCM10.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM10.AutoSize = true;
+            this.chkArmorMatrixCM10.Location = new System.Drawing.Point(235, 1);
+            this.chkArmorMatrixCM10.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM10.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM10.Name = "chkArmorMatrixCM10";
+            this.chkArmorMatrixCM10.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM10.TabIndex = 58;
+            this.chkArmorMatrixCM10.Tag = "10";
+            this.chkArmorMatrixCM10.Text = " ";
+            this.chkArmorMatrixCM10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM10.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM10.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM11
+            // 
+            this.chkArmorMatrixCM11.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM11.AutoSize = true;
+            this.chkArmorMatrixCM11.Location = new System.Drawing.Point(261, 1);
+            this.chkArmorMatrixCM11.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM11.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM11.Name = "chkArmorMatrixCM11";
+            this.chkArmorMatrixCM11.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM11.TabIndex = 59;
+            this.chkArmorMatrixCM11.Tag = "11";
+            this.chkArmorMatrixCM11.Text = " ";
+            this.chkArmorMatrixCM11.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM11.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM11.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM12
+            // 
+            this.chkArmorMatrixCM12.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM12.AutoSize = true;
+            this.chkArmorMatrixCM12.Location = new System.Drawing.Point(287, 1);
+            this.chkArmorMatrixCM12.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM12.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM12.Name = "chkArmorMatrixCM12";
+            this.chkArmorMatrixCM12.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM12.TabIndex = 60;
+            this.chkArmorMatrixCM12.Tag = "12";
+            this.chkArmorMatrixCM12.Text = " ";
+            this.chkArmorMatrixCM12.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM12.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM12.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM13
+            // 
+            this.chkArmorMatrixCM13.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM13.AutoSize = true;
+            this.chkArmorMatrixCM13.Location = new System.Drawing.Point(313, 1);
+            this.chkArmorMatrixCM13.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM13.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM13.Name = "chkArmorMatrixCM13";
+            this.chkArmorMatrixCM13.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM13.TabIndex = 63;
+            this.chkArmorMatrixCM13.Tag = "13";
+            this.chkArmorMatrixCM13.Text = " ";
+            this.chkArmorMatrixCM13.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM13.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM13.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM14
+            // 
+            this.chkArmorMatrixCM14.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM14.AutoSize = true;
+            this.chkArmorMatrixCM14.Location = new System.Drawing.Point(339, 1);
+            this.chkArmorMatrixCM14.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM14.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM14.Name = "chkArmorMatrixCM14";
+            this.chkArmorMatrixCM14.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM14.TabIndex = 64;
+            this.chkArmorMatrixCM14.Tag = "14";
+            this.chkArmorMatrixCM14.Text = " ";
+            this.chkArmorMatrixCM14.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM14.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM14.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM15
+            // 
+            this.chkArmorMatrixCM15.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM15.AutoSize = true;
+            this.chkArmorMatrixCM15.Location = new System.Drawing.Point(365, 1);
+            this.chkArmorMatrixCM15.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM15.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM15.Name = "chkArmorMatrixCM15";
+            this.chkArmorMatrixCM15.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM15.TabIndex = 65;
+            this.chkArmorMatrixCM15.Tag = "15";
+            this.chkArmorMatrixCM15.Text = " ";
+            this.chkArmorMatrixCM15.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM15.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM15.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM16
+            // 
+            this.chkArmorMatrixCM16.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM16.AutoSize = true;
+            this.chkArmorMatrixCM16.Location = new System.Drawing.Point(391, 1);
+            this.chkArmorMatrixCM16.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM16.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM16.Name = "chkArmorMatrixCM16";
+            this.chkArmorMatrixCM16.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM16.TabIndex = 66;
+            this.chkArmorMatrixCM16.Tag = "16";
+            this.chkArmorMatrixCM16.Text = " ";
+            this.chkArmorMatrixCM16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM16.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM16.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM17
+            // 
+            this.chkArmorMatrixCM17.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM17.AutoSize = true;
+            this.chkArmorMatrixCM17.Location = new System.Drawing.Point(417, 1);
+            this.chkArmorMatrixCM17.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM17.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM17.Name = "chkArmorMatrixCM17";
+            this.chkArmorMatrixCM17.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM17.TabIndex = 67;
+            this.chkArmorMatrixCM17.Tag = "17";
+            this.chkArmorMatrixCM17.Text = " ";
+            this.chkArmorMatrixCM17.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM17.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM17.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM18
+            // 
+            this.chkArmorMatrixCM18.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM18.AutoSize = true;
+            this.chkArmorMatrixCM18.Location = new System.Drawing.Point(443, 1);
+            this.chkArmorMatrixCM18.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM18.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM18.Name = "chkArmorMatrixCM18";
+            this.chkArmorMatrixCM18.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM18.TabIndex = 68;
+            this.chkArmorMatrixCM18.Tag = "18";
+            this.chkArmorMatrixCM18.Text = " ";
+            this.chkArmorMatrixCM18.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM18.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM18.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM19
+            // 
+            this.chkArmorMatrixCM19.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM19.AutoSize = true;
+            this.chkArmorMatrixCM19.Location = new System.Drawing.Point(1, 27);
+            this.chkArmorMatrixCM19.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM19.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM19.Name = "chkArmorMatrixCM19";
+            this.chkArmorMatrixCM19.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM19.TabIndex = 69;
+            this.chkArmorMatrixCM19.Tag = "19";
+            this.chkArmorMatrixCM19.Text = " ";
+            this.chkArmorMatrixCM19.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM19.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM19.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM20
+            // 
+            this.chkArmorMatrixCM20.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM20.AutoSize = true;
+            this.chkArmorMatrixCM20.Location = new System.Drawing.Point(27, 27);
+            this.chkArmorMatrixCM20.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM20.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM20.Name = "chkArmorMatrixCM20";
+            this.chkArmorMatrixCM20.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM20.TabIndex = 70;
+            this.chkArmorMatrixCM20.Tag = "20";
+            this.chkArmorMatrixCM20.Text = " ";
+            this.chkArmorMatrixCM20.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM20.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM20.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM21
+            // 
+            this.chkArmorMatrixCM21.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM21.AutoSize = true;
+            this.chkArmorMatrixCM21.Location = new System.Drawing.Point(53, 27);
+            this.chkArmorMatrixCM21.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM21.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM21.Name = "chkArmorMatrixCM21";
+            this.chkArmorMatrixCM21.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM21.TabIndex = 71;
+            this.chkArmorMatrixCM21.Tag = "21";
+            this.chkArmorMatrixCM21.Text = " ";
+            this.chkArmorMatrixCM21.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM21.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM21.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM22
+            // 
+            this.chkArmorMatrixCM22.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM22.AutoSize = true;
+            this.chkArmorMatrixCM22.Location = new System.Drawing.Point(79, 27);
+            this.chkArmorMatrixCM22.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM22.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM22.Name = "chkArmorMatrixCM22";
+            this.chkArmorMatrixCM22.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM22.TabIndex = 72;
+            this.chkArmorMatrixCM22.Tag = "22";
+            this.chkArmorMatrixCM22.Text = " ";
+            this.chkArmorMatrixCM22.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM22.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM22.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM23
+            // 
+            this.chkArmorMatrixCM23.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM23.AutoSize = true;
+            this.chkArmorMatrixCM23.Location = new System.Drawing.Point(105, 27);
+            this.chkArmorMatrixCM23.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM23.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM23.Name = "chkArmorMatrixCM23";
+            this.chkArmorMatrixCM23.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM23.TabIndex = 73;
+            this.chkArmorMatrixCM23.Tag = "23";
+            this.chkArmorMatrixCM23.Text = " ";
+            this.chkArmorMatrixCM23.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM23.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM23.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
+            // 
+            // chkArmorMatrixCM24
+            // 
+            this.chkArmorMatrixCM24.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkArmorMatrixCM24.AutoSize = true;
+            this.chkArmorMatrixCM24.Location = new System.Drawing.Point(131, 27);
+            this.chkArmorMatrixCM24.Margin = new System.Windows.Forms.Padding(1);
+            this.chkArmorMatrixCM24.MinimumSize = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM24.Name = "chkArmorMatrixCM24";
+            this.chkArmorMatrixCM24.Size = new System.Drawing.Size(24, 24);
+            this.chkArmorMatrixCM24.TabIndex = 74;
+            this.chkArmorMatrixCM24.Tag = "24";
+            this.chkArmorMatrixCM24.Text = " ";
+            this.chkArmorMatrixCM24.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.chkArmorMatrixCM24.UseVisualStyleBackColor = true;
+            this.chkArmorMatrixCM24.CheckedChanged += new System.EventHandler(this.chkArmorMatrixCM_CheckedChanged);
             // 
             // gpbArmorLocation
             // 
@@ -12252,9 +12806,9 @@ namespace Chummer
             this.gpbArmorLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbArmorLocation.Controls.Add(this.tlpArmorLocation);
             this.gpbArmorLocation.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbArmorLocation.Location = new System.Drawing.Point(3, 233);
+            this.gpbArmorLocation.Location = new System.Drawing.Point(3, 354);
             this.gpbArmorLocation.Name = "gpbArmorLocation";
-            this.gpbArmorLocation.Size = new System.Drawing.Size(426, 73);
+            this.gpbArmorLocation.Size = new System.Drawing.Size(501, 73);
             this.gpbArmorLocation.TabIndex = 2;
             this.gpbArmorLocation.TabStop = false;
             this.gpbArmorLocation.Tag = "String_Armor";
@@ -12278,7 +12832,7 @@ namespace Chummer
             this.tlpArmorLocation.RowCount = 2;
             this.tlpArmorLocation.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmorLocation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmorLocation.Size = new System.Drawing.Size(420, 54);
+            this.tlpArmorLocation.Size = new System.Drawing.Size(495, 54);
             this.tlpArmorLocation.TabIndex = 0;
             // 
             // lblArmorEquipped
@@ -12289,7 +12843,7 @@ namespace Chummer
             this.lblArmorEquipped.Location = new System.Drawing.Point(3, 35);
             this.lblArmorEquipped.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblArmorEquipped.Name = "lblArmorEquipped";
-            this.lblArmorEquipped.Size = new System.Drawing.Size(414, 13);
+            this.lblArmorEquipped.Size = new System.Drawing.Size(489, 13);
             this.lblArmorEquipped.TabIndex = 113;
             this.lblArmorEquipped.Text = "[Armor Bundle Equipped Items]";
             // 
@@ -12298,7 +12852,7 @@ namespace Chummer
             this.cmdArmorUnEquipAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdArmorUnEquipAll.AutoSize = true;
             this.cmdArmorUnEquipAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorUnEquipAll.Location = new System.Drawing.Point(342, 3);
+            this.cmdArmorUnEquipAll.Location = new System.Drawing.Point(417, 3);
             this.cmdArmorUnEquipAll.Name = "cmdArmorUnEquipAll";
             this.cmdArmorUnEquipAll.Size = new System.Drawing.Size(75, 23);
             this.cmdArmorUnEquipAll.TabIndex = 107;
@@ -12324,7 +12878,7 @@ namespace Chummer
             this.cmdArmorEquipAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdArmorEquipAll.AutoSize = true;
             this.cmdArmorEquipAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorEquipAll.Location = new System.Drawing.Point(278, 3);
+            this.cmdArmorEquipAll.Location = new System.Drawing.Point(353, 3);
             this.cmdArmorEquipAll.Name = "cmdArmorEquipAll";
             this.cmdArmorEquipAll.Size = new System.Drawing.Size(58, 23);
             this.cmdArmorEquipAll.TabIndex = 106;
@@ -12350,7 +12904,7 @@ namespace Chummer
             this.tlpArmorButtons.Name = "tlpArmorButtons";
             this.tlpArmorButtons.RowCount = 1;
             this.tlpArmorButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmorButtons.Size = new System.Drawing.Size(178, 29);
+            this.tlpArmorButtons.Size = new System.Drawing.Size(324, 29);
             this.tlpArmorButtons.TabIndex = 187;
             // 
             // cmdAddArmor
@@ -12361,7 +12915,7 @@ namespace Chummer
             this.cmdAddArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddArmor.Location = new System.Drawing.Point(3, 3);
             this.cmdAddArmor.Name = "cmdAddArmor";
-            this.cmdAddArmor.Size = new System.Drawing.Size(53, 23);
+            this.cmdAddArmor.Size = new System.Drawing.Size(102, 23);
             this.cmdAddArmor.SplitMenuStrip = this.cmsArmor;
             this.cmdAddArmor.TabIndex = 86;
             this.cmdAddArmor.Tag = "Button_AddArmor";
@@ -12374,9 +12928,9 @@ namespace Chummer
             this.cmdAddArmorBundle.AutoSize = true;
             this.cmdAddArmorBundle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddArmorBundle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdAddArmorBundle.Location = new System.Drawing.Point(121, 3);
+            this.cmdAddArmorBundle.Location = new System.Drawing.Point(219, 3);
             this.cmdAddArmorBundle.Name = "cmdAddArmorBundle";
-            this.cmdAddArmorBundle.Size = new System.Drawing.Size(54, 23);
+            this.cmdAddArmorBundle.Size = new System.Drawing.Size(102, 23);
             this.cmdAddArmorBundle.TabIndex = 105;
             this.cmdAddArmorBundle.Tag = "Button_AddBundle";
             this.cmdAddArmorBundle.Text = "Add Armor Bundle";
@@ -12389,9 +12943,9 @@ namespace Chummer
             this.cmdDeleteArmor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteArmor.ContextMenuStrip = this.cmsDeleteArmor;
             this.cmdDeleteArmor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteArmor.Location = new System.Drawing.Point(62, 3);
+            this.cmdDeleteArmor.Location = new System.Drawing.Point(111, 3);
             this.cmdDeleteArmor.Name = "cmdDeleteArmor";
-            this.cmdDeleteArmor.Size = new System.Drawing.Size(53, 23);
+            this.cmdDeleteArmor.Size = new System.Drawing.Size(102, 23);
             this.cmdDeleteArmor.SplitMenuStrip = this.cmsDeleteArmor;
             this.cmdDeleteArmor.TabIndex = 83;
             this.cmdDeleteArmor.Tag = "String_Delete";
@@ -20083,6 +20637,13 @@ namespace Chummer
             this.gpbArmorMatrix.PerformLayout();
             this.tlpArmorMatrix.ResumeLayout(false);
             this.tlpArmorMatrix.PerformLayout();
+            this.flpArmorMatrixCheckBoxes.ResumeLayout(false);
+            this.flpArmorMatrixCheckBoxes.PerformLayout();
+            this.tabArmorMatrixCM.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.panArmorMatrixCM.ResumeLayout(false);
+            this.panArmorMatrixCM.PerformLayout();
             this.gpbArmorLocation.ResumeLayout(false);
             this.gpbArmorLocation.PerformLayout();
             this.tlpArmorLocation.ResumeLayout(false);
@@ -20900,13 +21461,9 @@ namespace Chummer
         private SplitButton cmdAddGear;
         private SplitButton cmdDeleteGear;
         private TabPage tabArmor;
-        private Label lblArmorFirewall;
         private Label lblArmorFirewallLabel;
-        private Label lblArmorDataProcessing;
         private Label lblArmorDataProcessingLabel;
-        private Label lblArmorSleaze;
         private Label lblArmorSleazeLabel;
-        private Label lblArmorAttack;
         private Label lblArmorAttackLabel;
         private Label lblArmorDeviceRating;
         private Label lblArmorDeviceRatingLabel;
@@ -21560,5 +22117,41 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsWeaponMountLocation;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountNotes;
         private FlowLayoutPanel flpMagicianSpellButtons;
+        private ElasticComboBox cboArmorFirewall;
+        private ElasticComboBox cboArmorOverclocker;
+        private Label lblArmorOverclockerLabel;
+        private FlowLayoutPanel flpArmorMatrixCheckBoxes;
+        private ColorableCheckBox chkArmorHomeNode;
+        private ColorableCheckBox chkArmorActiveCommlink;
+        private ElasticComboBox cboArmorAttack;
+        private ElasticComboBox cboArmorSleaze;
+        private ElasticComboBox cboArmorDataProcessing;
+        private TabControl tabArmorMatrixCM;
+        private TabPage tabPage1;
+        private FlowLayoutPanel panArmorMatrixCM;
+        private CheckBox chkArmorMatrixCM1;
+        private CheckBox chkArmorMatrixCM2;
+        private CheckBox chkArmorMatrixCM3;
+        private CheckBox chkArmorMatrixCM4;
+        private CheckBox chkArmorMatrixCM5;
+        private CheckBox chkArmorMatrixCM6;
+        private CheckBox chkArmorMatrixCM7;
+        private CheckBox chkArmorMatrixCM8;
+        private CheckBox chkArmorMatrixCM9;
+        private CheckBox chkArmorMatrixCM10;
+        private CheckBox chkArmorMatrixCM11;
+        private CheckBox chkArmorMatrixCM12;
+        private CheckBox chkArmorMatrixCM13;
+        private CheckBox chkArmorMatrixCM14;
+        private CheckBox chkArmorMatrixCM15;
+        private CheckBox chkArmorMatrixCM16;
+        private CheckBox chkArmorMatrixCM17;
+        private CheckBox chkArmorMatrixCM18;
+        private CheckBox chkArmorMatrixCM19;
+        private CheckBox chkArmorMatrixCM20;
+        private CheckBox chkArmorMatrixCM21;
+        private CheckBox chkArmorMatrixCM22;
+        private CheckBox chkArmorMatrixCM23;
+        private CheckBox chkArmorMatrixCM24;
     }
 }

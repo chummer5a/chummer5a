@@ -37,7 +37,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "TotalArmor", "Extra")]
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear
+    public class Armor : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanSell, IHasChildrenAndCost<Gear>, IHasCustomName, IHasLocation, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, IHasMatrixAttributes
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
@@ -67,11 +67,29 @@ namespace Chummer.Backend.Equipment
         private Location _objLocation;
         private XmlNode _nodBonus;
         private XmlNode _nodWirelessBonus;
-        private bool _blnWirelessOn = true;
         private bool _blnDiscountCost;
         private int _intSortOrder;
         private bool _blnStolen;
         private bool _blnEncumbrance = true;
+
+        private string _strDeviceRating = string.Empty;
+        private string _strAttack = string.Empty;
+        private string _strSleaze = string.Empty;
+        private string _strDataProcessing = string.Empty;
+        private string _strFirewall = string.Empty;
+        private string _strAttributeArray = string.Empty;
+        private string _strModAttack = string.Empty;
+        private string _strModSleaze = string.Empty;
+        private string _strModDataProcessing = string.Empty;
+        private string _strModFirewall = string.Empty;
+        private string _strModAttributeArray = string.Empty;
+        private string _strProgramLimit = string.Empty;
+        private string _strOverclocked = "None";
+        private string _strCanFormPersona = string.Empty;
+        private bool _blnCanSwapAttributes;
+        private bool _blnWirelessOn = true;
+        private int _intMatrixCMBonus;
+        private int _intMatrixCMFilled;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -493,6 +511,33 @@ namespace Chummer.Backend.Equipment
                 lstWeapons?.AddRange(lstChildWeapons);
             }
 
+            objXmlArmorNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+            if (!objXmlArmorNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+            {
+                objXmlArmorNode.TryGetStringFieldQuickly("attack", ref _strAttack);
+                objXmlArmorNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+                objXmlArmorNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+                objXmlArmorNode.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            }
+            else
+            {
+                _blnCanSwapAttributes = true;
+                string[] strArray = _strAttributeArray.Split(',');
+                _strAttack = strArray[0];
+                _strSleaze = strArray[1];
+                _strDataProcessing = strArray[2];
+                _strFirewall = strArray[3];
+            }
+            objXmlArmorNode.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            objXmlArmorNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            objXmlArmorNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            objXmlArmorNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            objXmlArmorNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+
+            objXmlArmorNode.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+            objXmlArmorNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
+            objXmlArmorNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
+
             if (!blnSkipSelectForms)
                 RefreshWirelessBonuses();
 
@@ -545,7 +590,27 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("armorname", _strArmorName);
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("active", this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode", this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("devicerating", _strDeviceRating);
+            objWriter.WriteElementString("programlimit", _strProgramLimit);
+            objWriter.WriteElementString("overclocked", _strOverclocked);
+            objWriter.WriteElementString("attack", _strAttack);
+            objWriter.WriteElementString("sleaze", _strSleaze);
+            objWriter.WriteElementString("dataprocessing", _strDataProcessing);
+            objWriter.WriteElementString("firewall", _strFirewall);
+            objWriter.WriteElementString("attributearray", _strAttributeArray);
+            objWriter.WriteElementString("modattack", _strModAttack);
+            objWriter.WriteElementString("modsleaze", _strModSleaze);
+            objWriter.WriteElementString("moddataprocessing", _strModDataProcessing);
+            objWriter.WriteElementString("modfirewall", _strModFirewall);
+            objWriter.WriteElementString("modattributearray", _strModAttributeArray);
+            objWriter.WriteElementString("canswapattributes", _blnCanSwapAttributes.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("matrixcmfilled", _intMatrixCMFilled.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("matrixcmbonus",
+                _intMatrixCMBonus.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("canformpersona", _strCanFormPersona);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("damage", _intDamage.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalOptions.InvariantCultureInfo));
@@ -666,6 +731,51 @@ namespace Chummer.Backend.Equipment
             _nodWirelessBonus = objNode["wirelessbonus"];
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
+            bool blnIsActive = false;
+            if (objNode.TryGetBoolFieldQuickly("active", ref blnIsActive) && blnIsActive)
+                this.SetActiveCommlink(_objCharacter, true);
+            if (blnCopy)
+            {
+                this.SetHomeNode(_objCharacter, false);
+            }
+            else
+            {
+                bool blnIsHomeNode = false;
+                if (objNode.TryGetBoolFieldQuickly("homenode", ref blnIsHomeNode) && blnIsHomeNode)
+                {
+                    this.SetHomeNode(_objCharacter, true);
+                }
+            }
+
+            if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
+                GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
+            if (!objNode.TryGetStringFieldQuickly("programlimit", ref _strProgramLimit))
+                GetNode()?.TryGetStringFieldQuickly("programs", ref _strProgramLimit);
+            objNode.TryGetStringFieldQuickly("overclocked", ref _strOverclocked);
+            if (!objNode.TryGetStringFieldQuickly("attack", ref _strAttack))
+                GetNode()?.TryGetStringFieldQuickly("attack", ref _strAttack);
+            if (!objNode.TryGetStringFieldQuickly("sleaze", ref _strSleaze))
+                GetNode()?.TryGetStringFieldQuickly("sleaze", ref _strSleaze);
+            if (!objNode.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing))
+                GetNode()?.TryGetStringFieldQuickly("dataprocessing", ref _strDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("firewall", ref _strFirewall))
+                GetNode()?.TryGetStringFieldQuickly("firewall", ref _strFirewall);
+            if (!objNode.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray))
+                GetNode()?.TryGetStringFieldQuickly("attributearray", ref _strAttributeArray);
+            if (!objNode.TryGetStringFieldQuickly("modattack", ref _strModAttack))
+                GetNode()?.TryGetStringFieldQuickly("modattack", ref _strModAttack);
+            if (!objNode.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze))
+                GetNode()?.TryGetStringFieldQuickly("modsleaze", ref _strModSleaze);
+            if (!objNode.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing))
+                GetNode()?.TryGetStringFieldQuickly("moddataprocessing", ref _strModDataProcessing);
+            if (!objNode.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall))
+                GetNode()?.TryGetStringFieldQuickly("modfirewall", ref _strModFirewall);
+            if (!objNode.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray))
+                GetNode()?.TryGetStringFieldQuickly("modattributearray", ref _strModAttributeArray);
+            objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
+            objNode.TryGetInt32FieldQuickly("matrixcmbonus", ref _intMatrixCMBonus);
+            if (!objNode.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona))
+                GetNode()?.TryGetStringFieldQuickly("canformpersona", ref _strCanFormPersona);
             XmlNode xmlChildrenNode = objNode["armormods"];
             if (xmlChildrenNode != null)
             {
@@ -775,6 +885,23 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteEndElement();
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("location", Location?.DisplayNameShort(strLanguageToPrint));
+            objWriter.WriteElementString("attack", this.GetTotalMatrixAttribute("Attack").ToString(objCulture));
+            objWriter.WriteElementString("sleaze", this.GetTotalMatrixAttribute("Sleaze").ToString(objCulture));
+            objWriter.WriteElementString("dataprocessing",
+                this.GetTotalMatrixAttribute("Data Processing").ToString(objCulture));
+            objWriter.WriteElementString("firewall", this.GetTotalMatrixAttribute("Firewall").ToString(objCulture));
+            objWriter.WriteElementString("devicerating",
+                this.GetTotalMatrixAttribute("Device Rating").ToString(objCulture));
+            objWriter.WriteElementString("programlimit",
+                this.GetTotalMatrixAttribute("Program Limit").ToString(objCulture));
+            objWriter.WriteElementString("iscommlink", IsCommlink.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("isprogram", IsProgram.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("active",
+                this.IsActiveCommlink(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("homenode",
+                this.IsHomeNode(_objCharacter).ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("conditionmonitor", MatrixCM.ToString(objCulture));
+            objWriter.WriteElementString("matrixcmfilled", MatrixCMFilled.ToString(objCulture));
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
@@ -1408,6 +1535,195 @@ namespace Chummer.Backend.Equipment
             set => _blnStolen = value;
         }
 
+        /// <summary>
+        /// Device Rating string.
+        /// </summary>
+        public string DeviceRating
+        {
+            get => _strDeviceRating;
+            set => _strDeviceRating = value;
+        }
+
+        /// <summary>
+        /// Attack.
+        /// </summary>
+        public string Attack
+        {
+            get => _strAttack;
+            set => _strAttack = value;
+        }
+
+        /// <summary>
+        /// Sleaze.
+        /// </summary>
+        public string Sleaze
+        {
+            get => _strSleaze;
+            set => _strSleaze = value;
+        }
+
+        /// <summary>
+        /// Data Processing.
+        /// </summary>
+        public string DataProcessing
+        {
+            get => _strDataProcessing;
+            set => _strDataProcessing = value;
+        }
+
+        /// <summary>
+        /// Firewall.
+        /// </summary>
+        public string Firewall
+        {
+            get => _strFirewall;
+            set => _strFirewall = value;
+        }
+
+        /// <summary>
+        /// Modify Parent's Attack by this.
+        /// </summary>
+        public string ModAttack
+        {
+            get => _strModAttack;
+            set => _strModAttack = value;
+        }
+
+        /// <summary>
+        /// Modify Parent's Sleaze by this.
+        /// </summary>
+        public string ModSleaze
+        {
+            get => _strModSleaze;
+            set => _strModSleaze = value;
+        }
+
+        /// <summary>
+        /// Modify Parent's Data Processing by this.
+        /// </summary>
+        public string ModDataProcessing
+        {
+            get => _strModDataProcessing;
+            set => _strModDataProcessing = value;
+        }
+
+        /// <summary>
+        /// Modify Parent's Firewall by this.
+        /// </summary>
+        public string ModFirewall
+        {
+            get => _strModFirewall;
+            set => _strModFirewall = value;
+        }
+
+        /// <summary>
+        /// Cyberdeck's Attribute Array string.
+        /// </summary>
+        public string AttributeArray
+        {
+            get => _strAttributeArray;
+            set => _strAttributeArray = value;
+        }
+
+        /// <summary>
+        /// Modify Parent's Attribute Array by this.
+        /// </summary>
+        public string ModAttributeArray
+        {
+            get => _strModAttributeArray;
+            set => _strModAttributeArray = value;
+        }
+
+        public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children;
+
+        /// <summary>
+        /// Commlink's Limit for how many Programs they can run.
+        /// </summary>
+        public string ProgramLimit
+        {
+            get => _strProgramLimit;
+            set => _strProgramLimit = value;
+        }
+
+        /// <summary>
+        /// ASDF attribute boosted by Overclocker.
+        /// </summary>
+        public string Overclocked
+        {
+            get => !_objCharacter.Overclocker ? string.Empty : _strOverclocked;
+            set => _strOverclocked = value;
+        }
+
+        /// <summary>
+        /// Returns true if this is a cyberdeck whose attributes we could swap around.
+        /// </summary>
+        public bool CanSwapAttributes
+        {
+            get => _blnCanSwapAttributes;
+            set => _blnCanSwapAttributes = value;
+        }
+
+        /// <summary>
+        /// Whether or not the Gear qualifies as a Program in the printout XML.
+        /// </summary>
+        public bool IsProgram => false;
+
+        /// <summary>
+        /// String to determine if gear can form persona or grants persona forming to its parent.
+        /// </summary>
+        public string CanFormPersona
+        {
+            get => _strCanFormPersona;
+            set => _strCanFormPersona = value;
+        }
+
+        public bool IsCommlink
+        {
+            get { return CanFormPersona.Contains("Self") || Children.Any(x => x.CanFormPersona.Contains("Parent")); }
+        }
+
+        /// <summary>
+        /// Base Matrix Boxes.
+        /// </summary>
+        public int BaseMatrixBoxes => 8;
+
+        /// <summary>
+        /// Bonus Matrix Boxes.
+        /// </summary>
+        public int BonusMatrixBoxes
+        {
+            get => _intMatrixCMBonus;
+            set => _intMatrixCMBonus = value;
+        }
+
+        /// <summary>
+        /// Total Bonus Matrix Boxes (including all children).
+        /// </summary>
+        public int TotalBonusMatrixBoxes
+        {
+            get
+            {
+                int intReturn = BonusMatrixBoxes;
+                intReturn += Children.Where(g => g.Equipped).Sum(loopGear => loopGear.TotalBonusMatrixBoxes);
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Matrix Condition Monitor boxes.
+        /// </summary>
+        public int MatrixCM => BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 +
+                               TotalBonusMatrixBoxes;
+
+        /// <summary>
+        /// Matrix Condition Monitor boxes filled.
+        /// </summary>
+        public int MatrixCMFilled
+        {
+            get => _intMatrixCMFilled;
+            set => _intMatrixCMFilled = value;
+        }
+
         #endregion Properties
 
         #region Complex Properties
@@ -1679,6 +1995,97 @@ namespace Chummer.Backend.Equipment
 
             _strCachedXmlNodeLanguage = strLanguage;
             return _objCachedMyXmlNode;
+        }
+
+        public int GetBaseMatrixAttribute(string strAttributeName)
+        {
+            string strExpression = this.GetMatrixAttributeString(strAttributeName);
+            if (string.IsNullOrEmpty(strExpression))
+            {
+                switch (strAttributeName)
+                {
+                    case "Device Rating":
+                        strExpression = "2";
+                        break;
+
+                    case "Program Limit":
+                        if (IsCommlink)
+                        {
+                            strExpression = this.GetMatrixAttributeString("Device Rating");
+                            if (string.IsNullOrEmpty(strExpression))
+                                strExpression = "2";
+                        }
+                        else
+                            strExpression = "0";
+                        break;
+
+                    case "Data Processing":
+                    case "Firewall":
+                        strExpression = this.GetMatrixAttributeString("Device Rating");
+                        if (string.IsNullOrEmpty(strExpression))
+                            strExpression = "2";
+                        break;
+
+                    default:
+                        strExpression = "0";
+                        break;
+                }
+            }
+
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                StringBuilder objValue = new StringBuilder(strExpression);
+                foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
+                {
+                    objValue.CheapReplace(strExpression, "{Gear " + strMatrixAttribute + "}", () => "0");
+                    objValue.CheapReplace(strExpression, "{Parent " + strMatrixAttribute + "}", () => "0");
+                    if (Children.Count > 0 && strExpression.Contains("{Children " + strMatrixAttribute + "}"))
+                    {
+                        int intTotalChildrenValue = 0;
+                        foreach (Gear objLoopGear in Children)
+                        {
+                            if (objLoopGear.Equipped)
+                            {
+                                intTotalChildrenValue += objLoopGear.GetBaseMatrixAttribute(strMatrixAttribute);
+                            }
+                        }
+                        objValue.Replace("{Children " + strMatrixAttribute + "}", intTotalChildrenValue.ToString(GlobalOptions.InvariantCultureInfo));
+                    }
+                }
+                _objCharacter.AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+                // Replace the division sign with "div" since we're using XPath.
+                objValue.Replace("/", " div ");
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+            }
+            int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intReturn);
+            return intReturn;
+        }
+
+        public int GetBonusMatrixAttribute(string strAttributeName)
+        {
+            if (string.IsNullOrEmpty(strAttributeName))
+                return 0;
+            int intReturn = 0;
+
+            if (Overclocked == strAttributeName)
+            {
+                intReturn += 1;
+            }
+
+            if (!strAttributeName.StartsWith("Mod ", StringComparison.Ordinal))
+                strAttributeName = "Mod " + strAttributeName;
+
+            foreach (Gear objGear in Children)
+            {
+                if (objGear.Equipped && objGear.ParentID != InternalId)
+                {
+                    intReturn += objGear.GetTotalMatrixAttribute(strAttributeName);
+                }
+            }
+
+            return intReturn;
         }
 
         #endregion Complex Properties

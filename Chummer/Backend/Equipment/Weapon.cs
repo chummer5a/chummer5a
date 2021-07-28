@@ -5545,6 +5545,7 @@ namespace Chummer.Backend.Equipment
                     objReturn = (_objCharacter.Gear.DeepFindById(ParentID) ??
                                  _objCharacter.Vehicles.FindVehicleGear(ParentID) ??
                                  _objCharacter.Weapons.FindWeaponGear(ParentID) ??
+                                 (IHasMatrixAttributes)_objCharacter.Armor.FirstOrDefault(x => x.InternalId == ParentID) ??
                                  _objCharacter.Armor.FindArmorGear(ParentID) ??
                                  _objCharacter.Cyberware.FindCyberwareGear(ParentID)) ??
                                 ((_objCharacter.Cyberware.DeepFindById(ParentID) ??
