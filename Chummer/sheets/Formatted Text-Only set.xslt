@@ -265,7 +265,7 @@
         </xsl:variable>
         <xsl:variable name="tLOG2">
                 <xsl:if test="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total != attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/base">
-          <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total" /><xsl:text>(</xsl:text>
+          <xsl:text>(</xsl:text><xsl:value-of select="attributes/attribute[name_english = 'LOG' and (../attributecategory_english = metatypecategory or not(../attribute[name_english = 'LOG' and ../attributecategory_english = metatypecategory]))]/total" /><xsl:text>)</xsl:text>
         </xsl:if>
         </xsl:variable>
         <xsl:value-of select="concat($tLOG1,$tLOG2)" />
