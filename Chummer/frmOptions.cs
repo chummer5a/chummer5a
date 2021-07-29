@@ -693,6 +693,54 @@ namespace Chummer
             OptionsChanged(sender, e);
         }
 
+        private void lsbCustomDataDirectories_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnSkipRefresh)
+                return;
+            ListItem objSelectedItem = (ListItem)lsbCustomDataDirectories.SelectedItem;
+            CustomDataDirectoryInfo objSelected = (CustomDataDirectoryInfo)objSelectedItem.Value;
+            if (objSelected == null)
+            {
+                gpbDirectoryInfo.Visible = false;
+                return;
+            }
+
+            gpbDirectoryInfo.SuspendLayout();
+            txtDirectoryDescription.Text = objSelected.GetDisplayDescription(_strSelectedLanguage);
+            lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
+            lblDirectoryAuthors.Text = objSelected.GetDisplayAuthors(_strSelectedLanguage, _objSelectedCultureInfo);
+            lblDirectoryName.Text = objSelected.Name;
+            lblDirectoryPath.Text = objSelected.DirectoryPath.Replace(Utils.GetStartupPath, LanguageManager.GetString("String_Chummer5a", _strSelectedLanguage));
+
+            if (objSelected.DependenciesList.Count > 0)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var dependency in objSelected.DependenciesList)
+                    sb.AppendLine(dependency.DisplayName);
+                lblDependencies.Text = sb.ToString();
+            }
+            else
+            {
+                //Make sure all old information is discarded
+                lblDependencies.Text = string.Empty;
+            }
+
+            if (objSelected.IncompatibilitiesList.Count > 0)
+            {
+                //We only need a Stringbuilder if we got anything
+                StringBuilder sb = new StringBuilder();
+                foreach (var exclusivity in objSelected.IncompatibilitiesList)
+                    sb.AppendLine(exclusivity.DisplayName);
+                lblIncompatibilities.Text = sb.ToString();
+            }
+            else
+            {
+                lblIncompatibilities.Text = string.Empty;
+            }
+            gpbDirectoryInfo.Visible = true;
+            gpbDirectoryInfo.ResumeLayout();
+        }
+
         #endregion Control Events
 
         #region Methods
@@ -825,8 +873,9 @@ namespace Chummer
 
         private void PopulateCustomDataDirectoryListBox()
         {
+            bool blnOldSkipRefresh = _blnSkipRefresh;
+            _blnSkipRefresh = true;
             ListItem objOldSelected = lsbCustomDataDirectories.SelectedIndex != -1 ? (ListItem)lsbCustomDataDirectories.SelectedItem : ListItem.Blank;
-            string strNameFormat = "{0}" + LanguageManager.GetString("String_Space", _strSelectedLanguage) + "<{1}>";
             lsbCustomDataDirectories.BeginUpdate();
             if (_dicCustomDataDirectoryInfos.Count != lsbCustomDataDirectories.Items.Count)
             {
@@ -834,9 +883,7 @@ namespace Chummer
 
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in _dicCustomDataDirectoryInfos.Values)
                 {
-                    ListItem objItem = new ListItem(objCustomDataDirectory,
-                        string.Format(_objSelectedCultureInfo, strNameFormat, objCustomDataDirectory.Name,
-                            objCustomDataDirectory.DirectoryPath));
+                    ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
                     lsbCustomDataDirectories.Items.Add(objItem);
                 }
             }
@@ -854,9 +901,7 @@ namespace Chummer
                 }
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in _dicCustomDataDirectoryInfos.Where(x => !setListedInfos.Contains(x.Key)).Select(x => x.Value))
                 {
-                    ListItem objItem = new ListItem(objCustomDataDirectory,
-                        string.Format(_objSelectedCultureInfo, strNameFormat, objCustomDataDirectory.Name,
-                            objCustomDataDirectory.DirectoryPath));
+                    ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
                     lsbCustomDataDirectories.Items.Add(objItem);
                 }
             }
@@ -866,6 +911,7 @@ namespace Chummer
                 lsbCustomDataDirectories.ValueMember = nameof(ListItem.Value);
             }
             lsbCustomDataDirectories.EndUpdate();
+            _blnSkipRefresh = blnOldSkipRefresh;
             lsbCustomDataDirectories.SelectedItem = objOldSelected;
         }
 

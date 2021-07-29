@@ -224,7 +224,7 @@ namespace Chummer
             this.tabCustomData = new System.Windows.Forms.TabPage();
             this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treCustomDataDirectories = new System.Windows.Forms.TreeView();
-            this.gbpDirectoryInfo = new System.Windows.Forms.GroupBox();
+            this.gpbDirectoryInfo = new System.Windows.Forms.GroupBox();
             this.tlpDirectoryInfo = new Chummer.BufferedTableLayoutPanel(this.components);
             this.gbpDirectoryInfoDependencies = new System.Windows.Forms.GroupBox();
             this.pnlDirectoryDependencies = new System.Windows.Forms.Panel();
@@ -3490,7 +3490,7 @@ namespace Chummer
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpOptionalRules.Controls.Add(this.treCustomDataDirectories, 0, 1);
-            this.tlpOptionalRules.Controls.Add(this.gbpDirectoryInfo, 1, 0);
+            this.tlpOptionalRules.Controls.Add(this.gpbDirectoryInfo, 1, 0);
             this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
             this.tlpOptionalRules.Controls.Add(this.tlpOptionalRulesButtons, 0, 2);
             this.tlpOptionalRules.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -3517,21 +3517,21 @@ namespace Chummer
             this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterCheck);
             this.treCustomDataDirectories.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterSelect);
             // 
-            // gbpDirectoryInfo
+            // gpbDirectoryInfo
             // 
-            this.gbpDirectoryInfo.AutoSize = true;
-            this.gbpDirectoryInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gbpDirectoryInfo.Controls.Add(this.tlpDirectoryInfo);
-            this.gbpDirectoryInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbpDirectoryInfo.Location = new System.Drawing.Point(731, 3);
-            this.gbpDirectoryInfo.Name = "gbpDirectoryInfo";
-            this.tlpOptionalRules.SetRowSpan(this.gbpDirectoryInfo, 3);
-            this.gbpDirectoryInfo.Size = new System.Drawing.Size(480, 578);
-            this.gbpDirectoryInfo.TabIndex = 45;
-            this.gbpDirectoryInfo.TabStop = false;
-            this.gbpDirectoryInfo.Tag = "Title_CustomDataDirectoryInfo";
-            this.gbpDirectoryInfo.Text = "Custom Data Directory Info";
-            this.gbpDirectoryInfo.Visible = false;
+            this.gpbDirectoryInfo.AutoSize = true;
+            this.gpbDirectoryInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbDirectoryInfo.Controls.Add(this.tlpDirectoryInfo);
+            this.gpbDirectoryInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbDirectoryInfo.Location = new System.Drawing.Point(731, 3);
+            this.gpbDirectoryInfo.Name = "gpbDirectoryInfo";
+            this.tlpOptionalRules.SetRowSpan(this.gpbDirectoryInfo, 3);
+            this.gpbDirectoryInfo.Size = new System.Drawing.Size(480, 578);
+            this.gpbDirectoryInfo.TabIndex = 45;
+            this.gpbDirectoryInfo.TabStop = false;
+            this.gpbDirectoryInfo.Tag = "Title_CustomDataDirectoryInfo";
+            this.gpbDirectoryInfo.Text = "Custom Data Directory Info";
+            this.gpbDirectoryInfo.Visible = false;
             // 
             // tlpDirectoryInfo
             // 
@@ -4729,8 +4729,8 @@ namespace Chummer
             this.tabCustomData.PerformLayout();
             this.tlpOptionalRules.ResumeLayout(false);
             this.tlpOptionalRules.PerformLayout();
-            this.gbpDirectoryInfo.ResumeLayout(false);
-            this.gbpDirectoryInfo.PerformLayout();
+            this.gpbDirectoryInfo.ResumeLayout(false);
+            this.gpbDirectoryInfo.PerformLayout();
             this.tlpDirectoryInfo.ResumeLayout(false);
             this.tlpDirectoryInfo.PerformLayout();
             this.gbpDirectoryInfoDependencies.ResumeLayout(false);
@@ -5030,7 +5030,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaSpiritFettering;
         private NumericUpDownEx nudKarmaSpiritFettering;
         private System.Windows.Forms.Label lblKarmaSpiritFetteringExtra;
-        private System.Windows.Forms.GroupBox gbpDirectoryInfo;
+        private System.Windows.Forms.GroupBox gpbDirectoryInfo;
         private BufferedTableLayoutPanel tlpDirectoryInfo;
         private System.Windows.Forms.Label lblDirectoryNameLabel;
         private System.Windows.Forms.Label lblDirectoryVersion;

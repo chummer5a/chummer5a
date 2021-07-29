@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -360,36 +361,35 @@ namespace Chummer
                 if (_strDisplayDescription == null || _strDisplayDescriptionLanguage != GlobalOptions.Language)
                 {
                     _strDisplayDescriptionLanguage = GlobalOptions.Language;
-                    if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
-                    {
-                        _strDisplayDescription = LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing");
-                    }
-                    else if (!DescriptionDictionary.TryGetValue(GlobalOptions.Language, out string description))
-                    {
-                        if (!DescriptionDictionary.TryGetValue(GlobalOptions.DefaultLanguage, out description))
-                        {
-                            _strDisplayDescription =
-                                LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing");
-                        }
-                        else
-                        {
-                            _strDisplayDescription =
-                                LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing") +
-                                Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
-                        }
-                    }
-                    else
-                        _strDisplayDescription = description.NormalizeLineEndings(true);
+                    _strDisplayDescription = GetDisplayDescription(GlobalOptions.Language);
                 }
 
                 return _strDisplayDescription;
             }
         }
 
+        public string GetDisplayDescription(string strLanguage)
+        {
+            if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
+                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing", strLanguage);
+
+            if (DescriptionDictionary.TryGetValue(strLanguage, out string description))
+                return description.NormalizeLineEndings(true);
+
+            if (!DescriptionDictionary.TryGetValue(GlobalOptions.DefaultLanguage, out description))
+                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage);
+
+            return LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
+                       strLanguage) +
+                   Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
+        }
+
         /// <summary>
         /// A Dictionary, that uses the author name as key and provides a bool if he is the main author
         /// </summary>
         public IReadOnlyDictionary<string, bool> AuthorDictionary => _authorDictionary;
+
+        private string _strDisplayAuthorsLanguage = GlobalOptions.Language;
 
         private string _strDisplayAuthors;
 
@@ -405,21 +405,27 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalOptions.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterOptions are opened.
-                if (_strDisplayAuthors == null)
+                if (_strDisplayAuthors == null || _strDisplayAuthorsLanguage != GlobalOptions.Language)
                 {
-                    StringBuilder sbdDisplayAuthors = new StringBuilder();
-                    foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
-                    {
-                        sbdDisplayAuthors.AppendLine(kvp.Value
-                            ? string.Format(GlobalOptions.CultureInfo, kvp.Key,
-                                LanguageManager.GetString("String_IsMainAuthor"))
-                            : kvp.Key);
-                    }
-                    _strDisplayAuthors = sbdDisplayAuthors.ToString().Trim();
+                    _strDisplayAuthorsLanguage = GlobalOptions.Language;
+                    _strDisplayAuthors = GetDisplayAuthors(GlobalOptions.Language, GlobalOptions.CultureInfo);
                 }
 
                 return _strDisplayAuthors;
             }
+        }
+
+        public string GetDisplayAuthors(string strLanguage, CultureInfo objCultureInfo)
+        {
+            StringBuilder sbdDisplayAuthors = new StringBuilder();
+            foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
+            {
+                sbdDisplayAuthors.AppendLine(kvp.Value
+                    ? string.Format(objCultureInfo, kvp.Key,
+                        LanguageManager.GetString("String_IsMainAuthor", strLanguage))
+                    : kvp.Key);
+            }
+            return sbdDisplayAuthors.ToString().Trim();
         }
 
         public Guid Guid => _guid;

@@ -272,6 +272,8 @@ Changed/New Strings:
 - MessageTitle_Duplicate_CustomDataDirectoryGuid
 - Message_Duplicate_CustomDataDirectoryName
 - Label_CharacterOptions_NuyenExpression
+- String_Chummer5a
+- Label_DirectoryPath
 
 Build 214
 Application Fixes:

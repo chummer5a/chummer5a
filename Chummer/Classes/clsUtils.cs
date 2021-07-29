@@ -86,7 +86,7 @@ namespace Chummer
         /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
 
-        public static string GetStartupPath => !IsUnitTest ? Application.StartupPath : AppDomain.CurrentDomain.SetupInformation.ApplicationBase;
+        public static string GetStartupPath => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath;
 
         public static string GetAutosavesFolderPath => Path.Combine(GetStartupPath, "saves", "autosave");
 

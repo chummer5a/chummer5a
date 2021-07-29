@@ -99,6 +99,10 @@
     <!-- End Region -->
     <!-- Region Common Strings -->
     <string>
+      <key>String_Chummer5a</key>
+      <text>Chummer5a</text>
+    </string>
+    <string>
       <key>String_NotApplicable</key>
       <text>N/A</text>
     </string>
@@ -7995,6 +7999,10 @@
     <string>
       <key>Label_DirectoryName</key>
       <text>Name:</text>
+    </string>
+    <string>
+      <key>Label_DirectoryPath</key>
+      <text>Path:</text>
     </string>
     <string>
       <key>Label_DirectoryAuthors</key>

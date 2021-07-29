@@ -722,11 +722,11 @@ namespace Chummer
         {
             if (!(e.Node?.Tag is CustomDataDirectoryInfo objSelected))
             {
-                gbpDirectoryInfo.Visible = false;
+                gpbDirectoryInfo.Visible = false;
                 return;
             }
 
-            gbpDirectoryInfo.SuspendLayout();
+            gpbDirectoryInfo.SuspendLayout();
             txtDirectoryDescription.Text = objSelected.DisplayDescription;
             lblDirectoryVersion.Text = objSelected.MyVersion.ToString();
             lblDirectoryAuthors.Text = objSelected.DisplayAuthors;
@@ -757,8 +757,8 @@ namespace Chummer
             {
                 lblIncompatibilities.Text = string.Empty;
             }
-            gbpDirectoryInfo.Visible = true;
-            gbpDirectoryInfo.ResumeLayout();
+            gpbDirectoryInfo.Visible = true;
+            gpbDirectoryInfo.ResumeLayout();
         }
 
         #endregion Control Events
