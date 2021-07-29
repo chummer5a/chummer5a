@@ -278,6 +278,7 @@ Changed/New Strings:
 - Label_DirectoryPath
 - Label_Options_WftM_Nuyen
 - Label_Options_WftP_Nuyen
+- Tooltip_Dependency_BadLoadOrder
 
 Deleted Strings:
 - Label_Options_NuyenPerBP

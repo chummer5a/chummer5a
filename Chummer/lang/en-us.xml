@@ -8045,6 +8045,10 @@
       <text>{0} version does not meet the required version range of {1}</text>
     </string>
     <string>
+      <key>Tooltip_Dependency_BadLoadOrder</key>
+      <text>{0} is below {1} in its load order and so cannot satisfy the latter's dependency</text>
+    </string>
+    <string>
       <key>Tooltip_Incompatibility_VersionMismatch</key>
       <text>{0} is incompatible with {1}</text>
     </string>

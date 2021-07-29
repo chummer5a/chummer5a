@@ -225,6 +225,7 @@ namespace Chummer
         /// <returns>List of the names of all missing dependencies as a single string</returns>
         public string CheckDependency(CharacterOptions objCharacterOptions)
         {
+            int intMyLoadOrderPosition = objCharacterOptions.EnabledCustomDataDirectoryInfos.IndexOf(this);
             StringBuilder sbdReturn = new StringBuilder();
             foreach (DirectoryDependency dependency in DependenciesList)
             {
@@ -239,6 +240,12 @@ namespace Chummer
                             sbdReturn.AppendLine(string.Format(
                                 LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
                                 enabledCustomData.DisplayName, dependency.DisplayName));
+                        }
+                        else if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition > objCharacterOptions.EnabledCustomDataDirectoryInfos.IndexOf(enabledCustomData))
+                        {
+                            sbdReturn.AppendLine(string.Format(
+                                LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
+                                enabledCustomData.Name, Name));
                         }
                     }
                 }
