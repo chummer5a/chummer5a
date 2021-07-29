@@ -7416,6 +7416,30 @@ namespace Chummer
             IsDirty = true;
         }
 
+        private void chkArmorHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || treArmor.SelectedNode == null)
+                return;
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
+                return;
+            objCommlink.SetHomeNode(CharacterObject, chkArmorHomeNode.Checked);
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        private void chkWeaponHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || treWeapons.SelectedNode == null)
+                return;
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
+                return;
+            objCommlink.SetHomeNode(CharacterObject, chkWeaponHomeNode.Checked);
+
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
         private void chkCyberwareHomeNode_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
@@ -7442,6 +7466,34 @@ namespace Chummer
             if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+
+            IsDirty = true;
+            IsCharacterUpdateRequested = true;
+        }
+
+        private void chkArmorActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || treArmor.SelectedNode == null)
+                return;
+
+            // Attempt to locate the selected piece of Gear.
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
+                return;
+            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkArmorActiveCommlink.Checked);
+
+            IsDirty = true;
+            IsCharacterUpdateRequested = true;
+        }
+
+        private void chkWeaponActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || treWeapons.SelectedNode == null)
+                return;
+
+            // Attempt to locate the selected piece of Gear.
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
+                return;
+            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkWeaponActiveCommlink.Checked);
 
             IsDirty = true;
             IsCharacterUpdateRequested = true;
@@ -10035,6 +10087,8 @@ namespace Chummer
                         lblWeaponSleaze.Text = objWeapon.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
                         lblWeaponDataProcessing.Text = objWeapon.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
                         lblWeaponFirewall.Text = objWeapon.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
+                        chkWeaponHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
+                        chkWeaponActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
                         break;
                     }
                 case WeaponAccessory objSelectedAccessory:
@@ -10230,6 +10284,8 @@ namespace Chummer
                         lblWeaponSleaze.Text = objGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
                         lblWeaponDataProcessing.Text = objGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
                         lblWeaponFirewall.Text = objGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
+                        chkWeaponHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                        chkWeaponActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
                         break;
                     }
                 default:
@@ -10302,7 +10358,7 @@ namespace Chummer
             if (treArmor.SelectedNode?.Tag is Armor objArmor)
             {
                 gpbArmorCommon.Visible = true;
-                gpbArmorMatrix.Visible = false;
+                gpbArmorMatrix.Visible = true;
                 gpbArmorLocation.Visible = false;
 
                 // Buttons
@@ -10321,6 +10377,15 @@ namespace Chummer
                 chkArmorEquipped.Checked = objArmor.Equipped;
                 chkArmorEquipped.Enabled = true;
                 chkIncludedInArmor.Visible = false;
+
+                // gpbArmorMatrix
+                lblArmorDeviceRating.Text = objArmor.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                lblArmorAttack.Text = objArmor.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
+                lblArmorSleaze.Text = objArmor.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
+                lblArmorDataProcessing.Text = objArmor.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
+                lblArmorFirewall.Text = objArmor.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
+                chkArmorHomeNode.Checked = objArmor.IsHomeNode(CharacterObject);
+                chkArmorActiveCommlink.Checked = objArmor.IsActiveCommlink(CharacterObject);
             }
             else if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
             {
@@ -10425,6 +10490,8 @@ namespace Chummer
                         lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
                         lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
                         lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
+                        chkArmorHomeNode.Checked = objSelectedGear.IsHomeNode(CharacterObject);
+                        chkArmorActiveCommlink.Checked = objSelectedGear.IsActiveCommlink(CharacterObject);
                         break;
                     }
                     case Location objLocation:
