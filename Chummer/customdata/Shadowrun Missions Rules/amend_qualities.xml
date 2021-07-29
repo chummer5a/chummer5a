@@ -595,5 +595,21 @@
       <hide />
     </quality>
     <!-- End Region -->
+    <!-- Region Better than Bad Positive Qualities -->
+    <quality>
+      <name>Prototype Materials</name>
+      <hide />
+    </quality>
+    <quality>
+      <name>Special Modifications</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
+    <!-- Region Better than Bad Negative Qualities -->
+    <quality>
+      <name>Quadriplegic</name>
+      <hide />
+    </quality>
+    <!-- End Region -->
   </qualities>
 </chummer>

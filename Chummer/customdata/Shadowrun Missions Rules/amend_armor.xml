@@ -18,14 +18,11 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <gears>
-      <gear>
-        <name>Ammo: Depleted Uranium</name>
-        <hide />
-      </gear>
-    <gear>
-      <name>Subliminal Subacoustics Software</name>
-      <hide />
-    </gear>
-  </gears>
+  <armors>
+    <armor>
+      <!-- Urban Explorer Daedelus -->
+      <id>403adcb1-0739-4b20-816f-7854005eb227</id>
+      <hide/>
+    </armor>
+  </armors>
 </chummer>

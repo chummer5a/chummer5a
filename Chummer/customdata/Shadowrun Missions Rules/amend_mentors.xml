@@ -47,5 +47,11 @@
       <name>Tohu Wa-Bohu</name>
       <hide />
     </mentor>
+    <mentor>
+      <name>Raven (Alt)</name>
+      <choices>
+        <choice xpathfilter="bonus/specificskill/name = 'Summoning'" amendoperation="remove"/>
+      </choices>
+    </mentor>
   </mentors>
 </chummer>

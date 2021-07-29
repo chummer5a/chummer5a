@@ -21,18 +21,30 @@
 
 <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
-  <guid>62aeb98e-e61c-4d0e-b4ff-03e0469e6e2b</guid>
-  <version>1.4</version>
+  <guid>a63da33d-56ae-44f8-867e-6c756171af08</guid>
+  <version>1</version>
   <authors>
     <author>
       <name>SRM FAQ Committee</name>
       <main>true</main>
     </author>
     <author>
-      <name>Danny “Jayde Moon” Oliver</name>
+      <name>Danny "Jayde Moon" Oliver</name>
     </author>
     <author>
-      <name>Ray Rigel</name>
+      <name>Robert "Banshee" Volbrecht</name>
+    </author>
+    <author>
+      <name>Nick "DireRadiant" Van</name>
+    </author>
+    <author>
+      <name>Michael "Cadre Elite" Messmer</name>
+    </author>
+    <author>
+      <name>Grace "Pegasa" Lyttle</name>
+    </author>
+    <author>
+      <name>Francis Jose</name>
     </author>
     <author>
       <name>Brent Evans</name>
@@ -49,7 +61,7 @@
   </authors>
   <descriptions>
     <description>
-      <text>This ruleset implements the rules of Shadowrun Missions Chicago FAQ version 1.4.\n\nFor more information, please visit the Shadowrun Missions website and Discord channel (https://srmissionsonline.com/) or its Facebook page (https://www.facebook.com/SRMissions/).</text>
+      <text>This ruleset implements only the prices and availabilities for animals as purchasable pets according to the stats outlined in Shadowrun Missions Combined FAQ version 1.3. It is not required when playing with Shadowrun Missions' rules.</text>
       <lang>en-us</lang>
     </description>
   </descriptions>

@@ -30,10 +30,13 @@
       <name>Splintered State</name>
       <hide />
     </book>
+    <!--
+    Note: While Bloody Business is not allowed, the Body Sculpt adept power explicitly is allowed, and that is the only content from this book in Chummer5a
     <book>
       <name>Bloody Business</name>
       <hide />
     </book>
+    -->
     <book>
       <name>Shadows In Focus: Sioux Nation: Counting Coup</name>
       <hide />
@@ -68,7 +71,12 @@
     </book>
     <book>
       <name>No Future</name>
-      <!-- Note: this is for 6e -->
+      <!-- Note: this is for 6e only per SRM -->
+      <hide />
+    </book>
+    <book>
+      <name>Krime Katalog</name>
+      <!-- Note: this is for 6e only per SRM -->
       <hide />
     </book>
     <!-- End Region -->
@@ -115,6 +123,10 @@
     </book>
     <book>
       <name>Datapuls Verschlusssache (German-exclusive)</name>
+      <hide />
+    </book>
+    <book>
+      <name>Grimmes Erwachen (German-exclusive)</name>
       <hide />
     </book>
     <!-- End Region -->
