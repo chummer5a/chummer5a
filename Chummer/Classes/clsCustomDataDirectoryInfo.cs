@@ -117,7 +117,7 @@ namespace Chummer
                     objXmlNode.TryGetStringFieldQuickly("name", ref authorName);
                     objXmlNode.TryGetBoolFieldQuickly("main", ref isMain);
 
-                    if (!string.IsNullOrEmpty(authorName))
+                    if (!string.IsNullOrEmpty(authorName) && !_authorDictionary.ContainsKey(authorName))
                         //Maybe a stupid idea? But who would add two authors with the same name anyway?
                         _authorDictionary.Add(authorName, isMain);
                 }
