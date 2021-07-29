@@ -3165,8 +3165,8 @@
       <conceal>8</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
-      <damage>As Grenade</damage>
-      <ap>As Grenade</ap>
+      <damage>Grenade</damage>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>2(m)/6(c)</ammo>
@@ -4918,7 +4918,7 @@
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>Missile</damage>
-      <ap>-</ap>
+      <ap>Missile</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(ml)</ammo>
@@ -4972,7 +4972,7 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Missile</damage>
-      <ap>-</ap>
+      <ap>Missile</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>2(ml)</ammo>
@@ -7081,7 +7081,7 @@
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
-      <ap>-</ap>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>6(m)</ammo>
@@ -7112,7 +7112,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
-      <ap>-</ap>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>6(c)</ammo>
@@ -7143,7 +7143,7 @@
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
-      <ap>-</ap>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>6(c)</ammo>
@@ -10248,7 +10248,7 @@
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
-      <ap>-</ap>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>6(m)</ammo>
@@ -11533,7 +11533,7 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
-      <ap>-</ap>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>4(m)</ammo>
@@ -11782,7 +11782,7 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
-      <ap>-</ap>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>8(m)</ammo>
@@ -13984,7 +13984,7 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>Missile</damage>
-      <ap>-</ap>
+      <ap>Missile</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(ml)</ammo>
@@ -14002,7 +14002,7 @@
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>Missile</damage>
-      <ap>-</ap>
+      <ap>Missile</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1(ml)</ammo>
@@ -14410,7 +14410,7 @@
       <accuracy>5</accuracy>
       <reach>0</reach>
       <damage>Grenade</damage>
-      <ap>-</ap>
+      <ap>Grenade</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>6(c)</ammo>
