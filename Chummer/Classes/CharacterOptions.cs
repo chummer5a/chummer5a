@@ -105,7 +105,7 @@ namespace Chummer
         private bool _blnUsePointsOnBrokenGroups;
         private string _strContactPointsExpression = "{CHAUnaug} * 3";
         private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
-        private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000";
+        private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnemyKarmaQualityLimit = true;
         private string _strEssenceFormat = "#,0.00";
@@ -886,7 +886,12 @@ namespace Chummer
             if (!objXmlNode.TryGetStringFieldQuickly("chargenkarmatonuyenexpression", ref _strChargenKarmaToNuyenExpression))
             {
                 // Legacy shim
-                _strChargenKarmaToNuyenExpression = "{Karma} * " + _decNuyenPerBPWftM.ToString(GlobalOptions.InvariantCultureInfo);
+                _strChargenKarmaToNuyenExpression = "{Karma} * " + _decNuyenPerBPWftM.ToString(GlobalOptions.InvariantCultureInfo) + " + {PriorityNuyen}";
+            }
+            // A very hacky legacy shim, but also works as a bit of a sanity check
+            else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+            {
+                _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
             }
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
@@ -2031,6 +2036,11 @@ namespace Chummer
                 if (_strChargenKarmaToNuyenExpression != strNewValue)
                 {
                     _strChargenKarmaToNuyenExpression = strNewValue;
+                    // A safety check to make sure that we always still account for Priority-given Nuyen
+                    if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                    {
+                        _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                    }
                     OnPropertyChanged();
                 }
             }

@@ -1279,7 +1279,7 @@ namespace Chummer
 
                 string strContactPointsExpression = _objCharacterOptions.ContactPointsExpression;
                 string strKnowledgePointsExpression = _objCharacterOptions.KnowledgePointsExpression;
-                string strNuyenExpression = _objCharacterOptions.ChargenKarmaToNuyenExpression.Replace("{Karma}", "0");
+                string strNuyenExpression = _objCharacterOptions.ChargenKarmaToNuyenExpression.Replace("{Karma}", "0").Replace("{PriorityNuyen}", "0");
                 if (string.IsNullOrEmpty(strContactPointsExpression) && string.IsNullOrEmpty(strKnowledgePointsExpression) && string.IsNullOrEmpty(strNuyenExpression))
                     return true;
                 foreach (string strCharAttributeName in AttributeSection.AttributeStrings)

@@ -13801,7 +13801,9 @@ namespace Chummer
             lblAttributesAug.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesAug"));
             lblAttributesMetatype.SetToolTip(LanguageManager.GetString("Tip_CommonAttributesMetatypeLimits"));
             lblNuyen.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_CommonNuyen"),
-                CharacterObjectOptions.ChargenKarmaToNuyenExpression.Replace("{Karma}", LanguageManager.GetString("String_Karma"))));
+                CharacterObjectOptions.ChargenKarmaToNuyenExpression
+                    .Replace("{Karma}", LanguageManager.GetString("String_Karma"))
+                    .Replace("{PriorityNuyen}", LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen"))));
             // Armor Tab.
             chkArmorEquipped.SetToolTip(LanguageManager.GetString("Tip_ArmorEquipped"));
             // Weapon Tab.
@@ -13824,9 +13826,15 @@ namespace Chummer
             lblBuildPrimaryAttributes.SetToolTip(LanguageManager.GetString("Tip_CommonAttributes"));
             lblBuildPositiveQualities.SetToolTip(LanguageManager.GetString("Tip_BuildPositiveQualities"));
             lblBuildNegativeQualities.SetToolTip(LanguageManager.GetString("Tip_BuildNegativeQualities"));
-            lblBuildContacts.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_CommonContacts"), CharacterObjectOptions.KarmaContact.ToString(GlobalOptions.CultureInfo)));
+            lblBuildContacts.SetToolTip(string.Format(GlobalOptions.CultureInfo,
+                LanguageManager.GetString("Tip_CommonContacts"),
+                CharacterObjectOptions.KarmaContact.ToString(GlobalOptions.CultureInfo)));
             lblBuildEnemies.SetToolTip(LanguageManager.GetString("Tip_CommonEnemies"));
-            lblBuildNuyen.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_CommonNuyen"), CharacterObjectOptions.ChargenKarmaToNuyenExpression.Replace("{Karma}", LanguageManager.GetString("String_Karma"))));
+            lblBuildNuyen.SetToolTip(string.Format(GlobalOptions.CultureInfo,
+                LanguageManager.GetString("Tip_CommonNuyen"),
+                CharacterObjectOptions.ChargenKarmaToNuyenExpression
+                    .Replace("{Karma}", LanguageManager.GetString("String_Karma"))
+                    .Replace("{PriorityNuyen}", LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen"))));
             lblBuildSkillGroups.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_SkillsSkillGroups"), CharacterObjectOptions.KarmaImproveSkillGroup.ToString(GlobalOptions.CultureInfo)));
             lblBuildActiveSkills.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_SkillsActiveSkills"), CharacterObjectOptions.KarmaImproveActiveSkill.ToString(GlobalOptions.CultureInfo), CharacterObjectOptions.KarmaSpecialization.ToString(GlobalOptions.CultureInfo)));
             lblBuildKnowledgeSkills.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_SkillsKnowledgeSkills"), CharacterObjectOptions.KarmaImproveKnowledgeSkill.ToString(GlobalOptions.CultureInfo), CharacterObjectOptions.KarmaKnowledgeSpecialization.ToString(GlobalOptions.CultureInfo)));

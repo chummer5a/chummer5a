@@ -910,7 +910,7 @@ namespace Chummer
             this.txtNuyenExpression.Name = "txtNuyenExpression";
             this.txtNuyenExpression.Size = new System.Drawing.Size(180, 20);
             this.txtNuyenExpression.TabIndex = 33;
-            this.txtNuyenExpression.Text = "{Karma} * 2000";
+            this.txtNuyenExpression.Text = "{Karma} * 2000 + {PriorityNuyen}";
             this.txtNuyenExpression.TextChanged += new System.EventHandler(this.txtNuyenExpression_TextChanged);
             // 
             // lblContactPoints

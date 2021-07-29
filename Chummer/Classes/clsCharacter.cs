@@ -12948,8 +12948,7 @@ namespace Chummer
                 if (_decCachedTotalStartingNuyen == decimal.MinValue)
                 {
                     decimal decFromKarma = CalculateStartingNuyenFromKarma(Math.Min(NuyenBP, TotalNuyenMaximumBP));
-                    _decCachedTotalStartingNuyen = decFromKarma + StartingNuyen +
-                                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen);
+                    _decCachedTotalStartingNuyen = decFromKarma + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen);
                 }
 
                 return _decCachedTotalStartingNuyen;
@@ -12959,8 +12958,9 @@ namespace Chummer
         private decimal CalculateStartingNuyenFromKarma(decimal decKarma)
         {
             decimal decFromKarma = 0.0m;
-            string strExpression = Options.ChargenKarmaToNuyenExpression.Replace("{Karma}",
-                decKarma.ToString(GlobalOptions.InvariantCultureInfo));
+            string strExpression = Options.ChargenKarmaToNuyenExpression
+                .Replace("{Karma}", decKarma.ToString(GlobalOptions.InvariantCultureInfo))
+                .Replace("{PriorityNuyen}", StartingNuyen.ToString(GlobalOptions.InvariantCultureInfo));
             if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
             {
                 StringBuilder objValue = new StringBuilder(strExpression);
