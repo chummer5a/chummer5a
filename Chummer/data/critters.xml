@@ -26388,7 +26388,9 @@
       <essmin>0</essmin>
       <essmax>6</essmax>
       <essaug>6</essaug>
-      <movement>10/60</movement>
+      <walk>2/1/0</walk>
+      <run>6/0/0</run>
+      <sprint>4/1/0</sprint>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -26400,7 +26402,7 @@
         <enabletab>
           <name>critter</name>
         </enabletab>
-        <initiativepass>2</initiativepass>
+        <initiativepass>1</initiativepass>
       </bonus>
       <powers>
         <power>Compulsion</power>
@@ -26408,20 +26410,17 @@
         <power select="Thermographic Vision">Enhanced Senses</power>
         <power>Movement</power>
         <power select="Mask">Innate Spell</power>
-        <power select="Claws/Bite: DV 5P, AP -1">Natural Weapon</power>
-        <power select="Sunlight, Mild">Allergy</power>
+        <power select="Claws/Bite: DV 8P, AP -1">Natural Weapon</power>
       </powers>
       <skills>
-        <skill rating="4">Infiltration</skill>
+        <skill rating="5">Sneaking</skill>
         <skill rating="4">Perception</skill>
-        <skill rating="3">Running</skill>
-        <skill rating="3">Shadowing</skill>
-        <skill rating="2">Spellcasting</skill>
-        <skill rating="4">Tracking</skill>
-        <skill rating="5">Unarmed Combat</skill>
+        <skill rating="1">Running</skill>
+        <skill rating="5">Tracking</skill>
+        <skill rating="7">Unarmed Combat</skill>
       </skills>
-      <source>RW</source>
-      <page>153</page>
+      <source>SW</source>
+      <page>14</page>
     </metatype>
     <metatype>
       <id>754ee2e6-e802-4acf-9660-d28c82483b53</id>

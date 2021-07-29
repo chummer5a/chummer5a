@@ -269,5 +269,10 @@
       <name>Grimmes Erwachen (German-exclusive)</name>
       <code>GE</code>
     </book>
+    <book>
+      <id>775703af-df57-4ee2-b8e7-c6b829b80539</id>
+      <name>Sprawl Wilds</name>
+      <code>SW</code>
+    </book>
   </books>
 </chummer>
