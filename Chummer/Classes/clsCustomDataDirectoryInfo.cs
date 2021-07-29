@@ -407,19 +407,15 @@ namespace Chummer
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterOptions are opened.
                 if (_strDisplayAuthors == null)
                 {
-                    string[] authorsList = new string[AuthorDictionary.Count];
-                    int i = 0;
+                    StringBuilder sbdDisplayAuthors = new StringBuilder();
                     foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
                     {
-                        string formattedName = kvp.Key;
-
-                        if (kvp.Value)
-                            formattedName = string.Format(GlobalOptions.CultureInfo, kvp.Key, LanguageManager.GetString("String_IsMainAuthor"));
-
-                        authorsList[i] = formattedName;
-                        i++;
+                        sbdDisplayAuthors.AppendLine(kvp.Value
+                            ? string.Format(GlobalOptions.CultureInfo, kvp.Key,
+                                LanguageManager.GetString("String_IsMainAuthor"))
+                            : kvp.Key);
                     }
-                    _strDisplayAuthors = string.Join("," + LanguageManager.GetString("String_Space"), authorsList);
+                    _strDisplayAuthors = sbdDisplayAuthors.ToString().Trim();
                 }
 
                 return _strDisplayAuthors;

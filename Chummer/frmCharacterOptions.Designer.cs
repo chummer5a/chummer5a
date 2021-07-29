@@ -3655,14 +3655,14 @@ namespace Chummer
             this.tlpDirectoryInfoLeft.Margin = new System.Windows.Forms.Padding(0);
             this.tlpDirectoryInfoLeft.Name = "tlpDirectoryInfoLeft";
             this.tlpDirectoryInfoLeft.RowCount = 2;
-            this.tlpDirectoryInfoLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDirectoryInfoLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpDirectoryInfoLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDirectoryInfoLeft.Size = new System.Drawing.Size(237, 139);
             this.tlpDirectoryInfoLeft.TabIndex = 14;
             // 
             // lblDirectoryNameLabel
             // 
-            this.lblDirectoryNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDirectoryNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDirectoryNameLabel.AutoSize = true;
             this.lblDirectoryNameLabel.Location = new System.Drawing.Point(10, 6);
             this.lblDirectoryNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -3676,7 +3676,7 @@ namespace Chummer
             // lblDirectoryVersion
             // 
             this.lblDirectoryVersion.AutoSize = true;
-            this.lblDirectoryVersion.Location = new System.Drawing.Point(54, 31);
+            this.lblDirectoryVersion.Location = new System.Drawing.Point(54, 120);
             this.lblDirectoryVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDirectoryVersion.Name = "lblDirectoryVersion";
             this.lblDirectoryVersion.Size = new System.Drawing.Size(93, 13);
@@ -3687,7 +3687,6 @@ namespace Chummer
             // 
             // lblDirectoryName
             // 
-            this.lblDirectoryName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDirectoryName.AutoSize = true;
             this.lblDirectoryName.Location = new System.Drawing.Point(54, 6);
             this.lblDirectoryName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -3702,7 +3701,7 @@ namespace Chummer
             // 
             this.lblDirectoryVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDirectoryVersionLabel.AutoSize = true;
-            this.lblDirectoryVersionLabel.Location = new System.Drawing.Point(3, 31);
+            this.lblDirectoryVersionLabel.Location = new System.Drawing.Point(3, 120);
             this.lblDirectoryVersionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDirectoryVersionLabel.Name = "lblDirectoryVersionLabel";
             this.lblDirectoryVersionLabel.Size = new System.Drawing.Size(45, 13);
