@@ -1158,7 +1158,8 @@ namespace Chummer
 
             // Karma options.
             nudMetatypeCostsKarmaMultiplier.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.MetatypeCostsKarmaMultiplier));
-            nudKarmaNuyenPer.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenPerBP));
+            nudKarmaNuyenPerWftM.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenPerBPWftM));
+            nudKarmaNuyenPerWftP.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.NuyenPerBPWftP));
             nudKarmaAttribute.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaAttribute));
             nudKarmaQuality.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaQuality));
             nudKarmaSpecialization.DoDataBinding("Value", _objCharacterOptions, nameof(CharacterOptions.KarmaSpecialization));

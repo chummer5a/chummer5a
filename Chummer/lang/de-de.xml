@@ -3905,10 +3905,6 @@
             <text>Gliedmaßen für Standard-Charaktere:</text>
         </string>
         <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>Nuyen pro Generierungspunkt:</text>
-        </string>
-        <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
             <text>Automatische Updates</text>
         </string>

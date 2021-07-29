@@ -6563,12 +6563,29 @@ namespace Chummer
                 }
 
                 // Starting Nuyen karma value
-                intTemp = (StartingNuyen / Options.NuyenPerBP).StandardRound();
-                if(intTemp != 0)
+                if (StartingNuyen != 0)
                 {
-                    sbdMessage.Append(Environment.NewLine + LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen", strLanguage) + strColonCharacter
-                                      + strSpace + intTemp.ToString(GlobalOptions.CultureInfo) + strSpace + strKarmaString);
-                    intReturn += intTemp;
+                    intTemp = 0;
+                    // This looks horrible, but we cannot use binary search or calculate karma value directly because XPath expressions are so free-form
+                    // The only option is to loop through every possible Karma value until we find the lowest one that gives more nuyen than Priority gives
+                    for (int i = 1; i < int.MaxValue; ++i)
+                    {
+                        decimal decLoopNuyen = CalculateStartingNuyenFromKarma(i);
+                        if (decLoopNuyen > StartingNuyen)
+                        {
+                            intTemp = i - 1;
+                            break;
+                        }
+                    }
+                    if (intTemp != 0)
+                    {
+                        sbdMessage.Append(Environment.NewLine +
+                                          LanguageManager.GetString("Checkbox_CreatePACKSKit_StartingNuyen",
+                                              strLanguage) + strColonCharacter
+                                          + strSpace + intTemp.ToString(GlobalOptions.CultureInfo) + strSpace +
+                                          strKarmaString);
+                        intReturn += intTemp;
+                    }
                 }
             }
 
@@ -12930,30 +12947,35 @@ namespace Chummer
             {
                 if (_decCachedTotalStartingNuyen == decimal.MinValue)
                 {
-                    decimal decFromKarma = 0.0m;
-                    string strExpression = Options.ChargenKarmaToNuyenExpression.Replace("{Karma}",
-                        Math.Min(NuyenBP, TotalNuyenMaximumBP).ToString(GlobalOptions.InvariantCultureInfo));
-                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                    {
-                        StringBuilder objValue = new StringBuilder(strExpression);
-                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
-
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        object objProcess =
-                            CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
-                        if (blnIsSuccess)
-                            decFromKarma = Convert.ToDecimal((double) objProcess);
-                    }
-                    else
-                        decimal.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
-                            out decFromKarma);
-
+                    decimal decFromKarma = CalculateStartingNuyenFromKarma(Math.Min(NuyenBP, TotalNuyenMaximumBP));
                     _decCachedTotalStartingNuyen = decFromKarma + StartingNuyen +
                                                    ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen);
                 }
 
                 return _decCachedTotalStartingNuyen;
             }
+        }
+
+        private decimal CalculateStartingNuyenFromKarma(decimal decKarma)
+        {
+            decimal decFromKarma = 0.0m;
+            string strExpression = Options.ChargenKarmaToNuyenExpression.Replace("{Karma}",
+                decKarma.ToString(GlobalOptions.InvariantCultureInfo));
+            if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+            {
+                StringBuilder objValue = new StringBuilder(strExpression);
+                AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                object objProcess =
+                    CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                if (blnIsSuccess)
+                    decFromKarma = Convert.ToDecimal((double)objProcess);
+            }
+            else
+                decimal.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                    out decFromKarma);
+            return decFromKarma;
         }
 
         public string DisplayTotalStartingNuyen =>

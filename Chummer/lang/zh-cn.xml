@@ -4349,10 +4349,6 @@
             <text>通常的角色肢体</text>
         </string>
         <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>每点业力能兑换的新円：</text>
-        </string>
-        <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
             <text>自动更新</text>
         </string>

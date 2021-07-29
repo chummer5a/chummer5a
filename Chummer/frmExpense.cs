@@ -61,9 +61,11 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBP != 0)
+            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterOptions.NuyenPerBPWftP != 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_KarmaNuyenExchange"), LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_KarmaNuyenExchange"),
+                    LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
             }
             else
             {
@@ -192,10 +194,11 @@ namespace Chummer
             {
                 txtDescription.Text = KarmaNuyenExchangeString;
             }
+
             if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
             {
-                nudAmount.Increment = _objCharacterOptions.NuyenPerBP;
-                nudAmount.Value = _objCharacterOptions.NuyenPerBP;
+                nudAmount.Increment = _objCharacterOptions.NuyenPerBPWftP;
+                nudAmount.Value = _objCharacterOptions.NuyenPerBPWftP;
             }
             else
             {

@@ -97,6 +97,7 @@ Application Changes:
 - In Create mode, the sidebar section that tracks the number of spells, rituals, and preparations learned with priority points now properly reflects the maximum number of each as points are spent in either of the other categories.
 - Added support for Cyberware using the 'sameparent' requirement, in the same manner as armor mods. This allows for checking if the parent of a piece of cyberware (ie cyberlimb) already has another piece of cyberware installed.
 - Armor and clothing are now marked as devices with Matrix attributes.
+- Split up the option for how much Nuyen is gained per Karma spent after character creation into separate Working for the Man and Working for the People values.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -274,6 +275,11 @@ Changed/New Strings:
 - Label_CharacterOptions_NuyenExpression
 - String_Chummer5a
 - Label_DirectoryPath
+- Label_Options_WftM_Nuyen
+- Label_Options_WftP_Nuyen
+
+Deleted Strings:
+- Label_Options_NuyenPerBP
 
 Build 214
 Application Fixes:

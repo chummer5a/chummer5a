@@ -28,7 +28,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -178,7 +179,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -328,7 +330,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -478,7 +481,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -628,7 +632,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -778,7 +783,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -928,7 +934,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -1079,7 +1086,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -1230,7 +1238,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -1381,7 +1390,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -1537,7 +1547,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -1694,7 +1705,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -1851,7 +1863,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -2036,7 +2049,8 @@
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
       <printexpenses>False</printexpenses>
       <printfreeexpenses>True</printfreeexpenses>
-      <nuyenperbp>2000</nuyenperbp>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>

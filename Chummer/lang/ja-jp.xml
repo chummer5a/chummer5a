@@ -4417,10 +4417,6 @@
             <text>通常のキャラクターの四肢:</text>
         </string>
         <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>1BPあたりの新円:</text>
-        </string>
-        <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
             <text>自動的にアップデート</text>
         </string>

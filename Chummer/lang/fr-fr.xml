@@ -5077,10 +5077,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Nb de membres standard :</text>
     </string>
     <string>
-      <key>Label_Options_NuyenPerBP</key>
-      <text>Nuyen par PC :</text>
-    </string>
-    <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
       <text>Mises à jour automatiques</text>
     </string>

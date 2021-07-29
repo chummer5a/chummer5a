@@ -4258,7 +4258,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                    objExpense.Create(frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBPWftP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
@@ -4267,7 +4267,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBP;
+                    CharacterObject.Nuyen += frmNewExpense.Amount * -CharacterObjectOptions.NuyenPerBPWftP;
                 }
             }
 
@@ -4312,7 +4312,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
+                    objExpense.Create(frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBPWftM, frmNewExpense.Reason, ExpenseType.Nuyen, frmNewExpense.SelectedDate);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
@@ -4321,7 +4321,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Nuyen total.
-                    CharacterObject.Nuyen += frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBP;
+                    CharacterObject.Nuyen += frmNewExpense.Amount * CharacterObjectOptions.NuyenPerBPWftM;
                 }
             }
 
@@ -4365,7 +4365,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP).ToInt32();
+                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBPWftM).ToInt32();
                     objExpense.Create(-intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);
@@ -4420,7 +4420,7 @@ namespace Chummer
                 {
                     // Create the Expense Log Entry.
                     objExpense = new ExpenseLogEntry(CharacterObject);
-                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBP).ToInt32();
+                    int intAmount = (frmNewExpense.Amount / CharacterObjectOptions.NuyenPerBPWftP).ToInt32();
                     objExpense.Create(intAmount, frmNewExpense.Reason, ExpenseType.Karma, frmNewExpense.SelectedDate, frmNewExpense.Refund);
                     objExpense.ForceCareerVisible = frmNewExpense.ForceCareerVisible;
                     CharacterObject.ExpenseEntries.AddWithSort(objExpense);

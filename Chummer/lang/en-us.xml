@@ -7091,10 +7091,6 @@
       <text>Limb Count for Cyberlimbs:</text>
     </string>
     <string>
-      <key>Label_Options_NuyenPerBP</key>
-      <text>Nuyen per Karma</text>
-    </string>
-    <string>
       <key>Label_Options_DpiScalingMode</key>
       <text>Display Scaling Mode:</text>
     </string>
@@ -7275,6 +7271,14 @@
       <text>per Karma</text>
     </string>
     <string>
+      <key>Label_Options_PerKarmaSpent</key>
+      <text>per Karma Spent</text>
+    </string>
+    <string>
+      <key>Label_Options_PerKarmaGained</key>
+      <text>per Karma Gained</text>
+    </string>
+    <string>
       <key>Label_Options_ConnectionLoyalty</key>
       <text> × (Connection + Loyalty)</text>
     </string>
@@ -7325,6 +7329,14 @@
     <string>
       <key>Label_Options_Nuyen</key>
       <text>Nuyen</text>
+    </string>
+    <string>
+      <key>Label_Options_WftM_Nuyen</key>
+      <text>Working for the Man Nuyen Gained</text>
+    </string>
+    <string>
+      <key>Label_Options_WftP_Nuyen</key>
+      <text>Working for the People Nuyen Spent</text>
     </string>
     <string>
       <key>Label_Options_Contacts</key>

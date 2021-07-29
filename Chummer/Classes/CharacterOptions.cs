@@ -113,7 +113,8 @@ namespace Chummer
         private int _intDroneArmorMultiplier = 2;
         private int _intLimbCount = 6;
         private int _intMetatypeCostMultiplier = 1;
-        private decimal _decNuyenPerBP = 2000.0m;
+        private decimal _decNuyenPerBPWftM = 2000.0m;
+        private decimal _decNuyenPerBPWftP = 2000.0m;
         private int _intRestrictedCostMultiplier = 1;
         private bool _blnAutomaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
@@ -463,8 +464,10 @@ namespace Chummer
                     objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString(GlobalOptions.InvariantCultureInfo));
                     // <spiritforcebasedontotalmag />
                     objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <nuyenperbp />
-                    objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenperbpwftm />
+                    objWriter.WriteElementString("nuyenperbpwftm", _decNuyenPerBPWftM.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenperbpwftp />
+                    objWriter.WriteElementString("nuyenperbpwftp", _decNuyenPerBPWftP.ToString(GlobalOptions.InvariantCultureInfo));
                     // <UnarmedImprovementsApplyToWeapons />
                     objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowinitiationincreatemode />
@@ -830,7 +833,13 @@ namespace Chummer
             // Spirit Force Based on Total MAG.
             objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
             // Nuyen per Build Point
-            objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
+            if (!objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftm", ref _decNuyenPerBPWftM))
+            {
+                objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBPWftM);
+                _decNuyenPerBPWftP = _decNuyenPerBPWftM;
+            }
+            else
+                objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
             // Knucks use Unarmed
             objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
             // Allow Initiation in Create Mode
@@ -877,7 +886,7 @@ namespace Chummer
             if (!objXmlNode.TryGetStringFieldQuickly("chargenkarmatonuyenexpression", ref _strChargenKarmaToNuyenExpression))
             {
                 // Legacy shim
-                _strChargenKarmaToNuyenExpression = "{Karma} * " + _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo);
+                _strChargenKarmaToNuyenExpression = "{Karma} * " + _decNuyenPerBPWftM.ToString(GlobalOptions.InvariantCultureInfo);
             }
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
@@ -1531,7 +1540,8 @@ namespace Chummer
             GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 
             // Nuyen per Build Point
-            GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp", string.Empty, true);
+            GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBPWftM, "nuyenperbp", string.Empty, true);
+            _decNuyenPerBPWftP = _decNuyenPerBPWftM;
 
             // No Single Armor Encumbrance
             GlobalOptions.LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance", string.Empty, true);
@@ -1758,16 +1768,32 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Amount of Nuyen gained per BP spent.
+        /// Amount of Nuyen gained per BP spent when Working for the Man.
         /// </summary>
-        public decimal NuyenPerBP
+        public decimal NuyenPerBPWftM
         {
-            get => _decNuyenPerBP;
+            get => _decNuyenPerBPWftM;
             set
             {
-                if (_decNuyenPerBP != value)
+                if (_decNuyenPerBPWftM != value)
                 {
-                    _decNuyenPerBP = value;
+                    _decNuyenPerBPWftM = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nuyen spent per BP gained when Working for the People.
+        /// </summary>
+        public decimal NuyenPerBPWftP
+        {
+            get => _decNuyenPerBPWftP;
+            set
+            {
+                if (_decNuyenPerBPWftP != value)
+                {
+                    _decNuyenPerBPWftP = value;
                     OnPropertyChanged();
                 }
             }
