@@ -256,8 +256,13 @@
     </book>
     <book>
       <id>2ca3c7ce-3cdb-4bf2-b430-32ecef09fda1</id>
-      <name>Shadowrun Missions Season 8</name>
-      <code>SRM8</code>
+      <name>Shadowrun Missions 0803: 10 Block Tango</name>
+      <code>SRM0803</code>
+    </book>
+    <book>
+      <id>9d69b598-4f46-46d0-be44-dd3fd8a915b0</id>
+      <name>Shadowrun Missions 0804: Dirty Laundry</name>
+      <code>SRM0803</code>
     </book>
     <book>
       <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>

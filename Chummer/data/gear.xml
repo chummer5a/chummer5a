@@ -12484,11 +12484,23 @@
     </gear>
     <gear>
       <id>4235dd3f-1865-4f7b-b2e5-e43fdcbd94de</id>
-      <name>KEV</name>
+      <name>KEV Ammunition</name>
       <category>Toxins</category>
       <rating>0</rating>
-      <source>SRM8</source>
-      <page>0</page>
+      <source>SRM0803</source>
+      <page>8</page>
+      <avail>10</avail>
+      <cost>20</cost>
+    </gear>
+    <!-- A hacky way of making sure people who are only using one of the two SRM books still get access to KEV.
+    Also lines up with how the compound has different names in those two books (yay, CGL quality control!). -->
+    <gear>
+      <id>8be8c24a-57d6-4341-bc49-550a0c937c2e</id>
+      <name>KE-V</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>SRM0804</source>
+      <page>11</page>
       <avail>10</avail>
       <cost>20</cost>
     </gear>
