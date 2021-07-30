@@ -10082,13 +10082,24 @@ namespace Chummer
                         }
 
                         // gpbWeaponsMatrix
-                        lblWeaponDeviceRating.Text = objWeapon.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                        int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                         lblWeaponAttack.Text = objWeapon.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
                         lblWeaponSleaze.Text = objWeapon.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
                         lblWeaponDataProcessing.Text = objWeapon.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
                         lblWeaponFirewall.Text = objWeapon.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
-                        chkWeaponHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
+                        chkWeaponActiveCommlink.Visible = objWeapon.IsCommlink;
                         chkWeaponActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        if (CharacterObject.IsAI)
+                        {
+                            chkWeaponHomeNode.Visible = true;
+                            chkWeaponHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
+                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Enabled &&
+                                                        objWeapon.GetTotalMatrixAttribute("Program Limit") >=
+                                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        }
+                        else
+                            chkWeaponHomeNode.Visible = false;
                         break;
                     }
                 case WeaponAccessory objSelectedAccessory:
@@ -10279,13 +10290,24 @@ namespace Chummer
                         chkIncludedInWeapon.Visible = false;
 
                         // gpbWeaponsMatrix
-                        lblWeaponDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                        int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                         lblWeaponAttack.Text = objGear.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
                         lblWeaponSleaze.Text = objGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
                         lblWeaponDataProcessing.Text = objGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
                         lblWeaponFirewall.Text = objGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
-                        chkWeaponHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                        chkWeaponActiveCommlink.Visible = objGear.IsCommlink;
                         chkWeaponActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        if (CharacterObject.IsAI)
+                        {
+                            chkWeaponHomeNode.Visible = true;
+                            chkWeaponHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Enabled &&
+                                                        objGear.GetTotalMatrixAttribute("Program Limit") >=
+                                                        (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        }
+                        else
+                            chkWeaponHomeNode.Visible = false;
                         break;
                     }
                 default:
@@ -10379,13 +10401,24 @@ namespace Chummer
                 chkIncludedInArmor.Visible = false;
 
                 // gpbArmorMatrix
-                lblArmorDeviceRating.Text = objArmor.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                int intDeviceRating = objArmor.GetTotalMatrixAttribute("Device Rating");
+                lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                 lblArmorAttack.Text = objArmor.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
                 lblArmorSleaze.Text = objArmor.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
                 lblArmorDataProcessing.Text = objArmor.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
                 lblArmorFirewall.Text = objArmor.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
-                chkArmorHomeNode.Checked = objArmor.IsHomeNode(CharacterObject);
+                chkArmorActiveCommlink.Visible = objArmor.IsCommlink;
                 chkArmorActiveCommlink.Checked = objArmor.IsActiveCommlink(CharacterObject);
+                if (CharacterObject.IsAI)
+                {
+                    chkArmorHomeNode.Visible = true;
+                    chkArmorHomeNode.Checked = objArmor.IsHomeNode(CharacterObject);
+                    chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
+                                               objArmor.GetTotalMatrixAttribute("Program Limit") >=
+                                               (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                }
+                else
+                    chkArmorHomeNode.Visible = false;
             }
             else if (treArmor.SelectedNode?.Tag is ArmorMod objArmorMod)
             {
@@ -10485,13 +10518,24 @@ namespace Chummer
                         chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
 
                         // gpbArmorMatrix
-                        lblArmorDeviceRating.Text = objSelectedGear.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                        int intDeviceRating = objSelectedGear.GetTotalMatrixAttribute("Device Rating");
+                        lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                         lblArmorAttack.Text = objSelectedGear.GetTotalMatrixAttribute("Attack").ToString(GlobalOptions.CultureInfo);
                         lblArmorSleaze.Text = objSelectedGear.GetTotalMatrixAttribute("Sleaze").ToString(GlobalOptions.CultureInfo);
                         lblArmorDataProcessing.Text = objSelectedGear.GetTotalMatrixAttribute("Data Processing").ToString(GlobalOptions.CultureInfo);
                         lblArmorFirewall.Text = objSelectedGear.GetTotalMatrixAttribute("Firewall").ToString(GlobalOptions.CultureInfo);
-                        chkArmorHomeNode.Checked = objSelectedGear.IsHomeNode(CharacterObject);
+                        chkArmorActiveCommlink.Visible = objSelectedGear.IsCommlink;
                         chkArmorActiveCommlink.Checked = objSelectedGear.IsActiveCommlink(CharacterObject);
+                        if (CharacterObject.IsAI)
+                        {
+                            chkArmorHomeNode.Visible = true;
+                            chkArmorHomeNode.Checked = objSelectedGear.IsHomeNode(CharacterObject);
+                            chkArmorHomeNode.Enabled = chkArmorActiveCommlink.Enabled &&
+                                                       objSelectedGear.GetTotalMatrixAttribute("Program Limit") >=
+                                                       (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        }
+                        else
+                            chkArmorHomeNode.Visible = false;
                         break;
                     }
                     case Location objLocation:
@@ -10701,6 +10745,8 @@ namespace Chummer
                 int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                 lblGearDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                 objGear.RefreshMatrixAttributeCBOs(cboGearAttack, cboGearSleaze, cboGearDataProcessing, cboGearFirewall);
+                chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                chkGearActiveCommlink.Visible = objGear.IsCommlink;
                 if (CharacterObject.IsAI)
                 {
                     chkGearHomeNode.Visible = true;
@@ -10711,9 +10757,6 @@ namespace Chummer
                 }
                 else
                     chkGearHomeNode.Visible = false;
-                chkGearActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
-                chkGearActiveCommlink.Visible = objGear.IsCommlink;
-
                 treGear.SelectedNode.Text = objGear.CurrentDisplayName;
             }
             else

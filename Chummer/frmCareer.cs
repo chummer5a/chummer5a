@@ -11132,7 +11132,7 @@ namespace Chummer
                 return;
             if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink)) return;
 
-            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
+            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkArmorActiveCommlink.Checked);
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
