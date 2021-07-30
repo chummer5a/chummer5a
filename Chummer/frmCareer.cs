@@ -10927,7 +10927,20 @@ namespace Chummer
                 return;
             if (treArmor.SelectedNode?.Tag is IHasMatrixAttributes objCommlink)
             {
-                objCommlink.SetHomeNode(CharacterObject, chkGearHomeNode.Checked);
+                objCommlink.SetHomeNode(CharacterObject, chkArmorHomeNode.Checked);
+
+                IsCharacterUpdateRequested = true;
+                IsDirty = true;
+            }
+        }
+
+        private void chkWeaponHomeNode_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objCommlink)
+            {
+                objCommlink.SetHomeNode(CharacterObject, chkWeaponHomeNode.Checked);
 
                 IsCharacterUpdateRequested = true;
                 IsDirty = true;
@@ -11119,8 +11132,8 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink)) return;
-
+            if (!(treGear.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
+                return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkGearActiveCommlink.Checked);
             IsCharacterUpdateRequested = true;
             IsDirty = true;
@@ -11130,9 +11143,20 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink)) return;
-
+            if (!(treArmor.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
+                return;
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkArmorActiveCommlink.Checked);
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        private void chkWeaponActiveCommlink_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
+                return;
+            objSelectedCommlink.SetActiveCommlink(CharacterObject, chkWeaponActiveCommlink.Checked);
             IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
@@ -11141,14 +11165,10 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-
             if (!(treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
-
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkCyberwareActiveCommlink.Checked);
-
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -11156,14 +11176,10 @@ namespace Chummer
         {
             if (IsRefreshing)
                 return;
-
             if (!(treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objSelectedCommlink))
                 return;
-
             objSelectedCommlink.SetActiveCommlink(CharacterObject, chkCyberwareActiveCommlink.Checked);
-
             IsCharacterUpdateRequested = true;
-
             IsDirty = true;
         }
 
@@ -13571,13 +13587,13 @@ namespace Chummer
                         if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
                         {
                             List<ListItem> lstOverclocker = new List<ListItem>(5)
-                        {
-                            new ListItem("None", LanguageManager.GetString("String_None")),
-                            new ListItem("Attack", LanguageManager.GetString("String_Attack")),
-                            new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze")),
-                            new ListItem("Data Processing", LanguageManager.GetString("String_DataProcessing")),
-                            new ListItem("Firewall", LanguageManager.GetString("String_Firewall"))
-                        };
+                            {
+                                new ListItem("None", LanguageManager.GetString("String_None")),
+                                new ListItem("Attack", LanguageManager.GetString("String_Attack")),
+                                new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze")),
+                                new ListItem("Data Processing", LanguageManager.GetString("String_DataProcessing")),
+                                new ListItem("Firewall", LanguageManager.GetString("String_Firewall"))
+                            };
 
                             cboCyberwareOverclocker.BeginUpdate();
                             cboCyberwareOverclocker.PopulateWithListItems(lstOverclocker);
@@ -13886,8 +13902,23 @@ namespace Chummer
                         }
 
                         // gpbWeaponsMatrix
-                        lblWeaponDeviceRating.Text = objWeapon.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                        int intDeviceRating = objWeapon.GetTotalMatrixAttribute("Device Rating");
+                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                         objWeapon.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+
+                        chkWeaponActiveCommlink.Visible = objWeapon.IsCommlink;
+                        chkWeaponActiveCommlink.Checked = objWeapon.IsActiveCommlink(CharacterObject);
+                        if (CharacterObject.IsAI)
+                        {
+                            chkWeaponHomeNode.Visible = true;
+                            chkWeaponHomeNode.Checked = objWeapon.IsHomeNode(CharacterObject);
+                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Visible && objWeapon.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        }
+                        else
+                            chkWeaponHomeNode.Visible = false;
+
+                        cboWeaponOverclocker.Visible = false;
+                        lblWeaponOverclockerLabel.Visible = false;
                         break;
                     }
                 case WeaponAccessory objSelectedAccessory:
@@ -14081,8 +14112,46 @@ namespace Chummer
                         chkIncludedInWeapon.Visible = false;
 
                         // gpbWeaponsMatrix
-                        lblWeaponDeviceRating.Text = objGear.GetTotalMatrixAttribute("Device Rating").ToString(GlobalOptions.CultureInfo);
+                        int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
+                        lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
                         objGear.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
+
+                        chkWeaponActiveCommlink.Visible = objGear.IsCommlink;
+                        chkWeaponActiveCommlink.Checked = objGear.IsActiveCommlink(CharacterObject);
+                        if (CharacterObject.IsAI)
+                        {
+                            chkWeaponHomeNode.Visible = true;
+                            chkWeaponHomeNode.Checked = objGear.IsHomeNode(CharacterObject);
+                            chkWeaponHomeNode.Enabled = chkWeaponActiveCommlink.Visible && objGear.GetTotalMatrixAttribute("Program Limit") >= (CharacterObject.DEP.TotalValue > intDeviceRating ? 2 : 1);
+                        }
+                        else
+                            chkWeaponHomeNode.Visible = false;
+
+                        if (CharacterObject.Overclocker && objGear.Category == "Cyberdecks")
+                        {
+                            List<ListItem> lstOverclocker = new List<ListItem>(5)
+                            {
+                                new ListItem("None", LanguageManager.GetString("String_None")),
+                                new ListItem("Attack", LanguageManager.GetString("String_Attack")),
+                                new ListItem("Sleaze", LanguageManager.GetString("String_Sleaze")),
+                                new ListItem("Data Processing", LanguageManager.GetString("String_DataProcessing")),
+                                new ListItem("Firewall", LanguageManager.GetString("String_Firewall"))
+                            };
+
+                            cboWeaponOverclocker.BeginUpdate();
+                            cboWeaponOverclocker.PopulateWithListItems(lstOverclocker);
+                            cboWeaponOverclocker.SelectedValue = objGear.Overclocked;
+                            if (cboWeaponOverclocker.SelectedIndex == -1)
+                                cboWeaponOverclocker.SelectedIndex = 0;
+                            cboWeaponOverclocker.EndUpdate();
+                            cboWeaponOverclocker.Visible = true;
+                            lblWeaponOverclockerLabel.Visible = true;
+                        }
+                        else
+                        {
+                            cboWeaponOverclocker.Visible = false;
+                            lblWeaponOverclockerLabel.Visible = false;
+                        }
                         break;
                     }
                 default:
@@ -17441,6 +17510,16 @@ namespace Chummer
                 return;
             objCommlink.Overclocked = cboArmorOverclocker.SelectedValue.ToString();
             objCommlink.RefreshMatrixAttributeCBOs(cboArmorAttack, cboArmorSleaze, cboArmorDataProcessing, cboArmorFirewall);
+        }
+
+        private void cboWeaponOverclocker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsLoading || IsRefreshing || !CharacterObject.Overclocker)
+                return;
+            if (!(treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objCommlink))
+                return;
+            objCommlink.Overclocked = cboWeaponOverclocker.SelectedValue.ToString();
+            objCommlink.RefreshMatrixAttributeCBOs(cboWeaponGearAttack, cboWeaponGearSleaze, cboWeaponGearDataProcessing, cboWeaponGearFirewall);
         }
 
         private void cboCyberwareOverclocker_SelectedIndexChanged(object sender, EventArgs e)

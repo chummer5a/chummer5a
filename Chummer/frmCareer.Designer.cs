@@ -1357,6 +1357,11 @@ namespace Chummer
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.flpWeaponMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkWeaponHomeNode = new Chummer.ColorableCheckBox(this.components);
+            this.chkWeaponActiveCommlink = new Chummer.ColorableCheckBox(this.components);
+            this.lblWeaponOverclockerLabel = new System.Windows.Forms.Label();
+            this.cboWeaponOverclocker = new Chummer.ElasticComboBox();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1634,6 +1639,7 @@ namespace Chummer
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
             this.cmsWeaponMount.SuspendLayout();
+            this.flpWeaponMatrixCheckBoxes.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblTraditionSource
@@ -12960,7 +12966,7 @@ namespace Chummer
             this.tabWeapons.Location = new System.Drawing.Point(4, 22);
             this.tabWeapons.Name = "tabWeapons";
             this.tabWeapons.Padding = new System.Windows.Forms.Padding(3);
-            this.tabWeapons.Size = new System.Drawing.Size(184, 48);
+            this.tabWeapons.Size = new System.Drawing.Size(969, 605);
             this.tabWeapons.TabIndex = 2;
             this.tabWeapons.Tag = "Tab_Weapons";
             this.tabWeapons.Text = "Weapons";
@@ -12980,7 +12986,7 @@ namespace Chummer
             this.tlpWeapons.RowCount = 2;
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpWeapons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWeapons.Size = new System.Drawing.Size(178, 42);
+            this.tlpWeapons.Size = new System.Drawing.Size(963, 599);
             this.tlpWeapons.TabIndex = 227;
             // 
             // treWeapons
@@ -12996,7 +13002,7 @@ namespace Chummer
             this.treWeapons.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode21});
             this.treWeapons.ShowNodeToolTips = true;
-            this.treWeapons.Size = new System.Drawing.Size(50, 7);
+            this.treWeapons.Size = new System.Drawing.Size(302, 564);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
             this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
@@ -13012,10 +13018,10 @@ namespace Chummer
             this.flpWeapons.Controls.Add(this.tabWeaponMatrixCM);
             this.flpWeapons.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpWeapons.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpWeapons.Location = new System.Drawing.Point(56, 29);
+            this.flpWeapons.Location = new System.Drawing.Point(308, 29);
             this.flpWeapons.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeapons.Name = "flpWeapons";
-            this.flpWeapons.Size = new System.Drawing.Size(122, 13);
+            this.flpWeapons.Size = new System.Drawing.Size(655, 570);
             this.flpWeapons.TabIndex = 229;
             this.flpWeapons.WrapContents = false;
             // 
@@ -13968,7 +13974,9 @@ namespace Chummer
             this.tlpWeaponsMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpWeaponsMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
             this.tlpWeaponsMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpWeaponsMatrix.Controls.Add(this.chkWeaponWireless, 0, 0);
+            this.tlpWeaponsMatrix.Controls.Add(this.cboWeaponOverclocker, 1, 0);
+            this.tlpWeaponsMatrix.Controls.Add(this.lblWeaponOverclockerLabel, 0, 0);
+            this.tlpWeaponsMatrix.Controls.Add(this.flpWeaponMatrixCheckBoxes, 2, 0);
             this.tlpWeaponsMatrix.Controls.Add(this.lblWeaponFirewallLabel, 4, 1);
             this.tlpWeaponsMatrix.Controls.Add(this.lblWeaponDeviceRating, 0, 2);
             this.tlpWeaponsMatrix.Controls.Add(this.cboWeaponGearDataProcessing, 3, 2);
@@ -13995,7 +14003,7 @@ namespace Chummer
             this.chkWeaponWireless.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkWeaponWireless.AutoSize = true;
             this.chkWeaponWireless.DefaultColorScheme = true;
-            this.chkWeaponWireless.Location = new System.Drawing.Point(3, 4);
+            this.chkWeaponWireless.Location = new System.Drawing.Point(202, 3);
             this.chkWeaponWireless.Name = "chkWeaponWireless";
             this.chkWeaponWireless.Size = new System.Drawing.Size(66, 17);
             this.chkWeaponWireless.TabIndex = 213;
@@ -14581,7 +14589,7 @@ namespace Chummer
             this.tlpWeaponsButtons.Name = "tlpWeaponsButtons";
             this.tlpWeaponsButtons.RowCount = 1;
             this.tlpWeaponsButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpWeaponsButtons.Size = new System.Drawing.Size(178, 29);
+            this.tlpWeaponsButtons.Size = new System.Drawing.Size(312, 29);
             this.tlpWeaponsButtons.TabIndex = 230;
             // 
             // cmdAddWeapon
@@ -14592,7 +14600,7 @@ namespace Chummer
             this.cmdAddWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddWeapon.Location = new System.Drawing.Point(3, 3);
             this.cmdAddWeapon.Name = "cmdAddWeapon";
-            this.cmdAddWeapon.Size = new System.Drawing.Size(53, 23);
+            this.cmdAddWeapon.Size = new System.Drawing.Size(98, 23);
             this.cmdAddWeapon.SplitMenuStrip = this.cmsWeapon;
             this.cmdAddWeapon.TabIndex = 103;
             this.cmdAddWeapon.Tag = "Button_AddWeapon";
@@ -14605,9 +14613,9 @@ namespace Chummer
             this.cmdAddWeaponLocation.AutoSize = true;
             this.cmdAddWeaponLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddWeaponLocation.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdAddWeaponLocation.Location = new System.Drawing.Point(121, 3);
+            this.cmdAddWeaponLocation.Location = new System.Drawing.Point(211, 3);
             this.cmdAddWeaponLocation.Name = "cmdAddWeaponLocation";
-            this.cmdAddWeaponLocation.Size = new System.Drawing.Size(54, 23);
+            this.cmdAddWeaponLocation.Size = new System.Drawing.Size(98, 23);
             this.cmdAddWeaponLocation.TabIndex = 118;
             this.cmdAddWeaponLocation.Tag = "Button_AddLocation";
             this.cmdAddWeaponLocation.Text = "Add Location";
@@ -14620,9 +14628,9 @@ namespace Chummer
             this.cmdDeleteWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteWeapon.ContextMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteWeapon.Location = new System.Drawing.Point(62, 3);
+            this.cmdDeleteWeapon.Location = new System.Drawing.Point(107, 3);
             this.cmdDeleteWeapon.Name = "cmdDeleteWeapon";
-            this.cmdDeleteWeapon.Size = new System.Drawing.Size(53, 23);
+            this.cmdDeleteWeapon.Size = new System.Drawing.Size(98, 23);
             this.cmdDeleteWeapon.SplitMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.TabIndex = 55;
             this.cmdDeleteWeapon.Tag = "String_Delete";
@@ -20357,6 +20365,75 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
             // 
+            // flpWeaponMatrixCheckBoxes
+            // 
+            this.flpWeaponMatrixCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpWeaponMatrixCheckBoxes.AutoSize = true;
+            this.flpWeaponMatrixCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpWeaponsMatrix.SetColumnSpan(this.flpWeaponMatrixCheckBoxes, 3);
+            this.flpWeaponMatrixCheckBoxes.Controls.Add(this.chkWeaponHomeNode);
+            this.flpWeaponMatrixCheckBoxes.Controls.Add(this.chkWeaponActiveCommlink);
+            this.flpWeaponMatrixCheckBoxes.Controls.Add(this.chkWeaponWireless);
+            this.flpWeaponMatrixCheckBoxes.Location = new System.Drawing.Point(204, 1);
+            this.flpWeaponMatrixCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpWeaponMatrixCheckBoxes.Name = "flpWeaponMatrixCheckBoxes";
+            this.flpWeaponMatrixCheckBoxes.Size = new System.Drawing.Size(271, 23);
+            this.flpWeaponMatrixCheckBoxes.TabIndex = 216;
+            this.flpWeaponMatrixCheckBoxes.WrapContents = false;
+            // 
+            // chkWeaponHomeNode
+            // 
+            this.chkWeaponHomeNode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkWeaponHomeNode.AutoSize = true;
+            this.chkWeaponHomeNode.DefaultColorScheme = true;
+            this.chkWeaponHomeNode.Location = new System.Drawing.Point(3, 3);
+            this.chkWeaponHomeNode.Name = "chkWeaponHomeNode";
+            this.chkWeaponHomeNode.Size = new System.Drawing.Size(83, 17);
+            this.chkWeaponHomeNode.TabIndex = 114;
+            this.chkWeaponHomeNode.Tag = "Checkbox_HomeNode";
+            this.chkWeaponHomeNode.Text = "Home Node";
+            this.chkWeaponHomeNode.UseVisualStyleBackColor = true;
+            this.chkWeaponHomeNode.Visible = false;
+            this.chkWeaponHomeNode.CheckedChanged += new System.EventHandler(this.chkWeaponHomeNode_CheckedChanged);
+            // 
+            // chkWeaponActiveCommlink
+            // 
+            this.chkWeaponActiveCommlink.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkWeaponActiveCommlink.AutoSize = true;
+            this.chkWeaponActiveCommlink.DefaultColorScheme = true;
+            this.chkWeaponActiveCommlink.Location = new System.Drawing.Point(92, 3);
+            this.chkWeaponActiveCommlink.Name = "chkWeaponActiveCommlink";
+            this.chkWeaponActiveCommlink.Size = new System.Drawing.Size(104, 17);
+            this.chkWeaponActiveCommlink.TabIndex = 118;
+            this.chkWeaponActiveCommlink.Tag = "Checkbox_ActiveCommlink";
+            this.chkWeaponActiveCommlink.Text = "Active Commlink";
+            this.chkWeaponActiveCommlink.UseVisualStyleBackColor = true;
+            // 
+            // lblWeaponOverclockerLabel
+            // 
+            this.lblWeaponOverclockerLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponOverclockerLabel.AutoSize = true;
+            this.lblWeaponOverclockerLabel.Location = new System.Drawing.Point(31, 6);
+            this.lblWeaponOverclockerLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponOverclockerLabel.Name = "lblWeaponOverclockerLabel";
+            this.lblWeaponOverclockerLabel.Size = new System.Drawing.Size(68, 13);
+            this.lblWeaponOverclockerLabel.TabIndex = 217;
+            this.lblWeaponOverclockerLabel.Text = "Overclocker:";
+            this.lblWeaponOverclockerLabel.Visible = false;
+            // 
+            // cboWeaponOverclocker
+            // 
+            this.cboWeaponOverclocker.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboWeaponOverclocker.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboWeaponOverclocker.FormattingEnabled = true;
+            this.cboWeaponOverclocker.Location = new System.Drawing.Point(105, 3);
+            this.cboWeaponOverclocker.Name = "cboWeaponOverclocker";
+            this.cboWeaponOverclocker.Size = new System.Drawing.Size(96, 21);
+            this.cboWeaponOverclocker.TabIndex = 218;
+            this.cboWeaponOverclocker.TooltipText = "";
+            this.cboWeaponOverclocker.Visible = false;
+            this.cboWeaponOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboWeaponOverclocker_SelectedIndexChanged);
+            // 
             // frmCareer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -20847,6 +20924,8 @@ namespace Chummer
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
             this.cmsWeaponMount.ResumeLayout(false);
+            this.flpWeaponMatrixCheckBoxes.ResumeLayout(false);
+            this.flpWeaponMatrixCheckBoxes.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -22153,5 +22232,10 @@ namespace Chummer
         private CheckBox chkArmorMatrixCM22;
         private CheckBox chkArmorMatrixCM23;
         private CheckBox chkArmorMatrixCM24;
+        private ElasticComboBox cboWeaponOverclocker;
+        private Label lblWeaponOverclockerLabel;
+        private FlowLayoutPanel flpWeaponMatrixCheckBoxes;
+        private ColorableCheckBox chkWeaponHomeNode;
+        private ColorableCheckBox chkWeaponActiveCommlink;
     }
 }
