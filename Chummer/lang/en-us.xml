@@ -7922,7 +7922,7 @@
     </string>
     <string>
       <key>Button_ChangeCustomDataEntries</key>
-      <text>Change Custom Data Entries</text>
+      <text>Change Entries</text>
     </string>
     <string>
       <key>Label_CharacterOptions_Combat</key>
@@ -9784,8 +9784,16 @@
       <text>Increase Load Order</text>
     </string>
     <string>
+      <key>String_ToTop</key>
+      <text>To Top</text>
+    </string>
+    <string>
       <key>Button_DecreaseCustomDirectoryLoadOrder</key>
       <text>Decrease Load Order</text>
+    </string>
+    <string>
+      <key>String_ToBottom</key>
+      <text>To Bottom</text>
     </string>
     <string>
       <key>String_ShowAll</key>

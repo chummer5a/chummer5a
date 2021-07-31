@@ -280,6 +280,8 @@ Changed/New Strings:
 - Label_Options_WftM_Nuyen
 - Label_Options_WftP_Nuyen
 - Tooltip_Dependency_BadLoadOrder
+- String_ToTop
+- String_ToBottom
 
 Deleted Strings:
 - Label_Options_NuyenPerBP

@@ -537,16 +537,50 @@ namespace Chummer
             PopulateCustomDataDirectoryTreeView();
         }
 
+        private void cmdToTopCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        {
+            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            if (nodSelected == null)
+                return;
+            int intIndex = nodSelected.Index;
+            if (intIndex <= 0)
+                return;
+            for (int i = intIndex; i > 0; --i)
+            {
+                _dicCharacterCustomDataDirectoryInfos.Reverse(i - 1, 2);
+                _objCharacterOptions.CustomDataDirectoryNames.Reverse(i - 1, 2);
+            }
+            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+            PopulateCustomDataDirectoryTreeView();
+        }
+
         private void cmdDecreaseCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
         {
             TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            if (intIndex >= _dicCharacterCustomDataDirectoryInfos.Count)
+            if (intIndex >= _dicCharacterCustomDataDirectoryInfos.Count - 1)
                 return;
             _dicCharacterCustomDataDirectoryInfos.Reverse(intIndex, 2);
             _objCharacterOptions.CustomDataDirectoryNames.Reverse(intIndex, 2);
+            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+            PopulateCustomDataDirectoryTreeView();
+        }
+
+        private void cmdToBottomCustomDirectoryLoadOrder_Click(object sender, EventArgs e)
+        {
+            TreeNode nodSelected = treCustomDataDirectories.SelectedNode;
+            if (nodSelected == null)
+                return;
+            int intIndex = nodSelected.Index;
+            if (intIndex >= _dicCharacterCustomDataDirectoryInfos.Count - 1)
+                return;
+            for (int i = intIndex; i < _dicCharacterCustomDataDirectoryInfos.Count - 1; ++i)
+            {
+                _dicCharacterCustomDataDirectoryInfos.Reverse(i, 2);
+                _objCharacterOptions.CustomDataDirectoryNames.Reverse(i, 2);
+            }
             _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             PopulateCustomDataDirectoryTreeView();
         }

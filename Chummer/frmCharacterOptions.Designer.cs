@@ -175,17 +175,11 @@ namespace Chummer
             this.lblKarmaSpirit = new System.Windows.Forms.Label();
             this.nudKarmaSpirit = new Chummer.NumericUpDownEx();
             this.lblKarmaSpiritExtra = new System.Windows.Forms.Label();
-            this.lblKarmaNuyenPerWftM = new System.Windows.Forms.Label();
-            this.nudKarmaNuyenPerWftM = new Chummer.NumericUpDownEx();
-            this.lblKarmaNuyenPerExtraWftM = new System.Windows.Forms.Label();
             this.lblKarmaJoinGroup = new System.Windows.Forms.Label();
             this.nudKarmaJoinGroup = new Chummer.NumericUpDownEx();
             this.lblKarmaCarryover = new System.Windows.Forms.Label();
             this.nudKarmaCarryover = new Chummer.NumericUpDownEx();
             this.lblKarmaCarryoverExtra = new System.Windows.Forms.Label();
-            this.lblKarmaQuality = new System.Windows.Forms.Label();
-            this.nudKarmaQuality = new Chummer.NumericUpDownEx();
-            this.lblKarmaQualityExtra = new System.Windows.Forms.Label();
             this.lblKarmaSummoningFocus = new System.Windows.Forms.Label();
             this.nudKarmaSummoningFocus = new Chummer.NumericUpDownEx();
             this.lblKarmaSpellShapingFocus = new System.Windows.Forms.Label();
@@ -198,8 +192,6 @@ namespace Chummer
             this.lblKarmaWeaponFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaSustainingFocus = new Chummer.NumericUpDownEx();
             this.nudKarmaWeaponFocus = new Chummer.NumericUpDownEx();
-            this.lblMetatypeCostsKarmaMultiplierLabel = new System.Windows.Forms.Label();
-            this.nudMetatypeCostsKarmaMultiplier = new Chummer.NumericUpDownEx();
             this.lblKarmaTechnique = new System.Windows.Forms.Label();
             this.lblKarmaMetamagic = new System.Windows.Forms.Label();
             this.flpKarmaInitiation = new System.Windows.Forms.FlowLayoutPanel();
@@ -221,6 +213,17 @@ namespace Chummer
             this.lblKarmaSpiritFettering = new System.Windows.Forms.Label();
             this.nudKarmaSpiritFettering = new Chummer.NumericUpDownEx();
             this.lblKarmaSpiritFetteringExtra = new System.Windows.Forms.Label();
+            this.lblKarmaQuality = new System.Windows.Forms.Label();
+            this.nudKarmaQuality = new Chummer.NumericUpDownEx();
+            this.lblKarmaQualityExtra = new System.Windows.Forms.Label();
+            this.lblMetatypeCostsKarmaMultiplierLabel = new System.Windows.Forms.Label();
+            this.nudMetatypeCostsKarmaMultiplier = new Chummer.NumericUpDownEx();
+            this.lblKarmaNuyenPerWftM = new System.Windows.Forms.Label();
+            this.nudKarmaNuyenPerWftM = new Chummer.NumericUpDownEx();
+            this.lblKarmaNuyenPerExtraWftM = new System.Windows.Forms.Label();
+            this.lblKarmaNuyenPerExtraWftP = new System.Windows.Forms.Label();
+            this.lblKarmaNuyenPerWftP = new System.Windows.Forms.Label();
+            this.nudKarmaNuyenPerWftP = new Chummer.NumericUpDownEx();
             this.tabCustomData = new System.Windows.Forms.TabPage();
             this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
             this.treCustomDataDirectories = new System.Windows.Forms.TreeView();
@@ -299,9 +302,8 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.lblKarmaNuyenPerExtraWftP = new System.Windows.Forms.Label();
-            this.lblKarmaNuyenPerWftP = new System.Windows.Forms.Label();
-            this.nudKarmaNuyenPerWftP = new Chummer.NumericUpDownEx();
+            this.cmdToBottomCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
+            this.cmdToTopCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -356,15 +358,12 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftM)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellShapingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
             this.flpKarmaInitiation.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
@@ -375,6 +374,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftP)).BeginInit();
             this.tabCustomData.SuspendLayout();
             this.tlpOptionalRules.SuspendLayout();
             this.gpbDirectoryInfo.SuspendLayout();
@@ -402,7 +405,6 @@ namespace Chummer
             this.gpbHouseRulesMagicResonance.SuspendLayout();
             this.tlpHouseRulesMagicResonance.SuspendLayout();
             this.tlpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftP)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -2762,51 +2764,6 @@ namespace Chummer
             this.lblKarmaSpiritExtra.Text = "x Services Owed";
             this.lblKarmaSpiritExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblKarmaNuyenPerWftM
-            // 
-            this.lblKarmaNuyenPerWftM.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNuyenPerWftM.AutoSize = true;
-            this.lblKarmaNuyenPerWftM.Location = new System.Drawing.Point(9, 370);
-            this.lblKarmaNuyenPerWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNuyenPerWftM.Name = "lblKarmaNuyenPerWftM";
-            this.lblKarmaNuyenPerWftM.Size = new System.Drawing.Size(175, 13);
-            this.lblKarmaNuyenPerWftM.TabIndex = 41;
-            this.lblKarmaNuyenPerWftM.Tag = "Label_Options_WftM_Nuyen";
-            this.lblKarmaNuyenPerWftM.Text = "Working for the Man Nuyen Gained";
-            this.lblKarmaNuyenPerWftM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaNuyenPerWftM
-            // 
-            this.nudKarmaNuyenPerWftM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNuyenPerWftM.AutoSize = true;
-            this.nudKarmaNuyenPerWftM.Location = new System.Drawing.Point(190, 367);
-            this.nudKarmaNuyenPerWftM.Maximum = new decimal(new int[] {
-            99999,
-            0,
-            0,
-            0});
-            this.nudKarmaNuyenPerWftM.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaNuyenPerWftM.Name = "nudKarmaNuyenPerWftM";
-            this.nudKarmaNuyenPerWftM.Size = new System.Drawing.Size(53, 20);
-            this.nudKarmaNuyenPerWftM.TabIndex = 42;
-            // 
-            // lblKarmaNuyenPerExtraWftM
-            // 
-            this.lblKarmaNuyenPerExtraWftM.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaNuyenPerExtraWftM.AutoSize = true;
-            this.lblKarmaNuyenPerExtraWftM.Location = new System.Drawing.Point(249, 370);
-            this.lblKarmaNuyenPerExtraWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNuyenPerExtraWftM.Name = "lblKarmaNuyenPerExtraWftM";
-            this.lblKarmaNuyenPerExtraWftM.Size = new System.Drawing.Size(86, 13);
-            this.lblKarmaNuyenPerExtraWftM.TabIndex = 43;
-            this.lblKarmaNuyenPerExtraWftM.Tag = "Label_Options_PerKarmaSpent";
-            this.lblKarmaNuyenPerExtraWftM.Text = "per Karma Spent";
-            this.lblKarmaNuyenPerExtraWftM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblKarmaJoinGroup
             // 
             this.lblKarmaJoinGroup.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -2883,51 +2840,6 @@ namespace Chummer
             this.lblKarmaCarryoverExtra.Tag = "Label_Options_Maximum";
             this.lblKarmaCarryoverExtra.Text = "Maximum";
             this.lblKarmaCarryoverExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblKarmaQuality
-            // 
-            this.lblKarmaQuality.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaQuality.AutoSize = true;
-            this.lblKarmaQuality.Location = new System.Drawing.Point(51, 318);
-            this.lblKarmaQuality.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaQuality.Name = "lblKarmaQuality";
-            this.lblKarmaQuality.Size = new System.Drawing.Size(133, 13);
-            this.lblKarmaQuality.TabIndex = 20;
-            this.lblKarmaQuality.Tag = "Label_Options_Qualities";
-            this.lblKarmaQuality.Text = "Positive / Negative Quality";
-            this.lblKarmaQuality.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaQuality
-            // 
-            this.nudKarmaQuality.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaQuality.AutoSize = true;
-            this.nudKarmaQuality.Location = new System.Drawing.Point(190, 315);
-            this.nudKarmaQuality.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaQuality.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaQuality.Name = "nudKarmaQuality";
-            this.nudKarmaQuality.Size = new System.Drawing.Size(53, 20);
-            this.nudKarmaQuality.TabIndex = 21;
-            // 
-            // lblKarmaQualityExtra
-            // 
-            this.lblKarmaQualityExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaQualityExtra.AutoSize = true;
-            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(249, 318);
-            this.lblKarmaQualityExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaQualityExtra.Name = "lblKarmaQualityExtra";
-            this.lblKarmaQualityExtra.Size = new System.Drawing.Size(53, 13);
-            this.lblKarmaQualityExtra.TabIndex = 22;
-            this.lblKarmaQualityExtra.Tag = "Label_Options_BPCost";
-            this.lblKarmaQualityExtra.Text = "x BP Cost";
-            this.lblKarmaQualityExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblKarmaSummoningFocus
             // 
@@ -3108,43 +3020,6 @@ namespace Chummer
             this.nudKarmaWeaponFocus.Name = "nudKarmaWeaponFocus";
             this.nudKarmaWeaponFocus.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaWeaponFocus.TabIndex = 106;
-            // 
-            // lblMetatypeCostsKarmaMultiplierLabel
-            // 
-            this.lblMetatypeCostsKarmaMultiplierLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMetatypeCostsKarmaMultiplierLabel.AutoSize = true;
-            this.lblMetatypeCostsKarmaMultiplierLabel.Location = new System.Drawing.Point(32, 344);
-            this.lblMetatypeCostsKarmaMultiplierLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMetatypeCostsKarmaMultiplierLabel.Name = "lblMetatypeCostsKarmaMultiplierLabel";
-            this.lblMetatypeCostsKarmaMultiplierLabel.Size = new System.Drawing.Size(152, 13);
-            this.lblMetatypeCostsKarmaMultiplierLabel.TabIndex = 125;
-            this.lblMetatypeCostsKarmaMultiplierLabel.Tag = "Label_Options_MetatypesCostKarma";
-            this.lblMetatypeCostsKarmaMultiplierLabel.Text = "Metatype Karma Cost Multiplier";
-            this.lblMetatypeCostsKarmaMultiplierLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMetatypeCostsKarmaMultiplier
-            // 
-            this.nudMetatypeCostsKarmaMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMetatypeCostsKarmaMultiplier.AutoSize = true;
-            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(190, 341);
-            this.nudMetatypeCostsKarmaMultiplier.Maximum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.nudMetatypeCostsKarmaMultiplier.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudMetatypeCostsKarmaMultiplier.Name = "nudMetatypeCostsKarmaMultiplier";
-            this.nudMetatypeCostsKarmaMultiplier.Size = new System.Drawing.Size(53, 20);
-            this.nudMetatypeCostsKarmaMultiplier.TabIndex = 124;
-            this.nudMetatypeCostsKarmaMultiplier.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
             // 
             // lblKarmaTechnique
             // 
@@ -3474,6 +3349,178 @@ namespace Chummer
             this.lblKarmaSpiritFetteringExtra.Text = "x Force";
             this.lblKarmaSpiritFetteringExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // lblKarmaQuality
+            // 
+            this.lblKarmaQuality.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaQuality.AutoSize = true;
+            this.lblKarmaQuality.Location = new System.Drawing.Point(51, 318);
+            this.lblKarmaQuality.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaQuality.Name = "lblKarmaQuality";
+            this.lblKarmaQuality.Size = new System.Drawing.Size(133, 13);
+            this.lblKarmaQuality.TabIndex = 20;
+            this.lblKarmaQuality.Tag = "Label_Options_Qualities";
+            this.lblKarmaQuality.Text = "Positive / Negative Quality";
+            this.lblKarmaQuality.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaQuality
+            // 
+            this.nudKarmaQuality.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaQuality.AutoSize = true;
+            this.nudKarmaQuality.Location = new System.Drawing.Point(190, 315);
+            this.nudKarmaQuality.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaQuality.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaQuality.Name = "nudKarmaQuality";
+            this.nudKarmaQuality.Size = new System.Drawing.Size(53, 20);
+            this.nudKarmaQuality.TabIndex = 21;
+            // 
+            // lblKarmaQualityExtra
+            // 
+            this.lblKarmaQualityExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaQualityExtra.AutoSize = true;
+            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(249, 318);
+            this.lblKarmaQualityExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaQualityExtra.Name = "lblKarmaQualityExtra";
+            this.lblKarmaQualityExtra.Size = new System.Drawing.Size(53, 13);
+            this.lblKarmaQualityExtra.TabIndex = 22;
+            this.lblKarmaQualityExtra.Tag = "Label_Options_BPCost";
+            this.lblKarmaQualityExtra.Text = "x BP Cost";
+            this.lblKarmaQualityExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblMetatypeCostsKarmaMultiplierLabel
+            // 
+            this.lblMetatypeCostsKarmaMultiplierLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMetatypeCostsKarmaMultiplierLabel.AutoSize = true;
+            this.lblMetatypeCostsKarmaMultiplierLabel.Location = new System.Drawing.Point(32, 344);
+            this.lblMetatypeCostsKarmaMultiplierLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMetatypeCostsKarmaMultiplierLabel.Name = "lblMetatypeCostsKarmaMultiplierLabel";
+            this.lblMetatypeCostsKarmaMultiplierLabel.Size = new System.Drawing.Size(152, 13);
+            this.lblMetatypeCostsKarmaMultiplierLabel.TabIndex = 125;
+            this.lblMetatypeCostsKarmaMultiplierLabel.Tag = "Label_Options_MetatypesCostKarma";
+            this.lblMetatypeCostsKarmaMultiplierLabel.Text = "Metatype Karma Cost Multiplier";
+            this.lblMetatypeCostsKarmaMultiplierLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMetatypeCostsKarmaMultiplier
+            // 
+            this.nudMetatypeCostsKarmaMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMetatypeCostsKarmaMultiplier.AutoSize = true;
+            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(190, 341);
+            this.nudMetatypeCostsKarmaMultiplier.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.nudMetatypeCostsKarmaMultiplier.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudMetatypeCostsKarmaMultiplier.Name = "nudMetatypeCostsKarmaMultiplier";
+            this.nudMetatypeCostsKarmaMultiplier.Size = new System.Drawing.Size(53, 20);
+            this.nudMetatypeCostsKarmaMultiplier.TabIndex = 124;
+            this.nudMetatypeCostsKarmaMultiplier.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // lblKarmaNuyenPerWftM
+            // 
+            this.lblKarmaNuyenPerWftM.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNuyenPerWftM.AutoSize = true;
+            this.lblKarmaNuyenPerWftM.Location = new System.Drawing.Point(9, 370);
+            this.lblKarmaNuyenPerWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerWftM.Name = "lblKarmaNuyenPerWftM";
+            this.lblKarmaNuyenPerWftM.Size = new System.Drawing.Size(175, 13);
+            this.lblKarmaNuyenPerWftM.TabIndex = 41;
+            this.lblKarmaNuyenPerWftM.Tag = "Label_Options_WftM_Nuyen";
+            this.lblKarmaNuyenPerWftM.Text = "Working for the Man Nuyen Gained";
+            this.lblKarmaNuyenPerWftM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaNuyenPerWftM
+            // 
+            this.nudKarmaNuyenPerWftM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNuyenPerWftM.AutoSize = true;
+            this.nudKarmaNuyenPerWftM.Location = new System.Drawing.Point(190, 367);
+            this.nudKarmaNuyenPerWftM.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftM.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftM.Name = "nudKarmaNuyenPerWftM";
+            this.nudKarmaNuyenPerWftM.Size = new System.Drawing.Size(53, 20);
+            this.nudKarmaNuyenPerWftM.TabIndex = 42;
+            // 
+            // lblKarmaNuyenPerExtraWftM
+            // 
+            this.lblKarmaNuyenPerExtraWftM.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaNuyenPerExtraWftM.AutoSize = true;
+            this.lblKarmaNuyenPerExtraWftM.Location = new System.Drawing.Point(249, 370);
+            this.lblKarmaNuyenPerExtraWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerExtraWftM.Name = "lblKarmaNuyenPerExtraWftM";
+            this.lblKarmaNuyenPerExtraWftM.Size = new System.Drawing.Size(86, 13);
+            this.lblKarmaNuyenPerExtraWftM.TabIndex = 43;
+            this.lblKarmaNuyenPerExtraWftM.Tag = "Label_Options_PerKarmaSpent";
+            this.lblKarmaNuyenPerExtraWftM.Text = "per Karma Spent";
+            this.lblKarmaNuyenPerExtraWftM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarmaNuyenPerExtraWftP
+            // 
+            this.lblKarmaNuyenPerExtraWftP.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaNuyenPerExtraWftP.AutoSize = true;
+            this.lblKarmaNuyenPerExtraWftP.Location = new System.Drawing.Point(249, 396);
+            this.lblKarmaNuyenPerExtraWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerExtraWftP.Name = "lblKarmaNuyenPerExtraWftP";
+            this.lblKarmaNuyenPerExtraWftP.Size = new System.Drawing.Size(92, 13);
+            this.lblKarmaNuyenPerExtraWftP.TabIndex = 132;
+            this.lblKarmaNuyenPerExtraWftP.Tag = "Label_Options_PerKarmaGained";
+            this.lblKarmaNuyenPerExtraWftP.Text = "per Karma Gained";
+            this.lblKarmaNuyenPerExtraWftP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarmaNuyenPerWftP
+            // 
+            this.lblKarmaNuyenPerWftP.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNuyenPerWftP.AutoSize = true;
+            this.lblKarmaNuyenPerWftP.Location = new System.Drawing.Point(3, 396);
+            this.lblKarmaNuyenPerWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerWftP.Name = "lblKarmaNuyenPerWftP";
+            this.lblKarmaNuyenPerWftP.Size = new System.Drawing.Size(181, 13);
+            this.lblKarmaNuyenPerWftP.TabIndex = 133;
+            this.lblKarmaNuyenPerWftP.Tag = "Label_Options_WftP_Nuyen";
+            this.lblKarmaNuyenPerWftP.Text = "Working for the People Nuyen Spent";
+            this.lblKarmaNuyenPerWftP.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaNuyenPerWftP
+            // 
+            this.nudKarmaNuyenPerWftP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNuyenPerWftP.AutoSize = true;
+            this.nudKarmaNuyenPerWftP.Location = new System.Drawing.Point(190, 393);
+            this.nudKarmaNuyenPerWftP.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftP.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftP.Name = "nudKarmaNuyenPerWftP";
+            this.nudKarmaNuyenPerWftP.Size = new System.Drawing.Size(53, 20);
+            this.nudKarmaNuyenPerWftP.TabIndex = 134;
+            // 
             // tabCustomData
             // 
             this.tabCustomData.BackColor = System.Drawing.SystemColors.Control;
@@ -3493,9 +3540,6 @@ namespace Chummer
             this.tlpOptionalRules.ColumnCount = 2;
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpOptionalRules.Controls.Add(this.treCustomDataDirectories, 0, 1);
             this.tlpOptionalRules.Controls.Add(this.gpbDirectoryInfo, 1, 0);
             this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
@@ -3772,11 +3816,15 @@ namespace Chummer
             // 
             this.tlpOptionalRulesButtons.AutoSize = true;
             this.tlpOptionalRulesButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptionalRulesButtons.ColumnCount = 3;
-            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpOptionalRulesButtons.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 2, 0);
+            this.tlpOptionalRulesButtons.ColumnCount = 5;
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdToTopCustomDirectoryLoadOrder, 2, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdToBottomCustomDirectoryLoadOrder, 4, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 3, 0);
             this.tlpOptionalRulesButtons.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder, 1, 0);
             this.tlpOptionalRulesButtons.Controls.Add(this.cmdGlobalOptionsCustomData, 0, 0);
             this.tlpOptionalRulesButtons.Location = new System.Drawing.Point(0, 555);
@@ -3784,7 +3832,7 @@ namespace Chummer
             this.tlpOptionalRulesButtons.Name = "tlpOptionalRulesButtons";
             this.tlpOptionalRulesButtons.RowCount = 1;
             this.tlpOptionalRulesButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpOptionalRulesButtons.Size = new System.Drawing.Size(477, 29);
+            this.tlpOptionalRulesButtons.Size = new System.Drawing.Size(625, 29);
             this.tlpOptionalRulesButtons.TabIndex = 46;
             // 
             // cmdDecreaseCustomDirectoryLoadOrder
@@ -3792,9 +3840,9 @@ namespace Chummer
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(321, 3);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(378, 3);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
-            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(153, 23);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
             this.cmdDecreaseCustomDirectoryLoadOrder.Tag = "Button_DecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Text = "Decrease Load Order";
@@ -3806,9 +3854,9 @@ namespace Chummer
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(162, 3);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(128, 3);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
-            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(153, 23);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
             this.cmdIncreaseCustomDirectoryLoadOrder.Tag = "Button_IncreaseCustomDirectoryLoadOrder";
             this.cmdIncreaseCustomDirectoryLoadOrder.Text = "Increase Load Order";
@@ -3822,9 +3870,10 @@ namespace Chummer
             this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(3, 3);
             this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
-            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(153, 23);
+            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(119, 23);
             this.cmdGlobalOptionsCustomData.TabIndex = 44;
-            this.cmdGlobalOptionsCustomData.Text = "Change Custom Data Entries";
+            this.cmdGlobalOptionsCustomData.Tag = "Button_ChangeCustomDataEntries";
+            this.cmdGlobalOptionsCustomData.Text = "Change Entries";
             this.cmdGlobalOptionsCustomData.UseVisualStyleBackColor = true;
             this.cmdGlobalOptionsCustomData.Click += new System.EventHandler(this.cmdGlobalOptionsCustomData_Click);
             // 
@@ -4623,50 +4672,33 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
-            // lblKarmaNuyenPerExtraWftP
+            // cmdToBottomCustomDirectoryLoadOrder
             // 
-            this.lblKarmaNuyenPerExtraWftP.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaNuyenPerExtraWftP.AutoSize = true;
-            this.lblKarmaNuyenPerExtraWftP.Location = new System.Drawing.Point(249, 396);
-            this.lblKarmaNuyenPerExtraWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNuyenPerExtraWftP.Name = "lblKarmaNuyenPerExtraWftP";
-            this.lblKarmaNuyenPerExtraWftP.Size = new System.Drawing.Size(92, 13);
-            this.lblKarmaNuyenPerExtraWftP.TabIndex = 132;
-            this.lblKarmaNuyenPerExtraWftP.Tag = "Label_Options_PerKarmaGained";
-            this.lblKarmaNuyenPerExtraWftP.Text = "per Karma Gained";
-            this.lblKarmaNuyenPerExtraWftP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.cmdToBottomCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdToBottomCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdToBottomCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdToBottomCustomDirectoryLoadOrder.Location = new System.Drawing.Point(503, 3);
+            this.cmdToBottomCustomDirectoryLoadOrder.Name = "cmdToBottomCustomDirectoryLoadOrder";
+            this.cmdToBottomCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
+            this.cmdToBottomCustomDirectoryLoadOrder.TabIndex = 45;
+            this.cmdToBottomCustomDirectoryLoadOrder.Tag = "String_ToBottom";
+            this.cmdToBottomCustomDirectoryLoadOrder.Text = "To Bottom";
+            this.cmdToBottomCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
+            this.cmdToBottomCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdToBottomCustomDirectoryLoadOrder_Click);
             // 
-            // lblKarmaNuyenPerWftP
+            // cmdToTopCustomDirectoryLoadOrder
             // 
-            this.lblKarmaNuyenPerWftP.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNuyenPerWftP.AutoSize = true;
-            this.lblKarmaNuyenPerWftP.Location = new System.Drawing.Point(3, 396);
-            this.lblKarmaNuyenPerWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNuyenPerWftP.Name = "lblKarmaNuyenPerWftP";
-            this.lblKarmaNuyenPerWftP.Size = new System.Drawing.Size(181, 13);
-            this.lblKarmaNuyenPerWftP.TabIndex = 133;
-            this.lblKarmaNuyenPerWftP.Tag = "Label_Options_WftP_Nuyen";
-            this.lblKarmaNuyenPerWftP.Text = "Working for the People Nuyen Spent";
-            this.lblKarmaNuyenPerWftP.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaNuyenPerWftP
-            // 
-            this.nudKarmaNuyenPerWftP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNuyenPerWftP.AutoSize = true;
-            this.nudKarmaNuyenPerWftP.Location = new System.Drawing.Point(190, 393);
-            this.nudKarmaNuyenPerWftP.Maximum = new decimal(new int[] {
-            99999,
-            0,
-            0,
-            0});
-            this.nudKarmaNuyenPerWftP.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaNuyenPerWftP.Name = "nudKarmaNuyenPerWftP";
-            this.nudKarmaNuyenPerWftP.Size = new System.Drawing.Size(53, 20);
-            this.nudKarmaNuyenPerWftP.TabIndex = 134;
+            this.cmdToTopCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdToTopCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdToTopCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdToTopCustomDirectoryLoadOrder.Location = new System.Drawing.Point(253, 3);
+            this.cmdToTopCustomDirectoryLoadOrder.Name = "cmdToTopCustomDirectoryLoadOrder";
+            this.cmdToTopCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
+            this.cmdToTopCustomDirectoryLoadOrder.TabIndex = 46;
+            this.cmdToTopCustomDirectoryLoadOrder.Tag = "String_ToTop";
+            this.cmdToTopCustomDirectoryLoadOrder.Text = "To Top";
+            this.cmdToTopCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
+            this.cmdToTopCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdToTopCustomDirectoryLoadOrder_Click);
             // 
             // frmCharacterOptions
             // 
@@ -4757,15 +4789,12 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftM)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellShapingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
             this.flpKarmaInitiation.ResumeLayout(false);
             this.flpKarmaInitiation.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).EndInit();
@@ -4777,6 +4806,10 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftP)).EndInit();
             this.tabCustomData.ResumeLayout(false);
             this.tabCustomData.PerformLayout();
             this.tlpOptionalRules.ResumeLayout(false);
@@ -4826,7 +4859,6 @@ namespace Chummer
             this.tlpHouseRulesMagicResonance.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftP)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -5106,5 +5138,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaNuyenPerExtraWftP;
         private System.Windows.Forms.Label lblKarmaNuyenPerWftP;
         private NumericUpDownEx nudKarmaNuyenPerWftP;
+        private System.Windows.Forms.Button cmdToBottomCustomDirectoryLoadOrder;
+        private System.Windows.Forms.Button cmdToTopCustomDirectoryLoadOrder;
     }
 }
