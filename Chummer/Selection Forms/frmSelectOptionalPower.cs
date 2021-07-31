@@ -37,14 +37,14 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
+            foreach ((string strPowerName, string strPowerExtra) in lstPowerExtraPairs)
             {
-                string strName = objCharacter.TranslateExtra(lstObject.Item1);
-                if (!string.IsNullOrEmpty(lstObject.Item2))
+                string strName = objCharacter.TranslateExtra(strPowerName);
+                if (!string.IsNullOrEmpty(strPowerExtra))
                 {
-                    strName += LanguageManager.GetString("String_Space") + '(' + objCharacter.TranslateExtra(lstObject.Item2) + ')';
+                    strName += LanguageManager.GetString("String_Space") + '(' + objCharacter.TranslateExtra(strPowerExtra) + ')';
                 }
-                _lstPowerItems.Add(new ListItem(lstObject, strName));
+                _lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
             }
             cboPower.BeginUpdate();
             cboPower.PopulateWithListItems(_lstPowerItems);

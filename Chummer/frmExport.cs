@@ -165,9 +165,9 @@ namespace Chummer
             {
                 await txtText.DoThreadSafeAsync(() => txtText.Text = LanguageManager.GetString("String_Generating_Data"));
                 if (_dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                    out Tuple<string, string> tstrBoxText))
+                    out Tuple<string, string> strBoxText))
                 {
-                    await txtText.DoThreadSafeAsync(() => txtText.Text = tstrBoxText.Item2);
+                    await txtText.DoThreadSafeAsync(() => txtText.Text = strBoxText.Item2);
                 }
                 else
                 {
@@ -257,8 +257,8 @@ namespace Chummer
                 return;
 
             File.WriteAllText(strSaveFile, // Change this to a proper path.
-                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> tstrBoxText)
-                    ? tstrBoxText.Item1
+                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
+                    ? strBoxText.Item1
                     : txtText.Text,
                 Encoding.UTF8);
 
@@ -331,7 +331,9 @@ namespace Chummer
             strDisplayText = Regex.Replace(strDisplayText, "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>", "<mainmugshotbase64>[...]</mainmugshotbase64>");
             strDisplayText = Regex.Replace(strDisplayText, "<stringbase64>[^\\s\\S]*</stringbase64>", "<stringbase64>[...]</stringbase64>");
             strDisplayText = Regex.Replace(strDisplayText, "base64\": \"[^\\\"]*\",", "base64\": \"[...]\",");
-            _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt), x => new Tuple<string, string>(strText, strDisplayText), (a, b) => new Tuple<string, string>(strText, strDisplayText));
+            _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
+                x => new Tuple<string, string>(strText, strDisplayText),
+                (a, b) => new Tuple<string, string>(strText, strDisplayText));
             txtText.DoThreadSafe(() => txtText.Text = strDisplayText);
         }
 
@@ -355,8 +357,8 @@ namespace Chummer
                 return;
 
             File.WriteAllText(strSaveFile, // Change this to a proper path.
-                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> tstrBoxText)
-                    ? tstrBoxText.Item1
+                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
+                    ? strBoxText.Item1
                     : txtText.Text,
                 Encoding.UTF8);
 
