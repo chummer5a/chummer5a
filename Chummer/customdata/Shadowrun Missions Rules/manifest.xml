@@ -65,4 +65,14 @@
       <lang>en-us</lang>
     </description>
   </descriptions>
+  <incompatibilities>
+    <incompatibility>
+      <name>Shadowrun Missions Animal Prices</name>
+      <guid>a63da33d-56ae-44f8-867e-6c756171af08</guid>
+    </incompatibility>
+    <incompatibility>
+      <name>Rainforest Carbine Missions Errata</name>
+      <guid>39B1963E-DFB3-4082-8D7F-79F88DAB786F</guid>
+    </incompatibility>
+  </incompatibilities>
 </manifest>

@@ -35,4 +35,10 @@
       <lang>en-us</lang>
     </description>
   </descriptions>
+  <incompatibilities>
+    <incompatibility>
+      <name>Remove Automatics as a Skill</name>
+      <guid>1D72E8C0-8FBA-4B85-B2FF-EBD68153BCF5</guid>
+    </incompatibility>
+  </incompatibilities>
 </manifest>
