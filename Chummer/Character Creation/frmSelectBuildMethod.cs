@@ -116,12 +116,7 @@ namespace Chummer
                 SuspendLayout();
                 // Populate the Gameplay Options list.
                 object objOldSelected = cboCharacterOption.SelectedValue;
-                List<ListItem> lstGameplayOptions = new List<ListItem>();
-                foreach (KeyValuePair<string, CharacterOptions> objLoopOptions in OptionsManager.LoadedCharacterOptions)
-                {
-                    lstGameplayOptions.Add(new ListItem(objLoopOptions.Value, objLoopOptions.Value.DisplayName));
-                }
-
+                List<ListItem> lstGameplayOptions = OptionsManager.LoadedCharacterOptions.Values.Select(objLoopOptions => new ListItem(objLoopOptions, objLoopOptions.DisplayName)).ToList();
                 lstGameplayOptions.Sort(CompareListItems.CompareNames);
                 cboCharacterOption.BeginUpdate();
                 cboCharacterOption.PopulateWithListItems(lstGameplayOptions);

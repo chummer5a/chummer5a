@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -38,8 +37,8 @@ namespace Chummer
         private CharacterOptions _objReferenceCharacterOptions;
         private readonly List<ListItem> _lstSettings = new List<ListItem>();
 
-        // List of custom data directories on the character, in load order. If the character has a directory name for which we have no info, Item1 will be null
-        private readonly List<Tuple<object, bool>> _lstCharacterCustomDataDirectoryInfos = new List<Tuple<object, bool>>();
+        // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
+        private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos = new TypedOrderedDictionary<object, bool>();
 
         private bool _blnLoading = true;
         private bool _blnSkipLimbCountUpdate;
@@ -164,7 +163,7 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                OptionsManager.LoadedCharacterOptions.Remove(_objReferenceCharacterOptions.FileName);
+                OptionsManager.LoadedCharacterOptions.Remove(_objReferenceCharacterOptions.DictionaryKey);
                 KeyValuePair<string, CharacterOptions> kvpReplacementOption =
                     OptionsManager.LoadedCharacterOptions.First(x => x.Value.BuiltInOption
                                                                      && x.Value.BuildMethod ==
@@ -279,7 +278,7 @@ namespace Chummer
                 CharacterOptions objNewCharacterOptions = new CharacterOptions();
                 objNewCharacterOptions.CopyValues(_objCharacterOptions);
                 OptionsManager.LoadedCharacterOptions.Add(
-                    objNewCharacterOptions.FileName,
+                    objNewCharacterOptions.DictionaryKey,
                     objNewCharacterOptions);
                 _objReferenceCharacterOptions = objNewCharacterOptions;
                 IsDirty = false;
@@ -532,13 +531,8 @@ namespace Chummer
             int intIndex = nodSelected.Index;
             if (intIndex <= 0)
                 return;
-            _lstCharacterCustomDataDirectoryInfos.Reverse(intIndex - 1, 2);
-            string strCustomDataDirectoryToUp = _objCharacterOptions.CustomDataDirectoryNames.FirstOrDefault(x => x.Value.Item1 == intIndex).Key ?? string.Empty;
-            string strCustomDataDirectoryToDown = _objCharacterOptions.CustomDataDirectoryNames.FirstOrDefault(x => x.Value.Item1 == intIndex - 1).Key ?? string.Empty;
-            if (!string.IsNullOrEmpty(strCustomDataDirectoryToUp) && _objCharacterOptions.CustomDataDirectoryNames.TryGetValue(strCustomDataDirectoryToUp, out var objCustomDataDirectoryToUp))
-                _objCharacterOptions.CustomDataDirectoryNames[strCustomDataDirectoryToUp] = new Tuple<int, bool>(objCustomDataDirectoryToUp.Item1 - 1, objCustomDataDirectoryToUp.Item2);
-            if (!string.IsNullOrEmpty(strCustomDataDirectoryToDown) && _objCharacterOptions.CustomDataDirectoryNames.TryGetValue(strCustomDataDirectoryToDown, out var objCustomDataDirectoryToDown))
-                _objCharacterOptions.CustomDataDirectoryNames[strCustomDataDirectoryToDown] = new Tuple<int, bool>(objCustomDataDirectoryToDown.Item1 + 1, objCustomDataDirectoryToDown.Item2);
+            _dicCharacterCustomDataDirectoryInfos.Reverse(intIndex - 1, 2);
+            _objCharacterOptions.CustomDataDirectoryNames.Reverse(intIndex - 1, 2);
             _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             PopulateCustomDataDirectoryTreeView();
         }
@@ -549,15 +543,10 @@ namespace Chummer
             if (nodSelected == null)
                 return;
             int intIndex = nodSelected.Index;
-            if (intIndex >= _lstCharacterCustomDataDirectoryInfos.Count)
+            if (intIndex >= _dicCharacterCustomDataDirectoryInfos.Count)
                 return;
-            _lstCharacterCustomDataDirectoryInfos.Reverse(intIndex, 2);
-            string strCustomDataDirectoryToUp = _objCharacterOptions.CustomDataDirectoryNames.FirstOrDefault(x => x.Value.Item1 == intIndex + 1).Key ?? string.Empty;
-            string strCustomDataDirectoryToDown = _objCharacterOptions.CustomDataDirectoryNames.FirstOrDefault(x => x.Value.Item1 == intIndex).Key ?? string.Empty;
-            if (!string.IsNullOrEmpty(strCustomDataDirectoryToUp) && _objCharacterOptions.CustomDataDirectoryNames.TryGetValue(strCustomDataDirectoryToUp, out var objCustomDataDirectoryToUp))
-                _objCharacterOptions.CustomDataDirectoryNames[strCustomDataDirectoryToUp] = new Tuple<int, bool>(objCustomDataDirectoryToUp.Item1 - 1, objCustomDataDirectoryToUp.Item2);
-            if (!string.IsNullOrEmpty(strCustomDataDirectoryToDown) && _objCharacterOptions.CustomDataDirectoryNames.TryGetValue(strCustomDataDirectoryToDown, out var objCustomDataDirectoryToDown))
-                _objCharacterOptions.CustomDataDirectoryNames[strCustomDataDirectoryToDown] = new Tuple<int, bool>(objCustomDataDirectoryToDown.Item1 + 1, objCustomDataDirectoryToDown.Item2);
+            _dicCharacterCustomDataDirectoryInfos.Reverse(intIndex, 2);
+            _objCharacterOptions.CustomDataDirectoryNames.Reverse(intIndex, 2);
             _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             PopulateCustomDataDirectoryTreeView();
         }
@@ -568,23 +557,19 @@ namespace Chummer
             if (objNode == null)
                 return;
             int intIndex = objNode.Index;
-            _lstCharacterCustomDataDirectoryInfos[intIndex] = new Tuple<object, bool>(_lstCharacterCustomDataDirectoryInfos[intIndex].Item1, objNode.Checked);
+            _dicCharacterCustomDataDirectoryInfos[_dicCharacterCustomDataDirectoryInfos[intIndex].Key] = objNode.Checked;
             if (objNode.Tag is CustomDataDirectoryInfo objCustomDataDirectoryInfo
-                && _objCharacterOptions.CustomDataDirectoryNames.TryGetValue(objCustomDataDirectoryInfo.Name, out var objValue))
+                && _objCharacterOptions.CustomDataDirectoryNames.ContainsKey(objCustomDataDirectoryInfo.Name))
             {
-                _objCharacterOptions.CustomDataDirectoryNames[objCustomDataDirectoryInfo.Name] = new Tuple<int, bool>(objValue.Item1, objNode.Checked);
-                _objCharacterOptions.RecalculateEnabledCustomDataDirectories();
+                _objCharacterOptions.CustomDataDirectoryNames[objCustomDataDirectoryInfo.Name] = objNode.Checked;
                 _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             }
             else if (objNode.Tag is string strCustomDataDirectoryKey
-                     && _objCharacterOptions.CustomDataDirectoryNames.TryGetValue(strCustomDataDirectoryKey, out objValue))
+                     && _objCharacterOptions.CustomDataDirectoryNames.ContainsKey(strCustomDataDirectoryKey))
             {
-                _objCharacterOptions.CustomDataDirectoryNames[strCustomDataDirectoryKey] = new Tuple<int, bool>(objValue.Item1, objNode.Checked);
-                _objCharacterOptions.RecalculateEnabledCustomDataDirectories();
+                _objCharacterOptions.CustomDataDirectoryNames[strCustomDataDirectoryKey] = objNode.Checked;
                 _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
             }
-            //Each time one item is checked or unchecked, we need to see if any dependencies or exclusivities changed
-            CheckForDependenciesAndIncompatibilities();
         }
 
         private void txtPriorities_KeyPress(object sender, KeyPressEventArgs e)
@@ -618,7 +603,7 @@ namespace Chummer
 
         private void txtPriorities_TextChanged(object sender, EventArgs e)
         {
-            txtPriorities.ForeColor = txtPriorities.Text.Length == 5 ? SystemColors.WindowText : Color.Red;
+            txtPriorities.ForeColor = txtPriorities.Text.Length == 5 ? ColorManager.WindowText : ColorManager.ErrorColor;
         }
 
         private void txtContactPoints_TextChanged(object sender, EventArgs e)
@@ -636,11 +621,11 @@ namespace Chummer
                 CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
                 if (!blnSuccess)
                 {
-                    txtContactPoints.ForeColor = Color.Red;
+                    txtContactPoints.ForeColor = ColorManager.ErrorColor;
                     return;
                 }
             }
-            txtContactPoints.ForeColor = SystemColors.WindowText;
+            txtContactPoints.ForeColor = ColorManager.WindowText;
         }
 
         private void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
@@ -658,11 +643,11 @@ namespace Chummer
                 CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
                 if (!blnSuccess)
                 {
-                    txtKnowledgePoints.ForeColor = Color.Red;
+                    txtKnowledgePoints.ForeColor = ColorManager.ErrorColor;
                     return;
                 }
             }
-            txtKnowledgePoints.ForeColor = SystemColors.WindowText;
+            txtKnowledgePoints.ForeColor = ColorManager.WindowText;
         }
 
         private void txtNuyenExpression_TextChanged(object sender, EventArgs e)
@@ -680,11 +665,11 @@ namespace Chummer
                 CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
                 if (!blnSuccess)
                 {
-                    txtNuyenExpression.ForeColor = Color.Red;
+                    txtNuyenExpression.ForeColor = ColorManager.ErrorColor;
                     return;
                 }
             }
-            txtNuyenExpression.ForeColor = SystemColors.WindowText;
+            txtNuyenExpression.ForeColor = ColorManager.WindowText;
         }
 
         private void chkGrade_CheckedChanged(object sender, EventArgs e)
@@ -806,25 +791,43 @@ namespace Chummer
         {
             object objOldSelected = treCustomDataDirectories.SelectedNode?.Tag;
             treCustomDataDirectories.BeginUpdate();
-            if (_lstCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
+            if (_dicCharacterCustomDataDirectoryInfos.Count != treCustomDataDirectories.Nodes.Count)
             {
                 treCustomDataDirectories.Nodes.Clear();
 
-                foreach ((object objUntypedInfo, bool blnDataDirectoryEnabled) in _lstCharacterCustomDataDirectoryInfos)
+                foreach (KeyValuePair<object, bool> kvpInfo in _dicCharacterCustomDataDirectoryInfos)
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Tag = objUntypedInfo,
-                        Checked = blnDataDirectoryEnabled
+                        Tag = kvpInfo.Key,
+                        Checked = kvpInfo.Value
                     };
-                    if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
+                    if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.DisplayName;
+                        if (objNode.Checked)
+                        {
+                            // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
+                            string missingDirectories = string.Empty;
+                            if (objInfo.DependenciesList.Count > 0)
+                                missingDirectories = objInfo.CheckDependency(_objCharacterOptions);
+
+                            string prohibitedDirectories = string.Empty;
+                            if (objInfo.IncompatibilitiesList.Count > 0)
+                                prohibitedDirectories = objInfo.CheckIncompatibility(_objCharacterOptions);
+
+                            if (!string.IsNullOrEmpty(missingDirectories) || !string.IsNullOrEmpty(prohibitedDirectories))
+                            {
+                                objNode.ToolTipText = CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(missingDirectories, prohibitedDirectories);
+                                objNode.ForeColor = ColorManager.ErrorColor;
+                            }
+                        }
                     }
                     else
                     {
-                        objNode.Text = objUntypedInfo.ToString();
-                        objNode.ForeColor = SystemColors.GrayText;
+                        objNode.Text = kvpInfo.Key.ToString();
+                        objNode.ForeColor = ColorManager.GrayText;
+                        objNode.ToolTipText = LanguageManager.GetString("MessageTitle_FileNotFound");
                     }
                     treCustomDataDirectories.Nodes.Add(objNode);
                 }
@@ -834,19 +837,47 @@ namespace Chummer
                 for (int i = 0; i < treCustomDataDirectories.Nodes.Count; ++i)
                 {
                     TreeNode objNode = treCustomDataDirectories.Nodes[i];
-                    (object objUntypedInfo, bool blnDataDirectoryEnabled) = _lstCharacterCustomDataDirectoryInfos[i];
-                    if (objUntypedInfo != objNode.Tag)
-                        objNode.Tag = objUntypedInfo;
-                    if (blnDataDirectoryEnabled != objNode.Checked)
-                        objNode.Checked = blnDataDirectoryEnabled;
-                    if (objUntypedInfo is CustomDataDirectoryInfo objInfo)
+                    KeyValuePair<object, bool> kvpInfo = _dicCharacterCustomDataDirectoryInfos[i];
+                    if (kvpInfo.Key.Equals(objNode.Tag))
+                        objNode.Tag = kvpInfo.Key;
+                    if (kvpInfo.Value != objNode.Checked)
+                        objNode.Checked = kvpInfo.Value;
+                    if (kvpInfo.Key is CustomDataDirectoryInfo objInfo)
                     {
                         objNode.Text = objInfo.DisplayName;
+                        if (objNode.Checked)
+                        {
+                            // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
+                            string missingDirectories = string.Empty;
+                            if (objInfo.DependenciesList.Count > 0)
+                                missingDirectories = objInfo.CheckDependency(_objCharacterOptions);
+
+                            string prohibitedDirectories = string.Empty;
+                            if (objInfo.IncompatibilitiesList.Count > 0)
+                                prohibitedDirectories = objInfo.CheckIncompatibility(_objCharacterOptions);
+
+                            if (!string.IsNullOrEmpty(missingDirectories) || !string.IsNullOrEmpty(prohibitedDirectories))
+                            {
+                                objNode.ToolTipText = CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(missingDirectories, prohibitedDirectories);
+                                objNode.ForeColor = ColorManager.ErrorColor;
+                            }
+                            else
+                            {
+                                objNode.ToolTipText = string.Empty;
+                                objNode.ForeColor = ColorManager.WindowText;
+                            }
+                        }
+                        else
+                        {
+                            objNode.ToolTipText = string.Empty;
+                            objNode.ForeColor = ColorManager.WindowText;
+                        }
                     }
                     else
                     {
-                        objNode.Text = objUntypedInfo.ToString();
-                        objNode.ForeColor = SystemColors.GrayText;
+                        objNode.Text = kvpInfo.Key.ToString();
+                        objNode.ForeColor = ColorManager.GrayText;
+                        objNode.ToolTipText = LanguageManager.GetString("MessageTitle_FileNotFound");
                     }
                 }
             }
@@ -855,44 +886,6 @@ namespace Chummer
                 treCustomDataDirectories.SelectedNode = treCustomDataDirectories.FindNodeByTag(objOldSelected);
             treCustomDataDirectories.ShowNodeToolTips = true;
             treCustomDataDirectories.EndUpdate();
-        }
-
-        private void CheckForDependenciesAndIncompatibilities()
-        {
-            foreach (TreeNode directoryNode in treCustomDataDirectories.Nodes)
-            {
-                if (!(directoryNode.Tag is CustomDataDirectoryInfo customDataDirectory))
-                    continue;
-                if (directoryNode.Checked)
-                {
-                    // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
-                    string missingDirectories = string.Empty;
-                    if (customDataDirectory.DependenciesList.Count > 0)
-                        missingDirectories = customDataDirectory.CheckDependency(_objCharacterOptions);
-
-                    string prohibitedDirectories = string.Empty;
-                    if (customDataDirectory.IncompatibilitiesList.Count > 0)
-                        prohibitedDirectories = customDataDirectory.CheckIncompatibility(_objCharacterOptions);
-
-                    if (string.IsNullOrEmpty(missingDirectories) && string.IsNullOrEmpty(prohibitedDirectories))
-                    {
-                        directoryNode.ToolTipText = string.Empty;
-                        directoryNode.ForeColor = Color.Empty;
-                        continue;
-                    }
-
-                    string tooltip =
-                        CustomDataDirectoryInfo.BuildIncompatibilityDependencyString(missingDirectories, prohibitedDirectories);
-
-                    directoryNode.ToolTipText = tooltip;
-                    directoryNode.ForeColor = ColorManager.ErrorColor;
-                }
-                else
-                {
-                    directoryNode.ToolTipText = string.Empty;
-                    directoryNode.ForeColor = Color.Empty;
-                }
-            }
         }
 
         /// <summary>
@@ -1038,23 +1031,17 @@ namespace Chummer
 
         private void RebuildCustomDataDirectoryInfos()
         {
-            _lstCharacterCustomDataDirectoryInfos.Clear();
-            foreach (KeyValuePair<string, Tuple<int, bool>> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames.OrderBy(x => x.Value.Item1))
+            _dicCharacterCustomDataDirectoryInfos.Clear();
+            foreach (KeyValuePair<string, bool> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames)
             {
                 CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.Values.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
                 if (objLoopInfo != default)
                 {
-                    _lstCharacterCustomDataDirectoryInfos.Add(
-                        new Tuple<object, bool>(
-                            objLoopInfo,
-                            kvpCustomDataDirectory.Value.Item2));
+                    _dicCharacterCustomDataDirectoryInfos.Add(objLoopInfo, kvpCustomDataDirectory.Value);
                 }
                 else
                 {
-                    _lstCharacterCustomDataDirectoryInfos.Add(
-                        new Tuple<object, bool>(
-                            kvpCustomDataDirectory.Key,
-                            kvpCustomDataDirectory.Value.Item2));
+                    _dicCharacterCustomDataDirectoryInfos.Add(kvpCustomDataDirectory.Key, kvpCustomDataDirectory.Value);
                 }
             }
         }

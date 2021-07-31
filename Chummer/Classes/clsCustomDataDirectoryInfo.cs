@@ -229,24 +229,24 @@ namespace Chummer
             StringBuilder sbdReturn = new StringBuilder();
             foreach (DirectoryDependency dependency in DependenciesList)
             {
+                
                 if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
                 {
                     //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
-                    foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == dependency.UniqueIdentifier))
+                    CustomDataDirectoryInfo objEnabledCustomData =
+                        objCharacterOptions.EnabledCustomDataDirectoryInfosDictionary[dependency.UniqueIdentifier];
+                    if ((dependency.MinimumVersion != default && objEnabledCustomData.MyVersion < dependency.MinimumVersion)
+                        || (dependency.MaximumVersion != default && objEnabledCustomData.MyVersion > dependency.MaximumVersion))
                     {
-                        if ((dependency.MinimumVersion != default && enabledCustomData.MyVersion < dependency.MinimumVersion)
-                            || (dependency.MaximumVersion != default && enabledCustomData.MyVersion > dependency.MaximumVersion))
-                        {
-                            sbdReturn.AppendLine(string.Format(
-                                LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
-                                enabledCustomData.DisplayName, dependency.DisplayName));
-                        }
-                        else if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition > objCharacterOptions.EnabledCustomDataDirectoryInfos.IndexOf(enabledCustomData))
-                        {
-                            sbdReturn.AppendLine(string.Format(
-                                LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
-                                enabledCustomData.Name, Name));
-                        }
+                        sbdReturn.AppendLine(string.Format(
+                            LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
+                            objEnabledCustomData.DisplayName, dependency.DisplayName));
+                    }
+                    else if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterOptions.EnabledCustomDataDirectoryInfos.IndexOf(objEnabledCustomData))
+                    {
+                        sbdReturn.AppendLine(string.Format(
+                            LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
+                            objEnabledCustomData.Name, Name));
                     }
                 }
                 else

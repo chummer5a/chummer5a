@@ -214,8 +214,8 @@ namespace Chummer
         private decimal _decNuyenMaximumBP = 10;
         private int _intAvailability = 12;
 
-        // Dictionary of names of custom data directories, with first value element being load order and second value element being whether or not it's enabled
-        private readonly Dictionary<string, Tuple<int, bool>> _dicCustomDataDirectoryNames = new Dictionary<string, Tuple<int, bool>>();
+        // Dictionary of names of custom data directories, ordered by load order with the second value element being whether or not it's enabled
+        private readonly TypedOrderedDictionary<string, bool> _dicCustomDataDirectoryNames = new TypedOrderedDictionary<string, bool>();
 
         // Cached lists that should be updated every time _dicCustomDataDirectoryNames is updated
         private readonly TypedOrderedDictionary<Guid, CustomDataDirectoryInfo> _lstEnabledCustomDataDirectories = new TypedOrderedDictionary<Guid, CustomDataDirectoryInfo>();
@@ -327,6 +327,13 @@ namespace Chummer
         {
             if (objOther != null)
                 CopyValues(objOther);
+            PropertyChanged += OnPropertyChanged;
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CustomDataDirectoryNames))
+                RecalculateEnabledCustomDataDirectories();
         }
 
         public void CopyValues(CharacterOptions objOther)
@@ -351,11 +358,10 @@ namespace Chummer
             OnPropertyChanged(nameof(SourceId));
 
             _dicCustomDataDirectoryNames.Clear();
-            foreach (var kvpOther in objOther.CustomDataDirectoryNames)
+            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryNames)
             {
-                _dicCustomDataDirectoryNames.Add(kvpOther.Key, new Tuple<int, bool>(kvpOther.Value.Item1, kvpOther.Value.Item2));
+                _dicCustomDataDirectoryNames.Add(kvpOther.Key, kvpOther.Value);
             }
-            RecalculateEnabledCustomDataDirectories();
 
             _lstBooks.Clear();
             foreach (string strBook in objOther._lstBooks)
@@ -395,24 +401,12 @@ namespace Chummer
             if (aobjOtherProperties.Any(x => x.PropertyType.IsValueType && aobjProperties.All(y => y.Name != x.Name)))
                 return false;
 
-            foreach (var kvpOther in other.CustomDataDirectoryNames)
-            {
-                if (_dicCustomDataDirectoryNames.TryGetValue(kvpOther.Key, out Tuple<int, bool> objMyValue))
-                {
-                    if (objMyValue.Item1 != kvpOther.Value.Item1 || objMyValue.Item2 != kvpOther.Value.Item2)
-                        return false;
-                }
-                else if (kvpOther.Value.Item2)
-                {
-                    return false;
-                }
-            }
+            if (!other.CustomDataDirectoryNames.SequenceEqual<KeyValuePair<string, bool>>(_dicCustomDataDirectoryNames))
+                return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return !_dicCustomDataDirectoryNames.Any(x =>
-                       x.Value.Item2 && !other.CustomDataDirectoryNames.ContainsKey(x.Key)) &&
-                   _lstBooks.SequenceEqual(other._lstBooks) && BannedWareGrades.SequenceEqual(other.BannedWareGrades);
+            return _lstBooks.SequenceEqual(other._lstBooks) && BannedWareGrades.SequenceEqual(other.BannedWareGrades);
         }
 
         /// <summary>
@@ -1162,8 +1156,9 @@ namespace Chummer
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
-            int intTopMostLoadOrder = 0;
-            _dicCustomDataDirectoryNames.Clear();
+            int intTopMostOrder = -1;
+            Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
+                new Dictionary<int, Tuple<string, bool>>();
             bool blnNeedToProcessInfosWithoutLoadOrder = false;
             foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
             {
@@ -1178,14 +1173,25 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strOrder)
                         && int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intOrder))
                     {
-                        intTopMostLoadOrder = Math.Max(intTopMostLoadOrder, intTopMostLoadOrder);
-                        _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                            new Tuple<int, bool>(intOrder, blnLoopEnabled));
+                        while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
+                            intOrder += 1;
+                        intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
+                        dicLoadingCustomDataDirectories.Add(intOrder,
+                            new Tuple<string, bool>(strDirectoryName, blnLoopEnabled));
                     }
                     else
                         blnNeedToProcessInfosWithoutLoadOrder = true;
                 }
             }
+
+            _dicCustomDataDirectoryNames.Clear();
+            for (int i = 0; i < intTopMostOrder; ++i)
+            {
+                if (dicLoadingCustomDataDirectories.ContainsKey(i))
+                    _dicCustomDataDirectoryNames.Add(dicLoadingCustomDataDirectories[i].Item1,
+                        dicLoadingCustomDataDirectories[i].Item2);
+            }
+
             // Legacy sweep for custom data directories
             if (xmlLegacyCharacterNavigator != null)
             {
@@ -1194,8 +1200,7 @@ namespace Chummer
                     string strDirectoryName = xmlCustomDataDirectoryName.Value;
                     if (string.IsNullOrEmpty(strDirectoryName))
                         continue;
-                    _dicCustomDataDirectoryNames.Add(strDirectoryName, new Tuple<int, bool>(intTopMostLoadOrder, true));
-                    ++intTopMostLoadOrder;
+                    _dicCustomDataDirectoryNames.Add(strDirectoryName, true);
                 }
             }
 
@@ -1208,16 +1213,14 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strDirectoryName))
                         continue;
                     string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
-                    if (string.IsNullOrEmpty(strOrder) || !int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _))
+                    if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
+                        GlobalOptions.InvariantCultureInfo, out int _))
+                        continue;
+                    // Only load in directories that are either present in our GlobalOptions or are enabled
+                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
+                    if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Values.Any(x => x.Name == strDirectoryName))
                     {
-                        // Only load in directories that are either present in our GlobalOptions or are enabled
-                        bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
-                        if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Values.Any(x => x.Name == strDirectoryName))
-                        {
-                            _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                                new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
-                            ++intTopMostLoadOrder;
-                        }
+                        _dicCustomDataDirectoryNames.Add(strDirectoryName, blnLoopEnabled);
                     }
                 }
             }
@@ -1226,8 +1229,7 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/directoryname"))
                 {
-                    _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.Value, new Tuple<int, bool>(intTopMostLoadOrder, true));
-                    ++intTopMostLoadOrder;
+                    _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.Value, true);
                 }
             }
 
@@ -1236,8 +1238,7 @@ namespace Chummer
             {
                 if (!_dicCustomDataDirectoryNames.Keys.Contains(objMissingDirectory.Name))
                 {
-                    _dicCustomDataDirectoryNames.Add(objMissingDirectory.Name, new Tuple<int, bool>(intTopMostLoadOrder, false));
-                    ++intTopMostLoadOrder;
+                    _dicCustomDataDirectoryNames.Add(objMissingDirectory.Name, false);
                 }
             }
 
@@ -1522,6 +1523,8 @@ namespace Chummer
             }
         }
 
+        public string DictionaryKey => BuiltInOption ? SourceId : FileName;
+
         #endregion Build Properties
 
         #region Properties and Methods
@@ -1692,11 +1695,13 @@ namespace Chummer
                 _strBookXPath = string.Empty;
         }
 
-        public Dictionary<string, Tuple<int, bool>> CustomDataDirectoryNames => _dicCustomDataDirectoryNames;
+        public TypedOrderedDictionary<string, bool> CustomDataDirectoryNames => _dicCustomDataDirectoryNames;
 
         public IReadOnlyList<string> EnabledCustomDataDirectoryPaths => _lstEnabledCustomDataDirectoryPaths;
 
         public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _lstEnabledCustomDataDirectories;
+
+        public IReadOnlyDictionary<Guid, CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfosDictionary => _lstEnabledCustomDataDirectories;
 
         /// <summary>
         /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
@@ -1707,9 +1712,11 @@ namespace Chummer
         {
             _lstEnabledCustomDataDirectories.Clear();
             _lstEnabledCustomDataDirectoryPaths.Clear();
-            foreach (string strEnabledCustomDataDirectoryName in _dicCustomDataDirectoryNames.Where(x => x.Value.Item2).OrderBy(x => x.Value.Item1).Select(x => x.Key))
+            foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryNames)
             {
-                CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.Values.FirstOrDefault(x => x.Name == strEnabledCustomDataDirectoryName);
+                if (!kvpCustomDataDirectoryName.Value)
+                    continue;
+                CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.Values.FirstOrDefault(x => x.Name == kvpCustomDataDirectoryName.Key);
                 if (objInfoToAdd != default)
                 {
                     _lstEnabledCustomDataDirectories.Add(objInfoToAdd.Guid, objInfoToAdd);
@@ -2037,7 +2044,7 @@ namespace Chummer
                 {
                     _strChargenKarmaToNuyenExpression = strNewValue;
                     // A safety check to make sure that we always still account for Priority-given Nuyen
-                    if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                    if (OptionsManager.LoadedCharacterOptions.ContainsKey(DictionaryKey) && !_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
                     {
                         _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
                     }

@@ -64,7 +64,7 @@ namespace Chummer
                     CharacterOptions objNewCharacterOptions = new CharacterOptions();
                     if (objNewCharacterOptions.Load(xmlBuiltInSetting) &&
                         (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                        s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.SourceId,
+                        s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
                             objNewCharacterOptions);
                 });
                 string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -76,7 +76,8 @@ namespace Chummer
                         CharacterOptions objNewCharacterOptions = new CharacterOptions();
                         if (objNewCharacterOptions.Load(strSettingName, false) &&
                             (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                            s_dicLoadedCharacterOptions.TryAdd(strSettingName, objNewCharacterOptions);
+                            s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
+                                objNewCharacterOptions);
                     });
                 }
             }
