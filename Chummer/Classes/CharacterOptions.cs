@@ -702,12 +702,13 @@ namespace Chummer
 
                     // <customdatadirectorynames>
                     objWriter.WriteStartElement("customdatadirectorynames");
-                    foreach (KeyValuePair<string, Tuple<int, bool>> dicDirectoryName in _dicCustomDataDirectoryNames)
+                    for (int i = 0; i < _dicCustomDataDirectoryNames.Count; ++i)
                     {
+                        KeyValuePair<string, bool> dicDirectoryName = _dicCustomDataDirectoryNames[i];
                         objWriter.WriteStartElement("customdatadirectoryname");
                         objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
-                        objWriter.WriteElementString("order", dicDirectoryName.Value.Item1.ToString(GlobalOptions.InvariantCultureInfo));
-                        objWriter.WriteElementString("enabled", dicDirectoryName.Value.Item2.ToString(GlobalOptions.InvariantCultureInfo));
+                        objWriter.WriteElementString("order", i.ToString(GlobalOptions.InvariantCultureInfo));
+                        objWriter.WriteElementString("enabled", dicDirectoryName.Value.ToString(GlobalOptions.InvariantCultureInfo));
                         objWriter.WriteEndElement();
                     }
                     // </customdatadirectorynames>
@@ -1156,7 +1157,8 @@ namespace Chummer
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
-            int intTopMostOrder = -1;
+            int intTopMostOrder = 0;
+            int intBottomMostOrder = 0;
             Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
                 new Dictionary<int, Tuple<string, bool>>();
             bool blnNeedToProcessInfosWithoutLoadOrder = false;
@@ -1176,6 +1178,7 @@ namespace Chummer
                         while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
                             intOrder += 1;
                         intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
+                        intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
                         dicLoadingCustomDataDirectories.Add(intOrder,
                             new Tuple<string, bool>(strDirectoryName, blnLoopEnabled));
                     }
@@ -1185,7 +1188,7 @@ namespace Chummer
             }
 
             _dicCustomDataDirectoryNames.Clear();
-            for (int i = 0; i < intTopMostOrder; ++i)
+            for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
             {
                 if (dicLoadingCustomDataDirectories.ContainsKey(i))
                     _dicCustomDataDirectoryNames.Add(dicLoadingCustomDataDirectories[i].Item1,
