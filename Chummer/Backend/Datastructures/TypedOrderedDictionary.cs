@@ -95,7 +95,7 @@ namespace Chummer
             for (int i = 0; i < Count - 1; ++i)
                 yield return new KeyValuePair<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
         }
-
+        
         public IDictionaryEnumerator GetEnumerator()
         {
             return new TypedOrderedDictionaryEnumerator(this);
@@ -116,6 +116,9 @@ namespace Chummer
                 case KeyValuePair<TKey, TValue> objKeyValuePair:
                     return Contains(objKeyValuePair);
 
+                case Tuple<TKey, TValue> objTuple:
+                    return Contains(objTuple);
+
                 default:
                     return false;
             }
@@ -123,7 +126,12 @@ namespace Chummer
 
         public bool Contains(KeyValuePair<TKey, TValue> item)
         {
-            return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && item.Equals(objValue);
+            return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && item.Value.Equals(objValue);
+        }
+
+        public bool Contains(Tuple<TKey, TValue> item)
+        {
+            return _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && item.Item2.Equals(objValue);
         }
 
         public bool ContainsKey(TKey key)
@@ -141,6 +149,11 @@ namespace Chummer
             Add(item.Key, item.Value);
         }
 
+        public void Add(Tuple<TKey, TValue> item)
+        {
+            Add(item.Item1, item.Item2);
+        }
+
         public void Add(object key, object value)
         {
             if (!(key is TKey objKey))
@@ -156,6 +169,22 @@ namespace Chummer
             _lstIndexes.Add(key);
         }
 
+        public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> lstItems)
+        {
+            foreach (KeyValuePair<TKey, TValue> kvpItem in lstItems)
+            {
+                Add(kvpItem.Key, kvpItem.Value);
+            }
+        }
+
+        public void AddRange(IEnumerable<Tuple<TKey, TValue>> lstItems)
+        {
+            foreach ((TKey objKey, TValue objValue) in lstItems)
+            {
+                Add(objKey, objValue);
+            }
+        }
+
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             if (arrayIndex + Count >= array.Length)
@@ -163,6 +192,15 @@ namespace Chummer
             for (int i = 0; i < Count; ++i)
                 array[i + arrayIndex] =
                     new KeyValuePair<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
+        }
+
+        public void CopyTo(Tuple<TKey, TValue>[] array, int arrayIndex)
+        {
+            if (arrayIndex + Count >= array.Length)
+                throw new ArgumentOutOfRangeException();
+            for (int i = 0; i < Count; ++i)
+                array[i + arrayIndex] =
+                    new Tuple<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
         }
 
         public void CopyTo(Array array, int index)
@@ -204,6 +242,11 @@ namespace Chummer
         public bool Remove(KeyValuePair<TKey, TValue> item)
         {
             return Contains(item) && Remove(item.Key);
+        }
+
+        public bool Remove(Tuple<TKey, TValue> item)
+        {
+            return item != null && Contains(item) && Remove(item.Item1);
         }
 
         public void Remove(object key)
@@ -267,6 +310,10 @@ namespace Chummer
                         this[intKey] = objKeyValuePair;
                         break;
 
+                    case Tuple<TKey, TValue> objTuple when key is int intKey:
+                        this[intKey] = new KeyValuePair<TKey, TValue>(objTuple.Item1, objTuple.Item2);
+                        break;
+
                     default:
                         throw new ArgumentException(nameof(value));
                 }
@@ -315,12 +362,29 @@ namespace Chummer
                 : -1;
         }
 
+        public int IndexOf(Tuple<TKey, TValue> item)
+        {
+            return item != null && _dicUnorderedData.ContainsKey(item.Item1)
+                ? _lstIndexes.IndexOf(item.Item1)
+                : -1;
+        }
+
         public void Insert(int index, KeyValuePair<TKey, TValue> item)
         {
             if (_dicUnorderedData.ContainsKey(item.Key))
                 throw new ArgumentException(nameof(item));
             _dicUnorderedData.Add(item.Key, item.Value);
             _lstIndexes.Insert(index, item.Key);
+        }
+
+        public void Insert(int index, Tuple<TKey, TValue> item)
+        {
+            if (item == null)
+                throw new ArgumentNullException(nameof(item));
+            if (_dicUnorderedData.ContainsKey(item.Item1))
+                throw new ArgumentException(nameof(item));
+            _dicUnorderedData.Add(item.Item1, item.Item2);
+            _lstIndexes.Insert(index, item.Item1);
         }
 
         public void RemoveAt(int index)
@@ -335,6 +399,26 @@ namespace Chummer
         public void Reverse(int index, int count)
         {
             _lstIndexes.Reverse(index, count);
+        }
+
+        public void Sort()
+        {
+            _lstIndexes.Sort();
+        }
+
+        public void Sort(Comparison<TKey> comparison)
+        {
+            _lstIndexes.Sort(comparison);
+        }
+
+        public void Sort(IComparer<TKey> comparer)
+        {
+            _lstIndexes.Sort(comparer);
+        }
+
+        public void Sort(int index, int count, IComparer<TKey> comparer)
+        {
+            _lstIndexes.Sort(index, count, comparer);
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
