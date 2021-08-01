@@ -250,7 +250,9 @@ namespace Chummer
                     break;
 
                 case "SelectEcho":
-                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Echo))
+                {
+                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1, Technomancer = true};
+                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                     {
                         frmPickMetamagic.ShowDialog(this);
                         if (frmPickMetamagic.DialogResult == DialogResult.OK)
@@ -259,10 +261,13 @@ namespace Chummer
                             txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
                         }
                     }
+                }
                     break;
 
                 case "SelectMetamagic":
-                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Metamagic))
+                {
+                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
+                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                     {
                         frmPickMetamagic.ShowDialog(this);
                         if (frmPickMetamagic.DialogResult == DialogResult.OK)
@@ -271,6 +276,7 @@ namespace Chummer
                             txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
                         }
                     }
+                }
                     break;
 
                 case "SelectMentalAttribute":

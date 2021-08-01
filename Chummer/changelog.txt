@@ -99,6 +99,7 @@ Application Changes:
 - Armor and clothing are now marked as devices with Matrix attributes.
 - Split up the option for how much Nuyen is gained per Karma spent after character creation into separate Working for the Man and Working for the People values.
 - Weapon mounts for vehicles now have their capacities for weapons explicitly defined. The default size is one weapon, but a different size can be set with the weaponsize parameter. Users can no longer attempt to add more weapons to a mount than it has capacity for weapons.
+- Bonus nodes and improvements that force characters to pick up certain metamagics/echoes at specific initiation/submersion grades now properly allow the character to pick up other metamagics/echoes at other grades. Fixes #4530.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

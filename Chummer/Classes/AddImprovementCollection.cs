@@ -4476,7 +4476,8 @@ namespace Chummer.Classes
             }
             else
             {
-                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Metamagic))
+                InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
+                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                 {
                     frmPickMetamagic.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.
@@ -4578,7 +4579,8 @@ namespace Chummer.Classes
             }
             else
             {
-                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, frmSelectMetamagic.Mode.Echo))
+                InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
+                using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                 {
                     frmPickMetamagic.ShowDialog(Program.MainForm);
                     // Don't do anything else if the form was canceled.

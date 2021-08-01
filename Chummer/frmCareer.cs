@@ -17100,13 +17100,12 @@ namespace Chummer
 
             // Character can only have a number of Metamagics/Echoes equal to their Initiate Grade. Additional ones cost Karma.
 
-            int intGrade = 0;
-            if (treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade)
-                intGrade = objGrade.Grade;
+            if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
+                return;
 
             // Evaluate each object
-            bool blnPayWithKarma = CharacterObject.Metamagics.Any(objMetamagic => objMetamagic.Grade == intGrade)
-                || CharacterObject.Spells.Any(objSpell => objSpell.Grade == intGrade);
+            bool blnPayWithKarma = CharacterObject.Metamagics.Any(objMetamagic => objMetamagic.Grade == objGrade.Grade) ||
+                                   CharacterObject.Spells.Any(objSpell => objSpell.Grade == objGrade.Grade);
 
             // Additional Metamagics beyond the standard 1 per Grade cost additional Karma, so ask if the user wants to spend the additional Karma.
             if (blnPayWithKarma && CharacterObject.Karma < CharacterObjectOptions.KarmaMetamagic)
@@ -17128,9 +17127,7 @@ namespace Chummer
                 , CharacterObjectOptions.KarmaMetamagic.ToString(GlobalOptions.CultureInfo))))
                 return;
 
-            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled
-                ? frmSelectMetamagic.Mode.Echo
-                : frmSelectMetamagic.Mode.Metamagic))
+            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
             {
                 frmPickMetamagic.ShowDialog(this);
 
@@ -17154,7 +17151,7 @@ namespace Chummer
                 }
 
                 objNewMetamagic.Create(objXmlMetamagic, objSource);
-                objNewMetamagic.Grade = intGrade;
+                objNewMetamagic.Grade = objGrade.Grade;
                 if (objNewMetamagic.InternalId.IsEmptyGuid())
                     return;
 

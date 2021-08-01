@@ -14303,10 +14303,8 @@ namespace Chummer
         {
             if (!(treMetamagic.SelectedNode?.Tag is InitiationGrade objGrade))
                 return;
-
-            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, CharacterObject.RESEnabled
-                ? frmSelectMetamagic.Mode.Echo
-                : frmSelectMetamagic.Mode.Metamagic))
+            
+            using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(CharacterObject, objGrade))
             {
                 frmPickMetamagic.ShowDialog(this);
 
