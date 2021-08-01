@@ -143,6 +143,7 @@ Data Changes:
 - Rockblood Old School Line and Rockblood Signature Armored Shirt are categorized as Armor instead of Clothing.
 - Added the Gabriel Hound from Sprawl Wilds to the critters list.
 - KEV from Shadowrun Missions Season 8 now has proper sourcebook references, and the specific Shadowrun Missions Season 8 books that contain it with a price and availability have been added to the program.
+- Fixed Savior Medkit page reference. Fixes #4529.
 
 Changed/New Strings:
 - String_ContactPoints
