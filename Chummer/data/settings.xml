@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -23,11 +24,8 @@
       <id>223a11ff-80e0-428b-89a9-6ef1c243b8b6</id>
       <name>Standard</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -82,12 +80,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -174,11 +169,8 @@
       <id>507eef8e-eba8-41ea-84c4-4282258fe669</id>
       <name>Street Level</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -233,12 +225,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -325,11 +314,8 @@
       <id>33e5317f-12aa-416e-816e-3b8b6ad95712</id>
       <name>Prime Runner</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -384,12 +370,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -476,11 +459,8 @@
       <id>4c34a8ed-2888-410c-afda-024475fa3c76</id>
       <name>Street Scum (BCDEE)</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -535,12 +515,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -627,11 +604,8 @@
       <id>9da22725-0596-4d68-ba2b-54f701e75e74</id>
       <name>Street Scum (CCDDE)</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -686,12 +660,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -778,11 +749,8 @@
       <id>9e1c2dec-d2fa-42a0-a842-8bf575943780</id>
       <name>High Life</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -837,12 +805,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -929,11 +894,8 @@
       <id>3509a807-68ee-4c18-b7d5-b130313b4b77</id>
       <name>Sum to Ten</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -988,12 +950,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -1081,11 +1040,8 @@
       <id>fe7bb0d9-3cd9-4a75-825e-135b95a4f3ef</id>
       <name>Point Buy</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -1140,12 +1096,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -1233,11 +1186,8 @@
       <id>8a31af6d-7137-4284-872b-7d8087e156c6</id>
       <name>Life Modules</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -1292,12 +1242,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -1385,11 +1332,8 @@
       <id>0aa71387-6fe7-4b1b-b310-c968ca0cdc1f</id>
       <name>Standard (German)</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -1444,12 +1388,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -1542,11 +1483,8 @@
       <id>6bf7add9-34ac-4538-96ac-8015279bf602</id>
       <name>Sum to Ten (German)</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -1601,12 +1539,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -1700,11 +1635,8 @@
       <id>ae911699-a9ca-4c8e-9b38-9060b321ad49</id>
       <name>Point Buy (German)</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -1759,12 +1691,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -1858,11 +1787,8 @@
       <id>67e25032-2a4e-42ca-97fa-69f7f608236c</id>
       <name>Full House</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -1917,12 +1843,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -2014,8 +1937,11 @@
         <book>SFM</book>
         <book>SFCC</book>
         <book>SPS</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
         <book>SS</book>
         <book>SG</book>
+        <book>SW</book>
         <book>TCT</book>
         <book>SL</book>
         <book>TSG</book>
@@ -2041,14 +1967,196 @@
       </redlinerexclusion>
     </setting>
     <setting>
+      <id>803dd14a-9b21-4224-84d5-202511d94008</id>
+      <name>Full House (Point Buy)</name>
+      <licenserestricted>False</licenserestricted>
+      <morelethalgameplay>False</morelethalgameplay>
+      <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
+      <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
+      <allowinitiationincreatemode>False</allowinitiationincreatemode>
+      <usepointsonbrokengroups>False</usepointsonbrokengroups>
+      <dontdoublequalities>False</dontdoublequalities>
+      <dontdoublequalityrefunds>False</dontdoublequalityrefunds>
+      <ignoreart>False</ignoreart>
+      <cyberlegmovement>False</cyberlegmovement>
+      <allow2ndmaxattribute>False</allow2ndmaxattribute>
+      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
+      <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
+      <dronearmorflatnumber>2</dronearmorflatnumber>
+      <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
+      <ignorecomplexformlimit>False</ignorecomplexformlimit>
+      <noarmorencumbrance>False</noarmorencumbrance>
+      <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
+      <allowskillregrouping>True</allowskillregrouping>
+      <metatypecostskarma>True</metatypecostskarma>
+      <metatypecostskarmamultiplier>1</metatypecostskarmamultiplier>
+      <limbcount>6</limbcount>
+      <excludelimbslot />
+      <allowcyberwareessdiscounts>False</allowcyberwareessdiscounts>
+      <maximumarmormodifications>False</maximumarmormodifications>
+      <armordegredation>False</armordegredation>
+      <specialkarmacostbasedonshownvalue>False</specialkarmacostbasedonshownvalue>
+      <exceedpositivequalities>False</exceedpositivequalities>
+      <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
+      <mysaddppcareer>False</mysaddppcareer>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
+      <exceednegativequalities>False</exceednegativequalities>
+      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <multiplyrestrictedcost>False</multiplyrestrictedcost>
+      <multiplyforbiddencost>False</multiplyforbiddencost>
+      <restrictedcostmultiplier>1</restrictedcostmultiplier>
+      <forbiddencostmultiplier>1</forbiddencostmultiplier>
+      <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
+      <nuyenformat>#,0.##</nuyenformat>
+      <essenceformat>#,0.00</essenceformat>
+      <enforcecapacity>True</enforcecapacity>
+      <restrictrecoil>True</restrictrecoil>
+      <unrestrictednuyen>False</unrestrictednuyen>
+      <allowhigherstackedfoci>False</allowhigherstackedfoci>
+      <alloweditpartofbaseweapon>False</alloweditpartofbaseweapon>
+      <breakskillgroupsincreatemode>False</breakskillgroupsincreatemode>
+      <allowpointbuyspecializationsonkarmaskills>False</allowpointbuyspecializationsonkarmaskills>
+      <extendanydetectionspell>False</extendanydetectionspell>
+      <allowskilldicerolling>True</allowskilldicerolling>
+      <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
+      <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
+      <reverseattributepriorityorder>False</reverseattributepriorityorder>
+      <allowobsolescentupgrade>False</allowobsolescentupgrade>
+      <allowbiowaresuites>False</allowbiowaresuites>
+      <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
+      <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
+      <autobackstory>True</autobackstory>
+      <freemartialartspecialization>False</freemartialartspecialization>
+      <priorityspellsasadeptpowers>False</priorityspellsasadeptpowers>
+      <usecalculatedpublicawareness>False</usecalculatedpublicawareness>
+      <increasedimprovedabilitymodifier>False</increasedimprovedabilitymodifier>
+      <allowfreegrids>False</allowfreegrids>
+      <allowtechnomancerschooling>False</allowtechnomancerschooling>
+      <cyberlimbattributebonuscap>4</cyberlimbattributebonuscap>
+      <unclampattributeminimum>False</unclampattributeminimum>
+      <dronemods>False</dronemods>
+      <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <karmacost>
+        <karmaattribute>5</karmaattribute>
+        <karmaquality>1</karmaquality>
+        <karmaspecialization>7</karmaspecialization>
+        <karmaknospecialization>7</karmaknospecialization>
+        <karmanewknowledgeskill>1</karmanewknowledgeskill>
+        <karmanewactiveskill>2</karmanewactiveskill>
+        <karmanewskillgroup>5</karmanewskillgroup>
+        <karmaimproveknowledgeskill>1</karmaimproveknowledgeskill>
+        <karmaimproveactiveskill>2</karmaimproveactiveskill>
+        <karmaimproveskillgroup>5</karmaimproveskillgroup>
+        <karmaspell>5</karmaspell>
+        <karmaenhancement>2</karmaenhancement>
+        <karmanewcomplexform>4</karmanewcomplexform>
+        <karmaimprovecomplexform>1</karmaimprovecomplexform>
+        <karmanewaiprogram>5</karmanewaiprogram>
+        <karmanewaiadvancedprogram>8</karmanewaiadvancedprogram>
+        <karmacontact>1</karmacontact>
+        <karmaenemy>1</karmaenemy>
+        <karmacarryover>7</karmacarryover>
+        <karmaspirit>1</karmaspirit>
+        <karmamaneuver>5</karmamaneuver>
+        <karmainitiation>3</karmainitiation>
+        <karmainitiationflat>10</karmainitiationflat>
+        <karmametamagic>15</karmametamagic>
+        <karmacomplexformoption>2</karmacomplexformoption>
+        <karmacomplexformskillsoft>1</karmacomplexformskillsoft>
+        <karmajoingroup>5</karmajoingroup>
+        <karmaleavegroup>1</karmaleavegroup>
+        <karmaalchemicalfocus>3</karmaalchemicalfocus>
+        <karmabanishingfocus>2</karmabanishingfocus>
+        <karmabindingfocus>2</karmabindingfocus>
+        <karmacenteringfocus>3</karmacenteringfocus>
+        <karmacounterspellingfocus>2</karmacounterspellingfocus>
+        <karmadisenchantingfocus>3</karmadisenchantingfocus>
+        <karmaflexiblesignaturefocus>3</karmaflexiblesignaturefocus>
+        <karmamaskingfocus>3</karmamaskingfocus>
+        <karmapowerfocus>6</karmapowerfocus>
+        <karmaqifocus>2</karmaqifocus>
+        <karmaritualspellcastingfocus>2</karmaritualspellcastingfocus>
+        <karmaspellcastingfocus>2</karmaspellcastingfocus>
+        <karmaspellshapingfocus>3</karmaspellshapingfocus>
+        <karmasummoningfocus>2</karmasummoningfocus>
+        <karmasustainingfocus>2</karmasustainingfocus>
+        <karmaweaponfocus>3</karmaweaponfocus>
+        <karmamysadpp>5</karmamysadpp>
+        <karmaspiritfettering>3</karmaspiritfettering>
+      </karmacost>
+      <books>
+        <book>SR5</book>
+        <book>AET</book>
+        <book>AP</book>
+        <book>BTB</book>
+        <book>BOTL</book>
+        <book>BLB</book>
+        <book>BB</book>
+        <book>CA</book>
+        <book>CF</book>
+        <book>DTR</book>
+        <book>DT</book>
+        <book>FA</book>
+        <book>GH3</book>
+        <book>HT</book>
+        <book>HS</book>
+        <book>KK</book>
+        <book>KC</book>
+        <book>LCD</book>
+        <book>NF</book>
+        <book>NP</book>
+        <book>R5</book>
+        <book>RG</book>
+        <book>RF</book>
+        <book>SASS</book>
+        <book>SSP</book>
+        <book>SFB</book>
+        <book>SFME</book>
+        <book>SFM</book>
+        <book>SFCC</book>
+        <book>SPS</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
+        <book>SS</book>
+        <book>SG</book>
+        <book>SW</book>
+        <book>TCT</book>
+        <book>SL</book>
+        <book>TSG</book>
+        <book>TVG</book>
+      </books>
+      <customdatadirectorynames />
+      <buildmethod>Karma</buildmethod>
+      <buildpoints>800</buildpoints>
+      <qualitykarmalimit>25</qualitykarmalimit>
+      <priorityarray>ABCDE</priorityarray>
+      <prioritytable>Standard</prioritytable>
+      <sumtoten>10</sumtoten>
+      <availability>12</availability>
+      <nuyenmaxbp>10</nuyenmaxbp>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+    </setting>
+    <setting>
       <id>b378aff1-62ea-420e-a7af-7b15086b2d82</id>
       <name>Newbie's Choice</name>
       <licenserestricted>False</licenserestricted>
-      <printzeroratingskills>True</printzeroratingskills>
+
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <printexpenses>False</printexpenses>
-      <printfreeexpenses>True</printfreeexpenses>
+
       <nuyenperbpwftm>2000</nuyenperbpwftm>
       <nuyenperbpwftp>2000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
@@ -2103,12 +2211,9 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <printnotes>False</printnotes>
       <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
-      <allowhoverincrement>False</allowhoverincrement>
-      <searchincategoryonly>True</searchincategoryonly>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
       <autobackstory>True</autobackstory>
       <freemartialartspecialization>False</freemartialartspecialization>
@@ -2186,6 +2291,757 @@
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
         <grade>Gammaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+    </setting>
+    <setting>
+      <id>636d419c-49d0-42c3-9090-416980841c20</id>
+      <name>Shadowrun Missions Chicago</name>
+      <licenserestricted>False</licenserestricted>
+      <morelethalgameplay>False</morelethalgameplay>
+      <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
+      <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
+      <allowinitiationincreatemode>False</allowinitiationincreatemode>
+      <usepointsonbrokengroups>False</usepointsonbrokengroups>
+      <dontdoublequalities>False</dontdoublequalities>
+      <dontdoublequalityrefunds>False</dontdoublequalityrefunds>
+      <ignoreart>False</ignoreart>
+      <cyberlegmovement>False</cyberlegmovement>
+      <allow2ndmaxattribute>False</allow2ndmaxattribute>
+      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
+      <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
+      <dronearmorflatnumber>2</dronearmorflatnumber>
+      <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
+      <ignorecomplexformlimit>False</ignorecomplexformlimit>
+      <noarmorencumbrance>False</noarmorencumbrance>
+      <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
+      <allowskillregrouping>True</allowskillregrouping>
+      <metatypecostskarma>True</metatypecostskarma>
+      <metatypecostskarmamultiplier>1</metatypecostskarmamultiplier>
+      <limbcount>6</limbcount>
+      <excludelimbslot />
+      <allowcyberwareessdiscounts>False</allowcyberwareessdiscounts>
+      <maximumarmormodifications>False</maximumarmormodifications>
+      <armordegredation>False</armordegredation>
+      <specialkarmacostbasedonshownvalue>False</specialkarmacostbasedonshownvalue>
+      <exceedpositivequalities>False</exceedpositivequalities>
+      <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
+      <mysaddppcareer>False</mysaddppcareer>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
+      <exceednegativequalities>True</exceednegativequalities>
+      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <multiplyrestrictedcost>False</multiplyrestrictedcost>
+      <multiplyforbiddencost>False</multiplyforbiddencost>
+      <restrictedcostmultiplier>1</restrictedcostmultiplier>
+      <forbiddencostmultiplier>1</forbiddencostmultiplier>
+      <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
+      <nuyenformat>#,0.##</nuyenformat>
+      <essenceformat>#,0.00</essenceformat>
+      <enforcecapacity>True</enforcecapacity>
+      <restrictrecoil>True</restrictrecoil>
+      <unrestrictednuyen>False</unrestrictednuyen>
+      <allowhigherstackedfoci>False</allowhigherstackedfoci>
+      <alloweditpartofbaseweapon>False</alloweditpartofbaseweapon>
+      <breakskillgroupsincreatemode>False</breakskillgroupsincreatemode>
+      <allowpointbuyspecializationsonkarmaskills>False</allowpointbuyspecializationsonkarmaskills>
+      <extendanydetectionspell>False</extendanydetectionspell>
+      <allowskilldicerolling>True</allowskilldicerolling>
+      <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
+      <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
+      <reverseattributepriorityorder>False</reverseattributepriorityorder>
+      <allowobsolescentupgrade>False</allowobsolescentupgrade>
+      <allowbiowaresuites>False</allowbiowaresuites>
+      <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
+      <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
+      <autobackstory>True</autobackstory>
+      <freemartialartspecialization>False</freemartialartspecialization>
+      <priorityspellsasadeptpowers>False</priorityspellsasadeptpowers>
+      <usecalculatedpublicawareness>False</usecalculatedpublicawareness>
+      <increasedimprovedabilitymodifier>False</increasedimprovedabilitymodifier>
+      <allowfreegrids>False</allowfreegrids>
+      <allowtechnomancerschooling>False</allowtechnomancerschooling>
+      <cyberlimbattributebonuscap>4</cyberlimbattributebonuscap>
+      <unclampattributeminimum>False</unclampattributeminimum>
+      <dronemods>True</dronemods>
+      <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <karmacost>
+        <karmaattribute>5</karmaattribute>
+        <karmaquality>1</karmaquality>
+        <karmaspecialization>7</karmaspecialization>
+        <karmaknospecialization>7</karmaknospecialization>
+        <karmanewknowledgeskill>1</karmanewknowledgeskill>
+        <karmanewactiveskill>2</karmanewactiveskill>
+        <karmanewskillgroup>5</karmanewskillgroup>
+        <karmaimproveknowledgeskill>1</karmaimproveknowledgeskill>
+        <karmaimproveactiveskill>2</karmaimproveactiveskill>
+        <karmaimproveskillgroup>5</karmaimproveskillgroup>
+        <karmaspell>5</karmaspell>
+        <karmaenhancement>2</karmaenhancement>
+        <karmanewcomplexform>4</karmanewcomplexform>
+        <karmaimprovecomplexform>1</karmaimprovecomplexform>
+        <karmanewaiprogram>5</karmanewaiprogram>
+        <karmanewaiadvancedprogram>8</karmanewaiadvancedprogram>
+        <karmacontact>1</karmacontact>
+        <karmaenemy>1</karmaenemy>
+        <karmacarryover>7</karmacarryover>
+        <karmaspirit>1</karmaspirit>
+        <karmamaneuver>5</karmamaneuver>
+        <karmainitiation>3</karmainitiation>
+        <karmainitiationflat>10</karmainitiationflat>
+        <karmametamagic>15</karmametamagic>
+        <karmacomplexformoption>2</karmacomplexformoption>
+        <karmacomplexformskillsoft>1</karmacomplexformskillsoft>
+        <karmajoingroup>5</karmajoingroup>
+        <karmaleavegroup>1</karmaleavegroup>
+        <karmaalchemicalfocus>3</karmaalchemicalfocus>
+        <karmabanishingfocus>2</karmabanishingfocus>
+        <karmabindingfocus>2</karmabindingfocus>
+        <karmacenteringfocus>3</karmacenteringfocus>
+        <karmacounterspellingfocus>2</karmacounterspellingfocus>
+        <karmadisenchantingfocus>3</karmadisenchantingfocus>
+        <karmaflexiblesignaturefocus>3</karmaflexiblesignaturefocus>
+        <karmamaskingfocus>3</karmamaskingfocus>
+        <karmapowerfocus>6</karmapowerfocus>
+        <karmaqifocus>2</karmaqifocus>
+        <karmaritualspellcastingfocus>2</karmaritualspellcastingfocus>
+        <karmaspellcastingfocus>2</karmaspellcastingfocus>
+        <karmaspellshapingfocus>3</karmaspellshapingfocus>
+        <karmasummoningfocus>2</karmasummoningfocus>
+        <karmasustainingfocus>2</karmasustainingfocus>
+        <karmaweaponfocus>3</karmaweaponfocus>
+        <karmamysadpp>5</karmamysadpp>
+        <karmaspiritfettering>3</karmaspiritfettering>
+      </karmacost>
+      <books>
+        <book>SR5</book>
+        <book>AET</book>
+        <book>AP</book>
+        <book>BTB</book>
+        <book>BOTL</book>
+        <book>BLB</book>
+        <book>CA</book>
+        <book>CF</book>
+        <book>DT</book>
+        <book>FA</book>
+        <book>GH3</book>
+        <book>HT</book>
+        <book>HS</book>
+        <book>KC</book>
+        <book>LCD</book>
+        <book>NP</book>
+        <book>R5</book>
+        <book>RG</book>
+        <book>RF</book>
+        <book>SASS</book>
+        <book>SSP</book>
+        <book>SFB</book>
+        <book>SFME</book>
+        <book>SFM</book>
+        <book>SFCC</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
+        <book>SS</book>
+        <book>SG</book>
+        <book>SW</book>
+        <book>TCT</book>
+        <book>SL</book>
+        <book>TSG</book>
+        <book>TVG</book>
+      </books>
+      <customdatadirectorynames>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+      </customdatadirectorynames>
+      <buildmethod>Priority</buildmethod>
+      <buildpoints>25</buildpoints>
+      <qualitykarmalimit>25</qualitykarmalimit>
+      <priorityarray>ABCDE</priorityarray>
+      <prioritytable>Standard</prioritytable>
+      <sumtoten>10</sumtoten>
+      <availability>12</availability>
+      <nuyenmaxbp>10</nuyenmaxbp>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+        <grade>Omegaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+    </setting>
+    <setting>
+      <id>f16800fb-0c45-47be-bcc0-05862533e279</id>
+      <name>Shadowrun Missions Chicago (Point Buy)</name>
+      <licenserestricted>False</licenserestricted>
+      <morelethalgameplay>False</morelethalgameplay>
+      <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
+      <nuyenperbpwftm>2000</nuyenperbpwftm>
+      <nuyenperbpwftp>2000</nuyenperbpwftp>
+      <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
+      <allowinitiationincreatemode>False</allowinitiationincreatemode>
+      <usepointsonbrokengroups>False</usepointsonbrokengroups>
+      <dontdoublequalities>False</dontdoublequalities>
+      <dontdoublequalityrefunds>False</dontdoublequalityrefunds>
+      <ignoreart>False</ignoreart>
+      <cyberlegmovement>False</cyberlegmovement>
+      <allow2ndmaxattribute>False</allow2ndmaxattribute>
+      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
+      <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
+      <dronearmorflatnumber>2</dronearmorflatnumber>
+      <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
+      <ignorecomplexformlimit>False</ignorecomplexformlimit>
+      <noarmorencumbrance>False</noarmorencumbrance>
+      <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
+      <allowskillregrouping>True</allowskillregrouping>
+      <metatypecostskarma>True</metatypecostskarma>
+      <metatypecostskarmamultiplier>1</metatypecostskarmamultiplier>
+      <limbcount>6</limbcount>
+      <excludelimbslot />
+      <allowcyberwareessdiscounts>False</allowcyberwareessdiscounts>
+      <maximumarmormodifications>False</maximumarmormodifications>
+      <armordegredation>False</armordegredation>
+      <specialkarmacostbasedonshownvalue>False</specialkarmacostbasedonshownvalue>
+      <exceedpositivequalities>False</exceedpositivequalities>
+      <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
+      <mysaddppcareer>False</mysaddppcareer>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
+      <exceednegativequalities>True</exceednegativequalities>
+      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <multiplyrestrictedcost>False</multiplyrestrictedcost>
+      <multiplyforbiddencost>False</multiplyforbiddencost>
+      <restrictedcostmultiplier>1</restrictedcostmultiplier>
+      <forbiddencostmultiplier>1</forbiddencostmultiplier>
+      <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
+      <nuyenformat>#,0.##</nuyenformat>
+      <essenceformat>#,0.00</essenceformat>
+      <enforcecapacity>True</enforcecapacity>
+      <restrictrecoil>True</restrictrecoil>
+      <unrestrictednuyen>False</unrestrictednuyen>
+      <allowhigherstackedfoci>False</allowhigherstackedfoci>
+      <alloweditpartofbaseweapon>False</alloweditpartofbaseweapon>
+      <breakskillgroupsincreatemode>False</breakskillgroupsincreatemode>
+      <allowpointbuyspecializationsonkarmaskills>False</allowpointbuyspecializationsonkarmaskills>
+      <extendanydetectionspell>False</extendanydetectionspell>
+      <allowskilldicerolling>True</allowskilldicerolling>
+      <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
+      <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
+      <reverseattributepriorityorder>False</reverseattributepriorityorder>
+      <allowobsolescentupgrade>False</allowobsolescentupgrade>
+      <allowbiowaresuites>False</allowbiowaresuites>
+      <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
+      <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
+      <autobackstory>True</autobackstory>
+      <freemartialartspecialization>False</freemartialartspecialization>
+      <priorityspellsasadeptpowers>False</priorityspellsasadeptpowers>
+      <usecalculatedpublicawareness>False</usecalculatedpublicawareness>
+      <increasedimprovedabilitymodifier>False</increasedimprovedabilitymodifier>
+      <allowfreegrids>False</allowfreegrids>
+      <allowtechnomancerschooling>False</allowtechnomancerschooling>
+      <cyberlimbattributebonuscap>4</cyberlimbattributebonuscap>
+      <unclampattributeminimum>False</unclampattributeminimum>
+      <dronemods>True</dronemods>
+      <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <karmacost>
+        <karmaattribute>5</karmaattribute>
+        <karmaquality>1</karmaquality>
+        <karmaspecialization>7</karmaspecialization>
+        <karmaknospecialization>7</karmaknospecialization>
+        <karmanewknowledgeskill>1</karmanewknowledgeskill>
+        <karmanewactiveskill>2</karmanewactiveskill>
+        <karmanewskillgroup>5</karmanewskillgroup>
+        <karmaimproveknowledgeskill>1</karmaimproveknowledgeskill>
+        <karmaimproveactiveskill>2</karmaimproveactiveskill>
+        <karmaimproveskillgroup>5</karmaimproveskillgroup>
+        <karmaspell>5</karmaspell>
+        <karmaenhancement>2</karmaenhancement>
+        <karmanewcomplexform>4</karmanewcomplexform>
+        <karmaimprovecomplexform>1</karmaimprovecomplexform>
+        <karmanewaiprogram>5</karmanewaiprogram>
+        <karmanewaiadvancedprogram>8</karmanewaiadvancedprogram>
+        <karmacontact>1</karmacontact>
+        <karmaenemy>1</karmaenemy>
+        <karmacarryover>7</karmacarryover>
+        <karmaspirit>1</karmaspirit>
+        <karmamaneuver>5</karmamaneuver>
+        <karmainitiation>3</karmainitiation>
+        <karmainitiationflat>10</karmainitiationflat>
+        <karmametamagic>15</karmametamagic>
+        <karmacomplexformoption>2</karmacomplexformoption>
+        <karmacomplexformskillsoft>1</karmacomplexformskillsoft>
+        <karmajoingroup>5</karmajoingroup>
+        <karmaleavegroup>1</karmaleavegroup>
+        <karmaalchemicalfocus>3</karmaalchemicalfocus>
+        <karmabanishingfocus>2</karmabanishingfocus>
+        <karmabindingfocus>2</karmabindingfocus>
+        <karmacenteringfocus>3</karmacenteringfocus>
+        <karmacounterspellingfocus>2</karmacounterspellingfocus>
+        <karmadisenchantingfocus>3</karmadisenchantingfocus>
+        <karmaflexiblesignaturefocus>3</karmaflexiblesignaturefocus>
+        <karmamaskingfocus>3</karmamaskingfocus>
+        <karmapowerfocus>6</karmapowerfocus>
+        <karmaqifocus>2</karmaqifocus>
+        <karmaritualspellcastingfocus>2</karmaritualspellcastingfocus>
+        <karmaspellcastingfocus>2</karmaspellcastingfocus>
+        <karmaspellshapingfocus>3</karmaspellshapingfocus>
+        <karmasummoningfocus>2</karmasummoningfocus>
+        <karmasustainingfocus>2</karmasustainingfocus>
+        <karmaweaponfocus>3</karmaweaponfocus>
+        <karmamysadpp>5</karmamysadpp>
+        <karmaspiritfettering>3</karmaspiritfettering>
+      </karmacost>
+      <books>
+        <book>SR5</book>
+        <book>AET</book>
+        <book>AP</book>
+        <book>BTB</book>
+        <book>BOTL</book>
+        <book>BLB</book>
+        <book>CA</book>
+        <book>CF</book>
+        <book>DT</book>
+        <book>FA</book>
+        <book>GH3</book>
+        <book>HT</book>
+        <book>HS</book>
+        <book>KC</book>
+        <book>LCD</book>
+        <book>NP</book>
+        <book>R5</book>
+        <book>RG</book>
+        <book>RF</book>
+        <book>SASS</book>
+        <book>SSP</book>
+        <book>SFB</book>
+        <book>SFME</book>
+        <book>SFM</book>
+        <book>SFCC</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
+        <book>SS</book>
+        <book>SG</book>
+        <book>SW</book>
+        <book>TCT</book>
+        <book>SL</book>
+        <book>TSG</book>
+        <book>TVG</book>
+      </books>
+      <customdatadirectorynames>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+      </customdatadirectorynames>
+      <buildmethod>Karma</buildmethod>
+      <buildpoints>800</buildpoints>
+      <qualitykarmalimit>25</qualitykarmalimit>
+      <priorityarray>ABCDE</priorityarray>
+      <prioritytable>Standard</prioritytable>
+      <sumtoten>10</sumtoten>
+      <availability>12</availability>
+      <nuyenmaxbp>10</nuyenmaxbp>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+        <grade>Omegaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+    </setting>
+    <setting>
+      <id>dc770cdd-0837-4d58-a1f2-8705972aa534</id>
+      <name>Shadowrun Missions Neotokyo</name>
+      <licenserestricted>False</licenserestricted>
+      <morelethalgameplay>False</morelethalgameplay>
+      <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
+      <nuyenperbpwftm>1000</nuyenperbpwftm>
+      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
+      <allowinitiationincreatemode>False</allowinitiationincreatemode>
+      <usepointsonbrokengroups>False</usepointsonbrokengroups>
+      <dontdoublequalities>False</dontdoublequalities>
+      <dontdoublequalityrefunds>False</dontdoublequalityrefunds>
+      <ignoreart>False</ignoreart>
+      <cyberlegmovement>False</cyberlegmovement>
+      <allow2ndmaxattribute>False</allow2ndmaxattribute>
+      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
+      <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
+      <dronearmorflatnumber>2</dronearmorflatnumber>
+      <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
+      <ignorecomplexformlimit>False</ignorecomplexformlimit>
+      <noarmorencumbrance>False</noarmorencumbrance>
+      <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
+      <allowskillregrouping>True</allowskillregrouping>
+      <metatypecostskarma>True</metatypecostskarma>
+      <metatypecostskarmamultiplier>1</metatypecostskarmamultiplier>
+      <limbcount>6</limbcount>
+      <excludelimbslot />
+      <allowcyberwareessdiscounts>False</allowcyberwareessdiscounts>
+      <maximumarmormodifications>False</maximumarmormodifications>
+      <armordegredation>False</armordegredation>
+      <specialkarmacostbasedonshownvalue>False</specialkarmacostbasedonshownvalue>
+      <exceedpositivequalities>False</exceedpositivequalities>
+      <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
+      <mysaddppcareer>False</mysaddppcareer>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
+      <exceednegativequalities>True</exceednegativequalities>
+      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <multiplyrestrictedcost>False</multiplyrestrictedcost>
+      <multiplyforbiddencost>False</multiplyforbiddencost>
+      <restrictedcostmultiplier>1</restrictedcostmultiplier>
+      <forbiddencostmultiplier>1</forbiddencostmultiplier>
+      <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
+      <nuyenformat>#,0.##</nuyenformat>
+      <essenceformat>#,0.00</essenceformat>
+      <enforcecapacity>True</enforcecapacity>
+      <restrictrecoil>True</restrictrecoil>
+      <unrestrictednuyen>False</unrestrictednuyen>
+      <allowhigherstackedfoci>False</allowhigherstackedfoci>
+      <alloweditpartofbaseweapon>False</alloweditpartofbaseweapon>
+      <breakskillgroupsincreatemode>False</breakskillgroupsincreatemode>
+      <allowpointbuyspecializationsonkarmaskills>False</allowpointbuyspecializationsonkarmaskills>
+      <extendanydetectionspell>False</extendanydetectionspell>
+      <allowskilldicerolling>True</allowskilldicerolling>
+      <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
+      <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
+      <reverseattributepriorityorder>False</reverseattributepriorityorder>
+      <allowobsolescentupgrade>False</allowobsolescentupgrade>
+      <allowbiowaresuites>False</allowbiowaresuites>
+      <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
+      <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
+      <autobackstory>True</autobackstory>
+      <freemartialartspecialization>False</freemartialartspecialization>
+      <priorityspellsasadeptpowers>False</priorityspellsasadeptpowers>
+      <usecalculatedpublicawareness>False</usecalculatedpublicawareness>
+      <increasedimprovedabilitymodifier>False</increasedimprovedabilitymodifier>
+      <allowfreegrids>False</allowfreegrids>
+      <allowtechnomancerschooling>False</allowtechnomancerschooling>
+      <cyberlimbattributebonuscap>4</cyberlimbattributebonuscap>
+      <unclampattributeminimum>False</unclampattributeminimum>
+      <dronemods>True</dronemods>
+      <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <karmacost>
+        <karmaattribute>5</karmaattribute>
+        <karmaquality>1</karmaquality>
+        <karmaspecialization>7</karmaspecialization>
+        <karmaknospecialization>7</karmaknospecialization>
+        <karmanewknowledgeskill>1</karmanewknowledgeskill>
+        <karmanewactiveskill>2</karmanewactiveskill>
+        <karmanewskillgroup>5</karmanewskillgroup>
+        <karmaimproveknowledgeskill>1</karmaimproveknowledgeskill>
+        <karmaimproveactiveskill>2</karmaimproveactiveskill>
+        <karmaimproveskillgroup>5</karmaimproveskillgroup>
+        <karmaspell>5</karmaspell>
+        <karmaenhancement>2</karmaenhancement>
+        <karmanewcomplexform>4</karmanewcomplexform>
+        <karmaimprovecomplexform>1</karmaimprovecomplexform>
+        <karmanewaiprogram>5</karmanewaiprogram>
+        <karmanewaiadvancedprogram>8</karmanewaiadvancedprogram>
+        <karmacontact>1</karmacontact>
+        <karmaenemy>1</karmaenemy>
+        <karmacarryover>7</karmacarryover>
+        <karmaspirit>1</karmaspirit>
+        <karmamaneuver>5</karmamaneuver>
+        <karmainitiation>3</karmainitiation>
+        <karmainitiationflat>10</karmainitiationflat>
+        <karmametamagic>15</karmametamagic>
+        <karmacomplexformoption>2</karmacomplexformoption>
+        <karmacomplexformskillsoft>1</karmacomplexformskillsoft>
+        <karmajoingroup>5</karmajoingroup>
+        <karmaleavegroup>1</karmaleavegroup>
+        <karmaalchemicalfocus>3</karmaalchemicalfocus>
+        <karmabanishingfocus>2</karmabanishingfocus>
+        <karmabindingfocus>2</karmabindingfocus>
+        <karmacenteringfocus>3</karmacenteringfocus>
+        <karmacounterspellingfocus>2</karmacounterspellingfocus>
+        <karmadisenchantingfocus>3</karmadisenchantingfocus>
+        <karmaflexiblesignaturefocus>3</karmaflexiblesignaturefocus>
+        <karmamaskingfocus>3</karmamaskingfocus>
+        <karmapowerfocus>6</karmapowerfocus>
+        <karmaqifocus>2</karmaqifocus>
+        <karmaritualspellcastingfocus>2</karmaritualspellcastingfocus>
+        <karmaspellcastingfocus>2</karmaspellcastingfocus>
+        <karmaspellshapingfocus>3</karmaspellshapingfocus>
+        <karmasummoningfocus>2</karmasummoningfocus>
+        <karmasustainingfocus>2</karmasustainingfocus>
+        <karmaweaponfocus>3</karmaweaponfocus>
+        <karmamysadpp>5</karmamysadpp>
+        <karmaspiritfettering>3</karmaspiritfettering>
+      </karmacost>
+      <books>
+        <book>SR5</book>
+        <book>AET</book>
+        <book>AP</book>
+        <book>BTB</book>
+        <book>BOTL</book>
+        <book>BLB</book>
+        <book>CA</book>
+        <book>CF</book>
+        <book>DT</book>
+        <book>FA</book>
+        <book>GH3</book>
+        <book>HT</book>
+        <book>HS</book>
+        <book>KC</book>
+        <book>LCD</book>
+        <book>NP</book>
+        <book>R5</book>
+        <book>RG</book>
+        <book>RF</book>
+        <book>SASS</book>
+        <book>SSP</book>
+        <book>SFB</book>
+        <book>SFME</book>
+        <book>SFM</book>
+        <book>SFCC</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
+        <book>SS</book>
+        <book>SG</book>
+        <book>SW</book>
+        <book>TCT</book>
+        <book>SL</book>
+        <book>TSG</book>
+        <book>TVG</book>
+      </books>
+      <customdatadirectorynames>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+      </customdatadirectorynames>
+      <buildmethod>Priority</buildmethod>
+      <buildpoints>25</buildpoints>
+      <qualitykarmalimit>25</qualitykarmalimit>
+      <priorityarray>ABCDE</priorityarray>
+      <prioritytable>Standard</prioritytable>
+      <sumtoten>10</sumtoten>
+      <availability>12</availability>
+      <nuyenmaxbp>10</nuyenmaxbp>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+        <grade>Omegaware</grade>
+      </bannedwaregrades>
+      <redlinerexclusion>
+        <limb>skull</limb>
+        <limb>torso</limb>
+      </redlinerexclusion>
+    </setting>
+    <setting>
+      <id>3bb81ab8-e752-4f80-92c2-645f26b3df93</id>
+      <name>Shadowrun Missions Neotokyo (Point Buy)</name>
+      <licenserestricted>False</licenserestricted>
+      <morelethalgameplay>False</morelethalgameplay>
+      <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
+      <nuyenperbpwftm>1000</nuyenperbpwftm>
+      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
+      <allowinitiationincreatemode>False</allowinitiationincreatemode>
+      <usepointsonbrokengroups>False</usepointsonbrokengroups>
+      <dontdoublequalities>False</dontdoublequalities>
+      <dontdoublequalityrefunds>False</dontdoublequalityrefunds>
+      <ignoreart>False</ignoreart>
+      <cyberlegmovement>False</cyberlegmovement>
+      <allow2ndmaxattribute>False</allow2ndmaxattribute>
+      <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
+      <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
+      <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
+      <dronearmorflatnumber>2</dronearmorflatnumber>
+      <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
+      <ignorecomplexformlimit>False</ignorecomplexformlimit>
+      <noarmorencumbrance>False</noarmorencumbrance>
+      <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
+      <allowskillregrouping>True</allowskillregrouping>
+      <metatypecostskarma>True</metatypecostskarma>
+      <metatypecostskarmamultiplier>1</metatypecostskarmamultiplier>
+      <limbcount>6</limbcount>
+      <excludelimbslot />
+      <allowcyberwareessdiscounts>False</allowcyberwareessdiscounts>
+      <maximumarmormodifications>False</maximumarmormodifications>
+      <armordegredation>False</armordegredation>
+      <specialkarmacostbasedonshownvalue>False</specialkarmacostbasedonshownvalue>
+      <exceedpositivequalities>False</exceedpositivequalities>
+      <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
+      <mysaddppcareer>False</mysaddppcareer>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
+      <exceednegativequalities>True</exceednegativequalities>
+      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <multiplyrestrictedcost>False</multiplyrestrictedcost>
+      <multiplyforbiddencost>False</multiplyforbiddencost>
+      <restrictedcostmultiplier>1</restrictedcostmultiplier>
+      <forbiddencostmultiplier>1</forbiddencostmultiplier>
+      <donotroundessenceinternally>False</donotroundessenceinternally>
+      <enemykarmaqualitylimit>True</enemykarmaqualitylimit>
+      <nuyenformat>#,0.##</nuyenformat>
+      <essenceformat>#,0.00</essenceformat>
+      <enforcecapacity>True</enforcecapacity>
+      <restrictrecoil>True</restrictrecoil>
+      <unrestrictednuyen>False</unrestrictednuyen>
+      <allowhigherstackedfoci>False</allowhigherstackedfoci>
+      <alloweditpartofbaseweapon>False</alloweditpartofbaseweapon>
+      <breakskillgroupsincreatemode>False</breakskillgroupsincreatemode>
+      <allowpointbuyspecializationsonkarmaskills>False</allowpointbuyspecializationsonkarmaskills>
+      <extendanydetectionspell>False</extendanydetectionspell>
+      <allowskilldicerolling>True</allowskilldicerolling>
+      <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
+      <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
+      <reverseattributepriorityorder>False</reverseattributepriorityorder>
+      <allowobsolescentupgrade>False</allowobsolescentupgrade>
+      <allowbiowaresuites>False</allowbiowaresuites>
+      <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
+      <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
+      <autobackstory>True</autobackstory>
+      <freemartialartspecialization>False</freemartialartspecialization>
+      <priorityspellsasadeptpowers>False</priorityspellsasadeptpowers>
+      <usecalculatedpublicawareness>False</usecalculatedpublicawareness>
+      <increasedimprovedabilitymodifier>False</increasedimprovedabilitymodifier>
+      <allowfreegrids>False</allowfreegrids>
+      <allowtechnomancerschooling>False</allowtechnomancerschooling>
+      <cyberlimbattributebonuscap>4</cyberlimbattributebonuscap>
+      <unclampattributeminimum>False</unclampattributeminimum>
+      <dronemods>True</dronemods>
+      <dronemodsmaximumpilot>False</dronemodsmaximumpilot>
+      <karmacost>
+        <karmaattribute>5</karmaattribute>
+        <karmaquality>1</karmaquality>
+        <karmaspecialization>7</karmaspecialization>
+        <karmaknospecialization>7</karmaknospecialization>
+        <karmanewknowledgeskill>1</karmanewknowledgeskill>
+        <karmanewactiveskill>2</karmanewactiveskill>
+        <karmanewskillgroup>5</karmanewskillgroup>
+        <karmaimproveknowledgeskill>1</karmaimproveknowledgeskill>
+        <karmaimproveactiveskill>2</karmaimproveactiveskill>
+        <karmaimproveskillgroup>5</karmaimproveskillgroup>
+        <karmaspell>5</karmaspell>
+        <karmaenhancement>2</karmaenhancement>
+        <karmanewcomplexform>4</karmanewcomplexform>
+        <karmaimprovecomplexform>1</karmaimprovecomplexform>
+        <karmanewaiprogram>5</karmanewaiprogram>
+        <karmanewaiadvancedprogram>8</karmanewaiadvancedprogram>
+        <karmacontact>1</karmacontact>
+        <karmaenemy>1</karmaenemy>
+        <karmacarryover>7</karmacarryover>
+        <karmaspirit>1</karmaspirit>
+        <karmamaneuver>5</karmamaneuver>
+        <karmainitiation>3</karmainitiation>
+        <karmainitiationflat>10</karmainitiationflat>
+        <karmametamagic>15</karmametamagic>
+        <karmacomplexformoption>2</karmacomplexformoption>
+        <karmacomplexformskillsoft>1</karmacomplexformskillsoft>
+        <karmajoingroup>5</karmajoingroup>
+        <karmaleavegroup>1</karmaleavegroup>
+        <karmaalchemicalfocus>3</karmaalchemicalfocus>
+        <karmabanishingfocus>2</karmabanishingfocus>
+        <karmabindingfocus>2</karmabindingfocus>
+        <karmacenteringfocus>3</karmacenteringfocus>
+        <karmacounterspellingfocus>2</karmacounterspellingfocus>
+        <karmadisenchantingfocus>3</karmadisenchantingfocus>
+        <karmaflexiblesignaturefocus>3</karmaflexiblesignaturefocus>
+        <karmamaskingfocus>3</karmamaskingfocus>
+        <karmapowerfocus>6</karmapowerfocus>
+        <karmaqifocus>2</karmaqifocus>
+        <karmaritualspellcastingfocus>2</karmaritualspellcastingfocus>
+        <karmaspellcastingfocus>2</karmaspellcastingfocus>
+        <karmaspellshapingfocus>3</karmaspellshapingfocus>
+        <karmasummoningfocus>2</karmasummoningfocus>
+        <karmasustainingfocus>2</karmasustainingfocus>
+        <karmaweaponfocus>3</karmaweaponfocus>
+        <karmamysadpp>5</karmamysadpp>
+        <karmaspiritfettering>3</karmaspiritfettering>
+      </karmacost>
+      <books>
+        <book>SR5</book>
+        <book>AET</book>
+        <book>AP</book>
+        <book>BTB</book>
+        <book>BOTL</book>
+        <book>BLB</book>
+        <book>CA</book>
+        <book>CF</book>
+        <book>DT</book>
+        <book>FA</book>
+        <book>GH3</book>
+        <book>HT</book>
+        <book>HS</book>
+        <book>KC</book>
+        <book>LCD</book>
+        <book>NP</book>
+        <book>R5</book>
+        <book>RG</book>
+        <book>RF</book>
+        <book>SASS</book>
+        <book>SSP</book>
+        <book>SFB</book>
+        <book>SFME</book>
+        <book>SFM</book>
+        <book>SFCC</book>
+        <book>SPS</book>
+        <book>SRM0803</book>
+        <book>SRM0804</book>
+        <book>SS</book>
+        <book>SG</book>
+        <book>SW</book>
+        <book>TCT</book>
+        <book>SL</book>
+        <book>TSG</book>
+        <book>TVG</book>
+      </books>
+      <customdatadirectorynames>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+      </customdatadirectorynames>
+      <buildmethod>Karma</buildmethod>
+      <buildpoints>800</buildpoints>
+      <qualitykarmalimit>25</qualitykarmalimit>
+      <priorityarray>ABCDE</priorityarray>
+      <prioritytable>Standard</prioritytable>
+      <sumtoten>10</sumtoten>
+      <availability>12</availability>
+      <nuyenmaxbp>10</nuyenmaxbp>
+      <bannedwaregrades>
+        <grade>Betaware</grade>
+        <grade>Deltaware</grade>
+        <grade>Gammaware</grade>
+        <grade>Omegaware</grade>
       </bannedwaregrades>
       <redlinerexclusion>
         <limb>skull</limb>
