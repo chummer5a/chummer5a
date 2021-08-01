@@ -33,9 +33,9 @@ namespace Chummer
     public class TypedOrderedDictionary<TKey, TValue> :
         IDictionary<TKey, TValue>,
         IList<KeyValuePair<TKey, TValue>>,
-        IReadOnlyList<TValue>,
         IDictionary,
         IReadOnlyDictionary<TKey, TValue>,
+        IReadOnlyList<KeyValuePair<TKey, TValue>>,
         ISerializable,
         IDeserializationCallback
     {
@@ -84,16 +84,10 @@ namespace Chummer
             _lstIndexes.Clear();
         }
 
-        IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator()
-        {
-            for (int i = 0; i < Count - 1; ++i)
-                yield return _dicUnorderedData[_lstIndexes[i]];
-        }
-
         IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator()
         {
             for (int i = 0; i < Count - 1; ++i)
-                yield return new KeyValuePair<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
+                yield return this[i];
         }
         
         public IDictionaryEnumerator GetEnumerator()
@@ -169,29 +163,12 @@ namespace Chummer
             _lstIndexes.Add(key);
         }
 
-        public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> lstItems)
-        {
-            foreach (KeyValuePair<TKey, TValue> kvpItem in lstItems)
-            {
-                Add(kvpItem.Key, kvpItem.Value);
-            }
-        }
-
-        public void AddRange(IEnumerable<Tuple<TKey, TValue>> lstItems)
-        {
-            foreach ((TKey objKey, TValue objValue) in lstItems)
-            {
-                Add(objKey, objValue);
-            }
-        }
-
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
             if (arrayIndex + Count >= array.Length)
                 throw new ArgumentOutOfRangeException();
             for (int i = 0; i < Count; ++i)
-                array[i + arrayIndex] =
-                    new KeyValuePair<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
+                array[i + arrayIndex] = this[i];
         }
 
         public void CopyTo(Tuple<TKey, TValue>[] array, int arrayIndex)
@@ -208,7 +185,7 @@ namespace Chummer
             if (index + Count >= array.Length)
                 throw new ArgumentOutOfRangeException();
             for (int i = 0; i < Count; ++i)
-                array.SetValue(new KeyValuePair<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]), i + index);
+                array.SetValue(this[i], i + index);
         }
 
         public int Count => _dicUnorderedData.Count;
@@ -219,21 +196,29 @@ namespace Chummer
 
         public IEqualityComparer<TKey> Comparer => _dicUnorderedData.Comparer;
 
-        public ICollection<TKey> Keys => _dicUnorderedData.Keys;
+        public ICollection<TKey> Keys => _lstIndexes;
 
-        public ICollection<TValue> Values => _dicUnorderedData.Values;
+        public ICollection<TValue> Values => new List<TValue>(this.Select(x => x.Value)); // Needed to make sure ordering is retained
 
-        public IReadOnlyCollection<TKey> ReadOnlyKeys => _dicUnorderedData.Keys;
+        public ICollection<TKey> KeysUnsorted => _dicUnorderedData.Keys;
 
-        public IReadOnlyCollection<TValue> ReadOnlyValues => _dicUnorderedData.Values;
+        public ICollection<TValue> ValuesUnsorted => _dicUnorderedData.Values;
 
-        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => Keys;
+        public IReadOnlyList<TKey> ReadOnlyKeys => _lstIndexes;
 
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => Values;
+        public IReadOnlyList<TValue> ReadOnlyValues => new List<TValue>(this.Select(x => x.Value)); // Needed to make sure ordering is retained
 
-        ICollection IDictionary.Values => _dicUnorderedData.Values;
+        public IReadOnlyCollection<TKey> ReadOnlyKeysUnsorted => _dicUnorderedData.Keys;
 
-        ICollection IDictionary.Keys => _dicUnorderedData.Keys;
+        public IReadOnlyCollection<TValue> ReadOnlyValuesUnsorted => _dicUnorderedData.Values;
+
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => _lstIndexes;
+
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => this.Select(x => x.Value); // Needed to make sure ordering is retained
+
+        ICollection IDictionary.Keys => _lstIndexes;
+
+        ICollection IDictionary.Values => new List<TValue>(this.Select(x => x.Value)); // Needed to make sure ordering is retained
 
         public bool IsReadOnly => false;
 
@@ -353,20 +338,75 @@ namespace Chummer
             }
         }
 
-        TValue IReadOnlyList<TValue>.this[int index] => _dicUnorderedData[_lstIndexes[index]];
+        public int IndexOf(TKey key)
+        {
+            return _dicUnorderedData.ContainsKey(key)
+                ? _lstIndexes.IndexOf(key)
+                : -1;
+        }
 
         public int IndexOf(KeyValuePair<TKey, TValue> item)
         {
-            return _dicUnorderedData.ContainsKey(item.Key)
+            return _dicUnorderedData.ContainsKey(item.Key) && _dicUnorderedData[item.Key].Equals(item.Value)
                 ? _lstIndexes.IndexOf(item.Key)
                 : -1;
         }
 
         public int IndexOf(Tuple<TKey, TValue> item)
         {
-            return item != null && _dicUnorderedData.ContainsKey(item.Item1)
+            return item != null && _dicUnorderedData.ContainsKey(item.Item1) && _dicUnorderedData[item.Item1].Equals(item.Item2)
                 ? _lstIndexes.IndexOf(item.Item1)
                 : -1;
+        }
+
+        public int LastIndexOf(TKey key)
+        {
+            return _dicUnorderedData.ContainsKey(key)
+                ? _lstIndexes.LastIndexOf(key)
+                : -1;
+        }
+
+        public int LastIndexOf(KeyValuePair<TKey, TValue> item)
+        {
+            return _dicUnorderedData.ContainsKey(item.Key) && _dicUnorderedData[item.Key].Equals(item.Value)
+                ? _lstIndexes.LastIndexOf(item.Key)
+                : -1;
+        }
+
+        public int LastIndexOf(Tuple<TKey, TValue> item)
+        {
+            return item != null && _dicUnorderedData.ContainsKey(item.Item1) && _dicUnorderedData[item.Item1].Equals(item.Item2)
+                ? _lstIndexes.LastIndexOf(item.Item1)
+                : -1;
+        }
+
+        public List<TKey> FindAll(Predicate<TKey> predicate)
+        {
+            return _lstIndexes.FindAll(predicate);
+        }
+
+        public TypedOrderedDictionary<TKey, TValue> FindAll(Predicate<KeyValuePair<TKey, TValue>> predicate)
+        {
+            TypedOrderedDictionary<TKey, TValue> dicReturn = new TypedOrderedDictionary<TKey, TValue>(Count);
+            for (int i = 0; i < Count; ++i)
+            {
+                KeyValuePair<TKey, TValue> kvpLoop = this[i];
+                if (predicate(kvpLoop))
+                    dicReturn.Add(kvpLoop);
+            }
+            return dicReturn;
+        }
+
+        public List<Tuple<TKey, TValue>> FindAll(Predicate<Tuple<TKey, TValue>> predicate)
+        {
+            List<Tuple<TKey, TValue>> lstReturn = new List<Tuple<TKey, TValue>>(Count);
+            for (int i = 0; i < Count; ++i)
+            {
+                Tuple<TKey, TValue> tupLoop = new Tuple<TKey, TValue>(_lstIndexes[i], _dicUnorderedData[_lstIndexes[i]]);
+                if (predicate(tupLoop))
+                    lstReturn.Add(tupLoop);
+            }
+            return lstReturn;
         }
 
         public void Insert(int index, KeyValuePair<TKey, TValue> item)
@@ -411,14 +451,48 @@ namespace Chummer
             _lstIndexes.Sort(comparison);
         }
 
+        public void Sort(Comparison<KeyValuePair<TKey, TValue>> comparison)
+        {
+            _lstIndexes.Sort((x, y) => comparison(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+        }
+
+        public void Sort(Comparison<Tuple<TKey, TValue>> comparison)
+        {
+            _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+        }
+
         public void Sort(IComparer<TKey> comparer)
         {
             _lstIndexes.Sort(comparer);
         }
 
+        public void Sort(IComparer<KeyValuePair<TKey, TValue>> comparer)
+        {
+            _lstIndexes.Sort((x, y) => comparer.Compare(new KeyValuePair<TKey, TValue>(x, _dicUnorderedData[x]),
+                new KeyValuePair<TKey, TValue>(y, _dicUnorderedData[y])));
+        }
+
+        public void Sort(IComparer<Tuple<TKey, TValue>> comparer)
+        {
+            _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+        }
+
         public void Sort(int index, int count, IComparer<TKey> comparer)
         {
             _lstIndexes.Sort(index, count, comparer);
+        }
+
+        public void Sort(int index, int count, IComparer<KeyValuePair<TKey, TValue>> comparer)
+        {
+            _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
+        }
+
+        public void Sort(int index, int count, IComparer<Tuple<TKey, TValue>> comparer)
+        {
+            _lstIndexes.Sort(index, count, new KeyValueToKeyComparer(this, comparer));
         }
 
         public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -429,6 +503,45 @@ namespace Chummer
         public void OnDeserialization(object sender)
         {
             _dicUnorderedData.OnDeserialization(sender);
+        }
+
+        private class KeyValueToKeyComparer : IComparer<TKey>
+        {
+            private readonly TypedOrderedDictionary<TKey, TValue> _dicMyDictionary;
+            private readonly IComparer<KeyValuePair<TKey, TValue>> _objMyComparer;
+            private readonly IComparer<Tuple<TKey, TValue>> _objMyTupleComparer;
+
+            public KeyValueToKeyComparer(TypedOrderedDictionary<TKey, TValue> dictionary, IComparer<KeyValuePair<TKey, TValue>> comparer)
+            {
+                _dicMyDictionary = dictionary;
+                _objMyComparer = comparer;
+                _objMyTupleComparer = null;
+            }
+
+            public KeyValueToKeyComparer(TypedOrderedDictionary<TKey, TValue> dictionary, IComparer<Tuple<TKey, TValue>> comparer)
+            {
+                _dicMyDictionary = dictionary;
+                _objMyComparer = null;
+                _objMyTupleComparer = comparer;
+            }
+
+            public int Compare(TKey x, TKey y)
+            {
+                if (x == null)
+                {
+                    if (y == null)
+                        return 0;
+                    return -1;
+                }
+
+                if (y == null)
+                    return 1;
+
+                return _objMyComparer?.Compare(new KeyValuePair<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),
+                    new KeyValuePair<TKey, TValue>(y, _dicMyDictionary._dicUnorderedData[y]))
+                       ?? _objMyTupleComparer.Compare(new Tuple<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),
+                           new Tuple<TKey, TValue>(y, _dicMyDictionary._dicUnorderedData[y]));
+            }
         }
 
         private class TypedOrderedDictionaryEnumerator : IDictionaryEnumerator

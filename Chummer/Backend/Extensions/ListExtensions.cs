@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Chummer.Annotations;
 
 namespace Chummer
 {
@@ -246,24 +248,149 @@ namespace Chummer
             }
         }
 
-        public static int IndexOf<T>(this IReadOnlyList<T> lstCollection, T objItem)
+        public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection)
         {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            if (objItem == null)
-                throw new ArgumentNullException(nameof(objItem));
-            for (int i = 0; i < lstCollection.Count; ++i)
+            foreach (T item in collection.Reverse())
             {
-                if (lstCollection[i].Equals(objItem))
+                lstCollection.Insert(index, item);
+            }
+        }
+
+        public static int BinarySearch<T>(this IList<T> lstCollection, T objItem) where T : IComparable
+        {
+            int intLastIntervalBounds = lstCollection.Count - 1;
+            int intBase = 0;
+            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            {
+                int intLoopIndex = intBase + i;
+                int intCompareResult = objItem.CompareTo(lstCollection[intLoopIndex]);
+                if (intCompareResult == 0)
+                    return intLoopIndex;
+                if (intCompareResult > 0)
                 {
-                    return i;
+                    intBase += intLastIntervalBounds - i;
+                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                }
+                else
+                {
+                    intLastIntervalBounds = i;
                 }
             }
 
+            return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
+        }
+
+        public static int BinarySearch<T>(this IList<T> lstCollection, T objItem, IComparer<T> comparer)
+        {
+            int intLastIntervalBounds = lstCollection.Count - 1;
+            int intBase = 0;
+            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            {
+                int intLoopIndex = intBase + i;
+                int intCompareResult = comparer.Compare(objItem, lstCollection[intLoopIndex]);
+                if (intCompareResult == 0)
+                    return intLoopIndex;
+                if (intCompareResult > 0)
+                {
+                    intBase += intLastIntervalBounds - i;
+                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                }
+                else
+                {
+                    intLastIntervalBounds = i;
+                }
+            }
+
+            return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
+        }
+
+        public static int BinarySearch<T>(this IList<T> lstCollection, int index, int count, T objItem, IComparer<T> comparer)
+        {
+            int intLastIntervalBounds = count - 1;
+            int intBase = index;
+            for (int i = intLastIntervalBounds / 2; i > 0; i = intLastIntervalBounds / 2)
+            {
+                int intLoopIndex = intBase + i;
+                int intCompareResult = comparer.Compare(objItem, lstCollection[intLoopIndex]);
+                if (intCompareResult == 0)
+                    return intLoopIndex;
+                if (intCompareResult > 0)
+                {
+                    intBase += intLastIntervalBounds - i;
+                    intLastIntervalBounds -= i; // Makes sure that for odd sizes, we end up spanning every item
+                }
+                else
+                {
+                    intLastIntervalBounds = i;
+                }
+            }
+
+            return ~(intBase + 1); // Bitwise complement of next item larger than this one, just like List.BinarySearch
+        }
+
+        public static int FindIndex<T>(this IList<T> lstCollection, Predicate<T> predicate)
+        {
+            for (int i = 0; i < lstCollection.Count; ++i)
+            {
+                if (predicate(lstCollection[i]))
+                    return i;
+            }
             return -1;
         }
 
-        public static int LastIndexOf<T>(this IReadOnlyList<T> lstCollection, T objItem)
+        public static int FindIndex<T>(this IList<T> lstCollection, int startIndex, Predicate<T> predicate)
+        {
+            for (int i = startIndex; i < lstCollection.Count; ++i)
+            {
+                if (predicate(lstCollection[i]))
+                    return i;
+            }
+            return -1;
+        }
+
+        public static int FindIndex<T>(this IList<T> lstCollection, int startIndex, int count, Predicate<T> predicate)
+        {
+            int intUpperBounds = count - startIndex;
+            for (int i = startIndex; i < Math.Min(lstCollection.Count, intUpperBounds); ++i)
+            {
+                if (predicate(lstCollection[i]))
+                    return i;
+            }
+            return -1;
+        }
+
+        public static int FindLastIndex<T>(this IList<T> lstCollection, Predicate<T> predicate)
+        {
+            for (int i = lstCollection.Count - 1; i >= 0; --i)
+            {
+                if (predicate(lstCollection[i]))
+                    return i;
+            }
+            return -1;
+        }
+
+        public static int FindLastIndex<T>(this IList<T> lstCollection, int startIndex, Predicate<T> predicate)
+        {
+            for (int i = startIndex; i >= 0; --i)
+            {
+                if (predicate(lstCollection[i]))
+                    return i;
+            }
+            return -1;
+        }
+
+        public static int FindLastIndex<T>(this IList<T> lstCollection, int startIndex, int count, Predicate<T> predicate)
+        {
+            int intLowerBounds = startIndex - count;
+            for (int i = startIndex; i >= Math.Max(0, intLowerBounds); --i)
+            {
+                if (predicate(lstCollection[i]))
+                    return i;
+            }
+            return -1;
+        }
+
+        public static int LastIndexOf<T>(this IList<T> lstCollection, T objItem)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));

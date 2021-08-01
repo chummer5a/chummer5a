@@ -26,23 +26,6 @@ namespace Chummer
 {
     internal static class DictionaryExtensions
     {
-        public static Dictionary<string, object> ToDictionaryOfPublicMembers(this object objSource)
-        {
-            if (objSource == null)
-                throw new ArgumentNullException(nameof(objSource));
-            Dictionary<string, object> dicReturn = new Dictionary<string, object>();
-            Type objSourceType = objSource.GetType();
-            foreach (FieldInfo objLoopInfo in objSourceType.GetFields(BindingFlags.GetField | BindingFlags.Public | BindingFlags.Instance))
-            {
-                dicReturn.Add(objLoopInfo.Name, objLoopInfo.GetValue(objSource) ?? string.Empty);
-            }
-            foreach (PropertyInfo objLoopInfo in objSourceType.GetProperties(BindingFlags.GetField | BindingFlags.GetProperty | BindingFlags.Public | BindingFlags.Instance))
-            {
-                dicReturn.Add(objLoopInfo.Name, objLoopInfo.GetValue(objSource, null) ?? string.Empty);
-            }
-            return dicReturn;
-        }
-
         public static bool EqualsByValue(this IDictionary<object, IComparable> dicLeft, IDictionary<object, IComparable> dicRight)
         {
             if (dicLeft.Count != dicRight.Count)
@@ -51,20 +34,26 @@ namespace Chummer
                    dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
         }
 
-        public static bool IsAnonymousType(this object objInstance)
+        public static bool EqualsByValue(this IDictionary<object, IComparable> dicLeft, IReadOnlyDictionary<object, IComparable> dicRight)
         {
-            if (objInstance == null)
+            if (dicLeft.Count != dicRight.Count)
                 return false;
-            return objInstance.GetType().Namespace == null;
+            return dicLeft.Keys.All(dicRight.ContainsKey) &&
+                   dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
         }
 
-        public static Dictionary<string, object> ToFlattenedDictionaryOfPublicMembers(this object objSource, string strParentPropertyKey = "", IDictionary<string, object> dicParentPropertyValue = null)
+        public static T ToFlattenedDictionaryOfPublicMembers<T>(this object objSource, string strParentPropertyKey = "", T dicParentPropertyValue = default) where T : IDictionary<string, object>, new()
         {
-            Dictionary<string, object> dicReturn = dicParentPropertyValue?.ToDictionary(x => x.Key, y => y.Value) ?? new Dictionary<string, object>();
-            foreach (KeyValuePair<string, object> objItem in objSource.ToDictionaryOfPublicMembers())
+            T dicReturn = new T();
+            if (!dicParentPropertyValue.Equals(default))
             {
-                string strKey = string.IsNullOrEmpty(strParentPropertyKey) ? objItem.Key : $"{strParentPropertyKey}.{objItem.Key}";
-                if (objItem.Value.IsAnonymousType())
+                foreach (KeyValuePair<string, object> kvpItem in dicParentPropertyValue)
+                    dicReturn.Add(kvpItem.Key, kvpItem.Value);
+            }
+            foreach (KeyValuePair<string, object> objItem in objSource.ToDictionaryOfPublicMembers<Dictionary<string, object>>())
+            {
+                string strKey = string.IsNullOrEmpty(strParentPropertyKey) ? objItem.Key : strParentPropertyKey + '.' + objItem.Key;
+                if (IsAnonymousType(objItem.Value))
                 {
                     foreach (KeyValuePair<string, object> objInnerItem in objItem.Value
                         .ToFlattenedDictionaryOfPublicMembers(strKey, dicReturn))
@@ -73,6 +62,30 @@ namespace Chummer
                 else
                     dicReturn.Add(strKey, objItem.Value);
             }
+            return dicReturn;
+
+            bool IsAnonymousType(object objInstance)
+            {
+                if (objInstance == null)
+                    return false;
+                return objInstance.GetType().Namespace == null;
+            }
+        }
+
+        public static T ToDictionaryOfPublicMembers<T>(this object objSource) where T : IDictionary<string, object>, new()
+        {
+            if (objSource == null)
+                throw new ArgumentNullException(nameof(objSource));
+            Type objSourceType = objSource.GetType();
+            T dicReturn = new T();
+            foreach (FieldInfo objLoopInfo in objSourceType.GetFields(BindingFlags.GetField | BindingFlags.Public |
+                                                                      BindingFlags.Instance))
+                dicReturn.Add(objLoopInfo.Name, objLoopInfo.GetValue(objSource) ?? string.Empty);
+            foreach (PropertyInfo objLoopInfo in objSourceType.GetProperties(BindingFlags.GetField |
+                                                                             BindingFlags.GetProperty |
+                                                                             BindingFlags.Public |
+                                                                             BindingFlags.Instance))
+                dicReturn.Add(objLoopInfo.Name, objLoopInfo.GetValue(objSource, null) ?? string.Empty);
             return dicReturn;
         }
     }

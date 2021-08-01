@@ -2731,7 +2731,7 @@ namespace Chummer
                                     for (int i = 0; i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count; ++i)
                                     {
                                         string strLoopCustomDataName =
-                                            objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
+                                            objOptionsToCheck.EnabledCustomDataDirectoryInfosAsList[i].Value.Name;
                                         int intLoopIndex =
                                             lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
                                         if (intLoopIndex < 0)
@@ -2743,7 +2743,7 @@ namespace Chummer
 
                                     foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
                                         if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x =>
-                                            x.Name != strLoopCustomDataName))
+                                            x.Value.Name != strLoopCustomDataName))
                                             intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
                                                          intBaseline;
                                     int intBookBaselineScore =
@@ -2855,8 +2855,7 @@ namespace Chummer
                                             // Check to make sure all the names are the same
                                             for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
                                             {
-                                                if (lstSavedCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions
-                                                    .EnabledCustomDataDirectoryInfos[i].Name)
+                                                if (lstSavedCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfosAsList[i].Value.Name)
                                                 {
                                                     blnPromptConfirmSetting = true;
                                                     break;

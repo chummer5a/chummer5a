@@ -225,7 +225,7 @@ namespace Chummer
         /// <returns>List of the names of all missing dependencies as a single string</returns>
         public string CheckDependency(CharacterOptions objCharacterOptions)
         {
-            int intMyLoadOrderPosition = objCharacterOptions.EnabledCustomDataDirectoryInfos.IndexOf(this);
+            int intMyLoadOrderPosition = objCharacterOptions.EnabledCustomDataDirectoryInfosAsList.FindIndex(x => x.Value.Equals(this));
             StringBuilder sbdReturn = new StringBuilder();
             foreach (DirectoryDependency dependency in DependenciesList)
             {
@@ -234,7 +234,7 @@ namespace Chummer
                 {
                     //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
                     CustomDataDirectoryInfo objEnabledCustomData =
-                        objCharacterOptions.EnabledCustomDataDirectoryInfosDictionary[dependency.UniqueIdentifier];
+                        objCharacterOptions.EnabledCustomDataDirectoryInfos[dependency.UniqueIdentifier];
                     if ((dependency.MinimumVersion != default && objEnabledCustomData.MyVersion < dependency.MinimumVersion)
                         || (dependency.MaximumVersion != default && objEnabledCustomData.MyVersion > dependency.MaximumVersion))
                     {
@@ -242,7 +242,7 @@ namespace Chummer
                             LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
                             objEnabledCustomData.DisplayName, dependency.DisplayName));
                     }
-                    else if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterOptions.EnabledCustomDataDirectoryInfos.IndexOf(objEnabledCustomData))
+                    else if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterOptions.EnabledCustomDataDirectoryInfosAsList.FindIndex(x => x.Value.Equals(objEnabledCustomData)))
                     {
                         sbdReturn.AppendLine(string.Format(
                             LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
@@ -272,16 +272,15 @@ namespace Chummer
                 if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
                 {
                     //We still need to filter out all the matching incompatibilities from objCharacterOptions.EnabledCustomDataDirectoryInfos to check their versions
-                    foreach (var enabledCustomData in objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(activeDirectory => activeDirectory.Guid == incompatibility.UniqueIdentifier))
+                    CustomDataDirectoryInfo enabledCustomData =
+                        objCharacterOptions.EnabledCustomDataDirectoryInfos[incompatibility.UniqueIdentifier];
+                    //if the version is within the version range add it to the list.
+                    if ((incompatibility.MinimumVersion == default || enabledCustomData.MyVersion >= incompatibility.MinimumVersion)
+                        && (incompatibility.MaximumVersion == default || enabledCustomData.MyVersion <= incompatibility.MaximumVersion))
                     {
-                        //if the version is within the version range add it to the list.
-                        if ((incompatibility.MinimumVersion == default || enabledCustomData.MyVersion >= incompatibility.MinimumVersion)
-                             && (incompatibility.MaximumVersion == default || enabledCustomData.MyVersion <= incompatibility.MaximumVersion))
-                        {
-                            sbdReturn.AppendLine(string.Format(
-                                LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
-                                enabledCustomData.DisplayName, incompatibility.DisplayName));
-                        }
+                        sbdReturn.AppendLine(string.Format(
+                            LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                            enabledCustomData.DisplayName, incompatibility.DisplayName));
                     }
                 }
             }

@@ -218,7 +218,7 @@ namespace Chummer
         private readonly TypedOrderedDictionary<string, bool> _dicCustomDataDirectoryNames = new TypedOrderedDictionary<string, bool>();
 
         // Cached lists that should be updated every time _dicCustomDataDirectoryNames is updated
-        private readonly TypedOrderedDictionary<Guid, CustomDataDirectoryInfo> _lstEnabledCustomDataDirectories = new TypedOrderedDictionary<Guid, CustomDataDirectoryInfo>();
+        private readonly TypedOrderedDictionary<Guid, CustomDataDirectoryInfo> _dicEnabledCustomDataDirectories = new TypedOrderedDictionary<Guid, CustomDataDirectoryInfo>();
 
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
@@ -1702,18 +1702,18 @@ namespace Chummer
 
         public IReadOnlyList<string> EnabledCustomDataDirectoryPaths => _lstEnabledCustomDataDirectoryPaths;
 
-        public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _lstEnabledCustomDataDirectories;
+        public IReadOnlyDictionary<Guid, CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _dicEnabledCustomDataDirectories;
 
-        public IReadOnlyDictionary<Guid, CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfosDictionary => _lstEnabledCustomDataDirectories;
+        public IReadOnlyList<KeyValuePair<Guid, CustomDataDirectoryInfo>> EnabledCustomDataDirectoryInfosAsList => _dicEnabledCustomDataDirectories;
 
         /// <summary>
         /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
         /// </summary>
-        public IReadOnlyCollection<Guid> EnabledCustomDataDirectoryInfoGuids => _lstEnabledCustomDataDirectories.ReadOnlyKeys;
+        public IReadOnlyCollection<Guid> EnabledCustomDataDirectoryInfoGuids => _dicEnabledCustomDataDirectories.ReadOnlyKeysUnsorted;
 
         public void RecalculateEnabledCustomDataDirectories()
         {
-            _lstEnabledCustomDataDirectories.Clear();
+            _dicEnabledCustomDataDirectories.Clear();
             _lstEnabledCustomDataDirectoryPaths.Clear();
             foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryNames)
             {
@@ -1722,7 +1722,7 @@ namespace Chummer
                 CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.Values.FirstOrDefault(x => x.Name == kvpCustomDataDirectoryName.Key);
                 if (objInfoToAdd != default)
                 {
-                    _lstEnabledCustomDataDirectories.Add(objInfoToAdd.Guid, objInfoToAdd);
+                    _dicEnabledCustomDataDirectories.Add(objInfoToAdd.Guid, objInfoToAdd);
                     _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
                 }
                 else

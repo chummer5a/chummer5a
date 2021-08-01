@@ -262,6 +262,7 @@
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Extensions\CollectionExtensions.cs" />
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
@@ -273,6 +274,9 @@
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Extensions\ReadOnlyCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\ReadOnlyDictionaryExtensions.cs" />
+    <Compile Include="Backend\Extensions\ReadOnlyListExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Extensions\VersionExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />

@@ -177,7 +177,7 @@ namespace Chummer
                     lblBooks.Text = LanguageManager.GetString("String_None");
 
                 StringBuilder sbdCustomDataDirectories = new StringBuilder();
-                foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption.EnabledCustomDataDirectoryInfos)
+                foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption.EnabledCustomDataDirectoryInfos.Values)
                     sbdCustomDataDirectories.AppendLine(objLoopInfo.Name);
 
                 lblCustomData.Text = sbdCustomDataDirectories.ToString();
