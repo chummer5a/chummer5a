@@ -198,7 +198,17 @@ namespace Chummer
 
         public ICollection<TKey> Keys => _lstIndexes;
 
-        public ICollection<TValue> Values => new List<TValue>(this.Select(x => x.Value)); // Needed to make sure ordering is retained
+        public ICollection<TValue> Values
+        {
+            get
+            {
+                // Needed to make sure ordering is retained
+                List<TValue> lstReturn = new List<TValue>(Count);
+                for (int i = 0; i < Count; ++i)
+                    lstReturn.Add(_dicUnorderedData[_lstIndexes[i]]);
+                return lstReturn;
+            }
+        }
 
         public ICollection<TKey> KeysUnsorted => _dicUnorderedData.Keys;
 
@@ -206,7 +216,17 @@ namespace Chummer
 
         public IReadOnlyList<TKey> ReadOnlyKeys => _lstIndexes;
 
-        public IReadOnlyList<TValue> ReadOnlyValues => new List<TValue>(this.Select(x => x.Value)); // Needed to make sure ordering is retained
+        public IReadOnlyList<TValue> ReadOnlyValues
+        {
+            get
+            {
+                // Needed to make sure ordering is retained
+                List<TValue> lstReturn = new List<TValue>(Count);
+                for (int i = 0; i < Count; ++i)
+                    lstReturn.Add(_dicUnorderedData[_lstIndexes[i]]);
+                return lstReturn;
+            }
+        }
 
         public IReadOnlyCollection<TKey> ReadOnlyKeysUnsorted => _dicUnorderedData.Keys;
 
@@ -214,11 +234,29 @@ namespace Chummer
 
         IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => _lstIndexes;
 
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => this.Select(x => x.Value); // Needed to make sure ordering is retained
+        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values
+        {
+            get
+            {
+                // Needed to make sure ordering is retained
+                for (int i = 0; i < Count; ++i)
+                    yield return _dicUnorderedData[_lstIndexes[i]];
+            }
+        }
 
         ICollection IDictionary.Keys => _lstIndexes;
 
-        ICollection IDictionary.Values => new List<TValue>(this.Select(x => x.Value)); // Needed to make sure ordering is retained
+        ICollection IDictionary.Values
+        {
+            get
+            {
+                // Needed to make sure ordering is retained
+                List<TValue> lstReturn = new List<TValue>(Count);
+                for (int i = 0; i < Count; ++i)
+                    lstReturn.Add(_dicUnorderedData[_lstIndexes[i]]);
+                return lstReturn;
+            }
+        }
 
         public bool IsReadOnly => false;
 
@@ -592,10 +630,8 @@ namespace Chummer
             // Advance to the next item.
             public bool MoveNext()
             {
-                if (intIndex >= _dicMyDictionary.Count - 1)
-                    return false;
                 intIndex += 1;
-                return true;
+                return intIndex < _dicMyDictionary.Count;
             }
 
             // Validate the enumeration index and throw an exception if the index is out of range.
