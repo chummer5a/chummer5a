@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -46,6 +47,7 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private bool _blnIncludeInVehicle;
         private bool _blnEquipped = true;
+        private int _intWeaponCapacity = 1;
         private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
@@ -75,6 +77,27 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = character;
             Parent = vehicle;
+
+            _lstWeapons.AddTaggedCollectionChanged(this, EnforceWeaponCapacity);
+
+            void EnforceWeaponCapacity(object sender, NotifyCollectionChangedEventArgs args)
+            {
+                if (args.Action != NotifyCollectionChangedAction.Add)
+                    return;
+                int intNumFullWeapons = _lstWeapons.Count(x => string.IsNullOrEmpty(x.ParentID) || _lstWeapons.DeepFindById(x.ParentID) == null);
+                if (intNumFullWeapons <= _intWeaponCapacity)
+                    return;
+                // If you ever hit this, you done fucked up. Make sure that weapon mounts cannot actually equip more weapons than they're allowed in the first place
+                Utils.BreakIfDebug();
+                foreach (Weapon objNewWeapon in args.NewItems.OfType<Weapon>().Reverse())
+                {
+                    if (!string.IsNullOrEmpty(objNewWeapon.ParentID) && _lstWeapons.DeepFindById(objNewWeapon.ParentID) != null)
+                        continue;
+                    _lstWeapons.Remove(objNewWeapon);
+                    intNumFullWeapons -= 1;
+                    if (intNumFullWeapons <= _intWeaponCapacity) break;
+                }
+            }
         }
 
         /// Create a Vehicle Modification from an XmlNode and return the TreeNodes for it.
@@ -96,10 +119,13 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetInt32FieldQuickly("slots", ref _intSlots);
             objXmlMod.TryGetStringFieldQuickly("weaponcategories", ref _strAllowedWeaponCategories);
             objXmlMod.TryGetStringFieldQuickly("avail", ref _strAvail);
+            if (objXmlMod.TryGetInt32FieldQuickly("weaponcapacity", ref _intWeaponCapacity) && IsWeaponsFull)
+                // If you ever hit this, you done fucked up. Make sure that weapon mounts cannot actually equip more weapons than they're allowed in the first place
+                Utils.BreakIfDebug();
             if (!objXmlMod.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMod.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlMod.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
@@ -196,6 +222,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("included", _blnIncludeInVehicle.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("weaponmountcategories", _strAllowedWeaponCategories);
+            objWriter.WriteElementString("weaponcapacity", _intWeaponCapacity.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteStartElement("weapons");
             foreach (Weapon objWeapon in _lstWeapons)
             {
@@ -265,7 +292,7 @@ namespace Chummer.Backend.Equipment
             {
                 objNode.TryGetBoolFieldQuickly("installed", ref _blnEquipped);
             }
-
+            objNode.TryGetInt32FieldQuickly("weaponcapacity", ref _intWeaponCapacity);
             XmlNode xmlChildrenNode = objNode["weapons"];
             using (XmlNodeList xmlWeaponList = xmlChildrenNode?.SelectNodes("weapon"))
             {
@@ -473,6 +500,16 @@ namespace Chummer.Backend.Equipment
         /// Weapons.
         /// </summary>
         public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
+
+        /// <summary>
+        /// Maximum number of weapons this mount can have.
+        /// </summary>
+        public int WeaponCapacity => _intWeaponCapacity;
+
+        /// <summary>
+        /// Whether this mount can accommodate any more weapons or not
+        /// </summary>
+        public bool IsWeaponsFull => _lstWeapons.Count(x => string.IsNullOrEmpty(x.ParentID) || _lstWeapons.DeepFindById(x.ParentID) == null) >= _intWeaponCapacity;
 
         /// <summary>
         /// Internal identifier which will be used to identify this piece of Gear in the Character.
@@ -1180,7 +1217,7 @@ namespace Chummer.Backend.Equipment
                                     return false;
                             }
 
-                            return Weapons.Count == 0; //todo: something something sizes
+                            return IsWeaponsFull;
                         }
                     default:
                         return false;

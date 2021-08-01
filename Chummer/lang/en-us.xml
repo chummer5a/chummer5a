@@ -2591,6 +2591,10 @@
       <text>Select Vehicle</text>
     </string>
     <string>
+      <key>Message_WeaponMountFull</key>
+      <text>The selected weapon mount is full and cannot be equipped with any more weapons.</text>
+    </string>
+    <string>
       <key>Message_CannotAddWeapon</key>
       <text>Weapons can only be added to Weapon Mounts.</text>
     </string>

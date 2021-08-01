@@ -6897,7 +6897,17 @@ namespace Chummer
 
             if (objWeaponMount == null && objMod == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotAddWeapon"), LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotAddWeapon"),
+                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            if (objWeaponMount?.IsWeaponsFull == true)
+            {
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_WeaponMountFull"),
+                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -6993,7 +7003,8 @@ namespace Chummer
                 IsCharacterUpdateRequested = true;
 
                 IsDirty = true;
-                return frmPickWeapon.AddAgain;
+
+                return frmPickWeapon.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
             }
         }
 
@@ -11018,7 +11029,7 @@ namespace Chummer
                     //TODO: RAW, some mounts can have multiple weapons attached. Needs support in the Weapon Mount class itself, ideally a 'CanMountThisWeapon' bool or something.
                     if ((objVehicleWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) ||
                          objVehicleWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) &&
-                        objVehicleWeaponMount.Weapons.Count == 0)
+                        !objVehicleWeaponMount.IsWeaponsFull)
                         lstItems.Add(new ListItem(objVehicleWeaponMount.InternalId,
                             objVehicleWeaponMount.CurrentDisplayName));
                     else

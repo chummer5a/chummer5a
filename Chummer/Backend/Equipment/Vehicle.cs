@@ -478,10 +478,12 @@ namespace Chummer.Backend.Equipment
                         // Find the first free Weapon Mount in the Vehicle.
                         foreach (WeaponMount objWeaponMount in _lstWeaponMounts)
                         {
-                            if (objWeaponMount.Weapons.Count != 0) continue;
+                            if (objWeaponMount.IsWeaponsFull)
+                                continue;
                             if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
                                 !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&
-                                !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories)) continue;
+                                !string.IsNullOrEmpty(objWeaponMount.AllowedWeaponCategories))
+                                continue;
                             objWeaponMount.Weapons.Add(objWeapon);
                             blnAttached = true;
                             foreach (Weapon objSubWeapon in objSubWeapons)
@@ -853,7 +855,7 @@ namespace Chummer.Backend.Equipment
                                         // Find the first free Weapon Mount in the Vehicle.
                                         foreach (WeaponMount objWeaponMount in WeaponMounts)
                                         {
-                                            if (objWeaponMount.Weapons.Count != 0)
+                                            if (objWeaponMount.IsWeaponsFull)
                                                 continue;
                                             if (!objWeaponMount.AllowedWeaponCategories.Contains(objWeapon.SizeCategory) &&
                                                 !objWeaponMount.AllowedWeapons.Contains(objWeapon.Name) &&

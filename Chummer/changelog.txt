@@ -98,6 +98,7 @@ Application Changes:
 - Added support for Cyberware using the 'sameparent' requirement, in the same manner as armor mods. This allows for checking if the parent of a piece of cyberware (ie cyberlimb) already has another piece of cyberware installed.
 - Armor and clothing are now marked as devices with Matrix attributes.
 - Split up the option for how much Nuyen is gained per Karma spent after character creation into separate Working for the Man and Working for the People values.
+- Weapon mounts for vehicles now have their capacities for weapons explicitly defined. The default size is one weapon, but a different size can be set with the weaponsize parameter. Users can no longer attempt to add more weapons to a mount than it has capacity for weapons.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -282,6 +283,7 @@ Changed/New Strings:
 - Tooltip_Dependency_BadLoadOrder
 - String_ToTop
 - String_ToBottom
+- Message_WeaponMountFull
 
 Deleted Strings:
 - Label_Options_NuyenPerBP

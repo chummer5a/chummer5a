@@ -4689,7 +4689,17 @@ namespace Chummer
 
             if (objWeaponMount == null && objMod == null)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotAddWeapon"), LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CannotAddWeapon"),
+                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return;
+            }
+
+            if (objWeaponMount?.IsWeaponsFull == true)
+            {
+                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_WeaponMountFull"),
+                    LanguageManager.GetString("MessageTitle_CannotAddWeapon"), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
                 return;
             }
 
@@ -4741,7 +4751,7 @@ namespace Chummer
                                 objMod.Weapons.Add(objLoopWeapon);
                         }
 
-                        blnAddAgain = frmPickWeapon.AddAgain;
+                        blnAddAgain = frmPickWeapon.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
                     }
 
                     IsCharacterUpdateRequested = true;

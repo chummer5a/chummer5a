@@ -3518,6 +3518,7 @@
           <flexibility>Fixed</flexibility>
           <size>Built-In</size>
           <visibility>Concealed</visibility>
+          <allowedweapons>Melee Bite</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -3654,6 +3655,7 @@
           <flexibility>Fixed</flexibility>
           <size>Standard (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Colt Cobra TZ-120</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -3769,6 +3771,7 @@
           <flexibility>Fixed</flexibility>
           <size>Mini (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Defiance EX Shocker</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4177,6 +4180,7 @@
           <flexibility>Fixed</flexibility>
           <size>Built-In</size>
           <visibility>External</visibility>
+          <allowedweapons>Micro-Torpedo Launcher</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4380,6 +4384,7 @@
           <flexibility>Fixed</flexibility>
           <size>Built-In</size>
           <visibility>Concealed</visibility>
+          <allowedweapons>Jaws</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4495,6 +4500,7 @@
           <flexibility>Fixed</flexibility>
           <size>Mini (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Yamaha Pulsar</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4556,6 +4562,21 @@
           <flexibility>Fixed</flexibility>
           <size>Standard (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Underbarrel Grenade Launcher</allowedweapons>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -6367,12 +6388,14 @@
           <flexibility>Flexible</flexibility>
           <size>Light</size>
           <visibility>External</visibility>
+          <allowedweapons>Sword</allowedweapons>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
           <flexibility>Flexible</flexibility>
           <size>Light</size>
           <visibility>External</visibility>
+          <allowedweapons>Sword</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -6725,6 +6748,7 @@
           <flexibility>Fixed</flexibility>
           <size>Heavy [SR5]</size>
           <visibility>External</visibility>
+          <allowedweapons>Stoner-Ares M202</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -8894,6 +8918,7 @@
           <flexibility>Fixed</flexibility>
           <size>Mini (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Yamaha Pulsar</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -9871,6 +9896,7 @@
           <flexibility>Turret</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
+          <allowedweapons>Krupp Munitions 3E Firefighting Cannon</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -9924,6 +9950,7 @@
           <flexibility>Turret</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
+          <allowedweapons>Krupp Munitions 3E Firefighting Cannon</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>

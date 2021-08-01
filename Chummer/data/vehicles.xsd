@@ -230,6 +230,7 @@
                     <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                     <xs:element name="weaponcategories" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="weaponcapacity" type="xs:string" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
