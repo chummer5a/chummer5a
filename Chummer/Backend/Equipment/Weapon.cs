@@ -3874,7 +3874,26 @@ namespace Chummer.Backend.Equipment
                     case FiringMode.GunneryCommandDevice:
                     case FiringMode.ManualOperation:
                         {
-                            intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").Pool;
+                            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                            if (Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR") && _objMountedVehicle == null)
+                            {
+                                Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID);
+                                while (objAttributeSource != null
+                                       && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
+                                       && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                {
+                                    objAttributeSource = objAttributeSource.Parent;
+                                }
+
+                                if (objAttributeSource != null)
+                                    intDicePool = objSkill.PoolOtherAttribute(objSkill.Attribute, false, objSkill.Attribute == "STR"
+                                        ? objAttributeSource.TotalStrength
+                                        : objAttributeSource.TotalAgility);
+                                else
+                                    intDicePool = objSkill.Pool;
+                            }
+                            else
+                                intDicePool = objSkill.Pool;
 
                             if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
                             {
@@ -3890,7 +3909,27 @@ namespace Chummer.Backend.Equipment
                             Skill objSkill = Skill;
                             if (objSkill != null)
                             {
-                                intDicePool = objSkill.Pool;
+                                if (Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR"))
+                                {
+                                    Cyberware objAttributeSource = _objMountedVehicle != null
+                                        ? _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)
+                                        : _objCharacter.Cyberware.DeepFindById(ParentID);
+                                    while (objAttributeSource != null
+                                           && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
+                                           && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                    {
+                                        objAttributeSource = objAttributeSource.Parent;
+                                    }
+                                    
+                                    if (objAttributeSource != null)
+                                        intDicePool = objSkill.PoolOtherAttribute(objSkill.Attribute, false, objSkill.Attribute == "STR"
+                                            ? objAttributeSource.TotalStrength
+                                            : objAttributeSource.TotalAgility);
+                                    else
+                                        intDicePool = objSkill.Pool;
+                                }
+                                else
+                                    intDicePool = objSkill.Pool;
 
                                 if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
                                 {
@@ -3906,7 +3945,7 @@ namespace Chummer.Backend.Equipment
                                     SkillSpecialization objSpec =
                                         objSkill.GetSpecialization(DisplayNameShort(GlobalOptions.Language)) ??
                                         objSkill.GetSpecialization(Name) ??
-                                        objSkill.GetSpecialization(DisplayCategory(GlobalOptions.DefaultLanguage)) ??
+                                        objSkill.GetSpecialization(DisplayCategory(GlobalOptions.Language)) ??
                                         objSkill.GetSpecialization(Category);
 
                                     if (objSpec == null && !string.IsNullOrWhiteSpace(objSkill.Specialization))
@@ -4105,55 +4144,87 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                StringBuilder sbdReturn = new StringBuilder();
                 string strSpace = LanguageManager.GetString("String_Space");
+                StringBuilder sbdExtra = new StringBuilder();
+                foreach (WeaponAccessory wa in WeaponAccessories.Where(a => a.Equipped && a.DicePool != 0))
+                {
+                    sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                        strSpace, wa.CurrentDisplayName, wa.DicePool);
+                }
+
+                if (!string.IsNullOrEmpty(AmmoLoaded))
+                {
+                    Gear objLoadedAmmo = _objCharacter.Gear.DeepFindById(AmmoLoaded) ?? _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
+                    if (objLoadedAmmo != null)
+                    {
+                        string strWeaponBonusPool = string.Empty;
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objLoadedAmmo.FlechetteWeaponBonus != null)
+                            strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
+                        else if (objLoadedAmmo.WeaponBonus != null)
+                            strWeaponBonusPool = objLoadedAmmo.WeaponBonus?["pool"]?.InnerText;
+
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        {
+                            sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                strSpace, objLoadedAmmo.CurrentDisplayNameShort, strWeaponBonusPool);
+                        }
+                    }
+                }
+
+                if (ParentVehicle == null)
+                {
+                    if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
+                    {
+                        sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                            strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink));
+                    }
+
+                    foreach (Improvement objImprovement in _objCharacter.Improvements
+                        .Where(objImprovement => objImprovement.Enabled && (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDice &&
+                                                 objImprovement.ImprovedName == Category || objImprovement.ImproveType == Improvement.ImprovementType.WeaponSpecificDice &&
+                                                 objImprovement.ImprovedName == InternalId) && string.IsNullOrEmpty(objImprovement.Condition)))
+                    {
+                        sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                            strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
+                    }
+                }
+                else if (WirelessOn &&
+                         WeaponAccessories.Any(x =>
+                             x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn) &&
+                         ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
+                {
+                    sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                        strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
+                }
+
+                string strReturn = LanguageManager.GetString("String_Special");
                 switch (FireMode)
                 {
                     case FiringMode.DogBrain:
                         {
-                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}({2})",
-                                strSpace, LanguageManager.GetString("String_Pilot"), ParentVehicle.Pilot);
-                            Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children,
+                            strReturn = string.Format(GlobalOptions.CultureInfo, "{1}{0}({2})",
+                                strSpace, LanguageManager.GetString("String_Pilot"), ParentVehicle?.Pilot ?? 0);
+                            Gear objAutosoft = ParentVehicle?.GearChildren.DeepFirstOrDefault(x => x.Children,
                                 x => x.Name == "[Weapon] Targeting Autosoft" &&
                                      (x.Extra == Name || x.Extra == CurrentDisplayName));
-
                             if (objAutosoft != null)
                             {
-                                sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                strReturn += string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace, objAutosoft.CurrentDisplayName, objAutosoft.Rating);
                             }
                             else
                             {
-                                sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                strReturn += string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace, LanguageManager.GetString("Tip_Skill_Defaulting"), -1);
                             }
-                            break;
-                        }
-                    case FiringMode.GunneryCommandDevice:
-                        {
-                            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{1}[{2}]{0}({3})",
-                                strSpace, objSkill.CurrentDisplayName, _objCharacter.LOG.DisplayAbbrev, objSkill.PoolOtherAttribute("LOG"));
-                            if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
-                            {
-                                SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
-                                if (spec != null)
-                                {
-                                    int intSpecBonus = spec.SpecializationBonus;
-                                    if (intSpecBonus != 0)
-                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                            strSpace, spec.CurrentDisplayName, intSpecBonus);
-                                }
-                            }
+
+                            strReturn += sbdExtra.ToString();
                             break;
                         }
                     case FiringMode.RemoteOperated:
-                    //TODO: how/why are these different?
-                    case FiringMode.ManualOperation:
-                        {
+                    {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{1}[{2}]{0}({3})",
-                                strSpace, objSkill.CurrentDisplayName, objSkill.AttributeObject.DisplayAbbrev, objSkill.Pool);
+                            string strExtra = sbdExtra.ToString();
                             if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
                             {
                                 SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
@@ -4161,19 +4232,54 @@ namespace Chummer.Backend.Equipment
                                 {
                                     int intSpecBonus = spec.SpecializationBonus;
                                     if (intSpecBonus != 0)
-                                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                            strSpace, spec.CurrentDisplayName, intSpecBonus);
+                                        strExtra = string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                            strSpace, spec.CurrentDisplayName, intSpecBonus) + strExtra;
                                 }
                             }
+
+                            strReturn = objSkill.CompileDicepoolTooltip("LOG", objSkill.CurrentDisplayName + strSpace, strExtra);
+                            break;
+                        }
+                    case FiringMode.GunneryCommandDevice:
+                    case FiringMode.ManualOperation:
+                        {
+                            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                            string strExtra = sbdExtra.ToString();
+                            if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")
+                            {
+                                SkillSpecialization spec = objSkill.GetSpecialization(RelevantSpecialization);
+                                if (spec != null)
+                                {
+                                    int intSpecBonus = spec.SpecializationBonus;
+                                    if (intSpecBonus != 0)
+                                        strExtra = string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                            strSpace, spec.CurrentDisplayName, intSpecBonus) + strExtra;
+                                }
+                            }
+
+                            Cyberware objAttributeSource =
+                                Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR") &&
+                                _objMountedVehicle == null
+                                    ? _objCharacter.Cyberware.DeepFindById(ParentID)
+                                    : null;
+                            while (objAttributeSource != null
+                                   && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
+                                   && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                            {
+                                objAttributeSource = objAttributeSource.Parent;
+                            }
+
+                            strReturn = objSkill.CompileDicepoolTooltip(string.Empty,
+                                objSkill.CurrentDisplayName + strSpace, strExtra,
+                                !Cyberware || _objMountedVehicle != null, objAttributeSource);
                             break;
                         }
                     case FiringMode.Skill:
                         {
                             Skill objSkill = Skill;
+                            string strExtra = sbdExtra.ToString();
                             if (objSkill != null)
                             {
-                                sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}[{1}]{2}({3})",
-                                    objSkill.CurrentDisplayName, objSkill.AttributeObject.DisplayAbbrev, strSpace, objSkill.Pool);
                                 // If the character has a Specialization, include it in the Dice Pool string.
                                 if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                                 {
@@ -4195,68 +4301,34 @@ namespace Chummer.Backend.Equipment
                                     {
                                         int intSpecBonus = spec.SpecializationBonus;
                                         if (intSpecBonus != 0)
-                                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                                strSpace, spec.CurrentDisplayName, intSpecBonus);
+                                            strExtra = string.Format(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                                strSpace, spec.CurrentDisplayName, intSpecBonus) + strExtra;
                                     }
                                 }
+
+                                Cyberware objAttributeSource =
+                                    Cyberware && (objSkill.Attribute == "AGI" || objSkill.Attribute == "STR")
+                                        ? _objMountedVehicle != null
+                                            ? _objMountedVehicle.FindVehicleCyberware(x => x.InternalId == ParentID)
+                                            : _objCharacter.Cyberware.DeepFindById(ParentID)
+                                        : null;
+                                while (objAttributeSource != null
+                                       && (objSkill.Attribute != "STR" || objAttributeSource.TotalStrength == 0)
+                                       && (objSkill.Attribute != "AGI" || objAttributeSource.TotalAgility == 0))
+                                {
+                                    objAttributeSource = objAttributeSource.Parent;
+                                }
+
+                                strReturn = objSkill.CompileDicepoolTooltip(string.Empty,
+                                    objSkill.CurrentDisplayName + strSpace, strExtra, !Cyberware,
+                                    objAttributeSource);
                             }
 
                             break;
                         }
                 }
 
-                foreach (WeaponAccessory wa in WeaponAccessories.Where(a => a.Equipped && a.DicePool != 0))
-                {
-                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                        strSpace, wa.CurrentDisplayName, wa.DicePool);
-                }
-
-                if (!string.IsNullOrEmpty(AmmoLoaded))
-                {
-                    Gear objLoadedAmmo = _objCharacter.Gear.DeepFindById(AmmoLoaded) ?? _objCharacter.Vehicles.FindVehicleGear(AmmoLoaded);
-                    if (objLoadedAmmo != null)
-                    {
-                        string strWeaponBonusPool = string.Empty;
-                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objLoadedAmmo.FlechetteWeaponBonus != null)
-                            strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
-                        else if (objLoadedAmmo.WeaponBonus != null)
-                            strWeaponBonusPool = objLoadedAmmo.WeaponBonus?["pool"]?.InnerText;
-
-                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                        {
-                            sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                                strSpace, objLoadedAmmo.CurrentDisplayNameShort, strWeaponBonusPool);
-                        }
-                    }
-                }
-
-                if (ParentVehicle == null)
-                {
-                    if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
-                    {
-                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                            strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink));
-                    }
-
-                    foreach (Improvement objImprovement in _objCharacter.Improvements
-                        .Where(objImprovement => objImprovement.Enabled && (objImprovement.ImproveType == Improvement.ImprovementType.WeaponCategoryDice &&
-                                                 objImprovement.ImprovedName == Category || objImprovement.ImproveType == Improvement.ImprovementType.WeaponSpecificDice &&
-                                                 objImprovement.ImprovedName == InternalId) && string.IsNullOrEmpty(objImprovement.Condition)))
-                    {
-                        sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                            strSpace, _objCharacter.GetObjectName(objImprovement), objImprovement.Value);
-                    }
-                }
-                else if (WirelessOn &&
-                         WeaponAccessories.Any(x =>
-                             x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn) &&
-                         ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
-                {
-                    sbdReturn.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                        strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
-                }
-
-                return sbdReturn.ToString();
+                return strReturn;
             }
         }
 

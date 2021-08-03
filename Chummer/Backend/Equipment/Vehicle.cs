@@ -3349,6 +3349,15 @@ namespace Chummer.Backend.Equipment
         /// Locate a piece of Cyberware within this vehicle based on a predicate.
         /// </summary>
         /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
+        public Cyberware FindVehicleCyberware([NotNull] Func<Cyberware, bool> funcPredicate)
+        {
+            return FindVehicleCyberware(funcPredicate, out VehicleMod _);
+        }
+
+        /// <summary>
+        /// Locate a piece of Cyberware within this vehicle based on a predicate.
+        /// </summary>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
         /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
         public Cyberware FindVehicleCyberware([NotNull] Func<Cyberware, bool> funcPredicate, out VehicleMod objFoundVehicleMod)
         {
@@ -3377,6 +3386,15 @@ namespace Chummer.Backend.Equipment
 
             objFoundVehicleMod = null;
             return null;
+        }
+
+        /// <summary>
+        /// Locate a VehicleMod within this vehicle based on a predicate.
+        /// </summary>
+        /// <param name="funcPredicate">Predicate to locate the Cyberware.</param>
+        public VehicleMod FindVehicleMod([NotNull] Func<VehicleMod, bool> funcPredicate)
+        {
+            return FindVehicleMod(funcPredicate, out WeaponMount _);
         }
 
         /// <summary>

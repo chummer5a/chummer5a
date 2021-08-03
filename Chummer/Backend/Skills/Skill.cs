@@ -841,14 +841,16 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public int PoolOtherAttribute(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue)
         {
-            if (!Enabled)
+            if (!Enabled && !IsNativeLanguage)
                 return 0;
-            int intRating = Rating;
             int intValue = intAttributeOverrideValue > int.MinValue
                 ? intAttributeOverrideValue
                 : CharacterObject.AttributeSection.GetAttributeByName(strAttribute).TotalValue;
             if (intValue <= 0)
                 return 0;
+            if (IsNativeLanguage)
+                return int.MaxValue;
+            int intRating = Rating;
             if (intRating > 0)
                 return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
             return Default
@@ -1112,7 +1114,7 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// The total, general purpose dice pool for this skill
         /// </summary>
-        public int Pool => IsNativeLanguage ? int.MaxValue : PoolOtherAttribute(Attribute);
+        public int Pool => PoolOtherAttribute(Attribute);
 
         public bool Leveled => Rating > 0;
 
@@ -1541,20 +1543,28 @@ namespace Chummer.Backend.Skills
                 : null;
         }
 
-        public string PoolToolTip => IsNativeLanguage ? LanguageManager.GetString("Tip_Skill_NativeLanguage") : CompileDicepoolTooltip(Attribute);
+        public string PoolToolTip => CompileDicepoolTooltip();
 
-        public string CompileDicepoolTooltip(string abbrev = "")
+        public string CompileDicepoolTooltip(string abbrev = "", string strExtraStart = "", string strExtra = "", bool blnListAllLimbs = true, Cyberware objShowOnlyCyberware = null)
         {
-            if (!Default && !Leveled)
+            if (!Default && !Leveled && !IsNativeLanguage)
             {
-                return LanguageManager.GetString("Tip_Skill_Cannot_Default");
+                return strExtraStart + LanguageManager.GetString("Tip_Skill_Cannot_Default");
             }
+
+            if (string.IsNullOrEmpty(abbrev))
+                abbrev = Attribute;
 
             CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
 
             if (att.TotalValue <= 0)
             {
-                return string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_Zero_Attribute"), att.DisplayNameShort(GlobalOptions.Language));
+                return strExtraStart + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_Zero_Attribute"), att.DisplayNameShort(GlobalOptions.Language));
+            }
+            
+            if (IsNativeLanguage)
+            {
+                return strExtraStart + LanguageManager.GetString("Tip_Skill_NativeLanguage");
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
@@ -1562,11 +1572,11 @@ namespace Chummer.Backend.Skills
             StringBuilder s;
             if (CyberwareRating > TotalBaseRating)
             {
-                s = new StringBuilder(LanguageManager.GetString("Tip_Skill_SkillsoftRating") + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
+                s = new StringBuilder(strExtraStart + LanguageManager.GetString("Tip_Skill_SkillsoftRating") + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
             }
             else
             {
-                s = new StringBuilder(LanguageManager.GetString("Tip_Skill_SkillRating") + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
+                s = new StringBuilder(strExtraStart + LanguageManager.GetString("Tip_Skill_SkillRating") + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
                 bool first = true;
                 foreach (Improvement objImprovement in lstRelevantImprovements)
                 {
@@ -1585,7 +1595,26 @@ namespace Chummer.Backend.Skills
                 s.Append(first ? ")" : "))");
             }
 
-            s.Append(strSpace + '+' + strSpace + att.DisplayAbbrev + strSpace + '(' + att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+            if (blnListAllLimbs || (att.Abbrev != "STR" && att.Abbrev != "AGI") || objShowOnlyCyberware == null)
+                s.Append(strSpace + '+' + strSpace + att.DisplayAbbrev + strSpace + '(' + att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+            else
+            {
+                s.Append(strSpace + '+' + strSpace + objShowOnlyCyberware.CurrentDisplayName + strSpace +
+                         att.DisplayAbbrev + strSpace + '(' + (att.Abbrev == "STR"
+                             ? objShowOnlyCyberware.TotalStrength
+                             : objShowOnlyCyberware.TotalAgility).ToString(GlobalOptions.CultureInfo) + ')');
+                if ((objShowOnlyCyberware.LimbSlot == "arm"
+                     || objShowOnlyCyberware.Name.Contains(" Arm")
+                     || objShowOnlyCyberware.Name.Contains(" Hand"))
+                    && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
+                    && !CharacterObject.Ambidextrous
+                    && objShowOnlyCyberware.LimbSlotCount <= 1)
+                {
+                    s.Append(strSpace + '-' + strSpace + 2.ToString(GlobalOptions.CultureInfo) + strSpace + '(' +
+                             LanguageManager.GetString("Tip_Skill_OffHand") + ')');
+                }
+            }
+
             Improvement objAttributeSwapImprovement =
                 lstRelevantImprovements.FirstOrDefault(x =>
                     x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute);
@@ -1632,20 +1661,28 @@ namespace Chummer.Backend.Skills
                          sustains.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
-            if (att.Abbrev == "STR" || att.Abbrev == "AGI")
+            if (!string.IsNullOrEmpty(strExtra))
+                s.Append(strExtra);
+
+            if (blnListAllLimbs && (att.Abbrev == "STR" || att.Abbrev == "AGI"))
             {
                 foreach (Cyberware cyberware in CharacterObject.Cyberware)
                 {
-                    if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
+                    if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
                         continue;
-                    s.Append(Environment.NewLine + cyberware.Location + strSpace + cyberware.DisplayNameShort(GlobalOptions.Language));
+                    s.Append(Environment.NewLine + Environment.NewLine + strExtraStart + cyberware.CurrentDisplayName);
                     if (cyberware.Grade.Name != "Standard")
                     {
                         s.Append(strSpace + '(' + cyberware.Grade.CurrentDisplayName + ')');
                     }
 
-                    int pool = PoolOtherAttribute(att.Abbrev, false, att.Abbrev == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
-                    if (cyberware.Location == CharacterObject.PrimaryArm
+                    int pool = PoolOtherAttribute(att.Abbrev, false, att.Abbrev == "STR"
+                        ? cyberware.TotalStrength
+                        : cyberware.TotalAgility);
+                    if ((cyberware.LimbSlot != "arm"
+                         && !cyberware.Name.Contains(" Arm")
+                         && !cyberware.Name.Contains(" Hand"))
+                        || cyberware.Location == CharacterObject.PrimaryArm
                         || CharacterObject.Ambidextrous
                         || cyberware.LimbSlotCount > 1)
                     {
@@ -1655,6 +1692,9 @@ namespace Chummer.Backend.Skills
                     {
                         s.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2, strSpace, -2, LanguageManager.GetString("Tip_Skill_OffHand"));
                     }
+
+                    if (!string.IsNullOrEmpty(strExtra))
+                        s.Append(strExtra);
                 }
             }
 
@@ -1664,7 +1704,7 @@ namespace Chummer.Backend.Skills
             {
                 if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
                     continue;
-                s.Append(Environment.NewLine + objSwapSkillAttribute.Exclude +
+                s.Append(Environment.NewLine + Environment.NewLine + strExtraStart + objSwapSkillAttribute.Exclude +
                          LanguageManager.GetString("String_Colon") + strSpace +
                          CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace);
                 int intBasePool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false, CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
@@ -1683,16 +1723,19 @@ namespace Chummer.Backend.Skills
                 }
 
                 s.Append(intBasePool.ToString(GlobalOptions.CultureInfo));
-                if (objSwapSkillAttribute.ImprovedName != "STR" && objSwapSkillAttribute.ImprovedName != "AGI")
+                if (!string.IsNullOrEmpty(strExtra))
+                    s.Append(strExtra);
+                if (!blnListAllLimbs || (objSwapSkillAttribute.ImprovedName != "STR" &&
+                                         objSwapSkillAttribute.ImprovedName != "AGI"))
                     continue;
                 foreach (Cyberware cyberware in CharacterObject.Cyberware)
                 {
-                    if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
+                    if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
                         continue;
-                    s.Append(Environment.NewLine + objSwapSkillAttribute.Exclude +
+                    s.Append(Environment.NewLine + Environment.NewLine + strExtraStart + objSwapSkillAttribute.Exclude +
                              LanguageManager.GetString("String_Colon") + strSpace +
-                             CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace + cyberware.Location +
-                             strSpace + cyberware.CurrentDisplayNameShort);
+                             CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace
+                             + cyberware.CurrentDisplayName);
                     if (cyberware.Grade.Name != "Standard")
                     {
                         s.Append(strSpace + '(' + cyberware.Grade.CurrentDisplayName + ')');
@@ -1708,7 +1751,10 @@ namespace Chummer.Backend.Skills
                         intLoopPool += objSpecialization.SpecializationBonus;
                     }
 
-                    if (cyberware.Location == CharacterObject.PrimaryArm
+                    if ((cyberware.LimbSlot != "arm"
+                         && !cyberware.Name.Contains(" Arm")
+                         && !cyberware.Name.Contains(" Hand"))
+                        || cyberware.Location == CharacterObject.PrimaryArm
                         || CharacterObject.Ambidextrous
                         || cyberware.LimbSlotCount > 1)
                     {
@@ -1719,6 +1765,8 @@ namespace Chummer.Backend.Skills
                         s.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}{1}({2}{1}{3})",
                             intLoopPool - 2, strSpace, -2, LanguageManager.GetString("Tip_Skill_OffHand"));
                     }
+                    if (!string.IsNullOrEmpty(strExtra))
+                        s.Append(strExtra);
                 }
             }
 
@@ -1994,6 +2042,7 @@ namespace Chummer.Backend.Skills
                         new DependencyGraphNode<string, Skill>(nameof(DisplayOtherAttribute),
                             new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute),
                                 new DependencyGraphNode<string, Skill>(nameof(Enabled)),
+                                new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
                                 new DependencyGraphNode<string, Skill>(nameof(Rating)),
                                 new DependencyGraphNode<string, Skill>(nameof(GetSpecializationBonus),
                                     new DependencyGraphNode<string, Skill>(nameof(Specializations))
@@ -2019,8 +2068,7 @@ namespace Chummer.Backend.Skills
                                 new DependencyGraphNode<string, Skill>(nameof(AttributeObject))
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute)),
-                            new DependencyGraphNode<string, Skill>(nameof(Attribute)),
-                            new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage))
+                            new DependencyGraphNode<string, Skill>(nameof(Attribute))
                         )
                     )
                 ),
