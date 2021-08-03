@@ -3865,7 +3865,21 @@ namespace Chummer.Backend.Equipment
 
                             if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.Equipped && x.WirelessOn))
                             {
-                                decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                                decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
+                                    Improvement.ImprovementType.Smartlink);
+                                List<Gear> lstVehicleSmartlinks = ParentVehicle.GearChildren.DeepWhere(x => x.Children,
+                                    x => x.Bonus?.InnerXml.Contains("<smartlink>") == true).ToList();
+                                foreach (Gear objLoopGear in lstVehicleSmartlinks)
+                                {
+                                    string strLoopBonus = string.Empty;
+                                    if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                                    {
+                                        decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
+                                            _objCharacter, strLoopBonus,
+                                            objLoopGear.Rating));
+                                    }
+                                }
+                                decDicePoolModifier += decSmartlinkBonus;
                             }
 
                             decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
@@ -4175,8 +4189,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessOn && WeaponAccessories.Any(x => x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
                     {
-                        sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                            strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink));
+                        decimal decSmartlinkBonus =
+                            ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                        if (decSmartlinkBonus != 0)
+                            sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), decSmartlinkBonus);
                     }
 
                     foreach (Improvement objImprovement in _objCharacter.Improvements
@@ -4190,11 +4207,40 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (WirelessOn &&
                          WeaponAccessories.Any(x =>
-                             x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn) &&
-                         ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
+                             x.Name.StartsWith("Smartgun", StringComparison.Ordinal) && x.WirelessOn))
                 {
-                    sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
-                        strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
+                    decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                    switch (FireMode)
+                    {
+                        case FiringMode.DogBrain:
+                            if (ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft"))
+                                sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                    strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
+                            break;
+                        case FiringMode.RemoteOperated:
+                            List<Gear> lstVehicleSmartlinks = ParentVehicle.GearChildren.DeepWhere(x => x.Children,
+                                x => x.Bonus?.InnerXml.Contains("<smartlink>") == true).ToList();
+                            foreach (Gear objLoopGear in lstVehicleSmartlinks)
+                            {
+                                string strLoopBonus = string.Empty;
+                                if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                                {
+                                    decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
+                                        _objCharacter, strLoopBonus,
+                                        objLoopGear.Rating));
+                                }
+                            }
+                            if (decSmartlinkBonus != 0)
+                                sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                    strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), decSmartlinkBonus);
+                            break;
+                        case FiringMode.GunneryCommandDevice:
+                        case FiringMode.ManualOperation:
+                            if (decSmartlinkBonus != 0)
+                                sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
+                                    strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), decSmartlinkBonus);
+                            break;
+                    }
                 }
 
                 string strReturn = LanguageManager.GetString("String_Special");
