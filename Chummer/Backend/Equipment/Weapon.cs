@@ -2874,7 +2874,10 @@ namespace Chummer.Backend.Equipment
                         sbdMounts.Append(strMount + '/');
                     }
                 }
-                return sbdMounts + "Internal/None";
+                string strReturn = sbdMounts.ToString();
+                if (!strReturn.Contains("Internal/"))
+                    return strReturn + "Internal/None";
+                return strReturn + "None";
             }
         }
 

@@ -145,6 +145,8 @@ Data Changes:
 - Added the Gabriel Hound from Sprawl Wilds to the critters list.
 - KEV from Shadowrun Missions Season 8 now has proper sourcebook references, and the specific Shadowrun Missions Season 8 books that contain it with a price and availability have been added to the program.
 - Fixed Savior Medkit page reference. Fixes #4529.
+- Added Stock, Side, Underbarrel, and Top weapon accessory slots to assault cannons, grenade launchers, and missile launchers that were missing it.
+- Removed Barrel weapon accessory slots from assault cannons, grenade launchers, and missile launchers that had it. As per the core rulebook, these weapons cannot mount barrel-mounted accessories or modifications.
 
 Changed/New Strings:
 - String_ContactPoints
