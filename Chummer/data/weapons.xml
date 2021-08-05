@@ -2886,7 +2886,7 @@
       <accuracy>0</accuracy>
       <reach>0</reach>
       <damage>24P (-4/m)</damage>
-      <ap>-4/-10</ap>
+      <ap>-4//-10</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -2960,7 +2960,7 @@
       <accuracy>0</accuracy>
       <reach>0</reach>
       <damage>24P (-4/m)</damage>
-      <ap>-4/-10</ap>
+      <ap>-4//-10</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -3808,7 +3808,7 @@
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>({STR}+1)P</damage>
-      <ap>-1/-2</ap>
+      <ap>-1//-2</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -5933,7 +5933,7 @@
       <accuracy>Physical</accuracy>
       <reach>0</reach>
       <damage>({STR}+3)S/12P</damage>
-      <ap>+4/-8</ap>
+      <ap>+4//-8</ap>
       <mode>SS</mode>
       <rc>0</rc>
       <ammo>1</ammo>
@@ -10766,7 +10766,7 @@
       <accuracy>0</accuracy>
       <reach>0</reach>
       <damage>24P (-4/m)</damage>
-      <ap>-4/-10</ap>
+      <ap>-4//-10</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -10820,7 +10820,7 @@
       <accuracy>0</accuracy>
       <reach>0</reach>
       <damage>24P (-4/m)</damage>
-      <ap>-4/-10</ap>
+      <ap>-4//-10</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>
@@ -14867,7 +14867,7 @@
       <accuracy>0</accuracy>
       <reach>0</reach>
       <damage>18P (-6/m)</damage>
-      <ap>-4/-10</ap>
+      <ap>-4//-10</ap>
       <mode>0</mode>
       <rc>0</rc>
       <ammo>0</ammo>

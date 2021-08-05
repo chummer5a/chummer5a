@@ -2317,6 +2317,8 @@ namespace Chummer.Backend.Equipment
             {
                 if (string.IsNullOrEmpty(strDamage))
                     strReturn = strDamageType + strDamageExtra;
+                else if (strDamage.Contains("//"))
+                    strReturn = strDamage.Replace("//", "/") + strDamageType + strDamageExtra;
                 else
                 {
                     // Replace the division sign with "div" since we're using XPath.
@@ -2385,6 +2387,8 @@ namespace Chummer.Backend.Equipment
 
                 if (string.IsNullOrEmpty(strDamage))
                     strReturn = strDamageType + strDamageExtra;
+                else if (strDamage.Contains("//"))
+                    strReturn = strDamage.Replace("//", "/") + strDamageType + strDamageExtra;
                 else
                 {
                     // Replace the division sign with "div" since we're using XPath.
@@ -3014,10 +3018,14 @@ namespace Chummer.Backend.Equipment
             if (sbdBonusAP.Length > 0)
                 strAP += sbdBonusAP.ToString();
 
-            StringBuilder sbdAP = new StringBuilder(strAP)
-                .CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
-            ProcessAttributesInXPath(sbdAP, strAP);
+            if (strAP.Contains("//"))
+                return strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? strAP.Replace("//", "/")
+                    : strAP.Replace("//", "/").CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage));
 
+            StringBuilder sbdAP = new StringBuilder(strAP)
+                .CheapReplace("{Rating}", strAP, () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+            ProcessAttributesInXPath(sbdAP, strAP);
             int intAP;
             try
             {
