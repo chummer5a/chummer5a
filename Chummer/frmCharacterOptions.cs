@@ -872,7 +872,7 @@ namespace Chummer
                 {
                     TreeNode objNode = treCustomDataDirectories.Nodes[i];
                     KeyValuePair<object, bool> kvpInfo = _dicCharacterCustomDataDirectoryInfos[i];
-                    if (kvpInfo.Key.Equals(objNode.Tag))
+                    if (!kvpInfo.Key.Equals(objNode.Tag))
                         objNode.Tag = kvpInfo.Key;
                     if (kvpInfo.Value != objNode.Checked)
                         objNode.Checked = kvpInfo.Value;
