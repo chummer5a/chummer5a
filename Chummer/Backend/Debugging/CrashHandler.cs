@@ -60,8 +60,9 @@ namespace Chummer.Backend
                     {"application-dir", Application.ExecutablePath},
                     {"os-type", Environment.OSVersion.VersionString},
                     {"visible-error-friendly", ex?.Message ?? "No description available"},
-                    { "installation-id", Properties.Settings.Default.UploadClientId.ToString() },
-                    { "option-upload-logs-set", GlobalOptions.UseLoggingApplicationInsights.ToString() }
+                    {"visible-stacktrace", ex?.StackTrace ?? "No stack trace available"},
+                    {"installation-id", Properties.Settings.Default.UploadClientId.ToString() },
+                    {"option-upload-logs-set", GlobalOptions.UseLoggingApplicationInsights.ToString() }
                 };
 
                 try

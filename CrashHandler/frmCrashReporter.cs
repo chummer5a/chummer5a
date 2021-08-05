@@ -96,7 +96,8 @@ namespace CrashHandler
                                       _dumper.Attributes["installation-id"]
                                       + Environment.NewLine + Environment.NewLine + txtUserStory.Text
                                       + Environment.NewLine + Environment.NewLine + "### Crash Description"
-                                      + Environment.NewLine + _dumper.Attributes["visible-error-friendly"]);
+                                      + Environment.NewLine + _dumper.Attributes["visible-error-friendly"]
+                                      + Environment.NewLine + _dumper.Attributes["visible-stacktrace"]);
             string strSend =
                 $"https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={strTitle}&body={strBody}";
 
