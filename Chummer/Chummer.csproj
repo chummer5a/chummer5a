@@ -248,6 +248,7 @@
     <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
     <Compile Include="Backend\Datastructures\KeyArray.cs" />
     <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
+    <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
