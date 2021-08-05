@@ -128,20 +128,17 @@ namespace Chummer
                     if (objItems.Count > 0)
                     {
                         List<ListItem> lstItems = new List<ListItem>(objItems.Count);
-
-                        foreach (string s in _lstPriorities)
+                        
+                        foreach (XPathNavigator objXmlPriority in objItems)
                         {
-                            foreach (XPathNavigator objXmlPriority in objItems)
+                            string strValue = objXmlPriority.SelectSingleNode("value")?.Value;
+                            if (!string.IsNullOrEmpty(strValue) && _lstPriorities.Contains(strValue))
                             {
-                                if (objXmlPriority.SelectSingleNode("value")?.Value == s)
-                                {
-                                    lstItems.Add(new ListItem(
-                                        objXmlPriority.SelectSingleNode("value")?.Value ?? string.Empty,
-                                        objXmlPriority.SelectSingleNode("translate")?.Value ??
-                                        objXmlPriority.SelectSingleNode("name")?.Value ??
-                                        LanguageManager.GetString("String_Unknown")));
-                                    break;
-                                }
+                                lstItems.Add(new ListItem(
+                                    strValue,
+                                    objXmlPriority.SelectSingleNode("translate")?.Value ??
+                                    objXmlPriority.SelectSingleNode("name")?.Value ??
+                                    LanguageManager.GetString("String_Unknown")));
                             }
                         }
 
@@ -241,34 +238,41 @@ namespace Chummer
                     cboSkill3.SelectedValue = strSkill;
                 }
                 cboTalents_SelectedIndexChanged(null, EventArgs.Empty);
+
+                switch (_objCharacter.EffectiveBuildMethod)
+                {
+                    case CharacterBuildMethod.Priority:
+                        ManagePriorityItems(cboHeritage);
+                        ManagePriorityItems(cboAttributes);
+                        ManagePriorityItems(cboTalent);
+                        ManagePriorityItems(cboSkills);
+                        ManagePriorityItems(cboResources);
+                        break;
+
+                    case CharacterBuildMethod.SumtoTen:
+                        SumToTen();
+                        break;
+                }
             }
             else
             {
                 cboHeritage.SelectedIndex = 0;
-                cboTalent.SelectedIndex = 1;
-                cboAttributes.SelectedIndex = 2;
-                cboSkills.SelectedIndex = 3;
-                cboResources.SelectedIndex = 4;
+                cboTalent.SelectedIndex = 0;
+                cboAttributes.SelectedIndex = 0;
+                cboSkills.SelectedIndex = 0;
+                cboResources.SelectedIndex = 0;
+                ManagePriorityItems(cboHeritage, true);
+                ManagePriorityItems(cboAttributes, true);
+                ManagePriorityItems(cboTalent, true);
+                ManagePriorityItems(cboSkills, true);
+                ManagePriorityItems(cboResources, true);
                 LoadMetatypes();
                 PopulateMetatypes();
                 PopulateMetavariants();
                 PopulateTalents();
                 RefreshSelectedMetatype();
-            }
-
-            switch (_objCharacter.EffectiveBuildMethod)
-            {
-                case CharacterBuildMethod.Priority:
-                    ManagePriorityItems(cboHeritage);
-                    ManagePriorityItems(cboAttributes);
-                    ManagePriorityItems(cboTalent);
-                    ManagePriorityItems(cboSkills);
-                    ManagePriorityItems(cboResources);
-                    break;
-
-                case CharacterBuildMethod.SumtoTen:
+                if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.SumtoTen)
                     SumToTen();
-                    break;
             }
 
             // Set up possession boxes
@@ -1211,50 +1215,87 @@ namespace Chummer
         /// Manages adjusting priority selections to prevent doubling up in Priority mode.
         /// </summary>
         /// <param name="comboBox"></param>
-        private void ManagePriorityItems(ComboBox comboBox)
+        /// <param name="blnForce"></param>
+        private void ManagePriorityItems(ComboBox comboBox, bool blnForce = false)
         {
-            if (_objCharacter.EffectiveBuildMethod == CharacterBuildMethod.Priority)
+            if (!blnForce && _objCharacter.EffectiveBuildMethod != CharacterBuildMethod.Priority)
+                return;
+            List<string> lstCurrentPriorities = new List<string>(_lstPriorities);
+            string strHeritageSelected = cboHeritage.SelectedValue.ToString();
+            string strAttributesSelected = cboAttributes.SelectedValue.ToString();
+            string strTalentSelected = cboTalent.SelectedValue.ToString();
+            string strSkillsSelected = cboSkills.SelectedValue.ToString();
+            string strResourcesSelected = cboResources.SelectedValue.ToString();
+
+            // Discover which priority rating is not currently assigned
+            lstCurrentPriorities.Remove(strHeritageSelected);
+            lstCurrentPriorities.Remove(strAttributesSelected);
+            lstCurrentPriorities.Remove(strTalentSelected);
+            lstCurrentPriorities.Remove(strSkillsSelected);
+            lstCurrentPriorities.Remove(strResourcesSelected);
+            if (lstCurrentPriorities.Count <= 0)
+                return;
+            string strComboBoxSelected = comboBox.SelectedValue.ToString();
+
+            string strMissing = lstCurrentPriorities.First();
+
+            // Find the combo with the same value as this one and change it to the missing value.
+            //_blnInitializing = true;
+            if (strHeritageSelected == strComboBoxSelected && comboBox.Name != cboHeritage.Name)
+                cboHeritage.SelectedValue = strMissing;
+            else if (strAttributesSelected == strComboBoxSelected && comboBox.Name != cboAttributes.Name)
+                cboAttributes.SelectedValue = strMissing;
+            else if (strTalentSelected == strComboBoxSelected && comboBox.Name != cboTalent.Name)
+                cboTalent.SelectedValue = strMissing;
+            else if (strSkillsSelected == strComboBoxSelected && comboBox.Name != cboSkills.Name)
+                cboSkills.SelectedValue = strMissing;
+            else if (strResourcesSelected == strComboBoxSelected && comboBox.Name != cboResources.Name)
+                cboResources.SelectedValue = strMissing;
+
+            if (lstCurrentPriorities.Count <= 1)
+                return;
+            do
             {
-                List<string> lstCurrentPriorities = new List<string>(_lstPriorities);
-                string strHeritageSelected = cboHeritage.SelectedValue.ToString();
-                string strTalentSelected = cboTalent.SelectedValue.ToString();
-                string strAttributesSelected = cboAttributes.SelectedValue.ToString();
-                string strSkillsSelected = cboSkills.SelectedValue.ToString();
-                string strResourcesSelected = cboResources.SelectedValue.ToString();
+                lstCurrentPriorities.Clear();
+                lstCurrentPriorities.AddRange(_lstPriorities);
+                strHeritageSelected = cboHeritage.SelectedValue.ToString();
+                strAttributesSelected = cboAttributes.SelectedValue.ToString();
+                strTalentSelected = cboTalent.SelectedValue.ToString();
+                strSkillsSelected = cboSkills.SelectedValue.ToString();
+                strResourcesSelected = cboResources.SelectedValue.ToString();
 
                 // Discover which priority rating is not currently assigned
                 lstCurrentPriorities.Remove(strHeritageSelected);
-                lstCurrentPriorities.Remove(strTalentSelected);
                 lstCurrentPriorities.Remove(strAttributesSelected);
+                lstCurrentPriorities.Remove(strTalentSelected);
                 lstCurrentPriorities.Remove(strSkillsSelected);
                 lstCurrentPriorities.Remove(strResourcesSelected);
-                if (lstCurrentPriorities.Count == 0)
+                if (lstCurrentPriorities.Count <= 0) // Just in case
                     return;
 
-                string strComboBoxSelected = comboBox.SelectedValue.ToString();
-
-                string strMissing = lstCurrentPriorities.First();
+                strMissing = lstCurrentPriorities.First();
 
                 // Find the combo with the same value as this one and change it to the missing value.
                 //_blnInitializing = true;
-                if (strTalentSelected == strComboBoxSelected && comboBox.Name != cboTalent.Name)
-                    cboTalent.SelectedValue = strMissing;
-                else if (strHeritageSelected == strComboBoxSelected && comboBox.Name != cboHeritage.Name)
+                if (strHeritageSelected == strComboBoxSelected && comboBox.Name != cboHeritage.Name)
                     cboHeritage.SelectedValue = strMissing;
+                else if (strAttributesSelected == strComboBoxSelected && comboBox.Name != cboAttributes.Name)
+                    cboAttributes.SelectedValue = strMissing;
+                else if (strTalentSelected == strComboBoxSelected && comboBox.Name != cboTalent.Name)
+                    cboTalent.SelectedValue = strMissing;
                 else if (strSkillsSelected == strComboBoxSelected && comboBox.Name != cboSkills.Name)
                     cboSkills.SelectedValue = strMissing;
                 else if (strResourcesSelected == strComboBoxSelected && comboBox.Name != cboResources.Name)
                     cboResources.SelectedValue = strMissing;
-                else if (strAttributesSelected == strComboBoxSelected && comboBox.Name != cboAttributes.Name)
-                    cboAttributes.SelectedValue = strMissing;
-            }
+
+            } while (lstCurrentPriorities.Count > 1);
         }
 
         private int SumToTen(bool blnDoUIUpdate = true)
         {
             int value = _dicSumtoTenValues[cboHeritage.SelectedValue.ToString()];
-            value += _dicSumtoTenValues[cboTalent.SelectedValue.ToString()];
             value += _dicSumtoTenValues[cboAttributes.SelectedValue.ToString()];
+            value += _dicSumtoTenValues[cboTalent.SelectedValue.ToString()];
             value += _dicSumtoTenValues[cboSkills.SelectedValue.ToString()];
             value += _dicSumtoTenValues[cboResources.SelectedValue.ToString()];
 
