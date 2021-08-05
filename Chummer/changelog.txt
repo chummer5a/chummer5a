@@ -147,6 +147,7 @@ Data Changes:
 - Fixed Savior Medkit page reference. Fixes #4529.
 - Added Stock, Side, Underbarrel, and Top weapon accessory slots to assault cannons, grenade launchers, and missile launchers that were missing it.
 - Removed Barrel weapon accessory slots from assault cannons, grenade launchers, and missile launchers that had it. As per the core rulebook, these weapons cannot mount barrel-mounted accessories or modifications.
+- Fixed various incorrect page references for weapons added by Krime Katalog.
 
 Changed/New Strings:
 - String_ContactPoints
