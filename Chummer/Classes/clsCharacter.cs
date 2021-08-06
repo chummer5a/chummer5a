@@ -2492,6 +2492,7 @@ namespace Chummer
             }
 
             IsLoadMethodRunning = true;
+            LoadAsDirty = false;
             try
             {
                 using (var loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
@@ -2792,6 +2793,7 @@ namespace Chummer
                                     if (string.IsNullOrEmpty(strReplacementOptionsKey))
                                         strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
                                     _strCharacterOptionsKey = strReplacementOptionsKey;
+                                    LoadAsDirty = true;
                                 }
                                 else if (!Created &&
                                          OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey].BuildMethod !=
@@ -2833,6 +2835,7 @@ namespace Chummer
                                     if (string.IsNullOrEmpty(strReplacementOptionsKey))
                                         strReplacementOptionsKey = GlobalOptions.DefaultCharacterOptionDefaultValue;
                                     _strCharacterOptionsKey = strReplacementOptionsKey;
+                                    LoadAsDirty = true;
                                 }
                                 // Legacy load stuff
                                 else if (!Utils.IsUnitTest && showWarnings &&
@@ -2887,6 +2890,7 @@ namespace Chummer
 
                                 if (blnShowSelectBP)
                                 {
+                                    LoadAsDirty = true;
                                     DialogResult ePickBPResult;
                                     if (blnSync)
                                         // ReSharper disable once MethodHasAsyncOverload
@@ -5675,6 +5679,7 @@ namespace Chummer
             _lstDrugs.Clear();
 
             SkillsSection.Reset();
+            LoadAsDirty = false;
         }
 
         #endregion
@@ -16643,6 +16648,15 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Whether to immediately mark a character file as dirty when it is loaded in. Used if we're changing a character's settings on load.
+        /// </summary>
+        public bool LoadAsDirty
+        {
+            get;
+            private set;
         }
 
         public Version LastSavedVersion => _verSavedVersion;

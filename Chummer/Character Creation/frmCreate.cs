@@ -845,6 +845,8 @@ namespace Chummer
                         CharacterObject.InternalIdsNeedingReapplyImprovements.Clear();
                     }
 
+                    IsDirty = CharacterObject.LoadAsDirty;
+
                     op_load_frm_create.SetSuccess(true);
                 }
                 catch (Exception ex)
