@@ -1694,6 +1694,29 @@ namespace Chummer
                     // <buildmethod />
                     objWriter.WriteElementString("buildmethod", Options.BuildMethod.ToString());
 
+                    // <sources>
+                    objWriter.WriteStartElement("sources");
+                    foreach (string strBook in Options.Books)
+                    {
+                        objWriter.WriteElementString("source", strBook);
+                    }
+
+                    // </sources>
+                    objWriter.WriteEndElement();
+
+                    if (Options.EnabledCustomDataDirectoryInfos.Count > 0)
+                    {
+                        // <customdatadirectorynames>
+                        objWriter.WriteStartElement("customdatadirectorynames");
+                        foreach (string strDirectoryName in Options.EnabledCustomDataDirectoryInfos.Values.Select(x => x.Name))
+                        {
+                            objWriter.WriteElementString("directoryname", strDirectoryName);
+                        }
+
+                        // </customdatadirectorynames>
+                        objWriter.WriteEndElement();
+                    }
+
                     // <metatype />
                     objWriter.WriteElementString("metatype", _strMetatype);
                     // <metatypeid />
@@ -2845,7 +2868,7 @@ namespace Chummer
                                         OptionsManager.LoadedCharacterOptions[_strCharacterOptionsKey];
                                     // More books is fine, so just test if the stored book list is a subset of the current option's book list
                                     bool blnPromptConfirmSetting =
-                                        !setSavedBooks.IsProperSubsetOf(objCurrentlyLoadedOptions.Books);
+                                        !setSavedBooks.IsSubsetOf(objCurrentlyLoadedOptions.Books);
                                     if (!blnPromptConfirmSetting)
                                     {
                                         // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
@@ -2873,7 +2896,7 @@ namespace Chummer
                                                 GlobalOptions.CultureInfo,
                                                 LanguageManager.GetString(
                                                     "Message_CharacterOptions_DesyncBooksOrCustomData"),
-                                                Path.GetFileNameWithoutExtension(_strCharacterOptionsKey)),
+                                                objCurrentlyLoadedOptions.Name),
                                             LanguageManager.GetString(
                                                 "MessageTitle_CharacterOptions_DesyncBooksOrCustomData"),
                                             MessageBoxButtons.YesNoCancel);
