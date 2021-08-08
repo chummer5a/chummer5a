@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
@@ -140,7 +141,11 @@ namespace Chummer
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
-        public int SelectedCount => Convert.ToInt32(cboType.Text, GlobalOptions.InvariantCultureInfo);
+        public int SelectedCount =>
+            int.TryParse(cboType.Text, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo,
+                out int intReturn)
+                ? intReturn
+                : int.MaxValue;
 
         #endregion Properties
 
