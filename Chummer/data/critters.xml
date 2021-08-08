@@ -29858,7 +29858,6 @@
       <source>HS</source>
       <page>93</page>
     </metatype>
-
     <metatype>
       <id>34df2bf4-07e3-4576-b8b5-3638fde15c54</id>
       <name>Blink Sloth</name>
@@ -29916,7 +29915,6 @@
       <source>HS</source>
       <page>93</page>
     </metatype>
-
     <metatype>
       <id>bce587d2-812e-43d6-855d-3b93cd0b4b4a</id>
       <name>Blood Dog</name>
@@ -44601,6 +44599,98 @@
     </metatype>
     <!-- End Region -->
     <!-- Region Infected -->
+    <metatype>
+      <id>dc636061-6285-47c6-92ee-35c8cba323bf</id>
+      <name>Vampire</name>
+      <category>Infected</category>
+      <karma>0</karma>
+      <bodmin>4</bodmin>
+      <bodmax>4</bodmax>
+      <bodaug>4</bodaug>
+      <agimin>3</agimin>
+      <agimax>3</agimax>
+      <agiaug>3</agiaug>
+      <reamin>5</reamin>
+      <reamax>5</reamax>
+      <reaaug>5</reaaug>
+      <strmin>4</strmin>
+      <strmax>4</strmax>
+      <straug>4</straug>
+      <chamin>5</chamin>
+      <chamax>5</chamax>
+      <chaaug>5</chaaug>
+      <intmin>4</intmin>
+      <intmax>4</intmax>
+      <intaug>4</intaug>
+      <logmin>3</logmin>
+      <logmax>3</logmax>
+      <logaug>3</logaug>
+      <wilmin>4</wilmin>
+      <wilmax>4</wilmax>
+      <wilaug>4</wilaug>
+      <inimin>3</inimin>
+      <inimax>15</inimax>
+      <iniaug>15</iniaug>
+      <edgmin>3</edgmin>
+      <edgmax>6</edgmax>
+      <edgaug>6</edgaug>
+      <magmin>0</magmin>
+      <magmax>6</magmax>
+      <magaug>6</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>2D6</essmax>
+      <essaug>2D6</essaug>
+      <walk>3/1/0</walk>
+      <run>5/0/0</run>
+      <sprint>3/1/0</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>1</min>
+          <max>6</max>
+          <aug>6</aug>
+          <val>3</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+      </bonus>
+      <powers>
+        <power>Dual Natured</power>
+        <power select="Hearing">Enhanced Senses</power>
+        <power select="Smell">Enhanced Senses</power>
+        <power select="Thermographic Vision">Enhanced Senses</power>
+        <power>Essence Drain</power>
+        <power select="Age">Immunity</power>
+        <power select="Pathogens">Immunity</power>
+        <power select="Toxins">Immunity</power>
+        <power>Infection</power>
+        <power>Mist Form</power>
+        <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+        <power>Regeneration</power>
+        <power>Sapience</power>
+        <power select="Sunlight, Severe">Allergy</power>
+        <power select="Wood, Severe">Allergy</power>
+        <power select="Metahuman Blood">Dietary Requirement</power>
+        <power>Essence Loss</power>
+        <power select="Lack of Air, (Essence) Minutes">Induced Dormancy</power>
+      </powers>
+      <skills>
+        <skill rating="4">Running</skill>
+        <skill rating="5">Perception</skill>
+        <skill rating="6">Sneaking</skill>
+        <skill rating="5">Unarmed Combat</skill>
+      </skills>
+      <source>HS</source>
+      <page>82</page>
+    </metatype>
     <metatype>
       <id>a8611e90-7ec2-4e04-bdea-2d52081fead7</id>
       <name>Bandersnatch</name>
