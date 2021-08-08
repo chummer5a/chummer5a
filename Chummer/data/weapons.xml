@@ -17955,7 +17955,6 @@
       <cost>400</cost>
       <source>SL</source>
       <page>27</page>
-      <accuracy>0</accuracy>
       <forbidden>
         <oneof>
           <accessory>Ceramic/Plasteel Components</accessory>
