@@ -149,6 +149,7 @@ Data Changes:
 - Added Stock, Side, Underbarrel, and Top weapon accessory slots to assault cannons, grenade launchers, and missile launchers that were missing it.
 - Removed Barrel weapon accessory slots from assault cannons, grenade launchers, and missile launchers that had it. As per the core rulebook, these weapons cannot mount barrel-mounted accessories or modifications.
 - Fixed various incorrect page references for weapons added by Krime Katalog.
+- The custom ruleset to exclude German sourcebooks now also excludes Shadowrun 2050.
 
 Changed/New Strings:
 - String_ContactPoints
