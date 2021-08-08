@@ -17854,6 +17854,11 @@
       <walk>3/1/0</walk>
       <run>5/0/0</run>
       <sprint>3/1/0</sprint>
+      <qualities>
+        <positive>
+          <quality>Magician</quality>
+        </positive>
+      </qualities>
       <bonus>
         <enableattribute>
           <name>MAG</name>
@@ -44649,6 +44654,11 @@
       <walk>3/1/0</walk>
       <run>5/0/0</run>
       <sprint>3/1/0</sprint>
+      <qualities>
+        <positive>
+          <quality>Magician</quality>
+        </positive>
+      </qualities>
       <bonus>
         <enableattribute>
           <name>MAG</name>
