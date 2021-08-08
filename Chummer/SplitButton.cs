@@ -409,7 +409,7 @@ public class SplitButton : Button
 
     private void PaintArrow(Graphics g, Rectangle dropDownRect)
     {
-        Point middle = new Point(Convert.ToInt32(dropDownRect.Left + dropDownRect.Width / 2), Convert.ToInt32(dropDownRect.Top + dropDownRect.Height / 2));
+        Point middle = new Point(dropDownRect.Left + dropDownRect.Width / 2, dropDownRect.Top + dropDownRect.Height / 2);
 
         //if the width is odd - favor pushing it over one pixel right.
         middle.X += (dropDownRect.Width & 1);

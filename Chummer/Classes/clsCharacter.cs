@@ -6522,7 +6522,7 @@ namespace Chummer
                     if (xmlQualityNode == null)
                         continue;
                     int intLoopKarma = 0;
-                    if (xmlQualityNode?.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
+                    if (xmlQualityNode?.TryGetInt32FieldQuickly("karma", ref intLoopKarma) == true)
                         intTemp += intLoopKarma;
                 }
 
@@ -9090,7 +9090,7 @@ namespace Chummer
                                             break;
                                         case Improvement.ImprovementType.EssencePenaltyT100:
                                         case Improvement.ImprovementType.EssencePenaltyMAGOnlyT100:
-                                            decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                            decLoopEssencePenalty += objImprovement.Value / 100.0m;
                                             break;
                                     }
 
@@ -9463,7 +9463,7 @@ namespace Chummer
                                             decLoopEssencePenalty += objImprovement.Value;
                                             break;
                                         case Improvement.ImprovementType.EssencePenaltyT100:
-                                            decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                            decLoopEssencePenalty += objImprovement.Value / 100.0m;
                                             break;
                                     }
 
@@ -9683,7 +9683,7 @@ namespace Chummer
                                             decLoopEssencePenalty += objImprovement.Value;
                                             break;
                                         case Improvement.ImprovementType.EssencePenaltyT100:
-                                            decLoopEssencePenalty += Convert.ToDecimal(objImprovement.Value) / 100.0m;
+                                            decLoopEssencePenalty += objImprovement.Value / 100.0m;
                                             break;
                                     }
 
@@ -9895,12 +9895,10 @@ namespace Chummer
             }
 
             decimal decESS = ESS.MetatypeMaximum;
-            decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty));
-            decESS += Convert.ToDecimal(
-                          ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100)) / 100.0m;
+            decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty);
+            decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100) / 100.0m;
             if(blnForMAGPenalty)
-                decESS += Convert.ToDecimal(ImprovementManager.ValueOf(this,
-                              Improvement.ImprovementType.EssencePenaltyMAGOnlyT100)) / 100.0m;
+                decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100) / 100.0m;
 
             // Run through all of the pieces of Cyberware and include their Essence cost.
             decESS -= Cyberware.AsParallel().Sum(objCyberware => objCyberware.CalculatedESS);
@@ -15153,7 +15151,7 @@ namespace Chummer
             get
             {
                 if(_intInitPasses == int.MinValue)
-                    _intInitPasses = Convert.ToInt32(InitiativeDice);
+                    _intInitPasses = InitiativeDice;
                 return _intInitPasses;
             }
             set

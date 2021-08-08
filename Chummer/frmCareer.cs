@@ -13045,7 +13045,7 @@ namespace Chummer
                     CheckBox objMaxCheckBox = null;
                     foreach (CheckBox objLoopCheckBox in lstCheckBoxes)
                     {
-                        int intLoop = Convert.ToInt32(objLoopCheckBox.Tag);
+                        int intLoop = Convert.ToInt32(objLoopCheckBox.Tag, GlobalOptions.InvariantCultureInfo);
                         if (objMaxCheckBox == null || intMax < intLoop)
                         {
                             intMax = intLoop;

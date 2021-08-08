@@ -58,7 +58,7 @@ namespace Chummer.UI.Table
 
             if (!_blnUpdating && ValueGetter != null)
             {
-                decimal value = Convert.ToDecimal(ValueGetter(tValue));
+                decimal value = ValueGetter(tValue);
 
                 _blnUpdating = true;
                 _spinner.Value = value;

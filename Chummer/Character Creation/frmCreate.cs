@@ -2090,7 +2090,7 @@ namespace Chummer
                         if (objPower.Bonus != null)
                         {
                             ImprovementManager.ForcedValue = objPower.Extra;
-                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, Convert.ToInt32(objPower.TotalRating),
+                            ImprovementManager.CreateImprovements(CharacterObject, Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus, objPower.TotalRating,
                                 objPower.DisplayNameShort(GlobalOptions.Language));
                         }
                     }
@@ -12862,9 +12862,9 @@ namespace Chummer
                                 if (objMod.Category == "Handling" && Convert.ToInt32(objVehicle.TotalHandling, GlobalOptions.InvariantCultureInfo) < 1 ||
                                     objMod.Category == "Speed" && Convert.ToInt32(objVehicle.TotalSpeed, GlobalOptions.InvariantCultureInfo) < 0 ||
                                     objMod.Category == "Acceleration" && Convert.ToInt32(objVehicle.TotalAccel, GlobalOptions.InvariantCultureInfo) < 1 ||
-                                    objMod.Category == "Body" && Convert.ToInt32(objVehicle.TotalBody) < 1 ||
-                                    objMod.Category == "Armor" && Convert.ToInt32(objVehicle.TotalArmor) < 1 ||
-                                    objMod.Category == "Sensor" && Convert.ToInt32(objVehicle.CalculatedSensor) < 1)
+                                    objMod.Category == "Body" && objVehicle.TotalBody < 1 ||
+                                    objMod.Category == "Armor" && objVehicle.TotalArmor < 1 ||
+                                    objMod.Category == "Sensor" && objVehicle.CalculatedSensor < 1)
                                 {
                                     blnIllegalDowngrades = true;
                                     intIllegalDowngrades++;

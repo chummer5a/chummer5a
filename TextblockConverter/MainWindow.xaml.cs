@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -130,8 +131,12 @@ namespace WpfApplication1
                         // Set default swimming values if not present; based on metahuman values, may be incorrect.
                         if (position == 1)
                         {
-                            walk[position] = Math.Max(Convert.ToInt32(walk[position]), 1).ToString();
-                            sprint[position] = Math.Max(Convert.ToInt32(sprint[position]), 1).ToString();
+                            int.TryParse(walk[position], NumberStyles.Any, CultureInfo.InvariantCulture,
+                                out int intWalk);
+                            walk[position] = Math.Max(intWalk, 1).ToString();
+                            int.TryParse(sprint[position], NumberStyles.Any, CultureInfo.InvariantCulture,
+                                out int intSprint);
+                            sprint[position] = Math.Max(intSprint, 1).ToString();
                         }
                     }
 

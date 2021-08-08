@@ -706,17 +706,17 @@ namespace Chummer
 
                         if (xmlNode.SelectSingleNode("@minrating") != null)
                         {
-                            int rating = xmlNode.SelectSingleNode("@minrating").ValueAsInt;
+                            int rating = xmlNode.SelectSingleNode("@minrating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating >= rating);
                         }
                         else if (xmlNode.SelectSingleNode("@rating") != null)
                         {
-                            int rating = xmlNode.SelectSingleNode("@rating").ValueAsInt;
+                            int rating = xmlNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating == rating);
                         }
                         else if (xmlNode.SelectSingleNode("@maxrating") != null)
                         {
-                            int rating = xmlNode.SelectSingleNode("@maxrating").ValueAsInt;
+                            int rating = xmlNode.SelectSingleNode("@maxrating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating <= rating);
                         }
                         if (objGear != null)
