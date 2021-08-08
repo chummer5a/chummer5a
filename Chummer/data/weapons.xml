@@ -14755,6 +14755,62 @@
       <useskill>Exotic Ranged Weapons</useskill>
       <weapontype>firefighting cannons</weapontype>
     </weapon>
+    <weapon>
+      <id>828021e1-a9ff-44e4-9559-918aa156e279</id>
+      <name>Ruhrmetall SFW-30</name>
+      <category>Heavy Machine Guns</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>6(8)</accuracy>
+      <reach>0</reach>
+      <damage>14P</damage>
+      <ap>-10</ap>
+      <mode>FA</mode>
+      <rc>-6</rc>
+      <ammo>100(belt)</ammo>
+      <avail>24F</avail>
+      <cost>60000</cost>
+      <source>SOTG</source>
+      <page>14</page>
+      <accessories>
+        <accessory>
+          <name>Smartgun System, Internal</name>
+          <name>Trigger Removal</name>
+        </accessory>
+      </accessories>
+      <accessorymounts>
+        <mount>Stock</mount>
+        <mount>Side</mount>
+        <mount>Barrel</mount>
+        <mount>Top</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <underbarrels>
+        <underbarrel>Underbarrel Weapon</underbarrel>
+      </underbarrels>
+      <spec>Machine Guns</spec>
+    </weapon>
+    <weapon>
+      <id>59b08aa4-e71a-4f94-ad79-faa0668b0c81</id>
+      <name>Underbarrel Weapon</name>
+      <category>Heavy Machine Guns</category>
+      <type>Ranged</type>
+      <conceal>10</conceal>
+      <accuracy>6(8)</accuracy>
+      <reach>0</reach>
+      <damage>12P</damage>
+      <ap>-4</ap>
+      <mode>SA</mode>
+      <rc>-6</rc>
+      <ammo>10(m)</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SOTG</source>
+      <page>14</page>
+      <allowaccessory>False</allowaccessory>
+      <hide />
+      <spec>Machine Guns</spec>
+    </weapon>
     <!-- End Region -->
     <!-- Region Datapuls Verschlusssache (German) -->
     <weapon>
