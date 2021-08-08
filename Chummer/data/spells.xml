@@ -65,7 +65,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Indirect, Touch</descriptor>
+      <descriptor>Indirect</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -104,7 +104,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -195,7 +195,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -234,7 +234,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>S</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -1333,7 +1333,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Indirect, Touch, Elemental</descriptor>
+      <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-5</dv>
       <range>T</range>
@@ -1497,7 +1497,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-6</dv>
       <range>T</range>
@@ -1545,7 +1545,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-5</dv>
       <range>T</range>
@@ -1645,7 +1645,7 @@
       <source>SG</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Direct, Touch</descriptor>
+      <descriptor>Direct</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
       <range>T</range>

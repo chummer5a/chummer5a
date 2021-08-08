@@ -101,6 +101,7 @@ Application Changes:
 - Weapon mounts for vehicles now have their capacities for weapons explicitly defined. The default size is one weapon, but a different size can be set with the weaponsize parameter. Users can no longer attempt to add more weapons to a mount than it has capacity for weapons.
 - Bonus nodes and improvements that force characters to pick up certain metamagics/echoes at specific initiation/submersion grades now properly allow the character to pick up other metamagics/echoes at other grades. Fixes #4530.
 - AP and weapon damage codes that contain a slash mark that is not meant to represent a division operation can now be shown properly. In order to prevent ambiguity with slash marks that do represent a division operation, two successive slash marks need to be used to identify a forward slash mark that is not meant to be a division operation. Fixes #4532.
+- Using "Touch" instead of "T" for range now still properly translates a spell's or critter power's range to the equivalent in non-English languages. Fixes #4544.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

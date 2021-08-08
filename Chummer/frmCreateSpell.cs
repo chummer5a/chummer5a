@@ -796,6 +796,10 @@ namespace Chummer
                 return;
             }
 
+            string strRange = cboRange.SelectedValue.ToString();
+            if (chkArea.Checked)
+                strRange += "(A)";
+
             // If we're made it this far, everything is OK, so create the Spell.
             string strDescriptors = string.Empty;
             switch (cboCategory.SelectedValue.ToString())
@@ -814,7 +818,7 @@ namespace Chummer
                         if (!chkModifier14.Checked)
                             strDescriptors += "Area, ";
                         else
-                            strDescriptors += "Extended Area";
+                            strDescriptors += "Extended Area, ";
                     }
                     break;
 
@@ -853,25 +857,12 @@ namespace Chummer
                         strDescriptors += "Direct, ";
                     if (chkModifier2.Checked)
                         strDescriptors += "Indirect, ";
-                    switch (cboRange.SelectedValue.ToString())
-                    {
-                        case "T":
-                            strDescriptors += "Touch, ";
-                            break;
-
-                        case "A":
-                            strDescriptors += "Area, ";
-                            break;
-                    }
-
+                    if (cboRange.SelectedValue.ToString().Contains("(A)"))
+                        strDescriptors += "Area, ";
                     if (chkModifier3.Checked)
                         strDescriptors += "Elemental, ";
                     break;
             }
-
-            string strRange = cboRange.SelectedValue.ToString();
-            if (chkArea.Checked)
-                strRange += " (A)";
 
             // Remove the trailing ", " from the Descriptors string.
             if (!string.IsNullOrEmpty(strDescriptors))
