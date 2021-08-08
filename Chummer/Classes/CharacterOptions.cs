@@ -401,7 +401,7 @@ namespace Chummer
             if (aobjOtherProperties.Any(x => x.PropertyType.IsValueType && aobjProperties.All(y => y.Name != x.Name)))
                 return false;
 
-            if (!other.CustomDataDirectoryNames.SequenceEqual<KeyValuePair<string, bool>>(_dicCustomDataDirectoryNames))
+            if (!other.CustomDataDirectoryNames.SequenceEqual(_dicCustomDataDirectoryNames))
                 return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
@@ -693,10 +693,18 @@ namespace Chummer
                     // </karmacost>
                     objWriter.WriteEndElement();
 
+                    XPathNodeIterator lstAllowedBooksCodes = XmlManager
+                        .LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
+                        .Select("/chummer/books/book[not(hide)]/code");
+                    HashSet<string> setAllowedBooks = new HashSet<string>(lstAllowedBooksCodes.Count);
+                    foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
+                        setAllowedBooks.Add(objAllowedBook.Value);
+
                     // <books>
                     objWriter.WriteStartElement("books");
                     foreach (string strBook in _lstBooks)
-                        objWriter.WriteElementString("book", strBook);
+                        if (setAllowedBooks.Contains(strBook))
+                            objWriter.WriteElementString("book", strBook);
                     // </books>
                     objWriter.WriteEndElement();
 
