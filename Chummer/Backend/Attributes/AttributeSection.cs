@@ -743,8 +743,8 @@ namespace Chummer.Backend.Attributes
             catch (OverflowException) { intAugValue = 1; }
             catch (InvalidCastException) { intAugValue = 1; }
 
-            objNewAttribute.Base = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value, GlobalOptions.InvariantCultureInfo);
-            objNewAttribute.Karma = Convert.ToInt32(objCharacterNode.SelectSingleNode("base")?.Value, GlobalOptions.InvariantCultureInfo);
+            objNewAttribute.Base = objCharacterNode.SelectSingleNode("base")?.ValueAsInt ?? 0;
+            objNewAttribute.Karma = objCharacterNode.SelectSingleNode("base")?.ValueAsInt ?? 0;
             objNewAttribute.AssignLimits(intMinValue, intMaxValue, intAugValue);
             return objNewAttribute;
         }
@@ -811,9 +811,15 @@ namespace Chummer.Backend.Attributes
             XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath) ? xmlDoc?.SelectSingleNode(strMetavariantXPath) : null;
             if (node != null)
             {
-                objTarget.MetatypeMinimum = Convert.ToInt32(node[strSourceAbbrev + "min"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                objTarget.MetatypeMaximum = Convert.ToInt32(node[strSourceAbbrev + "max"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                objTarget.MetatypeAugmentedMaximum = Convert.ToInt32(node[strSourceAbbrev + "aug"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
+                    GlobalOptions.InvariantCultureInfo, out int intDummy);
+                objTarget.MetatypeMinimum = intDummy;
+                int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
+                    GlobalOptions.InvariantCultureInfo, out intDummy);
+                objTarget.MetatypeMaximum = Math.Max(intDummy, objTarget.MetatypeMinimum);
+                int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
+                    GlobalOptions.InvariantCultureInfo, out intDummy);
+                objTarget.MetatypeAugmentedMaximum = Math.Max(intDummy, objTarget.MetatypeMaximum);
             }
 
             objTarget.Base = objSource.Base;

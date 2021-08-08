@@ -346,7 +346,7 @@ namespace Chummer
                 }
 
                 xmlTestNode = objXmlMod.SelectSingleNode("requires");
-                if (xmlTestNode != null && _objVehicle.Seats < Convert.ToInt32(xmlTestNode.SelectSingleNode("seats")?.Value, GlobalOptions.InvariantCultureInfo))
+                if (xmlTestNode != null && _objVehicle.Seats < (xmlTestNode.SelectSingleNode("seats")?.ValueAsInt ?? 0))
                 {
                     continue;
                 }
@@ -523,8 +523,7 @@ namespace Chummer
                 else
                 {
                     lblRatingLabel.Text = LanguageManager.GetString("Label_Rating");
-                    int intRating = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
-                    if (intRating > 0)
+                    if (int.TryParse(strRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intRating) && intRating > 0)
                     {
                         nudRating.Maximum = intRating;
                         nudRating.Visible = true;
@@ -652,7 +651,8 @@ namespace Chummer
                     {
                         lblVehicleCapacityLabel.Visible = true;
                         lblVehicleCapacity.Visible = true;
-                        lblVehicleCapacity.Text = GetRemainingModCapacity(strCategory, Convert.ToInt32(lblSlots.Text, GlobalOptions.CultureInfo));
+                        int.TryParse(lblSlots.Text, NumberStyles.Any, GlobalOptions.CultureInfo, out int intSlots);
+                        lblVehicleCapacity.Text = GetRemainingModCapacity(strCategory, intSlots);
                         lblVehicleCapacityLabel.SetToolTip(LanguageManager.GetString("Tip_RemainingVehicleModCapacity"));
                     }
                     else

@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -454,13 +455,29 @@ namespace Chummer
                 int intSeparatorIndex = strLimbCount.IndexOf('<');
                 if (intSeparatorIndex == -1)
                 {
-                    _objCharacterOptions.LimbCount = Convert.ToInt32(strLimbCount, GlobalOptions.InvariantCultureInfo);
+                    if (int.TryParse(strLimbCount, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intLimbCount))
+                        _objCharacterOptions.LimbCount = intLimbCount;
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                        _objCharacterOptions.LimbCount = 6;
+                    }
                     _objCharacterOptions.ExcludeLimbSlot = string.Empty;
                 }
                 else
                 {
-                    _objCharacterOptions.LimbCount = Convert.ToInt32(strLimbCount.Substring(0, intSeparatorIndex), GlobalOptions.InvariantCultureInfo);
-                    _objCharacterOptions.ExcludeLimbSlot = intSeparatorIndex + 1 < strLimbCount.Length ? strLimbCount.Substring(intSeparatorIndex + 1) : string.Empty;
+                    if (int.TryParse(strLimbCount.Substring(0, intSeparatorIndex), NumberStyles.Any,
+                        GlobalOptions.InvariantCultureInfo, out int intLimbCount))
+                    {
+                        _objCharacterOptions.LimbCount = intLimbCount;
+                        _objCharacterOptions.ExcludeLimbSlot = intSeparatorIndex + 1 < strLimbCount.Length ? strLimbCount.Substring(intSeparatorIndex + 1) : string.Empty;
+                    }
+                    else
+                    {
+                        Utils.BreakIfDebug();
+                        _objCharacterOptions.LimbCount = 6;
+                        _objCharacterOptions.ExcludeLimbSlot = string.Empty;
+                    }
                 }
             }
         }

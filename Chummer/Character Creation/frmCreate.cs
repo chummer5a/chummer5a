@@ -3810,9 +3810,9 @@ namespace Chummer
                 if (objSelectedQuality.OriginSource == QualitySource.MetatypeRemovable)
                 {
                     int intBP = 0;
-                    if (objSelectedQuality.Type == QualityType.Negative)
+                    if (objSelectedQuality.Type == QualityType.Negative && objXmlDeleteQuality.TryGetInt32FieldQuickly("karma", ref intBP))
                     {
-                        intBP = Convert.ToInt32(objXmlDeleteQuality["karma"]?.InnerText, CultureInfo.InvariantCulture) * -1;
+                        intBP = -intBP;
                     }
 
                     intBP *= CharacterObjectOptions.KarmaQuality;
@@ -11816,11 +11816,11 @@ namespace Chummer
                             {
                                 objMod.MaxRating = objMod.Parent.TotalBody.ToString(GlobalOptions.CultureInfo);
                             }
-                            if (Convert.ToInt32(objMod.MaxRating, GlobalOptions.InvariantCultureInfo) > 0)
+                            if (int.TryParse(objMod.MaxRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intMaxRating) && intMaxRating > 0)
                             {
                                 lblVehicleRatingLabel.Visible = true;
                                 // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
-                                nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,", StringComparison.Ordinal) ? Math.Min(Convert.ToInt32(objMod.MaxRating, GlobalOptions.InvariantCultureInfo), objMod.Parent.MaxArmor) : Convert.ToInt32(objMod.MaxRating, GlobalOptions.InvariantCultureInfo);
+                                nudVehicleRating.Maximum = objMod.Name.StartsWith("Armor,", StringComparison.Ordinal) ? Math.Min(intMaxRating, objMod.Parent.MaxArmor) : intMaxRating;
                                 nudVehicleRating.Minimum = 1;
                                 nudVehicleRating.Visible = true;
                                 nudVehicleRating.Value = objMod.Rating;

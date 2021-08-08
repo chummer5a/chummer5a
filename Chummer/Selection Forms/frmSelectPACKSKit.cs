@@ -179,7 +179,7 @@ namespace Chummer
                             string strNameUpper = objXmlAttribute.Name.ToUpperInvariant();
                             TreeNode objChild = new TreeNode
                             {
-                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short") + strSpace + (Convert.ToInt32(objXmlAttribute.Value, GlobalOptions.InvariantCultureInfo) - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.CultureInfo)
+                                Text = LanguageManager.GetString("String_Attribute" + strNameUpper + "Short") + strSpace + (objXmlAttribute.ValueAsInt - (6 - _objCharacter.GetAttribute(strNameUpper).MetatypeMaximum)).ToString(GlobalOptions.CultureInfo)
                             };
 
                             objParent.Nodes.Add(objChild);
@@ -318,7 +318,7 @@ namespace Chummer
                             objParent.Text = LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
                             treContents.Nodes.Add(objParent);
 
-                            int intRating = Convert.ToInt32(objXmlItem.SelectSingleNode("@rating")?.Value ?? "1", GlobalOptions.InvariantCultureInfo);
+                            int intRating = objXmlItem.SelectSingleNode("@rating")?.ValueAsInt ?? 1;
                             string strSelect = objXmlItem.SelectSingleNode("@select")?.Value ?? LanguageManager.GetString("String_SelectPACKSKit_SelectMartialArt");
 
                             TreeNode objMartialArt = new TreeNode

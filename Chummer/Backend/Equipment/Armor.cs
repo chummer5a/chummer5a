@@ -434,8 +434,13 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode objXmlArmorMod in xmlArmorList)
                     {
                         XmlAttributeCollection objXmlAttributes = objXmlArmorMod.Attributes;
-                        intRating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-                        string strForceValue = objXmlAttributes?["select"]?.InnerText ?? string.Empty;
+                        string strForceValue = string.Empty;
+                        if (objXmlAttributes != null)
+                        {
+                            int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any,
+                                GlobalOptions.InvariantCultureInfo, out intRating);
+                            strForceValue = objXmlAttributes["select"]?.InnerText ?? string.Empty;
+                        }
 
                         XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlArmorMod.InnerText.CleanXPath() + "]");
                         if (objXmlMod != null)
@@ -451,13 +456,16 @@ namespace Chummer.Backend.Equipment
                             objMod.IncludedInArmor = true;
                             objMod.ArmorCapacity = "[0]";
                             objMod.Cost = "0";
+                            string strMaxRating = objXmlAttributes?["maxrating"]?.InnerText;
                             //If maxrating is being specified, we're intentionally bypassing the normal maximum rating. Set the maxrating first, then the rating again.
-                            if (objXmlAttributes?["maxrating"] != null)
+                            if (!string.IsNullOrEmpty(strMaxRating))
                             {
-                                objMod.MaximumRating = Convert.ToInt32(objXmlAttributes?["maxrating"]?.InnerText,
-                                    GlobalOptions.InvariantCultureInfo);
-                                objMod.Rating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText,
-                                    GlobalOptions.InvariantCultureInfo);
+                                int.TryParse(strMaxRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                                    out int intDummy);
+                                objMod.MaximumRating = intDummy;
+                                int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                                    out intDummy);
+                                objMod.Rating = intDummy;
                             }
                             else
                             {
@@ -468,6 +476,15 @@ namespace Chummer.Backend.Equipment
                         }
                         else
                         {
+                            int intLoopRating = 0;
+                            int intLoopMaximumRating = 0;
+                            if (objXmlAttributes != null)
+                            {
+                                int.TryParse(objXmlAttributes["rating"]?.InnerText, NumberStyles.Any,
+                                    GlobalOptions.InvariantCultureInfo, out intLoopRating);
+                                int.TryParse(objXmlAttributes["maxrating"]?.InnerText, NumberStyles.Any,
+                                    GlobalOptions.InvariantCultureInfo, out intLoopMaximumRating);
+                            }
                             ArmorMod objMod = new ArmorMod(_objCharacter)
                             {
                                 Name = _strName,
@@ -478,8 +495,8 @@ namespace Chummer.Backend.Equipment
                                 IncludedInArmor = true,
                                 ArmorCapacity = "[0]",
                                 Cost = "0",
-                                Rating = Convert.ToInt32(objXmlAttributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo),
-                                MaximumRating = Convert.ToInt32(objXmlAttributes?["maxrating"]?.InnerText, GlobalOptions.InvariantCultureInfo),
+                                Rating = intLoopRating,
+                                MaximumRating = intLoopMaximumRating,
                                 Extra = strForceValue
                             };
                             _lstArmorMods.Add(objMod);
@@ -552,10 +569,12 @@ namespace Chummer.Backend.Equipment
                     : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
 
                 int intAddWeaponRating = 0;
-                if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                if (!string.IsNullOrEmpty(strLoopRating))
                 {
-                    intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
-                        .CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                    strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                        () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                    int.TryParse(strLoopRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intAddWeaponRating);
                 }
                 Weapon objGearWeapon = new Weapon(_objCharacter);
                 objGearWeapon.Create(objXmlWeapon, lstWeapons, true, !blnSkipSelectForms, blnSkipCost, intAddWeaponRating);
@@ -1011,7 +1030,8 @@ namespace Chummer.Backend.Equipment
                 int intOldValue = _intDamage;
                 _intDamage = value;
 
-                int intTotalArmor = Convert.ToInt32(ArmorValue, GlobalOptions.InvariantCultureInfo);
+                int.TryParse(ArmorValue, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                    out int intTotalArmor);
 
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
                 foreach (ArmorMod objMod in ArmorMods)

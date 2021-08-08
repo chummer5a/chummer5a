@@ -362,16 +362,20 @@ namespace Chummer
 
                         if (xmlQuality.SelectSingleNode("costdiscount").RequirementsMet(_objCharacter))
                         {
-                            string strValue = xmlQuality.SelectSingleNode("costdiscount/value")?.Value;
-                            switch (xmlQuality.SelectSingleNode("category")?.Value)
+                            XPathNavigator xmlValueNode = xmlQuality.SelectSingleNode("costdiscount/value");
+                            if (xmlValueNode != null)
                             {
-                                case "Positive":
-                                    intBP += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
-                                    break;
+                                int intValue = xmlValueNode.ValueAsInt;
+                                switch (xmlQuality.SelectSingleNode("category")?.Value)
+                                {
+                                    case "Positive":
+                                        intBP += intValue;
+                                        break;
 
-                                case "Negative":
-                                    intBP -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
-                                    break;
+                                    case "Negative":
+                                        intBP -= intValue;
+                                        break;
+                                }
                             }
                         }
 

@@ -295,10 +295,12 @@ namespace Chummer.Backend.Equipment
                                 : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + "]");
 
                             int intAddWeaponRating = 0;
-                            if (objXmlAddWeapon.Attributes?["rating"]?.InnerText != null)
+                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strLoopRating))
                             {
-                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"].InnerText
-                                    .CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                                strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                                    () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                                int.TryParse(strLoopRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intAddWeaponRating);
                             }
 
                             Weapon objGearWeapon = new Weapon(_objCharacter);

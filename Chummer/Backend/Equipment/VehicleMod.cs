@@ -906,7 +906,8 @@ namespace Chummer.Backend.Equipment
                     {
                         string[] astrValue = strValue.Split('[');
                         string strAvailCode = astrValue[1].Trim('[', ']');
-                        int intMax = Convert.ToInt32(astrValue[0], GlobalOptions.InvariantCultureInfo);
+                        int.TryParse(astrValue[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                            out int intMax);
                         if (Rating > intMax)
                             continue;
                         strAvail = Rating.ToString(GlobalOptions.InvariantCultureInfo) + strAvailCode;

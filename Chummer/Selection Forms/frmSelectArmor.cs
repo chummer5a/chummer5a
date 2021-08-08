@@ -155,11 +155,11 @@ namespace Chummer
                 objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
 
                 _objSelectedArmor = objArmor;
-
-                string strRating = xmlArmor["rating"]?.InnerText;
-                if (!string.IsNullOrEmpty(strRating))
+                
+                int intRating = 0;
+                if (xmlArmor.TryGetInt32FieldQuickly("rating", ref intRating))
                 {
-                    nudRating.Maximum = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
+                    nudRating.Maximum = intRating;
                     if (chkHideOverAvailLimit.Checked)
                     {
                         while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, nudRating.MaximumAsInt))

@@ -1197,7 +1197,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dice Pool modifier.
         /// </summary>
-        public int DicePool => !string.IsNullOrEmpty(DicePoolString) ? Convert.ToInt32(DicePoolString, GlobalOptions.InvariantCultureInfo) : 0;
+        public int DicePool
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(DicePoolString))
+                    return 0;
+                int.TryParse(DicePoolString, NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                    out int intReturn);
+                return intReturn;
+            }
+        }
 
         private string DicePoolString => _strDicePool;
 

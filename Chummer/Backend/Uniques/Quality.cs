@@ -252,9 +252,10 @@ namespace Chummer
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            if (objXmlAddWeapon.Attributes?["rating"]?.InnerText != null)
+                            string strWeaponRating = objXmlAddWeapon.Attributes?["rating"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponRating) && int.TryParse(strWeaponRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intWeaponRating))
                             {
-                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"].InnerText, GlobalOptions.InvariantCultureInfo);
+                                intAddWeaponRating = intWeaponRating;
                             }
                             Weapon objGearWeapon = new Weapon(_objCharacter);
                             objGearWeapon.Create(objXmlWeapon, lstWeapons, true, true, true, intAddWeaponRating);
@@ -284,8 +285,9 @@ namespace Chummer
                             objWeapon.Name = objXmlNaturalWeapon["name"].InnerText;
                         objWeapon.Category = LanguageManager.GetString("Tab_Critter");
                         objWeapon.RangeType = "Melee";
-                        if (objXmlNaturalWeapon["reach"] != null)
-                            objWeapon.Reach = Convert.ToInt32(objXmlNaturalWeapon["reach"].InnerText, GlobalOptions.InvariantCultureInfo);
+                        int intDummy = 0;
+                        if (objXmlNaturalWeapon.TryGetInt32FieldQuickly("reach", ref intDummy))
+                            objWeapon.Reach = intDummy;
                         if (objXmlNaturalWeapon["accuracy"] != null)
                             objWeapon.Accuracy = objXmlNaturalWeapon["accuracy"].InnerText;
                         if (objXmlNaturalWeapon["damage"] != null)
@@ -769,8 +771,8 @@ namespace Chummer
         {
             get
             {
-                string strValue = _nodDiscounts?.SelectSingleNode("value")?.Value;
-                if (string.IsNullOrEmpty(strValue))
+                int intValue = 0;
+                if (_nodDiscounts?.TryGetInt32FieldQuickly("value", ref intValue) != true)
                     return _intBP;
                 int intReturn = _intBP;
                 if (_nodDiscounts.RequirementsMet(_objCharacter))
@@ -778,11 +780,11 @@ namespace Chummer
                     switch (Type)
                     {
                         case QualityType.Positive:
-                            intReturn += Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                            intReturn += intValue;
                             break;
 
                         case QualityType.Negative:
-                            intReturn -= Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                            intReturn -= intValue;
                             break;
                     }
                 }

@@ -365,12 +365,12 @@ namespace Chummer.Backend.Equipment
                         if (objXmlWeapon != null)
                         {
                             int intAddWeaponRating = 0;
-                            if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                            string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strLoopRating))
                             {
-                                intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
-                                        .CheapReplace("{Rating}",
-                                            () => Rating.ToString(GlobalOptions.InvariantCultureInfo)),
-                                    GlobalOptions.InvariantCultureInfo);
+                                strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                                    () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                                int.TryParse(strLoopRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intAddWeaponRating);
                             }
 
                             Weapon objGearWeapon = new Weapon(_objCharacter);
@@ -663,8 +663,8 @@ namespace Chummer.Backend.Equipment
             XmlNode xmlGearDataNode;
             List<Gear> lstChildGears = new List<Gear>(1);
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
-            int intRating =
-                Convert.ToInt32(lstGearAttributes?["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
+                GlobalOptions.InvariantCultureInfo, out int intRating);
             string strMaxRating = lstGearAttributes?["maxrating"]?.InnerText ?? string.Empty;
             decimal decQty = Convert.ToDecimal(lstGearAttributes?["qty"]?.InnerText ?? "1",
                 GlobalOptions.InvariantCultureInfo);

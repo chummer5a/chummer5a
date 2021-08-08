@@ -6452,7 +6452,11 @@ namespace Chummer
                    x.OriginSource == QualitySource.Metatype || x.OriginSource == QualitySource.MetatypeRemovable))
                 {
                     XmlNode xmlQualityNode = objQuality.GetNode();
-                    intMetatypeQualitiesValue += Convert.ToInt32(xmlQualityNode?["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                    if (xmlQualityNode == null)
+                        continue;
+                    int intLoopKarma = 0;
+                    if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
+                        intMetatypeQualitiesValue += intLoopKarma;
                 }
 
                 intReturn += intMetatypeQualitiesValue;
@@ -6515,7 +6519,11 @@ namespace Chummer
                 foreach(Quality objQuality in Qualities.Where(x => x.OriginSource == QualitySource.Heritage))
                 {
                     XmlNode xmlQualityNode = objQuality.GetNode();
-                    intTemp += Convert.ToInt32(xmlQualityNode["karma"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                    if (xmlQualityNode == null)
+                        continue;
+                    int intLoopKarma = 0;
+                    if (xmlQualityNode?.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
+                        intTemp += intLoopKarma;
                 }
 
                 if(intTemp != 0)

@@ -701,10 +701,12 @@ namespace Chummer.Backend.Equipment
                         ParentVehicle = ParentVehicle
                     };
                     int intAddWeaponRating = 0;
-                    if (objXmlAddWeapon.Attributes["rating"]?.InnerText != null)
+                    string strLoopRating = objXmlAddWeapon.Attributes["rating"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLoopRating))
                     {
-                        intAddWeaponRating = Convert.ToInt32(objXmlAddWeapon.Attributes["rating"]?.InnerText
-                            .CheapReplace("{Rating}", () => Rating.ToString(GlobalOptions.InvariantCultureInfo)), GlobalOptions.InvariantCultureInfo);
+                        strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                            () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                        int.TryParse(strLoopRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intAddWeaponRating);
                     }
                     objGearWeapon.Create(objXmlWeapon, lstWeapons, blnCreateChildren, blnCreateImprovements, false, intAddWeaponRating);
                     objGearWeapon.ParentID = InternalId;
@@ -1047,7 +1049,8 @@ namespace Chummer.Backend.Equipment
                             if (objXmlSubsystem != null)
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
-                                int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                                int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
+                                    GlobalOptions.InvariantCultureInfo, out int intSubSystemRating);
                                 objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Cyberware,
                                     intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
                                     objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);
@@ -1077,7 +1080,8 @@ namespace Chummer.Backend.Equipment
                             if (objXmlSubsystem != null)
                             {
                                 Cyberware objSubsystem = new Cyberware(_objCharacter);
-                                int intSubSystemRating = Convert.ToInt32(objXmlSubsystemNode["rating"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                                int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
+                                    GlobalOptions.InvariantCultureInfo, out int intSubSystemRating);
                                 objSubsystem.Create(objXmlSubsystem, objGrade, Improvement.ImprovementSource.Bioware,
                                     intSubSystemRating, lstWeapons, objVehicles, blnCreateImprovements, true,
                                     objXmlSubsystemNode["forced"]?.InnerText ?? string.Empty, this);

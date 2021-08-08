@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
@@ -409,15 +410,20 @@ namespace Chummer
                     }
                     else
                     {
-                        int intTotalSlots = Convert.ToInt32(xmlSelectedMount?["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                        
+                        int intTotalSlots = 0;
+                        xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intTotalSlots);
                         foreach (string strSelectedId in astrSelectedValues)
                         {
                             if (!string.IsNullOrEmpty(strSelectedId))
                             {
                                 XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
-                                if (xmlLoopNode != null)
+                                if (xmlLoopNode == null)
+                                    continue;
+                                int intLoopSlots = 0;
+                                if (xmlLoopNode.TryGetInt32FieldQuickly("slots", ref intLoopSlots))
                                 {
-                                    intTotalSlots += Convert.ToInt32(xmlLoopNode["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                                    intTotalSlots += intLoopSlots;
                                 }
                             }
                         }
@@ -447,8 +453,11 @@ namespace Chummer
                 lblAvailabilityLabel.Visible = false;
                 return;
             }
-            decimal decCost = !chkFreeItem.Checked ? Convert.ToDecimal(xmlSelectedMount["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo) : 0;
-            int intSlots = Convert.ToInt32(xmlSelectedMount["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            decimal decCost = 0;
+            if (!chkFreeItem.Checked)
+                xmlSelectedMount.TryGetDecFieldQuickly("cost", ref decCost);
+            int intSlots = 0;
+            xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
 
             string strAvail = xmlSelectedMount["avail"]?.InnerText ?? string.Empty;
             char chrAvailSuffix = strAvail.Length > 0 ? strAvail[strAvail.Length - 1] : ' ';
@@ -456,40 +465,45 @@ namespace Chummer
                 strAvail = strAvail.Substring(0, strAvail.Length - 1);
             else
                 chrAvailSuffix = ' ';
-            int intAvail = Convert.ToInt32(strAvail, GlobalOptions.InvariantCultureInfo);
+            int.TryParse(strAvail, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intAvail);
 
             foreach (string strSelectedId in astrSelectedValues)
             {
-                if (!string.IsNullOrEmpty(strSelectedId))
+                if (string.IsNullOrEmpty(strSelectedId))
+                    continue;
+                XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
+                if (xmlLoopNode == null)
+                    continue;
+                if (!chkFreeItem.Checked)
                 {
-                    XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + "]");
-                    if (xmlLoopNode != null)
+                    decimal decLoopCost = 0;
+                    if (xmlLoopNode.TryGetDecFieldQuickly("cost", ref decLoopCost))
+                        decCost += decLoopCost;
+                }
+
+                int intLoopSlots = 0;
+                if (xmlLoopNode.TryGetInt32FieldQuickly("slots", ref intLoopSlots))
+                    intSlots += intLoopSlots;
+
+                string strLoopAvail = xmlLoopNode["avail"]?.InnerText ?? string.Empty;
+                char chrLoopAvailSuffix = strLoopAvail.Length > 0 ? strLoopAvail[strLoopAvail.Length - 1] : ' ';
+                switch (chrLoopAvailSuffix)
+                {
+                    case 'F':
+                        strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                        chrAvailSuffix = 'F';
+                        break;
+
+                    case 'R':
                     {
-                        if (!chkFreeItem.Checked)
-                            decCost += Convert.ToInt32(xmlLoopNode["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-
-                        intSlots += Convert.ToInt32(xmlLoopNode["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
-
-                        string strLoopAvail = xmlLoopNode["avail"]?.InnerText ?? string.Empty;
-                        char chrLoopAvailSuffix = strLoopAvail.Length > 0 ? strLoopAvail[strLoopAvail.Length - 1] : ' ';
-                        switch (chrLoopAvailSuffix)
-                        {
-                            case 'F':
-                                strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
-                                chrAvailSuffix = 'F';
-                                break;
-
-                            case 'R':
-                                {
-                                    strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
-                                    if (chrAvailSuffix == ' ')
-                                        chrAvailSuffix = 'R';
-                                    break;
-                                }
-                        }
-                        intAvail += Convert.ToInt32(strLoopAvail, GlobalOptions.InvariantCultureInfo);
+                        strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                        if (chrAvailSuffix == ' ')
+                            chrAvailSuffix = 'R';
+                        break;
                     }
                 }
+                if (int.TryParse(strLoopAvail, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intLoopAvail))
+                    intAvail += intLoopAvail;
             }
             foreach (VehicleMod objMod in _lstMods)
             {
@@ -546,7 +560,8 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedMount))
                 xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + "]");
 
-            int intSlots = Convert.ToInt32(xmlSelectedMount?["slots"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+            int intSlots = 0;
+            xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
 
             string[] astrSelectedValues = { cboVisibility.SelectedValue?.ToString(), cboFlexibility.SelectedValue?.ToString(), cboControl.SelectedValue?.ToString() };
             foreach (string strSelectedId in astrSelectedValues)
