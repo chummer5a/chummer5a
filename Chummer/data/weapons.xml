@@ -14761,7 +14761,7 @@
       <category>Heavy Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
-      <accuracy>6(8)</accuracy>
+      <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>14P</damage>
       <ap>-10</ap>
