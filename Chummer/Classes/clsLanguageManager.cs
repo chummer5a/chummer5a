@@ -137,10 +137,10 @@ namespace Chummer
             {
                 if (!objNewLanguage.ErrorAlreadyShown)
                 {
-                    Program.MainForm.ShowMessageBox(
-                        "Language with code " + strLanguage + " could not be loaded for the following reasons:" +
-                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    /*Program.MainForm.ShowMessageBox(
+                        "language with code " + strlanguage + " could not be loaded for the following reasons:" +
+                        environment.newline + environment.newline + objnewlanguage.errormessage, "cannot load language",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);*/
                     objNewLanguage.ErrorAlreadyShown = true;
                 }
                 return false;
