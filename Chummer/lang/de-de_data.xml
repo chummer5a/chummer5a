@@ -46111,6 +46111,12 @@
                 <translate>Unterlauf-Kettensäge</translate>
                 <altpage>52</altpage>
             </weapon>
+            <weapon>
+              <id>59b08aa4-e71a-4f94-ad79-faa0668b0c81</id>
+              <name>Underbarrel Weapon</name>
+              <translate>Unterlaufwaffe</translate>
+              <altpage>14</altpage>
+            </weapon>
             <!-- End of translation for Custom Rule 'German Data Changes - Underbarrel Weapons'-->
         </weapons>
         <accessories>
