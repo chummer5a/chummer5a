@@ -11,9 +11,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms.VisualStyles;
 using NLog;
+using Chummer.Backend.Equipment;
+using Microsoft.ApplicationInsights.Channel;
+using System.Diagnostics;
 
 namespace MatrixPlugin
 {
+    [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(),nq}")]
     public class MatrixPlugin : IPlugin
     {
         
@@ -92,11 +96,7 @@ namespace MatrixPlugin
 
         public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCareer input)
         {
-            MatrixForm FormFrom = new MatrixForm();
-            FormFrom.comboBox1.AutoCompleteCustomSource.Add(input.CharacterObject.ActiveCommlink.Attack);
-            FormFrom.comboBox1.AutoCompleteCustomSource.Add(input.CharacterObject.ActiveCommlink.Sleaze);
-            FormFrom.comboBox1.AutoCompleteCustomSource.Add(input.CharacterObject.ActiveCommlink.DataProcessing);
-            FormFrom.comboBox1.AutoCompleteCustomSource.Add(input.CharacterObject.ActiveCommlink.Firewall);
+            MatrixForm FormFrom = new MatrixForm(input.CharacterObject);
             return new System.Windows.Forms.TabPage[] { FormFrom.MatrixTabPage };
         }
 
@@ -135,12 +135,17 @@ namespace MatrixPlugin
             return;
         }
 
-        public Microsoft.ApplicationInsights.Channel.ITelemetry SetTelemetryInitialize(Microsoft.ApplicationInsights.Channel.ITelemetry telemetry)
+        public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
             //here you can tweak telemetry items before they are logged.
             //if you don't know anything about logging or telemetry, just return the object
             return telemetry;
             
+        }
+
+        private string GetDebuggerDisplay()
+        {
+            return ToString();
         }
     }
 }
