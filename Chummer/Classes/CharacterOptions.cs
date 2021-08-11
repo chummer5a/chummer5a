@@ -362,6 +362,7 @@ namespace Chummer
             {
                 _dicCustomDataDirectoryNames.Add(kvpOther.Key, kvpOther.Value);
             }
+            RecalculateEnabledCustomDataDirectories();
 
             _lstBooks.Clear();
             foreach (string strBook in objOther._lstBooks)
