@@ -479,50 +479,54 @@ namespace Chummer
                     if (!CreateBackupZip())
                         return;
 
-                    HashSet<string> lstFilesToDelete =
-                        new HashSet<string>(Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories));
-                    HashSet<string> lstFilesToNotDelete = new HashSet<string>();
-                    foreach (string strFileToDelete in lstFilesToDelete)
+                    string[] astrAllFiles = Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories);
+                    List<string> lstFilesToDelete = new List<string>(astrAllFiles.Length);
+                    foreach (string strFileToDelete in astrAllFiles)
                     {
                         string strFileName = Path.GetFileName(strFileToDelete);
+                        if (string.IsNullOrEmpty(strFileName)
+                            || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase))
+                            continue;
                         string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
+                        if (!strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase)
+                            && !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase)
+                            && !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase)
+                            && !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase)
+                            && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase)
+                            && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase)
+                            && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)))
+                            continue;
                         int intSeparatorIndex = strFilePath.LastIndexOf(Path.DirectorySeparatorChar);
                         string strTopLevelFolder = intSeparatorIndex != -1
                             ? strFilePath.Substring(intSeparatorIndex + 1)
                             : string.Empty;
-                        if ((!strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase)
-                             && !strFilePath.StartsWith("export", StringComparison.OrdinalIgnoreCase)
-                             && !strFilePath.StartsWith("lang", StringComparison.OrdinalIgnoreCase)
-                             && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase)
-                             && !strFilePath.StartsWith("saves", StringComparison.OrdinalIgnoreCase)
-                             && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase)
-                             && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)))
-                            || strFileName?.EndsWith(".old", StringComparison.OrdinalIgnoreCase) != false
-                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("override_", StringComparison.OrdinalIgnoreCase)
-                            || strFileName.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
-                            || (strFilePath.Contains("sheets")
-                                && strTopLevelFolder != "de-de"
-                                && strTopLevelFolder != "fr-fr"
-                                && strTopLevelFolder != "ja-jp"
-                                && strTopLevelFolder != "pt-br"
-                                && strTopLevelFolder != "zh-cn")
-                            || (strTopLevelFolder == "lang"
-                                && strFileName != "de-de.xml"
-                                && strFileName != "fr-fr.xml"
-                                && strFileName != "ja-jp.xml"
-                                && strFileName != "pt-br.xml"
-                                && strFileName != "zh-cn.xml"
-                                && strFileName != "de-de_data.xml"
-                                && strFileName != "fr-fr_data.xml"
-                                && strFileName != "ja-jp_data.xml"
-                                && strFileName != "pt-br_data.xml"
-                                && strFileName != "zh-cn_data.xml"))
-                            lstFilesToNotDelete.Add(strFileToDelete);
+                        if (strFilePath.Contains("sheets", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strTopLevelFolder, "sheets", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strTopLevelFolder, "de-de", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strTopLevelFolder, "fr-fr", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strTopLevelFolder, "ja-jp", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strTopLevelFolder, "pt-br", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strTopLevelFolder, "zh-cn", StringComparison.OrdinalIgnoreCase))
+                            continue;
+                        if (string.Equals(strTopLevelFolder, "lang", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "en-us.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "de-de.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "fr-fr.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "ja-jp.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "pt-br.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "zh-cn.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "de-de_data.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "fr-fr_data.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "ja-jp_data.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "pt-br_data.xml", StringComparison.OrdinalIgnoreCase)
+                            && !string.Equals(strFileName, "zh-cn_data.xml", StringComparison.OrdinalIgnoreCase))
+                            continue;
+                        lstFilesToDelete.Add(strFileToDelete);
                     }
-
-                    lstFilesToDelete.RemoveWhere(x => lstFilesToNotDelete.Contains(x));
 
                     InstallUpdateFromZip(_strTempPath, lstFilesToDelete);
                 }
@@ -544,12 +548,15 @@ namespace Chummer
                     if (!CreateBackupZip())
                         return;
 
-                    HashSet<string> setFilesToDelete =
-                        new HashSet<string>(Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories));
-                    HashSet<string> setFilesToNotDelete = new HashSet<string>();
-                    foreach (string strFileToDelete in setFilesToDelete)
+                    string[] astrAllFiles = Directory.GetFiles(_strAppPath, "*", SearchOption.AllDirectories);
+                    List<string> lstFilesToDelete = new List<string>(astrAllFiles.Length);
+                    foreach (string strFileToDelete in astrAllFiles)
                     {
                         string strFileName = Path.GetFileName(strFileToDelete);
+                        if (string.IsNullOrEmpty(strFileName)
+                            || strFileName.EndsWith(".old", StringComparison.OrdinalIgnoreCase)
+                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            continue;
                         string strFilePath = Path.GetDirectoryName(strFileToDelete).TrimStartOnce(_strAppPath);
                         if (!strFilePath.StartsWith("customdata", StringComparison.OrdinalIgnoreCase)
                             && !strFilePath.StartsWith("data", StringComparison.OrdinalIgnoreCase)
@@ -559,15 +566,12 @@ namespace Chummer
                             && !strFilePath.StartsWith("settings", StringComparison.OrdinalIgnoreCase)
                             && !strFilePath.StartsWith("sheets", StringComparison.OrdinalIgnoreCase)
                             && !strFilePath.StartsWith("Utils", StringComparison.OrdinalIgnoreCase)
-                            && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName))
-                            || strFileName?.EndsWith(".old", StringComparison.OrdinalIgnoreCase) != false
-                            || strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                            setFilesToNotDelete.Add(strFileToDelete);
+                            && !string.IsNullOrEmpty(strFilePath.TrimEndOnce(strFileName)))
+                            continue;
+                        lstFilesToDelete.Add(strFileToDelete);
                     }
 
-                    setFilesToDelete.RemoveWhere(x => setFilesToNotDelete.Contains(x));
-
-                    InstallUpdateFromZip(_strTempPath, setFilesToDelete);
+                    InstallUpdateFromZip(_strTempPath, lstFilesToDelete);
                 }
             }
         }
@@ -660,13 +664,17 @@ namespace Chummer
                 if (lstBlocked.Count > 0)
                 {
                     Utils.BreakIfDebug();
-                    StringBuilder sbdOutput = new StringBuilder(LanguageManager.GetString("Message_Files_Cannot_Be_Removed"));
-                    foreach (string strFile in lstBlocked)
-                    {
-                        sbdOutput.Append(Environment.NewLine + strFile);
-                    }
                     if (!SilentMode)
-                        Program.MainForm.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    {
+                        StringBuilder sbdOutput =
+                            new StringBuilder(LanguageManager.GetString("Message_Files_Cannot_Be_Removed"));
+                        foreach (string strFile in lstBlocked)
+                        {
+                            sbdOutput.Append(Environment.NewLine + strFile);
+                        }
+                        Program.MainForm.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
+                            MessageBoxIcon.Information);
+                    }
                 }
                 Utils.RestartApplication();
             }
