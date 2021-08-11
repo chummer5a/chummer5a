@@ -249,7 +249,7 @@
   <xsl:variable name="lang.Target"    select="'Ziel'" />
   <xsl:variable name="lang.Tasks"    select="'Aufgaben'" />
   <xsl:variable name="lang.Total"      select="'Summe'" />
-  <xsl:variable name="lang.Touch"      select="'Berührung'" />
+  <xsl:variable name="lang.Touch"      select="'Bouch'" />
   <xsl:variable name="lang.Toxin"      select="'Toxin'" />
   <xsl:variable name="lang.Tradition"    select="'Tradition'" />
   <xsl:variable name="lang.Type"      select="'Typ'" />
