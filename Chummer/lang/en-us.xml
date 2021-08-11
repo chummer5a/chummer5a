@@ -9761,7 +9761,7 @@
     </string>
     <string>
       <key>Message_Duplicate_CustomDataDirectoryGuid</key>
-      <text>A custom data directory with an identical Guid to {0} has already been added. Please edit the data directory's manifest and give it a different Guid.</text>
+      <text>The custom data directory {0} has a manifest with a Guid identical to the Guid in the manifest of {1}. Please edit either data directory's manifest and give it a different Guid.</text>
     </string>
     <string>
       <key>MessageTitle_Duplicate_CustomDataDirectoryGuid</key>

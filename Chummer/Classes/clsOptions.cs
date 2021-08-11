@@ -225,7 +225,7 @@ namespace Chummer
         private static string _strImageFolder = string.Empty;
 
         // Custom Data Directory information.
-        private static readonly Dictionary<Guid, CustomDataDirectoryInfo> _dicCustomDataDirectoryInfo = new Dictionary<Guid, CustomDataDirectoryInfo>();
+        private static readonly Dictionary<Guid, CustomDataDirectoryInfo> _dicCustomDataDirectoryInfos = new Dictionary<Guid, CustomDataDirectoryInfo>();
 
         #region Constructor
 
@@ -604,25 +604,39 @@ namespace Chummer
                                             LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error));
                             }
-                            if (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid))
+                            if (_dicCustomDataDirectoryInfos.TryGetValue(objCustomDataDirectory.Guid, out CustomDataDirectoryInfo objExistingInfo))
                             {
                                 if (objCustomDataDirectory.HasManifest)
                                 {
-                                    Program.MainFormOnAssignActions.Add(x =>
-                                        x.ShowMessageBox(
-                                            string.Format(
-                                                LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryGuid"),
-                                                objCustomDataDirectory.Name),
-                                            LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryGuid"),
-                                            MessageBoxButtons.OK, MessageBoxIcon.Error));
-                                    continue;
+                                    if (objExistingInfo.HasManifest)
+                                    {
+                                        Program.MainFormOnAssignActions.Add(x =>
+                                            x.ShowMessageBox(
+                                                string.Format(
+                                                    LanguageManager.GetString(
+                                                        "Message_Duplicate_CustomDataDirectoryGuid"),
+                                                    objExistingInfo.Name, objCustomDataDirectory.Name),
+                                                LanguageManager.GetString(
+                                                    "MessageTitle_Duplicate_CustomDataDirectoryGuid"),
+                                                MessageBoxButtons.OK, MessageBoxIcon.Error));
+                                        continue;
+                                    }
+
+                                    _dicCustomDataDirectoryInfos.Remove(objCustomDataDirectory.Guid);
+                                    do
+                                    {
+                                        objExistingInfo.RandomizeGuid();
+                                    } while (objExistingInfo.Guid == objCustomDataDirectory.Guid);
                                 }
-                                do
+                                else
                                 {
-                                    objCustomDataDirectory.RandomizeGuid();
-                                } while (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid));
+                                    do
+                                    {
+                                        objCustomDataDirectory.RandomizeGuid();
+                                    } while (_dicCustomDataDirectoryInfos.ContainsKey(objCustomDataDirectory.Guid));
+                                }
                             }
-                            _dicCustomDataDirectoryInfo.Add(objCustomDataDirectory.Guid, objCustomDataDirectory);
+                            _dicCustomDataDirectoryInfos.Add(objCustomDataDirectory.Guid, objCustomDataDirectory);
                         }
                     }
                 }
@@ -636,7 +650,7 @@ namespace Chummer
                 foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
                 {
                     // Only add directories for which we don't already have entries loaded from registry
-                    if (_dicCustomDataDirectoryInfo.All(x => x.Value.DirectoryPath != strLoopDirectoryPath))
+                    if (_dicCustomDataDirectoryInfos.All(x => x.Value.DirectoryPath != strLoopDirectoryPath))
                     {
                         CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
                         if (objCustomDataDirectory.XmlException != default)
@@ -650,30 +664,44 @@ namespace Chummer
                                         LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error));
                         }
-                        if (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid))
+                        if (_dicCustomDataDirectoryInfos.TryGetValue(objCustomDataDirectory.Guid, out CustomDataDirectoryInfo objExistingInfo))
                         {
                             if (objCustomDataDirectory.HasManifest)
                             {
-                                Program.MainFormOnAssignActions.Add(x =>
-                                    x.ShowMessageBox(
-                                        string.Format(
-                                            LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryGuid"),
-                                            objCustomDataDirectory.Name),
-                                        LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryGuid"),
-                                        MessageBoxButtons.OK, MessageBoxIcon.Error));
-                                continue;
+                                if (objExistingInfo.HasManifest)
+                                {
+                                    Program.MainFormOnAssignActions.Add(x =>
+                                        x.ShowMessageBox(
+                                            string.Format(
+                                                LanguageManager.GetString(
+                                                    "Message_Duplicate_CustomDataDirectoryGuid"),
+                                                objExistingInfo.Name, objCustomDataDirectory.Name),
+                                            LanguageManager.GetString(
+                                                "MessageTitle_Duplicate_CustomDataDirectoryGuid"),
+                                            MessageBoxButtons.OK, MessageBoxIcon.Error));
+                                    continue;
+                                }
+
+                                _dicCustomDataDirectoryInfos.Remove(objCustomDataDirectory.Guid);
+                                do
+                                {
+                                    objExistingInfo.RandomizeGuid();
+                                } while (objExistingInfo.Guid == objCustomDataDirectory.Guid);
                             }
-                            do
+                            else
                             {
-                                objCustomDataDirectory.RandomizeGuid();
-                            } while (_dicCustomDataDirectoryInfo.ContainsKey(objCustomDataDirectory.Guid));
+                                do
+                                {
+                                    objCustomDataDirectory.RandomizeGuid();
+                                } while (_dicCustomDataDirectoryInfos.ContainsKey(objCustomDataDirectory.Guid));
+                            }
                         }
-                        _dicCustomDataDirectoryInfo.Add(objCustomDataDirectory.Guid, objCustomDataDirectory);
+                        _dicCustomDataDirectoryInfos.Add(objCustomDataDirectory.Guid, objCustomDataDirectory);
                     }
                 }
             }
 
-            XmlManager.RebuildDataDirectoryInfo(_dicCustomDataDirectoryInfo.Values);
+            XmlManager.RebuildDataDirectoryInfo(_dicCustomDataDirectoryInfos.Values);
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
@@ -1314,9 +1342,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// List of CustomDataDirectoryInfo.
+        /// Dictionary of custom data directory infos keyed to their internal IDs.
         /// </summary>
-        public static Dictionary<Guid, CustomDataDirectoryInfo> CustomDataDirectoryInfos => _dicCustomDataDirectoryInfo;
+        public static Dictionary<Guid, CustomDataDirectoryInfo> CustomDataDirectoryInfos => _dicCustomDataDirectoryInfos;
 
         /// <summary>
         /// Should the updater check for Release builds, or Nightly builds

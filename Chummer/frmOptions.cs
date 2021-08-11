@@ -490,20 +490,37 @@ namespace Chummer
 
                     if (_dicCustomDataDirectoryInfos.ContainsKey(objNewCustomDataDirectory.Guid))
                     {
-                        if (objNewCustomDataDirectory.HasManifest)
+                        if (_dicCustomDataDirectoryInfos.TryGetValue(objNewCustomDataDirectory.Guid, out CustomDataDirectoryInfo objExistingInfo))
                         {
-                            Program.MainForm.ShowMessageBox(this,
-                                string.Format(LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryGuid",
-                                    _strSelectedLanguage), objNewCustomDataDirectory.Name),
-                                LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryGuid",
-                                    _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            return;
-                        }
+                            if (objNewCustomDataDirectory.HasManifest)
+                            {
+                                if (objExistingInfo.HasManifest)
+                                {
+                                    Program.MainForm.ShowMessageBox(
+                                        string.Format(
+                                            LanguageManager.GetString(
+                                                "Message_Duplicate_CustomDataDirectoryGuid"),
+                                            objExistingInfo.Name, objNewCustomDataDirectory.Name),
+                                        LanguageManager.GetString(
+                                            "MessageTitle_Duplicate_CustomDataDirectoryGuid"),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                    return;
+                                }
 
-                        do
-                        {
-                            objNewCustomDataDirectory.RandomizeGuid();
-                        } while (_dicCustomDataDirectoryInfos.ContainsKey(objNewCustomDataDirectory.Guid));
+                                _dicCustomDataDirectoryInfos.Remove(objNewCustomDataDirectory.Guid);
+                                do
+                                {
+                                    objExistingInfo.RandomizeGuid();
+                                } while (objExistingInfo.Guid == objNewCustomDataDirectory.Guid);
+                            }
+                            else
+                            {
+                                do
+                                {
+                                    objNewCustomDataDirectory.RandomizeGuid();
+                                } while (_dicCustomDataDirectoryInfos.ContainsKey(objNewCustomDataDirectory.Guid));
+                            }
+                        }
                     }
                     if (_dicCustomDataDirectoryInfos.Values.Any(x => x.Name == objNewCustomDataDirectory.Name))
                     {
