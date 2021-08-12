@@ -28,21 +28,21 @@ namespace MatrixPlugin
         /// </summary>
         private void InitializeComponent()
         {
-            this.MySampleLabel = new System.Windows.Forms.Label();
+            this.LabelTitle = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // MySampleLabel
+            // LabelTitle
             // 
-            this.MySampleLabel.AutoSize = true;
-            this.MySampleLabel.Location = new System.Drawing.Point(4, 4);
-            this.MySampleLabel.Name = "MySampleLabel";
-            this.MySampleLabel.Size = new System.Drawing.Size(162, 13);
-            this.MySampleLabel.TabIndex = 0;
-            this.MySampleLabel.Text = "There is no options, just CheckIn";
+            this.LabelTitle.AutoSize = true;
+            this.LabelTitle.Location = new System.Drawing.Point(4, 4);
+            this.LabelTitle.Name = "LabelTitle";
+            this.LabelTitle.Size = new System.Drawing.Size(162, 13);
+            this.LabelTitle.TabIndex = 0;
+            this.LabelTitle.Text = "There is no options, just CheckIn";
             // 
             // ucOptions
             // 
-            this.Controls.Add(this.MySampleLabel);
+            this.Controls.Add(this.LabelTitle);
             this.Name = "ucOptions";
             this.Size = new System.Drawing.Size(359, 309);
             this.ResumeLayout(false);
@@ -52,6 +52,6 @@ namespace MatrixPlugin
 
         #endregion
 
-        private System.Windows.Forms.Label MySampleLabel;
+        private System.Windows.Forms.Label LabelTitle;
     }
 }

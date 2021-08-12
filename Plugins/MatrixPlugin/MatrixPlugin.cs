@@ -33,15 +33,23 @@ namespace MatrixPlugin
 
         public void CustomInitialize(frmChummerMain mainControl)
         {
-            Actions = new List<MatrixAction>();
-            XmlDocument xmlComplexFormDocument = XmlManager.Load("actions.xml", null, "", false);
-            foreach (XmlNode xmlAction in xmlComplexFormDocument.SelectNodes("/chummer/actions/action"))
+            try
+            {
+                Actions = new List<MatrixAction>();
+                XmlDocument xmlComplexFormDocument = XmlManager.Load("actions.xml", null, "", false);
+                foreach (XmlNode xmlAction in xmlComplexFormDocument.SelectNodes("/chummer/actions/action"))
                 if (xmlAction.SelectSingleNode("test/limit") != null)
                 {
                     MatrixAction newAction = new MatrixAction(xmlAction);
                     if (newAction.Attribute != "" && newAction.Skill != "")
                         Actions.Add(newAction);
                 }
+            }
+            catch (Exception e)
+            {
+                Log.Error(e);
+            }
+            
             return;
         }
 
@@ -69,8 +77,6 @@ namespace MatrixPlugin
         {
             try
             {
-
-                //return the UserControl for you options
                 return new ucOptions();
             }
             catch (Exception e)
@@ -84,10 +90,6 @@ namespace MatrixPlugin
         {
             try
             {
-
-
-                //this is the first thing needed for reflection in Chummer Main. Please don't return null, but your assembly
-                //that is probably bad coding AND we should change it, but for now, just stick with it...
                 return this.GetType().Assembly;
             }
 
@@ -112,45 +114,32 @@ namespace MatrixPlugin
 
         public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCreate input)
         {
-            //the same goes for the frmCreate
             return null;
         }
 
         public void LoadFileElement(Character input, string fileElement)
         {
-            //here you get the string "back" on load, that you (maybe) have saved before with the GetSaveToFileElement function.
-            //do whatever you want with that string
             return;
         }
 
         public bool ProcessCommandLine(string parameter)
         {
-            //here you have the chance to react to command line parameters that reference your plugin
-            // the syntax is: chummer5.exe /plugin:MyMatrixPlugin:myparameter
             return true;
         }
 
         public bool SetCharacterRosterNode(System.Windows.Forms.TreeNode objNode)
         {
-            //here you can tweak the nodes from the char-roster. Add onclickevents, change texts, reorder them - whatever you want...
-
             return true;
         }
 
         public void SetIsUnitTest(bool isUnitTest)
         {
-            //In case you want to make some special initialization if you are called in a unit test, this is the place
-            if (isUnitTest)
-                Console.WriteLine("MyMatrixPlugin is in a Unit Test!");
             return;
         }
 
         public ITelemetry SetTelemetryInitialize(ITelemetry telemetry)
         {
-            //here you can tweak telemetry items before they are logged.
-            //if you don't know anything about logging or telemetry, just return the object
             return telemetry;
-            
         }
 
         private string GetDebuggerDisplay()

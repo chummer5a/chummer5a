@@ -307,35 +307,44 @@ namespace MatrixPlugin
             foreach(MatrixAction action in Actions)
             if (cbActions.SelectedItem.ToString() == action.Name)
                 {
-                    label1.Text = action.Attribute;
-                    int attributeValue = character.GetAttribute(action.Attribute).TotalValue;
-                    label2.Text = attributeValue.ToString();
-                    label4.Text = action.Skill;
-                    int skillValue = character.SkillsSection.GetActiveSkill(action.Skill).TotalBaseRating;
-                    label3.Text = skillValue.ToString();
-                    label13.Text = action.Modifier.ToString();
-                    dpcActionDicePool.DicePool = attributeValue + skillValue + action.Modifier;
-
-                    label12.Text = action.DAttribute;
-                    int dattributeValue = character.GetAttribute(action.Attribute).TotalValue;
-                    if (action.DAttribute != "")
-                        label11.Text = dattributeValue.ToString();
-                    else label11.Text = "";
-
-                    label10.Text = action.DSkill;
-                    int dskill = character.ActiveCommlink.GetTotalMatrixAttribute(action.DSkill);
-                    switch(action.DSkill)
-                    {
-                        case "Attack": dskill += modAttack; break;
-                        case "Sleaze": dskill += modSleaze; break;
-                        case "Data Processing": dskill += modDataProc; break;
-                        case "Firewall": dskill += modFirewall; break;
-                    }
-                    label9.Text = dskill.ToString();
-                    dpcDefendDicePool.DicePool = dskill + dattributeValue;
-
-                    label14.Text = action.Description;
+                    currentAction = action;
+                    UpdateSkillLabels();
                 }
+        }
+
+        private void UpdateSkillLabels()
+        {
+            int attributeValue = character.GetAttribute(currentAction.Attribute).TotalValue;
+            int skillValue = character.SkillsSection.GetActiveSkill(currentAction.Skill).TotalBaseRating;
+            int defAttributeValue = character.GetAttribute(currentAction.Attribute).TotalValue;
+            int defSkill = character.ActiveCommlink.GetTotalMatrixAttribute(currentAction.DSkill);
+
+            switch(currentAction.DSkill)
+            {
+                case "Attack": dskill += modAttack; break;
+                case "Sleaze": dskill += modSleaze; break;
+                case "Data Processing": dskill += modDataProc; break;
+                case "Firewall": dskill += modFirewall; break;
+            }
+            int limitValue = character.ActiveCommlink.GetTotalMatrixAttribute(currentAction.Limit);
+
+            label1.Text = currentAction.Attribute;
+            label2.Text = attributeValue.ToString();
+
+            label3.Text = skillValue.ToString();
+            label4.Text = currentAction.Skill;
+
+            label13.Text = currentAction.DicePoolModifier.ToString();
+
+            label11.Text = defAttributeValue.ToString();
+
+            label12.Text = currentAction.DAttribute;
+            label9.Text = defSkill.ToString();
+
+            label14.Text = currentAction.Description;
+
+            dpcActionDicePool.DicePool = attributeValue + skillValue + currentAction.DicePoolModifier;
+            dpcDefendDicePool.DicePool = defAttributeValue + defSkill;
         }
     }
 }

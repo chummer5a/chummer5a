@@ -17,7 +17,8 @@ namespace MatrixPlugin
         public string Limit;
         public string DAttribute;
         public string DSkill;
-        public int Modifier;
+        public int DicePoolModifier;
+        public int LimitModifier;
 
         private static string[] Attributes = { "LOG", "WIL", "INT", "CHA" };
         private static string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare", "Firewall", "Data Processing", "Attack", "Sleaze" };
@@ -30,13 +31,16 @@ namespace MatrixPlugin
         public MatrixAction(XmlNode xmlAction)
         {
             Name = xmlAction.SelectSingleNode("name").FirstChild.Value;
-            Description = "";//xmlAction.SelectSingleNode("test/bonusstring") == null ? "" : xmlAction.SelectSingleNode("test/bonusstring").FirstChild.Value;
+            Description = "";
             Attribute = "";
             Skill = "";
             Limit = "";
             DAttribute = "";
             DSkill = "";
-            Modifier = 0;
+            DicePoolModifier = 0;
+
+            if (xmlAction.SelectSingleNode("test/bonusstring") != null)
+                Description = xmlAction.SelectSingleNode("test/bonusstring").FirstChild.Value;
 
             string limit = xmlAction.SelectSingleNode("test/limit").FirstChild.Value;
             
@@ -57,10 +61,6 @@ namespace MatrixPlugin
                 if (limit.Contains(skill))
                     Limit = skill;
             }
-            //if (Regex.IsMatch(Dice[0], "[-]* [\\d]{1,}"))
-                //Modifier = int.Parse(Regex.Match(Dice[0], "[-]* [\\d]{1,}").Value);
-
-
         }
     }
 }
