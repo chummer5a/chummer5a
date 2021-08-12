@@ -80,8 +80,9 @@ namespace Chummer.UI.Skills
             // 
             // splitSkills
             // 
-            this.splitSkills.BackColor = System.Drawing.Color.LightBlue;
+            this.splitSkills.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.splitSkills.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitSkills.ForeColor = System.Drawing.SystemColors.InactiveCaption;
             this.splitSkills.Location = new System.Drawing.Point(0, 0);
             this.splitSkills.Margin = new System.Windows.Forms.Padding(0);
             this.splitSkills.Name = "splitSkills";
@@ -91,12 +92,14 @@ namespace Chummer.UI.Skills
             // 
             this.splitSkills.Panel1.BackColor = System.Drawing.SystemColors.Control;
             this.splitSkills.Panel1.Controls.Add(this.tlpTopPanel);
+            this.splitSkills.Panel1.ForeColor = System.Drawing.SystemColors.ControlText;
             this.splitSkills.Panel1.Resize += new System.EventHandler(this.Panel1_Resize);
             // 
             // splitSkills.Panel2
             // 
             this.splitSkills.Panel2.BackColor = System.Drawing.SystemColors.Control;
             this.splitSkills.Panel2.Controls.Add(this.tlpBottomPanel);
+            this.splitSkills.Panel2.ForeColor = System.Drawing.SystemColors.ControlText;
             this.splitSkills.Panel2.Resize += new System.EventHandler(this.Panel2_Resize);
             this.splitSkills.Size = new System.Drawing.Size(800, 611);
             this.splitSkills.SplitterDistance = 420;
