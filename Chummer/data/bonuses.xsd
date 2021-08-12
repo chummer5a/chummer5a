@@ -643,6 +643,14 @@
       <xs:element name="pathogeninhalationresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="pathogeninjectionimmune" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="pathogeninjectionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="penaltyfreesustain" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="count" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="force" type="xs:string" minOccurs="0" maxOccurs="1" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="physicalcmrecovery" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="physicalillusionresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="physicallimit" type="xs:string" minOccurs="0" maxOccurs="1" />

@@ -7447,6 +7447,23 @@ namespace Chummer.Classes
             objSkill.Specializations.Add(objExpertise);
             CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, objExpertise.InternalId);
         }
+
+        public void penaltyfreesustain(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Info("penaltyfreesustain");
+            Log.Info("penaltyfreesustain = " + bonusNode.OuterXml);
+
+            string strDummy = string.Empty;
+            int intCount = 1;
+            if (bonusNode.TryGetStringFieldQuickly("count", ref strDummy))
+                intCount = ImprovementManager.ValueToInt(_objCharacter, strDummy, _intRating);
+            int intMaxForce = int.MaxValue;
+            if (bonusNode.TryGetStringFieldQuickly("force", ref strDummy))
+                intMaxForce = ImprovementManager.ValueToInt(_objCharacter, strDummy, _intRating);
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PenaltyFreeSustain, _strUnique, intMaxForce, intCount);
+        }
 #pragma warning restore IDE1006 // Naming Styles
         #endregion
     }

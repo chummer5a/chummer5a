@@ -355,6 +355,7 @@ namespace Chummer
             AstralReputation,
             AstralReputationWild,
             CyberadeptDaemon,
+            PenaltyFreeSustain,
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
@@ -2595,6 +2596,12 @@ namespace Chummer
                                 nameof(Character.CyberwareEssence));
                         break;
                     }
+                case ImprovementType.PenaltyFreeSustain:
+                    {
+                        yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
+                            nameof(Character.SustainingPenalty));
+                        break;
+                    }
             }
         }
 
@@ -3398,6 +3405,7 @@ namespace Chummer
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
+                strReturn = strReturn.Replace("/", " div ");
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -3437,6 +3445,7 @@ namespace Chummer
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
                 strReturn = objCharacter.AttributeSection.ProcessAttributesInXPath(strReturn);
+                strReturn = strReturn.Replace("/", " div ");
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);

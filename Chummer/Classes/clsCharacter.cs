@@ -16649,10 +16649,67 @@ namespace Chummer
             int intDicePenaltySustainedSpell = Options.DicePenaltySustaining;
 
             //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
-            int intSustainedSpells = SustainedCollection.Count(x => x.HasSustainingPenalty);
+            List<SustainedObject> lstSustainedSpells = SustainedCollection.Where(x => x.HasSustainingPenalty).ToList();
+            // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
+            if (Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.PenaltyFreeSustain && x.Enabled))
+            {
+                // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
+                SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();
+                foreach (Improvement objImprovement in Improvements.Where(x =>
+                    x.ImproveType == Improvement.ImprovementType.PenaltyFreeSustain && x.Enabled))
+                {
+                    decimal decForce = objImprovement.Value;
+                    if (dicPenaltyFreeSustains.ContainsKey(decForce))
+                        dicPenaltyFreeSustains[decForce] += objImprovement.Rating;
+                    else
+                        dicPenaltyFreeSustains.Add(decForce, objImprovement.Rating);
+                }
+                // List of supported objects, sorted in descending order of Force
+                List<SustainedObject> lstSupportedObjects = new List<SustainedObject>();
+                // Go from lowest maximum force/level bonus to highest (that's why we use SortedDictionary) and match each one to the highest possible objects for it.
+                foreach (KeyValuePair<decimal, int> kvpLoop in dicPenaltyFreeSustains)
+                {
+                    int intSupportedForce = kvpLoop.Key.StandardRound();
+                    int intNumSupportsPossible = kvpLoop.Value;
+                    lstSupportedObjects.Clear();
+                    foreach (SustainedObject objLoopObject in lstSustainedSpells)
+                    {
+                        int intLoopForce = objLoopObject.Force;
+                        if (intLoopForce > intSupportedForce)
+                            continue;
+                        if (intLoopForce == intSupportedForce)
+                        {
+                            if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                                // Remove the last element because we know it's the lowest
+                                lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
+                            // Safe to insert object at the top because we cannot get objects with more Force in the list
+                            lstSupportedObjects.Insert(0, objLoopObject);
+                            if (lstSupportedObjects.Count == intNumSupportsPossible && lstSupportedObjects[lstSupportedObjects.Count - 1].Force == intSupportedForce)
+                                // The entire list at this point is saturated with objects with the maximum allowable force, so quit out early
+                                break;
+                        }
+                        else
+                        {
+                            if (lstSupportedObjects.Count + 1 > intNumSupportsPossible)
+                            {
+                                // Check against the last element because we know it'll be the lowest, only replace item if loop has a higher force than this one
+                                if (intLoopForce <= lstSupportedObjects[lstSupportedObjects.Count - 1].Force)
+                                    continue;
+                                lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
+                            }
+                            lstSupportedObjects.AddWithSort(objLoopObject, (x, y) => y.Force.CompareTo(x.Force));
+                        }
+                    }
+                    // Remove all sustained objects that supported as penalty-free
+                    lstSustainedSpells.RemoveAll(x => lstSupportedObjects.Contains(x));
+                    // If we have no more sustained objects in need of penalty removal, exit out early
+                    if (lstSustainedSpells.Count <= 0)
+                        break;
+                }
+            }
             int intModifierPerSpell = PsycheActive ? -1 : -intDicePenaltySustainedSpell;
                                                                                                                
-            SustainingPenalty = intSustainedSpells * intModifierPerSpell;
+            SustainingPenalty = lstSustainedSpells.Count * intModifierPerSpell;
 
             return true;
         }

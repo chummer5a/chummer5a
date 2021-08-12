@@ -263,6 +263,19 @@
       </bonus>
       <limit>3</limit>
     </echo>
+    <echo>
+      <id>08848a07-a013-4c45-b103-f5600f1e7171</id>
+      <name>Sourcerer Daemon</name>
+      <source>KC</source>
+      <page>91</page>
+      <bonus>
+        <penaltyfreesustain>
+          <!-- Reducing Submersion Grade by 1 makes sure we end up rounding down for this bonus -->
+          <count>(Rating - 1) / 2</count>
+        </penaltyfreesustain>
+      </bonus>
+      <hide />
+    </echo>
     <!-- End Region -->
   </echoes>
 </chummer>

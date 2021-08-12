@@ -646,6 +646,8 @@ namespace Chummer
                     return objImprovementAdder.freequality;
                 case "SELECTEXPERTISE":
                     return objImprovementAdder.selectexpertise;
+                case "PENALTYFREESUSTAIN":
+                    return objImprovementAdder.penaltyfreesustain;
                 // No method matches, return a null pointer
                 default:
                     return null;

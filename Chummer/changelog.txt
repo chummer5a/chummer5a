@@ -25,7 +25,7 @@ Application Changes:
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 - Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
-- Added the ability to track sustained spells and complex forms in the Career mode. They are found in their respective tabs. Psyche is also supported.
+- Added the ability to track sustained spells and complex forms in the Career mode. They are found in their respective tabs. Psyche is also supported, as are bonus nodes that allow a certain number of spells or complex forms up to a certain force or level to be sustained without penalties.
 - Added the ability to specify a city, district, and borough for a lifestyle.
 - If a character sheet is printed/exported in a language other than the one with which Chummer is being used, Chummer now attemtps to translate the names of gear, vehicle, and weapon locations.
 - Generating character sheets in languages where commas are used as decimal separators and/or periods are used as number group separators no longer sometimes causes the generator to stall out and silently crash. Fixes #4415.

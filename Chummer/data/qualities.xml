@@ -182,6 +182,8 @@
       <karma>4</karma>
       <category>Positive</category>
       <limit>6</limit>
+      <!-- TODO: penaltyfreesustain done in a way that works well with quality ratings -->
+      <bonus />
       <required>
         <oneof>
           <power>Adept Spell</power>
@@ -18690,7 +18692,9 @@
       <karma>20</karma>
       <category>Positive</category>
       <doublecareer>False</doublecareer>
-      <bonus />
+      <bonus>
+        <addecho>Sourcerer Daemon</addecho>
+      </bonus>
       <forbidden>
         <oneof>
           <quality>Resonant Stream: Cyberadept</quality>
