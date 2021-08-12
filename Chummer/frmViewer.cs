@@ -579,7 +579,7 @@ namespace Chummer
 
                             if (GlobalOptions.PrintToFileFirst)
                             {
-                                Utils.SafeDeleteFile(_strFilePathName);
+                                Utils.SafeDeleteFile(_strFilePathName, true);
                             }
                         }
                     }

@@ -1285,7 +1285,7 @@ namespace Chummer
             this.cmdAddImprovementGroup = new System.Windows.Forms.Button();
             this.cmdEditImprovement = new System.Windows.Forms.Button();
             this.cmdDeleteImprovement = new System.Windows.Forms.Button();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpImprovementsRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblImprovementTypeLabel = new System.Windows.Forms.Label();
             this.lblImprovementValue = new System.Windows.Forms.Label();
             this.tlpImprovementsActive = new Chummer.BufferedTableLayoutPanel(this.components);
@@ -1614,7 +1614,7 @@ namespace Chummer
             this.tabImprovements.SuspendLayout();
             this.tlpImprovements.SuspendLayout();
             this.tlpImprovementsButtons.SuspendLayout();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
+            this.tlpImprovementsRight.SuspendLayout();
             this.tlpImprovementsActive.SuspendLayout();
             this.tabRelationships.SuspendLayout();
             this.tabPeople.SuspendLayout();
@@ -19329,7 +19329,7 @@ namespace Chummer
             this.tlpImprovements.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68F));
             this.tlpImprovements.Controls.Add(this.treImprovements, 0, 1);
             this.tlpImprovements.Controls.Add(this.tlpImprovementsButtons, 0, 0);
-            this.tlpImprovements.Controls.Add(this.bufferedTableLayoutPanel1, 1, 1);
+            this.tlpImprovements.Controls.Add(this.tlpImprovementsRight, 1, 1);
             this.tlpImprovements.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpImprovements.Location = new System.Drawing.Point(3, 3);
             this.tlpImprovements.Name = "tlpImprovements";
@@ -19438,27 +19438,27 @@ namespace Chummer
             this.cmdDeleteImprovement.UseVisualStyleBackColor = true;
             this.cmdDeleteImprovement.Click += new System.EventHandler(this.cmdDeleteImprovement_Click);
             // 
-            // bufferedTableLayoutPanel1
+            // tlpImprovementsRight
             // 
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel1.ColumnCount = 2;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.lblImprovementTypeLabel, 0, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.lblImprovementValue, 1, 1);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.tlpImprovementsActive, 0, 2);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.lblImprovementType, 1, 0);
-            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(310, 29);
-            this.bufferedTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 3;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(661, 79);
-            this.bufferedTableLayoutPanel1.TabIndex = 89;
+            this.tlpImprovementsRight.AutoSize = true;
+            this.tlpImprovementsRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpImprovementsRight.ColumnCount = 2;
+            this.tlpImprovementsRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpImprovementsRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpImprovementsRight.Controls.Add(this.lblImprovementTypeLabel, 0, 0);
+            this.tlpImprovementsRight.Controls.Add(this.lblImprovementValue, 1, 1);
+            this.tlpImprovementsRight.Controls.Add(this.tlpImprovementsActive, 0, 2);
+            this.tlpImprovementsRight.Controls.Add(this.lblImprovementType, 1, 0);
+            this.tlpImprovementsRight.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpImprovementsRight.Location = new System.Drawing.Point(310, 29);
+            this.tlpImprovementsRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpImprovementsRight.Name = "tlpImprovementsRight";
+            this.tlpImprovementsRight.RowCount = 3;
+            this.tlpImprovementsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpImprovementsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpImprovementsRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpImprovementsRight.Size = new System.Drawing.Size(661, 79);
+            this.tlpImprovementsRight.TabIndex = 89;
             // 
             // lblImprovementTypeLabel
             // 
@@ -19488,7 +19488,7 @@ namespace Chummer
             this.tlpImprovementsActive.AutoSize = true;
             this.tlpImprovementsActive.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpImprovementsActive.ColumnCount = 3;
-            this.bufferedTableLayoutPanel1.SetColumnSpan(this.tlpImprovementsActive, 2);
+            this.tlpImprovementsRight.SetColumnSpan(this.tlpImprovementsActive, 2);
             this.tlpImprovementsActive.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpImprovementsActive.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpImprovementsActive.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
@@ -20968,8 +20968,8 @@ namespace Chummer
             this.tlpImprovements.PerformLayout();
             this.tlpImprovementsButtons.ResumeLayout(false);
             this.tlpImprovementsButtons.PerformLayout();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
+            this.tlpImprovementsRight.ResumeLayout(false);
+            this.tlpImprovementsRight.PerformLayout();
             this.tlpImprovementsActive.ResumeLayout(false);
             this.tlpImprovementsActive.PerformLayout();
             this.tabRelationships.ResumeLayout(false);
@@ -22143,7 +22143,7 @@ namespace Chummer
         private BufferedTableLayoutPanel tlpCritterRight;
         private BufferedTableLayoutPanel tlpInitiationRight;
         private TreeView treImprovements;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private BufferedTableLayoutPanel tlpImprovementsRight;
         private Label lblImprovementTypeLabel;
         private Label lblImprovementValue;
         private BufferedTableLayoutPanel tlpImprovementsActive;

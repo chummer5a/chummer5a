@@ -707,8 +707,7 @@ namespace Chummer
             await Task.WhenAll(cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = false),
                 cmdRestart.DoThreadSafeAsync(() => cmdRestart.Enabled = false),
                 cmdCleanReinstall.DoThreadSafeAsync(() => cmdCleanReinstall.Enabled = false));
-            if (File.Exists(_strTempPath))
-                File.Delete(_strTempPath);
+            Utils.SafeDeleteFile(_strTempPath, !SilentMode);
             try
             {
                 await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempPath);
