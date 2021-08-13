@@ -481,7 +481,8 @@ namespace Chummer.Backend.Equipment
                             VehicleMod objMod = new VehicleMod(_objCharacter)
                             {
                                 Parent = Parent,
-                                WeaponMountParent = this
+                                WeaponMountParent = this,
+                                IncludedInVehicle = true
                             };
                             xmlDataNode = xmlDoc.SelectSingleNode("/chummer/weaponmountmods/mod[name = " + xmlModNode.InnerText.CleanXPath() + "]");
                             objMod.Load(xmlDataNode);

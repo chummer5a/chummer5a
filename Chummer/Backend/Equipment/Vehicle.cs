@@ -333,14 +333,16 @@ namespace Chummer.Backend.Equipment
                                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlVehicleMod.InnerText.CleanXPath() + "]");
                                 if (objXmlMod != null)
                                 {
-                                    VehicleMod objMod = new VehicleMod(_objCharacter);
+                                    VehicleMod objMod = new VehicleMod(_objCharacter)
+                                    {
+                                        IncludedInVehicle = true
+                                    };
                                     string strForcedValue = objXmlVehicleMod.Attributes?["select"]?.InnerText ?? string.Empty;
                                     if (!int.TryParse(objXmlVehicleMod.Attributes?["rating"]?.InnerText, out int intRating))
                                         intRating = 0;
 
                                     objMod.Extra = strForcedValue;
                                     objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
-                                    objMod.IncludedInVehicle = true;
 
                                     _lstVehicleMods.Add(objMod);
                                 }
@@ -360,14 +362,16 @@ namespace Chummer.Backend.Equipment
                                 XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = " + strName.CleanXPath() + "]");
                                 if (objXmlMod != null)
                                 {
-                                    VehicleMod objMod = new VehicleMod(_objCharacter);
+                                    VehicleMod objMod = new VehicleMod(_objCharacter)
+                                    {
+                                        IncludedInVehicle = true
+                                    };
                                     string strForcedValue = objXmlVehicleMod["name"].Attributes?["select"]?.InnerText ?? string.Empty;
                                     if (!int.TryParse(objXmlVehicleMod["rating"]?.InnerText, out int intRating))
                                         intRating = 0;
 
                                     objMod.Extra = strForcedValue;
                                     objMod.Create(objXmlMod, intRating, this, 0, strForcedValue);
-                                    objMod.IncludedInVehicle = true;
 
                                     XmlNode xmlSubsystemsNode = objXmlVehicleMod["subsystems"];
                                     if (xmlSubsystemsNode != null)
