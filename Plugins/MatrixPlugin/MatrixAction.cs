@@ -61,6 +61,13 @@ namespace MatrixPlugin
                 if (limit.Contains(skill))
                     Limit = skill;
             }
+
+            if (Regex.IsMatch(Dice[0], "([-]{0,1})[ ]([\\d]+)"))
+            {
+                Match match = Regex.Match(Dice[0], "([-]{0,1})[ ]([\\d]+)");
+                string result = match.Groups[1].Value + match.Groups[2].Value;
+                DicePoolModifier = int.Parse(result);
+            }
         }
     }
 }

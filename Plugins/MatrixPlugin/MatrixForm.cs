@@ -15,7 +15,6 @@ namespace MatrixPlugin
         List<Gear> Software;
         List<MatrixAction> Actions;
         MatrixAction currentAction;
-        int maximumSoft = 0;
         int modAttack = 0;
         int modSleaze = 0;
         int modDataProc = 0;
@@ -24,12 +23,31 @@ namespace MatrixPlugin
         {
             character = input.CharacterObject;
             InitializeComponent();
-            dpcActionDicePool.DicePool = 10;
-            dpcDefendDicePool.DicePool = 8;
             CyberDecks = new List<Gear>();
             Software = new List<Gear>();
             Actions = actions;
             addGear(character);
+            
+            
+            listCyberDecks.Items.AddRange((from cyberdeck in CyberDecks select cyberdeck.Name).ToArray());
+            listSoftware.Items.AddRange((from soft in Software select (soft.Name)).ToArray());
+            cbActions.Items.AddRange((from action in Actions select (action.Name)).ToArray());
+
+            listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(character.ActiveCommlink);
+            cbActions.SelectedIndex = 0;
+
+            UpdateFormElements();
+        }
+
+        private void UpdateFormElements()
+        {
+            UpdateOverclock();
+            addDataBinding();
+            UpdateSkillLabels();
+        }
+
+        private void UpdateOverclock()
+        {
             if (!character.Overclocker)
             {
                 lOverClocker.Enabled = false;
@@ -38,18 +56,14 @@ namespace MatrixPlugin
                 rbOverDataProc.Enabled = false;
                 rbOverFirewall.Enabled = false;
             }
-            listCyberDecks.Items.AddRange((from cyberdeck in CyberDecks select new ListViewItem(cyberdeck.Name)).ToArray());
-            listSoftware.Items.AddRange((from soft in Software select (soft.Name)).ToArray());
-            addDataBinding();
-            addActionComboBox();
-        }
-
-        private void addActionComboBox()
-        {
-            foreach (var action in Actions)
-            {
-                cbActions.Items.Add(action.Name);
-            }
+            else switch (character.ActiveCommlink.Overclocked)
+                {
+                    case "Attack": rbOverAttack.Checked = true; break;
+                    case "Sleaze": rbOverSleaze.Checked = true; break;
+                    case "Data Processing": rbOverDataProc.Checked = true; break;
+                    case "Firewall": rbOverFirewall.Checked = true; break;
+                    default: rbOverAttack.Checked = true; break;
+                }
         }
 
         private void addDataBinding()
@@ -92,21 +106,7 @@ namespace MatrixPlugin
 
         private void listCyberDecks_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
-            if (listCyberDecks.SelectedItems.Count == 0)
-                return;
-            ListViewItem Item = listCyberDecks.SelectedItems[0];
-
-            foreach (Gear deck in CyberDecks)
-            {
-                if (deck.Name == Item.Text)
-                {
-                    character.ActiveCommlink = deck;
-                    addDataBinding();
-                    RefreshMatrixAttributeCBOs(character.ActiveCommlink, cbAttack, cbSleaze, cbDataProc, cbFirewall);
-                    maximumSoft = int.Parse(deck.ProgramLimit);
-                }
-            }
-            addDataBinding();
+            
         }
 
         public void RefreshMatrixAttributeCBOs(IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
@@ -193,41 +193,41 @@ namespace MatrixPlugin
 
         private void listSoftware_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            /*if (e.NewValue == CheckState.Checked) if (maximumSoft+1 > listSoftware.CheckedItems.Count)
-            {
-                int indexChecked = listSoftware.CheckedIndices[0];
-                listSoftware.SetItemChecked(indexChecked,false);
-            }*/
             switch (listSoftware.Items[e.Index].ToString())
             {
+                case "Shredder":
                 case "Edit":
-                    modDataProc = e.NewValue == CheckState.Checked? modDataProc + 2: modDataProc - 2;
+                    Actions.Find(i => i.Name == "Edit File").LimitModifier += e.NewValue == CheckState.Checked ? + 2 : - 2;
                     break;
                 case "Encryption":
-                    modFirewall = e.NewValue == CheckState.Checked ? modFirewall + 1 : modFirewall - 1;
+                    modFirewall += e.NewValue == CheckState.Checked ? modFirewall + 1 : modFirewall - 1;
                     break;
                 case "Search":
-                case "Shredder":
+                    Actions.Find(i => i.Name == "Matrix Search").DicePoolModifier += e.NewValue == CheckState.Checked ? +2 : -2;
+                    break;
                 case "Signal Scrub":
                     break;
                 case "Toolbox":
-                    modDataProc = e.NewValue == CheckState.Checked ? modDataProc + 1 : modDataProc - 1;
+                    modDataProc += e.NewValue == CheckState.Checked ? 1 : -1;
                     break;
                 case "Virtual Machine":
                     break;
                 case "Decryption":
-                    modAttack = e.NewValue == CheckState.Checked ? modAttack + 1 : modAttack - 1;
+                    modAttack += e.NewValue == CheckState.Checked ? + 1 : - 1;
                     break;
                 case "Exploit":
-                    modSleaze = e.NewValue == CheckState.Checked ? modSleaze + 2 : modSleaze - 2;
+                    Actions.Find(i => i.Name.Contains("Hack on the Fly")).LimitModifier += e.NewValue == CheckState.Checked ? +2 : -2;
                     break;
                 case "Paintjob":
-                    modAttack = e.NewValue == CheckState.Checked ? modAttack + 2 : modAttack - 2;
+                    Actions.Find(i => i.Name.Contains("Erase Marks")).LimitModifier += e.NewValue == CheckState.Checked ? +2 : -2;
                     break;
                 case "Stealth":
                     modSleaze = e.NewValue == CheckState.Checked ? modSleaze + 1 : modSleaze - 1;
                     break;
-
+                case "Tarball":
+                    Actions.Find(i => i.Name.Contains("Crash Program")).LimitModifier += e.NewValue == CheckState.Checked ? +2 : -2;
+                    Actions.Find(i => i.Name.Contains("Crash Program")).DicePoolModifier += e.NewValue == CheckState.Checked ? +1 : -1;
+                    break;
                 default:
                     break;
             }
@@ -275,31 +275,39 @@ namespace MatrixPlugin
             }
 
             RefreshMatrixAttributeCBOs(character.ActiveCommlink, cbAttack, cbSleaze, cbDataProc, cbFirewall);
-            addDataBinding();
+            UpdateFormElements();
         }
 
         private void rbOverFirewall_CheckedChanged(object sender, EventArgs e)
         {
-            character.ActiveCommlink.Overclocked += "Firewall";
-            addDataBinding();
+            if (!rbOverFirewall.Checked)
+                return;
+            character.ActiveCommlink.Overclocked = "Firewall";
+            UpdateFormElements();
         }
 
         private void rbOverDataProc_CheckedChanged(object sender, EventArgs e)
         {
-            character.ActiveCommlink.Overclocked += "Data Processing";
-            addDataBinding();
+            if (!rbOverDataProc.Checked)
+                return;
+            character.ActiveCommlink.Overclocked = "Data Processing";
+            UpdateFormElements();
         }
 
         private void rbOverSleaze_CheckedChanged(object sender, EventArgs e)
         {
-            character.ActiveCommlink.Overclocked += "Sleaze";
-            addDataBinding();
+            if (!rbOverSleaze.Checked)
+                return;
+            character.ActiveCommlink.Overclocked = "Sleaze";
+            UpdateFormElements();
         }
 
         private void rbOverAttack_CheckedChanged(object sender, EventArgs e)
         {
-            character.ActiveCommlink.Overclocked += "Attack";
-            addDataBinding();
+            if (!rbOverAttack.Checked)
+                return;
+            character.ActiveCommlink.Overclocked = "Attack";
+            UpdateFormElements();
         }
 
         private void cbActions_SelectedIndexChanged(object sender, EventArgs e)
@@ -308,43 +316,81 @@ namespace MatrixPlugin
             if (cbActions.SelectedItem.ToString() == action.Name)
                 {
                     currentAction = action;
-                    UpdateSkillLabels();
+                    UpdateFormElements();
                 }
         }
 
         private void UpdateSkillLabels()
         {
+            if (currentAction == null)
+                return;
             int attributeValue = character.GetAttribute(currentAction.Attribute).TotalValue;
             int skillValue = character.SkillsSection.GetActiveSkill(currentAction.Skill).TotalBaseRating;
             int defAttributeValue = character.GetAttribute(currentAction.Attribute).TotalValue;
             int defSkill = character.ActiveCommlink.GetTotalMatrixAttribute(currentAction.DSkill);
-
-            switch(currentAction.DSkill)
-            {
-                case "Attack": dskill += modAttack; break;
-                case "Sleaze": dskill += modSleaze; break;
-                case "Data Processing": dskill += modDataProc; break;
-                case "Firewall": dskill += modFirewall; break;
-            }
             int limitValue = character.ActiveCommlink.GetTotalMatrixAttribute(currentAction.Limit);
 
-            label1.Text = currentAction.Attribute;
-            label2.Text = attributeValue.ToString();
+            switch (currentAction.DSkill)
+            {
+                case "Attack": defSkill += modAttack; break;
+                case "Sleaze": defSkill += modSleaze; break;
+                case "Data Processing": defSkill += modDataProc; break;
+                case "Firewall": defSkill += modFirewall; break;
+            }
+            
+            lSkillAttributeName.Text = currentAction.Attribute;
+            lSkillAttributeValue.Text = attributeValue.ToString();
 
-            label3.Text = skillValue.ToString();
-            label4.Text = currentAction.Skill;
+            lActionSkillName.Text = currentAction.Skill;
+            lActionSkillValue.Text = skillValue.ToString();
 
-            label13.Text = currentAction.DicePoolModifier.ToString();
+            lActionModValue.Text = currentAction.DicePoolModifier.ToString();
 
-            label11.Text = defAttributeValue.ToString();
+            lSkillLimitName.Text = "[" + currentAction.Limit + "]";
+            lSkillLimitValue.Text = "[" + limitValue.ToString() + "]";
 
-            label12.Text = currentAction.DAttribute;
-            label9.Text = defSkill.ToString();
+            lDefendAttributeName.Text = currentAction.DAttribute;
+            lDefendAttributeValue.Text = defAttributeValue.ToString();
 
-            label14.Text = currentAction.Description;
+            lDefendSkillName.Text = currentAction.DSkill;
+            lDefendSkillValue.Text = defSkill.ToString();
 
-            dpcActionDicePool.DicePool = attributeValue + skillValue + currentAction.DicePoolModifier;
-            dpcDefendDicePool.DicePool = defAttributeValue + defSkill;
+            lSkillDescription.Text = currentAction.Description;
+
+            int allModifier = 0;
+            allModifier -= (int)nNoize.Value;
+            if (listSoftware.CheckedItems.Contains("Signal Scrub")) allModifier += 2;
+            if (allModifier > 0) allModifier = 0;
+
+            allModifier -= character.WoundModifier;
+            if (cSilent.Checked) allModifier -= 2;
+            if (cHotVR.Checked) allModifier += 2;
+            dpcActionDicePool.DicePool = attributeValue + skillValue + currentAction.DicePoolModifier + allModifier;
+            dpcDefendDicePool.DicePool = defAttributeValue + defSkill + allModifier;
         }
+
+        private void listCyberDecks_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listCyberDecks.SelectedItems.Count == 0)
+                return;
+            var Item = listCyberDecks.SelectedItems[0];
+            
+
+            foreach (Gear deck in CyberDecks)
+            {
+                if (deck.Name == Item.ToString())
+                {
+                    character.ActiveCommlink = deck;
+                    RefreshMatrixAttributeCBOs(character.ActiveCommlink, cbAttack, cbSleaze, cbDataProc, cbFirewall);
+                }
+            }
+            UpdateFormElements();
+        }
+
+        private void ValueChanged(object sender, EventArgs e)
+        {
+            UpdateFormElements();
+        }
+
     }
 }
