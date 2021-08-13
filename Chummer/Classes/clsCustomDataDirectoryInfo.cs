@@ -30,7 +30,7 @@ namespace Chummer
     /// <summary>
     /// This class holds all information about an CustomDataDirectory
     /// </summary>
-    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>
+    public class CustomDataDirectoryInfo : IComparable, IEquatable<CustomDataDirectoryInfo>, IComparable<CustomDataDirectoryInfo>, IHasInternalId
     {
         private readonly Version _objMyVersion = new Version(1, 0);
         private Guid _guid = Guid.NewGuid();
@@ -225,28 +225,39 @@ namespace Chummer
         /// <returns>List of the names of all missing dependencies as a single string</returns>
         public string CheckDependency(CharacterOptions objCharacterOptions)
         {
-            int intMyLoadOrderPosition = objCharacterOptions.EnabledCustomDataDirectoryInfosAsList.FindIndex(x => x.Value.Equals(this));
+            int intMyLoadOrderPosition = objCharacterOptions.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Equals(this));
             StringBuilder sbdReturn = new StringBuilder();
+            List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
             foreach (DirectoryDependency dependency in DependenciesList)
             {
-                
+                lstEnabledCustomData.Clear();
                 if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(dependency.UniqueIdentifier))
+                    lstEnabledCustomData.AddRange(objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(dependency.UniqueIdentifier)));
+                if (lstEnabledCustomData.Count > 0)
                 {
-                    //If not all GUIDs are unequal there has to be some version of an dependency active and we need to check it's version.
-                    CustomDataDirectoryInfo objEnabledCustomData =
-                        objCharacterOptions.EnabledCustomDataDirectoryInfos[dependency.UniqueIdentifier];
-                    if ((dependency.MinimumVersion != default && objEnabledCustomData.MyVersion < dependency.MinimumVersion)
-                        || (dependency.MaximumVersion != default && objEnabledCustomData.MyVersion > dependency.MaximumVersion))
+                    // First check if we have any data whose version matches
+                    if (dependency.MinimumVersion != default || dependency.MaximumVersion != default)
                     {
-                        sbdReturn.AppendLine(string.Format(
-                            LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
-                            objEnabledCustomData.DisplayName, dependency.DisplayName));
+                        if (lstEnabledCustomData.All(x =>
+                            (dependency.MinimumVersion != default && x.MyVersion < dependency.MinimumVersion)
+                            || (dependency.MaximumVersion != default && x.MyVersion > dependency.MaximumVersion)))
+                        {
+                            sbdReturn.AppendLine(string.Format(
+                                LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
+                                lstEnabledCustomData[0].DisplayName, dependency.DisplayName));
+                            continue;
+                        }
+
+                        // Remove all from the list where version does not match before moving on to load orders
+                        lstEnabledCustomData.RemoveAll(x =>
+                            (dependency.MinimumVersion != default && x.MyVersion < dependency.MinimumVersion)
+                            || (dependency.MaximumVersion != default && x.MyVersion > dependency.MaximumVersion));
                     }
-                    else if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterOptions.EnabledCustomDataDirectoryInfosAsList.FindIndex(x => x.Value.Equals(objEnabledCustomData)))
+                    if (intMyLoadOrderPosition >= 0 && intMyLoadOrderPosition < objCharacterOptions.EnabledCustomDataDirectoryInfos.FindLastIndex(x => lstEnabledCustomData.Contains(x)))
                     {
                         sbdReturn.AppendLine(string.Format(
                             LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
-                            objEnabledCustomData.Name, Name));
+                            lstEnabledCustomData[0].Name, Name));
                     }
                 }
                 else
@@ -266,21 +277,36 @@ namespace Chummer
         public string CheckIncompatibility(CharacterOptions objCharacterOptions)
         {
             StringBuilder sbdReturn = new StringBuilder();
+            List<CustomDataDirectoryInfo> lstEnabledCustomData = new List<CustomDataDirectoryInfo>();
             foreach (var incompatibility in IncompatibilitiesList)
             {
                 //Use the fast HasSet.Contains to determine if any dependency is present
                 if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
                 {
                     //We still need to filter out all the matching incompatibilities from objCharacterOptions.EnabledCustomDataDirectoryInfos to check their versions
-                    CustomDataDirectoryInfo enabledCustomData =
-                        objCharacterOptions.EnabledCustomDataDirectoryInfos[incompatibility.UniqueIdentifier];
+                    lstEnabledCustomData.Clear();
+                    if (objCharacterOptions.EnabledCustomDataDirectoryInfoGuids.Contains(incompatibility.UniqueIdentifier))
+                        lstEnabledCustomData.AddRange(objCharacterOptions.EnabledCustomDataDirectoryInfos.Where(x => x.Guid.Equals(incompatibility.UniqueIdentifier)));
+                    if (lstEnabledCustomData.Count <= 0)
+                        continue;
+                    CustomDataDirectoryInfo objInfoToDisplay;
+                    if (incompatibility.MinimumVersion != default || incompatibility.MaximumVersion != default)
+                    {
+                        objInfoToDisplay = lstEnabledCustomData.FirstOrDefault(x =>
+                            (incompatibility.MinimumVersion != default &&
+                             x.MyVersion >= incompatibility.MinimumVersion)
+                            || (incompatibility.MaximumVersion != default &&
+                                x.MyVersion <= incompatibility.MaximumVersion));
+                    }
+                    else
+                        objInfoToDisplay = lstEnabledCustomData[0];
+
                     //if the version is within the version range add it to the list.
-                    if ((incompatibility.MinimumVersion == default || enabledCustomData.MyVersion >= incompatibility.MinimumVersion)
-                        && (incompatibility.MaximumVersion == default || enabledCustomData.MyVersion <= incompatibility.MaximumVersion))
+                    if (objInfoToDisplay != default)
                     {
                         sbdReturn.AppendLine(string.Format(
                             LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
-                            enabledCustomData.DisplayName, incompatibility.DisplayName));
+                            objInfoToDisplay.DisplayName, incompatibility.DisplayName));
                     }
                 }
             }
@@ -458,6 +484,41 @@ namespace Chummer
         public string DisplayName => MyVersion == default ? Name : string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", Name,
             LanguageManager.GetString("String_Space"), MyVersion);
 
+        public string InternalId => Guid.ToString("D", GlobalOptions.InvariantCultureInfo);
+
+        /// <summary>
+        /// Key to use in character options files
+        /// </summary>
+        public string CharacterOptionsSaveKey => HasManifest ? InternalId + '>' + MyVersion : Name;
+
+        public static string GetIdFromCharacterOptionsSaveKey(string strKey)
+        {
+            int intSeparatorIndex = strKey.IndexOf('>');
+            if (intSeparatorIndex >= 0 && intSeparatorIndex + 1 < strKey.Length)
+            {
+                string strReturn = strKey.Substring(0, intSeparatorIndex);
+                if (strReturn.IsGuid())
+                    return strReturn;
+            }
+            return string.Empty;
+        }
+
+        public static string GetIdFromCharacterOptionsSaveKey(string strKey, out Version objPreferredVersion)
+        {
+            int intSeparatorIndex = strKey.IndexOf('>');
+            if (intSeparatorIndex >= 0 && intSeparatorIndex + 1 < strKey.Length)
+            {
+                string strReturn = strKey.Substring(0, intSeparatorIndex);
+                if (strReturn.IsGuid())
+                {
+                    objPreferredVersion = new Version(strKey.Substring(intSeparatorIndex + 1));
+                    return strReturn;
+                }
+            }
+            objPreferredVersion = default;
+            return string.Empty;
+        }
+
         #endregion Properties
 
         #region Interface Implementations and Operators
@@ -471,10 +532,10 @@ namespace Chummer
 
         public int CompareTo(CustomDataDirectoryInfo other)
         {
-            int intReturn = string.Compare(Name, other.Name, StringComparison.Ordinal);
+            int intReturn = string.Compare(Name, other.Name, StringComparison.OrdinalIgnoreCase);
             if (intReturn == 0)
             {
-                intReturn = string.Compare(DirectoryPath, other.DirectoryPath, StringComparison.Ordinal);
+                intReturn = string.Compare(DirectoryPath, other.DirectoryPath, StringComparison.OrdinalIgnoreCase);
                 //Should basically never happen, because paths are supposed to be unique. But this "future proofs" it.
                 if (intReturn == 0)
                     intReturn = MyVersion.CompareTo(other.MyVersion);
@@ -501,8 +562,10 @@ namespace Chummer
         public bool Equals(CustomDataDirectoryInfo other)
         {
             //This should be enough to uniquely identify an object.
-            return other != null && Name == other.Name && DirectoryPath == other.DirectoryPath && (other.Guid == Guid || (!other.HasManifest && !HasManifest)) &&
-                   other.MyVersion.Equals(MyVersion) && other.DependenciesList.CollectionEqual(DependenciesList) &&
+            return other != null && Name.Equals(other.Name, StringComparison.OrdinalIgnoreCase) &&
+                   DirectoryPath.Equals(other.DirectoryPath, StringComparison.OrdinalIgnoreCase) &&
+                   (other.Guid == Guid || (!other.HasManifest && !HasManifest)) && other.MyVersion.Equals(MyVersion) &&
+                   other.DependenciesList.CollectionEqual(DependenciesList) &&
                    other.IncompatibilitiesList.CollectionEqual(IncompatibilitiesList);
         }
 

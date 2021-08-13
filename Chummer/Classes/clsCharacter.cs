@@ -1708,7 +1708,7 @@ namespace Chummer
                     {
                         // <customdatadirectorynames>
                         objWriter.WriteStartElement("customdatadirectorynames");
-                        foreach (string strDirectoryName in Options.EnabledCustomDataDirectoryInfos.Values.Select(x => x.Name))
+                        foreach (string strDirectoryName in Options.EnabledCustomDataDirectoryInfos.Select(x => x.Name))
                         {
                             objWriter.WriteElementString("directoryname", strDirectoryName);
                         }
@@ -2755,7 +2755,7 @@ namespace Chummer
                                     for (int i = 0; i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count; ++i)
                                     {
                                         string strLoopCustomDataName =
-                                            objOptionsToCheck.EnabledCustomDataDirectoryInfosAsList[i].Value.Name;
+                                            objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
                                         int intLoopIndex =
                                             lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
                                         if (intLoopIndex < 0)
@@ -2766,8 +2766,7 @@ namespace Chummer
                                     }
 
                                     foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
-                                        if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x =>
-                                            x.Value.Name != strLoopCustomDataName))
+                                        if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
                                             intReturn -= objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count.RaiseToPower(2) *
                                                          intBaseline;
                                     int intBookBaselineScore =
@@ -2881,7 +2880,7 @@ namespace Chummer
                                             // Check to make sure all the names are the same
                                             for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
                                             {
-                                                if (lstSavedCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfosAsList[i].Value.Name)
+                                                if (lstSavedCustomDataDirectoryNames[i] != objCurrentlyLoadedOptions.EnabledCustomDataDirectoryInfos[i].Name)
                                                 {
                                                     blnPromptConfirmSetting = true;
                                                     break;

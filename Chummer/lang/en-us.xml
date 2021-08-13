@@ -9753,19 +9753,27 @@
     </string>
     <string>
       <key>Message_Duplicate_CustomDataDirectoryName</key>
-      <text>There is already a custom data directory called {0}. Please use a different name.</text>
+      <text>There is already a custom data directory called {0}. Having multiple custom data directories with the same name and no manifest can cause problems. Do you wish to continue?</text>
     </string>
     <string>
       <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Duplicate Custom Data Directory Name</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryGuid</key>
-      <text>The custom data directory {0} has a manifest with a Guid identical to the Guid in the manifest of {1}. Please edit either data directory's manifest and give it a different Guid.</text>
+      <key>Message_Duplicate_CustomDataDirectoryPath</key>
+      <text>There is already a custom data directory added for the path used for {0}. Please select a new </text>
     </string>
     <string>
-      <key>MessageTitle_Duplicate_CustomDataDirectoryGuid</key>
-      <text>Duplicate Custom Data Directory Guid</text>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryPath</key>
+      <text>Duplicate Custom Data Directory Path</text>
+    </string>
+    <string>
+      <key>Message_Duplicate_CustomDataDirectory</key>
+      <text>The custom data directory {0} has a name and manifest contents that make it identical to those of the directory {1}. Please edit either data directory's manifest to make sure they are different directories, like giving them different Guids.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Duplicate_CustomDataDirectory</key>
+      <text>Duplicate Custom Data Directory</text>
     </string>
     <string>
       <key>Label_CustomDataDirectories</key>

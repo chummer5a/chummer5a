@@ -38,7 +38,7 @@ namespace Chummer
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
 
         // List of custom data directories possible to be added to a character
-        private readonly Dictionary<Guid, CustomDataDirectoryInfo> _dicCustomDataDirectoryInfos;
+        private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
 
         // List of sourcebook infos, needed to make sure we don't directly modify ones in the options unless we save our options
         private readonly Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
@@ -63,7 +63,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm(_strSelectedLanguage);
 
-            _dicCustomDataDirectoryInfos = new Dictionary<Guid, CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfos);
+            _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>(GlobalOptions.CustomDataDirectoryInfos);
             _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>(GlobalOptions.SourcebookInfos);
             if (!string.IsNullOrEmpty(strActiveTab))
             {
@@ -486,11 +486,22 @@ namespace Chummer
                                 LanguageManager.GetString("MessageTitle_FailedLoad", _strSelectedLanguage) +
                                 LanguageManager.GetString("String_Space", _strSelectedLanguage) + objNewCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
                     }
-
-                    if (_dicCustomDataDirectoryInfos.ContainsKey(objNewCustomDataDirectory.Guid))
+                    if (_setCustomDataDirectoryInfos.Any(x => x.DirectoryPath == objNewCustomDataDirectory.DirectoryPath))
                     {
-                        if (_dicCustomDataDirectoryInfos.TryGetValue(objNewCustomDataDirectory.Guid, out CustomDataDirectoryInfo objExistingInfo))
+                        Program.MainForm.ShowMessageBox(this,
+                            string.Format(
+                                LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryPath",
+                                    _strSelectedLanguage), objNewCustomDataDirectory.Name),
+                            LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryPath",
+                                _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                    if (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory))
+                    {
+                        CustomDataDirectoryInfo objExistingInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objNewCustomDataDirectory));
+                        if (objExistingInfo != null)
                         {
                             if (objNewCustomDataDirectory.HasManifest)
                             {
@@ -499,43 +510,41 @@ namespace Chummer
                                     Program.MainForm.ShowMessageBox(
                                         string.Format(
                                             LanguageManager.GetString(
-                                                "Message_Duplicate_CustomDataDirectoryGuid"),
+                                                "Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objNewCustomDataDirectory.Name),
                                         LanguageManager.GetString(
-                                            "MessageTitle_Duplicate_CustomDataDirectoryGuid"),
+                                            "MessageTitle_Duplicate_CustomDataDirectory"),
                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                                     return;
                                 }
 
-                                _dicCustomDataDirectoryInfos.Remove(objNewCustomDataDirectory.Guid);
+                                _setCustomDataDirectoryInfos.Remove(objExistingInfo);
                                 do
                                 {
                                     objExistingInfo.RandomizeGuid();
-                                } while (objExistingInfo.Guid == objNewCustomDataDirectory.Guid);
+                                } while (objExistingInfo.Equals(objNewCustomDataDirectory) || _setCustomDataDirectoryInfos.Contains(objExistingInfo));
+                                _setCustomDataDirectoryInfos.Add(objExistingInfo);
                             }
                             else
                             {
                                 do
                                 {
                                     objNewCustomDataDirectory.RandomizeGuid();
-                                } while (_dicCustomDataDirectoryInfos.ContainsKey(objNewCustomDataDirectory.Guid));
+                                } while (_setCustomDataDirectoryInfos.Contains(objNewCustomDataDirectory));
                             }
                         }
                     }
-                    if (_dicCustomDataDirectoryInfos.Values.Any(x => x.Name == objNewCustomDataDirectory.Name))
-                    {
-                        Program.MainForm.ShowMessageBox(this,
-                            string.Format(
-                                LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName",
-                                    _strSelectedLanguage), objNewCustomDataDirectory.Name),
-                            LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryName",
-                                _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    else
-                    {
-                        _dicCustomDataDirectoryInfos.Add(objNewCustomDataDirectory.Guid, objNewCustomDataDirectory);
-                        PopulateCustomDataDirectoryListBox();
-                    }
+                    if (_setCustomDataDirectoryInfos.Any(x =>
+                        objNewCustomDataDirectory.CharacterOptionsSaveKey.Equals(x.CharacterOptionsSaveKey,
+                            StringComparison.OrdinalIgnoreCase)) && Program.MainForm.ShowMessageBox(this,
+                        string.Format(
+                            LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName",
+                                _strSelectedLanguage), objNewCustomDataDirectory.Name),
+                        LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryName",
+                            _strSelectedLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                        return;
+                    _setCustomDataDirectoryInfos.Add(objNewCustomDataDirectory);
+                    PopulateCustomDataDirectoryListBox();
                 }
             }
         }
@@ -546,7 +555,7 @@ namespace Chummer
                 return;
             ListItem objSelected = (ListItem)lsbCustomDataDirectories.SelectedItem;
             CustomDataDirectoryInfo objInfoToRemove = (CustomDataDirectoryInfo)objSelected.Value;
-            if (!_dicCustomDataDirectoryInfos.Remove(objInfoToRemove.Guid))
+            if (!_setCustomDataDirectoryInfos.Remove(objInfoToRemove))
                 return;
             OptionsChanged(sender, e);
             PopulateCustomDataDirectoryListBox();
@@ -565,33 +574,34 @@ namespace Chummer
             {
                 if (frmSelectCustomDirectoryName.ShowDialog(this) != DialogResult.OK)
                     return;
-                if (_dicCustomDataDirectoryInfos.Values.Any(x => x.Name == frmSelectCustomDirectoryName.Name))
+                CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
+                if (!objNewInfo.HasManifest)
+                    objNewInfo.CopyGuid(objInfoToRename);
+                if (objNewInfo.XmlException != default)
                 {
+                    Program.MainForm.ShowMessageBox(this,
+                        string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FailedLoad", _strSelectedLanguage),
+                            objNewInfo.XmlException.Message),
+                        string.Format(_objSelectedCultureInfo,
+                            LanguageManager.GetString("MessageTitle_FailedLoad", _strSelectedLanguage) +
+                            LanguageManager.GetString("String_Space", _strSelectedLanguage) + objNewInfo.Name + Path.DirectorySeparatorChar + "manifest.xml"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                if (_setCustomDataDirectoryInfos.Any(x => x != objInfoToRename &&
+                                                          objNewInfo.CharacterOptionsSaveKey.Equals(
+                                                              x.CharacterOptionsSaveKey,
+                                                              StringComparison.OrdinalIgnoreCase)) &&
                     Program.MainForm.ShowMessageBox(this,
                         string.Format(
                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectoryName",
-                                _strSelectedLanguage), frmSelectCustomDirectoryName.Name),
+                                _strSelectedLanguage), objNewInfo.Name),
                         LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectoryName",
-                            _strSelectedLanguage), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    CustomDataDirectoryInfo objNewInfo = new CustomDataDirectoryInfo(frmSelectCustomDirectoryName.SelectedValue, objInfoToRename.DirectoryPath);
-                    if (!objNewInfo.HasManifest)
-                        objNewInfo.CopyGuid(objInfoToRename);
-                    if (objNewInfo.XmlException != default)
-                    {
-                        Program.MainForm.ShowMessageBox(this,
-                            string.Format(_objSelectedCultureInfo, LanguageManager.GetString("Message_FailedLoad", _strSelectedLanguage),
-                                objNewInfo.XmlException.Message),
-                            string.Format(_objSelectedCultureInfo,
-                                LanguageManager.GetString("MessageTitle_FailedLoad", _strSelectedLanguage) +
-                                LanguageManager.GetString("String_Space", _strSelectedLanguage) + objNewInfo.Name + Path.DirectorySeparatorChar + "manifest.xml"),
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
-                    _dicCustomDataDirectoryInfos[objInfoToRename.Guid] = objNewInfo;
-                    PopulateCustomDataDirectoryListBox();
-                }
+                            _strSelectedLanguage), MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                    return;
+                _setCustomDataDirectoryInfos.Remove(objInfoToRename);
+                _setCustomDataDirectoryInfos.Add(objNewInfo);
+                PopulateCustomDataDirectoryListBox();
             }
         }
 
@@ -894,11 +904,11 @@ namespace Chummer
             _blnSkipRefresh = true;
             ListItem objOldSelected = lsbCustomDataDirectories.SelectedIndex != -1 ? (ListItem)lsbCustomDataDirectories.SelectedItem : ListItem.Blank;
             lsbCustomDataDirectories.BeginUpdate();
-            if (_dicCustomDataDirectoryInfos.Count != lsbCustomDataDirectories.Items.Count)
+            if (_setCustomDataDirectoryInfos.Count != lsbCustomDataDirectories.Items.Count)
             {
                 lsbCustomDataDirectories.Items.Clear();
 
-                foreach (CustomDataDirectoryInfo objCustomDataDirectory in _dicCustomDataDirectoryInfos.Values)
+                foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
                 {
                     ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
                     lsbCustomDataDirectories.Items.Add(objItem);
@@ -906,17 +916,17 @@ namespace Chummer
             }
             else
             {
-                HashSet<Guid> setListedInfos = new HashSet<Guid>();
+                HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
                 for (int iI = lsbCustomDataDirectories.Items.Count - 1; iI >= 0; --iI)
                 {
                     ListItem objExistingItem = (ListItem)lsbCustomDataDirectories.Items[iI];
                     CustomDataDirectoryInfo objExistingInfo = (CustomDataDirectoryInfo)objExistingItem.Value;
-                    if (!_dicCustomDataDirectoryInfos.ContainsKey(objExistingInfo.Guid))
+                    if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
                         lsbCustomDataDirectories.Items.RemoveAt(iI);
                     else
-                        setListedInfos.Add(objExistingInfo.Guid);
+                        setListedInfos.Add(objExistingInfo);
                 }
-                foreach (CustomDataDirectoryInfo objCustomDataDirectory in _dicCustomDataDirectoryInfos.Where(x => !setListedInfos.Contains(x.Key)).Select(x => x.Value))
+                foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos.Where(x => !setListedInfos.Contains(x)))
                 {
                     ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
                     lsbCustomDataDirectories.Items.Add(objItem);
@@ -1055,9 +1065,9 @@ namespace Chummer
             }
 
             GlobalOptions.CustomDataDirectoryInfos.Clear();
-            foreach (KeyValuePair<Guid, CustomDataDirectoryInfo> kvpInfo in _dicCustomDataDirectoryInfos)
-                GlobalOptions.CustomDataDirectoryInfos.Add(kvpInfo.Key, kvpInfo.Value);
-            XmlManager.RebuildDataDirectoryInfo(GlobalOptions.CustomDataDirectoryInfos.Values);
+            foreach (CustomDataDirectoryInfo objInfo in _setCustomDataDirectoryInfos)
+                GlobalOptions.CustomDataDirectoryInfos.Add(objInfo);
+            XmlManager.RebuildDataDirectoryInfo(GlobalOptions.CustomDataDirectoryInfos);
             GlobalOptions.SourcebookInfos.Clear();
             foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
                 GlobalOptions.SourcebookInfos.Add(objInfo.Code, objInfo);

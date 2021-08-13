@@ -549,8 +549,8 @@ namespace Chummer
             if (intIndex <= 0)
                 return;
             _dicCharacterCustomDataDirectoryInfos.Reverse(intIndex - 1, 2);
-            _objCharacterOptions.CustomDataDirectoryNames.Reverse(intIndex - 1, 2);
-            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+            _objCharacterOptions.CustomDataDirectoryKeys.Reverse(intIndex - 1, 2);
+            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryKeys));
             PopulateCustomDataDirectoryTreeView();
         }
 
@@ -565,9 +565,9 @@ namespace Chummer
             for (int i = intIndex; i > 0; --i)
             {
                 _dicCharacterCustomDataDirectoryInfos.Reverse(i - 1, 2);
-                _objCharacterOptions.CustomDataDirectoryNames.Reverse(i - 1, 2);
+                _objCharacterOptions.CustomDataDirectoryKeys.Reverse(i - 1, 2);
             }
-            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryKeys));
             PopulateCustomDataDirectoryTreeView();
         }
 
@@ -580,8 +580,8 @@ namespace Chummer
             if (intIndex >= _dicCharacterCustomDataDirectoryInfos.Count - 1)
                 return;
             _dicCharacterCustomDataDirectoryInfos.Reverse(intIndex, 2);
-            _objCharacterOptions.CustomDataDirectoryNames.Reverse(intIndex, 2);
-            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+            _objCharacterOptions.CustomDataDirectoryKeys.Reverse(intIndex, 2);
+            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryKeys));
             PopulateCustomDataDirectoryTreeView();
         }
 
@@ -596,9 +596,9 @@ namespace Chummer
             for (int i = intIndex; i < _dicCharacterCustomDataDirectoryInfos.Count - 1; ++i)
             {
                 _dicCharacterCustomDataDirectoryInfos.Reverse(i, 2);
-                _objCharacterOptions.CustomDataDirectoryNames.Reverse(i, 2);
+                _objCharacterOptions.CustomDataDirectoryKeys.Reverse(i, 2);
             }
-            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+            _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryKeys));
             PopulateCustomDataDirectoryTreeView();
         }
 
@@ -610,16 +610,16 @@ namespace Chummer
             int intIndex = objNode.Index;
             _dicCharacterCustomDataDirectoryInfos[_dicCharacterCustomDataDirectoryInfos[intIndex].Key] = objNode.Checked;
             if (objNode.Tag is CustomDataDirectoryInfo objCustomDataDirectoryInfo
-                && _objCharacterOptions.CustomDataDirectoryNames.ContainsKey(objCustomDataDirectoryInfo.Name))
+                && _objCharacterOptions.CustomDataDirectoryKeys.ContainsKey(objCustomDataDirectoryInfo.CharacterOptionsSaveKey))
             {
-                _objCharacterOptions.CustomDataDirectoryNames[objCustomDataDirectoryInfo.Name] = objNode.Checked;
-                _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+                _objCharacterOptions.CustomDataDirectoryKeys[objCustomDataDirectoryInfo.CharacterOptionsSaveKey] = objNode.Checked;
+                _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryKeys));
             }
             else if (objNode.Tag is string strCustomDataDirectoryKey
-                     && _objCharacterOptions.CustomDataDirectoryNames.ContainsKey(strCustomDataDirectoryKey))
+                     && _objCharacterOptions.CustomDataDirectoryKeys.ContainsKey(strCustomDataDirectoryKey))
             {
-                _objCharacterOptions.CustomDataDirectoryNames[strCustomDataDirectoryKey] = objNode.Checked;
-                _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryNames));
+                _objCharacterOptions.CustomDataDirectoryKeys[strCustomDataDirectoryKey] = objNode.Checked;
+                _objCharacterOptions.OnPropertyChanged(nameof(CharacterOptions.CustomDataDirectoryKeys));
             }
         }
 
@@ -1083,9 +1083,9 @@ namespace Chummer
         private void RebuildCustomDataDirectoryInfos()
         {
             _dicCharacterCustomDataDirectoryInfos.Clear();
-            foreach (KeyValuePair<string, bool> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryNames)
+            foreach (KeyValuePair<string, bool> kvpCustomDataDirectory in _objCharacterOptions.CustomDataDirectoryKeys)
             {
-                CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.Values.FirstOrDefault(x => x.Name == kvpCustomDataDirectory.Key);
+                CustomDataDirectoryInfo objLoopInfo = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.CharacterOptionsSaveKey == kvpCustomDataDirectory.Key);
                 if (objLoopInfo != default)
                 {
                     _dicCharacterCustomDataDirectoryInfos.Add(objLoopInfo, kvpCustomDataDirectory.Value);

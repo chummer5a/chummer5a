@@ -280,9 +280,12 @@ Changed/New Strings:
 - String_IsMainAuthor
 - Tooltip_Incompatibility_VersionMismatch
 - Tooltip_Dependency_VersionMismatch
-- Message_Duplicate_CustomDataDirectoryGuid
-- MessageTitle_Duplicate_CustomDataDirectoryGuid
+- Message_Duplicate_CustomDataDirectory
+- MessageTitle_Duplicate_CustomDataDirectory
 - Message_Duplicate_CustomDataDirectoryName
+- MessageTitle_Duplicate_CustomDataDirectoryName
+- Message_Duplicate_CustomDataDirectoryPath
+- MessageTitle_Duplicate_CustomDataDirectoryPath
 - Label_CharacterOptions_NuyenExpression
 - String_Chummer5a
 - Label_DirectoryPath
