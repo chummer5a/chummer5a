@@ -1561,7 +1561,7 @@ namespace Chummer.Backend.Skills
             {
                 return strExtraStart + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_Zero_Attribute"), att.DisplayNameShort(GlobalOptions.Language));
             }
-            
+
             if (IsNativeLanguage)
             {
                 return strExtraStart + LanguageManager.GetString("Tip_Skill_NativeLanguage");

@@ -3942,7 +3942,7 @@ namespace Chummer.Backend.Equipment
                                     {
                                         objAttributeSource = objAttributeSource.Parent;
                                     }
-                                    
+
                                     if (objAttributeSource != null)
                                         intDicePool = objSkill.PoolOtherAttribute(objSkill.Attribute, false, objSkill.Attribute == "STR"
                                             ? objAttributeSource.TotalStrength
@@ -4225,6 +4225,7 @@ namespace Chummer.Backend.Equipment
                                 sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), 1);
                             break;
+
                         case FiringMode.RemoteOperated:
                             List<Gear> lstVehicleSmartlinks = ParentVehicle.GearChildren.DeepWhere(x => x.Children,
                                 x => x.Bonus?.InnerXml.Contains("<smartlink>") == true).ToList();
@@ -4242,6 +4243,7 @@ namespace Chummer.Backend.Equipment
                                 sbdExtra.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})",
                                     strSpace, LanguageManager.GetString("Tip_Skill_Smartlink"), decSmartlinkBonus);
                             break;
+
                         case FiringMode.GunneryCommandDevice:
                         case FiringMode.ManualOperation:
                             if (decSmartlinkBonus != 0)
@@ -4276,7 +4278,7 @@ namespace Chummer.Backend.Equipment
                             break;
                         }
                     case FiringMode.RemoteOperated:
-                    {
+                        {
                             Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
                             string strExtra = sbdExtra.ToString();
                             if (objSkill.Specializations.Count > 0 && RelevantSpecialization != "None")

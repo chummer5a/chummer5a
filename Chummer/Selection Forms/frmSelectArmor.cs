@@ -155,7 +155,7 @@ namespace Chummer
                 objArmor.Create(xmlArmor, 0, lstWeapons, true, true, true);
 
                 _objSelectedArmor = objArmor;
-                
+
                 int intRating = 0;
                 if (xmlArmor.TryGetInt32FieldQuickly("rating", ref intRating))
                 {

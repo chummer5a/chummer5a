@@ -50,7 +50,7 @@
     <mentor>
       <name>Raven (Alt)</name>
       <choices>
-        <choice xpathfilter="bonus/specificskill/name = 'Summoning'" amendoperation="remove"/>
+        <choice xpathfilter="bonus/specificskill/name = 'Summoning'" amendoperation="remove" />
       </choices>
     </mentor>
   </mentors>

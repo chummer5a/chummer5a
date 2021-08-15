@@ -219,6 +219,7 @@ namespace Chummer
 
         // Cached lists that should be updated every time _dicCustomDataDirectoryKeys is updated
         private readonly OrderedSet<CustomDataDirectoryInfo> _setEnabledCustomDataDirectories = new OrderedSet<CustomDataDirectoryInfo>();
+
         private readonly HashSet<Guid> _setEnabledCustomDataDirectoryGuids = new HashSet<Guid>();
 
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();

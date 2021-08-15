@@ -250,33 +250,33 @@ namespace Chummer
                     break;
 
                 case "SelectEcho":
-                {
-                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1, Technomancer = true};
-                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                     {
-                        frmPickMetamagic.ShowDialog(this);
-                        if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                        InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
+                        using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                         {
-                            txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
-                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                            frmPickMetamagic.ShowDialog(this);
+                            if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                            {
+                                txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
+                                txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                            }
                         }
                     }
-                }
                     break;
 
                 case "SelectMetamagic":
-                {
-                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
-                    using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                     {
-                        frmPickMetamagic.ShowDialog(this);
-                        if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                        InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1 };
+                        using (frmSelectMetamagic frmPickMetamagic = new frmSelectMetamagic(_objCharacter, objGrade))
                         {
-                            txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
-                            txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                            frmPickMetamagic.ShowDialog(this);
+                            if (frmPickMetamagic.DialogResult == DialogResult.OK)
+                            {
+                                txtSelect.Text = frmPickMetamagic.SelectedMetamagic;
+                                txtTranslateSelection.Text = TranslateField(_strSelect, frmPickMetamagic.SelectedMetamagic);
+                            }
                         }
                     }
-                }
                     break;
 
                 case "SelectMentalAttribute":

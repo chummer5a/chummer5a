@@ -4782,7 +4782,7 @@
       <page>87</page>
       <bonus>
         <!-- Empty because TODO: add support for showing bonuses to limits of a skill where the limit type isn't known ahead of time -->
-        <selectskill knowledgeskills="False"/>
+        <selectskill knowledgeskills="False" />
       </bonus>
       <pairbonus>
         <!-- Though this is a selectskill, the fact that a selectskill exists in the bonus node means the same skill will get forced on this one -->

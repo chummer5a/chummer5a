@@ -128,7 +128,7 @@ namespace Chummer
                     if (objItems.Count > 0)
                     {
                         List<ListItem> lstItems = new List<ListItem>(objItems.Count);
-                        
+
                         foreach (XPathNavigator objXmlPriority in objItems)
                         {
                             string strValue = objXmlPriority.SelectSingleNode("value")?.Value;
@@ -1287,7 +1287,6 @@ namespace Chummer
                     cboSkills.SelectedValue = strMissing;
                 else if (strResourcesSelected == strComboBoxSelected && comboBox.Name != cboResources.Name)
                     cboResources.SelectedValue = strMissing;
-
             } while (lstCurrentPriorities.Count > 1);
         }
 
@@ -1691,7 +1690,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            EndForbiddenLoop:
+                        EndForbiddenLoop:
                             if (blnRequirementForbidden)
                                 continue;
                         }
@@ -1739,7 +1738,7 @@ namespace Chummer
                                     }
                                 }
                             }
-                            EndRequiredLoop:
+                        EndRequiredLoop:
                             if (!blnRequirementMet)
                                 continue;
                         }

@@ -32,7 +32,7 @@
 		<spirithealth> specifies the healer/health spirit the tradition can summon (as defined in <spirits>)
 		<spiritillusion> specifies the illusion spirit the tradition can summon (as defined in <spirits>)
 		<spiritmanipulation> specifies the manipulation spirit the tradition can summon (as defined in <spirits>)
-		
+
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema traditions.xsd">

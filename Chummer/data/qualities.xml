@@ -1535,7 +1535,7 @@
       <karma>-25</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -1571,7 +1571,7 @@
       <karma>-15</karma>
       <category>Negative</category>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -4401,7 +4401,7 @@
       <limit>10</limit>
       <nolevels />
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <forbidden>
         <oneof>
@@ -10745,7 +10745,7 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>	
+    </quality>
 	<quality>
       <id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
       <name>Infected Advanced Optional Power: Mimicry</name>
@@ -10769,7 +10769,7 @@
       </required>
       <source>SR5</source>
       <page>398</page>
-    </quality>    
+    </quality>
 	<quality>
       <id>7843087c-30a3-4d87-aaa2-5ebdb90cccd8</id>
       <name>Infected Optional Power: Mist Form</name>
@@ -10792,7 +10792,7 @@
       </required>
       <source>RF</source>
       <page>136</page>
-    </quality>	
+    </quality>
     <quality>
       <id>6d9f205e-52a0-4bb2-a4c2-e49232dd8346</id>
       <name>Infected Optional Power: Paralyzing Howl</name>
@@ -10840,7 +10840,7 @@
       </required>
       <source>SR5</source>
       <page>400</page>
-    </quality>    
+    </quality>
     <quality>
       <id>311ebb96-bf65-483e-86b7-62702a43aae3</id>
       <name>Infected Optional Power: Regeneration</name>

@@ -410,7 +410,6 @@ namespace Chummer
                     }
                     else
                     {
-                        
                         int intTotalSlots = 0;
                         xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intTotalSlots);
                         foreach (string strSelectedId in astrSelectedValues)
@@ -495,12 +494,12 @@ namespace Chummer
                         break;
 
                     case 'R':
-                    {
-                        strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
-                        if (chrAvailSuffix == ' ')
-                            chrAvailSuffix = 'R';
-                        break;
-                    }
+                        {
+                            strLoopAvail = strLoopAvail.Substring(0, strLoopAvail.Length - 1);
+                            if (chrAvailSuffix == ' ')
+                                chrAvailSuffix = 'R';
+                            break;
+                        }
                 }
                 if (int.TryParse(strLoopAvail, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out int intLoopAvail))
                     intAvail += intLoopAvail;

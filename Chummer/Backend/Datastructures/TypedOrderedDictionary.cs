@@ -89,7 +89,7 @@ namespace Chummer
             for (int i = 0; i < Count - 1; ++i)
                 yield return this[i];
         }
-        
+
         public IDictionaryEnumerator GetEnumerator()
         {
             return new TypedOrderedDictionaryEnumerator(this);

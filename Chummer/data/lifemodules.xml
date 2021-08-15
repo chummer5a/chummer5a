@@ -35,7 +35,7 @@
       <category>LifeModule</category>
       <name>United Canadian American States</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
@@ -7236,7 +7236,7 @@
       <category>LifeModule</category>
       <name>Caribbean League</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>62a71e87-d427-4b96-93f2-33d96c6226f2</id>
@@ -8474,7 +8474,7 @@
       <category>LifeModule</category>
       <name>Amazonian</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>047e3fb2-1d43-480c-baed-2b333472eb7d</id>

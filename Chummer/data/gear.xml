@@ -1585,7 +1585,7 @@
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <costfor>10</costfor>
       <weaponbonus>
@@ -1639,7 +1639,7 @@
       <avail>5R</avail>
       <cost>100</cost>
       <bonus>
-        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True"/>
+        <selecttext xml="lifemodules.xml" xpath="/chummer/storybuilder/macros/mega/persistent/*" allowedit="True" />
       </bonus>
       <costfor>10</costfor>
       <weaponbonus>
@@ -6117,7 +6117,7 @@
       <page>269</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True"/>
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6130,7 +6130,7 @@
       <page>269</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True"/>
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6143,7 +6143,7 @@
       <page>270</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True"/>
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6156,7 +6156,7 @@
       <page>270</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Ranged']" allowedit="True"/>
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Ranged']" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6204,7 +6204,7 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selectskill knowledgeskills="True" skillcategory="Academic,Language,Professional"/>
+        <selectskill knowledgeskills="True" skillcategory="Academic,Language,Professional" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6217,7 +6217,7 @@
       <page>127</page>
       <avail>(Rating * 2)R</avail>
       <bonus>
-        <selectskill limittoskill="Chemistry,Demolitions,Electronic Warfare,Lockpicking,Medicine"/>
+        <selectskill limittoskill="Chemistry,Demolitions,Electronic Warfare,Lockpicking,Medicine" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -6230,7 +6230,7 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Melee']" allowedit="True"/>
+        <selecttext xml="weapons.xml" xpath="/chummer/weapons/weapon[type = 'Melee']" allowedit="True" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
