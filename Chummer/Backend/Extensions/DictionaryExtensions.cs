@@ -26,22 +26,6 @@ namespace Chummer
 {
     internal static class DictionaryExtensions
     {
-        public static bool EqualsByValue(this IDictionary<object, IComparable> dicLeft, IDictionary<object, IComparable> dicRight)
-        {
-            if (dicLeft.Count != dicRight.Count)
-                return false;
-            return dicLeft.Keys.All(dicRight.ContainsKey) &&
-                   dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
-        }
-
-        public static bool EqualsByValue(this IDictionary<object, IComparable> dicLeft, IReadOnlyDictionary<object, IComparable> dicRight)
-        {
-            if (dicLeft.Count != dicRight.Count)
-                return false;
-            return dicLeft.Keys.All(dicRight.ContainsKey) &&
-                   dicRight.Keys.All(x => dicLeft.ContainsKey(x) && dicRight[x].Equals(dicLeft[x]));
-        }
-
         public static T ToFlattenedDictionaryOfPublicMembers<T>(this object objSource, string strParentPropertyKey = "", T dicParentPropertyValue = default) where T : IDictionary<string, object>, new()
         {
             T dicReturn = new T();
