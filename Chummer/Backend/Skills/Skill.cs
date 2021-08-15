@@ -275,7 +275,9 @@ namespace Chummer.Backend.Skills
                         return objLoadingSkill;
                     foreach (XmlNode xmlSpec in xmlSpecList)
                     {
-                        objLoadingSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpec));
+                        SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                        if (objSpec != null)
+                            objLoadingSkill.Specializations.Add(objSpec);
                     }
                 }
             }
@@ -344,9 +346,11 @@ namespace Chummer.Backend.Skills
             {
                 if (xmlSpecList != null)
                 {
-                    foreach (XmlNode xmlSpecializationNode in xmlSpecList)
+                    foreach (XmlNode xmlSpec in xmlSpecList)
                     {
-                        objSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpecializationNode));
+                        SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                        if (objSpec != null)
+                            objSkill.Specializations.Add(objSpec);
                     }
                 }
             }
@@ -1478,28 +1482,19 @@ namespace Chummer.Backend.Skills
                 {
                     return ((ExoticSkill)this).Specific;
                 }
-
-                return Specializations.Count > 0 ? Specializations[0].CurrentDisplayName : string.Empty;
+                
+                return Specializations.FirstOrDefault(x => !x.Free)?.CurrentDisplayName ?? string.Empty;
             }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    int index = -1;
-                    for (int i = 0; i < Specializations.Count; i++)
-                    {
-                        if (Specializations[i].Free) continue;
-                        index = i;
-                        break;
-                    }
+                    Specializations.RemoveAll(x => !x.Free);
+                    return;
+                }
 
-                    if (index >= 0) Specializations.RemoveAt(index);
-                }
-                else if (Specializations.Count == 0)
-                {
-                    Specializations.Add(new SkillSpecialization(CharacterObject, value));
-                }
-                else if (Specializations[0].Free)
+                int intIndexToReplace = Specializations.FindIndex(x => !x.Free);
+                if (intIndexToReplace < 0)
                 {
                     Specializations.AddWithSort(new SkillSpecialization(CharacterObject, value), (x, y) =>
                     {
@@ -1509,12 +1504,21 @@ namespace Chummer.Backend.Skills
                                 return 0;
                             return x.Expertise ? 1 : -1;
                         }
+
                         return x.Free ? 1 : -1;
                     });
+                    return;
                 }
-                else
+
+                Specializations[intIndexToReplace] = new SkillSpecialization(CharacterObject, value);
+                // For safety's, remove all non-free specializations after the one we are replacing.
+                intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
+                if (intIndexToReplace > 0)
+                    Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
+                while (intIndexToReplace > 0)
                 {
-                    Specializations[0] = new SkillSpecialization(CharacterObject, value);
+                    Specializations.RemoveAt(intIndexToReplace);
+                    intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
                 }
             }
         }

@@ -69,10 +69,13 @@ namespace Chummer.Backend.Skills
         /// <param name="xmlNode">XmlNode to load.</param>
         public static SkillSpecialization Load(Character objCharacter, XmlNode xmlNode)
         {
+            string strName = string.Empty;
+            if (!xmlNode.TryGetStringFieldQuickly("name", ref strName) || string.IsNullOrEmpty(strName))
+                return null;
             if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(objCharacter, xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
+            return new SkillSpecialization(objCharacter, strName, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
             {
                 _guiID = guiTemp
             };
@@ -166,7 +169,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Is this a forced specialization or player entered
+        /// Is this a forced specialization (true) or player entered (false)
         /// </summary>
         public bool Free => _blnFree;
 
