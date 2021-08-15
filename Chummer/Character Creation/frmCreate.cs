@@ -258,6 +258,12 @@ namespace Chummer
                         chkJoinGroup.DoDataBinding("Checked", CharacterObject, nameof(Character.GroupMember));
                         chkInitiationGroup.DoOneWayDataBinding("Enabled", CharacterObject, nameof(Character.GroupMember));
 
+                        chkCyberwareBlackMarketDiscount.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                        chkGearBlackMarketDiscount.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                        chkWeaponBlackMarketDiscount.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                        chkArmorBlackMarketDiscount.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+                        chkVehicleBlackMarketDiscount.DoOneWayDataBinding("Visible", CharacterObject, nameof(Character.BlackMarketDiscount));
+
                         // If the character has a mugshot, decode it and put it in the PictureBox.
                         if (CharacterObject.Mugshots.Count > 0)
                         {
@@ -1520,6 +1526,15 @@ namespace Chummer
                 case nameof(Character.IsSprite):
                     {
                         mnuSpecialConvertToFreeSprite.Visible = CharacterObject.IsSprite;
+                        break;
+                    }
+                case nameof(Character.BlackMarketDiscount):
+                    {
+                        RefreshSelectedCyberware();
+                        RefreshSelectedArmor();
+                        RefreshSelectedGear();
+                        RefreshSelectedVehicle();
+                        RefreshSelectedWeapon();
                         break;
                     }
             }
@@ -3215,7 +3230,7 @@ namespace Chummer
                         objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalOptions.InvariantCultureInfo);
                     }
 
-                    objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
+                    objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
                     if (frmPickVehicle.FreeCost)
                     {
                         objVehicle.Cost = "0";
@@ -9818,6 +9833,24 @@ namespace Chummer
                             lblCyberlimbSTRLabel.Visible = false;
                             lblCyberlimbSTR.Visible = false;
                         }
+
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = CharacterObject.GenerateBlackMarketMappings(CharacterObject
+                                    .LoadDataXPath(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
+                                        ? "cyberware.xml"
+                                        : "bioware.xml").SelectSingleNode("/chummer"))
+                                .Contains(objCyberware.Category);
+                            chkCyberwareBlackMarketDiscount.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
+                                ? (objCyberware.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                : objCyberware.DiscountCost;
+                        }
+                        else
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = false;
+                            chkCyberwareBlackMarketDiscount.Checked = false;
+                        }
+
                         chkPrototypeTranshuman.Visible = CharacterObject.PrototypeTranshuman != 0;
                         chkPrototypeTranshuman.Enabled = objCyberware.Parent == null && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
                         chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
@@ -9893,6 +9926,22 @@ namespace Chummer
                         lblCyberlimbAGI.Visible = false;
                         lblCyberlimbSTRLabel.Visible = false;
                         lblCyberlimbSTR.Visible = false;
+
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                            chkCyberwareBlackMarketDiscount.Checked = objGear.IncludedInParent
+                                ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                : objGear.DiscountCost;
+                        }
+                        else
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = false;
+                            chkCyberwareBlackMarketDiscount.Checked = false;
+                        }
+
                         chkPrototypeTranshuman.Visible = false;
 
                         // gpbCyberwareMatrix
@@ -10021,6 +10070,21 @@ namespace Chummer
                         chkIncludedInWeapon.Visible = objWeapon.Parent != null;
                         chkIncludedInWeapon.Enabled = false;
                         chkIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
+
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objWeapon.Category);
+                            chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
+                                ? objWeapon.Parent.DiscountCost
+                                : objWeapon.DiscountCost;
+                        }
+                        else
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = false;
+                            chkWeaponBlackMarketDiscount.Checked = false;
+                        }
 
                         // gpbWeaponsWeapon
                         gpbWeaponsWeapon.Text = LanguageManager.GetString("String_Weapon");
@@ -10179,6 +10243,21 @@ namespace Chummer
                         chkIncludedInWeapon.Enabled = CharacterObjectOptions.AllowEditPartOfBaseWeapon;
                         chkIncludedInWeapon.Checked = objSelectedAccessory.IncludedInWeapon;
 
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = !objSelectedAccessory.IncludedInWeapon && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objSelectedAccessory.Parent.Category);
+                            chkWeaponBlackMarketDiscount.Checked = objSelectedAccessory.IncludedInWeapon
+                                ? objSelectedAccessory.Parent.DiscountCost
+                                : objSelectedAccessory.DiscountCost;
+                        }
+                        else
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = false;
+                            chkWeaponBlackMarketDiscount.Checked = false;
+                        }
+
                         // gpbWeaponsWeapon
                         gpbWeaponsWeapon.Text = LanguageManager.GetString("String_WeaponAccessory");
                         if (string.IsNullOrEmpty(objSelectedAccessory.Damage))
@@ -10301,6 +10380,21 @@ namespace Chummer
                         chkWeaponAccessoryInstalled.Checked = objGear.Equipped;
                         chkIncludedInWeapon.Visible = false;
 
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                            chkWeaponBlackMarketDiscount.Checked = objGear.IncludedInParent
+                                ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                : objGear.DiscountCost;
+                        }
+                        else
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = false;
+                            chkWeaponBlackMarketDiscount.Checked = false;
+                        }
+
                         // gpbWeaponsMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
                         lblWeaponDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
@@ -10412,6 +10506,19 @@ namespace Chummer
                 chkArmorEquipped.Enabled = true;
                 chkIncludedInArmor.Visible = false;
 
+                if (CharacterObject.BlackMarketDiscount)
+                {
+                    chkArmorBlackMarketDiscount.Enabled = CharacterObject
+                        .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("armor.xml")
+                            .SelectSingleNode("/chummer")).Contains(objArmor.Category);
+                    chkArmorBlackMarketDiscount.Checked = objArmor.DiscountCost;
+                }
+                else
+                {
+                    chkArmorBlackMarketDiscount.Enabled = false;
+                    chkArmorBlackMarketDiscount.Checked = false;
+                }
+
                 // gpbArmorMatrix
                 int intDeviceRating = objArmor.GetTotalMatrixAttribute("Device Rating");
                 lblArmorDeviceRating.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
@@ -10481,6 +10588,21 @@ namespace Chummer
                 chkArmorEquipped.Enabled = true;
                 chkIncludedInArmor.Visible = true;
                 chkIncludedInArmor.Checked = objArmorMod.IncludedInArmor;
+
+                if (CharacterObject.BlackMarketDiscount)
+                {
+                    chkArmorBlackMarketDiscount.Enabled = !objArmorMod.IncludedInArmor && CharacterObject
+                        .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("armor.xml")
+                            .SelectSingleNode("/chummer/modcategories")).Contains(objArmorMod.Category);
+                    chkArmorBlackMarketDiscount.Checked = objArmorMod.IncludedInArmor
+                        ? (objArmorMod.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                        : objArmorMod.DiscountCost;
+                }
+                else
+                {
+                    chkArmorBlackMarketDiscount.Enabled = false;
+                    chkArmorBlackMarketDiscount.Checked = false;
+                }
             }
             else
             {
@@ -10528,6 +10650,21 @@ namespace Chummer
                         chkArmorEquipped.Enabled = true;
                         chkIncludedInArmor.Visible = true;
                         chkIncludedInArmor.Checked = objSelectedGear.IncludedInParent;
+
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkArmorBlackMarketDiscount.Enabled = !objSelectedGear.IncludedInParent && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objSelectedGear.Category);
+                            chkArmorBlackMarketDiscount.Checked = objSelectedGear.IncludedInParent
+                                ? (objSelectedGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                : objSelectedGear.DiscountCost;
+                        }
+                        else
+                        {
+                            chkArmorBlackMarketDiscount.Enabled = false;
+                            chkArmorBlackMarketDiscount.Checked = false;
+                        }
 
                         // gpbArmorMatrix
                         int intDeviceRating = objSelectedGear.GetTotalMatrixAttribute("Device Rating");
@@ -10751,6 +10888,21 @@ namespace Chummer
                 else
                 {
                     chkGearEquipped.Text = LanguageManager.GetString("Checkbox_Equipped");
+                }
+
+                if (CharacterObject.BlackMarketDiscount)
+                {
+                    chkGearBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
+                        .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
+                            .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                    chkGearBlackMarketDiscount.Checked = objGear.IncludedInParent
+                        ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                        : objGear.DiscountCost;
+                }
+                else
+                {
+                    chkGearBlackMarketDiscount.Enabled = false;
+                    chkGearBlackMarketDiscount.Checked = false;
                 }
 
                 // gpbGearMatrix
@@ -11674,6 +11826,19 @@ namespace Chummer
                         chkVehicleWeaponAccessoryInstalled.Visible = false;
                         chkVehicleIncludedInWeapon.Visible = false;
 
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("vehicles.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objVehicle.Category);
+                            chkWeaponBlackMarketDiscount.Checked = objVehicle.DiscountCost;
+                        }
+                        else
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = false;
+                            chkWeaponBlackMarketDiscount.Checked = false;
+                        }
+
                         // gpbVehiclesVehicle
                         lblVehicleHandling.Text = objVehicle.TotalHandling;
                         lblVehicleAccel.Text = objVehicle.TotalAccel;
@@ -11790,6 +11955,20 @@ namespace Chummer
                     chkVehicleWeaponAccessoryInstalled.Checked = objWeaponMount.Equipped;
                     chkVehicleWeaponAccessoryInstalled.Enabled = !objWeaponMount.IncludedInVehicle;
                     chkVehicleIncludedInWeapon.Visible = false;
+                    if (CharacterObject.BlackMarketDiscount)
+                    {
+                        chkWeaponBlackMarketDiscount.Enabled = !objWeaponMount.IncludedInVehicle && CharacterObject
+                            .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("vehicles.xml")
+                                .SelectSingleNode("/chummer/weaponmountcategories")).Contains(objWeaponMount.Category);
+                        chkWeaponBlackMarketDiscount.Checked = objWeaponMount.IncludedInVehicle
+                            ? objWeaponMount.Parent.DiscountCost
+                            : objWeaponMount.DiscountCost;
+                    }
+                    else
+                    {
+                        chkWeaponBlackMarketDiscount.Enabled = false;
+                        chkWeaponBlackMarketDiscount.Checked = false;
+                    }
                     break;
 
                 case VehicleMod objMod:
@@ -11859,6 +12038,21 @@ namespace Chummer
                         chkVehicleWeaponAccessoryInstalled.Checked = objMod.Equipped;
                         chkVehicleWeaponAccessoryInstalled.Enabled = !objMod.IncludedInVehicle;
                         chkVehicleIncludedInWeapon.Visible = false;
+
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = !objMod.IncludedInVehicle && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
+                                    .SelectSingleNode("/chummer/modcategories")).Contains(objMod.Category);
+                            chkWeaponBlackMarketDiscount.Checked = objMod.IncludedInVehicle
+                                ? (objMod.WeaponMountParent?.DiscountCost ?? objMod.Parent.DiscountCost)
+                                : objMod.DiscountCost;
+                        }
+                        else
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = false;
+                            chkWeaponBlackMarketDiscount.Checked = false;
+                        }
                         break;
                     }
                 case Weapon objWeapon:
@@ -11903,6 +12097,21 @@ namespace Chummer
                         chkVehicleWeaponAccessoryInstalled.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId && objWeapon.ParentID != objWeapon.ParentVehicle.InternalId;
                         chkVehicleIncludedInWeapon.Visible = true;
                         chkVehicleIncludedInWeapon.Checked = objWeapon.IncludedInWeapon;
+
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = !objWeapon.IncludedInWeapon && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objWeapon.Category);
+                            chkWeaponBlackMarketDiscount.Checked = objWeapon.IncludedInWeapon
+                                ? objWeapon.Parent.DiscountCost
+                                : objWeapon.DiscountCost;
+                        }
+                        else
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = false;
+                            chkWeaponBlackMarketDiscount.Checked = false;
+                        }
 
                         // gpbVehiclesWeapon
                         lblVehicleWeaponDamageLabel.Visible = true;
@@ -12046,6 +12255,21 @@ namespace Chummer
                         chkVehicleIncludedInWeapon.Visible = true;
                         chkVehicleIncludedInWeapon.Checked = objAccessory.IncludedInWeapon;
 
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = !objAccessory.IncludedInWeapon && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("weapons.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objAccessory.Parent.Category);
+                            chkWeaponBlackMarketDiscount.Checked = objAccessory.IncludedInWeapon
+                                ? objAccessory.Parent.DiscountCost
+                                : objAccessory.DiscountCost;
+                        }
+                        else
+                        {
+                            chkWeaponBlackMarketDiscount.Enabled = false;
+                            chkWeaponBlackMarketDiscount.Checked = false;
+                        }
+
                         // gpbVehiclesWeapon
                         lblVehicleWeaponModeLabel.Visible = false;
                         lblVehicleWeaponMode.Visible = false;
@@ -12156,6 +12380,23 @@ namespace Chummer
                         chkVehicleWeaponAccessoryInstalled.Visible = false;
                         chkVehicleIncludedInWeapon.Visible = false;
 
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = CharacterObject.GenerateBlackMarketMappings(CharacterObject
+                                    .LoadDataXPath(objCyberware.SourceType == Improvement.ImprovementSource.Cyberware
+                                        ? "cyberware.xml"
+                                        : "bioware.xml").SelectSingleNode("/chummer"))
+                                .Contains(objCyberware.Category);
+                            chkCyberwareBlackMarketDiscount.Checked = !string.IsNullOrEmpty(objCyberware.ParentID)
+                                ? (objCyberware.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                : objCyberware.DiscountCost;
+                        }
+                        else
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = false;
+                            chkCyberwareBlackMarketDiscount.Checked = false;
+                        }
+
                         // gpbVehiclesMatrix
                         int intDeviceRating = objCyberware.GetTotalMatrixAttribute("Device Rating");
                         lblVehicleDevice.Text = intDeviceRating.ToString(GlobalOptions.CultureInfo);
@@ -12245,6 +12486,21 @@ namespace Chummer
                         cmdVehicleCyberwareChangeMount.Visible = false;
                         chkVehicleWeaponAccessoryInstalled.Visible = false;
                         chkVehicleIncludedInWeapon.Visible = false;
+
+                        if (CharacterObject.BlackMarketDiscount)
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = !objGear.IncludedInParent && CharacterObject
+                                .GenerateBlackMarketMappings(CharacterObject.LoadDataXPath("gear.xml")
+                                    .SelectSingleNode("/chummer")).Contains(objGear.Category);
+                            chkCyberwareBlackMarketDiscount.Checked = objGear.IncludedInParent
+                                ? (objGear.Parent as ICanBlackMarketDiscount)?.DiscountCost == true
+                                : objGear.DiscountCost;
+                        }
+                        else
+                        {
+                            chkCyberwareBlackMarketDiscount.Enabled = false;
+                            chkCyberwareBlackMarketDiscount.Checked = false;
+                        }
 
                         // gpbVehiclesMatrix
                         int intDeviceRating = objGear.GetTotalMatrixAttribute("Device Rating");
@@ -15023,6 +15279,8 @@ namespace Chummer
 
         private void chkDrugStolen_CheckedChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             if (!(treCustomDrugs.SelectedNode?.Tag is IHasStolenProperty loot))
                 return;
             ProcessStolenChanged(loot, chkDrugStolen.Checked);
@@ -15030,6 +15288,8 @@ namespace Chummer
 
         private void chkCyberwareStolen_CheckedChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             if (!(treCyberware.SelectedNode?.Tag is IHasStolenProperty loot))
                 return;
             ProcessStolenChanged(loot, chkCyberwareStolen.Checked);
@@ -15037,6 +15297,8 @@ namespace Chummer
 
         private void chkGearStolen_CheckedChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             if (!(treGear.SelectedNode?.Tag is IHasStolenProperty loot))
                 return;
             ProcessStolenChanged(loot, chkGearStolen.Checked);
@@ -15044,6 +15306,8 @@ namespace Chummer
 
         private void chkArmorStolen_CheckedChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             if (!(treArmor.SelectedNode?.Tag is IHasStolenProperty loot))
                 return;
             ProcessStolenChanged(loot, chkArmorStolen.Checked);
@@ -15051,6 +15315,8 @@ namespace Chummer
 
         private void chkWeaponStolen_CheckedChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             if (!(treWeapons.SelectedNode?.Tag is IHasStolenProperty loot))
                 return;
             ProcessStolenChanged(loot, chkWeaponStolen.Checked);
@@ -15058,6 +15324,8 @@ namespace Chummer
 
         private void chkVehicleStolen_CheckedChanged(object sender, EventArgs e)
         {
+            if (IsRefreshing)
+                return;
             if (!(treVehicles.SelectedNode?.Tag is IHasStolenProperty loot))
                 return;
             ProcessStolenChanged(loot, chkVehicleStolen.Checked);
@@ -15095,6 +15363,61 @@ namespace Chummer
                 : Weapon.FiringMode.DogBrain;
             RefreshSelectedVehicle();
 
+            IsDirty = true;
+        }
+
+        private void chkCyberwareBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (!(treCyberware.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+                return;
+            objItem.DiscountCost = chkCyberwareBlackMarketDiscount.Checked;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        private void chkGearBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (!(treGear.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+                return;
+            objItem.DiscountCost = chkGearBlackMarketDiscount.Checked;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        private void chkArmorBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (!(treArmor.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+                return;
+            objItem.DiscountCost = chkArmorBlackMarketDiscount.Checked;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        private void chkWeaponBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (!(treWeapons.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+                return;
+            objItem.DiscountCost = chkWeaponBlackMarketDiscount.Checked;
+            IsCharacterUpdateRequested = true;
+            IsDirty = true;
+        }
+
+        private void chkVehicleBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing)
+                return;
+            if (!(treVehicles.SelectedNode?.Tag is ICanBlackMarketDiscount objItem))
+                return;
+            objItem.DiscountCost = chkVehicleBlackMarketDiscount.Checked;
+            IsCharacterUpdateRequested = true;
             IsDirty = true;
         }
     }

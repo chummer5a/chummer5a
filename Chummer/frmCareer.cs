@@ -3798,7 +3798,7 @@ namespace Chummer
                     objVehicle.Cost = frmPickVehicle.UsedCost.ToString(GlobalOptions.InvariantCultureInfo);
                 }
 
-                objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
+                objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
 
                 decimal decCost = objVehicle.TotalCost;
                 // Apply a markup if applicable.
@@ -3841,7 +3841,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
                 }
 
-                objVehicle.BlackMarketDiscount = frmPickVehicle.BlackMarketDiscount;
+                objVehicle.DiscountCost = frmPickVehicle.BlackMarketDiscount;
 
                 //objVehicle.Location = objLocation;
                 objLocation?.Children.Add(objVehicle);

@@ -41,7 +41,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Cyberware : ICanPaste, IHasChildren<Cyberware>, IHasGear, IHasName, IHasInternalId, IHasXmlNode,
         IHasMatrixAttributes, IHasNotes, ICanSell, IHasRating, IHasSource, ICanSort, IHasStolenProperty,
-        IHasWirelessBonus
+        IHasWirelessBonus, ICanBlackMarketDiscount
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;

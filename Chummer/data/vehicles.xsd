@@ -73,6 +73,21 @@
             </xs:sequence>
           </xs:complexType>
         </xs:element>
+        <xs:element name="weaponmountcategories" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="category" nillable="true" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:simpleContent msdata:ColumnName="category_Text" msdata:Ordinal="0">
+                    <xs:extension base="xs:string">
+                      <xs:attribute name="blackmarket" type="xs:string" use="optional" />
+                    </xs:extension>
+                  </xs:simpleContent>
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
         <xs:element name="limits" minOccurs="0" maxOccurs="unbounded">
           <xs:complexType>
             <xs:sequence>

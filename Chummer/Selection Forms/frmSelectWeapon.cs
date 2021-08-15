@@ -163,16 +163,15 @@ namespace Chummer
             SuspendLayout();
             if (_objSelectedWeapon != null)
             {
-                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-
+                bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
                 if (!chkBlackMarketDiscount.Checked)
                 {
-                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
-                                                     _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
                 }
-                else if (!_setBlackMarketMaps.Contains(_objSelectedWeapon.Category))
+                else if (!blnCanBlackMarketDiscount)
                 {
-                    //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
                     chkBlackMarketDiscount.Checked = false;
                 }
 

@@ -56,15 +56,18 @@ namespace Chummer
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpTopButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
+            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpTopButtons.SuspendLayout();
-            this.flpMarkup.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
+            this.flpMarkup.SuspendLayout();
+            this.flpCheckBoxes.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdCancel
@@ -275,7 +278,8 @@ namespace Chummer
             this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeItem.AutoSize = true;
             this.chkFreeItem.DefaultColorScheme = true;
-            this.chkFreeItem.Location = new System.Drawing.Point(3, 186);
+            this.chkFreeItem.Location = new System.Drawing.Point(3, 4);
+            this.chkFreeItem.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFreeItem.Name = "chkFreeItem";
             this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
             this.chkFreeItem.TabIndex = 59;
@@ -321,7 +325,7 @@ namespace Chummer
             // 
             this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(8, 212);
+            this.lblMarkupLabel.Location = new System.Drawing.Point(8, 214);
             this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
@@ -373,7 +377,7 @@ namespace Chummer
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(60, 238);
+            this.lblSource.Location = new System.Drawing.Point(60, 240);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -386,7 +390,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(10, 238);
+            this.lblSourceLabel.Location = new System.Drawing.Point(10, 240);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -443,18 +447,6 @@ namespace Chummer
             this.tlpTopButtons.Size = new System.Drawing.Size(303, 29);
             this.tlpTopButtons.TabIndex = 71;
             // 
-            // flpMarkup
-            // 
-            this.flpMarkup.AutoSize = true;
-            this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpMarkup.Controls.Add(this.nudMarkup);
-            this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Location = new System.Drawing.Point(57, 206);
-            this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
-            this.flpMarkup.Name = "flpMarkup";
-            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
-            this.flpMarkup.TabIndex = 72;
-            // 
             // tlpButtons
             // 
             this.tlpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
@@ -489,7 +481,6 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.flpMarkup, 1, 8);
             this.tlpRight.Controls.Add(this.lblAvailabilityLabel, 0, 4);
             this.tlpRight.Controls.Add(this.lblCost, 1, 6);
-            this.tlpRight.Controls.Add(this.chkFreeItem, 0, 7);
             this.tlpRight.Controls.Add(this.lblCostLabel, 0, 6);
             this.tlpRight.Controls.Add(this.lblSlotsLabel, 0, 5);
             this.tlpRight.Controls.Add(this.lblFlexibility, 0, 3);
@@ -499,6 +490,7 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblVisbility, 0, 1);
             this.tlpRight.Controls.Add(this.cboVisibility, 1, 1);
             this.tlpRight.Controls.Add(this.cboControl, 1, 2);
+            this.tlpRight.Controls.Add(this.flpCheckBoxes, 0, 7);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpRight.Location = new System.Drawing.Point(303, 29);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
@@ -514,8 +506,50 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.Size = new System.Drawing.Size(303, 257);
+            this.tlpRight.Size = new System.Drawing.Size(303, 259);
             this.tlpRight.TabIndex = 74;
+            // 
+            // flpMarkup
+            // 
+            this.flpMarkup.AutoSize = true;
+            this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpMarkup.Controls.Add(this.nudMarkup);
+            this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
+            this.flpMarkup.Location = new System.Drawing.Point(57, 208);
+            this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
+            this.flpMarkup.Name = "flpMarkup";
+            this.flpMarkup.Size = new System.Drawing.Size(83, 26);
+            this.flpMarkup.TabIndex = 72;
+            // 
+            // flpCheckBoxes
+            // 
+            this.flpCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpCheckBoxes.AutoSize = true;
+            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.SetColumnSpan(this.flpCheckBoxes, 2);
+            this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
+            this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
+            this.flpCheckBoxes.Location = new System.Drawing.Point(0, 183);
+            this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpCheckBoxes.Name = "flpCheckBoxes";
+            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 25);
+            this.flpCheckBoxes.TabIndex = 73;
+            // 
+            // chkBlackMarketDiscount
+            // 
+            this.chkBlackMarketDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkBlackMarketDiscount.AutoSize = true;
+            this.chkBlackMarketDiscount.DefaultColorScheme = true;
+            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 4);
+            this.chkBlackMarketDiscount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
+            this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
+            this.chkBlackMarketDiscount.TabIndex = 60;
+            this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
+            this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
+            this.chkBlackMarketDiscount.Visible = false;
+            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
             // 
             // frmCreateWeaponMount
             // 
@@ -536,12 +570,14 @@ namespace Chummer
             this.tlpMain.PerformLayout();
             this.tlpTopButtons.ResumeLayout(false);
             this.tlpTopButtons.PerformLayout();
-            this.flpMarkup.ResumeLayout(false);
-            this.flpMarkup.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.tlpRight.ResumeLayout(false);
             this.tlpRight.PerformLayout();
+            this.flpMarkup.ResumeLayout(false);
+            this.flpMarkup.PerformLayout();
+            this.flpCheckBoxes.ResumeLayout(false);
+            this.flpCheckBoxes.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -579,5 +615,7 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private BufferedTableLayoutPanel tlpButtons;
         private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
+        private ColorableCheckBox chkBlackMarketDiscount;
     }
 }

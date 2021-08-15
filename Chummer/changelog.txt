@@ -103,6 +103,7 @@ Application Changes:
 - AP and weapon damage codes that contain a slash mark that is not meant to represent a division operation can now be shown properly. In order to prevent ambiguity with slash marks that do represent a division operation, two successive slash marks need to be used to identify a forward slash mark that is not meant to be a division operation. Fixes #4532.
 - Using "Touch" instead of "T" for range now still properly translates a spell's or critter power's range to the equivalent in non-English languages. Fixes #4544.
 - Modifications that come with a vehicle weapon mount are now marked as such.
+- Black Market Pipeline's discount can now be applied to weapon mounts and can now be toggled freely during character creation. Fixes #4553.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

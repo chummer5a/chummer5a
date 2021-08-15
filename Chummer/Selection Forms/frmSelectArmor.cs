@@ -549,8 +549,17 @@ namespace Chummer
             _blnSkipUpdate = true;
             if (_objSelectedArmor != null)
             {
-                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                }
+                else if (!blnCanBlackMarketDiscount)
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
 
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
                 _objSelectedArmor.Rating = nudRating.ValueAsInt;

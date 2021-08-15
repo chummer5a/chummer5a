@@ -39,7 +39,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     [HubClassTag("SourceID", true, "Name", null)]
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
-    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste
+    public class Vehicle : IHasInternalId, IHasName, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasPhysicalConditionMonitor, IHasLocation, IHasSource, ICanSort, IHasGear, IHasStolenProperty, ICanPaste, ICanBlackMarketDiscount
     {
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
@@ -77,7 +77,7 @@ namespace Chummer.Backend.Equipment
         private Color _colNotes = ColorManager.HasNotesColor;
         private Location _objLocation;
         private readonly TaggedObservableCollection<Location> _lstLocations = new TaggedObservableCollection<Location>();
-        private bool _blnBlackMarketDiscount;
+        private bool _blnDiscountCost;
         private string _strParentID = string.Empty;
 
         private readonly Character _objCharacter;
@@ -634,7 +634,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("location", Location?.InternalId ?? string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteElementString("discountedcost", _blnBlackMarketDiscount.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
             if (_lstLocations.Count > 0)
             {
                 // <locations>
@@ -980,7 +980,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-            objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnBlackMarketDiscount);
+            objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
 
             if (!objNode.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating))
                 GetNode()?.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -1626,10 +1626,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Whether or not the Vehicle's cost should be discounted by 10% through the Dealer Connection Quality.
         /// </summary>
-        public bool BlackMarketDiscount
+        public bool DiscountCost
         {
-            get => _blnBlackMarketDiscount && _objCharacter.BlackMarketDiscount;
-            set => _blnBlackMarketDiscount = value;
+            get => _blnDiscountCost && _objCharacter.BlackMarketDiscount;
+            set => _blnDiscountCost = value;
         }
 
         /// <summary>
@@ -1897,7 +1897,7 @@ namespace Chummer.Backend.Equipment
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(objCost.ToString(), out bool blnIsSuccess);
                 decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) : 0;
 
-                if (BlackMarketDiscount)
+                if (DiscountCost)
                     decCost *= 0.9m;
 
                 if (DealerConnectionDiscount)

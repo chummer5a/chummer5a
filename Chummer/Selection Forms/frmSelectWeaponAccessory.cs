@@ -514,6 +514,7 @@ namespace Chummer
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
 
+            chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             if (!chkBlackMarketDiscount.Checked)
             {
                 chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _blnIsParentWeaponBlackMarketAllowed;
@@ -524,7 +525,6 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = false;
             }
 
-            chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);

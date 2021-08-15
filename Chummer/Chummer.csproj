@@ -372,6 +372,7 @@
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
+    <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Interfaces\ITranslatable.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="Classes\OptionsManager.cs" />

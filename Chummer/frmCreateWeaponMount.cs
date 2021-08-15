@@ -35,6 +35,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private WeaponMount _objMount;
         private readonly XmlDocument _xmlDoc;
+        private readonly HashSet<string> _setBlackMarketMaps;
 
         public WeaponMount WeaponMount => _objMount;
 
@@ -44,6 +45,7 @@ namespace Chummer
             _objMount = objWeaponMount;
             _objCharacter = objCharacter;
             _xmlDoc = _objCharacter.LoadData("vehicles.xml");
+            _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNode("/chummer/weaponmountcategories"));
             InitializeComponent();
         }
 
@@ -137,6 +139,8 @@ namespace Chummer
                         cboControl.SelectedValue = strLoopId;
                 }
             }
+
+            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             _blnLoading = false;
             UpdateInfo();
@@ -285,6 +289,8 @@ namespace Chummer
                 _objMount.Create(xmlSelectedMount);
             }
 
+            _objMount.DiscountCost = chkBlackMarketDiscount.Checked;
+
             WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
             if (objControlOption.Create(xmlSelectedControl))
             {
@@ -312,6 +318,7 @@ namespace Chummer
                 objMod.WeaponMountParent = _objMount;
                 _objMount.Mods.Add(objMod);
             }
+
             DialogResult = DialogResult.OK;
         }
 
@@ -334,6 +341,11 @@ namespace Chummer
         }
 
         private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateInfo();
+        }
+
+        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             UpdateInfo();
         }
@@ -452,6 +464,19 @@ namespace Chummer
                 lblAvailabilityLabel.Visible = false;
                 return;
             }
+            // Cost.
+            bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(xmlSelectedMount.SelectSingleNode("category")?.Value);
+            chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
+            if (!chkBlackMarketDiscount.Checked)
+            {
+                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
+            }
+            else if (!blnCanBlackMarketDiscount)
+            {
+                //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                chkBlackMarketDiscount.Checked = false;
+            }
+
             decimal decCost = 0;
             if (!chkFreeItem.Checked)
                 xmlSelectedMount.TryGetDecFieldQuickly("cost", ref decCost);
@@ -522,6 +547,9 @@ namespace Chummer
                     decCost += objMod.TotalCostInMountCreation(intSlots);
                 }
             }
+
+            if (chkBlackMarketDiscount.Checked)
+                decCost *= 0.9m;
 
             string strAvailText = intAvail.ToString(GlobalOptions.CultureInfo);
             switch (chrAvailSuffix)

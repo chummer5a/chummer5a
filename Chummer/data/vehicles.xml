@@ -50,6 +50,9 @@
     <category blackmarket="Vehicles" >Protection</category>
     <category blackmarket="Vehicles" >Weapons</category>
   </modcategories>
+  <weaponmountcategories>
+    <category blackmarket="Vehicles">Size</category>
+  </weaponmountcategories>
   <vehicles>
     <vehicle>
       <id>c0d3e7fd-d5fd-48c4-b49d-0c7dea26895d</id>

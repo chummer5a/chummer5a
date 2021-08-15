@@ -568,16 +568,15 @@ namespace Chummer
                 decMultiplier *= 0.5m;
 
             // Cost.
-            chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
+            bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value);
+            chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
             if (!chkBlackMarketDiscount.Checked)
             {
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
-                                                 _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")
-                                                     ?.Value);
+                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
             }
-            else if (!_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
+            else if (!blnCanBlackMarketDiscount)
             {
-                //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
                 chkBlackMarketDiscount.Checked = false;
             }
 
