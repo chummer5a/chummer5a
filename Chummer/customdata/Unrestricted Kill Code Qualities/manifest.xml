@@ -28,7 +28,7 @@
     </authors>
     <descriptions>
       <description>
-        <text>This ruleset allows the Escaped Custody and Hold the Door to be taken by any character; these are normally restricted to Technomancers.</text>
+        <text>This ruleset allows all Technomancer-only qualities from Kill Code that do not refer to Technomancer-specific abilities to be taken by non-Technomancers. This includes, among others, Brilliant Heuristics, Hold the Door, Team Player, Code of Honor: Black Hat, Escaped Custody, and Wired User.</text>
         <lang>en-us</lang>
       </description>
     </descriptions>
