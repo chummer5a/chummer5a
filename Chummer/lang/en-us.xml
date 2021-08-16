@@ -7764,7 +7764,7 @@
     </string>
     <string>
       <key>Checkbox_Options_DroneArmorMultiplier</key>
-      <text>Limit Drone Armor Enhance ment to Drone Armor</text>
+      <text>Limit Drone Armor Enhancement to base Armor</text>
     </string>
     <string>
       <key>Message_Options_Restart</key>
@@ -7844,7 +7844,7 @@
     </string>
     <string>
       <key>Checkbox_Options_AllowTechnomancerSchooling</key>
-      <text>Technomancer: Allow \'Schooling\' Initiation discounts</text>
+      <text>Technomancer: Allow 'Schooling' as a possible Initiation discount</text>
     </string>
     <string>
       <key>Checkbox_Options_CyberlimbAttributeBonusCap</key>
@@ -7852,7 +7852,7 @@
     </string>
     <string>
       <key>Checkbox_Options_UnclampAttributeMinimum</key>
-      <text>Attribute values are allowed to go below 0 due to Essence Loss.</text>
+      <text>Attribute values are allowed to go below 0 due to Essence Loss</text>
     </string>
     <string>
       <key>Button_ToggleSourcebooks</key>
