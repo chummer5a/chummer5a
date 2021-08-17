@@ -5612,8 +5612,8 @@ namespace Chummer
             _intCFPLimit = 0;
             _intAINormalProgramLimit = 0;
             _intAIAdvancedProgramLimit = 0;
-            _intCachedRedlinerBonus = 0;
-            _intCachedContactPoints = 0;
+            _intCachedRedlinerBonus = int.MinValue;
+            _intCachedContactPoints = int.MinValue;
             _intCurrentCounterspellingDice = 0;
             _intCachedInitiationEnabled = -1;
             _decCachedBiowareEssence = decimal.MinValue;
