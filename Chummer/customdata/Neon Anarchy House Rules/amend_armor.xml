@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<armors>
+		<armor>
+			<name>Ares Arms Bug Stomper Custom Armor</name>
+			<hide />
+		</armor>
+		<armor>
+			<name>Hardened Mil-Spec Battle Armor: Light</name>
+			<hide />
+		</armor>
+		<armor>
+			<name>Hardened Mil-Spec Battle Armor: Medium</name>
+			<hide />
+		</armor>
+		<armor>
+			<name>Hardened Mil-Spec Battle Armor: Heavy</name>
+			<hide />
+		</armor>
+		<armor>
+			<name>Hardened Mil-Spec Battle Armor: Helmet</name>
+			<hide />
+		</armor>
+		<armor>
+			<name>Snake Mesh Socks</name>
+			<armor>0</armor>
+		</armor>
+	</armors>
+	<mods>
+		<mod>
+			<name>Grey Mana Integration</name>
+			<avail>FixedValues(6R,6R,6R,9R,9R,9R)</avail>
+		</mod>
+	</mods>
+</chummer>

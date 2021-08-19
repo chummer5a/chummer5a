@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<spells>
+		<spell>
+			<name>Flame Burst</name>
+			<descriptor>Indirect, Elemental</descriptor>
+		</spell>
+		<spell>
+			<name>Convert Blood to Ichor</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Convince</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Inflict Disease</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Multiply Food</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Shape [Material]</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Turn To Goo</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Rot</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Spirit Pact</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Petrify</name>
+			<hide />
+		</spell>
+		<spell>
+			<name>Growth</name>
+			<range>T</range>
+		</spell>
+	</spells>
+</chummer>

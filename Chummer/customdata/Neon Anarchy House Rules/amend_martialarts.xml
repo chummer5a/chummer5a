@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<martialarts>
+		<martialart>
+			<name>Capoeira</name>
+			<techniques>
+				<technique amendoperation="addnode">
+					<name>Defiant Dance</name>
+				</technique>
+			</techniques>
+		</martialart>
+		<martialart>
+			<name>The Cowboy Way</name>
+			<techniques>
+				<technique amendoperation="addnode">
+					<name>Grasping Vines</name>
+				</technique>
+			</techniques>
+		</martialart>
+		<martialart>
+			<name>Whip Fighting</name>
+			<techniques>
+				<technique amendoperation="addnode">
+					<name>Grasping Vines</name>
+				</technique>
+			</techniques>
+		</martialart>
+	</martialarts>
+</chummer>

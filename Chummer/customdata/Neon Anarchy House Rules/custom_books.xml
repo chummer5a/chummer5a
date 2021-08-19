@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema books.xsd">
+	<books>
+		<book>
+			<id>829ed2ce-c22f-11ea-b3de-0242ac130004</id>
+			<name>Neon Anarchy</name>
+			<code>NA</code>
+		</book>
+	</books>
+</chummer>

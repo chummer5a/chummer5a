@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>4873b11d-347a-4aa5-a41c-5f7d60a6433d</guid>
+    <version>1.7.8</version>
+    <authors>
+      <author>
+        <name>Neon Anarchy LC</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset encompasses Energy Weapon Standardization rules used in the Neon Anarchy Living Community.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+	<dependencies>
+	  <dependency>
+		  <name>Neon Anarchy House Rules</name>
+		  <guid>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c</guid>
+	  </dependency>
+	</dependencies>
+  </manifest>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<metamagics>
+		<metamagic>
+			<id>68785c2f-b1cc-4256-be16-8f774999475a</id>
+			<name>Power Point (Purity)</name>
+			<adept>True</adept>
+			<magician>False</magician>
+			<limit>False</limit>
+			<bonus>
+				<adeptpowerpoints>1.5</adeptpowerpoints>
+			</bonus>
+			<required>
+				<oneof>
+					<quality>Purity Bonus (Adept)</quality>
+				</oneof>
+			</required>
+			<source>SR5</source>
+			<page>326</page>
+		</metamagic>
+	</metamagics>
+	<!--
+	<arts>
+		<art>
+			<name>Blood Magic</name>
+			<hide />
+		</art>
+	</arts>
+	-->
+</chummer>

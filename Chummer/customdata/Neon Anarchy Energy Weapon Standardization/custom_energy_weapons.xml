@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<accessories>
+		<accessory>
+			<id>6c0af59c-f2e5-45fd-b4d7-6afd7782fc3c</id>
+			<name>Peak-Discharge Battery Pack, Power Clip (Twin)</name>
+			<mount />
+			<avail>12R</avail>
+			<cost>800</cost>
+			<source>RG</source>
+			<page>52</page>
+			<ammoreplace>20 or External Source</ammoreplace>
+			<ammoslots>1</ammoslots>
+			<rating>0</rating>
+			<required>
+				<weapondetails>
+					<OR>
+						<name>Ares Lancer MP Laser</name>
+						<name>Narcoject PEP</name>
+					</OR>
+				</weapondetails>
+			</required>
+		</accessory>
+	</accessories>
+</chummer>

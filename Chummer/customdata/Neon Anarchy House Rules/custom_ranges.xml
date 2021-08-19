@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<ranges>
+		<range>
+			<name>Carbines</name>
+			<min>0</min>
+			<short>10</short>
+			<medium>40</medium>
+			<long>80</long>
+			<extreme>150</extreme>
+		</range>
+	</ranges>
+</chummer>

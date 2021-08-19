@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<mentors>
+		<mentor>
+			<name>Goddess</name>
+			<advantage>All: +2 dice pool modifier for Leadership Tests.</advantage>
+			<bonus amendoperation="replace">
+				<specificskill>
+					<name>Leadership</name>
+					<bonus>2</bonus>
+				</specificskill>
+			</bonus>
+		</mentor>
+		<mentor>
+			<name>Spider (Alt)</name>
+			<choices amendoperation="replace">
+				<choice>
+					<name>Magician: +2 dice pool modifier when casting Manipulation spells, preparations, and rituals</name>
+					<bonus>
+						<spellcategory>
+							<name>Manipulation</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice>
+					<name>Adept: Gain 1 free level of Hang Time and Spirit Claw (although in this case, Spirit Claw manifests as a fang).</name>
+					<bonus>
+						<specificpower>
+							<name>Spirit Claw</name>
+							<val>1</val>
+						</specificpower>
+						<specificpower>
+							<name>Hang Time</name>
+							<val>1</val>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+		</mentor>
+		<mentor>
+			<name>Wise Warrior</name>
+			<advantage>All: +2 to dice to Leadership or Etiquette skill tests (choose one).</advantage>
+			<choices amendoperation="replace">
+				<choice>
+					<name>+2 dice for Leadership skill tests</name>
+					<bonus>
+						<specificskill>
+							<name>Leadership</name>
+							<bonus>2</bonus>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice>
+					<name>+2 dice for Etiquette skill tests</name>
+					<bonus>
+						<specificskill>
+							<name>Etiquette</name>
+							<bonus>2</bonus>
+						</specificskill>
+					</bonus>
+				</choice>
+				<choice set="2">
+					<name>Magician: +2 dice for Combat spells</name>
+					<bonus>
+						<spellcategory>
+							<name>Combat</name>
+							<val>2</val>
+						</spellcategory>
+					</bonus>
+				</choice>
+				<choice set="2">
+					<name>Adept: 1 free level of Improved Ability on a Combat skill</name>
+					<bonus>
+						<specificpower>
+							<name>Improved Ability (skill)</name>
+							<val>1</val>
+							<bonusoverride>
+								<selectskill skillcategory="Combat Active" minimumrating="1">
+									<val>Rating</val>
+									<!-- Hero Lab says this is not RAW <applytorating>True</applytorating> -->
+								</selectskill>
+							</bonusoverride>
+						</specificpower>
+					</bonus>
+				</choice>
+			</choices>
+		</mentor>
+	</mentors>
+</chummer>
