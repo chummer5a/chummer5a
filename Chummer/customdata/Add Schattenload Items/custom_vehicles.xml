@@ -87,7 +87,7 @@
           <flexibility>Fixed</flexibility>
           <size>Standard (Drone)</size>
           <visibility>External</visibility>
-          <allowedweapons>Underarm Ballistic Shield</allowedweapons>
+          <allowedweapons>Forearm Ballistic Shield</allowedweapons>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
@@ -102,7 +102,7 @@
           <name>Gas Grenade Launcher</name>
         </weapon>
         <weapon>
-          <name>Underarm Ballistic Shield</name>
+          <name>Forearm Ballistic Shield</name>
         </weapon>
       </weapons>
     </vehicle>
