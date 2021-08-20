@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <weapons>
+    <weapon>
+      <id>75ff26f3-d775-4b74-8042-0d3ba2233358</id>
+      <name>HK Puncheon</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>2</accuracy>
+      <reach>0</reach>
+      <damage>Chemical</damage>
+      <ap>-</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>6(c)</ammo>
+      <avail>9R</avail>
+      <cost>1150</cost>
+      <source>SL02.19</source>
+      <page>1</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+      </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>Ceramic/Plasteel Components</name>
+          <rating>3</rating>
+        </accessory>
+      </accessories>
+      <range>Holdouts</range>
+      <sizecategory>Light Pistols</sizecategory>
+      <useskill>Pistols</useskill>
+      <weapontype>squirtgun</weapontype>
+    </weapon>
+    <weapon>
+      <id>a02a80a3-f9f5-4d0f-8c4a-627b2f4ed45b</id>
+      <name>HK Puncheon (Booster)</name>
+      <category>Exotic Ranged Weapons</category>
+      <type>Ranged</type>
+      <conceal>-2</conceal>
+      <accuracy>2</accuracy>
+      <reach>0</reach>
+      <damage>Chemical</damage>
+      <ap>-</ap>
+      <mode>SA</mode>
+      <rc>0</rc>
+      <ammo>6(c)</ammo>
+      <avail>9R</avail>
+      <cost>1150</cost>
+      <source>SL02.19</source>
+      <page>1</page>
+      <accessorymounts>
+        <mount>Barrel</mount>
+        <mount>Under</mount>
+      </accessorymounts>
+      <accessories>
+        <accessory>
+          <name>BOOSTER</name>
+        </accessory>
+        <accessory>
+          <name>Slide Mount</name>
+          <mount>Under</mount>
+        </accessory>
+        <accessory>
+          <name>Ceramic/Plasteel Components</name>
+          <rating>3</rating>
+        </accessory>
+      </accessories>
+      <range>Heavy Pistols</range>
+      <sizecategory>Heavy Pistols</sizecategory>
+      <useskill>Pistols</useskill>
+      <weapontype>squirtgun</weapontype>
+    </weapon>
+    <!--Region Verordnete Fröhlichkeit-->
+    <weapon>
+      <id>f3022b64-7b98-4e95-a53b-a1cbb7949fdc</id>
+      <name>Gas Grenade Launcher</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>Grenade</damage>
+      <ap>Grenade</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>6(m)</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SL03.19</source>
+      <page>3</page>
+      <ammocategory>Grenade Launchers</ammocategory>
+      <range>Grenade Launchers</range>
+      <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
+      <hide />
+    </weapon>
+    <weapon>
+      <id>4828d74b-aa1d-48c9-ad70-9033ece30c55</id>
+      <name>Underarm Ballistic Shield</name>
+      <category>Exotic Melee Weapons</category>
+      <type>Melee</type>
+      <conceal>8</conceal>
+      <accuracy>4</accuracy>
+      <reach>0</reach>
+      <damage>({STR}+2)S</damage>
+      <ap>0</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail></avail>
+      <cost>0</cost>
+      <source>SL03.19</source>
+      <page>3</page>
+      <hide />
+      <spec>Shields</spec>
+    </weapon>
+    <weapon>
+      <id>942c784a-4629-480a-91fc-9e0a9100017d</id>
+      <name>Caramel Bonbon Grenade Launcher</name>
+      <category>Underbarrel Weapons</category>
+      <type>Ranged</type>
+      <conceal>6</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>Grenade</damage>
+      <ap>Grenade</ap>
+      <mode>SS</mode>
+      <rc>0</rc>
+      <ammo>6(m)</ammo>
+      <avail>0</avail>
+      <cost>0</cost>
+      <source>SL03.19</source>
+      <page>3</page>
+      <ammocategory>Grenade Launchers</ammocategory>
+      <hide />
+      <range>Grenade Launchers</range>
+      <useskill>Heavy Weapons</useskill>
+      <weapontype>glauncher</weapontype>
+    </weapon>
+  </weapons>
+  <accessories>
+    <accessory>
+      <!--As far as I know an accessory can't add other accessories, so this is a a hidden workaround and only comes with the HK Puncheon (Booster) weapon-->
+      <id>9a8068a7-3a4e-4dd9-b5e5-141119458c63</id>
+      <name>BOOSTER</name>
+      <mount />
+      <avail>9R</avail>
+      <cost>250</cost>
+      <source>SL02.19</source>
+      <page>1</page>
+      <rating>0</rating>
+      <conceal>2</conceal>
+      <accuracy>2</accuracy>
+      <required>
+        <weapondetails>
+          <name>HK Puncheon</name>
+        </weapondetails>
+      </required>
+      <forbidden>
+        <oneof>
+          <accessory>BOOSTER</accessory>
+        </oneof>
+      </forbidden>
+      <hide />
+    </accessory>
+  </accessories>
+
+</chummer>

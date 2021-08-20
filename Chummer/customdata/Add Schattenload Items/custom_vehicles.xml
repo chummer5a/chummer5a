@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema vehicles.xsd">
+  <vehicles>
+    <vehicle>
+      <id>d2336327-1f36-479f-94f2-62a359c0dcbd</id>
+      <name>Sony Economically-4</name>
+      <category>Drones: Anthro</category>
+      <page>3</page>
+      <source>SL03.19</source>
+      <handling>2</handling>
+      <speed>3</speed>
+      <accel>1</accel>
+      <body>3</body>
+      <armor>0</armor>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <cost>18000</cost>
+      <avail>4</avail>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+      </mods>
+    </vehicle>
+    <vehicle>
+      <id>21116c38-076e-4f99-9e0b-6083f8a9c83a</id>
+      <name>Sony Reliable-4</name>
+      <category>Drones: Anthro</category>
+      <page>3</page>
+      <source>SL03.19</source>
+      <handling>2</handling>
+      <speed>3</speed>
+      <accel>2</accel>
+      <body>4</body>
+      <armor>3</armor>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <cost>34000</cost>
+      <avail>12R</avail>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+        <gear>
+          <name>Quick-Draw Holster</name>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Emotive Display</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Underarm Ballistic Shield</allowedweapons>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Gas Grenade Launcher</allowedweapons>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Gas Grenade Launcher</name>
+        </weapon>
+        <weapon>
+          <name>Underarm Ballistic Shield</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+    <vehicle>
+      <id>dac6f24b-a8e1-4d83-bc43-27ee02b0963a</id>
+      <name>Sony Versatile Cologne Ed.</name>
+      <category>Drones: Anthro</category>
+      <page>3</page>
+      <source>SL03.19</source>
+      <handling>2</handling>
+      <speed>3</speed>
+      <accel>1</accel>
+      <body>3</body>
+      <armor>0</armor>
+      <pilot>3</pilot>
+      <sensor>3</sensor>
+      <cost>23000</cost>
+      <avail>18R</avail>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Caramel Bonbon Grenade Launcher</allowedweapons>
+        </weaponmount>
+      </weaponmounts>
+      <weapons>
+        <weapon>
+          <name>Caramel Bonbon Grenade Launcher</name>
+        </weapon>
+      </weapons>
+    </vehicle>
+    <vehicle>
+      <id>cbd915a6-8ab8-4509-b70f-a2cd27803a1e</id>
+      <name>Sony Orderly-4</name>
+      <category>Drones: Anthro</category>
+      <page>3</page>
+      <source>SL03.19</source>
+      <handling>4</handling>
+      <speed>3</speed>
+      <accel>1</accel>
+      <body>4</body>
+      <armor>3</armor>
+      <pilot>4</pilot>
+      <sensor>4</sensor>
+      <cost>38000</cost>
+      <avail>11R</avail>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>4</rating>
+          <maxrating>6</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Drone Arm</name>
+        <name>Drone Arm</name>
+        <name>Drone Leg</name>
+        <name>Drone Leg</name>
+        <name>Emotive Display</name>
+      </mods>
+    </vehicle>
+<!--Region Der Multimog-->
+    <vehicle>
+      <id>1b27cddf-25fb-46a0-aff0-c252231ac616</id>
+      <name>Mercedes Multimog-D1</name>
+      <page>1</page>
+      <source>SL07.19</source>
+      <accel>1</accel>
+      <armor>16</armor>
+      <avail>0</avail>
+      <body>16</body>
+      <category>Trucks</category>
+      <cost>45000</cost>
+      <handling>3/4</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <bodymodslots>4</bodymodslots>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <seats>6</seats>
+    </vehicle>
+    <vehicle>
+      <id>6a612d60-2776-4556-8b56-9e781241005d</id>
+      <name>Mercedes Multimog-K4 "Greif"</name>
+      <page>1</page>
+      <source>SL07.19</source>
+      <accel>1</accel>
+      <armor>18</armor>
+      <avail>12</avail>
+      <body>18</body>
+      <category>Trucks</category>
+      <cost>83000</cost>
+      <handling>3/4</handling>
+      <pilot>1</pilot>
+      <sensor>4</sensor>
+      <speed>3</speed>
+      <bodymodslots>4</bodymodslots>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>3</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Rigger Adaptation</name>
+        <name rating="4">ECM</name>
+        <name>Satellite Link</name>
+        <name>Landing Drone Rack (Small)</name>
+        <name>Landing Drone Rack (Small)</name>
+      </mods>
+      <seats>6</seats>
+    </vehicle>
+  </vehicles>
+<!--Mods-->
+  <mods>
+    <mod>
+      <id>a8673414-5ad8-441c-bcea-65a93ab3d8c4</id>
+      <name>Emotive Display</name>
+      <page>3</page>
+      <source>SL03.19</source>
+      <avail>0</avail>
+      <category>Cosmetic</category>
+      <cost>0</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+  </mods>
+</chummer>
