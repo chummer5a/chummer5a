@@ -14067,6 +14067,7 @@ namespace Chummer
             this.chkWeaponActiveCommlink.Tag = "Checkbox_ActiveCommlink";
             this.chkWeaponActiveCommlink.Text = "Active Commlink";
             this.chkWeaponActiveCommlink.UseVisualStyleBackColor = true;
+            this.chkWeaponActiveCommlink.CheckedChanged += new System.EventHandler(this.chkWeaponActiveCommlink_CheckedChanged);
             // 
             // chkWeaponWireless
             // 
