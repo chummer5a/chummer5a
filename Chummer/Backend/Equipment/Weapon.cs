@@ -43,7 +43,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Weapon : IHasChildren<Weapon>, IHasName, IHasInternalId, IHasXmlNode, IHasMatrixAttributes, IHasNotes, ICanSell, IHasCustomName, IHasLocation, ICanEquip, IHasSource, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasRating, ICanBlackMarketDiscount
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -741,12 +741,12 @@ namespace Chummer.Backend.Equipment
 
                     foreach (XmlNode node in clipNode.ChildNodes)
                     {
-                        Clip LoopClip = Clip.Load(node);
-                        if (string.IsNullOrWhiteSpace(LoopClip.AmmoName))
+                        Clip objLoopClip = Clip.Load(node);
+                        if (string.IsNullOrWhiteSpace(objLoopClip.AmmoName))
                         {
-                            LoopClip.AmmoName = GetAmmoName(LoopClip.Guid, GlobalOptions.DefaultLanguage);
+                            objLoopClip.AmmoName = GetAmmoName(objLoopClip.Guid, GlobalOptions.DefaultLanguage);
                         }
-                        _lstAmmo.Add(LoopClip);
+                        _lstAmmo.Add(objLoopClip);
                     }
                 }
                 else //Load old clips
@@ -2542,10 +2542,10 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strModifyAmmoCapacity))
                                 {
                                     strThisAmmo = '(' + strThisAmmo + strModifyAmmoCapacity + ')';
-                                    int AddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')') - strModifyAmmoCapacity.Count(x => x == '(');
-                                    for (int i = 0; i < AddParenthesesCount; ++i)
+                                    int intAddParenthesesCount = strModifyAmmoCapacity.Count(x => x == ')') - strModifyAmmoCapacity.Count(x => x == '(');
+                                    for (int i = 0; i < intAddParenthesesCount; ++i)
                                         strThisAmmo = '(' + strThisAmmo;
-                                    for (int i = 0; i < -AddParenthesesCount; ++i)
+                                    for (int i = 0; i < -intAddParenthesesCount; ++i)
                                         strThisAmmo += ')';
                                 }
                             }

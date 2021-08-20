@@ -28,7 +28,7 @@ namespace Chummer.UI.Table
         public CheckBoxTableCell(string text = "", string tag = null)
         {
             InitializeComponent();
-            contentField = _checkBox;
+            ContentField = _checkBox;
             _checkBox.Text = text;
             _checkBox.Tag = tag;
             this.UpdateLightDarkMode();

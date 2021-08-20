@@ -43,7 +43,7 @@ namespace Chummer
         private readonly object _objGearParent;
         private readonly XPathNavigator _objParentNode;
         private decimal _decMaximumCapacity = -1;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private bool _blnShowPositiveCapacityOnly;
         private bool _blnShowNegativeCapacityOnly;
         private bool _blnBlackMarketDiscount;
@@ -163,8 +163,8 @@ namespace Chummer
 
             _blnLoading = false;
             // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (!string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedValue = _strSelectCategory;
             if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
                 cboCategory.SelectedIndex = 0;
             else
@@ -1073,7 +1073,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 _strSelectedGear = strSelectedId;
-                s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                     ? cboCategory.SelectedValue?.ToString()
                     : _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + "]/category")?.Value;
                 _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;

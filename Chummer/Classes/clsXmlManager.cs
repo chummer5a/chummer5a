@@ -98,7 +98,7 @@ namespace Chummer
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
             .Combine(Utils.GetStartupPath, "data").Yield()
             .Concat(GlobalOptions.CustomDataDirectoryInfos.Select(x => x.DirectoryPath)));
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         #region Methods
         public static void RebuildDataDirectoryInfo(IEnumerable<CustomDataDirectoryInfo> customDirectories)

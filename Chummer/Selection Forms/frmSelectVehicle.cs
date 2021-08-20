@@ -37,7 +37,7 @@ namespace Chummer
 
         private bool _blnLoading = true;
         private bool _blnAddAgain;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
 
         private readonly XPathNavigator _xmlBaseVehicleDataNode;
         private readonly Character _objCharacter;
@@ -107,10 +107,10 @@ namespace Chummer
             cboCategory.PopulateWithListItems(_lstCategory);
             _blnLoading = false;
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = s_StrSelectCategory;
+                cboCategory.SelectedValue = _strSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -493,7 +493,7 @@ namespace Chummer
             }
 
             _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
+            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicle.SelectSingleNode("category")?.Value;
             _strSelectedVehicle = strSelectedId;
             _decMarkup = nudMarkup.Value;
 

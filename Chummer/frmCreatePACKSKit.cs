@@ -43,6 +43,9 @@ namespace Chummer
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            if (_objCharacter == null)
+                throw new ArgumentNullException(nameof(_objCharacter));
+
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {

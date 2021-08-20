@@ -12,7 +12,7 @@ namespace SamplePlugin
     public class MySamplePlugin : IPlugin
     {
         //Just use NLog, like we all do... or don'T and implement your own logging...
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         //If you want this plugin NOT to be visible with the default "SamplePlugin.MySamplePlugin"
         public override string ToString()

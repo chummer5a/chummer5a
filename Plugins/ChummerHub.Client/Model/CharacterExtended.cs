@@ -20,7 +20,7 @@ namespace ChummerHub.Client.Sinners
 {
     public sealed class CharacterExtended : IDisposable
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public CharacterExtended(Character character, CharacterCache myCharacterCache = null, bool blnDoSave = true)
         {
             MyCharacter = character ?? throw new ArgumentNullException(nameof(character));
@@ -384,7 +384,7 @@ namespace ChummerHub.Client.Sinners
                 }
                 catch (Exception e)
                 {
-                    op_uploadChummer?.tc?.TrackException(e);
+                    op_uploadChummer?.MyTelemetryClient?.TrackException(e);
                     Utils.HandleError(e);
                     throw;
                 }

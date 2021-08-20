@@ -12,7 +12,7 @@ namespace ChummerHub.Client.Backend
 {
     public class MyMessageHandler : HttpClientHandler
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public MyMessageHandler()
         {
             Proxy = WebRequest.DefaultWebProxy;

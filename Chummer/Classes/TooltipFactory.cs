@@ -24,7 +24,7 @@ namespace Chummer
 {
     public static class ToolTipFactory
     {
-        private static readonly HtmlToolTip _tp = new HtmlToolTip
+        public static HtmlToolTip ToolTip { get; } = new HtmlToolTip
         {
             AllowLinksHandling = true,
             AutoPopDelay = 3600000,
@@ -39,11 +39,9 @@ namespace Chummer
             //UseFading = true
         };
 
-        public static HtmlToolTip ToolTip { get; } = _tp;
-
         public static void SetToolTip(this Control c, string caption)
         {
-            ToolTip.SetToolTip(c, caption.CleanForHTML());
+            ToolTip.SetToolTip(c, caption.CleanForHtml());
         }
     }
 }

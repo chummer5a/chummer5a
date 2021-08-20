@@ -71,7 +71,7 @@ namespace Chummer
             if (_colNotes.IsEmpty)
                 _colNotes = ColorManager.HasNotesColor;
 
-            updateColorRepresentation();
+            UpdateColorRepresentation();
         }
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
@@ -125,7 +125,7 @@ namespace Chummer
             if (resNewColor == DialogResult.OK)
             {
                 _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
-                updateColorRepresentation();
+                UpdateColorRepresentation();
             }
         }
 
@@ -147,7 +147,7 @@ namespace Chummer
 
         #endregion Properties
 
-        private void updateColorRepresentation()
+        private void UpdateColorRepresentation()
         {
             txtNotes.ForeColor = ColorManager.GenerateCurrentModeColor(_colNotes);
         }

@@ -27,17 +27,17 @@ namespace Chummer
 {
     public class DropUserdataTelemetryProcessor : ITelemetryProcessor
     {
-        private readonly string UserProfilePath;
+        private readonly string _strUserProfilePath;
         private ITelemetryProcessor Next { get; }
 
         // You can pass values from .config
         public string MyParamFromConfigFile { get; set; }
 
         // Link processors to each other in a chain.
-        public DropUserdataTelemetryProcessor(ITelemetryProcessor next, string UserProfilePath)
+        public DropUserdataTelemetryProcessor(ITelemetryProcessor next, string strUserProfilePath)
         {
             Next = next;
-            this.UserProfilePath = UserProfilePath;
+            _strUserProfilePath = strUserProfilePath;
         }
 
         public void Process(ITelemetry item)
@@ -76,12 +76,12 @@ namespace Chummer
             switch (item)
             {
                 case TraceTelemetry trace:
-                    trace.Message = trace.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    trace.Message = trace.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                     return;
 
                 case RequestTelemetry req:
                     {
-                        string newurl = req.Url?.ToString().Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                        string newurl = req.Url?.ToString().Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                         if (!string.IsNullOrEmpty(newurl))
                             req.Url = new Uri(newurl);
                         return;
@@ -95,13 +95,13 @@ namespace Chummer
                         }
                         if (exception.Message == null)
                         {
-                            exception.Message = exception.Exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                            exception.Message = exception.Exception.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                         }
 
                         break;
                     }
                 case ExceptionTelemetry exception:
-                    exception.Message = exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    exception.Message = exception.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
                     break;
             }
         }

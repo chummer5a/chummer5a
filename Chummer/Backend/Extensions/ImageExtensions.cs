@@ -30,10 +30,10 @@ namespace Chummer
 {
     public static class ImageExtensions
     {
-        private static readonly Lazy<ImageCodecInfo> _lzyJpegEncoder =
+        private static readonly Lazy<ImageCodecInfo> s_LzyJpegEncoder =
             new Lazy<ImageCodecInfo>(() => GetEncoder(ImageFormat.Jpeg));
 
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Takes a Base64 String that is meant to represent an Image and turns it into a Base64 String that is meant to represent a JPEG
@@ -176,7 +176,7 @@ namespace Chummer
             {
                 using (MemoryStream objImageStream = new MemoryStream())
                 {
-                    bmpClone.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
+                    bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                     objImageStream.Position = 0;
                     return Image.FromStream(objImageStream, true);
                 }
@@ -205,7 +205,7 @@ namespace Chummer
                 {
                     using (MemoryStream objImageStream = new MemoryStream())
                     {
-                        bmpClone.Save(objImageStream, _lzyJpegEncoder.Value, lstJpegParameters);
+                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                         objImageStream.Position = 0;
                         return Image.FromStream(objImageStream, true);
                     }
@@ -453,7 +453,7 @@ namespace Chummer
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
             };
-            return imgToConvert.ToBase64String(_lzyJpegEncoder.Value, lstJpegParameters);
+            return imgToConvert.ToBase64String(s_LzyJpegEncoder.Value, lstJpegParameters);
         }
 
         /// <summary>
@@ -471,7 +471,7 @@ namespace Chummer
             {
                 Param = { [0] = new EncoderParameter(Encoder.Quality, Math.Min(Math.Max(intQuality, 0), 100)) }
             };
-            return await imgToConvert.ToBase64StringAsync(_lzyJpegEncoder.Value, lstJpegParameters);
+            return await imgToConvert.ToBase64StringAsync(s_LzyJpegEncoder.Value, lstJpegParameters);
         }
 
         /// <summary>

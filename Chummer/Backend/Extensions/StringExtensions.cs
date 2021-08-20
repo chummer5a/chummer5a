@@ -1157,7 +1157,7 @@ namespace Chummer
             return Guid.TryParse(strGuid, out Guid _);
         }
 
-        private static readonly Dictionary<string, string> s_dicLigaturesMap = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> s_DicLigaturesMap = new Dictionary<string, string>
         {
             {"ﬀ", "ff"},
             {"ﬃ", "ffi"},
@@ -1179,7 +1179,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             string strReturn = strInput;
-            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+            foreach (KeyValuePair<string, string> kvpLigature in s_DicLigaturesMap)
                 strReturn = strReturn.Replace(kvpLigature.Key, kvpLigature.Value);
             return strReturn;
         }
@@ -1192,7 +1192,7 @@ namespace Chummer
         {
             if (sbdInput == null)
                 throw new ArgumentNullException(nameof(sbdInput));
-            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+            foreach (KeyValuePair<string, string> kvpLigature in s_DicLigaturesMap)
                 sbdInput.Replace(kvpLigature.Key, kvpLigature.Value);
             return sbdInput;
         }
@@ -1292,8 +1292,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             return blnEscaped
-                ? rgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
-                : rgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
+                ? s_RgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
+                : s_RgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
         }
 
         /// <summary>
@@ -1325,7 +1325,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strToClean">String to clean.</param>
         /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
-        public static string CleanForHTML(this string strToClean)
+        public static string CleanForHtml(this string strToClean)
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
@@ -1334,7 +1334,7 @@ namespace Chummer
                 .Replace("&amp;amp;", "&amp;")
                 .Replace("<", "&lt;")
                 .Replace(">", "&gt;");
-            return rgxLineEndingsExpression.Replace(strReturn, "<br />");
+            return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
         }
 
         /// <summary>
@@ -1349,12 +1349,12 @@ namespace Chummer
             if (strInput.IsRtf())
                 return strInput;
             strInput = strInput.NormalizeWhiteSpace();
-            lock (rtbRtfManipulatorLock)
+            lock (s_RtbRtfManipulatorLock)
             {
-                if (!rtbRtfManipulator.IsHandleCreated)
-                    rtbRtfManipulator.CreateControl();
-                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput);
-                return rtbRtfManipulator.Rtf;
+                if (!s_RtbRtfManipulator.IsHandleCreated)
+                    s_RtbRtfManipulator.CreateControl();
+                s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Text = strInput);
+                return s_RtbRtfManipulator.Rtf;
             }
         }
 
@@ -1371,20 +1371,20 @@ namespace Chummer
             if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                lock (rtbRtfManipulatorLock)
+                lock (s_RtbRtfManipulatorLock)
                 {
-                    if (!rtbRtfManipulator.IsHandleCreated)
-                        rtbRtfManipulator.CreateControl();
+                    if (!s_RtbRtfManipulator.IsHandleCreated)
+                        s_RtbRtfManipulator.CreateControl();
                     try
                     {
-                        rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Rtf = strInput);
+                        s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
                     }
                     catch (ArgumentException)
                     {
                         return strInput.NormalizeWhiteSpace();
                     }
 
-                    return rtbRtfManipulator.Text.NormalizeWhiteSpace();
+                    return s_RtbRtfManipulator.Text.NormalizeWhiteSpace();
                 }
             }
             return strInput.NormalizeWhiteSpace();
@@ -1394,7 +1394,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHTML();
+            return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
         }
 
         /// <summary>
@@ -1410,13 +1410,13 @@ namespace Chummer
                 if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    lock (rtbRtfManipulatorLock)
+                    lock (s_RtbRtfManipulatorLock)
                     {
-                        if (!rtbRtfManipulator.IsHandleCreated)
-                            rtbRtfManipulator.CreateControl();
+                        if (!s_RtbRtfManipulator.IsHandleCreated)
+                            s_RtbRtfManipulator.CreateControl();
                         try
                         {
-                            rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Rtf = strInput);
+                            s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
                         }
                         catch (ArgumentException)
                         {
@@ -1437,19 +1437,19 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && rgxHtmlTagExpression.IsMatch(strInput);
+            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.IsMatch(strInput);
         }
 
-        private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
+        private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private static readonly Regex rgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
+        private static readonly Regex s_RgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private static readonly Regex rgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
+        private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        private static readonly object rtbRtfManipulatorLock = new object();
-        private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
+        private static readonly object s_RtbRtfManipulatorLock = new object();
+        private static readonly RichTextBox s_RtbRtfManipulator = new RichTextBox();
     }
 }

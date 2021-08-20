@@ -801,10 +801,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                    lstNamesOfChangedProperties = s_SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_SpiritDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -818,7 +818,7 @@ namespace Chummer
             }
         }
 
-        private static readonly DependencyGraph<string, Spirit> SpiritDependencyGraph =
+        private static readonly DependencyGraph<string, Spirit> s_SpiritDependencyGraph =
             new DependencyGraph<string, Spirit>(
                 new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))

@@ -32,8 +32,8 @@ namespace Chummer.UI.Charts
         private Character _objCharacter;
         private readonly Series _objMainSeries;
         private readonly Axis _objYAxis;
-        private static readonly Brush _objKarmaFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0, 0, 0xFF));
-        private static readonly Brush _objNuyenFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0xFF, 0, 0));
+        private static readonly Brush s_ObjKarmaFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0, 0, 0xFF));
+        private static readonly Brush s_ObjNuyenFillBrush = new SolidColorBrush(Color.FromArgb(0x7F, 0xFF, 0, 0));
 
         public ExpenseChart()
         {
@@ -44,7 +44,7 @@ namespace Chummer.UI.Charts
                 Values = ExpenseValues,
                 LineSmoothness = 0.1,
                 Stroke = Brushes.Blue,
-                Fill = _objKarmaFillBrush,
+                Fill = s_ObjKarmaFillBrush,
                 PointGeometrySize = 8
             };
             chtCartesian.Series = new SeriesCollection
@@ -133,7 +133,7 @@ namespace Chummer.UI.Charts
                     _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Options.NuyenFormat ?? "#,0.##") + '¥', GlobalOptions.CultureInfo);
                     _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
                     _objMainSeries.Stroke = Brushes.Red;
-                    _objMainSeries.Fill = _objNuyenFillBrush;
+                    _objMainSeries.Fill = s_ObjNuyenFillBrush;
                 }
                 else
                 {
@@ -141,7 +141,7 @@ namespace Chummer.UI.Charts
                     _objYAxis.LabelFormatter = val => val.ToString("#,0.##", GlobalOptions.CultureInfo);
                     _objMainSeries.Title = LanguageManager.GetString("String_KarmaRemaining");
                     _objMainSeries.Stroke = Brushes.Blue;
-                    _objMainSeries.Fill = _objKarmaFillBrush;
+                    _objMainSeries.Fill = s_ObjKarmaFillBrush;
                 }
                 chtCartesian.ResumeLayout();
             }

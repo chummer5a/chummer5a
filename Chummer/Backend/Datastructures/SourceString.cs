@@ -26,7 +26,7 @@ namespace Chummer
 {
     public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
-        private static readonly ConcurrentDictionary<string, Tuple<string, string>> _dicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
+        private static readonly ConcurrentDictionary<string, Tuple<string, string>> s_DicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
         private readonly int _intHashCode;
 
         public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
@@ -48,12 +48,12 @@ namespace Chummer
 
             Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            if (!_dicCachedStrings.ContainsKey(Language))
-                _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
+            if (!s_DicCachedStrings.ContainsKey(Language))
+                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                         LanguageManager.GetString("String_Space", Language),
                         LanguageManager.GetString("String_Page", Language)));
-            string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
+            string strSpace = s_DicCachedStrings[Language].Item1;
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
@@ -65,12 +65,12 @@ namespace Chummer
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            if (!_dicCachedStrings.ContainsKey(Language))
-                _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
+            if (!s_DicCachedStrings.ContainsKey(Language))
+                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
-            string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
+            string strSpace = s_DicCachedStrings[Language].Item1;
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
@@ -81,17 +81,17 @@ namespace Chummer
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            if (!_dicCachedStrings.ContainsKey(Language))
-                _dicCachedStrings.TryAdd(Language, new Tuple<string, string>(
+            if (!s_DicCachedStrings.ContainsKey(Language))
+                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
-            string strSpace = _dicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + _dicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
+            string strSpace = s_DicCachedStrings[Language].Item1;
+            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public override string ToString()
         {
-            return Code + _dicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
+            return Code + s_DicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
         }
 
         /// <summary>

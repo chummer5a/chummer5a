@@ -191,7 +191,7 @@ namespace Chummer
             {
                 if (cboStage.DataSource == null)
                 {
-                    List<ListItem> Stages = new List<ListItem>(6)
+                    List<ListItem> lstStages = new List<ListItem>(6)
                     {
                         new ListItem("0", LanguageManager.GetString("String_All"))
                     };
@@ -203,12 +203,12 @@ namespace Chummer
                                 string strOrder = xnode.Attributes?["order"]?.Value;
                                 if (!string.IsNullOrEmpty(strOrder))
                                 {
-                                    Stages.Add(new ListItem(strOrder, xnode.InnerText));
+                                    lstStages.Add(new ListItem(strOrder, xnode.InnerText));
                                 }
                             }
 
                     //Sort based on integer value of key
-                    Stages.Sort((x, y) =>
+                    lstStages.Sort((x, y) =>
                     {
                         if (int.TryParse(x.Value.ToString(), out int xint))
                         {
@@ -228,7 +228,7 @@ namespace Chummer
                         return 0;
                     });
 
-                    cboStage.PopulateWithListItems(Stages);
+                    cboStage.PopulateWithListItems(lstStages);
                 }
 
                 ListItem selectedItem = ((List<ListItem>)cboStage.DataSource).Find(x => x.Value.ToString() == _intStage.ToString(GlobalOptions.InvariantCultureInfo));

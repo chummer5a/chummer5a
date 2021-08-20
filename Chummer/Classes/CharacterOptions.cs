@@ -119,7 +119,7 @@ namespace Chummer
         private bool _blnAutomaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
-        private bool _blnMysAdeptAllowPPCareer;
+        private bool _blnMysAdeptAllowPpCareer;
         private bool _blnMysAdeptSecondMAGAttribute;
         private bool _blnReverseAttributePriorityOrder;
         private string _strNuyenFormat = "#,0.##";
@@ -276,7 +276,7 @@ namespace Chummer
                     new DependencyGraphNode<string, CharacterOptions>(nameof(CustomDataDirectoryKeys))
                 ),
                 new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptSecondMAGAttributeEnabled),
-                    new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptAllowPPCareer)),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptAllowPpCareer)),
                     new DependencyGraphNode<string, CharacterOptions>(nameof(PrioritySpellsAsAdeptPowers))
                 ),
                 new DependencyGraphNode<string, CharacterOptions>(nameof(MaxNuyenDecimals),
@@ -522,7 +522,7 @@ namespace Chummer
                     // <exceedpositivequalitiescostdoubled />
                     objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString(GlobalOptions.InvariantCultureInfo));
 
-                    objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPPCareer.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPpCareer.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <mysadeptsecondmagattribute />
                     objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString(GlobalOptions.InvariantCultureInfo));
@@ -936,7 +936,7 @@ namespace Chummer
             // Double all positive qualities in excess of the limit
             objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled", ref _blnExceedPositiveQualitiesCostDoubled);
 
-            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPPCareer);
+            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPpCareer);
 
             // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
             objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
@@ -1098,14 +1098,14 @@ namespace Chummer
             // Legacy sweep by looking at MRU
             if (!BuiltInOption && objXmlNode.SelectSingleNode("books/book") == null && objXmlNode.SelectSingleNode("customdatadirectorynames/directoryname") == null)
             {
-                foreach (string strMRUCharacterFile in GlobalOptions.MostRecentlyUsedCharacters)
+                foreach (string strMruCharacterFile in GlobalOptions.MostRecentlyUsedCharacters)
                 {
                     XPathDocument objXmlDocument;
-                    if (!File.Exists(strMRUCharacterFile))
+                    if (!File.Exists(strMruCharacterFile))
                         continue;
                     try
                     {
-                        using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
+                        using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
                         using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
                             objXmlDocument = new XPathDocument(objXmlReader);
                     }
@@ -1126,14 +1126,14 @@ namespace Chummer
 
                 if (xmlLegacyCharacterNavigator == null)
                 {
-                    foreach (string strMRUCharacterFile in GlobalOptions.FavoritedCharacters)
+                    foreach (string strMruCharacterFile in GlobalOptions.FavoritedCharacters)
                     {
                         XPathDocument objXmlDocument;
-                        if (!File.Exists(strMRUCharacterFile))
+                        if (!File.Exists(strMruCharacterFile))
                             continue;
                         try
                         {
-                            using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
+                            using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
                             using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
                                 objXmlDocument = new XPathDocument(objXmlReader);
                         }
@@ -2059,14 +2059,14 @@ namespace Chummer
         /// <summary>
         /// Allow Mystic Adepts to increase their power points during career mode
         /// </summary>
-        public bool MysAdeptAllowPPCareer
+        public bool MysAdeptAllowPpCareer
         {
-            get => _blnMysAdeptAllowPPCareer;
+            get => _blnMysAdeptAllowPpCareer;
             set
             {
-                if (_blnMysAdeptAllowPPCareer != value)
+                if (_blnMysAdeptAllowPpCareer != value)
                 {
-                    _blnMysAdeptAllowPPCareer = value;
+                    _blnMysAdeptAllowPpCareer = value;
                     OnPropertyChanged();
                     if (value)
                         MysAdeptSecondMAGAttribute = false;
@@ -2089,13 +2089,13 @@ namespace Chummer
                     if (value)
                     {
                         PrioritySpellsAsAdeptPowers = false;
-                        MysAdeptAllowPPCareer = false;
+                        MysAdeptAllowPpCareer = false;
                     }
                 }
             }
         }
 
-        public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPPCareer;
+        public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
 
         /// <summary>
         /// Whether or not to allow a 2nd max attribute with Exceptional Attribute

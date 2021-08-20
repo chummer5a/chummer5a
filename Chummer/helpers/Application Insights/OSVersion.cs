@@ -22,11 +22,11 @@ using NLog;
 
 namespace Chummer.helpers.Application_Insights
 {
-    public static class OSVersion
+    public static class OsVersion
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
-        public static string GetOSInfo()
+        public static string GetOsInfo()
         {
             try
             {

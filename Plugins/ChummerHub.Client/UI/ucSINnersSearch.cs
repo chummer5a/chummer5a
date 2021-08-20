@@ -18,7 +18,7 @@ namespace ChummerHub.Client.UI
     public partial class ucSINnersSearch : UserControl
     {
         public static CharacterExtended MySearchCharacter;
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         public SearchTag motherTag;
         private Action<string> GetSelectedObjectCallback;

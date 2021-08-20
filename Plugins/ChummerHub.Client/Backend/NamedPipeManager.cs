@@ -13,7 +13,7 @@ namespace ChummerHub.Client.Backend
     /// </summary>
     public class NamedPipeManager : IDisposable
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public string NamedPipeName { get; }
         public event Action<string> ReceiveString;
 

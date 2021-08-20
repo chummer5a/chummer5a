@@ -34,7 +34,7 @@ namespace Chummer
 {
     internal static class XmlNodeExtensions
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         //QUESTION: TrySelectField<T> that uses SelectSingleNode instead of this[node]?
 
         public delegate bool TryParseFunction<T>(string input, out T result);

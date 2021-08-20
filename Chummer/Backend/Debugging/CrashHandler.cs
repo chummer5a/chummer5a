@@ -37,7 +37,7 @@ namespace Chummer.Backend
 {
     public static class CrashHandler
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         private sealed class DumpData : ISerializable
         {

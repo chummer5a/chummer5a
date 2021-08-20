@@ -40,7 +40,7 @@ namespace Chummer
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
         private HashSet<string> _hashLimitToCategories = new HashSet<string>();
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
         private Weapon _objSelectedWeapon;
@@ -111,11 +111,11 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
             {
-                cboCategory.SelectedValue = s_StrSelectCategory;
+                cboCategory.SelectedValue = _strSelectCategory;
                 if (cboCategory.SelectedIndex == -1)
                     cboCategory.SelectedIndex = 0;
             }
@@ -644,7 +644,7 @@ namespace Chummer
                         objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strSelectedId.CleanXPath() + "]");
                         if (objNode != null)
                         {
-                            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                                 ? cboCategory.SelectedValue?.ToString()
                                 : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
@@ -673,7 +673,7 @@ namespace Chummer
                         }
                         if (objNode != null)
                         {
-                            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+                            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
                             _strSelectedWeapon = objNode["id"]?.InnerText;
                         }
                         _decMarkup = nudMarkup.Value;

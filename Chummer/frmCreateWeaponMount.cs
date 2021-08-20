@@ -117,7 +117,7 @@ namespace Chummer
                     cboSize.SelectedIndex = 0;
             }
             else
-                RefreshCBOs();
+                RefreshComboBoxes();
 
             nudMarkup.Visible = AllowDiscounts;
             lblMarkupLabel.Visible = AllowDiscounts;
@@ -329,7 +329,7 @@ namespace Chummer
 
         private void cboSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RefreshCBOs();
+            RefreshComboBoxes();
             treMods.SelectedNode = null;
             UpdateInfo();
         }
@@ -766,7 +766,7 @@ namespace Chummer
             UpdateInfo();
         }
 
-        private void RefreshCBOs()
+        private void RefreshComboBoxes()
         {
             XmlNode xmlRequiredNode = null;
             XmlNode xmlForbiddenNode = null;

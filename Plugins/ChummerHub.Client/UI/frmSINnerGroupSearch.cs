@@ -9,7 +9,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmSINnerGroupSearch : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private CharacterExtended MyCE { get; }
         public ucSINnersBasic MyParentForm { get; }
 

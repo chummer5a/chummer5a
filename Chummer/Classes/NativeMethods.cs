@@ -48,13 +48,13 @@ namespace Chummer
         internal static extern IntPtr GetThreadDpiAwarenessContext();
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern int GetAwarenessFromDpiAwarenessContext(IntPtr DPI_AWARENESS_CONTEXT);
+        internal static extern int GetAwarenessFromDpiAwarenessContext(IntPtr dpiAwarenessContext);
 
         [DllImport("SHCore.dll", SetLastError = true)]
-        internal static extern bool SetProcessDpiAwareness(ProcessDPIAwareness awareness);
+        internal static extern bool SetProcessDpiAwareness(ProcessDpiAwareness awareness);
 
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool SetProcessDpiAwarenessContext(ContextDPIAwareness awareness);
+        internal static extern bool SetProcessDpiAwarenessContext(ContextDpiAwareness awareness);
 
         [DllImport("user32.dll")]
         internal static extern bool SetProcessDPIAware();
@@ -63,7 +63,7 @@ namespace Chummer
         internal static extern bool GetWindowRect(IntPtr hWnd, ref Rectangle lpRect);
 
         [DllImport("user32.dll")]
-        internal static extern int MoveWindow(IntPtr hWnd, int X, int Y, int nWidth, int nHeight, bool bRepaint);
+        internal static extern int MoveWindow(IntPtr hWnd, int x, int y, int nWidth, int nHeight, bool bRepaint);
 
         [DllImport("user32.dll")]
         internal static extern UIntPtr SetTimer(IntPtr hWnd, UIntPtr nIDEvent, uint uElapse, TimerProc lpTimerFunc);
@@ -74,13 +74,13 @@ namespace Chummer
         /// <param name="hWnd">A handle to the window whose window procedure will receive the message.
         /// If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level
         /// windows in the system.</param>
-        /// <param name="Msg">The message to be sent.</param>
+        /// <param name="msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, StringBuilder lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, StringBuilder lParam);
 
         /// <summary>
         /// Sends the specified message to a window or windows.
@@ -88,13 +88,13 @@ namespace Chummer
         /// <param name="hWnd">A handle to the window whose window procedure will receive the message.
         /// If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level
         /// windows in the system.</param>
-        /// <param name="Msg">The message to be sent.</param>
+        /// <param name="msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         /// <summary>
         /// Sends the specified message to a window or windows.
@@ -102,13 +102,13 @@ namespace Chummer
         /// <param name="hWnd">A handle to the window whose window procedure will receive the message.
         /// If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level
         /// windows in the system.</param>
-        /// <param name="Msg">The message to be sent.</param>
+        /// <param name="msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         /// <summary>
         /// Sends the specified message to a window or windows.
@@ -116,13 +116,13 @@ namespace Chummer
         /// <param name="hWnd">A handle to the window whose window procedure will receive the message.
         /// If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level
         /// windows in the system.</param>
-        /// <param name="Msg">The message to be sent.</param>
+        /// <param name="msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, ref IntPtr lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, ref IntPtr lParam);
 
         /// <summary>
         /// Sends the specified message to a window or windows.
@@ -130,13 +130,13 @@ namespace Chummer
         /// <param name="hWnd">A handle to the window whose window procedure will receive the message.
         /// If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level
         /// windows in the system.</param>
-        /// <param name="Msg">The message to be sent.</param>
+        /// <param name="msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, int wParam, IntPtr lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, int wParam, IntPtr lParam);
 
         /// <summary>
         /// Sends the specified message to a window or windows.
@@ -144,13 +144,13 @@ namespace Chummer
         /// <param name="hWnd">A handle to the window whose window procedure will receive the message.
         /// If this parameter is HWND_BROADCAST ((HWND)0xffff), the message is sent to all top-level
         /// windows in the system.</param>
-        /// <param name="Msg">The message to be sent.</param>
+        /// <param name="msg">The message to be sent.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing;
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode, SetLastError = false)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, ref COPYDATASTRUCT lParam);
+        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, ref CopyDataStruct lParam);
 
         [DllImport("user32.dll")]
         internal static extern IntPtr SetWindowsHookEx(int idHook, HookProc lpfn, IntPtr hInstance, int threadId);
@@ -178,10 +178,10 @@ namespace Chummer
         internal static extern int SetForegroundWindow(IntPtr hWnd);
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        internal static extern bool PostMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
+        internal static extern bool PostMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32", CharSet = CharSet.Unicode)]
-        internal static extern bool PostMessage(IntPtr hWnd, int Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+        internal static extern bool PostMessage(IntPtr hWnd, int msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
         [DllImport("user32")]
         internal static extern int RegisterWindowMessage(string message);
@@ -198,20 +198,20 @@ namespace Chummer
         /// <param name="action">The action to be performed, and can take one of the following values
         /// <see cref="MessageFilterInfo"/></param>
         /// <param name="changeInfo">Optional pointer to a
-        /// <see cref="CHANGEFILTERSTRUCT"/> structure.</param>
+        /// <see cref="ChangeFilterStruct"/> structure.</param>
         /// <returns>If the function succeeds, it returns TRUE; otherwise, it returns FALSE.
         /// To get extended error information, call GetLastError.</returns>
         [DllImport("user32.dll", SetLastError = true)]
-        internal static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref CHANGEFILTERSTRUCT changeInfo);
+        internal static extern bool ChangeWindowMessageFilterEx(IntPtr hWnd, uint msg, ChangeWindowMessageFilterExAction action, ref ChangeFilterStruct changeInfo);
 
-        internal enum ProcessDPIAwareness
+        internal enum ProcessDpiAwareness
         {
             Unaware = 0,
             System = 1,
             PerMonitor = 2
         }
 
-        internal enum ContextDPIAwareness
+        internal enum ContextDpiAwareness
         {
             Undefined = 0,
             Unaware = -1,
@@ -242,7 +242,7 @@ namespace Chummer
         /// Contains data to be passed to another application by the WM_COPYDATA message.
         /// </summary>
         [StructLayout(LayoutKind.Sequential)]
-        internal struct COPYDATASTRUCT
+        internal struct CopyDataStruct
         {
             /// <summary>
             /// User defined data to be passed to the receiving application.
@@ -260,9 +260,9 @@ namespace Chummer
             internal IntPtr lpData;
         }
 
-        internal static COPYDATASTRUCT CopyDataFromString(IntPtr intId, string strData)
+        internal static CopyDataStruct CopyDataFromString(IntPtr intId, string strData)
         {
-            return new COPYDATASTRUCT
+            return new CopyDataStruct
             {
                 dwData = intId,
                 cbData = strData.Length * 2 + 1,
@@ -271,7 +271,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Values used in the struct CHANGEFILTERSTRUCT
+        /// Values used in the struct ChangeFilterStruct
         /// </summary>
         internal enum MessageFilterInfo : uint
         {
@@ -338,10 +338,10 @@ namespace Chummer
         /// the ChangeWindowMessageFilterEx function.
         /// </summary>
         [StructLayout(LayoutKind.Sequential)]
-        internal struct CHANGEFILTERSTRUCT
+        internal struct ChangeFilterStruct
         {
             /// <summary>
-            /// The size of the structure, in bytes. Must be set to sizeof(CHANGEFILTERSTRUCT),
+            /// The size of the structure, in bytes. Must be set to sizeof(ChangeFilterStruct),
             /// otherwise the function fails with ERROR_INVALID_PARAMETER.
             /// </summary>
             internal uint size;

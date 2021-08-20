@@ -34,9 +34,9 @@ namespace Chummer
             _objRandom = new Random();
         }
 
-        public ThreadSafeRandom(int Seed)
+        public ThreadSafeRandom(int seed)
         {
-            _objRandom = new Random(Seed);
+            _objRandom = new Random(seed);
         }
 
         public ThreadSafeRandom(Random objRandom)

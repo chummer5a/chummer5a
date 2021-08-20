@@ -31,7 +31,7 @@ namespace Chummer
 {
     public class SustainedObject : IHasInternalId, INotifyPropertyChanged
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private readonly Character _objCharacter;
         private bool _blnSelfSustained = true;

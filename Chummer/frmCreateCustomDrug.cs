@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class frmCreateCustomDrug : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<clsNodeData> _lstSelectedDrugComponents;
         private readonly List<ListItem> _lstGrade = new List<ListItem>(10);

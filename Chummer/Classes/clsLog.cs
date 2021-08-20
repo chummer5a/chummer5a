@@ -31,7 +31,7 @@ namespace Chummer
     [Obsolete("Use NLog instead: private static Logger Log = NLog.LogManager.GetCurrentClassLogger();")]
     public static class Log
     {
-        private static StreamWriter s_LogWriter;
+        private static StreamWriter _logWriter;
         private static readonly object s_LogWriterLock = new object();
 
         static Log()
@@ -41,30 +41,30 @@ namespace Chummer
             sw.TaskEnd("log open");
         }
 
-        private static bool s_blnIsLoggerEnabled;
+        private static bool _blnIsLoggerEnabled;
 
         public static bool IsLoggerEnabled
         {
-            get => s_blnIsLoggerEnabled;
+            get => _blnIsLoggerEnabled;
             set
             {
                 lock (s_LogWriterLock)
                 {
-                    if (s_blnIsLoggerEnabled != value)
+                    if (_blnIsLoggerEnabled != value)
                     {
                         // Sets up logging information
                         if (value)
                         {
-                            s_LogWriter = new StreamWriter(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
+                            _logWriter = new StreamWriter(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
                         }
                         // This will disabled logging and free any resources used by it
-                        else if (s_LogWriter != null)
+                        else if (_logWriter != null)
                         {
-                            s_LogWriter.Flush();
-                            s_LogWriter.Close();
+                            _logWriter.Flush();
+                            _logWriter.Close();
                         }
 
-                        s_blnIsLoggerEnabled = value;
+                        _blnIsLoggerEnabled = value;
                     }
                 }
             }
@@ -104,7 +104,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
         )
         {
-            writeLog(("Entering " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
+            WriteLog(("Entering " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
         )
         {
-            writeLog(("Exiting " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
+            WriteLog(("Exiting " + info).Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
             )
         {
-            writeLog(info?.Select(x => x.ToString()), file ?? String.Empty, method, line, LogLevel.Error);
+            WriteLog(info?.Select(x => x.ToString()), file ?? String.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
             )
         {
-            writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Error);
+            WriteLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Error);
         }
 
         /// <summary>
@@ -180,7 +180,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
         )
         {
-            writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
+            WriteLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Debug);
         }
 
         /// <summary>
@@ -199,7 +199,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
         )
         {
-            writeLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Trace);
+            WriteLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Trace);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
         )
         {
-            writeLog(EnumerableExtensions.ToEnumerable(exception.ToString(), info?.ToString() ?? string.Empty), file ?? string.Empty, method, line, LogLevel.Trace);
+            WriteLog(EnumerableExtensions.ToEnumerable(exception.ToString(), info?.ToString() ?? string.Empty), file ?? string.Empty, method, line, LogLevel.Trace);
         }
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Chummer
                 return;
             if (exception == null)
                 throw new ArgumentNullException(nameof(exception));
-            writeLog(
+            WriteLog(
                 EnumerableExtensions.ToEnumerable(message, exception.ToString(), exception.StackTrace),
                 exception.Source,
                 exception.TargetSite.Name,
@@ -259,7 +259,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
             )
         {
-            writeLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Warn);
+            WriteLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -278,7 +278,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
             )
         {
-            writeLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Warn);
+            WriteLog(info?.ToString().Yield(), file ?? string.Empty, method, line, LogLevel.Warn);
         }
 
         /// <summary>
@@ -297,7 +297,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
             )
         {
-            writeLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Info);
+            WriteLog(info?.Select(x => x.ToString()), file ?? string.Empty, method, line, LogLevel.Info);
         }
 
         /// <summary>
@@ -316,7 +316,7 @@ namespace Chummer
             [CallerLineNumber] int line = 0
             )
         {
-            writeLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Info);
+            WriteLog(info.Yield(), file ?? string.Empty, method, line, LogLevel.Info);
         }
 
         public enum LogLevel
@@ -330,7 +330,7 @@ namespace Chummer
             Fatal
         }
 
-        private static void writeLog(IEnumerable<string> info, string file, string method, int line, LogLevel loglevel)
+        private static void WriteLog(IEnumerable<string> info, string file, string method, int line, LogLevel loglevel)
         {
             if (!IsLoggerEnabled)
                 return;
@@ -360,7 +360,7 @@ namespace Chummer
 
             string strTimeStamp = sbdTimeStamper.ToString();
             lock (s_LogWriterLock)
-                s_LogWriter?.WriteLine(strTimeStamp);
+                _logWriter?.WriteLine(strTimeStamp);
             sw.TaskEnd("filewrite");
             System.Diagnostics.Trace.WriteLine(strTimeStamp);
             sw.TaskEnd("screenwrite");
@@ -372,7 +372,7 @@ namespace Chummer
             if (IsLoggerEnabled)
             {
                 lock (s_LogWriterLock)
-                    s_LogWriter?.WriteLine("First chance exception: " + e?.Exception);
+                    _logWriter?.WriteLine("First chance exception: " + e?.Exception);
             }
         }
     }

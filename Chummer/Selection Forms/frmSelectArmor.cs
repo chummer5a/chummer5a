@@ -37,7 +37,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private decimal _decMarkup;
         private Armor _objSelectedArmor;
 
@@ -115,8 +115,8 @@ namespace Chummer
             cboCategory.PopulateWithListItems(_lstCategory);
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (!string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedValue = _strSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -529,7 +529,7 @@ namespace Chummer
             }
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                     ? cboCategory.SelectedValue?.ToString()
                     : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + "]/category")?.InnerText;
                 _strSelectedArmor = strSelectedId;

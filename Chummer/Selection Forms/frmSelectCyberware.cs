@@ -31,7 +31,7 @@ namespace Chummer
 {
     public partial class frmSelectCyberware : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly Character _objCharacter;
         private List<Grade> _lstGrades;
         private readonly string _strNoneGradeId;

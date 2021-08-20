@@ -21,7 +21,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersOptions : UserControl
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private bool? LoginStatus;
 
         private static SINnerVisibility _SINnerVisibility;
@@ -188,7 +188,7 @@ namespace ChummerHub.Client.UI
 
             if (StaticUtils.UserRoles?.Count == 0)
             {
-                _ = Chummer.Utils.StartSTATask(
+                _ = Chummer.Utils.StartStaTask(
                     async () =>
                     {
                         var roles = await GetRolesStatus(this);
@@ -376,7 +376,7 @@ namespace ChummerHub.Client.UI
                 StaticUtils.AuthorizationCookieContainer = null;
                 LoginStatus = false;
                 bLogin.Text = "Login";
-                _ = Chummer.Utils.StartSTATask(
+                _ = Chummer.Utils.StartStaTask(
                     async () =>
                     {
                         try
@@ -427,7 +427,7 @@ namespace ChummerHub.Client.UI
                     Invoke((Action) (() =>
                         {
                             frmWebBrowser.ShowDialog(Program.MainForm);
-                            _ = Chummer.Utils.StartSTATask(
+                            _ = Chummer.Utils.StartStaTask(
                                 async () =>
                                 {
                                     await GetRolesStatus(this);
@@ -439,7 +439,7 @@ namespace ChummerHub.Client.UI
                 else
                 {
                     frmWebBrowser.ShowDialog(Program.MainForm);
-                    _ = Chummer.Utils.StartSTATask(
+                    _ = Chummer.Utils.StartStaTask(
                         async () =>
                         {
                             await GetRolesStatus(this);

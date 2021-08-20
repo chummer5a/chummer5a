@@ -28,7 +28,7 @@ namespace Chummer
     {
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
         //public IOperationHolder<RequestTelemetry> myOperationRequestHolder { get; set; }
-        public TelemetryClient tc { get; set; }
+        public TelemetryClient MyTelemetryClient { get; set; }
 
         public DependencyTelemetry MyDependencyTelemetry { get; private set; }
         public RequestTelemetry MyRequestTelemetry { get; private set; }
@@ -53,22 +53,22 @@ namespace Chummer
                 Start();
                 return;
             }
-            tc = new TelemetryClient();
+            MyTelemetryClient = new TelemetryClient();
             Start();
             switch (operationType)
             {
                 case OperationType.DependencyOperation:
                     MyDependencyTelemetry = new DependencyTelemetry(operationName, MyTelemetryTarget, null, null, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                     MyDependencyTelemetry.Context.Operation.Id = Id;
-                    tc.Context.Operation.Id = MyDependencyTelemetry.Context.Operation.Id;
+                    MyTelemetryClient.Context.Operation.Id = MyDependencyTelemetry.Context.Operation.Id;
                     break;
 
                 case OperationType.RequestOperation:
                     MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                     MyRequestTelemetry.Context.Operation.Id = Id;
-                    tc.Context.Operation.Id = MyRequestTelemetry.Context.Operation.Id;
-                    if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
-                        MyRequestTelemetry.Url = Uriresult;
+                    MyTelemetryClient.Context.Operation.Id = MyRequestTelemetry.Context.Operation.Id;
+                    if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri uriResult))
+                        MyRequestTelemetry.Url = uriResult;
                     break;
 
                 default:
@@ -82,7 +82,7 @@ namespace Chummer
             {
                 MyOperationType = parentActivity.MyOperationType;
                 SetParentId(parentActivity.Id ?? string.Empty);
-                tc = parentActivity.tc;
+                MyTelemetryClient = parentActivity.MyTelemetryClient;
                 MyTelemetryTarget = parentActivity.MyTelemetryTarget;
                 switch (MyOperationType)
                 {
@@ -94,8 +94,8 @@ namespace Chummer
                     case OperationType.RequestOperation:
                         MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
                         MyRequestTelemetry.Context.Operation.ParentId = ParentId;
-                        if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri Uriresult))
-                            MyRequestTelemetry.Url = Uriresult;
+                        if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri uriResult))
+                            MyRequestTelemetry.Url = uriResult;
                         break;
 
                     default:
@@ -137,14 +137,14 @@ namespace Chummer
                     MyDependencyTelemetry.Duration = DateTimeOffset.UtcNow - MyDependencyTelemetry.Timestamp;
                     if (MyDependencyTelemetry.ResultCode == "not disposed")
                         MyDependencyTelemetry.ResultCode = "OK";
-                    tc.TrackDependency(MyDependencyTelemetry);
+                    MyTelemetryClient.TrackDependency(MyDependencyTelemetry);
                     break;
 
                 case OperationType.RequestOperation:
                     MyRequestTelemetry.Duration = DateTimeOffset.UtcNow - MyRequestTelemetry.Timestamp;
                     if (MyRequestTelemetry.ResponseCode == "not disposed")
                         MyRequestTelemetry.ResponseCode = "OK";
-                    tc.TrackRequest(MyRequestTelemetry);
+                    MyTelemetryClient.TrackRequest(MyRequestTelemetry);
                     break;
 
                 default:

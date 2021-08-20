@@ -33,7 +33,7 @@ namespace Chummer
 {
     public partial class frmCharacterOptions : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private readonly CharacterOptions _objCharacterOptions;
         private CharacterOptions _objReferenceCharacterOptions;
         private readonly List<ListItem> _lstSettings = new List<ListItem>();
@@ -1163,7 +1163,7 @@ namespace Chummer
             chkIgnoreArt.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IgnoreArt));
             chkIgnoreComplexFormLimit.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.IgnoreComplexFormLimit));
             chkUnarmedSkillImprovements.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.UnarmedImprovementsApplyToWeapons));
-            chkMysAdPp.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptAllowPPCareer));
+            chkMysAdPp.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.MysAdeptAllowPpCareer));
             chkMysAdPp.DoOneWayNegatableDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));
             chkPrioritySpellsAsAdeptPowers.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.PrioritySpellsAsAdeptPowers));
             chkPrioritySpellsAsAdeptPowers.DoOneWayNegatableDataBinding("Enabled", _objCharacterOptions, nameof(CharacterOptions.MysAdeptSecondMAGAttribute));

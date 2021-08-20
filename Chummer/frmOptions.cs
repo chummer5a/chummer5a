@@ -35,7 +35,7 @@ namespace Chummer
 {
     public partial class frmOptions : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         // List of custom data directories possible to be added to a character
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
@@ -85,7 +85,7 @@ namespace Chummer
             SetDefaultValueForSheetLanguageList();
             PopulateXsltList();
             SetDefaultValueForXsltList();
-            PopulatePDFParameters();
+            PopulatePdfParameters();
 
             _blnLoading = false;
 
@@ -862,7 +862,7 @@ namespace Chummer
                 cboSheetLanguage.SelectedValue = _strSelectedLanguage;
             }
 
-            PopulatePDFParameters();
+            PopulatePdfParameters();
             PopulateCustomDataDirectoryListBox();
             PopulateApplicationInsightsOptions();
             PopulateColorModes();
@@ -972,7 +972,7 @@ namespace Chummer
             chkPrintNotes.Checked = GlobalOptions.PrintNotes;
             chkPrintSkillsWithZeroRating.Checked = GlobalOptions.PrintSkillsWithZeroRating;
             nudBrowserVersion.Value = GlobalOptions.EmulatedBrowserVersion;
-            txtPDFAppPath.Text = GlobalOptions.PDFAppPath;
+            txtPDFAppPath.Text = GlobalOptions.PdfAppPath;
             cmdRemovePDFAppPath.Enabled = txtPDFAppPath.TextLength > 0;
             txtCharacterRosterPath.Text = GlobalOptions.CharacterRosterPath;
             cmdRemoveCharacterRoster.Enabled = txtCharacterRosterPath.TextLength > 0;
@@ -1038,8 +1038,8 @@ namespace Chummer
             GlobalOptions.PrintNotes = chkPrintNotes.Checked;
             GlobalOptions.PrintSkillsWithZeroRating = chkPrintSkillsWithZeroRating.Checked;
             GlobalOptions.EmulatedBrowserVersion = decimal.ToInt32(nudBrowserVersion.Value);
-            GlobalOptions.PDFAppPath = txtPDFAppPath.Text;
-            GlobalOptions.PDFParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
+            GlobalOptions.PdfAppPath = txtPDFAppPath.Text;
+            GlobalOptions.PdfParameters = cboPDFParameters.SelectedValue?.ToString() ?? string.Empty;
             GlobalOptions.LifeModuleEnabled = chkLifeModule.Checked;
             GlobalOptions.PreferNightlyBuilds = chkPreferNightlyBuilds.Checked;
             GlobalOptions.CharacterRosterPath = txtCharacterRosterPath.Text;
@@ -1136,7 +1136,7 @@ namespace Chummer
             nudMugshotCompressionQuality.Enabled = Equals(cboMugshotCompression.SelectedValue, ImageFormat.Jpeg);
         }
 
-        private void PopulatePDFParameters()
+        private void PopulatePdfParameters()
         {
             List<ListItem> lstPdfParameters = new List<ListItem>();
 
@@ -1146,7 +1146,7 @@ namespace Chummer
             {
                 string strValue = objXmlNode.SelectSingleNode("value")?.Value;
                 lstPdfParameters.Add(new ListItem(strValue, objXmlNode.SelectSingleNode("translate")?.Value ?? objXmlNode.SelectSingleNode("name")?.Value ?? string.Empty));
-                if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFParameters) && GlobalOptions.PDFParameters == strValue)
+                if (!string.IsNullOrWhiteSpace(GlobalOptions.PdfParameters) && GlobalOptions.PdfParameters == strValue)
                 {
                     intIndex = lstPdfParameters.Count - 1;
                 }

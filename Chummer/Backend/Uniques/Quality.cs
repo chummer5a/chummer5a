@@ -82,7 +82,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
     public class Quality : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, IHasSource, INotifyMultiplePropertyChanged
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;

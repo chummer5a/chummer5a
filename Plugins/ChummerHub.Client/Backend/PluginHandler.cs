@@ -28,7 +28,7 @@ namespace Chummer.Plugins
     //[ExportMetadata("frmCareer", "true")]
     public class PluginHandler : IPlugin
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public static UploadClient MyUploadClient;
         public static IPlugin MyPluginHandlerInstance;
         public static frmChummerMain MainForm;

@@ -52,7 +52,7 @@ namespace Chummer
     [DebuggerDisplay("{" + nameof(Name) + "} ({DisplayRoleMethod(GlobalOptions.DefaultLanguage)})")]
     public sealed class Contact : INotifyMultiplePropertyChanged, IHasName, IHasMugshots, IHasNotes, IHasInternalId
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private string _strName = string.Empty;
         private string _strRole = string.Empty;
         private string _strLocation = string.Empty;
@@ -100,10 +100,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = ContactDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                    lstNamesOfChangedProperties = s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in ContactDependencyGraph.GetWithAllDependents(this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_ContactDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }
@@ -145,7 +145,7 @@ namespace Chummer
             }
         }
 
-        private static readonly DependencyGraph<string, Contact> ContactDependencyGraph =
+        private static readonly DependencyGraph<string, Contact> s_ContactDependencyGraph =
             new DependencyGraph<string, Contact>(
                 new DependencyGraphNode<string, Contact>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Contact>(nameof(LinkedCharacter))

@@ -19,7 +19,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                watcherCharacterRosterFolder?.Dispose();
+                _watcherCharacterRosterFolder?.Dispose();
             }
             base.Dispose(disposing);
         }

@@ -28,7 +28,7 @@ namespace Chummer
 {
     public partial class frmSelectLifestyle : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private bool _blnAddAgain;
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;

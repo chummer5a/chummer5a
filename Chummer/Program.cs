@@ -93,7 +93,7 @@ namespace Chummer
 
                                 string strCommandLineArgumentsJoined =
                                     string.Join("<>", Environment.GetCommandLineArgs());
-                                NativeMethods.COPYDATASTRUCT objData = new NativeMethods.COPYDATASTRUCT();
+                                NativeMethods.CopyDataStruct objData = new NativeMethods.CopyDataStruct();
                                 IntPtr ptrCommandLineArguments = IntPtr.Zero;
                                 try
                                 {
@@ -311,7 +311,7 @@ namespace Chummer
                             //Log an Event with AssemblyVersion and CultureInfo
                             MetricIdentifier objMetricIdentifier = new MetricIdentifier("Chummer", "Program Start",
                                 "Version", "Culture", dimension3Name: "AISetting", dimension4Name: "OSVersion");
-                            string strOSVersion = helpers.Application_Insights.OSVersion.GetOSInfo();
+                            string strOSVersion = helpers.Application_Insights.OsVersion.GetOsInfo();
                             Metric objMetric = ChummerTelemetryClient.GetMetric(objMetricIdentifier);
                             objMetric.TrackValue(1,
                                 Assembly.GetExecutingAssembly().GetName().Version.ToString(),
@@ -464,7 +464,7 @@ namespace Chummer
 
                     if (showMainForm)
                     {
-                        MainForm.MyStartupPVT = pvt;
+                        MainForm.MyStartupPvt = pvt;
                         Application.Run(MainForm);
                     }
 
@@ -537,9 +537,9 @@ namespace Chummer
                     if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
                     {
                         if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
-                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDPIAwareness.Unaware);
+                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDpiAwareness.Unaware);
                         else
-                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.Unaware);
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.Unaware);
                     }
                     break;
                 // System
@@ -547,9 +547,9 @@ namespace Chummer
                     if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
                     {
                         if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
-                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDPIAwareness.System);
+                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDpiAwareness.System);
                         else
-                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.System);
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.System);
                     }
                     else
                         NativeMethods.SetProcessDPIAware();
@@ -559,9 +559,9 @@ namespace Chummer
                     if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
                     {
                         if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext and PerMonitorV2
-                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDPIAwareness.PerMonitorV2);
+                            NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDpiAwareness.PerMonitorV2);
                         else
-                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.PerMonitor);
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.PerMonitor);
                     }
                     else
                         NativeMethods.SetProcessDPIAware(); // System as backup, because it's better than remaining unaware if we want PerMonitor/PerMonitorV2
@@ -574,11 +574,11 @@ namespace Chummer
                         {
                             NativeMethods.SetProcessDpiAwarenessContext(
                                 Environment.OSVersion.Version >= new Version(10, 0, 17763)
-                                    ? NativeMethods.ContextDPIAwareness.UnawareGdiScaled // Windows 10 Version 1809 Added GDI+ Scaling
-                                    : NativeMethods.ContextDPIAwareness.System); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
+                                    ? NativeMethods.ContextDpiAwareness.UnawareGdiScaled // Windows 10 Version 1809 Added GDI+ Scaling
+                                    : NativeMethods.ContextDpiAwareness.System); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
                         }
                         else
-                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDPIAwareness.System);
+                            NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.System);
                     }
                     else
                         NativeMethods.SetProcessDPIAware(); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling

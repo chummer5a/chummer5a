@@ -682,7 +682,7 @@ namespace Chummer
             }
         };
 
-        private static readonly Regex rgxExtraFileSpecifierExpression = new Regex(@"^(\[([a-z])+\.xml\])",
+        private static readonly Regex s_RgxExtraFileSpecifierExpression = new Regex(@"^(\[([a-z])+\.xml\])",
             RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         public static string MAGAdeptString(string strLanguage = "", bool blnLong = false)
@@ -813,7 +813,7 @@ namespace Chummer
 
                     default:
                         strReturn = strExtra;
-                        Match objFileSpecifier = rgxExtraFileSpecifierExpression.Match(strReturn);
+                        Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Match(strReturn);
                         if (objFileSpecifier.Success)
                         {
                             strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();
@@ -987,7 +987,7 @@ namespace Chummer
                 return "None";
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
-            Match objFileSpecifier = rgxExtraFileSpecifierExpression.Match(strReturn);
+            Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Match(strReturn);
             if (objFileSpecifier.Success)
             {
                 strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();

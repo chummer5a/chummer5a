@@ -44,7 +44,7 @@ namespace Chummer
     public sealed partial class frmChummerMain : Form
     {
         private bool _blnAbleToReceiveData;
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private frmDiceRoller _frmRoller;
         private frmLoading _frmProgressBar;
         private frmUpdate _frmUpdate;
@@ -141,20 +141,20 @@ namespace Chummer
         //in case of a commandline argument not asking for the mainform to be shown.
         private async void frmChummerMain_Load(object sender, EventArgs e)
         {
-            using (var op_frmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
+            using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron("frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation, _strCurrentVersion))
             {
                 try
                 {
-                    op_frmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
-                    op_frmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
+                    opFrmChummerMain.MyDependencyTelemetry.Type = "loadfrmChummerMain";
+                    opFrmChummerMain.MyDependencyTelemetry.Target = _strCurrentVersion;
 
-                    if (MyStartupPVT != null)
+                    if (MyStartupPvt != null)
                     {
-                        MyStartupPVT.Duration = DateTimeOffset.UtcNow - MyStartupPVT.Timestamp;
-                        op_frmChummerMain.tc.TrackPageView(MyStartupPVT);
+                        MyStartupPvt.Duration = DateTimeOffset.UtcNow - MyStartupPvt.Timestamp;
+                        opFrmChummerMain.MyTelemetryClient.TrackPageView(MyStartupPvt);
                     }
 
-                    NativeMethods.CHANGEFILTERSTRUCT changeFilter = new NativeMethods.CHANGEFILTERSTRUCT();
+                    NativeMethods.ChangeFilterStruct changeFilter = new NativeMethods.ChangeFilterStruct();
                     changeFilter.size = (uint)Marshal.SizeOf(changeFilter);
                     changeFilter.info = 0;
                     if (NativeMethods.ChangeWindowMessageFilterEx(Handle, NativeMethods.WM_COPYDATA,
@@ -178,7 +178,7 @@ namespace Chummer
                     CheckForUpdate();
 #endif
 
-                    GlobalOptions.MRUChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMRUToolstripMenu(senderInner, eInner));
+                    GlobalOptions.MruChanged += (senderInner, eInner) => this.DoThreadSafe(() => PopulateMruToolstripMenu(senderInner, eInner));
 
                     // Delete the old executable if it exists (created by the update process).
                     foreach (string strLoopOldFilePath in Directory.GetFiles(Utils.GetStartupPath, "*.old", SearchOption.AllDirectories))
@@ -187,7 +187,7 @@ namespace Chummer
                     }
 
                     // Populate the MRU list.
-                    PopulateMRUToolstripMenu(this, null);
+                    PopulateMruToolstripMenu(this, null);
 
                     Program.MainForm = this;
 
@@ -216,7 +216,7 @@ namespace Chummer
                             }
 
                             // Attempt to cache all XML files that are used the most.
-                            using (_ = Timekeeper.StartSyncron("cache_load", op_frmChummerMain))
+                            using (_ = Timekeeper.StartSyncron("cache_load", opFrmChummerMain))
                             {
                                 await Task.WhenAll(s_PreloadFileNames.Select(x => Task.Run(() =>
                                 {
@@ -239,11 +239,11 @@ namespace Chummer
                             bool blnShowTest = false;
                             if (!Utils.IsUnitTest)
                             {
-                                ProcessCommandLineArguments(strArgs, out blnShowTest, out HashSet<string> setFilesToLoad, op_frmChummerMain);
+                                ProcessCommandLineArguments(strArgs, out blnShowTest, out HashSet<string> setFilesToLoad, opFrmChummerMain);
 
                                 if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                 {
-                                    bool blnAnyAutosaveInMRU = GlobalOptions.MostRecentlyUsedCharacters.Count == 0 &&
+                                    bool blnAnyAutosaveInMru = GlobalOptions.MostRecentlyUsedCharacters.Count == 0 &&
                                                                GlobalOptions.FavoritedCharacters.Count ==
                                                                0; // Always process newest autosave if all MRUs are empty
                                     FileInfo objMostRecentAutosave = null;
@@ -275,7 +275,7 @@ namespace Chummer
                                                 Path.GetFileName(x) == objAutosave.Name) ||
                                             GlobalOptions.FavoritedCharacters.Any(x =>
                                                 Path.GetFileName(x) == objAutosave.Name))
-                                            blnAnyAutosaveInMRU = true;
+                                            blnAnyAutosaveInMru = true;
                                         else if (objAutosave != objMostRecentAutosave &&
                                                  objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold &&
                                                  !setFilesToLoad.Contains(strAutosave))
@@ -285,7 +285,7 @@ namespace Chummer
                                     if (objMostRecentAutosave != null)
                                     {
                                         // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                        if (blnAnyAutosaveInMRU &&
+                                        if (blnAnyAutosaveInMru &&
                                             !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
                                             GlobalOptions.MostRecentlyUsedCharacters.All(x =>
                                                 Path.GetFileName(x) != objMostRecentAutosave.Name) &&
@@ -357,7 +357,7 @@ namespace Chummer
                             }
                         }
 
-                        Program.PluginLoader.CallPlugins(toolsMenu, op_frmChummerMain);
+                        Program.PluginLoader.CallPlugins(toolsMenu, opFrmChummerMain);
 
                         // Set the Tag for each ToolStrip item so it can be translated.
                         foreach (ToolStripMenuItem tssItem in menuStrip.Items.OfType<ToolStripMenuItem>())
@@ -380,10 +380,10 @@ namespace Chummer
                 }
                 catch (Exception ex)
                 {
-                    if (op_frmChummerMain != null)
+                    if (opFrmChummerMain != null)
                     {
-                        op_frmChummerMain.SetSuccess(false);
-                        op_frmChummerMain.tc.TrackException(ex);
+                        opFrmChummerMain.SetSuccess(false);
+                        opFrmChummerMain.MyTelemetryClient.TrackException(ex);
                     }
                     Log.Error(ex);
                     throw;
@@ -440,7 +440,7 @@ namespace Chummer
             IsFinishedLoading = true;
         }
 
-        public PageViewTelemetry MyStartupPVT { get; set; }
+        public PageViewTelemetry MyStartupPvt { get; set; }
 
         private async void LstOpenCharacterFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -456,7 +456,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Remove:
                     {
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
-                        await CharacterRoster.RefreshMRULists(e.OldItems.Cast<CharacterShared>().Any(objClosedForm =>
+                        await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>().Any(objClosedForm =>
                             GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                             ? "stickymru"
                             : "mru");
@@ -466,7 +466,7 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Replace:
                     {
                         // Need a full refresh because the recents list in the character roster also shows open characters that are not in the most recently used list because of it being too full
-                        await CharacterRoster.RefreshMRULists(e.OldItems.Cast<CharacterShared>()
+                        await CharacterRoster.RefreshMruLists(e.OldItems.Cast<CharacterShared>()
                             .Concat(e.NewItems.Cast<CharacterShared>()).Any(objClosedForm =>
                                 GlobalOptions.FavoritedCharacters.Contains(objClosedForm.CharacterObject.FileName))
                             ? "stickymru"
@@ -475,7 +475,7 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    await CharacterRoster.RefreshMRULists(string.Empty);
+                    await CharacterRoster.RefreshMruLists(string.Empty);
                     break;
             }
         }
@@ -919,32 +919,29 @@ namespace Chummer
             (tabForms.SelectedTab?.Tag as Form)?.Select();
         }
 
-        public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMRU)
+        public bool SwitchToOpenCharacter(Character objCharacter, bool blnIncludeInMru)
         {
-            if (objCharacter != null)
+            if (objCharacter == null)
+                return false;
+            Form objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
+            if (objCharacterForm != null)
             {
-                Form objCharacterForm = OpenCharacterForms.FirstOrDefault(x => x.CharacterObject == objCharacter);
-                if (objCharacterForm != null)
+                foreach (TabPage objTabPage in tabForms.TabPages)
                 {
-                    foreach (TabPage objTabPage in tabForms.TabPages)
-                    {
-                        if (objTabPage.Tag == objCharacterForm)
-                        {
-                            tabForms.SelectTab(objTabPage);
-                            if (_mascotChummy != null)
-                                _mascotChummy.CharacterObject = objCharacter;
-                            return true;
-                        }
-                    }
-                }
-                if (OpenCharacters.Contains(objCharacter))
-                {
-                    using (new CursorWait(this))
-                        OpenCharacter(objCharacter, blnIncludeInMRU);
+                    if (objTabPage.Tag != objCharacterForm)
+                        continue;
+                    tabForms.SelectTab(objTabPage);
+                    if (_mascotChummy != null)
+                        _mascotChummy.CharacterObject = objCharacter;
                     return true;
                 }
             }
-            return false;
+
+            if (!OpenCharacters.Contains(objCharacter))
+                return false;
+            using (new CursorWait(this))
+                OpenCharacter(objCharacter, blnIncludeInMru);
+            return true;
         }
 
         public void UpdateCharacterTabTitle(object sender, PropertyChangedEventArgs e)
@@ -1159,7 +1156,7 @@ namespace Chummer
 
         #region Methods
 
-        private static bool showDevWarningAboutDebuggingOnlyOnce = true;
+        private static bool _blnShowDevWarningAboutDebuggingOnlyOnce = true;
 
         /// <summary>
         /// This makes sure, that the MessageBox is shown in the UI Thread.
@@ -1191,9 +1188,9 @@ namespace Chummer
 
             if (owner.InvokeRequired)
             {
-                if ((showDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
+                if ((_blnShowDevWarningAboutDebuggingOnlyOnce) && (Debugger.IsAttached))
                 {
-                    showDevWarningAboutDebuggingOnlyOnce = false;
+                    _blnShowDevWarningAboutDebuggingOnlyOnce = false;
                     //it works on my installation even in the debugger, so maybe we can ignore that...
                     //WARNING from the link above (you can edit that out if it's not causing problem):
                     //
@@ -1361,17 +1358,17 @@ namespace Chummer
         /// <summary>
         /// Opens the correct window for a single character (not thread-safe).
         /// </summary>
-        public void OpenCharacter(Character objCharacter, bool blnIncludeInMRU = true)
+        public void OpenCharacter(Character objCharacter, bool blnIncludeInMru = true)
         {
-            OpenCharacterList(objCharacter.Yield(), blnIncludeInMRU);
+            OpenCharacterList(objCharacter.Yield(), blnIncludeInMru);
         }
 
         /// <summary>
         /// Open the correct windows for a list of characters (not thread-safe).
         /// </summary>
         /// <param name="lstCharacters">Characters for which windows should be opened.</param>
-        /// <param name="blnIncludeInMRU">Added the opened characters to the Most Recently Used list.</param>
-        public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMRU = true)
+        /// <param name="blnIncludeInMru">Added the opened characters to the Most Recently Used list.</param>
+        public void OpenCharacterList(IEnumerable<Character> lstCharacters, bool blnIncludeInMru = true)
         {
             if (lstCharacters == null)
                 return;
@@ -1412,7 +1409,7 @@ namespace Chummer
                         frmNewCharacter.Show();
                         lstNewFormsToProcess.Add(frmNewCharacter);
                     });
-                    if (blnIncludeInMRU && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
+                    if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName) && File.Exists(objCharacter.FileName))
                         GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCharacter.FileName);
 
                     UpdateCharacterTabTitle(objCharacter,
@@ -1588,7 +1585,7 @@ namespace Chummer
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
-        public void PopulateMRUToolstripMenu(object sender, TextEventArgs e)
+        public void PopulateMruToolstripMenu(object sender, TextEventArgs e)
         {
             SuspendLayout();
             mnuFileMRUSeparator.Visible = GlobalOptions.FavoritedCharacters.Count > 0
@@ -1791,7 +1788,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     // Extract the file name
-                    NativeMethods.COPYDATASTRUCT objReceivedData = (NativeMethods.COPYDATASTRUCT)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.COPYDATASTRUCT));
+                    NativeMethods.CopyDataStruct objReceivedData = (NativeMethods.CopyDataStruct)Marshal.PtrToStructure(m.LParam, typeof(NativeMethods.CopyDataStruct));
                     if (objReceivedData.dwData == Program.CommandLineArgsDataTypeId)
                     {
                         string strParam = Marshal.PtrToStringUni(objReceivedData.lpData);
@@ -1801,7 +1798,7 @@ namespace Chummer
 
                         if (Directory.Exists(Utils.GetAutosavesFolderPath))
                         {
-                            bool blnAnyAutosaveInMRU = GlobalOptions.MostRecentlyUsedCharacters.Count == 0 &&
+                            bool blnAnyAutosaveInMru = GlobalOptions.MostRecentlyUsedCharacters.Count == 0 &&
                                                        GlobalOptions.FavoritedCharacters.Count ==
                                                        0; // Always process newest autosave if all MRUs are empty
                             FileInfo objMostRecentAutosave = null;
@@ -1830,13 +1827,13 @@ namespace Chummer
                                         Path.GetFileName(x) == objAutosave.Name) ||
                                     GlobalOptions.FavoritedCharacters.Any(x =>
                                         Path.GetFileName(x) == objAutosave.Name))
-                                    blnAnyAutosaveInMRU = true;
+                                    blnAnyAutosaveInMru = true;
                             }
 
                             if (objMostRecentAutosave != null)
                             {
                                 // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                if (blnAnyAutosaveInMRU &&
+                                if (blnAnyAutosaveInMru &&
                                     !setFilesToLoad.Contains(objMostRecentAutosave.FullName) &&
                                     GlobalOptions.MostRecentlyUsedCharacters.All(x =>
                                         Path.GetFileName(x) != objMostRecentAutosave.Name) &&
@@ -1892,7 +1889,7 @@ namespace Chummer
             TopMost = blnOldTopMost;
         }
 
-        private static void ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity op_LoadActivity = null)
+        private static void ProcessCommandLineArguments(string[] strArgs, out bool blnShowTest, out HashSet<string> setFilesToLoad, CustomActivity opLoadActivity = null)
         {
             blnShowTest = false;
             setFilesToLoad = new HashSet<string>(strArgs.Length);
@@ -1955,14 +1952,14 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                if (op_LoadActivity != null)
+                if (opLoadActivity != null)
                 {
-                    op_LoadActivity.SetSuccess(false);
+                    opLoadActivity.SetSuccess(false);
                     ExceptionTelemetry ext = new ExceptionTelemetry(ex)
                     {
                         SeverityLevel = SeverityLevel.Warning
                     };
-                    op_LoadActivity.tc.TrackException(ext);
+                    opLoadActivity.MyTelemetryClient.TrackException(ext);
                 }
                 Log.Warn(ex);
             }

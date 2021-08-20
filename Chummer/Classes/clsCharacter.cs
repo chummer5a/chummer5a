@@ -57,7 +57,7 @@ namespace Chummer
     public sealed class Character : INotifyMultiplePropertyChanged, IHasMugshots, IHasName, IHasSource
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private XmlNode _oldSkillsBackup;
         private XmlNode _oldSkillGroupBackup;
         private string _strFileName = string.Empty;
@@ -485,7 +485,7 @@ namespace Chummer
                 case nameof(CharacterOptions.AllowInitiationInCreateMode):
                     OnPropertyChanged(nameof(AddInitiationsAllowed));
                     break;
-                case nameof(CharacterOptions.MysAdeptAllowPPCareer):
+                case nameof(CharacterOptions.MysAdeptAllowPpCareer):
                     OnPropertyChanged(nameof(MysAdeptAllowPPCareer));
                     break;
                 case nameof(CharacterOptions.MysAdeptSecondMAGAttribute):
@@ -16759,7 +16759,7 @@ namespace Chummer
         /// <summary>
         /// Whether this character is a Mystic Adept uses PPs and can purchase PPs in career mode
         /// </summary>
-        public bool MysAdeptAllowPPCareer => UseMysticAdeptPPs && Options.MysAdeptAllowPPCareer;
+        public bool MysAdeptAllowPPCareer => UseMysticAdeptPPs && Options.MysAdeptAllowPpCareer;
 
         /// <summary>
         /// Could this character buy Power Points in career mode if the optional/house rule is enabled

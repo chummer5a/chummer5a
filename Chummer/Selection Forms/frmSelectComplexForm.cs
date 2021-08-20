@@ -140,10 +140,10 @@ namespace Chummer
                     break;
             }
 
-            string strFV = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
+            string strFv = xmlComplexForm.SelectSingleNode("fv")?.Value.Replace('/', '÷') ?? string.Empty;
             if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                strFV = strFV.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))
+                strFv = strFv.CheapReplace("L", () => LanguageManager.GetString("String_ComplexFormLevel"))
                     .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
                     .CheapReplace("Damage Value", () => LanguageManager.GetString("String_SpellDamageValue"))
                     .CheapReplace("Toxin DV", () => LanguageManager.GetString("String_SpellToxinDV"))
@@ -151,7 +151,7 @@ namespace Chummer
                     .CheapReplace("Radiation Power", () => LanguageManager.GetString("String_SpellRadiationPower"));
             }
 
-            lblFV.Text = strFV;
+            lblFV.Text = strFv;
 
             string strSource = xmlComplexForm.SelectSingleNode("source")?.Value ??
                                LanguageManager.GetString("String_Unknown");

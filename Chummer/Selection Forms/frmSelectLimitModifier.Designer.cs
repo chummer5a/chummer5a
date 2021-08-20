@@ -68,7 +68,7 @@ namespace Chummer
             this.txtName.Name = "txtName";
             this.txtName.Size = new System.Drawing.Size(260, 20);
             this.txtName.TabIndex = 0;
-            this.txtName.TextChanged += new System.EventHandler(this.ToggleOKEnabled);
+            this.txtName.TextChanged += new System.EventHandler(this.ToggleOkEnabled);
             // 
             // cmdOK
             // 
@@ -162,7 +162,7 @@ namespace Chummer
             this.cboLimit.Size = new System.Drawing.Size(260, 21);
             this.cboLimit.TabIndex = 13;
             this.cboLimit.TooltipText = "";
-            this.cboLimit.SelectedIndexChanged += new System.EventHandler(this.ToggleOKEnabled);
+            this.cboLimit.SelectedIndexChanged += new System.EventHandler(this.ToggleOkEnabled);
             // 
             // lblLimit
             // 

@@ -32,7 +32,7 @@ namespace Chummer
     public class CenterableMessageBox
     {
         private static IWin32Window _owner;
-        private static readonly NativeMethods.HookProc _hookProc;
+        private static readonly NativeMethods.HookProc s_HookProc;
         private static IntPtr _hHook;
 
         public static DialogResult Show(string text)
@@ -130,7 +130,7 @@ namespace Chummer
         }
 
         [StructLayout(LayoutKind.Sequential)]
-        public struct CWPRETSTRUCT
+        public struct CwpRetStruct
         {
             public IntPtr lResult;
             public IntPtr lParam;
@@ -141,7 +141,7 @@ namespace Chummer
 
         static CenterableMessageBox()
         {
-            _hookProc = MessageBoxHookProc;
+            s_HookProc = MessageBoxHookProc;
             _hHook = IntPtr.Zero;
         }
 
@@ -154,7 +154,7 @@ namespace Chummer
 
             if (_owner != null)
             {
-                _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, _hookProc, IntPtr.Zero, Thread.CurrentThread.ManagedThreadId);
+                _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, s_HookProc, IntPtr.Zero, Thread.CurrentThread.ManagedThreadId);
             }
         }
 
@@ -165,7 +165,7 @@ namespace Chummer
                 return NativeMethods.CallNextHookEx(_hHook, nCode, wParam, lParam);
             }
 
-            CWPRETSTRUCT msg = (CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(CWPRETSTRUCT));
+            CwpRetStruct msg = (CwpRetStruct)Marshal.PtrToStructure(lParam, typeof(CwpRetStruct));
             IntPtr hook = _hHook;
 
             if (msg.message == (int)CbtHookAction.HCBT_ACTIVATE)

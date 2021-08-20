@@ -37,7 +37,7 @@ namespace Chummer
         private string _strForceSpell = string.Empty;
         private bool _blnCanGenericSpellBeFree;
         private bool _blnCanTouchOnlySpellBeFree;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
 
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
@@ -119,10 +119,10 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
-                cboCategory.SelectedValue = s_StrSelectCategory;
+                cboCategory.SelectedValue = _strSelectCategory;
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
@@ -460,7 +460,7 @@ namespace Chummer
             }
 
             _strSelectedSpell = strSelectedItem;
-            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()
                 : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + _strSelectedSpell.CleanXPath() + "]/category")?.Value ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;

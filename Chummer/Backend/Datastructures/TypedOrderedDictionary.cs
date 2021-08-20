@@ -587,7 +587,7 @@ namespace Chummer
             // A copy of the SimpleDictionary object's key/value pairs.
             private readonly TypedOrderedDictionary<TKey, TValue> _dicMyDictionary;
 
-            private int intIndex = -1;
+            private int _intIndex = -1;
 
             public TypedOrderedDictionaryEnumerator(TypedOrderedDictionary<TKey, TValue> dictionary)
             {
@@ -600,7 +600,7 @@ namespace Chummer
                 get
                 {
                     ValidateIndex();
-                    return _dicMyDictionary[intIndex];
+                    return _dicMyDictionary[_intIndex];
                 }
             }
 
@@ -613,7 +613,7 @@ namespace Chummer
                 get
                 {
                     ValidateIndex();
-                    return _dicMyDictionary[intIndex].Key;
+                    return _dicMyDictionary[_intIndex].Key;
                 }
             }
 
@@ -623,28 +623,28 @@ namespace Chummer
                 get
                 {
                     ValidateIndex();
-                    return _dicMyDictionary[intIndex].Value;
+                    return _dicMyDictionary[_intIndex].Value;
                 }
             }
 
             // Advance to the next item.
             public bool MoveNext()
             {
-                intIndex += 1;
-                return intIndex < _dicMyDictionary.Count;
+                _intIndex += 1;
+                return _intIndex < _dicMyDictionary.Count;
             }
 
             // Validate the enumeration index and throw an exception if the index is out of range.
             private void ValidateIndex()
             {
-                if (intIndex < 0 || intIndex >= _dicMyDictionary.Count)
+                if (_intIndex < 0 || _intIndex >= _dicMyDictionary.Count)
                     throw new InvalidOperationException("Enumerator is before or after the collection.");
             }
 
             // Reset the index to restart the enumeration.
             public void Reset()
             {
-                intIndex = -1;
+                _intIndex = -1;
             }
         }
     }

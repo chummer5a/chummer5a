@@ -39,7 +39,7 @@ namespace Chummer
 
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
 
         #region Control Events
 
@@ -72,11 +72,11 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
             else
             {
-                cboCategory.SelectedValue = s_StrSelectCategory;
+                cboCategory.SelectedValue = _strSelectCategory;
 
                 if (cboCategory.SelectedIndex == -1)
                     cboCategory.SelectedIndex = 0;
@@ -563,7 +563,7 @@ namespace Chummer
                 return;
 
             _strSelectedQuality = strSelectedQuality;
-            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
+            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode.SelectSingleNode("category")?.Value;
             DialogResult = DialogResult.OK;
         }
 

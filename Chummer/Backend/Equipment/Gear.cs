@@ -45,7 +45,7 @@ namespace Chummer.Backend.Equipment
         IHasNotes, ICanSell, IHasLocation, ICanEquip, IHasSource, IHasRating, INotifyMultiplePropertyChanged, ICanSort,
         IHasStolenProperty, ICanPaste, IHasWirelessBonus, IHasGear, ICanBlackMarketDiscount
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -3783,7 +3783,7 @@ namespace Chummer.Backend.Equipment
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
-        private static readonly DependencyGraph<string, Gear> GearDependencyGraph =
+        private static readonly DependencyGraph<string, Gear> s_GearDependencyGraph =
             new DependencyGraph<string, Gear>(
                 new DependencyGraphNode<string, Gear>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, Gear>(nameof(DisplayName),
@@ -3902,10 +3902,10 @@ namespace Chummer.Backend.Equipment
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = GearDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                    lstNamesOfChangedProperties = s_GearDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in GearDependencyGraph.GetWithAllDependents(this,
+                    foreach (string strLoopChangedProperty in s_GearDependencyGraph.GetWithAllDependents(this,
                         strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }

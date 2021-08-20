@@ -274,11 +274,11 @@ namespace Chummer
                 {
                     string exportSheetPath = Path.Combine(Utils.GetStartupPath, "export", _strXslt + ".xsl");
 
-                    XslCompiledTransform objXSLTransform = new XslCompiledTransform();
-                    objXSLTransform.Load(exportSheetPath); // Use the path for the export sheet.
+                    XslCompiledTransform objXslTransform = new XslCompiledTransform();
+                    objXslTransform.Load(exportSheetPath); // Use the path for the export sheet.
                     if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
                         return;
-                    XmlWriterSettings objSettings = objXSLTransform.OutputSettings.Clone();
+                    XmlWriterSettings objSettings = objXslTransform.OutputSettings.Clone();
                     objSettings.CheckCharacters = false;
                     objSettings.ConformanceLevel = ConformanceLevel.Fragment;
 
@@ -286,7 +286,7 @@ namespace Chummer
                     using (MemoryStream objStream = new MemoryStream())
                     {
                         using (XmlWriter objWriter = XmlWriter.Create(objStream, objSettings))
-                            objXSLTransform.Transform(_objCharacterXml, null, objWriter);
+                            objXslTransform.Transform(_objCharacterXml, null, objWriter);
                         if (_objXmlGeneratorCancellationTokenSource.IsCancellationRequested)
                             return;
                         objStream.Position = 0;

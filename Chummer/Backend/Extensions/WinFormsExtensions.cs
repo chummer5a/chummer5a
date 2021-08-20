@@ -31,7 +31,7 @@ namespace Chummer
 {
     public static class WinFormsExtensions
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         #region Controls Extensions
 

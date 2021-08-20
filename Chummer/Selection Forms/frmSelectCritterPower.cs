@@ -30,7 +30,7 @@ namespace Chummer
     {
         private string _strSelectedPower = string.Empty;
         private int _intSelectedRating;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private decimal _decPowerPoints;
         private bool _blnAddAgain;
 
@@ -99,11 +99,11 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
-            else if (cboCategory.Items.Contains(s_StrSelectCategory))
+            else if (cboCategory.Items.Contains(_strSelectCategory))
             {
-                cboCategory.SelectedValue = s_StrSelectCategory;
+                cboCategory.SelectedValue = _strSelectCategory;
             }
 
             if (cboCategory.SelectedIndex == -1)
@@ -402,7 +402,7 @@ namespace Chummer
             if (nudCritterPowerRating.Visible)
                 _intSelectedRating = nudCritterPowerRating.ValueAsInt;
 
-            s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
+            _strSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = strSelectedPower;
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.

@@ -310,7 +310,7 @@ namespace Chummer
             }
         }
 
-        private void UpdateGearInfo(bool blnUpdateMountCBOs = true)
+        private void UpdateGearInfo(bool blnUpdateMountComboBoxes = true)
         {
             if (_blnLoading)
                 return;
@@ -372,7 +372,7 @@ namespace Chummer
                 lblRatingLabel.Visible = true;
             }
 
-            if (blnUpdateMountCBOs)
+            if (blnUpdateMountComboBoxes)
             {
                 string strDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value;
                 List<string> strMounts = new List<string>();

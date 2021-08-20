@@ -1139,9 +1139,9 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSource))
                 return;
             if (string.IsNullOrEmpty(strPdfParameters))
-                strPdfParameters = GlobalOptions.PDFParameters;
+                strPdfParameters = GlobalOptions.PdfParameters;
             if (string.IsNullOrEmpty(strPdfAppPath))
-                strPdfAppPath = GlobalOptions.PDFAppPath;
+                strPdfAppPath = GlobalOptions.PdfAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
@@ -1155,8 +1155,8 @@ namespace Chummer
                         frmOptions.DoLinkPdfReader();
                     if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;
-                    strPdfParameters = GlobalOptions.PDFParameters;
-                    strPdfAppPath = GlobalOptions.PDFAppPath;
+                    strPdfParameters = GlobalOptions.PdfParameters;
+                    strPdfAppPath = GlobalOptions.PdfAppPath;
                 }
             }
 

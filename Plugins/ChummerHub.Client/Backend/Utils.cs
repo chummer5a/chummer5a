@@ -28,7 +28,7 @@ namespace ChummerHub.Client.Backend
 {
     public static class StaticUtils
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         public static Type GetListType(object someList)
         {
@@ -424,7 +424,7 @@ namespace ChummerHub.Client.Backend
 
     public class Utils
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         public Utils()
         {

@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class Chummy : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private const int EyeBallWidth = 20;
         private const int EyeBallHeight = 32;
         private const int DistanceBetweenEyes = 10;
@@ -138,7 +138,7 @@ namespace Chummer
             DrawEye(gr, localPos, x2, _eyeballCenter.Y, (int)(EyeBallWidth * gr.DpiX / 96.0f), (int)(EyeBallHeight * gr.DpiY / 96.0f));
         }
 
-        private void DrawEye(Graphics gr, Point local_pos,
+        private void DrawEye(Graphics gr, Point localPos,
             int x1, int y1, int wid, int hgt)
         {
             // Draw the outside.
@@ -150,8 +150,8 @@ namespace Chummer
             int cy = y1 + hgt / 2;
 
             // Get the unit vector pointing towards the mouse position.
-            double dx = local_pos.X - cx;
-            double dy = local_pos.Y - cy;
+            double dx = localPos.X - cx;
+            double dy = localPos.Y - cy;
             double dist = Math.Sqrt(dx * dx + dy * dy);
             dx /= dist;
             dy /= dist;

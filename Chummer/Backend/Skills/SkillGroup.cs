@@ -422,7 +422,7 @@ namespace Chummer.Backend.Skills
                 _intSkillFromKarma = intTemp;
         }
 
-        private static readonly DependencyGraph<string, SkillGroup> SkillGroupDependencyGraph =
+        private static readonly DependencyGraph<string, SkillGroup> s_SkillGroupDependencyGraph =
             new DependencyGraph<string, SkillGroup>(
                 new DependencyGraphNode<string, SkillGroup>(nameof(DisplayRating),
                     new DependencyGraphNode<string, SkillGroup>(nameof(SkillList)),
@@ -691,10 +691,10 @@ namespace Chummer.Backend.Skills
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                    lstNamesOfChangedProperties = s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_SkillGroupDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

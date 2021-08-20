@@ -35,7 +35,7 @@ namespace Chummer
         private int _intMarkup;
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
 
         private bool _blnAddAgain;
 
@@ -107,8 +107,8 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (!string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedValue = _strSelectCategory;
             if (cboCategory.SelectedIndex == -1 && _lstCategory.Count > 0)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
@@ -145,7 +145,7 @@ namespace Chummer
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            s_StrSelectCategory = string.Empty;
+            _strSelectCategory = string.Empty;
             DialogResult = DialogResult.Cancel;
         }
 
@@ -431,7 +431,7 @@ namespace Chummer
                     SelectedRating = nudRating.ValueAsInt;
                     _intMarkup = nudMarkup.ValueAsInt;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-                    s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
+                    _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlVehicleMod.SelectSingleNode("category")?.Value;
                     DialogResult = DialogResult.OK;
                 }
             }

@@ -26,13 +26,13 @@ namespace Chummer
 {
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         // Set session data:
         //private static string Hostname =  Dns.GetHostName();
-        private static readonly string Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        private static string Version { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        private static readonly bool IsMilestone = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
+        private static bool IsMilestone { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
 
         public void Initialize(ITelemetry telemetry)
         {

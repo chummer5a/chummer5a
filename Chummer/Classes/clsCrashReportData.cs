@@ -77,7 +77,7 @@ namespace Chummer
             Program.MainForm.ShowMessageBox("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);
         }
 
-        private readonly List<KeyValuePair<string, Stream>> values;
+        private readonly List<KeyValuePair<string, Stream>> _lstValues;
 
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report
@@ -95,7 +95,7 @@ namespace Chummer
         public CrashReportData(Guid repordGuid)
         {
             Id = repordGuid;
-            values = new List<KeyValuePair<string, Stream>>(1);
+            _lstValues = new List<KeyValuePair<string, Stream>>(1);
         }
 
         public CrashReportData AddDefaultData()
@@ -175,7 +175,7 @@ namespace Chummer
 
         public CrashReportData AddData(string title, Stream contents)
         {
-            values.Add(new KeyValuePair<string, Stream>(title, contents));
+            _lstValues.Add(new KeyValuePair<string, Stream>(title, contents));
             return this;
         }
 
@@ -207,7 +207,7 @@ namespace Chummer
                         message.Body = DefaultInfo();
 
                         //Compression?
-                        foreach (KeyValuePair<string, Stream> pair in values)
+                        foreach (KeyValuePair<string, Stream> pair in _lstValues)
                         {
                             message.Attachments.Add(new Attachment(pair.Value, pair.Key));
                         }

@@ -53,7 +53,7 @@ namespace Chummer.Backend.Equipment
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Lifestyle : IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasCustomName, IHasSource, ICanSort, INotifyPropertyChanged
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         // ReSharper disable once InconsistentNaming
         private Guid _guiID;
@@ -1404,7 +1404,7 @@ namespace Chummer.Backend.Equipment
 
         #endregion Methods
 
-        private static readonly DependencyGraph<string, Lifestyle> LifestyleDependencyGraph =
+        private static readonly DependencyGraph<string, Lifestyle> s_LifestyleDependencyGraph =
             new DependencyGraph<string, Lifestyle>(
                 new DependencyGraphNode<string, Lifestyle>(nameof(DisplayTotalMonthlyCost),
                     new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
@@ -1463,10 +1463,10 @@ namespace Chummer.Backend.Equipment
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                    lstNamesOfChangedProperties = s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_LifestyleDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

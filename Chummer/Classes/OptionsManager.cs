@@ -28,32 +28,32 @@ namespace Chummer
 {
     public static class OptionsManager
     {
-        private static int s_intDicLoadedCharacterOptionsLoadedStatus = -1;
-        private static readonly ConcurrentDictionary<string, CharacterOptions> s_dicLoadedCharacterOptions = new ConcurrentDictionary<string, CharacterOptions>();
+        private static int _intDicLoadedCharacterOptionsLoadedStatus = -1;
+        private static readonly ConcurrentDictionary<string, CharacterOptions> s_DicLoadedCharacterOptions = new ConcurrentDictionary<string, CharacterOptions>();
 
         public static IDictionary<string, CharacterOptions> LoadedCharacterOptions
         {
             get
             {
-                if (s_intDicLoadedCharacterOptionsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
+                if (_intDicLoadedCharacterOptionsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
                     LoadCharacterOptions();
-                while (s_intDicLoadedCharacterOptionsLoadedStatus <= 0)
+                while (_intDicLoadedCharacterOptionsLoadedStatus <= 0)
                 {
                     Utils.SafeSleep();
                 }
-                return s_dicLoadedCharacterOptions;
+                return s_DicLoadedCharacterOptions;
             }
         }
 
         private static void LoadCharacterOptions()
         {
-            s_intDicLoadedCharacterOptionsLoadedStatus = 0;
+            _intDicLoadedCharacterOptionsLoadedStatus = 0;
             try
             {
-                s_dicLoadedCharacterOptions.Clear();
+                s_DicLoadedCharacterOptions.Clear();
                 if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 {
-                    s_dicLoadedCharacterOptions.TryAdd(GlobalOptions.DefaultCharacterOption, new CharacterOptions());
+                    s_DicLoadedCharacterOptions.TryAdd(GlobalOptions.DefaultCharacterOption, new CharacterOptions());
                     return;
                 }
 
@@ -64,7 +64,7 @@ namespace Chummer
                     CharacterOptions objNewCharacterOptions = new CharacterOptions();
                     if (objNewCharacterOptions.Load(xmlBuiltInSetting) &&
                         (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                        s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
+                        s_DicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
                             objNewCharacterOptions);
                 });
                 string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -76,14 +76,14 @@ namespace Chummer
                         CharacterOptions objNewCharacterOptions = new CharacterOptions();
                         if (objNewCharacterOptions.Load(strSettingName, false) &&
                             (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                            s_dicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
+                            s_DicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
                                 objNewCharacterOptions);
                     });
                 }
             }
             finally
             {
-                s_intDicLoadedCharacterOptionsLoadedStatus = 1;
+                _intDicLoadedCharacterOptionsLoadedStatus = 1;
             }
         }
     }

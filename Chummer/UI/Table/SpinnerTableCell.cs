@@ -29,7 +29,7 @@ namespace Chummer.UI.Table
         public SpinnerTableCell(TableView<T> table)
         {
             InitializeComponent();
-            contentField = _spinner;
+            ContentField = _spinner;
             Enter += (a, b) => table.PauseSort(this);
             Leave += (a, b) => table.ResumeSort(this);
         }

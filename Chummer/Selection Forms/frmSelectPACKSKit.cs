@@ -32,7 +32,7 @@ namespace Chummer
     {
         private string _strSelectedKit = string.Empty;
         private bool _blnAddAgain;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
 
         // Not readonly because content can change while form is up
@@ -95,8 +95,8 @@ namespace Chummer
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (!string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedValue = _strSelectCategory;
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
@@ -971,7 +971,7 @@ namespace Chummer
         /// <summary>
         /// Category that was selected in the dialogue.
         /// </summary>
-        public static string SelectedCategory => s_StrSelectCategory;
+        public static string SelectedCategory => _strSelectCategory;
 
         #endregion Properties
 
@@ -987,7 +987,7 @@ namespace Chummer
                 return;
             string[] objSelectedKit = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
             _strSelectedKit = objSelectedKit[0];
-            s_StrSelectCategory = objSelectedKit[1];
+            _strSelectCategory = objSelectedKit[1];
             DialogResult = DialogResult.OK;
         }
 

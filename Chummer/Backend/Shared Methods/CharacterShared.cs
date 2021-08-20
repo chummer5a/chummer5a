@@ -45,8 +45,8 @@ namespace Chummer
     [DesignerCategory("")]
     public class CharacterShared : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static TelemetryClient TelemetryClient { get; } = new TelemetryClient();
         private readonly Character _objCharacter;
         private readonly CharacterOptions _objOptions;
         private bool _blnIsDirty;
@@ -5566,7 +5566,7 @@ namespace Chummer
                 {
                     case Armor objCopyArmor:
                         {
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             MemoryStream objStream = new MemoryStream();
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
@@ -5611,16 +5611,16 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXml;
                             break;
                         }
                     case ArmorMod objCopyArmorMod:
                         {
                             MemoryStream objStream = new MemoryStream();
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
@@ -5664,16 +5664,16 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXml;
                             break;
                         }
                     case Cyberware objCopyCyberware:
                         {
                             MemoryStream objStream = new MemoryStream();
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
@@ -5731,17 +5731,17 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
-                            //Clipboard.SetText(objCharacterXML.OuterXml);
+                            GlobalOptions.Clipboard = objCharacterXml;
+                            //Clipboard.SetText(objCharacterXml.OuterXml);
                             break;
                         }
                     case Gear objCopyGear:
                         {
                             MemoryStream objStream = new MemoryStream();
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
@@ -5785,16 +5785,16 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXml;
                             break;
                         }
                     case Lifestyle objCopyLifestyle:
                         {
                             MemoryStream objStream = new MemoryStream();
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
@@ -5823,18 +5823,18 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXml;
                             GlobalOptions.ClipboardContentType = ClipboardContentType.Lifestyle;
-                            //Clipboard.SetText(objCharacterXML.OuterXml);
+                            //Clipboard.SetText(objCharacterXml.OuterXml);
                             break;
                         }
                     case Vehicle objCopyVehicle:
                         {
                             MemoryStream objStream = new MemoryStream();
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
@@ -5863,12 +5863,12 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXml;
                             GlobalOptions.ClipboardContentType = ClipboardContentType.Vehicle;
-                            //Clipboard.SetText(objCharacterXML.OuterXml);
+                            //Clipboard.SetText(objCharacterXml.OuterXml);
                             break;
                         }
                     case Weapon objCopyWeapon:
@@ -5878,7 +5878,7 @@ namespace Chummer
                                 return;
 
                             MemoryStream objStream = new MemoryStream();
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
@@ -5907,10 +5907,10 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXml;
                             GlobalOptions.ClipboardContentType = ClipboardContentType.Weapon;
                             break;
                         }
@@ -5921,7 +5921,7 @@ namespace Chummer
                                 return;
 
                             MemoryStream objStream = new MemoryStream();
-                            XmlDocument objCharacterXML = new XmlDocument { XmlResolver = null };
+                            XmlDocument objCharacterXml = new XmlDocument { XmlResolver = null };
                             using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
                             {
                                 Formatting = Formatting.Indented,
@@ -5950,10 +5950,10 @@ namespace Chummer
                                 using (XmlReader objXmlReader =
                                         XmlReader.Create(objReader, GlobalOptions.SafeXmlReaderSettings))
                                     // Put the stream into an XmlDocument
-                                    objCharacterXML.Load(objXmlReader);
+                                    objCharacterXml.Load(objXmlReader);
                             }
 
-                            GlobalOptions.Clipboard = objCharacterXML;
+                            GlobalOptions.Clipboard = objCharacterXml;
                             GlobalOptions.ClipboardContentType = ClipboardContentType.WeaponAccessory;
                             break;
                         }

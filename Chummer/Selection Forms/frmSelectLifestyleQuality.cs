@@ -46,7 +46,7 @@ namespace Chummer
         private static readonly ReadOnlyCollection<string> s_LifestylesSorted = Array.AsReadOnly(new[] { "Street", "Squatter", "Low", "Medium", "High", "Luxury" });
         private static readonly IReadOnlyCollection<string> s_LifestyleSpecific = new HashSet<string> { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
 
         private readonly XmlDocument _objMetatypeDocument;
         private readonly XmlDocument _objCritterDocument;
@@ -91,8 +91,8 @@ namespace Chummer
             cboCategory.PopulateWithListItems(_lstCategory);
             cboCategory.Enabled = _lstCategory.Count > 1;
 
-            if (!string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (!string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedValue = _strSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -412,7 +412,7 @@ namespace Chummer
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
-            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
+            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : objNode["category"]?.InnerText;
 
             DialogResult = DialogResult.OK;
         }
@@ -552,7 +552,7 @@ namespace Chummer
 
                 // Loop through the oneof requirements.
                 XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof");
-                XmlDocument _objXmlQualityDocument = _objCharacter.LoadData("qualities.xml");
+                XmlDocument objXmlQualityDocument = _objCharacter.LoadData("qualities.xml");
                 foreach (XmlNode objXmlOneOf in objXmlRequiredList)
                 {
                     bool blnOneOfMet = false;
@@ -594,7 +594,7 @@ namespace Chummer
 
                                 if (!blnOneOfMet)
                                 {
-                                    XmlNode objNode = _objXmlQualityDocument.SelectSingleNode(
+                                    XmlNode objNode = objXmlQualityDocument.SelectSingleNode(
                                         "/chummer/qualities/quality[name = " + objXmlRequired.InnerText.CleanXPath() +
                                         "]");
                                     sbdThisRequirement.Append(

@@ -40,7 +40,7 @@ namespace Chummer
 {
     public partial class frmViewer : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private List<Character> _lstCharacters = new List<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalOptions.DefaultCharacterSheet;
@@ -93,19 +93,18 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            ContextMenuStrip[] lstCMSToTranslate = {
+            ContextMenuStrip[] lstCmsToTranslate = {
                 cmsPrintButton,
                 cmsSaveButton
             };
-            foreach (ContextMenuStrip objCMS in lstCMSToTranslate)
+            foreach (ContextMenuStrip objCms in lstCmsToTranslate)
             {
-                if (objCMS != null)
+                if (objCms == null)
+                    continue;
+                foreach (ToolStripMenuItem tssItem in objCms.Items.OfType<ToolStripMenuItem>())
                 {
-                    foreach (ToolStripMenuItem tssItem in objCMS.Items.OfType<ToolStripMenuItem>())
-                    {
-                        tssItem.UpdateLightDarkMode();
-                        tssItem.TranslateToolStripItemsRecursively();
-                    }
+                    tssItem.UpdateLightDarkMode();
+                    tssItem.TranslateToolStripItemsRecursively();
                 }
             }
         }
@@ -324,16 +323,16 @@ namespace Chummer
                     PdfOutput objPdfOutput = new PdfOutput { OutputFilePath = strSaveFile };
                     await PdfConvert.ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput);
 
-                    if (!string.IsNullOrWhiteSpace(GlobalOptions.PDFAppPath))
+                    if (!string.IsNullOrWhiteSpace(GlobalOptions.PdfAppPath))
                     {
                         Uri uriPath = new Uri(strSaveFile);
-                        string strParams = GlobalOptions.PDFParameters
+                        string strParams = GlobalOptions.PdfParameters
                             .Replace("{page}", "1")
                             .Replace("{localpath}", uriPath.LocalPath)
                             .Replace("{absolutepath}", uriPath.AbsolutePath);
                         ProcessStartInfo objPdfProgramProcess = new ProcessStartInfo
                         {
-                            FileName = GlobalOptions.PDFAppPath,
+                            FileName = GlobalOptions.PdfAppPath,
                             Arguments = strParams,
                             WindowStyle = ProcessWindowStyle.Hidden
                         };
@@ -431,7 +430,7 @@ namespace Chummer
                     "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\"><head><meta http-equiv=\"x - ua - compatible\" content=\"IE = Edge\"/><meta charset = \"UTF-8\" /></head><body style=\"width:100%;height:" +
                     x.Result.ToString(GlobalOptions.InvariantCultureInfo) +
                     ";text-align:center;vertical-align:middle;font-family:segoe, tahoma,'trebuchet ms',arial;font-size:9pt;\">" +
-                    strText.CleanForHTML() + "</body></html>")
+                    strText.CleanForHtml() + "</body></html>")
                 .ContinueWith(x => webViewer.DoThreadSafeAsync(() => webViewer.DocumentText = x.Result));
         }
 

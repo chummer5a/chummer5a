@@ -35,7 +35,7 @@ namespace Chummer
 {
     public static class Utils
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         public static void BreakIfDebug()
         {
@@ -46,13 +46,13 @@ namespace Chummer
         }
 
         // Need this as a Lazy, otherwise it won't fire properly in the designer if we just cache it, and the check itself is also quite expensive
-        private static readonly Lazy<bool> s_blnIsRunningInVisualStudio =
+        private static readonly Lazy<bool> s_BlnIsRunningInVisualStudio =
             new Lazy<bool>(() => Process.GetCurrentProcess().ProcessName == "devenv");
 
         /// <summary>
         /// Returns if we are running inside Visual Studio, e.g. if we are in the designer.
         /// </summary>
-        public static bool IsRunningInVisualStudio => s_blnIsRunningInVisualStudio.Value;
+        public static bool IsRunningInVisualStudio => s_BlnIsRunningInVisualStudio.Value;
 
         /// <summary>
         /// Returns if we are in VS's Designer.
@@ -65,20 +65,20 @@ namespace Chummer
         /// </summary>
         public static Version CachedGitVersion { get; set; }
 
-        private static bool s_blnIsUnitTest;
+        private static bool _blnIsUnitTest;
 
         /// <summary>
         /// This property is set in the Constructor of frmChummerMain (and NO where else!)
         /// </summary>
         public static bool IsUnitTest
         {
-            get => s_blnIsUnitTest;
+            get => _blnIsUnitTest;
             set
             {
-                if (s_blnIsUnitTest == value)
+                if (_blnIsUnitTest == value)
                     return;
-                s_blnIsUnitTest = value;
-                s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
+                _blnIsUnitTest = value;
+                _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
             }
         }
 
@@ -297,7 +297,7 @@ namespace Chummer
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static Task StartSTATask(Action func)
+        public static Task StartStaTask(Action func)
         {
             var tcs = new TaskCompletionSource<bool>();
             Thread thread = new Thread(() =>
@@ -328,7 +328,7 @@ namespace Chummer
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static Task<T> StartSTATask<T>(Func<T> func)
+        public static Task<T> StartStaTask<T>(Func<T> func)
         {
             var tcs = new TaskCompletionSource<T>();
             Thread thread = new Thread(() =>
@@ -352,7 +352,7 @@ namespace Chummer
         /// </summary>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static Task StartSTATask(Task func)
+        public static Task StartStaTask(Task func)
         {
             var tcs = new TaskCompletionSource<bool>();
             Thread thread = new Thread(RunFunction);
@@ -384,7 +384,7 @@ namespace Chummer
         /// <typeparam name="T"></typeparam>
         /// <param name="func"></param>
         /// <returns></returns>
-        public static Task<T> StartSTATask<T>(Task<T> func)
+        public static Task<T> StartStaTask<T>(Task<T> func)
         {
             var tcs = new TaskCompletionSource<T>();
             Thread thread = new Thread(RunFunction);
@@ -405,7 +405,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntatic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
+        /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// Because async functions don't lock threads, it does not need to manually call events anyway.
         /// </summary>
@@ -416,7 +416,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// Because async functions don't lock threads, it does not need to manually call events anyway.
         /// </summary>
@@ -428,7 +428,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntatic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
+        /// Syntactic sugar for Thread.Sleep with the default sleep duration done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// </summary>
         /// <param name="blnForceDoEvents">Force running of events. Useful for unit tests where running events is normally disabled.</param>
@@ -439,7 +439,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// </summary>
         /// <param name="intDurationMilliseconds">Duration to wait in milliseconds.</param>
@@ -452,25 +452,25 @@ namespace Chummer
                 Thread.Sleep(intDurationMilliseconds);
                 if (!EverDoEvents)
                     return;
-                bool blnDoEvents = blnForceDoEvents || s_blnIsOKToRunDoEvents;
+                bool blnDoEvents = blnForceDoEvents || _blnIsOkToRunDoEvents;
                 try
                 {
                     if (blnDoEvents)
                     {
-                        s_blnIsOKToRunDoEvents = false;
+                        _blnIsOkToRunDoEvents = false;
                         Application.DoEvents();
                     }
                 }
                 finally
                 {
                     if (blnDoEvents)
-                        s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
+                        _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
                 }
             }
         }
 
         /// <summary>
-        /// Syntatic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
+        /// Syntactic sugar for Thread.Sleep done in a way that makes sure the application will run queued up events afterwards.
         /// This means that this method can (in theory) be put in a loop without it ever causing the UI thread to get locked.
         /// </summary>
         /// <param name="objTimeSpan">Duration to wait. If 0 or less milliseconds, DefaultSleepDuration is used instead.</param>
@@ -489,12 +489,12 @@ namespace Chummer
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
         /// </summary>
-        private static bool DefaultIsOKToRunDoEvents => !IsUnitTest && EverDoEvents;
+        private static bool DefaultIsOkToRunDoEvents => !IsUnitTest && EverDoEvents;
 
         /// <summary>
         /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
         /// </summary>
-        private static bool s_blnIsOKToRunDoEvents = DefaultIsOKToRunDoEvents;
+        private static bool _blnIsOkToRunDoEvents = DefaultIsOkToRunDoEvents;
 
         /// <summary>
         /// Syntactic sugar for synchronously waiting for code to complete while still allowing queued invocations to go through.

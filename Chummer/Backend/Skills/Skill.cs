@@ -1817,7 +1817,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string HtmlSkillToolTip => SkillToolTip.CleanForHTML();
+        public string HtmlSkillToolTip => SkillToolTip.CleanForHtml();
 
         public string SkillToolTip
         {

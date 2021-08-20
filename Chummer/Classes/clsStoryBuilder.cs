@@ -29,14 +29,14 @@ namespace Chummer
 {
     public sealed class StoryBuilder
     {
-        private readonly ConcurrentDictionary<string, string> persistenceDictionary = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _dicPersistence = new ConcurrentDictionary<string, string>();
         private readonly Character _objCharacter;
 
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            persistenceDictionary.TryAdd("metatype", _objCharacter.Metatype.ToLowerInvariant());
-            persistenceDictionary.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
+            _dicPersistence.TryAdd("metatype", _objCharacter.Metatype.ToLowerInvariant());
+            _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
         public async Task<string> GetStory(string strLanguage)
@@ -180,7 +180,7 @@ namespace Chummer
                 if (xmlUserMacroFirstChild != null)
                 {
                     //Already defined, no need to do anything fancy
-                    if (!persistenceDictionary.TryGetValue(macroPool, out string strSelectedNodeName))
+                    if (!_dicPersistence.TryGetValue(macroPool, out string strSelectedNodeName))
                     {
                         switch (xmlUserMacroFirstChild.Name)
                         {
@@ -226,8 +226,8 @@ namespace Chummer
                                             ++i;
                                         }
 
-                                        if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
-                                            persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
+                                        if (!_dicPersistence.TryAdd(macroPool, strSelectedNodeName))
+                                            _dicPersistence.TryGetValue(macroPool, out strSelectedNodeName);
                                     }
 
                                     break;

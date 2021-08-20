@@ -41,7 +41,7 @@ namespace Chummer
     [DebuggerDisplay("{" + nameof(DisplayDebug) + "()}")]
     public class Improvement : IHasNotes, IHasInternalId, ICanSort
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         private string DisplayDebug()
         {
@@ -2732,13 +2732,12 @@ namespace Chummer
 
     public static class ImprovementManager
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         // String that will be used to limit the selection in Pick forms.
-        private static string s_StrLimitSelection = string.Empty;
-
-        private static string s_StrSelectedValue = string.Empty;
-        private static string s_StrForcedValue = string.Empty;
+        private static string _strLimitSelection = string.Empty;
+        private static string _strSelectedValue = string.Empty;
+        private static string _strForcedValue = string.Empty;
         private static readonly ConcurrentDictionary<Character, List<TransactingImprovement>> s_DictionaryTransactions = new ConcurrentDictionary<Character, List<TransactingImprovement>>(8, 10);
         private static readonly ConcurrentDictionary<ImprovementDictionaryKey, decimal> s_DictionaryCachedValues = new ConcurrentDictionary<ImprovementDictionaryKey, decimal>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
         private static readonly ConcurrentDictionary<ImprovementDictionaryKey, decimal> s_DictionaryCachedAugmentedValues = new ConcurrentDictionary<ImprovementDictionaryKey, decimal>(8, (int)Improvement.ImprovementType.NumImprovementTypes);
@@ -2751,8 +2750,8 @@ namespace Chummer
         /// </summary>
         public static string LimitSelection
         {
-            get => s_StrLimitSelection;
-            set => s_StrLimitSelection = value;
+            get => _strLimitSelection;
+            set => _strLimitSelection = value;
         }
 
         /// <summary>
@@ -2760,8 +2759,8 @@ namespace Chummer
         /// </summary>
         public static string SelectedValue
         {
-            get => s_StrSelectedValue;
-            set => s_StrSelectedValue = value;
+            get => _strSelectedValue;
+            set => _strSelectedValue = value;
         }
 
         /// <summary>
@@ -2769,8 +2768,8 @@ namespace Chummer
         /// </summary>
         public static string ForcedValue
         {
-            get => s_StrForcedValue;
-            set => s_StrForcedValue = value;
+            get => _strForcedValue;
+            set => _strForcedValue = value;
         }
 
         public static void ClearCachedValue(Character objCharacter, Improvement.ImprovementType eImprovementType, string strImprovementName = "")
@@ -3737,16 +3736,16 @@ namespace Chummer
             {*/
             if (nodBonus == null)
             {
-                s_StrForcedValue = string.Empty;
-                s_StrLimitSelection = string.Empty;
+                _strForcedValue = string.Empty;
+                _strLimitSelection = string.Empty;
                 Log.Debug("CreateImprovements exit");
                 return true;
             }
 
-            s_StrSelectedValue = string.Empty;
+            _strSelectedValue = string.Empty;
 
-            Log.Info("_strForcedValue = " + s_StrForcedValue);
-            Log.Info("_strLimitSelection = " + s_StrLimitSelection);
+            Log.Info("_strForcedValue = " + _strForcedValue);
+            Log.Info("_strLimitSelection = " + _strLimitSelection);
 
             string strUnique = nodBonus.Attributes?["unique"]?.InnerText ?? string.Empty;
             // If no friendly name was provided, use the one from SourceName.
@@ -3760,9 +3759,9 @@ namespace Chummer
                 {
                     Log.Info("selecttext");
 
-                    if (!string.IsNullOrEmpty(s_StrForcedValue))
+                    if (!string.IsNullOrEmpty(_strForcedValue))
                     {
-                        LimitSelection = s_StrForcedValue;
+                        LimitSelection = _strForcedValue;
                     }
                     else if (objCharacter?.Pushtext.Count != 0)
                     {
@@ -3774,7 +3773,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
-                        s_StrSelectedValue = LimitSelection;
+                        _strSelectedValue = LimitSelection;
                     }
                     else if (nodBonus["selecttext"].Attributes.Count == 0)
                     {
@@ -3799,7 +3798,7 @@ namespace Chummer
                                 return false;
                             }
 
-                            s_StrSelectedValue = frmPickText.SelectedValue;
+                            _strSelectedValue = frmPickText.SelectedValue;
                         }
                     }
                     else if (objCharacter != null)
@@ -3868,7 +3867,7 @@ namespace Chummer
                                 Log.Debug("CreateImprovements exit");
                                 return false;
                             }
-                            s_StrSelectedValue = frmSelect.SelectedItem;
+                            _strSelectedValue = frmSelect.SelectedItem;
                         }
                     }
                     Log.Info("_strSelectedValue = " + SelectedValue);
@@ -3877,7 +3876,7 @@ namespace Chummer
                     // Create the Improvement.
                     Log.Info("Calling CreateImprovement");
 
-                    CreateImprovement(objCharacter, s_StrSelectedValue, objImprovementSource, strSourceName,
+                    CreateImprovement(objCharacter, _strSelectedValue, objImprovementSource, strSourceName,
                         Improvement.ImprovementType.Text,
                         strUnique);
                 }
@@ -3930,8 +3929,8 @@ namespace Chummer
                 SelectedValue = string.Empty;
             }
             // Clear the Forced Value and Limit Selection strings once we're done to prevent these from forcing their values on other Improvements.
-            s_StrForcedValue = string.Empty;
-            s_StrLimitSelection = string.Empty;
+            _strForcedValue = string.Empty;
+            _strLimitSelection = string.Empty;
 
             /*}
             catch (Exception ex)
@@ -3958,7 +3957,7 @@ namespace Chummer
             //getting a different parameter injected
 
             AddImprovementCollection container = new AddImprovementCollection(objCharacter, objImprovementSource,
-                strSourceName, strUnique, s_StrForcedValue, s_StrLimitSelection, SelectedValue, strFriendlyName,
+                strSourceName, strUnique, _strForcedValue, _strLimitSelection, SelectedValue, strFriendlyName,
                 intRating);
 
             Action<XmlNode> objImprovementMethod = ImprovementMethods.GetMethod(bonusNode.Name.ToUpperInvariant(), container);
@@ -3975,9 +3974,9 @@ namespace Chummer
                 }
 
                 strSourceName = container.SourceName;
-                s_StrForcedValue = container.ForcedValue;
-                s_StrLimitSelection = container.LimitSelection;
-                s_StrSelectedValue = container.SelectedValue;
+                _strForcedValue = container.ForcedValue;
+                _strLimitSelection = container.LimitSelection;
+                _strSelectedValue = container.SelectedValue;
             }
             else if (blnIgnoreMethodNotFound || bonusNode.ChildNodes.Count == 0)
             {
@@ -4131,8 +4130,8 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
-                        if (NewContact != null)
+                        Contact objNewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
+                        if (objNewContact != null)
                         {
                             // TODO: Add code to enable disabled contact
                         }
@@ -4424,8 +4423,8 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
-                        if (NewContact != null)
+                        Contact objNewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
+                        if (objNewContact != null)
                         {
                             // TODO: Add code to disable contact
                         }
@@ -4821,9 +4820,9 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementType.AddContact:
-                        Contact NewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
-                        if (NewContact != null)
-                            objCharacter.Contacts.Remove(NewContact);
+                        Contact objNewContact = objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == objImprovement.ImprovedName);
+                        if (objNewContact != null)
+                            objCharacter.Contacts.Remove(objNewContact);
                         break;
 
                     case Improvement.ImprovementType.Art:

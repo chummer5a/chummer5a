@@ -118,18 +118,18 @@ namespace Chummer
 
         #region IDisposable Support
 
-        private bool disposedValue; // To detect redundant calls
+        private bool _disposedValue; // To detect redundant calls
 
         private void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!_disposedValue)
             {
                 if (disposing)
                 {
                     _objPdfDocument?.Close();
                 }
 
-                disposedValue = true;
+                _disposedValue = true;
             }
         }
 
@@ -150,20 +150,20 @@ namespace Chummer
     /// </summary>
     public static class GlobalOptions
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static CultureInfo s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static CultureInfo _objLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
 
         public static string ErrorMessage { get; }
 
-        public static event TextEventHandler MRUChanged;
+        public static event TextEventHandler MruChanged;
 
         public static event PropertyChangedEventHandler ClipboardChanged;
 
         public const int MaxMruSize = 10;
-        private static readonly MostRecentlyUsedCollection<string> _lstMostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
-        private static readonly MostRecentlyUsedCollection<string> _lstFavoritedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
+        private static readonly MostRecentlyUsedCollection<string> s_LstMostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
+        private static readonly MostRecentlyUsedCollection<string> s_LstFavoritedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
 
-        private static readonly RegistryKey _objBaseChummerKey;
+        private static readonly RegistryKey s_ObjBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
         public const string DefaultCharacterOptionDefaultValue = "223a11ff-80e0-428b-89a9-6ef1c243b8b6"; // GUID for built-in Standard option
@@ -214,9 +214,9 @@ namespace Chummer
         public static Dictionary<string, bool> PluginsEnabledDic { get; } = new Dictionary<string, bool>();
 
         // PDF information.
-        private static string _strPDFAppPath = string.Empty;
+        private static string _strPdfAppPath = string.Empty;
 
-        private static string _strPDFParameters = string.Empty;
+        private static string _strPdfParameters = string.Empty;
         private static Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
         private static bool _blnUseLogging;
         private static UseAILogging _enumUseLoggingApplicationInsights;
@@ -225,7 +225,7 @@ namespace Chummer
         private static string _strImageFolder = string.Empty;
 
         // Custom Data Directory information.
-        private static readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>();
+        private static readonly HashSet<CustomDataDirectoryInfo> s_SetCustomDataDirectoryInfos = new HashSet<CustomDataDirectoryInfo>();
 
         #region Constructor
 
@@ -234,7 +234,7 @@ namespace Chummer
         /// </summary>
         public static bool LoadBoolFromRegistry(ref bool blnStorage, string strBoolName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
-            RegistryKey objKey = _objBaseChummerKey;
+            RegistryKey objKey = s_ObjBaseChummerKey;
             if (!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
             if (objKey != null)
@@ -263,7 +263,7 @@ namespace Chummer
         /// </summary>
         public static bool LoadInt32FromRegistry(ref int intStorage, string strIntName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
-            RegistryKey objKey = _objBaseChummerKey;
+            RegistryKey objKey = s_ObjBaseChummerKey;
             if (!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
             if (objKey != null)
@@ -292,7 +292,7 @@ namespace Chummer
         /// </summary>
         public static bool LoadDecFromRegistry(ref decimal decStorage, string strDecName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
-            RegistryKey objKey = _objBaseChummerKey;
+            RegistryKey objKey = s_ObjBaseChummerKey;
             if (!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
             if (objKey != null)
@@ -321,7 +321,7 @@ namespace Chummer
         /// </summary>
         public static bool LoadStringFromRegistry(ref string strStorage, string strStringName, string strSubKey = "", bool blnDeleteAfterFetch = false)
         {
-            RegistryKey objKey = _objBaseChummerKey;
+            RegistryKey objKey = s_ObjBaseChummerKey;
             if (!string.IsNullOrWhiteSpace(strSubKey))
                 objKey = objKey.OpenSubKey(strSubKey);
             if (objKey != null)
@@ -353,15 +353,15 @@ namespace Chummer
             try
             {
                 blnFirstEverLaunch = Registry.CurrentUser.OpenSubKey("Software\\Chummer5") == null;
-                _objBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
+                s_ObjBaseChummerKey = Registry.CurrentUser.CreateSubKey("Software\\Chummer5");
             }
             catch (Exception ex)
             {
                 ErrorMessage += ex;
             }
-            if (_objBaseChummerKey == null)
+            if (s_ObjBaseChummerKey == null)
                 return;
-            _objBaseChummerKey.CreateSubKey("Sourcebook");
+            s_ObjBaseChummerKey.CreateSubKey("Sourcebook");
 
             // Automatic Update.
             LoadBoolFromRegistry(ref _blnAutomaticUpdate, "autoupdate");
@@ -374,9 +374,9 @@ namespace Chummer
 
             try
             {
-                string strDPIScalingMethod = DefaultDpiScalingMethod.ToString();
-                LoadStringFromRegistry(ref strDPIScalingMethod, "dpiscalingmethod");
-                _eDpiScalingMethod = (DpiScalingMethod)Enum.Parse(typeof(DpiScalingMethod), strDPIScalingMethod);
+                string strDpiScalingMethod = DefaultDpiScalingMethod.ToString();
+                LoadStringFromRegistry(ref strDpiScalingMethod, "dpiscalingmethod");
+                _eDpiScalingMethod = (DpiScalingMethod)Enum.Parse(typeof(DpiScalingMethod), strDpiScalingMethod);
             }
             catch (Exception e)
             {
@@ -529,10 +529,10 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnSingleDiceRoller, "singlediceroller");
 
             // Open PDFs as URLs. For use with Chrome, Firefox, etc.
-            LoadStringFromRegistry(ref _strPDFParameters, "pdfparameters");
+            LoadStringFromRegistry(ref _strPdfParameters, "pdfparameters");
 
             // PDF application path.
-            LoadStringFromRegistry(ref _strPDFAppPath, "pdfapppath");
+            LoadStringFromRegistry(ref _strPdfAppPath, "pdfapppath");
 
             // Folder path to check for characters.
             LoadStringFromRegistry(ref _strCharacterRosterPath, "characterrosterpath");
@@ -575,7 +575,7 @@ namespace Chummer
             LoadInt32FromRegistry(ref _intSavedImageQuality, "savedimagequality");
 
             // Retrieve CustomDataDirectoryInfo objects from registry
-            RegistryKey objCustomDataDirectoryKey = _objBaseChummerKey.OpenSubKey("CustomDataDirectory");
+            RegistryKey objCustomDataDirectoryKey = s_ObjBaseChummerKey.OpenSubKey("CustomDataDirectory");
             if (objCustomDataDirectoryKey != null)
             {
                 foreach (string strDirectoryName in objCustomDataDirectoryKey.GetSubKeyNames())
@@ -602,10 +602,10 @@ namespace Chummer
                                         LanguageManager.GetString("String_Space") + objCustomDataDirectory.Name + Path.DirectorySeparatorChar + "manifest.xml"),
                                     MessageBoxButtons.OK, MessageBoxIcon.Error));
                         }
-                        if (_setCustomDataDirectoryInfos.Contains(objCustomDataDirectory))
+                        if (s_SetCustomDataDirectoryInfos.Contains(objCustomDataDirectory))
                         {
                             CustomDataDirectoryInfo objExistingInfo =
-                                _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objCustomDataDirectory));
+                                s_SetCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objCustomDataDirectory));
                             if (objExistingInfo != null)
                             {
                                 if (objCustomDataDirectory.HasManifest)
@@ -624,23 +624,23 @@ namespace Chummer
                                         continue;
                                     }
 
-                                    _setCustomDataDirectoryInfos.Remove(objExistingInfo);
+                                    s_SetCustomDataDirectoryInfos.Remove(objExistingInfo);
                                     do
                                     {
                                         objExistingInfo.RandomizeGuid();
-                                    } while (objExistingInfo.Equals(objCustomDataDirectory) || _setCustomDataDirectoryInfos.Contains(objExistingInfo));
-                                    _setCustomDataDirectoryInfos.Add(objExistingInfo);
+                                    } while (objExistingInfo.Equals(objCustomDataDirectory) || s_SetCustomDataDirectoryInfos.Contains(objExistingInfo));
+                                    s_SetCustomDataDirectoryInfos.Add(objExistingInfo);
                                 }
                                 else
                                 {
                                     do
                                     {
                                         objCustomDataDirectory.RandomizeGuid();
-                                    } while (_setCustomDataDirectoryInfos.Contains(objCustomDataDirectory));
+                                    } while (s_SetCustomDataDirectoryInfos.Contains(objCustomDataDirectory));
                                 }
                             }
                         }
-                        _setCustomDataDirectoryInfos.Add(objCustomDataDirectory);
+                        s_SetCustomDataDirectoryInfos.Add(objCustomDataDirectory);
                     }
                 }
 
@@ -653,7 +653,7 @@ namespace Chummer
                 foreach (string strLoopDirectoryPath in Directory.GetDirectories(strCustomDataRootPath))
                 {
                     // Only add directories for which we don't already have entries loaded from registry
-                    if (_setCustomDataDirectoryInfos.All(x => x.DirectoryPath != strLoopDirectoryPath))
+                    if (s_SetCustomDataDirectoryInfos.All(x => x.DirectoryPath != strLoopDirectoryPath))
                     {
                         CustomDataDirectoryInfo objCustomDataDirectory = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
                         if (objCustomDataDirectory.XmlException != default)
@@ -668,10 +668,10 @@ namespace Chummer
                                     MessageBoxButtons.OK, MessageBoxIcon.Error));
                         }
 
-                        if (_setCustomDataDirectoryInfos.Contains(objCustomDataDirectory))
+                        if (s_SetCustomDataDirectoryInfos.Contains(objCustomDataDirectory))
                         {
                             CustomDataDirectoryInfo objExistingInfo =
-                                _setCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objCustomDataDirectory));
+                                s_SetCustomDataDirectoryInfos.FirstOrDefault(x => x.Equals(objCustomDataDirectory));
                             if (objExistingInfo != null)
                             {
                                 if (objCustomDataDirectory.HasManifest)
@@ -690,52 +690,52 @@ namespace Chummer
                                         continue;
                                     }
 
-                                    _setCustomDataDirectoryInfos.Remove(objExistingInfo);
+                                    s_SetCustomDataDirectoryInfos.Remove(objExistingInfo);
                                     do
                                     {
                                         objExistingInfo.RandomizeGuid();
-                                    } while (objExistingInfo.Equals(objCustomDataDirectory) || _setCustomDataDirectoryInfos.Contains(objExistingInfo));
-                                    _setCustomDataDirectoryInfos.Add(objExistingInfo);
+                                    } while (objExistingInfo.Equals(objCustomDataDirectory) || s_SetCustomDataDirectoryInfos.Contains(objExistingInfo));
+                                    s_SetCustomDataDirectoryInfos.Add(objExistingInfo);
                                 }
                                 else
                                 {
                                     do
                                     {
                                         objCustomDataDirectory.RandomizeGuid();
-                                    } while (_setCustomDataDirectoryInfos.Contains(objCustomDataDirectory));
+                                    } while (s_SetCustomDataDirectoryInfos.Contains(objCustomDataDirectory));
                                 }
                             }
                         }
-                        _setCustomDataDirectoryInfos.Add(objCustomDataDirectory);
+                        s_SetCustomDataDirectoryInfos.Add(objCustomDataDirectory);
                     }
                 }
             }
 
-            XmlManager.RebuildDataDirectoryInfo(_setCustomDataDirectoryInfos);
+            XmlManager.RebuildDataDirectoryInfo(s_SetCustomDataDirectoryInfos);
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
-                object objLoopValue = _objBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
+                object objLoopValue = s_ObjBaseChummerKey.GetValue("stickymru" + i.ToString(InvariantCultureInfo));
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName) && !_lstFavoritedCharacters.Contains(strFileName))
-                        _lstFavoritedCharacters.Add(strFileName);
+                    if (File.Exists(strFileName) && !s_LstFavoritedCharacters.Contains(strFileName))
+                        s_LstFavoritedCharacters.Add(strFileName);
                 }
             }
-            _lstFavoritedCharacters.CollectionChanged += LstFavoritedCharactersOnCollectionChanged;
+            s_LstFavoritedCharacters.CollectionChanged += LstFavoritedCharactersOnCollectionChanged;
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
-                object objLoopValue = _objBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
+                object objLoopValue = s_ObjBaseChummerKey.GetValue("mru" + i.ToString(InvariantCultureInfo));
                 if (objLoopValue != null)
                 {
                     string strFileName = objLoopValue.ToString();
-                    if (File.Exists(strFileName) && !_lstMostRecentlyUsedCharacters.Contains(strFileName))
-                        _lstMostRecentlyUsedCharacters.Add(strFileName);
+                    if (File.Exists(strFileName) && !s_LstMostRecentlyUsedCharacters.Contains(strFileName))
+                        s_LstMostRecentlyUsedCharacters.Add(strFileName);
                 }
             }
-            _lstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
+            s_LstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
 
             if (blnFirstEverLaunch)
                 ShowCharacterCustomDataWarning = false;
@@ -780,8 +780,8 @@ namespace Chummer
                     objRegistry.SetValue("printnotes", PrintNotes.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("emulatedbrowserversion",
                         EmulatedBrowserVersion.ToString(InvariantCultureInfo));
-                    objRegistry.SetValue("pdfapppath", PDFAppPath);
-                    objRegistry.SetValue("pdfparameters", PDFParameters);
+                    objRegistry.SetValue("pdfapppath", PdfAppPath);
+                    objRegistry.SetValue("pdfparameters", PdfParameters);
                     objRegistry.SetValue("lifemodule", LifeModuleEnabled.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("prefernightlybuilds", PreferNightlyBuilds.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("characterrosterpath", CharacterRosterPath);
@@ -1178,15 +1178,15 @@ namespace Chummer
                     _strLanguage = value;
                     try
                     {
-                        s_ObjLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
+                        _objLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
                     }
                     catch (CultureNotFoundException)
                     {
-                        s_ObjLanguageCultureInfo = SystemCultureInfo;
+                        _objLanguageCultureInfo = SystemCultureInfo;
                     }
                     // Set default cultures based on the currently set language
-                    CultureInfo.DefaultThreadCurrentCulture = s_ObjLanguageCultureInfo;
-                    CultureInfo.DefaultThreadCurrentUICulture = s_ObjLanguageCultureInfo;
+                    CultureInfo.DefaultThreadCurrentCulture = _objLanguageCultureInfo;
+                    CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
                 }
             }
         }
@@ -1212,7 +1212,7 @@ namespace Chummer
         /// <summary>
         /// CultureInfo for number localization.
         /// </summary>
-        public static CultureInfo CultureInfo => s_ObjLanguageCultureInfo;
+        public static CultureInfo CultureInfo => _objLanguageCultureInfo;
 
         /// <summary>
         /// Invariant CultureInfo for saving and loading of numbers.
@@ -1277,21 +1277,21 @@ namespace Chummer
             set => _strDefaultCharacterOption = value;
         }
 
-        public static RegistryKey ChummerRegistryKey => _objBaseChummerKey;
+        public static RegistryKey ChummerRegistryKey => s_ObjBaseChummerKey;
 
         /// <summary>
         /// Path to the user's PDF application.
         /// </summary>
-        public static string PDFAppPath
+        public static string PdfAppPath
         {
-            get => _strPDFAppPath;
-            set => _strPDFAppPath = value;
+            get => _strPdfAppPath;
+            set => _strPdfAppPath = value;
         }
 
-        public static string PDFParameters
+        public static string PdfParameters
         {
-            get => _strPDFParameters;
-            set => _strPDFParameters = value;
+            get => _strPdfParameters;
+            set => _strPdfParameters = value;
         }
 
         /// <summary>
@@ -1354,7 +1354,7 @@ namespace Chummer
         /// <summary>
         /// Dictionary of custom data directory infos keyed to their internal IDs.
         /// </summary>
-        public static HashSet<CustomDataDirectoryInfo> CustomDataDirectoryInfos => _setCustomDataDirectoryInfos;
+        public static HashSet<CustomDataDirectoryInfo> CustomDataDirectoryInfos => s_SetCustomDataDirectoryInfos;
 
         /// <summary>
         /// Should the updater check for Release builds, or Nightly builds
@@ -1397,7 +1397,7 @@ namespace Chummer
             set => _strCharacterRosterPath = value;
         }
 
-        public static string PDFArguments { get; internal set; }
+        public static string PdfArguments { get; internal set; }
 
         public static int SavedImageQuality
         {
@@ -1441,42 +1441,42 @@ namespace Chummer
                     {
                         for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstFavoritedCharacters.Count)
-                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            if (i <= s_LstFavoritedCharacters.Count)
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoritedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
                         for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstFavoritedCharacters.Count)
-                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            if (i <= s_LstFavoritedCharacters.Count)
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoritedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
                         string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
                         if (!string.IsNullOrEmpty(strNewFile))
-                            _objBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                            s_ObjBaseChummerKey.SetValue("stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                         else
                         {
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= _lstFavoritedCharacters.Count)
-                                    _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                                if (i <= s_LstFavoritedCharacters.Count)
+                                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoritedCharacters[i - 1]);
                                 else
-                                    _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                             }
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Move:
@@ -1499,21 +1499,21 @@ namespace Chummer
                         }
                         for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
                         {
-                            _objBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), _lstFavoritedCharacters[i]);
+                            s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo), s_LstFavoritedCharacters[i]);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Reset:
                     {
                         for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstFavoritedCharacters.Count)
-                                _objBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), _lstFavoritedCharacters[i - 1]);
+                            if (i <= s_LstFavoritedCharacters.Count)
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoritedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("stickymru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("stickymru"));
                         break;
                     }
             }
@@ -1527,24 +1527,24 @@ namespace Chummer
                     {
                         for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstMostRecentlyUsedCharacters.Count)
-                                _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
+                            if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), s_LstMostRecentlyUsedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
                         for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstMostRecentlyUsedCharacters.Count)
-                                _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
+                            if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), s_LstMostRecentlyUsedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
@@ -1552,19 +1552,19 @@ namespace Chummer
                         string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
                         if (!string.IsNullOrEmpty(strNewFile))
                         {
-                            _objBaseChummerKey.SetValue("mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                            s_ObjBaseChummerKey.SetValue("mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
                         }
                         else
                         {
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= _lstMostRecentlyUsedCharacters.Count)
-                                    _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
+                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                    s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), s_LstMostRecentlyUsedCharacters[i - 1]);
                                 else
-                                    _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                                    s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                             }
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Move:
@@ -1587,29 +1587,29 @@ namespace Chummer
                         }
                         for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
                         {
-                            _objBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i]);
+                            s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo), s_LstMostRecentlyUsedCharacters[i]);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
                 case NotifyCollectionChangedAction.Reset:
                     {
                         for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            if (i <= _lstMostRecentlyUsedCharacters.Count)
-                                _objBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), _lstMostRecentlyUsedCharacters[i - 1]);
+                            if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo), s_LstMostRecentlyUsedCharacters[i - 1]);
                             else
-                                _objBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
-                        MRUChanged?.Invoke(sender, new TextEventArgs("mru"));
+                        MruChanged?.Invoke(sender, new TextEventArgs("mru"));
                         break;
                     }
             }
         }
 
-        public static ObservableCollection<string> FavoritedCharacters => _lstFavoritedCharacters;
+        public static ObservableCollection<string> FavoritedCharacters => s_LstFavoritedCharacters;
 
-        public static ObservableCollection<string> MostRecentlyUsedCharacters => _lstMostRecentlyUsedCharacters;
+        public static ObservableCollection<string> MostRecentlyUsedCharacters => s_LstMostRecentlyUsedCharacters;
 
         public static bool CustomDateTimeFormats
         {

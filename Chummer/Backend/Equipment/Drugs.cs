@@ -36,7 +36,7 @@ namespace Chummer.Backend.Equipment
 {
     public class Drug : IHasName, IHasXmlNode, ICanSort, IHasStolenProperty, ICanRemove
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiSourceID = Guid.Empty;
         private Guid _guiID;
         private string _strName = string.Empty;
@@ -1067,7 +1067,7 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class DrugComponent : IHasName, IHasInternalId, IHasXmlNode
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guidId;
         private Guid _guiSourceID;
         private string _strName;

@@ -11,7 +11,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerVisibility : UserControl
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private SINnerVisibility _mySINnerVisibility;
         public SINnerVisibility MyVisibility
         {

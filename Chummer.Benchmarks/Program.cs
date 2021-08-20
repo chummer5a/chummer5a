@@ -26,11 +26,7 @@ namespace Chummer.Benchmarks
     [SimpleJob(RuntimeMoniker.Net472, baseline: true)]
     public class ForeachSplitComparison
     {
-        private readonly string[] astrWords = {
-            "lorem", "ipsum", "dolor", "sit", "amet"
-        };
-
-        private readonly string strLongWord;
+        private readonly string _strLongWord;
 
         [Params(100, 1000, 10000)]
         // ReSharper disable once MemberCanBePrivate.Global
@@ -39,6 +35,10 @@ namespace Chummer.Benchmarks
         public ForeachSplitComparison()
         {
             Random objRandom = new Random(42);
+            string[] astrWords =
+            {
+                "lorem", "ipsum", "dolor", "sit", "amet"
+            };
             StringBuilder sbdLongWord = new StringBuilder(600000);
             foreach (string strWord in astrWords)
                 sbdLongWord.Append(strWord).Append(' ');
@@ -47,7 +47,7 @@ namespace Chummer.Benchmarks
                 sbdLongWord.Append(astrWords[objRandom.Next(0, astrWords.Length)]).Append(' ');
             }
             sbdLongWord.Length -= 1;
-            strLongWord = sbdLongWord.ToString();
+            _strLongWord = sbdLongWord.ToString();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Chummer.Benchmarks
         [Benchmark(Baseline = true)]
         public bool ForeachSplit()
         {
-            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
             foreach (string strWord in strBaseWord.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -73,7 +73,7 @@ namespace Chummer.Benchmarks
         [Benchmark]
         public bool ForeachSplitNoAlloc()
         {
-            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
             foreach (string strWord in strBaseWord.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries))
             {
@@ -89,7 +89,7 @@ namespace Chummer.Benchmarks
         [Benchmark]
         public bool ForeachSplitString()
         {
-            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
             foreach (string strWord in strBaseWord.Split(new[] { "rem " }, StringSplitOptions.RemoveEmptyEntries))
             {
@@ -105,7 +105,7 @@ namespace Chummer.Benchmarks
         [Benchmark]
         public bool ForeachSplitNoAllocString()
         {
-            string strBaseWord = strLongWord.Substring((strLongWord.Length - N) / 2, N);
+            string strBaseWord = _strLongWord.Substring((_strLongWord.Length - N) / 2, N);
             bool blnDummy = false;
             foreach (string strWord in strBaseWord.SplitNoAlloc("rem ", StringSplitOptions.RemoveEmptyEntries))
             {

@@ -29,7 +29,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strAdvantage = string.Empty;
@@ -219,9 +219,9 @@ namespace Chummer
                 objWriter.WriteElementString("choice2", string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
 
-            if (!string.IsNullOrEmpty(strSourceID))
+            if (SourceID != Guid.Empty && !string.IsNullOrEmpty(SourceIDString))
             {
-                objWriter.WriteElementString("id", strSourceID);
+                objWriter.WriteElementString("id", SourceIDString);
             }
 
             objWriter.WriteEndElement();
@@ -451,11 +451,6 @@ namespace Chummer
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
-
-        /// <summary>
-        /// Guid of the Xml Node containing data on this Mentor Spirit or Paragon.
-        /// </summary>
-        public string strSourceID => _guiSourceID.Equals(Guid.Empty) ? string.Empty : _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;

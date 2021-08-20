@@ -76,7 +76,7 @@ namespace Chummer
 
         private async void frmMasterIndex_Load(object sender, EventArgs e)
         {
-            using (var op_load_frm_masterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
+            using (CustomActivity opLoadFrmMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null,
                 CustomActivity.OperationType.RequestOperation, null))
             {
                 HashSet<string> setValidCodes = new HashSet<string>();
@@ -92,7 +92,7 @@ namespace Chummer
 
                 ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
                 ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", op_load_frm_masterindex))
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", opLoadFrmMasterindex))
                 {
                     // Prevents locking the UI thread while still benefitting from static scheduling of Parallel.ForEach
                     await Task.WhenAll(_lstFileNames.Select(strFileName => Task.Run(async () =>
@@ -141,7 +141,7 @@ namespace Chummer
                     })));
                 }
 
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", op_load_frm_masterindex))
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadFrmMasterindex))
                 {
                     string strSpace = LanguageManager.GetString("String_Space");
                     string strFormat = "{0}" + strSpace + "[{1}]";
@@ -196,13 +196,13 @@ namespace Chummer
                     _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                 }
 
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", op_load_frm_masterindex))
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", opLoadFrmMasterindex))
                 {
                     _lstItems.Sort(CompareListItems.CompareNames);
                     _lstFileNamesWithItems.Sort(CompareListItems.CompareNames);
                 }
 
-                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", op_load_frm_masterindex))
+                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadFrmMasterindex))
                 {
                     _lstFileNamesWithItems.Insert(0, new ListItem(string.Empty, LanguageManager.GetString("String_All")));
 

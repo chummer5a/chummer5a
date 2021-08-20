@@ -11,7 +11,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class frmWebBrowser : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public frmWebBrowser()
         {
             InitializeComponent();

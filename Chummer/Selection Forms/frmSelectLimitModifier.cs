@@ -109,7 +109,7 @@ namespace Chummer
 
         #endregion Properties
 
-        private void ToggleOKEnabled(object sender, EventArgs e)
+        private void ToggleOkEnabled(object sender, EventArgs e)
         {
             cmdOK.Enabled = cboLimit.Items.Count > 0 && txtName.TextLength > 0 && !string.IsNullOrEmpty(cboLimit.SelectedValue?.ToString());
         }

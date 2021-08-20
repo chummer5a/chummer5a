@@ -29,7 +29,7 @@ namespace Chummer
     public partial class frmSelectAIProgram : Form
     {
         private string _strSelectedAIProgram = string.Empty;
-        private static string s_StrSelectedCategory = string.Empty;
+        private static string _strSelectedCategory = string.Empty;
 
         private bool _blnLoading = true;
         private bool _blnAddAgain;
@@ -82,8 +82,8 @@ namespace Chummer
 
             cboCategory.BeginUpdate();
             cboCategory.PopulateWithListItems(_lstCategory);
-            if (!string.IsNullOrEmpty(s_StrSelectedCategory))
-                cboCategory.SelectedValue = s_StrSelectedCategory;
+            if (!string.IsNullOrEmpty(_strSelectedCategory))
+                cboCategory.SelectedValue = _strSelectedCategory;
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
@@ -362,7 +362,7 @@ namespace Chummer
                 }
 
                 _strSelectedAIProgram = strSelectedId;
-                s_StrSelectedCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlProgram.SelectSingleNode("category")?.Value;
+                _strSelectedCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0) ? cboCategory.SelectedValue?.ToString() : xmlProgram.SelectSingleNode("category")?.Value;
 
                 DialogResult = DialogResult.OK;
             }

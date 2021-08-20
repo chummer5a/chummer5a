@@ -14,7 +14,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerGroupSearch : UserControl
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public CharacterExtended MyCE { get; set; }
         public EventHandler<SINnerGroup> OnGroupJoinCallback = null;
 

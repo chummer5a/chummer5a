@@ -294,11 +294,11 @@ namespace Chummer.Backend.Skills
         {
             if (xmlSkillNode == null)
                 return;
-            using (var op_load_char_skills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
+            using (var opLoadCharSkills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
             {
                 if (!blnLegacy)
                 {
-                    using (_ = Timekeeper.StartSyncron("load_char_skills_groups", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_groups", opLoadCharSkills))
                     {
                         List<SkillGroup> lstLoadingSkillGroups;
                         using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
@@ -334,7 +334,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_groups");
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_char_skills_normal", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_normal", opLoadCharSkills))
                     {
                         //Load skills. Because sorting a BindingList is complicated we use a temporery normal list
                         List<Skill> lstLoadingSkills;
@@ -379,7 +379,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_normal");
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_char_skills_kno", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_skills_kno", opLoadCharSkills))
                     {
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
                         {
@@ -406,7 +406,7 @@ namespace Chummer.Backend.Skills
                         //Timekeeper.Finish("load_char_skills_kno");
                     }
 
-                    using (_ = Timekeeper.StartSyncron("load_char_knowsoft_buffer", op_load_char_skills))
+                    using (_ = Timekeeper.StartSyncron("load_char_knowsoft_buffer", opLoadCharSkills))
                     {
                         // Knowsoft Buffer.
                         using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("skilljackknowledgeskills/skill"))

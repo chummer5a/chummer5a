@@ -972,7 +972,7 @@ namespace Chummer
                 DiscountedAdeptWay = false;
         }
 
-        private static readonly DependencyGraph<string, Power> PowerDependencyGraph =
+        private static readonly DependencyGraph<string, Power> s_PowerDependencyGraph =
             new DependencyGraph<string, Power>(
                 new DependencyGraphNode<string, Power>(nameof(DisplayPoints),
                     new DependencyGraphNode<string, Power>(nameof(PowerPoints),
@@ -1034,10 +1034,10 @@ namespace Chummer
             foreach (string strPropertyName in lstPropertyNames)
             {
                 if (lstNamesOfChangedProperties == null)
-                    lstNamesOfChangedProperties = PowerDependencyGraph.GetWithAllDependents(this, strPropertyName);
+                    lstNamesOfChangedProperties = s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName);
                 else
                 {
-                    foreach (string strLoopChangedProperty in PowerDependencyGraph.GetWithAllDependents(this, strPropertyName))
+                    foreach (string strLoopChangedProperty in s_PowerDependencyGraph.GetWithAllDependents(this, strPropertyName))
                         lstNamesOfChangedProperties.Add(strLoopChangedProperty);
                 }
             }

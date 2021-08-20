@@ -36,7 +36,7 @@ namespace Chummer
 {
     public partial class frmUpdate : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private bool _blnSilentMode;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
@@ -144,7 +144,7 @@ namespace Chummer
                 }
                 if (File.Exists(_strTempUpdatePath))
                 {
-                    string strUpdateLog = File.ReadAllText(_strTempUpdatePath).CleanForHTML();
+                    string strUpdateLog = File.ReadAllText(_strTempUpdatePath).CleanForHtml();
                     await webNotes.DoThreadSafeAsync(() => webNotes.DocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">"
                         + strUpdateLog + "</font>");
                 }
@@ -280,10 +280,10 @@ namespace Chummer
                     return;
                 File.Move(_strTempUpdatePath, _strTempUpdatePath + ".old");
             }
-            string strURL = "https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt";
+            string strUrl = "https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt";
             try
             {
-                Uri uriConnectionAddress = new Uri(strURL);
+                Uri uriConnectionAddress = new Uri(strUrl);
                 if (!Utils.SafeDeleteFile(_strTempUpdatePath + ".tmp", !SilentMode))
                     return;
                 await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempUpdatePath + ".tmp");

@@ -24,11 +24,11 @@ namespace Chummer.UI.Table
 {
     public partial class TableCell : UserControl
     {
-        protected Control contentField;
+        protected Control ContentField;
 
         public TableCell(Control content = null)
         {
-            contentField = content;
+            ContentField = content;
             InitializeComponent();
             Alignment = Alignment.Left;
         }
@@ -57,8 +57,8 @@ namespace Chummer.UI.Table
         /// <param name="height"></param>
         protected internal virtual void UpdateAvailableSize(int width, int height)
         {
-            if (contentField == null) return;
-            Size size = contentField.Size;
+            if (ContentField == null) return;
+            Size size = ContentField.Size;
             int x;
             if ((Alignment & Alignment.Left) != 0)
             {
@@ -88,12 +88,12 @@ namespace Chummer.UI.Table
             }
 
             SuspendLayout();
-            contentField.Location = new Point(x, y);
+            ContentField.Location = new Point(x, y);
             Size = new Size(x + size.Width, y + size.Height);
             ResumeLayout(false);
             //Invalidate();
         }
 
-        internal Control Content => contentField;
+        internal Control Content => ContentField;
     }
 }
