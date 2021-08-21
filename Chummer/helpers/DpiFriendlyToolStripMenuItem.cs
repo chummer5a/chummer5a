@@ -31,13 +31,11 @@ namespace Chummer
         public DpiFriendlyToolStripMenuItem()
         {
             InitializeComponent();
-            RefreshImage();
         }
 
         public DpiFriendlyToolStripMenuItem(string strText) : base(strText)
         {
             InitializeComponent();
-            RefreshImage();
         }
 
         public DpiFriendlyToolStripMenuItem(Image objImage) : base(objImage)
@@ -80,7 +78,6 @@ namespace Chummer
         {
             container.Add(this);
             InitializeComponent();
-            RefreshImage();
         }
 
         public void RefreshImage()
@@ -98,8 +95,9 @@ namespace Chummer
                 Image = lstImages[0];
                 return;
             }
-            int intWidth = Width;
-            int intHeight = Height;
+            // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
+            int intWidth = Math.Min(Width, Height);
+            int intHeight = Math.Min(Width, Height);
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in lstImages)
@@ -249,8 +247,9 @@ namespace Chummer
                 Image = objNewImage;
                 return;
             }
-            int intWidth = Width;
-            int intHeight = Height;
+            // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
+            int intWidth = Math.Min(Width, Height);
+            int intHeight = Math.Min(Width, Height);
             int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
                                    (intWidth - Image.Width).RaiseToPower(2);
             int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
@@ -262,6 +261,12 @@ namespace Chummer
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
+            RefreshImage();
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
             RefreshImage();
         }
     }

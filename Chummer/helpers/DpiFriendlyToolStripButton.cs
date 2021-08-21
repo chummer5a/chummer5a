@@ -31,13 +31,11 @@ namespace Chummer
         public DpiFriendlyToolStripButton()
         {
             InitializeComponent();
-            RefreshImage();
         }
 
         public DpiFriendlyToolStripButton(string strText) : base(strText)
         {
             InitializeComponent();
-            RefreshImage();
         }
 
         public DpiFriendlyToolStripButton(Image objImage) : base(objImage)
@@ -68,7 +66,6 @@ namespace Chummer
         {
             container.Add(this);
             InitializeComponent();
-            RefreshImage();
         }
 
         public void RefreshImage()
@@ -250,6 +247,12 @@ namespace Chummer
         protected override void OnFontChanged(EventArgs e)
         {
             base.OnFontChanged(e);
+            RefreshImage();
+        }
+
+        protected override void OnTextChanged(EventArgs e)
+        {
+            base.OnTextChanged(e);
             RefreshImage();
         }
     }
