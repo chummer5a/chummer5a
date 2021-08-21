@@ -75,11 +75,22 @@ namespace Chummer
         {
             if (Utils.IsDesignerMode)
                 return;
+            List<Image> lstImages = new List<Image>(Images);
+            if (lstImages.Count == 0)
+            {
+                Image = null;
+                return;
+            }
+            if (lstImages.Count == 1)
+            {
+                Image = lstImages[0];
+                return;
+            }
             int intWidth = Width;
             int intHeight = Height;
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
-            foreach (Image objLoopImage in Images)
+            foreach (Image objLoopImage in lstImages)
             {
                 int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) + (intWidth - objLoopImage.Width).RaiseToPower(2);
                 // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
@@ -126,17 +137,115 @@ namespace Chummer
             }
         }
 
-        public Image ImageDpi96 { get; set; }
+        private Image _objImageDpi96;
 
-        public Image ImageDpi120 { get; set; }
+        private Image _objImageDpi120;
 
-        public Image ImageDpi144 { get; set; }
+        private Image _objImageDpi144;
 
-        public Image ImageDpi192 { get; set; }
+        private Image _objImageDpi192;
 
-        public Image ImageDpi288 { get; set; }
+        private Image _objImageDpi288;
 
-        public Image ImageDpi384 { get; set; }
+        private Image _objImageDpi384;
+
+        public Image ImageDpi96
+        {
+            get => _objImageDpi96;
+            set
+            {
+                if (_objImageDpi96 == value)
+                    return;
+                _objImageDpi96 = value;
+                UpdateImageIfBetterMatch(value);
+            }
+        }
+
+        public Image ImageDpi120
+        {
+            get => _objImageDpi120;
+            set
+            {
+                if (_objImageDpi120 == value)
+                    return;
+                _objImageDpi120 = value;
+                UpdateImageIfBetterMatch(value);
+            }
+        }
+
+        public Image ImageDpi144
+        {
+            get => _objImageDpi144;
+            set
+            {
+                if (_objImageDpi144 == value)
+                    return;
+                _objImageDpi144 = value;
+                UpdateImageIfBetterMatch(value);
+            }
+        }
+
+        public Image ImageDpi192
+        {
+            get => _objImageDpi192;
+            set
+            {
+                if (_objImageDpi192 == value)
+                    return;
+                _objImageDpi192 = value;
+                UpdateImageIfBetterMatch(value);
+            }
+        }
+
+        public Image ImageDpi288
+        {
+            get => _objImageDpi288;
+            set
+            {
+                if (_objImageDpi288 == value)
+                    return;
+                _objImageDpi288 = value;
+                UpdateImageIfBetterMatch(value);
+            }
+        }
+
+        public Image ImageDpi384
+        {
+            get => _objImageDpi384;
+            set
+            {
+                if (_objImageDpi384 == value)
+                    return;
+                _objImageDpi384 = value;
+                UpdateImageIfBetterMatch(value);
+            }
+        }
+
+        /// <summary>
+        /// Checks a newly set image against the existing image of the button to see if it's a better fit than the current image.
+        /// Only use this with images that are one of the ones set for this button!
+        /// </summary>
+        /// <param name="objNewImage"></param>
+        private void UpdateImageIfBetterMatch(Image objNewImage)
+        {
+            if (Utils.IsDesignerMode)
+                return;
+            if (objNewImage == null)
+                return;
+            if (Image == null)
+            {
+                Image = objNewImage;
+                return;
+            }
+            int intWidth = Width;
+            int intHeight = Height;
+            int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
+                                   (intWidth - Image.Width).RaiseToPower(2);
+            int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
+                               (intWidth - objNewImage.Width).RaiseToPower(2);
+            if (intNewMetric > intCurrentMetric)
+                Image = objNewImage;
+        }
 
         protected override void OnFontChanged(EventArgs e)
         {
