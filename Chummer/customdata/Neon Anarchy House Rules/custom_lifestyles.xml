@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<qualities>
+		<quality>
+			<id>b7dc10c6-88b4-4236-a5e8-2f13a472e443</id>
+			<name>Fab Sensor Feedstock</name>
+			<category>Contracts</category>
+			<lp>0</lp>
+			<allowed>Street,Squatter,Low,Medium,High,Luxury</allowed>
+			<allowmultiple />
+			<cost>50</cost>
+			<source>HT</source>
+			<page>195</page>
+			<hide />
+		</quality>
+		<quality>
+			<id>e489a499-245c-404a-bf59-7d12f015f5fa</id>
+			<name>SINner (National)</name>
+			<lp>0</lp>
+			<category>Negative</category>
+			<multiplierbaseonly>10</multiplierbaseonly>
+			<source>SR5</source>
+			<page>84</page>
+		</quality>
+		<quality>
+			<id>613e4d51-286e-4053-9e43-2df7bd0fd375</id>
+			<name>SINner (Criminal)</name>
+			<lp>0</lp>
+			<category>Negative</category>
+			<multiplierbaseonly>10</multiplierbaseonly>
+			<source>SR5</source>
+			<page>84</page>
+		</quality>
+		<quality>
+			<id>65e9e03d-1f98-4483-874f-79c2968d4499</id>
+			<name>SINner (Corporate)</name>
+			<lp>0</lp>
+			<category>Negative</category>
+			<multiplierbaseonly>20</multiplierbaseonly>
+			<source>SR5</source>
+			<page>85</page>
+		</quality>
+		<quality>
+			<id>a32def6e-c7c1-480b-88c5-962440df2c83</id>
+			<name>SINner (Corporate Limited)</name>
+			<lp>0</lp>
+			<category>Negative</category>
+			<multiplierbaseonly>15</multiplierbaseonly>
+			<source>SR5</source>
+			<page>84</page>
+		</quality>
+	</qualities>
+</chummer>

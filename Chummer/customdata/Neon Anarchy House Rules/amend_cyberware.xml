@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<grades>
+		<grade>
+			<name>Gammaware</name>
+			<hide />
+		</grade>
+		<grade>
+			<name>Omegaware</name>
+			<hide />
+		</grade>
+		<grade>
+			<name>Gammaware (Adapsin)</name>
+			<hide />
+		</grade>
+		<grade>
+			<name>Omegaware (Adapsin)</name>
+			<hide />
+		</grade>
+	</grades>
+	<cyberwares>
+		<cyberware>
+			<name>Junkyard Jaw</name>
+			<avail>8R</avail>
+		</cyberware>
+		<cyberware>
+			<name>Digigrade Legs</name>
+			<ess>0</ess>
+		</cyberware>
+		<cyberware>
+			<name>Skilljack</name>
+			<cost>Rating * 1000</cost>
+		</cyberware>
+		<cyberware>
+			<name>Dynamic Handprints</name>
+			<cost>2100 * Rating</cost>
+		</cyberware>
+	</cyberwares>
+</chummer>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<licenses amendoperation="replace">
+		<license>Adept License</license>
+		<license>Augmentations License</license>
+		<license>Concealed Carry Permit</license>
+		<license>Cyberdeck License</license>
+		<license>Driver's License</license>
+		<license>Drone License</license>
+		<license>Drug License</license>
+		<license>Explosives License</license>
+		<license>Firearms License</license>
+		<license>Foci License</license>
+		<license>Mage License</license>
+		<license>Pet License</license>
+		<license>Restricted Armor License</license>
+		<license>Software License</license>
+		<license>Technomancer License</license>
+		<license>Vehicle License</license>
+		<license>Weapon License</license>
+	</licenses>
+</chummer>
