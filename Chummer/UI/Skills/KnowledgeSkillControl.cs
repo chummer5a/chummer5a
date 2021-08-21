@@ -503,6 +503,8 @@ namespace Chummer.UI.Skills
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
         private void cboName_TextChanged(object sender, EventArgs e)
         {
+            if (_tmrNameChangeTimer == null)
+                return;
             if (_tmrNameChangeTimer.Enabled)
                 _tmrNameChangeTimer.Stop();
             if (_blnUpdatingName)
@@ -512,6 +514,8 @@ namespace Chummer.UI.Skills
 
         private void cboSpec_TextChanged(object sender, EventArgs e)
         {
+            if (_tmrSpecChangeTimer == null)
+                return;
             if (_tmrSpecChangeTimer.Enabled)
                 _tmrSpecChangeTimer.Stop();
             if (_blnUpdatingSpec)
