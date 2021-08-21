@@ -806,6 +806,108 @@
     <Content Include="customdata\Morrissey Alta Availability\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Neon Anarchy Energy Weapon Standardization\amend_energy_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy Energy Weapon Standardization\custom_energy_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy Energy Weapon Standardization\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_contacts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_drugcomponents.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_echoes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_licenses.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_metamagic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_animals_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_books.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_critterpowers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_metamagic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_ranges.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Orks Have Natural Weapon Tusks\amend_orktusk_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
