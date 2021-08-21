@@ -457,23 +457,22 @@ namespace Chummer
             }
             if (nudValueBP.Value != 0)
             {
+                string strValueBP = nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo);
                 if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases && nudValueBP.Value > 0)
                 {
-                    sbdFilter.Append(" and ((doublecareer = 'False' and (karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                        + " or (not(nolevels) and limit != 'False' and karma mod " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                        + " = 0 and abs(karma * limit) <= abs(" + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                        + ")))) or (not(doublecareer = 'False') and (karma = " + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)
-                        + " or (not(nolevels) and limit != 'False' and karma mod " + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)
-                        + " = 0 and abs(karma * limit) <= abs(" + (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo)
-                        + ")))))");
+                    string strValueBPHalved = (nudValueBP.Value / 2).ToString(GlobalOptions.InvariantCultureInfo);
+                    sbdFilter.Append(" and ((doublecareer = 'False' and (karma = " + strValueBP +
+                                     " or (not(nolevels) and limit != 'False' and (karma mod " + strValueBP +
+                                     ") = 0 and karma * karma * limit <= karma * " + strValueBP +
+                                     "))) or (not(doublecareer = 'False') and (karma = " + strValueBPHalved +
+                                     " or (not(nolevels) and limit != 'False' and (karma mod " + strValueBPHalved +
+                                     ") = 0 and karma * karma * limit <= karma * " + strValueBPHalved + "))))");
                 }
                 else
                 {
-                    sbdFilter.Append(" and (karma = " + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                                                      + " or (not(nolevels) and limit != 'False' and karma mod "
-                                                      + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                                                      + " = 0 and abs(karma * limit) <= abs("
-                                                      + nudValueBP.Value.ToString(GlobalOptions.InvariantCultureInfo) + ")))");
+                    sbdFilter.Append(" and (karma = " + strValueBP +
+                                     " or (not(nolevels) and limit != 'False' and (karma mod " + strValueBP +
+                                     ") = 0 and karma * karma * limit <= karma * " + strValueBP + "))");
                 }
             }
             else if (nudMinimumBP.Value != 0 || nudMaximumBP.Value != 0)
@@ -490,31 +489,31 @@ namespace Chummer
 
                 string GetKarmaRangeString(int intMax, int intMin)
                 {
-                    int intMostExtremeValue = intMax > 0 ? intMax : intMin;
-                    int intValueDiff = intMax > 0 ? intMax - intMin : intMin - intMax;
+                    string strMax = intMax.ToString(GlobalOptions.InvariantCultureInfo);
+                    string strMin = intMin.ToString(GlobalOptions.InvariantCultureInfo);
+                    string strMostExtremeValue = (intMax > 0 ? intMax : intMin).ToString(GlobalOptions.InvariantCultureInfo);
+                    string strValueDiff = (intMax > 0 ? intMax - intMin : intMin - intMax).ToString(GlobalOptions.InvariantCultureInfo);
                     if (_objCharacter.Created && !_objCharacter.Options.DontDoubleQualityPurchases)
                     {
-                        return "((doublecareer = 'False' or karma < 0) and ((karma >= " + intMin.ToString(GlobalOptions.InvariantCultureInfo) + " and karma <= " + intMax.ToString(GlobalOptions.InvariantCultureInfo)
-                               + ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
-                               + " and (karma * (" + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
-                               + " mod karma) <= karma * " + intValueDiff.ToString(GlobalOptions.InvariantCultureInfo) + ") and ((karma >= 0 and karma * limit >= "
-                               + intMin.ToString(GlobalOptions.InvariantCultureInfo) + ") or (karma < 0 and karma * limit <= "
-                               + intMax.ToString(GlobalOptions.InvariantCultureInfo)
-                               + "))))) or (not(doublecareer = 'False' or karma < 0) and ((2 * karma >= " + intMin.ToString(GlobalOptions.InvariantCultureInfo)
-                               + " and 2 * karma <= " + intMax.ToString(GlobalOptions.InvariantCultureInfo)
-                               + ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= 2 * karma * " + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
-                               + " and (2 * karma * (" + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
-                               + " mod (2 * karma)) <= 2 * karma * " + intValueDiff.ToString(GlobalOptions.InvariantCultureInfo) + ") and ((karma >= 0 and 2 * karma * limit >= "
-                               + intMin.ToString(GlobalOptions.InvariantCultureInfo) + ") or (karma < 0 and 2 * karma * limit <= "
-                               + intMax.ToString(GlobalOptions.InvariantCultureInfo) + ")))))";
+                        return "((doublecareer = 'False' or karma < 0) and ((karma >= " + strMin + " and karma <= " +
+                               strMax + ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " +
+                               strMostExtremeValue + " and (karma * (" + strMostExtremeValue +
+                               " mod karma) <= karma * " + strValueDiff + ") and ((karma >= 0 and karma * limit >= " +
+                               strMin + ") or (karma < 0 and karma * limit <= " + strMax +
+                               "))))) or (not(doublecareer = 'False' or karma < 0) and ((2 * karma >= " + strMin +
+                               " and 2 * karma <= " + strMax +
+                               ") or (not(nolevels) and limit != 'False' and 2 * karma * karma <= 2 * karma * " +
+                               strMostExtremeValue + " and (2 * karma * (" + strMostExtremeValue +
+                               " mod (2 * karma)) <= 2 * karma * " + strValueDiff +
+                               ") and ((karma >= 0 and 2 * karma * limit >= " + strMin +
+                               ") or (karma < 0 and 2 * karma * limit <= " + strMax + ")))))";
                     }
 
-                    return "(karma >= " + intMin.ToString(GlobalOptions.InvariantCultureInfo) + " and karma <= " + intMax.ToString(GlobalOptions.InvariantCultureInfo)
-                           + ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
-                           + " and (karma * (" + intMostExtremeValue.ToString(GlobalOptions.InvariantCultureInfo)
-                           + " mod karma) <= karma * " + intValueDiff.ToString(GlobalOptions.InvariantCultureInfo) + ") and ((karma >= 0 and karma * limit >= "
-                           + intMin.ToString(GlobalOptions.InvariantCultureInfo) + ") or (karma < 0 and karma * limit <= "
-                           + intMax.ToString(GlobalOptions.InvariantCultureInfo) + ")))";
+                    return "(karma >= " + strMin + " and karma <= " + strMax +
+                           ") or (not(nolevels) and limit != 'False' and karma * karma <= karma * " +
+                           strMostExtremeValue + " and (karma * (" + strMostExtremeValue + " mod karma) <= karma * " +
+                           strValueDiff + ") and ((karma >= 0 and karma * limit >= " + strMin +
+                           ") or (karma < 0 and karma * limit <= " + strMax + ")))";
                 }
             }
             if (!string.IsNullOrEmpty(txtSearch.Text))
