@@ -34,7 +34,9 @@ namespace Chummer.UI.Skills
     public sealed partial class SkillControl2 : UserControl
     {
         private readonly bool _blnLoading = true;
+        private bool _blnUpdatingSpec = true;
         private readonly Skill _objSkill;
+        private readonly Timer _tmrSpecChangeTimer;
         private readonly Font _fntNormal;
         private readonly Font _fntItalic;
         private readonly Font _fntNormalName;
@@ -261,9 +263,12 @@ namespace Chummer.UI.Skills
                         cboSpec.BeginUpdate();
                         cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
                         cboSpec.SelectedIndex = -1;
-                        cboSpec.DoDataBinding("Text", objSkill, nameof(Skill.Specialization));
                         cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
+                        cboSpec.TextChanged += cboSpec_TextChanged;
                         cboSpec.EndUpdate();
+                        _blnUpdatingSpec = false;
+                        _tmrSpecChangeTimer = new Timer { Interval = 1000 };
+                        _tmrSpecChangeTimer.Tick += SpecChangeTimer_Tick;
                         chkKarma = new ColorableCheckBox(components)
                         {
                             Anchor = AnchorStyles.Left,
@@ -342,6 +347,16 @@ namespace Chummer.UI.Skills
                     else
                     {
                         AttributeActive = _objSkill.AttributeObject;
+                    }
+                    if (blnUpdateAll)
+                        goto case nameof(Skill.Specialization);
+                    break;
+
+                case nameof(KnowledgeSkill.Specialization):
+                    if (!_blnUpdatingSpec)
+                    {
+                        string strWritableSpec = _objSkill.Specialization;
+                        cboSpec.QueueThreadSafe(() => cboSpec.Text = strWritableSpec);
                     }
                     if (blnUpdateAll)
                         goto case nameof(Skill.CGLSpecializations);
@@ -544,6 +559,7 @@ namespace Chummer.UI.Skills
 
         private void UnbindSkillControl()
         {
+            _tmrSpecChangeTimer?.Dispose();
             _objSkill.PropertyChanged -= Skill_PropertyChanged;
             AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
 
@@ -619,6 +635,24 @@ namespace Chummer.UI.Skills
             lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.Text = backgroundCalcPool);
             string backgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(AttributeActive.Abbrev);
             lblModifiedRating.QueueThreadSafe(() => lblModifiedRating.ToolTipText = backgroundCalcTooltip);
+        }
+
+        // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
+        private void cboSpec_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrSpecChangeTimer.Enabled)
+                _tmrSpecChangeTimer.Stop();
+            if (_blnUpdatingSpec)
+                return;
+            _tmrSpecChangeTimer.Start();
+        }
+
+        private void SpecChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrSpecChangeTimer.Stop();
+            _blnUpdatingSpec = true;
+            _objSkill.Specialization = cboSpec.Text;
+            _blnUpdatingSpec = false;
         }
     }
 }

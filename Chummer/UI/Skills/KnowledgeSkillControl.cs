@@ -31,8 +31,10 @@ namespace Chummer.UI.Skills
     public sealed partial class KnowledgeSkillControl : UserControl
     {
         private bool _blnUpdatingName = true;
+        private bool _blnUpdatingSpec = true;
         private readonly KnowledgeSkill _skill;
         private readonly Timer _tmrNameChangeTimer;
+        private readonly Timer _tmrSpecChangeTimer;
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudSkill;
         private readonly Label lblRating;
@@ -48,8 +50,6 @@ namespace Chummer.UI.Skills
             if (skill == null)
                 return;
             _skill = skill;
-            _tmrNameChangeTimer = new Timer { Interval = 1000 };
-            _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
             InitializeComponent();
             SuspendLayout();
             tlpMain.SuspendLayout();
@@ -78,6 +78,8 @@ namespace Chummer.UI.Skills
                 cboName.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowNameChange));
                 cboName.EndUpdate();
                 _blnUpdatingName = false;
+                _tmrNameChangeTimer = new Timer { Interval = 1000 };
+                _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
 
                 int intMinimumSize;
                 using (Graphics g = CreateGraphics())
@@ -232,8 +234,11 @@ namespace Chummer.UI.Skills
                     cboSpec.PopulateWithListItems(_skill.CGLSpecializations);
                     cboSpec.SelectedIndex = -1;
                     cboSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
-                    cboSpec.DoDataBinding("Text", _skill, nameof(Skill.Specialization));
+                    cboSpec.TextChanged += cboSpec_TextChanged;
                     cboSpec.EndUpdate();
+                    _blnUpdatingSpec = false;
+                    _tmrSpecChangeTimer = new Timer { Interval = 1000 };
+                    _tmrSpecChangeTimer.Tick += SpecChangeTimer_Tick;
 
                     chkKarma.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
                     chkKarma.DoDataBinding("Checked", _skill, nameof(Skill.BuyWithKarma));
@@ -317,6 +322,16 @@ namespace Chummer.UI.Skills
                         cboName.QueueThreadSafe(() => cboName.Text = strWritableName);
                     }
                     if (blnAll)
+                        goto case nameof(Skill.Specialization);
+                    break;
+
+                case nameof(KnowledgeSkill.Specialization):
+                    if (!_blnUpdatingSpec)
+                    {
+                        string strWritableSpec = _skill.Specialization;
+                        cboSpec.QueueThreadSafe(() => cboSpec.Text = strWritableSpec);
+                    }
+                    if (blnAll)
                         goto case nameof(Skill.IsNativeLanguage);
                     break;
 
@@ -334,6 +349,7 @@ namespace Chummer.UI.Skills
         private void UnbindKnowledgeSkillControl()
         {
             _tmrNameChangeTimer?.Dispose();
+            _tmrSpecChangeTimer?.Dispose();
             _skill.PropertyChanged -= Skill_PropertyChanged;
             _skill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
             foreach (Control objControl in Controls)
@@ -482,7 +498,7 @@ namespace Chummer.UI.Skills
             }
         }
 
-        // Hacky solution to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
+        // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
         private void cboName_TextChanged(object sender, EventArgs e)
         {
             if (_tmrNameChangeTimer.Enabled)
@@ -492,12 +508,29 @@ namespace Chummer.UI.Skills
             _tmrNameChangeTimer.Start();
         }
 
+        private void cboSpec_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrSpecChangeTimer.Enabled)
+                _tmrSpecChangeTimer.Stop();
+            if (_blnUpdatingSpec)
+                return;
+            _tmrSpecChangeTimer.Start();
+        }
+
         private void NameChangeTimer_Tick(object sender, EventArgs e)
         {
             _tmrNameChangeTimer.Stop();
             _blnUpdatingName = true;
             _skill.WritableName = cboName.Text;
             _blnUpdatingName = false;
+        }
+
+        private void SpecChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrSpecChangeTimer.Stop();
+            _blnUpdatingSpec = true;
+            _skill.Specialization = cboSpec.Text;
+            _blnUpdatingSpec = false;
         }
     }
 }
