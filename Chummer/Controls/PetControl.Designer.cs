@@ -36,15 +36,13 @@ namespace Chummer
             this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.imgLink = new System.Windows.Forms.PictureBox();
-            this.imgNotes = new System.Windows.Forms.PictureBox();
             this.lblName = new System.Windows.Forms.Label();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
             this.cboMetatype = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdLink = new Chummer.ButtonWithToolTip();
+            this.cmdNotes = new Chummer.ButtonWithToolTip();
             this.cmsContact.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgLink)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -63,7 +61,7 @@ namespace Chummer
             // 
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.Location = new System.Drawing.Point(705, 3);
+            this.cmdDelete.Location = new System.Drawing.Point(717, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(48, 23);
             this.cmdDelete.TabIndex = 18;
@@ -126,34 +124,6 @@ namespace Chummer
             this.tsAttachCharacter.Text = "Attach Character";
             this.tsAttachCharacter.Click += new System.EventHandler(this.tsAttachCharacter_Click);
             // 
-            // imgLink
-            // 
-            this.imgLink.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.imgLink.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imgLink.Image = global::Chummer.Properties.Resources.link;
-            this.imgLink.Location = new System.Drawing.Point(661, 0);
-            this.imgLink.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.imgLink.Name = "imgLink";
-            this.imgLink.Size = new System.Drawing.Size(16, 30);
-            this.imgLink.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.imgLink.TabIndex = 17;
-            this.imgLink.TabStop = false;
-            this.imgLink.Click += new System.EventHandler(this.imgLink_Click);
-            // 
-            // imgNotes
-            // 
-            this.imgNotes.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.imgNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(683, 0);
-            this.imgNotes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.imgNotes.Name = "imgNotes";
-            this.imgNotes.Size = new System.Drawing.Size(16, 30);
-            this.imgNotes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.imgNotes.TabIndex = 21;
-            this.imgNotes.TabStop = false;
-            this.imgNotes.Click += new System.EventHandler(this.imgNotes_Click);
-            // 
             // lblName
             // 
             this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -205,20 +175,64 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.Controls.Add(this.cmdNotes, 5, 0);
             this.tlpMain.Controls.Add(this.cmdDelete, 6, 0);
-            this.tlpMain.Controls.Add(this.imgNotes, 5, 0);
-            this.tlpMain.Controls.Add(this.imgLink, 4, 0);
             this.tlpMain.Controls.Add(this.lblName, 0, 0);
             this.tlpMain.Controls.Add(this.cboMetatype, 3, 0);
             this.tlpMain.Controls.Add(this.txtContactName, 1, 0);
             this.tlpMain.Controls.Add(this.lblMetatypeLabel, 2, 0);
+            this.tlpMain.Controls.Add(this.cmdLink, 4, 0);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(756, 30);
+            this.tlpMain.Size = new System.Drawing.Size(768, 30);
             this.tlpMain.TabIndex = 25;
+            // 
+            // cmdLink
+            // 
+            this.cmdLink.AutoSize = true;
+            this.cmdLink.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdLink.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdLink.FlatAppearance.BorderSize = 0;
+            this.cmdLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmdLink.Image = global::Chummer.Properties.Resources.link;
+            this.cmdLink.ImageDpi120 = null;
+            this.cmdLink.ImageDpi144 = null;
+            this.cmdLink.ImageDpi192 = global::Chummer.Properties.Resources.link1;
+            this.cmdLink.ImageDpi288 = null;
+            this.cmdLink.ImageDpi384 = null;
+            this.cmdLink.ImageDpi96 = global::Chummer.Properties.Resources.link;
+            this.cmdLink.Location = new System.Drawing.Point(661, 3);
+            this.cmdLink.Name = "cmdLink";
+            this.cmdLink.Size = new System.Drawing.Size(22, 24);
+            this.cmdLink.TabIndex = 25;
+            this.cmdLink.ToolTipText = "";
+            this.cmdLink.UseVisualStyleBackColor = true;
+            this.cmdLink.Click += new System.EventHandler(this.cmdLink_Click);
+            // 
+            // cmdNotes
+            // 
+            this.cmdNotes.AutoSize = true;
+            this.cmdNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdNotes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdNotes.FlatAppearance.BorderSize = 0;
+            this.cmdNotes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmdNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.cmdNotes.ImageDpi120 = null;
+            this.cmdNotes.ImageDpi144 = null;
+            this.cmdNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.cmdNotes.ImageDpi288 = null;
+            this.cmdNotes.ImageDpi384 = null;
+            this.cmdNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.cmdNotes.Location = new System.Drawing.Point(689, 3);
+            this.cmdNotes.Name = "cmdNotes";
+            this.cmdNotes.Size = new System.Drawing.Size(22, 24);
+            this.cmdNotes.TabIndex = 26;
+            this.cmdNotes.ToolTipText = "";
+            this.cmdNotes.UseVisualStyleBackColor = true;
+            this.cmdNotes.Click += new System.EventHandler(this.cmdNotes_Click);
             // 
             // PetControl
             // 
@@ -228,11 +242,9 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(0, 30);
             this.Name = "PetControl";
-            this.Size = new System.Drawing.Size(756, 30);
+            this.Size = new System.Drawing.Size(768, 30);
             this.Load += new System.EventHandler(this.PetControl_Load);
             this.cmsContact.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.imgLink)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.ResumeLayout(false);
@@ -241,9 +253,7 @@ namespace Chummer
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox imgLink;
         private System.Windows.Forms.TextBox txtContactName;
-        private System.Windows.Forms.PictureBox imgNotes;
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.ContextMenuStrip cmsContact;
         private System.Windows.Forms.Label lblName;
@@ -253,5 +263,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsContactOpen;
         private DpiFriendlyToolStripMenuItem tsRemoveCharacter;
         private DpiFriendlyToolStripMenuItem tsAttachCharacter;
+        private ButtonWithToolTip cmdLink;
+        private ButtonWithToolTip cmdNotes;
     }
 }

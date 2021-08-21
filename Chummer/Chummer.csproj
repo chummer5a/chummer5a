@@ -271,6 +271,7 @@
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
+    <Compile Include="Backend\Extensions\MathExtensions.cs" />
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
@@ -372,6 +373,12 @@
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
+    <Compile Include="helpers\DpiFriendlyImagedButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyImagedButton.Designer.cs">
+      <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Interfaces\ITranslatable.cs" />
     <Compile Include="Classes\NativeMethods.cs" />

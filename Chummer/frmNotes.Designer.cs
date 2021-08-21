@@ -31,7 +31,7 @@ namespace Chummer
             this.components = new System.ComponentModel.Container();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtNotes = new System.Windows.Forms.TextBox();
-            this.btnColorSelect = new System.Windows.Forms.Button();
+            this.btnColorSelect = new Chummer.DpiFriendlyImagedButton(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
@@ -80,6 +80,12 @@ namespace Chummer
             this.btnColorSelect.Dock = System.Windows.Forms.DockStyle.Left;
             this.btnColorSelect.Image = global::Chummer.Properties.Resources.color_wheel;
             this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.btnColorSelect.ImageDpi120 = null;
+            this.btnColorSelect.ImageDpi144 = null;
+            this.btnColorSelect.ImageDpi192 = global::Chummer.Properties.Resources.color_wheel1;
+            this.btnColorSelect.ImageDpi288 = null;
+            this.btnColorSelect.ImageDpi384 = null;
+            this.btnColorSelect.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel;
             this.btnColorSelect.Location = new System.Drawing.Point(3, 295);
             this.btnColorSelect.Name = "btnColorSelect";
             this.btnColorSelect.Size = new System.Drawing.Size(96, 23);
@@ -175,7 +181,7 @@ namespace Chummer
 
         private BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtNotes;
-        private System.Windows.Forms.Button btnColorSelect;
+        private DpiFriendlyImagedButton btnColorSelect;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private BufferedTableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button btnOK;

@@ -69,25 +69,27 @@ namespace Chummer
 
             if (_objContact.EntityType == ContactType.Enemy)
             {
-                imgLink?.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                if (cmdLink != null)
+                    cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
                         ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
 
                 string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap());
+                cmdNotes.ToolTipText = strTooltip.WordWrap();
             }
             else
             {
-                imgLink?.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
-                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                        : LanguageManager.GetString("Tip_Contact_LinkContact"));
+                if (cmdLink != null)
+                    cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
 
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap());
+                cmdNotes.ToolTipText = strTooltip.WordWrap();
             }
 
             _blnLoading = false;
@@ -267,7 +269,7 @@ namespace Chummer
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
-        private void imgLink_Click(object sender, EventArgs e)
+        private void cmdLink_Click(object sender, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
             if (!string.IsNullOrEmpty(_objContact.FileName))
@@ -282,7 +284,7 @@ namespace Chummer
                 tsContactOpen.Visible = false;
                 tsRemoveCharacter.Visible = false;
             }
-            cmsContact.Show(imgLink, imgLink.Left - cmsContact.PreferredSize.Width, imgLink.Top);
+            cmsContact.Show(cmdLink, cmdLink.Left - cmsContact.PreferredSize.Width, cmdLink.Top);
         }
 
         private void tsContactOpen_Click(object sender, EventArgs e)
@@ -343,9 +345,10 @@ namespace Chummer
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
                 _objContact.FileName = openFileDialog.FileName;
-                imgLink?.SetToolTip(_objContact.EntityType == ContactType.Enemy
-                    ? LanguageManager.GetString("Tip_Enemy_OpenFile")
-                    : LanguageManager.GetString("Tip_Contact_OpenFile"));
+                if (cmdLink != null)
+                    cmdLink.ToolTipText = _objContact.EntityType == ContactType.Enemy
+                        ? LanguageManager.GetString("Tip_Enemy_OpenFile")
+                        : LanguageManager.GetString("Tip_Contact_OpenFile");
             }
 
             // Set the relative path.
@@ -364,14 +367,14 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                imgLink?.SetToolTip(_objContact.EntityType == ContactType.Enemy
-                        ? LanguageManager.GetString("Tip_Enemy_LinkFile")
-                        : LanguageManager.GetString("Tip_Contact_LinkFile"));
+                cmdLink.ToolTipText = _objContact.EntityType == ContactType.Enemy
+                    ? LanguageManager.GetString("Tip_Enemy_LinkFile")
+                    : LanguageManager.GetString("Tip_Contact_LinkFile");
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
-        private void imgNotes_Click(object sender, EventArgs e)
+        private void cmdNotes_Click(object sender, EventArgs e)
         {
             using (frmNotes frmContactNotes = new frmNotes(_objContact.Notes, _objContact.NotesColor))
             {
@@ -384,7 +387,7 @@ namespace Chummer
             string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-            imgNotes.SetToolTip(strTooltip.WordWrap());
+            cmdNotes.ToolTipText = strTooltip.WordWrap();
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 
@@ -420,7 +423,8 @@ namespace Chummer
             get => tlpStatBlock?.Visible == true;
             set
             {
-                cmdExpand.Image = value ? Resources.Collapse : Resources.Expand;
+                cmdExpand.ImageDpi96 = value ? Resources.toggle : Resources.toggle_expand;
+                cmdExpand.ImageDpi192 = value ? Resources.toggle1 : Resources.toggle_expand1;
                 if (value && (tlpStatBlock == null || !_blnStatBlockIsLoaded))
                 {
                     // Create second row and statblock only on the first expansion to save on handles and load times
@@ -441,7 +445,7 @@ namespace Chummer
                     chkFree.Visible = _objContact?.CharacterObject.Created == false && value;
                     chkBlackmail.Visible = value;
                     chkFamily.Visible = value;
-                    imgLink.Visible = value;
+                    cmdLink.Visible = value;
                     tlpStatBlock.Visible = value;
                     ResumeLayout();
                 }
@@ -500,7 +504,7 @@ namespace Chummer
         private ColorableCheckBox chkFree;
         private ColorableCheckBox chkBlackmail;
         private ColorableCheckBox chkFamily;
-        private PictureBox imgLink;
+        private ButtonWithToolTip cmdLink;
 
         private void CreateSecondRow()
         {
@@ -582,15 +586,17 @@ namespace Chummer
                     Text = "Family",
                     UseVisualStyleBackColor = true
                 };
-                imgLink = new PictureBox
+                cmdLink = new ButtonWithToolTip
                 {
-                    Cursor = Cursors.Hand,
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
                     Dock = DockStyle.Fill,
-                    Image = Resources.link,
-                    Margin = new Padding(3, 0, 3, 0),
-                    Size = new Size(16, 26),
-                    Name = "imgLink",
-                    SizeMode = PictureBoxSizeMode.Zoom,
+                    FlatAppearance = { BorderSize = 0 },
+                    FlatStyle = FlatStyle.Flat,
+                    ImageDpi96 = Resources.link,
+                    ImageDpi192 = Resources.link1,
+                    Name = "cmdLink",
+                    UseVisualStyleBackColor = true,
                     TabStop = false
                 };
                 nudConnection.ValueChanged += nudConnection_ValueChanged;
@@ -599,7 +605,7 @@ namespace Chummer
                 chkGroup.CheckedChanged += chkGroup_CheckedChanged;
                 chkBlackmail.CheckedChanged += chkBlackmail_CheckedChanged;
                 chkFamily.CheckedChanged += chkFamily_CheckedChanged;
-                imgLink.Click += imgLink_Click;
+                cmdLink.Click += cmdLink_Click;
                 if (_objContact != null)
                 {
                     chkGroup.DoDataBinding("Checked", _objContact, nameof(_objContact.IsGroup));
@@ -620,15 +626,15 @@ namespace Chummer
                     nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
                     if (_objContact.EntityType == ContactType.Enemy)
                     {
-                        imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                        cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
                             ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
+                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
                     }
                     else
                     {
-                        imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                        cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
                             ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                            : LanguageManager.GetString("Tip_Contact_LinkContact"));
+                            : LanguageManager.GetString("Tip_Contact_LinkContact");
                     }
                 }
                 tlpMain.SetColumnSpan(lblConnection, 2);
@@ -644,7 +650,7 @@ namespace Chummer
                 tlpMain.Controls.Add(chkGroup, 7, 2);
                 tlpMain.Controls.Add(chkBlackmail, 8, 2);
                 tlpMain.Controls.Add(chkFamily, 9, 2);
-                tlpMain.Controls.Add(imgLink, 12, 2);
+                tlpMain.Controls.Add(cmdLink, 12, 2);
                 tlpMain.ResumeLayout();
                 ResumeLayout();
             }

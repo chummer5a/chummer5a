@@ -43,7 +43,7 @@ namespace Chummer
             this.flpPDFOffset = new System.Windows.Forms.FlowLayoutPanel();
             this.nudPDFOffset = new Chummer.NumericUpDownEx();
             this.cmdPDFTest = new System.Windows.Forms.Button();
-            this.cmdRemovePDFLocation = new System.Windows.Forms.Button();
+            this.cmdRemovePDFLocation = new Chummer.DpiFriendlyImagedButton(this.components);
             this.tlpGlobalOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpDpiScalingMode = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cboDpiScalingMethod = new System.Windows.Forms.ComboBox();
@@ -79,13 +79,13 @@ namespace Chummer
             this.tlpCharacterRosterPath = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCharacterRoster = new System.Windows.Forms.Button();
             this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
-            this.cmdRemoveCharacterRoster = new System.Windows.Forms.Button();
+            this.cmdRemoveCharacterRoster = new Chummer.DpiFriendlyImagedButton(this.components);
             this.lblPDFParametersLabel = new System.Windows.Forms.Label();
             this.cboPDFParameters = new Chummer.ElasticComboBox();
             this.tlpPDFAppPath = new Chummer.BufferedTableLayoutPanel(this.components);
             this.txtPDFAppPath = new System.Windows.Forms.TextBox();
             this.cmdPDFAppPath = new System.Windows.Forms.Button();
-            this.cmdRemovePDFAppPath = new System.Windows.Forms.Button();
+            this.cmdRemovePDFAppPath = new Chummer.DpiFriendlyImagedButton(this.components);
             this.tlpMugshotCompression = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblMugshotCompressionQuality = new System.Windows.Forms.Label();
             this.nudMugshotCompressionQuality = new Chummer.NumericUpDownEx();
@@ -244,7 +244,7 @@ namespace Chummer
             this.tabGlobal.Location = new System.Drawing.Point(4, 22);
             this.tabGlobal.Name = "tabGlobal";
             this.tabGlobal.Padding = new System.Windows.Forms.Padding(9);
-            this.tabGlobal.Size = new System.Drawing.Size(1232, 596);
+            this.tabGlobal.Size = new System.Drawing.Size(1232, 602);
             this.tabGlobal.TabIndex = 5;
             this.tabGlobal.Tag = "Tab_Options_Global";
             this.tabGlobal.Text = "Global Options";
@@ -265,7 +265,7 @@ namespace Chummer
             this.tlpGlobal.RowCount = 2;
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpGlobal.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpGlobal.Size = new System.Drawing.Size(1214, 578);
+            this.tlpGlobal.Size = new System.Drawing.Size(1214, 584);
             this.tlpGlobal.TabIndex = 39;
             // 
             // grpSelectedSourcebook
@@ -275,7 +275,7 @@ namespace Chummer
             this.grpSelectedSourcebook.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.grpSelectedSourcebook.Controls.Add(this.tlpSelectedSourcebook);
             this.grpSelectedSourcebook.Enabled = false;
-            this.grpSelectedSourcebook.Location = new System.Drawing.Point(306, 497);
+            this.grpSelectedSourcebook.Location = new System.Drawing.Point(306, 503);
             this.grpSelectedSourcebook.Name = "grpSelectedSourcebook";
             this.grpSelectedSourcebook.Size = new System.Drawing.Size(475, 78);
             this.grpSelectedSourcebook.TabIndex = 27;
@@ -413,6 +413,12 @@ namespace Chummer
             this.cmdRemovePDFLocation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRemovePDFLocation.Enabled = false;
             this.cmdRemovePDFLocation.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdRemovePDFLocation.ImageDpi120 = null;
+            this.cmdRemovePDFLocation.ImageDpi144 = null;
+            this.cmdRemovePDFLocation.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
+            this.cmdRemovePDFLocation.ImageDpi288 = null;
+            this.cmdRemovePDFLocation.ImageDpi384 = null;
+            this.cmdRemovePDFLocation.ImageDpi96 = global::Chummer.Properties.Resources.delete;
             this.cmdRemovePDFLocation.Location = new System.Drawing.Point(442, 3);
             this.cmdRemovePDFLocation.Name = "cmdRemovePDFLocation";
             this.cmdRemovePDFLocation.Padding = new System.Windows.Forms.Padding(1);
@@ -495,7 +501,7 @@ namespace Chummer
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpGlobalOptions.Size = new System.Drawing.Size(911, 494);
+            this.tlpGlobalOptions.Size = new System.Drawing.Size(911, 500);
             this.tlpGlobalOptions.TabIndex = 67;
             // 
             // tlpDpiScalingMode
@@ -986,6 +992,12 @@ namespace Chummer
             this.cmdRemoveCharacterRoster.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRemoveCharacterRoster.Enabled = false;
             this.cmdRemoveCharacterRoster.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdRemoveCharacterRoster.ImageDpi120 = null;
+            this.cmdRemoveCharacterRoster.ImageDpi144 = null;
+            this.cmdRemoveCharacterRoster.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
+            this.cmdRemoveCharacterRoster.ImageDpi288 = null;
+            this.cmdRemoveCharacterRoster.ImageDpi384 = null;
+            this.cmdRemoveCharacterRoster.ImageDpi96 = global::Chummer.Properties.Resources.delete;
             this.cmdRemoveCharacterRoster.Location = new System.Drawing.Point(195, 3);
             this.cmdRemoveCharacterRoster.Name = "cmdRemoveCharacterRoster";
             this.cmdRemoveCharacterRoster.Padding = new System.Windows.Forms.Padding(1);
@@ -1069,6 +1081,12 @@ namespace Chummer
             this.cmdRemovePDFAppPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRemovePDFAppPath.Enabled = false;
             this.cmdRemovePDFAppPath.Image = global::Chummer.Properties.Resources.delete;
+            this.cmdRemovePDFAppPath.ImageDpi120 = null;
+            this.cmdRemovePDFAppPath.ImageDpi144 = null;
+            this.cmdRemovePDFAppPath.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
+            this.cmdRemovePDFAppPath.ImageDpi288 = null;
+            this.cmdRemovePDFAppPath.ImageDpi384 = null;
+            this.cmdRemovePDFAppPath.ImageDpi96 = global::Chummer.Properties.Resources.delete;
             this.cmdRemovePDFAppPath.Location = new System.Drawing.Point(195, 3);
             this.cmdRemovePDFAppPath.Name = "cmdRemovePDFAppPath";
             this.cmdRemovePDFAppPath.Padding = new System.Windows.Forms.Padding(1);
@@ -1627,7 +1645,7 @@ namespace Chummer
             this.gpbEditSourcebookInfo.Location = new System.Drawing.Point(3, 3);
             this.gpbEditSourcebookInfo.Name = "gpbEditSourcebookInfo";
             this.tlpGlobal.SetRowSpan(this.gpbEditSourcebookInfo, 2);
-            this.gpbEditSourcebookInfo.Size = new System.Drawing.Size(297, 572);
+            this.gpbEditSourcebookInfo.Size = new System.Drawing.Size(297, 578);
             this.gpbEditSourcebookInfo.TabIndex = 65;
             this.gpbEditSourcebookInfo.TabStop = false;
             this.gpbEditSourcebookInfo.Tag = "Label_Options_EditSourcebookInfo";
@@ -1639,7 +1657,7 @@ namespace Chummer
             this.lstGlobalSourcebookInfos.FormattingEnabled = true;
             this.lstGlobalSourcebookInfos.Location = new System.Drawing.Point(3, 16);
             this.lstGlobalSourcebookInfos.Name = "lstGlobalSourcebookInfos";
-            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(291, 553);
+            this.lstGlobalSourcebookInfos.Size = new System.Drawing.Size(291, 559);
             this.lstGlobalSourcebookInfos.TabIndex = 48;
             this.lstGlobalSourcebookInfos.SelectedIndexChanged += new System.EventHandler(this.lstGlobalSourcebookInfos_SelectedIndexChanged);
             // 
@@ -2027,7 +2045,7 @@ namespace Chummer
             this.tabGitHubIssues.Location = new System.Drawing.Point(4, 22);
             this.tabGitHubIssues.Name = "tabGitHubIssues";
             this.tabGitHubIssues.Padding = new System.Windows.Forms.Padding(3);
-            this.tabGitHubIssues.Size = new System.Drawing.Size(1232, 596);
+            this.tabGitHubIssues.Size = new System.Drawing.Size(1232, 602);
             this.tabGitHubIssues.TabIndex = 4;
             this.tabGitHubIssues.Tag = "Tab_Options_GitHubIssues";
             this.tabGitHubIssues.Text = "GitHub Issues";
@@ -2053,7 +2071,7 @@ namespace Chummer
             this.tabPlugins.Location = new System.Drawing.Point(4, 22);
             this.tabPlugins.Name = "tabPlugins";
             this.tabPlugins.Padding = new System.Windows.Forms.Padding(9);
-            this.tabPlugins.Size = new System.Drawing.Size(1232, 596);
+            this.tabPlugins.Size = new System.Drawing.Size(1232, 602);
             this.tabPlugins.TabIndex = 6;
             this.tabPlugins.Tag = "Tab_Options_Plugins";
             this.tabPlugins.Text = "Plugins";
@@ -2073,7 +2091,7 @@ namespace Chummer
             this.tlpPlugins.Name = "tlpPlugins";
             this.tlpPlugins.RowCount = 1;
             this.tlpPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpPlugins.Size = new System.Drawing.Size(1214, 578);
+            this.tlpPlugins.Size = new System.Drawing.Size(1214, 584);
             this.tlpPlugins.TabIndex = 0;
             // 
             // grpAvailablePlugins
@@ -2084,7 +2102,7 @@ namespace Chummer
             this.grpAvailablePlugins.Dock = System.Windows.Forms.DockStyle.Fill;
             this.grpAvailablePlugins.Location = new System.Drawing.Point(3, 3);
             this.grpAvailablePlugins.Name = "grpAvailablePlugins";
-            this.grpAvailablePlugins.Size = new System.Drawing.Size(297, 572);
+            this.grpAvailablePlugins.Size = new System.Drawing.Size(297, 578);
             this.grpAvailablePlugins.TabIndex = 0;
             this.grpAvailablePlugins.TabStop = false;
             this.grpAvailablePlugins.Tag = "String_AvailablePlugins";
@@ -2096,7 +2114,7 @@ namespace Chummer
             this.clbPlugins.FormattingEnabled = true;
             this.clbPlugins.Location = new System.Drawing.Point(3, 16);
             this.clbPlugins.Name = "clbPlugins";
-            this.clbPlugins.Size = new System.Drawing.Size(291, 553);
+            this.clbPlugins.Size = new System.Drawing.Size(291, 559);
             this.clbPlugins.TabIndex = 0;
             this.clbPlugins.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbPlugins_ItemCheck);
             this.clbPlugins.SelectedValueChanged += new System.EventHandler(this.clbPlugins_SelectedValueChanged);
@@ -2111,7 +2129,7 @@ namespace Chummer
             this.pnlPluginOption.Location = new System.Drawing.Point(303, 0);
             this.pnlPluginOption.Margin = new System.Windows.Forms.Padding(0);
             this.pnlPluginOption.Name = "pnlPluginOption";
-            this.pnlPluginOption.Size = new System.Drawing.Size(911, 578);
+            this.pnlPluginOption.Size = new System.Drawing.Size(911, 584);
             this.pnlPluginOption.TabIndex = 1;
             // 
             // tlpButtons
@@ -2369,9 +2387,9 @@ namespace Chummer
         private ColorableCheckBox chkPrintExpenses;
         private ColorableCheckBox chkPrintFreeExpenses;
         private ColorableCheckBox chkPrintNotes;
-        private System.Windows.Forms.Button cmdRemovePDFLocation;
-        private System.Windows.Forms.Button cmdRemoveCharacterRoster;
-        private System.Windows.Forms.Button cmdRemovePDFAppPath;
+        private DpiFriendlyImagedButton cmdRemovePDFLocation;
+        private DpiFriendlyImagedButton cmdRemoveCharacterRoster;
+        private DpiFriendlyImagedButton cmdRemovePDFAppPath;
         private Chummer.BufferedTableLayoutPanel tlpDpiScalingMode;
         private System.Windows.Forms.ComboBox cboDpiScalingMethod;
         private System.Windows.Forms.Label lblDpiScalingMode;

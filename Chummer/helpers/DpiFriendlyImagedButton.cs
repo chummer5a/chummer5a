@@ -26,45 +26,17 @@ using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class DpiFriendlyToolStripButton : ToolStripButton
+    public partial class DpiFriendlyImagedButton : Button
     {
-        public DpiFriendlyToolStripButton()
+        public DpiFriendlyImagedButton()
         {
             InitializeComponent();
         }
 
-        public DpiFriendlyToolStripButton(string strText) : base(strText)
-        {
-            InitializeComponent();
-        }
-
-        public DpiFriendlyToolStripButton(Image objImage) : base(objImage)
-        {
-            InitializeComponent();
-            RefreshImage();
-        }
-
-        public DpiFriendlyToolStripButton(string strText, Image objImage) : base(strText, objImage)
-        {
-            InitializeComponent();
-            RefreshImage();
-        }
-
-        public DpiFriendlyToolStripButton(string strText, Image objImage, EventHandler funcOnClick) : base(strText, objImage, funcOnClick)
-        {
-            InitializeComponent();
-            RefreshImage();
-        }
-
-        public DpiFriendlyToolStripButton(string strText, Image objImage, EventHandler funcOnClick, string strName) : base(strText, objImage, funcOnClick, strName)
-        {
-            InitializeComponent();
-            RefreshImage();
-        }
-
-        public DpiFriendlyToolStripButton(IContainer container)
+        public DpiFriendlyImagedButton(IContainer container)
         {
             container.Add(this);
+
             InitializeComponent();
         }
 
@@ -83,8 +55,9 @@ namespace Chummer
                 Image = lstImages[0];
                 return;
             }
-            int intWidth = Width;
-            int intHeight = Height;
+            // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
+            int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
+            int intHeight = intWidth;
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in lstImages)
@@ -104,12 +77,12 @@ namespace Chummer
             Image = objBestImage;
         }
 
-        public override Image Image
+        public new Image Image
         {
             get => base.Image;
             set
             {
-                if (!Images.Any())
+                if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                     ImageDpi96 = value;
                 base.Image = value;
             }
@@ -249,8 +222,9 @@ namespace Chummer
                 Image = objNewImage;
                 return;
             }
-            int intWidth = Width;
-            int intHeight = Height;
+            // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
+            int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
+            int intHeight = intWidth;
             int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
                                    (intWidth - Image.Width).RaiseToPower(2);
             int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
@@ -268,6 +242,12 @@ namespace Chummer
         protected override void OnTextChanged(EventArgs e)
         {
             base.OnTextChanged(e);
+            RefreshImage();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
             RefreshImage();
         }
     }

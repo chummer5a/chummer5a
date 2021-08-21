@@ -82,7 +82,7 @@ namespace Chummer
 
         public void RefreshImage()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
             List<Image> lstImages = new List<Image>(Images);
             if (lstImages.Count == 0)
@@ -122,7 +122,7 @@ namespace Chummer
             get => base.Image;
             set
             {
-                if (Utils.IsDesignerMode || !Images.Any())
+                if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                     ImageDpi96 = value;
                 base.Image = value;
             }
@@ -166,8 +166,12 @@ namespace Chummer
             {
                 if (_objImageDpi96 == value)
                     return;
+                Image objOldImage = _objImageDpi96;
                 _objImageDpi96 = value;
-                UpdateImageIfBetterMatch(value);
+                if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                    base.Image = value;
+                else
+                    UpdateImageIfBetterMatch(value, objOldImage);
             }
         }
 
@@ -178,8 +182,9 @@ namespace Chummer
             {
                 if (_objImageDpi120 == value)
                     return;
+                Image objOldImage = _objImageDpi120;
                 _objImageDpi120 = value;
-                UpdateImageIfBetterMatch(value);
+                UpdateImageIfBetterMatch(value, objOldImage);
             }
         }
 
@@ -190,8 +195,9 @@ namespace Chummer
             {
                 if (_objImageDpi144 == value)
                     return;
+                Image objOldImage = _objImageDpi144;
                 _objImageDpi144 = value;
-                UpdateImageIfBetterMatch(value);
+                UpdateImageIfBetterMatch(value, objOldImage);
             }
         }
 
@@ -202,8 +208,9 @@ namespace Chummer
             {
                 if (_objImageDpi192 == value)
                     return;
+                Image objOldImage = _objImageDpi192;
                 _objImageDpi192 = value;
-                UpdateImageIfBetterMatch(value);
+                UpdateImageIfBetterMatch(value, objOldImage);
             }
         }
 
@@ -214,8 +221,9 @@ namespace Chummer
             {
                 if (_objImageDpi288 == value)
                     return;
+                Image objOldImage = _objImageDpi288;
                 _objImageDpi288 = value;
-                UpdateImageIfBetterMatch(value);
+                UpdateImageIfBetterMatch(value, objOldImage);
             }
         }
 
@@ -226,8 +234,9 @@ namespace Chummer
             {
                 if (_objImageDpi384 == value)
                     return;
+                Image objOldImage = _objImageDpi384;
                 _objImageDpi384 = value;
-                UpdateImageIfBetterMatch(value);
+                UpdateImageIfBetterMatch(value, objOldImage);
             }
         }
 
@@ -236,10 +245,16 @@ namespace Chummer
         /// Only use this with images that are one of the ones set for this button!
         /// </summary>
         /// <param name="objNewImage"></param>
-        private void UpdateImageIfBetterMatch(Image objNewImage)
+        /// <param name="objImageToReplace"></param>
+        private void UpdateImageIfBetterMatch(Image objNewImage, Image objImageToReplace)
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
+            if (Image == objImageToReplace)
+            {
+                Image = objNewImage;
+                return;
+            }
             if (objNewImage == null)
                 return;
             if (Image == null)
@@ -254,7 +269,7 @@ namespace Chummer
                                    (intWidth - Image.Width).RaiseToPower(2);
             int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
                                (intWidth - objNewImage.Width).RaiseToPower(2);
-            if (intNewMetric > intCurrentMetric)
+            if (intNewMetric < intCurrentMetric)
                 Image = objNewImage;
         }
 

@@ -95,7 +95,7 @@ namespace Chummer
             DeleteContact?.Invoke(this, e);
         }
 
-        private void imgLink_Click(object sender, EventArgs e)
+        private void cmdLink_Click(object sender, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
             if (!string.IsNullOrEmpty(_objContact.FileName))
@@ -110,7 +110,7 @@ namespace Chummer
                 tsContactOpen.Visible = false;
                 tsRemoveCharacter.Visible = false;
             }
-            cmsContact.Show(imgLink, imgLink.Left - 700, imgLink.Top);
+            cmsContact.Show(cmdLink, cmdLink.Left - 700, cmdLink.Top);
         }
 
         private void tsContactOpen_Click(object sender, EventArgs e)
@@ -173,7 +173,7 @@ namespace Chummer
                 using (new CursorWait(this))
                 {
                     _objContact.FileName = openFileDialog.FileName;
-                    imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_OpenFile"));
+                    cmdLink.ToolTipText = LanguageManager.GetString("Tip_Contact_OpenFile");
 
                     // Set the relative path.
                     Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -193,12 +193,12 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                imgLink.SetToolTip(LanguageManager.GetString("Tip_Contact_LinkFile"));
+                cmdLink.ToolTipText = LanguageManager.GetString("Tip_Contact_LinkFile");
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
-        private void imgNotes_Click(object sender, EventArgs e)
+        private void cmdNotes_Click(object sender, EventArgs e)
         {
             using (frmNotes frmContactNotes = new frmNotes(_objContact.Notes, _objContact.NotesColor))
             {
@@ -211,7 +211,7 @@ namespace Chummer
             string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-            imgNotes.SetToolTip(strTooltip.WordWrap());
+            cmdNotes.ToolTipText = strTooltip.WordWrap();
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 

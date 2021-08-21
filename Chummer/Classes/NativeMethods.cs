@@ -56,6 +56,9 @@ namespace Chummer
         [DllImport("user32.dll", SetLastError = true)]
         internal static extern bool SetProcessDpiAwarenessContext(ContextDpiAwareness awareness);
 
+        [DllImport("user32.dll", SetLastError = true)]
+        internal static extern bool SetThreadDpiAwarenessContext(ContextDpiAwareness awareness);
+
         [DllImport("user32.dll")]
         internal static extern bool SetProcessDPIAware();
 

@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
@@ -37,11 +38,25 @@ namespace Chummer
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void BreakIfDebug()
         {
 #if DEBUG
             if (Debugger.IsAttached && !IsUnitTest)
                 Debugger.Break();
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void BreakOnErrorIfDebug()
+        {
+#if DEBUG
+            if (Debugger.IsAttached && !IsUnitTest)
+            {
+                int intErrorCode = Marshal.GetLastWin32Error();
+                if (intErrorCode != 0)
+                    Debugger.Break();
+            }
 #endif
         }
 

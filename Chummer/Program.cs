@@ -69,6 +69,10 @@ namespace Chummer
         [STAThread]
         private static void Main()
         {
+            // Set DPI Stuff before anything else, even the mutex
+            SetProcessDPI(GlobalOptions.DpiScalingMethodSetting);
+            if (IsMainThread)
+                SetThreadDPI(GlobalOptions.DpiScalingMethodSetting);
             using (GlobalChummerMutex = new Mutex(false, @"Global\" + ChummerGuid, out bool blnIsNewInstance))
             {
                 try
@@ -126,8 +130,6 @@ namespace Chummer
                     //for some fun try out this command line parameter: chummer://plugin:SINners:Load:5ff55b9d-7d1c-4067-a2f5-774127346f4e
                     PageViewTelemetry pvt = null;
                     var startTime = DateTimeOffset.UtcNow;
-                    // Set DPI Stuff
-                    SetProcessDPI(GlobalOptions.DpiScalingMethodSetting);
                     // Set default cultures based on the currently set language
                     CultureInfo.DefaultThreadCurrentCulture = GlobalOptions.CultureInfo;
                     CultureInfo.DefaultThreadCurrentUICulture = GlobalOptions.CultureInfo;
@@ -541,6 +543,8 @@ namespace Chummer
                         else
                             NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.Unaware);
                     }
+                    else
+                        return;
                     break;
                 // System
                 case DpiScalingMethod.Zoom:
@@ -587,6 +591,45 @@ namespace Chummer
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eMethod), eMethod, null);
             }
+
+            Utils.BreakOnErrorIfDebug();
+        }
+
+        private static void SetThreadDPI(DpiScalingMethod eMethod)
+        {
+            if (Environment.OSVersion.Version <
+                new Version(10, 0, 15063)) // Windows 10 Creators Update added SetThreadDpiAwarenessContext
+            {
+                SetProcessDPI(eMethod);
+                return;
+            }
+
+            switch (eMethod)
+            {
+                case DpiScalingMethod.None:
+                    NativeMethods.SetThreadDpiAwarenessContext(NativeMethods.ContextDpiAwareness.Unaware);
+                    break;
+                // System
+                case DpiScalingMethod.Zoom:
+                    NativeMethods.SetThreadDpiAwarenessContext(NativeMethods.ContextDpiAwareness.System);
+                    break;
+                // PerMonitor/PerMonitorV2
+                case DpiScalingMethod.Rescale:
+                    NativeMethods.SetThreadDpiAwarenessContext(NativeMethods.ContextDpiAwareness.PerMonitorV2);
+                    break;
+                // System (Enhanced)
+                case DpiScalingMethod.SmartZoom:
+                    NativeMethods.SetThreadDpiAwarenessContext(
+                        Environment.OSVersion.Version >= new Version(10, 0, 17763)
+                            ? NativeMethods.ContextDpiAwareness.UnawareGdiScaled // Windows 10 Version 1809 Added GDI+ Scaling
+                            : NativeMethods.ContextDpiAwareness.System); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
+                    break;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eMethod), eMethod, null);
+            }
+
+            Utils.BreakOnErrorIfDebug();
         }
 
         private static frmChummerMain _frmMainForm;

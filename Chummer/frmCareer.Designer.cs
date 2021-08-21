@@ -6581,6 +6581,8 @@ namespace Chummer
             this.cmdIncreasePowerPoints.AutoSize = true;
             this.cmdIncreasePowerPoints.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdIncreasePowerPoints.Image = global::Chummer.Properties.Resources.add;
+            this.cmdIncreasePowerPoints.ImageDpi96 = global::Chummer.Properties.Resources.add;
+            this.cmdIncreasePowerPoints.ImageDpi192 = global::Chummer.Properties.Resources.add1;
             this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(181, 205);
             this.cmdIncreasePowerPoints.Name = "cmdIncreasePowerPoints";
             this.cmdIncreasePowerPoints.Padding = new System.Windows.Forms.Padding(1);

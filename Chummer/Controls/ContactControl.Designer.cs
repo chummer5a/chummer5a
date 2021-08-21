@@ -36,17 +36,16 @@ namespace Chummer
             this.cboContactRole = new Chummer.ElasticComboBox();
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.txtContactLocation = new System.Windows.Forms.TextBox();
-            this.cmdExpand = new System.Windows.Forms.Button();
-            this.imgNotes = new System.Windows.Forms.PictureBox();
+            this.cmdExpand = new Chummer.DpiFriendlyImagedButton(this.components);
             this.lblQuickStats = new System.Windows.Forms.Label();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdDelete = new System.Windows.Forms.Button();
+            this.cmdDelete = new Chummer.DpiFriendlyImagedButton(this.components);
             this.tlpComboBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
+            this.cmdNotes = new Chummer.ButtonWithToolTip();
             this.cmsContact.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpComboBoxes.SuspendLayout();
             this.SuspendLayout();
@@ -92,7 +91,7 @@ namespace Chummer
             // 
             // tsAttachCharacter
             // 
-            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add;
+            this.tsAttachCharacter.Image = global::Chummer.Properties.Resources.link_add1;
             this.tsAttachCharacter.ImageDpi120 = null;
             this.tsAttachCharacter.ImageDpi144 = null;
             this.tsAttachCharacter.ImageDpi192 = null;
@@ -109,9 +108,9 @@ namespace Chummer
             // 
             this.cboContactRole.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboContactRole.FormattingEnabled = true;
-            this.cboContactRole.Location = new System.Drawing.Point(344, 30);
+            this.cboContactRole.Location = new System.Drawing.Point(360, 31);
             this.cboContactRole.Name = "cboContactRole";
-            this.cboContactRole.Size = new System.Drawing.Size(166, 21);
+            this.cboContactRole.Size = new System.Drawing.Size(174, 21);
             this.cboContactRole.TabIndex = 2;
             this.cboContactRole.TooltipText = "";
             this.cboContactRole.SelectedIndexChanged += new System.EventHandler(this.UpdateContactRole);
@@ -121,9 +120,9 @@ namespace Chummer
             // txtContactName
             // 
             this.txtContactName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtContactName.Location = new System.Drawing.Point(3, 30);
+            this.txtContactName.Location = new System.Drawing.Point(3, 31);
             this.txtContactName.Name = "txtContactName";
-            this.txtContactName.Size = new System.Drawing.Size(164, 20);
+            this.txtContactName.Size = new System.Drawing.Size(172, 20);
             this.txtContactName.TabIndex = 0;
             this.txtContactName.TextChanged += new System.EventHandler(this.txtContactName_TextChanged);
             // 
@@ -131,9 +130,9 @@ namespace Chummer
             // 
             this.txtContactLocation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpComboBoxes.SetColumnSpan(this.txtContactLocation, 2);
-            this.txtContactLocation.Location = new System.Drawing.Point(173, 30);
+            this.txtContactLocation.Location = new System.Drawing.Point(181, 31);
             this.txtContactLocation.Name = "txtContactLocation";
-            this.txtContactLocation.Size = new System.Drawing.Size(165, 20);
+            this.txtContactLocation.Size = new System.Drawing.Size(173, 20);
             this.txtContactLocation.TabIndex = 1;
             this.txtContactLocation.TextChanged += new System.EventHandler(this.txtContactLocation_TextChanged);
             // 
@@ -141,35 +140,27 @@ namespace Chummer
             // 
             this.cmdExpand.AutoSize = true;
             this.cmdExpand.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdExpand.Image = global::Chummer.Properties.Resources.Expand;
+            this.cmdExpand.Image = global::Chummer.Properties.Resources.toggle_expand;
+            this.cmdExpand.ImageDpi120 = null;
+            this.cmdExpand.ImageDpi144 = null;
+            this.cmdExpand.ImageDpi192 = global::Chummer.Properties.Resources.toggle_expand1;
+            this.cmdExpand.ImageDpi288 = null;
+            this.cmdExpand.ImageDpi384 = null;
+            this.cmdExpand.ImageDpi96 = global::Chummer.Properties.Resources.toggle_expand;
             this.cmdExpand.Location = new System.Drawing.Point(3, 3);
             this.cmdExpand.Name = "cmdExpand";
             this.cmdExpand.Padding = new System.Windows.Forms.Padding(1);
             this.tlpMain.SetRowSpan(this.cmdExpand, 2);
-            this.cmdExpand.Size = new System.Drawing.Size(23, 23);
+            this.cmdExpand.Size = new System.Drawing.Size(24, 24);
             this.cmdExpand.TabIndex = 11;
             this.cmdExpand.UseVisualStyleBackColor = true;
             this.cmdExpand.Click += new System.EventHandler(this.cmdExpand_Click);
-            // 
-            // imgNotes
-            // 
-            this.imgNotes.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.imgNotes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.imgNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.imgNotes.Location = new System.Drawing.Point(599, 30);
-            this.imgNotes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
-            this.imgNotes.Name = "imgNotes";
-            this.imgNotes.Size = new System.Drawing.Size(16, 26);
-            this.imgNotes.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.imgNotes.TabIndex = 10;
-            this.imgNotes.TabStop = false;
-            this.imgNotes.Click += new System.EventHandler(this.imgNotes_Click);
             // 
             // lblQuickStats
             // 
             this.lblQuickStats.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblQuickStats.AutoSize = true;
-            this.lblQuickStats.Location = new System.Drawing.Point(545, 21);
+            this.lblQuickStats.Location = new System.Drawing.Point(570, 22);
             this.lblQuickStats.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblQuickStats.MinimumSize = new System.Drawing.Size(40, 0);
             this.lblQuickStats.Name = "lblQuickStats";
@@ -201,7 +192,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblQuickStats, 10, 0);
             this.tlpMain.Controls.Add(this.cmdExpand, 0, 0);
             this.tlpMain.Controls.Add(this.tlpComboBoxes, 1, 0);
-            this.tlpMain.Controls.Add(this.imgNotes, 12, 1);
+            this.tlpMain.Controls.Add(this.cmdNotes, 12, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(0, 0);
             this.tlpMain.Name = "tlpMain";
@@ -210,7 +201,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(618, 56);
+            this.tlpMain.Size = new System.Drawing.Size(643, 58);
             this.tlpMain.TabIndex = 35;
             // 
             // cmdDelete
@@ -220,7 +211,13 @@ namespace Chummer
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.SetColumnSpan(this.cmdDelete, 2);
             this.cmdDelete.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdDelete.Location = new System.Drawing.Point(591, 3);
+            this.cmdDelete.ImageDpi120 = null;
+            this.cmdDelete.ImageDpi144 = null;
+            this.cmdDelete.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
+            this.cmdDelete.ImageDpi288 = null;
+            this.cmdDelete.ImageDpi384 = null;
+            this.cmdDelete.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.Location = new System.Drawing.Point(616, 3);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Padding = new System.Windows.Forms.Padding(1);
             this.cmdDelete.Size = new System.Drawing.Size(24, 24);
@@ -246,21 +243,21 @@ namespace Chummer
             this.tlpComboBoxes.Controls.Add(this.txtContactLocation, 1, 1);
             this.tlpComboBoxes.Controls.Add(this.cboContactRole, 3, 1);
             this.tlpComboBoxes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpComboBoxes.Location = new System.Drawing.Point(29, 0);
+            this.tlpComboBoxes.Location = new System.Drawing.Point(30, 0);
             this.tlpComboBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.tlpComboBoxes.Name = "tlpComboBoxes";
             this.tlpComboBoxes.RowCount = 2;
             this.tlpMain.SetRowSpan(this.tlpComboBoxes, 2);
             this.tlpComboBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpComboBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpComboBoxes.Size = new System.Drawing.Size(513, 56);
+            this.tlpComboBoxes.Size = new System.Drawing.Size(537, 58);
             this.tlpComboBoxes.TabIndex = 35;
             // 
             // lblContactArchtypeLabel
             // 
             this.lblContactArchtypeLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblContactArchtypeLabel.AutoSize = true;
-            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(344, 6);
+            this.lblContactArchtypeLabel.Location = new System.Drawing.Point(360, 6);
             this.lblContactArchtypeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblContactArchtypeLabel.Name = "lblContactArchtypeLabel";
             this.lblContactArchtypeLabel.Size = new System.Drawing.Size(52, 13);
@@ -273,7 +270,7 @@ namespace Chummer
             this.lblContactLocationLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblContactLocationLabel.AutoSize = true;
             this.tlpComboBoxes.SetColumnSpan(this.lblContactLocationLabel, 2);
-            this.lblContactLocationLabel.Location = new System.Drawing.Point(173, 6);
+            this.lblContactLocationLabel.Location = new System.Drawing.Point(181, 6);
             this.lblContactLocationLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblContactLocationLabel.Name = "lblContactLocationLabel";
             this.lblContactLocationLabel.Size = new System.Drawing.Size(51, 13);
@@ -293,6 +290,27 @@ namespace Chummer
             this.lblContactNameLabel.Tag = "Label_Name";
             this.lblContactNameLabel.Text = "Name:";
             // 
+            // cmdNotes
+            // 
+            this.cmdNotes.AutoSize = true;
+            this.cmdNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdNotes.FlatAppearance.BorderSize = 0;
+            this.cmdNotes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmdNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.cmdNotes.ImageDpi120 = null;
+            this.cmdNotes.ImageDpi144 = null;
+            this.cmdNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.cmdNotes.ImageDpi288 = null;
+            this.cmdNotes.ImageDpi384 = null;
+            this.cmdNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.cmdNotes.Location = new System.Drawing.Point(618, 33);
+            this.cmdNotes.Name = "cmdNotes";
+            this.cmdNotes.Size = new System.Drawing.Size(22, 22);
+            this.cmdNotes.TabIndex = 36;
+            this.cmdNotes.ToolTipText = "";
+            this.cmdNotes.UseVisualStyleBackColor = true;
+            this.cmdNotes.Click += new System.EventHandler(this.cmdNotes_Click);
+            // 
             // ContactControl
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
@@ -303,10 +321,9 @@ namespace Chummer
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(480, 0);
             this.Name = "ContactControl";
-            this.Size = new System.Drawing.Size(618, 56);
+            this.Size = new System.Drawing.Size(643, 58);
             this.Load += new System.EventHandler(this.ContactControl_Load);
             this.cmsContact.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.imgNotes)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpComboBoxes.ResumeLayout(false);
@@ -318,20 +335,20 @@ namespace Chummer
 
         #endregion
         private System.Windows.Forms.ContextMenuStrip cmsContact;
-        private System.Windows.Forms.PictureBox imgNotes;
         private ElasticComboBox cboContactRole;
         private System.Windows.Forms.TextBox txtContactName;
         private System.Windows.Forms.TextBox txtContactLocation;
-        private System.Windows.Forms.Button cmdExpand;
+        private DpiFriendlyImagedButton cmdExpand;
         private System.Windows.Forms.Label lblQuickStats;
         private BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpComboBoxes;
         private System.Windows.Forms.Label lblContactNameLabel;
         private System.Windows.Forms.Label lblContactLocationLabel;
         private System.Windows.Forms.Label lblContactArchtypeLabel;
-        private System.Windows.Forms.Button cmdDelete;
+        private DpiFriendlyImagedButton cmdDelete;
         private DpiFriendlyToolStripMenuItem tsContactOpen;
         private DpiFriendlyToolStripMenuItem tsRemoveCharacter;
         private DpiFriendlyToolStripMenuItem tsAttachCharacter;
+        private ButtonWithToolTip cmdNotes;
     }
 }

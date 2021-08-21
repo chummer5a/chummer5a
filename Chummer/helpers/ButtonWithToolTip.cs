@@ -17,11 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed class ButtonWithToolTip : Button
+    public sealed class ButtonWithToolTip : DpiFriendlyImagedButton
     {
         private readonly int _intToolTipWrap;
 
@@ -61,6 +62,17 @@ namespace Chummer
         }
 
         public ButtonWithToolTip(ToolTip objToolTip, int intToolTipWrap = -1)
+        {
+            ToolTipObject = objToolTip;
+            _intToolTipWrap = intToolTipWrap;
+            DoubleBuffered = true;
+        }
+
+        public ButtonWithToolTip(IContainer container) : this(container, ToolTipFactory.ToolTip)
+        {
+        }
+
+        public ButtonWithToolTip(IContainer container, ToolTip objToolTip, int intToolTipWrap = -1) : base(container)
         {
             ToolTipObject = objToolTip;
             _intToolTipWrap = intToolTipWrap;
