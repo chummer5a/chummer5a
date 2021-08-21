@@ -115,15 +115,14 @@ namespace Chummer
             get => _blnIsLightMode;
             set
             {
-                if (_blnIsLightMode != value)
+                if (_blnIsLightMode == value)
+                    return;
+                _blnIsLightMode = value;
+                Program.MainForm?.DoThreadSafe(() =>
                 {
-                    _blnIsLightMode = value;
-                    Program.MainForm?.DoThreadSafe(() =>
-                    {
-                        using (new CursorWait(Program.MainForm))
-                            Program.MainForm.UpdateLightDarkMode();
-                    });
-                }
+                    using (new CursorWait(Program.MainForm))
+                        Program.MainForm.UpdateLightDarkMode();
+                });
             }
         }
 
@@ -198,13 +197,10 @@ namespace Chummer
                     s_DicDimmedColors.TryAdd(objColor, objRetColor);
                 }
             }
-            else
+            else if (!s_DicBrightenedColors.TryGetValue(objColor, out objRetColor))
             {
-                if (!s_DicBrightenedColors.TryGetValue(objColor, out objRetColor))
-                {
-                    objRetColor = GetBrightenedVersion(objColor);
-                    s_DicBrightenedColors.TryAdd(objColor, objRetColor);
-                }
+                objRetColor = GetBrightenedVersion(objColor);
+                s_DicBrightenedColors.TryAdd(objColor, objRetColor);
             }
 
             return objRetColor;

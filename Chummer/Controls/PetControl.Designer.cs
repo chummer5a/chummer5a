@@ -40,8 +40,8 @@ namespace Chummer
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
             this.cboMetatype = new Chummer.ElasticComboBox();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdLink = new Chummer.ButtonWithToolTip();
-            this.cmdNotes = new Chummer.ButtonWithToolTip();
+            this.cmdNotes = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdLink = new Chummer.ButtonWithToolTip(this.components);
             this.cmsContact.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -190,33 +190,11 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(768, 30);
             this.tlpMain.TabIndex = 25;
             // 
-            // cmdLink
-            // 
-            this.cmdLink.AutoSize = true;
-            this.cmdLink.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdLink.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdLink.FlatAppearance.BorderSize = 0;
-            this.cmdLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.cmdLink.Image = global::Chummer.Properties.Resources.link;
-            this.cmdLink.ImageDpi120 = null;
-            this.cmdLink.ImageDpi144 = null;
-            this.cmdLink.ImageDpi192 = global::Chummer.Properties.Resources.link1;
-            this.cmdLink.ImageDpi288 = null;
-            this.cmdLink.ImageDpi384 = null;
-            this.cmdLink.ImageDpi96 = global::Chummer.Properties.Resources.link;
-            this.cmdLink.Location = new System.Drawing.Point(661, 3);
-            this.cmdLink.Name = "cmdLink";
-            this.cmdLink.Size = new System.Drawing.Size(22, 24);
-            this.cmdLink.TabIndex = 25;
-            this.cmdLink.ToolTipText = "";
-            this.cmdLink.UseVisualStyleBackColor = true;
-            this.cmdLink.Click += new System.EventHandler(this.cmdLink_Click);
-            // 
             // cmdNotes
             // 
+            this.cmdNotes.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdNotes.AutoSize = true;
             this.cmdNotes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdNotes.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdNotes.FlatAppearance.BorderSize = 0;
             this.cmdNotes.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdNotes.Image = global::Chummer.Properties.Resources.note_edit;
@@ -226,13 +204,35 @@ namespace Chummer
             this.cmdNotes.ImageDpi288 = null;
             this.cmdNotes.ImageDpi384 = null;
             this.cmdNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
-            this.cmdNotes.Location = new System.Drawing.Point(689, 3);
+            this.cmdNotes.Location = new System.Drawing.Point(689, 4);
             this.cmdNotes.Name = "cmdNotes";
-            this.cmdNotes.Size = new System.Drawing.Size(22, 24);
+            this.cmdNotes.Size = new System.Drawing.Size(22, 22);
             this.cmdNotes.TabIndex = 26;
             this.cmdNotes.ToolTipText = "";
             this.cmdNotes.UseVisualStyleBackColor = true;
             this.cmdNotes.Click += new System.EventHandler(this.cmdNotes_Click);
+            // 
+            // cmdLink
+            // 
+            this.cmdLink.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdLink.AutoSize = true;
+            this.cmdLink.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdLink.FlatAppearance.BorderSize = 0;
+            this.cmdLink.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.cmdLink.Image = global::Chummer.Properties.Resources.link;
+            this.cmdLink.ImageDpi120 = null;
+            this.cmdLink.ImageDpi144 = null;
+            this.cmdLink.ImageDpi192 = global::Chummer.Properties.Resources.link1;
+            this.cmdLink.ImageDpi288 = null;
+            this.cmdLink.ImageDpi384 = null;
+            this.cmdLink.ImageDpi96 = global::Chummer.Properties.Resources.link;
+            this.cmdLink.Location = new System.Drawing.Point(661, 4);
+            this.cmdLink.Name = "cmdLink";
+            this.cmdLink.Size = new System.Drawing.Size(22, 22);
+            this.cmdLink.TabIndex = 25;
+            this.cmdLink.ToolTipText = "";
+            this.cmdLink.UseVisualStyleBackColor = true;
+            this.cmdLink.Click += new System.EventHandler(this.cmdLink_Click);
             // 
             // PetControl
             // 

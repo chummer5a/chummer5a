@@ -588,9 +588,8 @@ namespace Chummer
                 };
                 cmdLink = new ButtonWithToolTip
                 {
+                    Anchor = AnchorStyles.Left,
                     AutoSize = true,
-                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                    Dock = DockStyle.Fill,
                     FlatAppearance = { BorderSize = 0 },
                     FlatStyle = FlatStyle.Flat,
                     ImageDpi96 = Resources.link,
@@ -805,7 +804,7 @@ namespace Chummer
 
                 SuspendLayout();
                 tlpMain.SuspendLayout();
-                tlpMain.SetColumnSpan(tlpStatBlock, 13);
+                tlpMain.SetColumnSpan(tlpStatBlock, 12);
                 tlpMain.Controls.Add(tlpStatBlock, 0, 3);
                 tlpMain.ResumeLayout();
                 ResumeLayout();
