@@ -8471,15 +8471,15 @@
           </replaceattribute>
           <replaceattribute>
             <name>INT</name>
-            <min>3</min>
-            <max>9</max>
-            <aug>13</aug>
+            <min>1</min>
+            <max>6</max>
+            <aug>10</aug>
           </replaceattribute>
           <replaceattribute>
             <name>CHA</name>
             <min>1</min>
-            <max>4</max>
-            <aug>8</aug>
+            <max>2</max>
+            <aug>6</aug>
           </replaceattribute>
         </replaceattributes>
         <selectattributes>
