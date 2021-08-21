@@ -16,9 +16,8 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                if (characters != null)
-                    foreach (Character objCharacter in characters)
-                        objCharacter.Dispose();
+                foreach (Character objCharacter in _lstCharacters)
+                    objCharacter.Dispose();
             }
             base.Dispose(disposing);
         }
