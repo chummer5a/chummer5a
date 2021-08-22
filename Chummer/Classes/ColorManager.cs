@@ -512,21 +512,22 @@ namespace Chummer
                     return;
 
                 case CheckBox chkControl:
-                    if (chkControl.Appearance != Appearance.Button)
+                    if (chkControl.Appearance == Appearance.Button || chkControl is DpiFriendlyCheckBoxDisguisedAsButton)
                     {
-                        if (chkControl is ColorableCheckBox chkControlColored)
-                        {
-                            chkControlColored.DefaultColorScheme = blnLightMode;
-                            if (blnLightMode) // Disabled case for Light mode already handled by the switch above
-                                chkControlColored.ForeColor = ControlTextLight;
-                            else
-                                chkControlColored.ForeColor = chkControlColored.Enabled ? ControlTextDark : GrayText;
-                            break;
-                        }
-                        goto default;
+                        ApplyButtonStyle();
+                        break;
                     }
-                    ApplyButtonStyle();
-                    break;
+
+                    if (chkControl is ColorableCheckBox chkControlColored)
+                    {
+                        chkControlColored.DefaultColorScheme = blnLightMode;
+                        if (blnLightMode) // Disabled case for Light mode already handled by the switch above
+                            chkControlColored.ForeColor = ControlTextLight;
+                        else
+                            chkControlColored.ForeColor = chkControlColored.Enabled ? ControlTextDark : GrayText;
+                        break;
+                    }
+                    goto default;
 
                 case Button cmdControl:
                     if (cmdControl.FlatStyle == FlatStyle.Flat)

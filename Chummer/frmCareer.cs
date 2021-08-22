@@ -13013,13 +13013,13 @@ namespace Chummer
 
         private void chkPhysicalCM_CheckedChanged(object sender, EventArgs e)
         {
-            if (sender is CheckBox objBox)
+            if (sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.PhysicalCMFilled = i);
         }
 
         private void chkStunCM_CheckedChanged(object sender, EventArgs e)
         {
-            if (sender is CheckBox objBox)
+            if (sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => CharacterObject.StunCMFilled = i);
         }
 
@@ -13034,18 +13034,18 @@ namespace Chummer
         /// <param name="button_Click">Event handler for when a CM box is clicked</param>
         /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
-        private static void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
+        private void ProcessCharacterConditionMonitorBoxDisplays(Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset, int intOverflow, EventHandler button_Click, bool check = false, int value = 0)
         {
             pnlConditionMonitorPanel.SuspendLayout();
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
-                List<CheckBox> lstCheckBoxes = pnlConditionMonitorPanel.Controls.OfType<CheckBox>().ToList();
+                List<DpiFriendlyCheckBoxDisguisedAsButton> lstCheckBoxes = pnlConditionMonitorPanel.Controls.OfType<DpiFriendlyCheckBoxDisguisedAsButton>().ToList();
                 if (lstCheckBoxes.Count < intConditionMax + intOverflow)
                 {
                     int intMax = 0;
-                    CheckBox objMaxCheckBox = null;
-                    foreach (CheckBox objLoopCheckBox in lstCheckBoxes)
+                    DpiFriendlyCheckBoxDisguisedAsButton objMaxCheckBox = null;
+                    foreach (DpiFriendlyCheckBoxDisguisedAsButton objLoopCheckBox in lstCheckBoxes)
                     {
                         int intLoop = Convert.ToInt32(objLoopCheckBox.Tag, GlobalOptions.InvariantCultureInfo);
                         if (objMaxCheckBox == null || intMax < intLoop)
@@ -13059,7 +13059,7 @@ namespace Chummer
                     {
                         for (int i = intMax + 1; i <= intConditionMax + intOverflow; i++)
                         {
-                            CheckBox cb = new CheckBox
+                            DpiFriendlyCheckBoxDisguisedAsButton cb = new DpiFriendlyCheckBoxDisguisedAsButton(components)
                             {
                                 Tag = i,
                                 Appearance = objMaxCheckBox.Appearance,
@@ -13082,7 +13082,7 @@ namespace Chummer
 
                 int intMaxDimension = 0;
                 int intMaxMargin = 0;
-                foreach (CheckBox chkCmBox in lstCheckBoxes)
+                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in lstCheckBoxes)
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
                     chkCmBox.BackColor = SystemColors.Control; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
@@ -13093,7 +13093,8 @@ namespace Chummer
                     if (intCurrentBoxTag <= intConditionMax)
                     {
                         chkCmBox.Visible = true;
-                        chkCmBox.Image = null;
+                        chkCmBox.ImageDpi96 = null;
+                        chkCmBox.ImageDpi192 = null;
                         if (intCurrentBoxTag > intThresholdOffset && (intCurrentBoxTag - intThresholdOffset) % intThreshold == 0)
                         {
                             int intModifiers = (intThresholdOffset - intCurrentBoxTag) / intThreshold;
@@ -13106,13 +13107,22 @@ namespace Chummer
                     {
                         chkCmBox.Visible = true;
                         chkCmBox.BackColor = SystemColors.ControlDark; // Condition Monitor checkboxes shouldn't get colored based on Dark Mode
-                        chkCmBox.Image = intCurrentBoxTag == intConditionMax + intOverflow
-                            ? Properties.Resources.skull_old : null;
+                        if (intCurrentBoxTag == intConditionMax + intOverflow)
+                        {
+                            chkCmBox.ImageDpi96 = Properties.Resources.rip;
+                            chkCmBox.ImageDpi192 = Properties.Resources.rip1;
+                        }
+                        else
+                        {
+                            chkCmBox.ImageDpi96 = null;
+                            chkCmBox.ImageDpi192 = null;
+                        }
                     }
                     else
                     {
                         chkCmBox.Visible = false;
-                        chkCmBox.Image = null;
+                        chkCmBox.ImageDpi96 = null;
+                        chkCmBox.ImageDpi192 = null;
                         chkCmBox.Text = " "; // Non-breaking space to help with DPI stuff
                     }
 
@@ -13122,7 +13132,7 @@ namespace Chummer
 
                 Size objSquareSize = new Size(intMaxDimension, intMaxDimension);
                 Padding objSquarePadding = new Padding(intMaxMargin);
-                foreach (CheckBox chkCmBox in lstCheckBoxes)
+                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in lstCheckBoxes)
                 {
                     chkCmBox.MinimumSize = objSquareSize;
                     chkCmBox.Margin = objSquarePadding;
@@ -13151,7 +13161,7 @@ namespace Chummer
             if (intConditionMax > 0)
             {
                 pnlConditionMonitorPanel.Visible = true;
-                foreach (CheckBox chkCmBox in pnlConditionMonitorPanel.Controls.OfType<CheckBox>())
+                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in pnlConditionMonitorPanel.Controls.OfType<DpiFriendlyCheckBoxDisguisedAsButton>())
                 {
                     int intCurrentBoxTag = Convert.ToInt32(chkCmBox.Tag, GlobalOptions.InvariantCultureInfo);
 
@@ -13183,7 +13193,7 @@ namespace Chummer
         /// <param name="chkSender">Checkbox we're currently changing.</param>
         /// <param name="blnDoUIUpdate">Whether to update all the other boxes in the UI or not. If something like ProcessEquipmentConditionMonitorBoxDisplays would be called later, this can be false.</param>
         /// <param name="funcPropertyToUpdate">Function to run once the condition monitor has been processed, probably a property setter. Uses the amount of filled boxes as its argument.</param>
-        private void ProcessConditionMonitorCheckedChanged(CheckBox chkSender, Action<int> funcPropertyToUpdate = null, bool blnDoUIUpdate = true)
+        private void ProcessConditionMonitorCheckedChanged(DpiFriendlyCheckBoxDisguisedAsButton chkSender, Action<int> funcPropertyToUpdate = null, bool blnDoUIUpdate = true)
         {
             if (IsRefreshing)
                 return;
@@ -13203,7 +13213,7 @@ namespace Chummer
                 IsRefreshing = true;
 
                 pnlConditionMonitorPanel.SuspendLayout();
-                foreach (CheckBox chkCmBox in pnlConditionMonitorPanel.Controls.OfType<CheckBox>())
+                foreach (DpiFriendlyCheckBoxDisguisedAsButton chkCmBox in pnlConditionMonitorPanel.Controls.OfType<DpiFriendlyCheckBoxDisguisedAsButton>())
                 {
                     if (chkCmBox != chkSender)
                     {
@@ -13242,7 +13252,7 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
+            if (treCyberware.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
@@ -13256,7 +13266,7 @@ namespace Chummer
             while (objGearNode?.Level > 1)
                 objGearNode = objGearNode.Parent;
 
-            if (objGearNode?.Tag is Gear objGear && sender is CheckBox objBox)
+            if (objGearNode?.Tag is Gear objGear && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objGear.MatrixCMFilled = i, false);
         }
 
@@ -13265,7 +13275,7 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (treArmor.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
+            if (treArmor.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
@@ -13274,7 +13284,7 @@ namespace Chummer
             if (IsRefreshing)
                 return;
 
-            if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
+            if (treWeapons.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 
@@ -13290,10 +13300,10 @@ namespace Chummer
                 while (objVehicleNode?.Level > 1)
                     objVehicleNode = objVehicleNode.Parent;
                 
-                if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle && sender is CheckBox objBox)
+                if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                     ProcessConditionMonitorCheckedChanged(objBox, i => objVehicle.PhysicalCMFilled = i);
             }
-            else if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is CheckBox objBox)
+            else if (treVehicles.SelectedNode?.Tag is IHasMatrixAttributes objItem && sender is DpiFriendlyCheckBoxDisguisedAsButton objBox)
                 ProcessConditionMonitorCheckedChanged(objBox, i => objItem.MatrixCMFilled = i, false);
         }
 

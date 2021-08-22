@@ -373,6 +373,12 @@
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
+    <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
+      <DependentUpon>DpiFriendlyCheckBoxDisguisedAsButton.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\DpiFriendlyImagedButton.cs">
       <SubType>Component</SubType>
     </Compile>
