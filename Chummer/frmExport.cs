@@ -136,8 +136,9 @@ namespace Chummer
             _objCharacterXml = null;
             await Task.WhenAll(
                 imgSheetLanguageFlag.DoThreadSafeAsync(() =>
-                    imgSheetLanguageFlag.Image =
-                        FlagImageGetter.GetFlagFromCountryCode(_strExportLanguage.Substring(3, 2))), DoXsltUpdate());
+                   imgSheetLanguageFlag.Image = Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height) >= 32
+                       ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strExportLanguage.Substring(3, 2))
+                       : FlagImageGetter.GetFlagFromCountryCode(_strExportLanguage.Substring(3, 2))), DoXsltUpdate());
         }
 
         private async Task DoXsltUpdate()

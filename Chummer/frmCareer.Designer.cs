@@ -5429,13 +5429,13 @@ namespace Chummer
             // 
             // mnuSpecialPossess
             // 
-            this.mnuSpecialPossess.Image = global::Chummer.Properties.Resources.possession;
+            this.mnuSpecialPossess.Image = global::Chummer.Properties.Resources.status_online;
             this.mnuSpecialPossess.ImageDpi120 = null;
             this.mnuSpecialPossess.ImageDpi144 = null;
-            this.mnuSpecialPossess.ImageDpi192 = global::Chummer.Properties.Resources.status_online;
+            this.mnuSpecialPossess.ImageDpi192 = global::Chummer.Properties.Resources.status_online1;
             this.mnuSpecialPossess.ImageDpi288 = null;
             this.mnuSpecialPossess.ImageDpi384 = null;
-            this.mnuSpecialPossess.ImageDpi96 = global::Chummer.Properties.Resources.possession;
+            this.mnuSpecialPossess.ImageDpi96 = global::Chummer.Properties.Resources.status_online;
             this.mnuSpecialPossess.Name = "mnuSpecialPossess";
             this.mnuSpecialPossess.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialPossess.Tag = "Menu_SpecialPossessLiving";
@@ -5444,13 +5444,13 @@ namespace Chummer
             // 
             // mnuSpecialPossessInanimate
             // 
-            this.mnuSpecialPossessInanimate.Image = global::Chummer.Properties.Resources.possessinanimate;
+            this.mnuSpecialPossessInanimate.Image = global::Chummer.Properties.Resources.status_offline;
             this.mnuSpecialPossessInanimate.ImageDpi120 = null;
             this.mnuSpecialPossessInanimate.ImageDpi144 = null;
-            this.mnuSpecialPossessInanimate.ImageDpi192 = global::Chummer.Properties.Resources.status_offline;
+            this.mnuSpecialPossessInanimate.ImageDpi192 = global::Chummer.Properties.Resources.status_offline1;
             this.mnuSpecialPossessInanimate.ImageDpi288 = null;
             this.mnuSpecialPossessInanimate.ImageDpi384 = null;
-            this.mnuSpecialPossessInanimate.ImageDpi96 = global::Chummer.Properties.Resources.possessinanimate;
+            this.mnuSpecialPossessInanimate.ImageDpi96 = global::Chummer.Properties.Resources.status_offline;
             this.mnuSpecialPossessInanimate.Name = "mnuSpecialPossessInanimate";
             this.mnuSpecialPossessInanimate.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialPossessInanimate.Tag = "Menu_SpecialPossessInanimate";

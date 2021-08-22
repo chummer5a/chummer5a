@@ -2293,6 +2293,7 @@
     <Content Include="Resources\Chummy.png" />
     <Content Include="Resources\HeroLab.ico" />
     <Content Include="Resources\icons\defaulted.png" />
+    <Content Include="Resources\icons\defaulted_32.png" />
     <Content Include="Resources\icons\die.png" />
     <Content Include="Resources\icons\discord_16px.png" />
     <Content Include="Resources\icons\discord_32px.png" />
@@ -10670,6 +10671,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\cart_remove.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_delete.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_gear.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_taxi.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\cash_register_left.png" />
@@ -18046,6 +18048,7 @@
     <Content Include="Resources\icons\HeroLab_32.png" />
     <Content Include="Resources\icons\HeroLab_48.png" />
     <Content Include="Resources\icons\noimagedots.png" />
+    <Content Include="Resources\icons\noimagedots_32.png" />
     <Content Include="Resources\troll.ico" />
     <Content Include="Resources\troll.png" />
     <Content Include="lang\pt-br.xml">

@@ -44,7 +44,7 @@ namespace Chummer.UI.Shared.Components
             this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
             this.cmdRoll.ImageDpi120 = null;
             this.cmdRoll.ImageDpi144 = null;
-            this.cmdRoll.ImageDpi192 = global::Chummer.Properties.Resources.dice;
+            this.cmdRoll.ImageDpi192 = global::Chummer.Properties.Resources.die1;
             this.cmdRoll.ImageDpi288 = null;
             this.cmdRoll.ImageDpi384 = null;
             this.cmdRoll.ImageDpi96 = global::Chummer.Properties.Resources.die;

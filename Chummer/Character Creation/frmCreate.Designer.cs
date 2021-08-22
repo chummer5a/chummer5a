@@ -3228,7 +3228,7 @@ namespace Chummer
             this.mnuSpecialConfirmValidity.Image = global::Chummer.Properties.Resources.accept;
             this.mnuSpecialConfirmValidity.ImageDpi120 = null;
             this.mnuSpecialConfirmValidity.ImageDpi144 = null;
-            this.mnuSpecialConfirmValidity.ImageDpi192 = global::Chummer.Properties.Resources.accept_button;
+            this.mnuSpecialConfirmValidity.ImageDpi192 = global::Chummer.Properties.Resources.accept1;
             this.mnuSpecialConfirmValidity.ImageDpi288 = null;
             this.mnuSpecialConfirmValidity.ImageDpi384 = null;
             this.mnuSpecialConfirmValidity.ImageDpi96 = global::Chummer.Properties.Resources.accept;

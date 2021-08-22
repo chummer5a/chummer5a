@@ -650,7 +650,7 @@ namespace Chummer
             this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die;
             this.mnuToolsDiceRoller.ImageDpi120 = null;
             this.mnuToolsDiceRoller.ImageDpi144 = null;
-            this.mnuToolsDiceRoller.ImageDpi192 = global::Chummer.Properties.Resources.dice;
+            this.mnuToolsDiceRoller.ImageDpi192 = global::Chummer.Properties.Resources.die1;
             this.mnuToolsDiceRoller.ImageDpi288 = null;
             this.mnuToolsDiceRoller.ImageDpi384 = null;
             this.mnuToolsDiceRoller.ImageDpi96 = global::Chummer.Properties.Resources.die;

@@ -971,5 +971,956 @@ namespace Chummer
             }
             return objReturn;
         }
+
+        /// <summary>
+        /// Returns a 32px x 32px image of a country/region's flag based on its two-letter, ISO-3166 code.
+        /// </summary>
+        /// <param name="strCode">The ISO-3166 code of the country/region's flag.</param>
+        /// <returns>32px x 32px image of the country/region's flag if available, null otherwise</returns>
+        public static System.Drawing.Image GetFlagFromCountryCode192Dpi(string strCode)
+        {
+            System.Drawing.Image objReturn;
+            if (string.IsNullOrEmpty(strCode))
+                strCode = string.Empty;
+            switch (strCode.ToUpperInvariant())
+            {
+                case "AD":
+                    objReturn = Properties.Resources.flag_andorra1;
+                    break;
+
+                case "AE":
+                    objReturn = Properties.Resources.flag_united_arab_emirates1;
+                    break;
+
+                case "AF":
+                    objReturn = Properties.Resources.flag_afghanistan1;
+                    break;
+
+                case "AG":
+                    objReturn = Properties.Resources.flag_antigua_and_barbuda1;
+                    break;
+
+                case "AI":
+                    objReturn = Properties.Resources.flag_anguilla1;
+                    break;
+
+                case "AL":
+                    objReturn = Properties.Resources.flag_albania1;
+                    break;
+
+                case "AM":
+                    objReturn = Properties.Resources.flag_armenia1;
+                    break;
+
+                case "AN":
+                    objReturn = Properties.Resources.flag_netherlands_antilles1;
+                    break;
+
+                case "AO":
+                    objReturn = Properties.Resources.flag_angola1;
+                    break;
+
+                case "AR":
+                    objReturn = Properties.Resources.flag_argentina1;
+                    break;
+
+                case "AS":
+                    objReturn = Properties.Resources.flag_american_samoa1;
+                    break;
+
+                case "AT":
+                    objReturn = Properties.Resources.flag_austria1;
+                    break;
+
+                case "AU":
+                    objReturn = Properties.Resources.flag_australia1;
+                    break;
+
+                case "AW":
+                    objReturn = Properties.Resources.flag_aruba1;
+                    break;
+
+                case "AZ":
+                    objReturn = Properties.Resources.flag_azerbaijan1;
+                    break;
+
+                case "BA":
+                    objReturn = Properties.Resources.flag_bosnia1;
+                    break;
+
+                case "BB":
+                    objReturn = Properties.Resources.flag_barbados1;
+                    break;
+
+                case "BD":
+                    objReturn = Properties.Resources.flag_bangladesh1;
+                    break;
+
+                case "BE":
+                    objReturn = Properties.Resources.flag_belgium1;
+                    break;
+
+                case "BF":
+                    objReturn = Properties.Resources.flag_burkina_faso1;
+                    break;
+
+                case "BG":
+                    objReturn = Properties.Resources.flag_bulgaria1;
+                    break;
+
+                case "BH":
+                    objReturn = Properties.Resources.flag_bahrain1;
+                    break;
+
+                case "BI":
+                    objReturn = Properties.Resources.flag_burundi1;
+                    break;
+
+                case "BJ":
+                    objReturn = Properties.Resources.flag_benin1;
+                    break;
+
+                case "BM":
+                    objReturn = Properties.Resources.flag_bermuda1;
+                    break;
+
+                case "BN":
+                    objReturn = Properties.Resources.flag_brunei1;
+                    break;
+
+                case "BO":
+                    objReturn = Properties.Resources.flag_bolivia1;
+                    break;
+
+                case "BR":
+                    objReturn = Properties.Resources.flag_brazil1;
+                    break;
+
+                case "BS":
+                    objReturn = Properties.Resources.flag_bahamas1;
+                    break;
+
+                case "BT":
+                    objReturn = Properties.Resources.flag_bhutan1;
+                    break;
+
+                case "BW":
+                    objReturn = Properties.Resources.flag_botswana1;
+                    break;
+
+                case "BY":
+                    objReturn = Properties.Resources.flag_belarus1;
+                    break;
+
+                case "BZ":
+                    objReturn = Properties.Resources.flag_belize1;
+                    break;
+
+                case "CA":
+                    objReturn = Properties.Resources.flag_canada1;
+                    break;
+
+                case "CD":
+                    objReturn = Properties.Resources.flag_congo_democratic_republic1;
+                    break;
+
+                case "CF":
+                    objReturn = Properties.Resources.flag_central_african_republic1;
+                    break;
+
+                case "CG":
+                    objReturn = Properties.Resources.flag_congo_republic1;
+                    break;
+
+                case "CH":
+                    objReturn = Properties.Resources.flag_switzerland1;
+                    break;
+
+                case "CI":
+                    objReturn = Properties.Resources.flag_cote_divoire1;
+                    break;
+
+                case "CK":
+                    objReturn = Properties.Resources.flag_cook_islands1;
+                    break;
+
+                case "CL":
+                    objReturn = Properties.Resources.flag_chile1;
+                    break;
+
+                case "CM":
+                    objReturn = Properties.Resources.flag_cameroon1;
+                    break;
+
+                case "CN":
+                    objReturn = Properties.Resources.flag_china1;
+                    break;
+
+                case "CO":
+                    objReturn = Properties.Resources.flag_colombia1;
+                    break;
+
+                case "CR":
+                    objReturn = Properties.Resources.flag_costa_rica1;
+                    break;
+
+                case "CU":
+                    objReturn = Properties.Resources.flag_cuba1;
+                    break;
+
+                case "CV":
+                    objReturn = Properties.Resources.flag_cape_verde1;
+                    break;
+
+                case "CY":
+                    objReturn = Properties.Resources.flag_cyprus1;
+                    break;
+
+                case "CZ":
+                    objReturn = Properties.Resources.flag_czech_republic1;
+                    break;
+
+                case "DE":
+                    objReturn = Properties.Resources.flag_germany1;
+                    break;
+
+                case "DJ":
+                    objReturn = Properties.Resources.flag_djibouti1;
+                    break;
+
+                case "DK":
+                    objReturn = Properties.Resources.flag_denmark1;
+                    break;
+
+                case "DM":
+                    objReturn = Properties.Resources.flag_dominica1;
+                    break;
+
+                case "DO":
+                    objReturn = Properties.Resources.flag_dominican_republic1;
+                    break;
+
+                case "DZ":
+                    objReturn = Properties.Resources.flag_algeria1;
+                    break;
+
+                case "EC":
+                    objReturn = Properties.Resources.flag_equador1;
+                    break;
+
+                case "EE":
+                    objReturn = Properties.Resources.flag_estonia1;
+                    break;
+
+                case "EG":
+                    objReturn = Properties.Resources.flag_egypt1;
+                    break;
+
+                case "ER":
+                    objReturn = Properties.Resources.flag_eritrea1;
+                    break;
+
+                case "ES":
+                    objReturn = Properties.Resources.flag_spain1;
+                    break;
+
+                case "ET":
+                    objReturn = Properties.Resources.flag_ethiopia1;
+                    break;
+
+                case "EU":
+                    objReturn = Properties.Resources.flag_european_union1;
+                    break;
+
+                case "FI":
+                    objReturn = Properties.Resources.flag_finland1;
+                    break;
+
+                case "FJ":
+                    objReturn = Properties.Resources.flag_fiji1;
+                    break;
+
+                case "FK":
+                    objReturn = Properties.Resources.flag_falkland_islands1;
+                    break;
+
+                case "FM":
+                    objReturn = Properties.Resources.flag_micronesia1;
+                    break;
+
+                case "FO":
+                    objReturn = Properties.Resources.flag_faroe_islands1;
+                    break;
+
+                case "FR":
+                    objReturn = Properties.Resources.flag_france1;
+                    break;
+
+                case "GA":
+                    objReturn = Properties.Resources.flag_gabon1;
+                    break;
+
+                case "GB":
+                    objReturn = Properties.Resources.flag_great_britain1;
+                    break;
+
+                case "GD":
+                    objReturn = Properties.Resources.flag_grenada1;
+                    break;
+
+                case "GE":
+                    objReturn = Properties.Resources.flag_georgia1;
+                    break;
+
+                case "GG":
+                    objReturn = Properties.Resources.flag_guernsey1;
+                    break;
+
+                case "GH":
+                    objReturn = Properties.Resources.flag_ghana1;
+                    break;
+
+                case "GI":
+                    objReturn = Properties.Resources.flag_gibraltar1;
+                    break;
+
+                case "GL":
+                    objReturn = Properties.Resources.flag_greenland1;
+                    break;
+
+                case "GM":
+                    objReturn = Properties.Resources.flag_gambia1;
+                    break;
+
+                case "GN":
+                    objReturn = Properties.Resources.flag_guinea1;
+                    break;
+
+                case "GQ":
+                    objReturn = Properties.Resources.flag_equatorial_guinea1;
+                    break;
+
+                case "GR":
+                    objReturn = Properties.Resources.flag_greece1;
+                    break;
+
+                case "GS":
+                    objReturn = Properties.Resources.flag_south_georgia1;
+                    break;
+
+                case "GT":
+                    objReturn = Properties.Resources.flag_guatemala1;
+                    break;
+
+                case "GU":
+                    objReturn = Properties.Resources.flag_guam1;
+                    break;
+
+                case "GW":
+                    objReturn = Properties.Resources.flag_guinea_bissau1;
+                    break;
+
+                case "GY":
+                    objReturn = Properties.Resources.flag_guyana1;
+                    break;
+
+                case "HK":
+                    objReturn = Properties.Resources.flag_hong_kong1;
+                    break;
+
+                case "HN":
+                    objReturn = Properties.Resources.flag_honduras1;
+                    break;
+
+                case "HR":
+                    objReturn = Properties.Resources.flag_croatia1;
+                    break;
+
+                case "HT":
+                    objReturn = Properties.Resources.flag_haiti1;
+                    break;
+
+                case "HU":
+                    objReturn = Properties.Resources.flag_hungary1;
+                    break;
+
+                case "ID":
+                    objReturn = Properties.Resources.flag_indonesia1;
+                    break;
+
+                case "IE":
+                    objReturn = Properties.Resources.flag_ireland1;
+                    break;
+
+                case "IL":
+                    objReturn = Properties.Resources.flag_israel1;
+                    break;
+
+                case "IM":
+                    objReturn = Properties.Resources.flag_isle_of_man1;
+                    break;
+
+                case "IN":
+                    objReturn = Properties.Resources.flag_india1;
+                    break;
+
+                case "IO":
+                    objReturn = Properties.Resources.flag_british_indian_ocean1;
+                    break;
+
+                case "IQ":
+                    objReturn = Properties.Resources.flag_iraq1;
+                    break;
+
+                case "IR":
+                    objReturn = Properties.Resources.flag_iran1;
+                    break;
+
+                case "IS":
+                    objReturn = Properties.Resources.flag_iceland1;
+                    break;
+
+                case "IT":
+                    objReturn = Properties.Resources.flag_italy1;
+                    break;
+
+                case "JE":
+                    objReturn = Properties.Resources.flag_jersey1;
+                    break;
+
+                case "JM":
+                    objReturn = Properties.Resources.flag_jamaica1;
+                    break;
+
+                case "JO":
+                    objReturn = Properties.Resources.flag_jordan1;
+                    break;
+
+                case "JP":
+                    objReturn = Properties.Resources.flag_japan1;
+                    break;
+
+                case "KE":
+                    objReturn = Properties.Resources.flag_kenya1;
+                    break;
+
+                case "KG":
+                    objReturn = Properties.Resources.flag_kyrgyzstan1;
+                    break;
+
+                case "KH":
+                    objReturn = Properties.Resources.flag_cambodia1;
+                    break;
+
+                case "KI":
+                    objReturn = Properties.Resources.flag_kiribati1;
+                    break;
+
+                case "KM":
+                    objReturn = Properties.Resources.flag_comoros1;
+                    break;
+
+                case "KN":
+                    objReturn = Properties.Resources.flag_saint_kitts_and_nevis1;
+                    break;
+
+                case "KP":
+                    objReturn = Properties.Resources.flag_north_korea1;
+                    break;
+
+                case "KR":
+                    objReturn = Properties.Resources.flag_south_korea1;
+                    break;
+
+                case "KW":
+                    objReturn = Properties.Resources.flag_kuwait1;
+                    break;
+
+                case "KY":
+                    objReturn = Properties.Resources.flag_cayman_islands1;
+                    break;
+
+                case "KZ":
+                    objReturn = Properties.Resources.flag_kazakhstan1;
+                    break;
+
+                case "LA":
+                    objReturn = Properties.Resources.flag_laos1;
+                    break;
+
+                case "LB":
+                    objReturn = Properties.Resources.flag_lebanon1;
+                    break;
+
+                case "LC":
+                    objReturn = Properties.Resources.flag_saint_lucia1;
+                    break;
+
+                case "LI":
+                    objReturn = Properties.Resources.flag_liechtenstein1;
+                    break;
+
+                case "LK":
+                    objReturn = Properties.Resources.flag_sri_lanka1;
+                    break;
+
+                case "LR":
+                    objReturn = Properties.Resources.flag_liberia1;
+                    break;
+
+                case "LS":
+                    objReturn = Properties.Resources.flag_lesotho1;
+                    break;
+
+                case "LT":
+                    objReturn = Properties.Resources.flag_lithuania1;
+                    break;
+
+                case "LU":
+                    objReturn = Properties.Resources.flag_luxembourg1;
+                    break;
+
+                case "LV":
+                    objReturn = Properties.Resources.flag_latvia1;
+                    break;
+
+                case "LY":
+                    objReturn = Properties.Resources.flag_libya1;
+                    break;
+
+                case "MA":
+                    objReturn = Properties.Resources.flag_morocco1;
+                    break;
+
+                case "MC":
+                    objReturn = Properties.Resources.flag_monaco1;
+                    break;
+
+                case "MD":
+                    objReturn = Properties.Resources.flag_moldova1;
+                    break;
+
+                case "MG":
+                    objReturn = Properties.Resources.flag_madagascar1;
+                    break;
+
+                case "MH":
+                    objReturn = Properties.Resources.flag_marshall_islands1;
+                    break;
+
+                case "MK":
+                    objReturn = Properties.Resources.flag_macedonia1;
+                    break;
+
+                case "ML":
+                    objReturn = Properties.Resources.flag_mali1;
+                    break;
+
+                case "MM":
+                    objReturn = Properties.Resources.flag_burma1;
+                    break;
+
+                case "MN":
+                    objReturn = Properties.Resources.flag_mongolia1;
+                    break;
+
+                case "MO":
+                    objReturn = Properties.Resources.flag_macau1;
+                    break;
+
+                case "MP":
+                    objReturn = Properties.Resources.flag_northern_mariana_islands1;
+                    break;
+
+                case "MQ":
+                    objReturn = Properties.Resources.flag_martinique1;
+                    break;
+
+                case "MR":
+                    objReturn = Properties.Resources.flag_mauretania1;
+                    break;
+
+                case "MS":
+                    objReturn = Properties.Resources.flag_montserrat1;
+                    break;
+
+                case "MT":
+                    objReturn = Properties.Resources.flag_malta1;
+                    break;
+
+                case "MU":
+                    objReturn = Properties.Resources.flag_mauritius1;
+                    break;
+
+                case "MV":
+                    objReturn = Properties.Resources.flag_maledives1;
+                    break;
+
+                case "MW":
+                    objReturn = Properties.Resources.flag_malawi1;
+                    break;
+
+                case "MX":
+                    objReturn = Properties.Resources.flag_mexico1;
+                    break;
+
+                case "MY":
+                    objReturn = Properties.Resources.flag_malaysia1;
+                    break;
+
+                case "MZ":
+                    objReturn = Properties.Resources.flag_mozambique1;
+                    break;
+
+                case "NA":
+                    objReturn = Properties.Resources.flag_namibia1;
+                    break;
+
+                case "NE":
+                    objReturn = Properties.Resources.flag_niger1;
+                    break;
+
+                case "NF":
+                    objReturn = Properties.Resources.flag_norfolk_islands1;
+                    break;
+
+                case "NG":
+                    objReturn = Properties.Resources.flag_nigeria1;
+                    break;
+
+                case "NI":
+                    objReturn = Properties.Resources.flag_nicaragua1;
+                    break;
+
+                case "NL":
+                    objReturn = Properties.Resources.flag_netherlands1;
+                    break;
+
+                case "NO":
+                    objReturn = Properties.Resources.flag_norway1;
+                    break;
+
+                case "NP":
+                    objReturn = Properties.Resources.flag_nepal1;
+                    break;
+
+                case "NR":
+                    objReturn = Properties.Resources.flag_nauru1;
+                    break;
+
+                case "NU":
+                    objReturn = Properties.Resources.flag_niue1;
+                    break;
+
+                case "NZ":
+                    objReturn = Properties.Resources.flag_new_zealand1;
+                    break;
+
+                case "OM":
+                    objReturn = Properties.Resources.flag_oman1;
+                    break;
+
+                case "PA":
+                    objReturn = Properties.Resources.flag_panama1;
+                    break;
+
+                case "PE":
+                    objReturn = Properties.Resources.flag_peru1;
+                    break;
+
+                case "PF":
+                    objReturn = Properties.Resources.flag_french_polynesia1;
+                    break;
+
+                case "PG":
+                    objReturn = Properties.Resources.flag_papua_new_guinea1;
+                    break;
+
+                case "PH":
+                    objReturn = Properties.Resources.flag_philippines1;
+                    break;
+
+                case "PK":
+                    objReturn = Properties.Resources.flag_pakistan1;
+                    break;
+
+                case "PL":
+                    objReturn = Properties.Resources.flag_poland1;
+                    break;
+
+                case "PM":
+                    objReturn = Properties.Resources.flag_saint_pierre_and_miquelon1;
+                    break;
+
+                case "PN":
+                    objReturn = Properties.Resources.flag_pitcairn_islands1;
+                    break;
+
+                case "PR":
+                    objReturn = Properties.Resources.flag_puerto_rico1;
+                    break;
+
+                case "PT":
+                    objReturn = Properties.Resources.flag_portugal1;
+                    break;
+
+                case "PW":
+                    objReturn = Properties.Resources.flag_palau1;
+                    break;
+
+                case "PY":
+                    objReturn = Properties.Resources.flag_paraquay1;
+                    break;
+
+                case "QA":
+                    objReturn = Properties.Resources.flag_qatar1;
+                    break;
+
+                case "RO":
+                    objReturn = Properties.Resources.flag_romania1;
+                    break;
+
+                case "RS":
+                    objReturn = Properties.Resources.flag_serbia_montenegro1;
+                    break;
+
+                case "RU":
+                    objReturn = Properties.Resources.flag_russia1;
+                    break;
+
+                case "RW":
+                    objReturn = Properties.Resources.flag_rwanda1;
+                    break;
+
+                case "SA":
+                    objReturn = Properties.Resources.flag_saudi_arabia1;
+                    break;
+
+                case "SB":
+                    objReturn = Properties.Resources.flag_solomon_islands1;
+                    break;
+
+                case "SC":
+                    objReturn = Properties.Resources.flag_seychelles1;
+                    break;
+
+                case "SD":
+                    objReturn = Properties.Resources.flag_sudan1;
+                    break;
+
+                case "SE":
+                    objReturn = Properties.Resources.flag_sweden1;
+                    break;
+
+                case "SG":
+                    objReturn = Properties.Resources.flag_singapore1;
+                    break;
+
+                case "SH":
+                    objReturn = Properties.Resources.flag_saint_helena1;
+                    break;
+
+                case "SI":
+                    objReturn = Properties.Resources.flag_slovenia1;
+                    break;
+
+                case "SK":
+                    objReturn = Properties.Resources.flag_slovakia1;
+                    break;
+
+                case "SL":
+                    objReturn = Properties.Resources.flag_sierra_leone1;
+                    break;
+
+                case "SM":
+                    objReturn = Properties.Resources.flag_san_marino1;
+                    break;
+
+                case "SN":
+                    objReturn = Properties.Resources.flag_senegal1;
+                    break;
+
+                case "SO":
+                    objReturn = Properties.Resources.flag_somalia1;
+                    break;
+
+                case "SR":
+                    objReturn = Properties.Resources.flag_suriname1;
+                    break;
+
+                case "ST":
+                    objReturn = Properties.Resources.flag_sao_tome_and_principe1;
+                    break;
+
+                case "SV":
+                    objReturn = Properties.Resources.flag_el_salvador1;
+                    break;
+
+                case "SY":
+                    objReturn = Properties.Resources.flag_syria1;
+                    break;
+
+                case "SZ":
+                    objReturn = Properties.Resources.flag_swaziland1;
+                    break;
+
+                case "TC":
+                    objReturn = Properties.Resources.flag_turks_and_caicos_islands1;
+                    break;
+
+                case "TD":
+                    objReturn = Properties.Resources.flag_chad1;
+                    break;
+
+                case "TG":
+                    objReturn = Properties.Resources.flag_togo1;
+                    break;
+
+                case "TH":
+                    objReturn = Properties.Resources.flag_thailand1;
+                    break;
+
+                case "TI":
+                    objReturn = Properties.Resources.flag_tibet1;
+                    break;
+
+                case "TJ":
+                    objReturn = Properties.Resources.flag_tajikistan1;
+                    break;
+
+                case "TL":
+                    objReturn = Properties.Resources.flag_east_timor1;
+                    break;
+
+                case "TM":
+                    objReturn = Properties.Resources.flag_turkmenistan1;
+                    break;
+
+                case "TN":
+                    objReturn = Properties.Resources.flag_tunisia1;
+                    break;
+
+                case "TO":
+                    objReturn = Properties.Resources.flag_tonga1;
+                    break;
+
+                case "TR":
+                    objReturn = Properties.Resources.flag_turkey1;
+                    break;
+
+                case "TT":
+                    objReturn = Properties.Resources.flag_trinidad_and_tobago1;
+                    break;
+
+                case "TV":
+                    objReturn = Properties.Resources.flag_tuvalu1;
+                    break;
+
+                case "TW":
+                    objReturn = Properties.Resources.flag_taiwan1;
+                    break;
+
+                case "TZ":
+                    objReturn = Properties.Resources.flag_tanzania1;
+                    break;
+
+                case "UA":
+                    objReturn = Properties.Resources.flag_ukraine1;
+                    break;
+
+                case "UG":
+                    objReturn = Properties.Resources.flag_uganda1;
+                    break;
+
+                case "US":
+                    objReturn = Properties.Resources.flag_usa1;
+                    break;
+
+                case "UY":
+                    objReturn = Properties.Resources.flag_uruquay1;
+                    break;
+
+                case "UZ":
+                    objReturn = Properties.Resources.flag_uzbekistan1;
+                    break;
+
+                case "VA":
+                    objReturn = Properties.Resources.flag_vatican_city1;
+                    break;
+
+                case "VC":
+                    objReturn = Properties.Resources.flag_saint_vincent_and_grenadines1;
+                    break;
+
+                case "VE":
+                    objReturn = Properties.Resources.flag_venezuela1;
+                    break;
+
+                case "VG":
+                    objReturn = Properties.Resources.flag_british_virgin_islands1;
+                    break;
+
+                case "VI":
+                    objReturn = Properties.Resources.flag_virgin_islands1;
+                    break;
+
+                case "VN":
+                    objReturn = Properties.Resources.flag_vietnam1;
+                    break;
+
+                case "VU":
+                    objReturn = Properties.Resources.flag_vanuatu1;
+                    break;
+
+                case "WF":
+                    objReturn = Properties.Resources.flag_wallis_and_futuna1;
+                    break;
+
+                case "WS":
+                    objReturn = Properties.Resources.flag_samoa1;
+                    break;
+
+                case "XE":
+                    objReturn = Properties.Resources.flag_england1;
+                    break;
+
+                case "XS":
+                    objReturn = Properties.Resources.flag_scotland1;
+                    break;
+
+                case "XW":
+                    objReturn = Properties.Resources.flag_wales1;
+                    break;
+
+                case "YE":
+                    objReturn = Properties.Resources.flag_yemen1;
+                    break;
+
+                case "ZA":
+                    objReturn = Properties.Resources.flag_south_africa1;
+                    break;
+
+                case "ZM":
+                    objReturn = Properties.Resources.flag_zambia1;
+                    break;
+
+                case "ZW":
+                    objReturn = Properties.Resources.flag_zimbabwe1;
+                    break;
+
+                case "DEFAULT":
+                    objReturn = Properties.Resources.defaulted_32;
+                    break;
+
+                case "NOIMAGEDOTS":
+                    objReturn = Properties.Resources.noimagedots_32;
+                    break;
+
+                default:
+                    Utils.BreakIfDebug();
+                    goto case "DEFAULT";
+            }
+            return objReturn;
+        }
     }
 }
