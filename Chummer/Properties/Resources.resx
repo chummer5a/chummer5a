@@ -136,8 +136,8 @@
   <data name="flag_tunisia" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_tunisia.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_martinique" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_martinique.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="arrow_join1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\arrow_join.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_sao_tome_and_principe" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_sao_tome_and_principe.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -226,6 +226,9 @@
   <data name="calculator" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\calculator.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="flag_tibet" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_tibet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="flag_iran" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_iran.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -234,6 +237,9 @@
   </data>
   <data name="Expand" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\Expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="flag_benin" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_benin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="brick_add1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\brick_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -271,8 +277,8 @@
   <data name="text_align_justify" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\text_align_justify.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_bhutan" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_bhutan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="car_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\car_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_england" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_england.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -307,9 +313,6 @@
   <data name="flag_costa_rica" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_costa_rica.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="gun_add1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\gun_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="flag_north_korea" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_north_korea.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -328,14 +331,14 @@
   <data name="flag_burundi" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_burundi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_estonia" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_estonia.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="flag_british_virgin_islands" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_british_virgin_islands.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow_down" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\arrow_down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="arrow_divide1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\arrow_divide.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_laos" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_laos.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -366,8 +369,14 @@
   <data name="flag_algeria" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_algeria.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="flag_sri_lanka" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_sri_lanka.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="flag_romania" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_romania.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="flag_haiti" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_haiti.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_british_indian_ocean" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_british_indian_ocean.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -381,8 +390,8 @@
   <data name="brain_add1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\brain_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="link1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\link.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="folder_page" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\folder_page.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -404,9 +413,6 @@
   </data>
   <data name="flag_belize" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_belize.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="flag_saint_helena" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_saint_helena.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="fire" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\fire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -522,8 +528,8 @@
   <data name="flag_chad" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_chad.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_lebanon" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_lebanon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="text_superscript1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\text_superscript.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="transmit_go" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\transmit_go.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -612,6 +618,9 @@
   <data name="gun_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\gun_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="possessinanimate" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\status_offline.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="arrow_down1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\arrow_down.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -657,9 +666,6 @@
   <data name="flag_belgium" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_belgium.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="delete1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="text_underline1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\text_underline.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -699,6 +705,9 @@
   <data name="text_align_right1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\text_align_right.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="flag_bulgaria" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_bulgaria.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="toggle1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\toggle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -725,6 +734,9 @@
   </data>
   <data name="cancel" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\cancel.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="fire1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\fire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="report" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\report.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -825,6 +837,9 @@
   <data name="flag_japan" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_japan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="car_go1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\car_go.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="flag_cyprus" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_cyprus.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -833,6 +848,12 @@
   </data>
   <data name="flag_suriname" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_suriname.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="flag_lebanon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_lebanon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="flag_kiribati" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_kiribati.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="arrow_redo1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\arrow_redo.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -876,6 +897,9 @@
   <data name="locate1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\locate.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="flag_denmark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_denmark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="toggle" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\toggle.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -909,8 +933,8 @@
   <data name="link_add1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\link_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="emoticon_waii1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\emoticon_waii.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flag_bhutan" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_bhutan.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_puerto_rico" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_puerto_rico.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -984,8 +1008,8 @@
   <data name="flag_sweden" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_sweden.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_croatia" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_croatia.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flag_martinique" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_martinique.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_malawi" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_malawi.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1029,20 +1053,20 @@
   <data name="flag_cambodia" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_cambodia.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_sri_lanka" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_sri_lanka.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="emoticon_waii1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\emoticon_waii.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="text_align_right" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\text_align_right.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_benin" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_benin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flag_saint_helena" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_saint_helena.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="toggle_expand1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\toggle_expand.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_denmark" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_denmark.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flag_estonia" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_estonia.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_burma" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_burma.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1161,9 +1185,6 @@
   <data name="flag_india" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_india.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="die" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\dice.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="flag_niger" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_niger.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1176,8 +1197,8 @@
   <data name="flag_switzerland" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_switzerland.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="possessinanimate" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\status_offline.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flag_ukraine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_ukraine.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_hungary" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_hungary.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1239,8 +1260,8 @@
   <data name="basket_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\basket_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="fire1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\fire.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="reseller_account1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\reseller_account.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="font" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\font.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1269,8 +1290,8 @@
   <data name="discord_16px" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\discord_16px.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="text_superscript1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\text_superscript.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="delete1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\delete.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="tag_red" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\tag_red.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1296,9 +1317,6 @@
   <data name="car_gear" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\car_gear.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_european_union" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_european_union.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="flag_panama" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_panama.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -1307,9 +1325,6 @@
   </data>
   <data name="flag_guinea_bissau" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_guinea_bissau.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="car_add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\car_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="printer_add1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\printer_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1326,8 +1341,8 @@
   <data name="flag_united_arab_emirates" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_united_arab_emirates.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_ukraine" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_ukraine.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flag_croatia" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_croatia.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_bahrain" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_bahrain.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1359,8 +1374,8 @@
   <data name="flag_germany" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_germany.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_haiti" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_haiti.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="gun_add1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\gun_add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="dice" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\dice.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1374,11 +1389,8 @@
   <data name="information" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\information.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="reseller_account1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\reseller_account.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="disk_multiple" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\disk_multiple.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="flag_european_union" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_european_union.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_pitcairn_islands" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_pitcairn_islands.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1422,11 +1434,11 @@
   <data name="processor_edit" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\processor_edit.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_tibet" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_tibet.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="die" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\dice.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_kiribati" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_kiribati.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="disk_multiple" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\disk_multiple.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="text_indent1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons32x32\text_indent.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1470,8 +1482,8 @@
   <data name="flag_angola" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_angola.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="flag_bulgaria" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_bulgaria.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="add" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="flag_hong_kong" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_hong_kong.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -1482,7 +1494,13 @@
   <data name="flag_tuvalu" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\icons\FatCow\FatCow_Icons16x16\flag_tuvalu.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="link1" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\link.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="skull_old1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\skull_old.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="skull" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons16x16\skull.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="skull1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\icons\FatCow\FatCow_Icons32x32\skull.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

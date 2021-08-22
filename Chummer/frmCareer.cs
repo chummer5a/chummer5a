@@ -15505,8 +15505,8 @@ namespace Chummer
             }
 
             lblLifestyleMonthsLabel.Text = strIncrementString + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Label_LifestylePermanent"), objLifestyle.IncrementsRequiredForPermanent.ToString(GlobalOptions.CultureInfo));
-            cmdIncreaseLifestyleMonths.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tab_IncreaseLifestyleMonths"), strIncrementString));
-            cmdDecreaseLifestyleMonths.SetToolTip(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tab_DecreaseLifestyleMonths"), strIncrementString));
+            cmdIncreaseLifestyleMonths.ToolTipText = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tab_IncreaseLifestyleMonths"), strIncrementString);
+            cmdDecreaseLifestyleMonths.ToolTipText = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tab_DecreaseLifestyleMonths"), strIncrementString);
 
             if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
             {
@@ -16643,20 +16643,20 @@ namespace Chummer
             // ToolTipFactory.SetToolTip(cmdArmorDecrease, LanguageManager.GetString("Tip_ArmorDegradationAMinus"));
             // Weapon Tab.
             chkWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled"));
-            cmdWeaponBuyAmmo.SetToolTip(LanguageManager.GetString("Tip_BuyAmmo"));
-            cmdWeaponMoveToVehicle.SetToolTip(LanguageManager.GetString("Tip_TransferToVehicle"));
+            cmdWeaponBuyAmmo.ToolTipText = LanguageManager.GetString("Tip_BuyAmmo");
+            cmdWeaponMoveToVehicle.ToolTipText = LanguageManager.GetString("Tip_TransferToVehicle");
             // Gear Tab.
-            cmdGearIncreaseQty.SetToolTip(LanguageManager.GetString("Tip_IncreaseGearQty"));
-            cmdGearReduceQty.SetToolTip(LanguageManager.GetString("Tip_DecreaseGearQty"));
-            cmdGearSplitQty.SetToolTip(LanguageManager.GetString("Tip_SplitGearQty"));
-            cmdGearMergeQty.SetToolTip(LanguageManager.GetString("Tip_MergeGearQty"));
-            cmdGearMoveToVehicle.SetToolTip(LanguageManager.GetString("Tip_TransferToVehicle"));
+            cmdGearIncreaseQty.ToolTipText = LanguageManager.GetString("Tip_IncreaseGearQty");
+            cmdGearReduceQty.ToolTipText = LanguageManager.GetString("Tip_DecreaseGearQty");
+            cmdGearSplitQty.ToolTipText = LanguageManager.GetString("Tip_SplitGearQty");
+            cmdGearMergeQty.ToolTipText = LanguageManager.GetString("Tip_MergeGearQty");
+            cmdGearMoveToVehicle.ToolTipText = LanguageManager.GetString("Tip_TransferToVehicle");
             chkGearActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink"));
             chkCyberwareActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink"));
             // Vehicles Tab.
             chkVehicleWeaponAccessoryInstalled.SetToolTip(LanguageManager.GetString("Tip_WeaponInstalled"));
-            cmdVehicleGearReduceQty.SetToolTip(LanguageManager.GetString("Tip_DecreaseGearQty"));
-            cmdVehicleMoveToInventory.SetToolTip(LanguageManager.GetString("Tip_TransferToInventory"));
+            cmdVehicleGearReduceQty.ToolTipText = LanguageManager.GetString("Tip_DecreaseGearQty");
+            cmdVehicleMoveToInventory.ToolTipText = LanguageManager.GetString("Tip_TransferToInventory");
             chkVehicleActiveCommlink.SetToolTip(LanguageManager.GetString("Tip_ActiveCommlink"));
             // Other Info Tab.
             lblCMPhysicalLabel.SetToolTip(LanguageManager.GetString("Tip_OtherCMPhysical"));
@@ -16680,16 +16680,14 @@ namespace Chummer
             lblCMPenaltyLabel.SetToolTip(LanguageManager.GetString("Tip_CMPenalty"));
             lblCMArmorLabel.SetToolTip(LanguageManager.GetString("Tip_OtherArmor"));
             lblCMDamageResistancePoolLabel.SetToolTip(LanguageManager.GetString("Tip_CMDamageResistance"));
-            cmdEdgeGained.SetToolTip(LanguageManager.GetString("Tip_CMRegainEdge"));
-            cmdEdgeSpent.SetToolTip(LanguageManager.GetString("Tip_CMSpendEdge"));
+            cmdEdgeGained.ToolTipText = LanguageManager.GetString("Tip_CMRegainEdge");
+            cmdEdgeSpent.ToolTipText = LanguageManager.GetString("Tip_CMSpendEdge");
             // Common Info Tab.
             lblStreetCred.SetToolTip(LanguageManager.GetString("Tip_StreetCred"));
             lblNotoriety.SetToolTip(LanguageManager.GetString("Tip_Notoriety"));
             if (CharacterObjectOptions.UseCalculatedPublicAwareness)
-            {
                 lblPublicAware.SetToolTip(LanguageManager.GetString("Tip_PublicAwareness"));
-            }
-            cmdBurnStreetCred.SetToolTip(LanguageManager.GetString("Tip_BurnStreetCred"));
+            cmdBurnStreetCred.ToolTipText = LanguageManager.GetString("Tip_BurnStreetCred");
         }
 
         /// <summary>
