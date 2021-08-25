@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <weapons>
+    <weapon>
+      <id>40bf3eed-b239-4521-ac1d-80a4e472451e</id>
+      <!--Ultimax Rain Forest Carbine-->
+      <accuracy>5</accuracy>
+      <damage>11P</damage>
+      <ap>-2</ap>
+      <mode>SA/BF</mode>
+      <avail>8R</avail>
+    </weapon>
+    <weapon>
+      <id>21fb8d4f-5958-4fd9-996f-7e88ee0282c2</id>
+      <!--Microwave Gun, High Frequency-->
+      <hide />
+    </weapon>
+    <weapon>
+      <id>10fb69db-efd0-4f63-80a7-bda5ef0480a4</id>
+      <!--Microwave Gun, Low Frequency-->
+      <hide />
+    </weapon>
+    <weapon>
+      <id>4189afe7-ec22-40f7-9e5d-fef42b9c9a00</id>
+      <!--Halloweener Barbecue Lighter-->
+      <ammo>12(t)</ammo>
+    </weapon>
+    <weapon>
+      <id>dddebf4a-dabf-417f-9f44-54de9ac88e2e</id>
+      <!--Krime Whammy-->
+      <hide />
+    </weapon>
+    <weapon>
+      <id>39a6ea40-087e-4caa-b5a5-94d7c2a203f3</id>
+      <!--Narcoject Gas Gun-->
+      <hide />
+    </weapon>
+    <weapon>
+      <id>ced53705-2d9c-4ee6-b612-550f6ae63980</id>
+      <!--Krime Tingler-->
+      <damage>11S(e)</damage>
+    </weapon>
+  </weapons>
+</chummer>

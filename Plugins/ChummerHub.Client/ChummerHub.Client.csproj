@@ -46,8 +46,8 @@
     <Reference Include="GroupControls, Version=1.8.1.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GroupControls.1.8.1\lib\net45\GroupControls.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.17.0.146, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.17.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.18.0.315, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.18.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -57,7 +57,7 @@
       <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.7.9\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\..\packages\NLog.4.7.10\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\ApiKeyCredentials.cs" />
+    <Compile Include="Backend\FixedIsoDateTimeOffsetConverter .cs" />
     <Compile Include="Backend\NamedPipeManager.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
     <Compile Include="Backend\PropertyRenameAndIgnoreSerializerContractResolver.cs" />
@@ -382,13 +383,11 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\group.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="changelog.txt" />
     <Content Include="plugin.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Resources\group.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

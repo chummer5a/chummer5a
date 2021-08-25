@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -31,6 +32,7 @@ namespace Chummer
         private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
+
         public frmSelectSpellCategory(Character objCharacter)
         {
             InitializeComponent();
@@ -52,14 +54,10 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstCategory;
-
+            cboCategory.PopulateWithListItems(lstCategory);
             // Select the first Skill in the list.
             cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
-
             if (cboCategory.Items.Count == 1)
                 cmdOK_Click(sender, e);
         }
@@ -69,9 +67,11 @@ namespace Chummer
             _strSelectedCategory = cboCategory.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Weapon Category that was selected in the dialogue.
         /// </summary>
@@ -92,7 +92,8 @@ namespace Chummer
         {
             set => _strForceCategory = value;
         }
-        #endregion
+
+        #endregion Properties
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {

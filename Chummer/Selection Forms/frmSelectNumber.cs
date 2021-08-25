@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -26,6 +27,7 @@ namespace Chummer
         private decimal _decReturnValue;
 
         #region Control Events
+
         public frmSelectNumber(int intDecimalPlaces = 2)
         {
             InitializeComponent();
@@ -49,9 +51,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Value that was entered in the dialogue.
         /// </summary>
@@ -97,6 +101,7 @@ namespace Chummer
                     ControlBox = false;
             }
         }
-        #endregion
+
+        #endregion Properties
     }
 }

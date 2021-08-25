@@ -39358,12 +39358,6 @@
                 <altpage>21</altpage>
             </spell>
             <spell>
-                <id>2c7be069-208e-41e4-b3cf-97c9fc480fbc</id>
-                <name>Hemorrhage</name>
-                <translate>Hemorrhage</translate>
-                <altpage>91</altpage>
-            </spell>
-            <spell>
                 <id>eab0bcfd-9bf5-4482-9cca-2bdecb7f7b59</id>
                 <name>Hand of Glory</name>
                 <translate>Hand of Glory</translate>
@@ -40661,56 +40655,56 @@
             </spirit>
             <spirit>
                 <id>de5f01da-a334-4b64-b491-549e420ac6d3</id>
-                <name>Homonculus (Fragile)</name>
-                <translate>Homonculus (Fragile)</translate>
+                <name>Homunculus (Fragile)</name>
+                <translate>Homunculus (Fragile)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>28d8859b-21da-43f7-b401-181cf1284f97</id>
-                <name>Homonculus (Cheap Material)</name>
-                <translate>Homonculus (Cheap Material)</translate>
+                <name>Homunculus (Cheap Material)</name>
+                <translate>Homunculus (Cheap Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>2ed43bda-6773-462d-b850-db4b82d9bac0</id>
-                <name>Homonculus (Average Material)</name>
-                <translate>Homonculus (Average Material)</translate>
+                <name>Homunculus (Average Material)</name>
+                <translate>Homunculus (Average Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>f1262445-f4fd-43ab-b874-b9111f02ac96</id>
-                <name>Homonculus (Heavy Material)</name>
-                <translate>Homonculus (Heavy Material)</translate>
+                <name>Homunculus (Heavy Material)</name>
+                <translate>Homunculus (Heavy Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>eb454ca4-2260-4f1c-91c4-901abf010f2b</id>
-                <name>Homonculus (Reinforced Material)</name>
-                <translate>Homonculus (Reinforced Material)</translate>
+                <name>Homunculus (Reinforced Material)</name>
+                <translate>Homunculus (Reinforced Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>ce4e5b8b-3d15-4cbe-b0ed-3ed150300779</id>
-                <name>Homonculus (Structural Material)</name>
-                <translate>Homonculus (Structural Material)</translate>
+                <name>Homunculus (Structural Material)</name>
+                <translate>Homunculus (Structural Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>d19a52fe-1c68-4032-9459-662b0b80a633</id>
-                <name>Homonculus (Heavy Structural Material)</name>
-                <translate>Homonculus (Heavy Structural Material)</translate>
+                <name>Homunculus (Heavy Structural Material)</name>
+                <translate>Homunculus (Heavy Structural Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>d8a0781e-c5bf-451a-939c-97f68a3ceacb</id>
-                <name>Homonculus (Armored Material)</name>
-                <translate>Homonculus (Armored Material)</translate>
+                <name>Homunculus (Armored Material)</name>
+                <translate>Homunculus (Armored Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>
                 <id>01cea6c7-1b92-4e71-a56c-4059ab105382</id>
-                <name>Homonculus (Hardened Material)</name>
-                <translate>Homonculus (Hardened Material)</translate>
+                <name>Homunculus (Hardened Material)</name>
+                <translate>Homunculus (Hardened Material)</translate>
                 <altpage>298</altpage>
             </spirit>
             <spirit>

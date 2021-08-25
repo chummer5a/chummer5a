@@ -34,7 +34,7 @@ namespace Chummer
             this.cboSpec = new Chummer.ElasticComboBox();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.chkKarma = new Chummer.ColorableCheckBox();
+            this.chkKarma = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
@@ -72,8 +72,7 @@ namespace Chummer
             // 
             // cboSpec
             // 
-            this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSpec.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpMain.SetColumnSpan(this.cboSpec, 2);
             this.cboSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpec.DropDownWidth = 252;
@@ -87,12 +86,12 @@ namespace Chummer
             // 
             // lblAmmoLabel
             // 
-            this.lblAmmoLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblAmmoLabel.AutoSize = true;
+            this.lblAmmoLabel.Dock = System.Windows.Forms.DockStyle.Right;
             this.lblAmmoLabel.Location = new System.Drawing.Point(3, 33);
             this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Name = "lblAmmoLabel";
-            this.lblAmmoLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblAmmoLabel.Size = new System.Drawing.Size(38, 15);
             this.lblAmmoLabel.TabIndex = 1;
             this.lblAmmoLabel.Tag = "Label_Name";
             this.lblAmmoLabel.Text = "Name:";
@@ -101,20 +100,22 @@ namespace Chummer
             // 
             this.lblDescription.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblDescription, 3);
+            this.lblDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(255, 13);
+            this.lblDescription.Size = new System.Drawing.Size(320, 15);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Tag = "Label_SelectSkillSpecialization_Description";
             this.lblDescription.Text = "Select a Skill Specialization to add to your character.";
             // 
             // chkKarma
             // 
-            this.chkKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.chkKarma.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.chkKarma, 2);
-            this.chkKarma.Location = new System.Drawing.Point(35, 57);
+            this.chkKarma.DefaultColorScheme = true;
+            this.chkKarma.Dock = System.Windows.Forms.DockStyle.Right;
+            this.chkKarma.Location = new System.Drawing.Point(36, 57);
             this.chkKarma.Name = "chkKarma";
             this.chkKarma.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkKarma.Size = new System.Drawing.Size(99, 17);
@@ -172,6 +173,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(344, 101);
             this.ControlBox = false;

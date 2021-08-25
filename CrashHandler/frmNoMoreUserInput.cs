@@ -2,35 +2,43 @@ using System.Windows.Forms;
 
 namespace CrashHandler
 {
-	public sealed partial class frmNoMoreUserInput : Form
-	{
-		delegate void ChangeDesc(CrashDumperProgress progress, string desc);
+    public sealed partial class frmNoMoreUserInput : Form
+    {
+        private delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 
-		public frmNoMoreUserInput(CrashDumper dmper)
-		{
-			InitializeComponent();
+        private readonly CrashDumper _objCrashDumper;
 
-            if (dmper != null)
+        public frmNoMoreUserInput(CrashDumper objCrashDumper)
+        {
+            _objCrashDumper = objCrashDumper;
+            InitializeComponent();
+
+            if (_objCrashDumper != null)
             {
-                lblProgress.Text = dmper.Progress.GetDescription();
+                lblProgress.Text = _objCrashDumper.Progress.GetDescription();
 
-                dmper.CrashDumperProgressChanged += Dmper_CrashDumperProgressChanged;
+                _objCrashDumper.CrashDumperProgressChanged += CrashDumperProgressChanged;
             }
-		}
+        }
 
-		private void Dmper_CrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)
-		{
-			Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
-		}
+        private void frmNoMoreUserInput_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (_objCrashDumper != null)
+                _objCrashDumper.CrashDumperProgressChanged -= CrashDumperProgressChanged;
+        }
 
-		private void ChangeProgress(CrashDumperProgress progress, string desc)
-		{
-			if (progress == CrashDumperProgress.FinishedSending)
-			{
-				Close();
-			}
+        private void CrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)
+        {
+            Invoke(new ChangeDesc(ChangeProgress), args.Progress, args.Progress.GetDescription());
+        }
 
-			lblProgress.Text = desc;
-		}
-	}
+        private void ChangeProgress(CrashDumperProgress progress, string desc)
+        {
+            lblProgress.Text = desc;
+            if (progress == CrashDumperProgress.FinishedSending)
+            {
+                Close();
+            }
+        }
+    }
 }

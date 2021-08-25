@@ -30,7 +30,7 @@ namespace Chummer.UI.Table
         {
             InitializeComponent();
             _lblText = new Label();
-            contentField = _lblText;
+            ContentField = _lblText;
             Controls.Add(_lblText);
             _lblText.AutoSize = true;
             _lblText.Click += CommonFunctions.OpenPdfFromControl;

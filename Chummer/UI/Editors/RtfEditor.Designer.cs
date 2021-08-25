@@ -30,27 +30,28 @@ namespace Chummer.UI.Editors
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.tsControls = new System.Windows.Forms.ToolStrip();
-            this.tsbBold = new System.Windows.Forms.ToolStripButton();
-            this.tsbItalic = new System.Windows.Forms.ToolStripButton();
-            this.tsbUnderline = new System.Windows.Forms.ToolStripButton();
-            this.tsbStrikeout = new System.Windows.Forms.ToolStripButton();
+            this.tsbBold = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbItalic = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbUnderline = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbStrikeout = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tss1 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbFont = new System.Windows.Forms.ToolStripButton();
-            this.tsbForeColor = new System.Windows.Forms.ToolStripButton();
-            this.tsbBackColor = new System.Windows.Forms.ToolStripButton();
+            this.tsbFont = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbForeColor = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbBackColor = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tss2 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbSuperscript = new System.Windows.Forms.ToolStripButton();
-            this.tsbSubscript = new System.Windows.Forms.ToolStripButton();
+            this.tsbSuperscript = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbSubscript = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tss3 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbAlignLeft = new System.Windows.Forms.ToolStripButton();
-            this.tsbAlignCenter = new System.Windows.Forms.ToolStripButton();
-            this.tsbAlignRight = new System.Windows.Forms.ToolStripButton();
+            this.tsbAlignLeft = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbAlignCenter = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbAlignRight = new Chummer.DpiFriendlyToolStripButton(this.components);
             this.tss4 = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbUnorderedList = new System.Windows.Forms.ToolStripButton();
-            this.tsbIncreaseIndent = new System.Windows.Forms.ToolStripButton();
-            this.tsbDecreaseIndent = new System.Windows.Forms.ToolStripButton();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tsbUnorderedList = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbIncreaseIndent = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbDecreaseIndent = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.rtbContent = new System.Windows.Forms.RichTextBox();
             this.tsControls.SuspendLayout();
             this.tlpMain.SuspendLayout();
@@ -92,6 +93,12 @@ namespace Chummer.UI.Editors
             this.tsbBold.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbBold.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbBold.Image = global::Chummer.Properties.Resources.text_bold;
+            this.tsbBold.ImageDpi120 = null;
+            this.tsbBold.ImageDpi144 = null;
+            this.tsbBold.ImageDpi192 = global::Chummer.Properties.Resources.text_bold1;
+            this.tsbBold.ImageDpi288 = null;
+            this.tsbBold.ImageDpi384 = null;
+            this.tsbBold.ImageDpi96 = global::Chummer.Properties.Resources.text_bold;
             this.tsbBold.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBold.Name = "tsbBold";
             this.tsbBold.Size = new System.Drawing.Size(23, 20);
@@ -105,6 +112,12 @@ namespace Chummer.UI.Editors
             this.tsbItalic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbItalic.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbItalic.Image = global::Chummer.Properties.Resources.text_italic;
+            this.tsbItalic.ImageDpi120 = null;
+            this.tsbItalic.ImageDpi144 = null;
+            this.tsbItalic.ImageDpi192 = global::Chummer.Properties.Resources.text_italic1;
+            this.tsbItalic.ImageDpi288 = null;
+            this.tsbItalic.ImageDpi384 = null;
+            this.tsbItalic.ImageDpi96 = global::Chummer.Properties.Resources.text_italic;
             this.tsbItalic.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbItalic.Name = "tsbItalic";
             this.tsbItalic.Size = new System.Drawing.Size(23, 20);
@@ -118,6 +131,12 @@ namespace Chummer.UI.Editors
             this.tsbUnderline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbUnderline.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.tsbUnderline.Image = global::Chummer.Properties.Resources.text_underline;
+            this.tsbUnderline.ImageDpi120 = null;
+            this.tsbUnderline.ImageDpi144 = null;
+            this.tsbUnderline.ImageDpi192 = global::Chummer.Properties.Resources.text_underline1;
+            this.tsbUnderline.ImageDpi288 = null;
+            this.tsbUnderline.ImageDpi384 = null;
+            this.tsbUnderline.ImageDpi96 = global::Chummer.Properties.Resources.text_underline;
             this.tsbUnderline.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnderline.Name = "tsbUnderline";
             this.tsbUnderline.Size = new System.Drawing.Size(23, 20);
@@ -130,6 +149,12 @@ namespace Chummer.UI.Editors
             this.tsbStrikeout.CheckOnClick = true;
             this.tsbStrikeout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbStrikeout.Image = global::Chummer.Properties.Resources.text_strikethrough;
+            this.tsbStrikeout.ImageDpi120 = null;
+            this.tsbStrikeout.ImageDpi144 = null;
+            this.tsbStrikeout.ImageDpi192 = global::Chummer.Properties.Resources.text_strikethrough1;
+            this.tsbStrikeout.ImageDpi288 = null;
+            this.tsbStrikeout.ImageDpi384 = null;
+            this.tsbStrikeout.ImageDpi96 = global::Chummer.Properties.Resources.text_strikethrough;
             this.tsbStrikeout.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbStrikeout.Name = "tsbStrikeout";
             this.tsbStrikeout.Size = new System.Drawing.Size(23, 20);
@@ -146,6 +171,12 @@ namespace Chummer.UI.Editors
             // 
             this.tsbFont.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbFont.Image = global::Chummer.Properties.Resources.font;
+            this.tsbFont.ImageDpi120 = null;
+            this.tsbFont.ImageDpi144 = null;
+            this.tsbFont.ImageDpi192 = global::Chummer.Properties.Resources.font1;
+            this.tsbFont.ImageDpi288 = null;
+            this.tsbFont.ImageDpi384 = null;
+            this.tsbFont.ImageDpi96 = global::Chummer.Properties.Resources.font;
             this.tsbFont.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbFont.Name = "tsbFont";
             this.tsbFont.Size = new System.Drawing.Size(23, 20);
@@ -157,6 +188,12 @@ namespace Chummer.UI.Editors
             // 
             this.tsbForeColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbForeColor.Image = global::Chummer.Properties.Resources.color_wheel;
+            this.tsbForeColor.ImageDpi120 = null;
+            this.tsbForeColor.ImageDpi144 = null;
+            this.tsbForeColor.ImageDpi192 = global::Chummer.Properties.Resources.color_wheel1;
+            this.tsbForeColor.ImageDpi288 = null;
+            this.tsbForeColor.ImageDpi384 = null;
+            this.tsbForeColor.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel;
             this.tsbForeColor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbForeColor.Name = "tsbForeColor";
             this.tsbForeColor.Size = new System.Drawing.Size(23, 20);
@@ -168,6 +205,12 @@ namespace Chummer.UI.Editors
             // 
             this.tsbBackColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbBackColor.Image = global::Chummer.Properties.Resources.paintcan;
+            this.tsbBackColor.ImageDpi120 = null;
+            this.tsbBackColor.ImageDpi144 = null;
+            this.tsbBackColor.ImageDpi192 = global::Chummer.Properties.Resources.paintcan1;
+            this.tsbBackColor.ImageDpi288 = null;
+            this.tsbBackColor.ImageDpi384 = null;
+            this.tsbBackColor.ImageDpi96 = global::Chummer.Properties.Resources.paintcan;
             this.tsbBackColor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBackColor.Name = "tsbBackColor";
             this.tsbBackColor.Size = new System.Drawing.Size(23, 20);
@@ -185,6 +228,12 @@ namespace Chummer.UI.Editors
             this.tsbSuperscript.CheckOnClick = true;
             this.tsbSuperscript.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbSuperscript.Image = global::Chummer.Properties.Resources.text_superscript;
+            this.tsbSuperscript.ImageDpi120 = null;
+            this.tsbSuperscript.ImageDpi144 = null;
+            this.tsbSuperscript.ImageDpi192 = global::Chummer.Properties.Resources.text_superscript1;
+            this.tsbSuperscript.ImageDpi288 = null;
+            this.tsbSuperscript.ImageDpi384 = null;
+            this.tsbSuperscript.ImageDpi96 = global::Chummer.Properties.Resources.text_superscript;
             this.tsbSuperscript.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSuperscript.Name = "tsbSuperscript";
             this.tsbSuperscript.Size = new System.Drawing.Size(23, 20);
@@ -196,6 +245,12 @@ namespace Chummer.UI.Editors
             this.tsbSubscript.CheckOnClick = true;
             this.tsbSubscript.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbSubscript.Image = global::Chummer.Properties.Resources.text_subscript;
+            this.tsbSubscript.ImageDpi120 = null;
+            this.tsbSubscript.ImageDpi144 = null;
+            this.tsbSubscript.ImageDpi192 = global::Chummer.Properties.Resources.text_subscript1;
+            this.tsbSubscript.ImageDpi288 = null;
+            this.tsbSubscript.ImageDpi384 = null;
+            this.tsbSubscript.ImageDpi96 = global::Chummer.Properties.Resources.text_subscript;
             this.tsbSubscript.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSubscript.Name = "tsbSubscript";
             this.tsbSubscript.Size = new System.Drawing.Size(23, 20);
@@ -212,6 +267,12 @@ namespace Chummer.UI.Editors
             this.tsbAlignLeft.CheckOnClick = true;
             this.tsbAlignLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAlignLeft.Image = global::Chummer.Properties.Resources.text_align_left;
+            this.tsbAlignLeft.ImageDpi120 = null;
+            this.tsbAlignLeft.ImageDpi144 = null;
+            this.tsbAlignLeft.ImageDpi192 = global::Chummer.Properties.Resources.text_align_left1;
+            this.tsbAlignLeft.ImageDpi288 = null;
+            this.tsbAlignLeft.ImageDpi384 = null;
+            this.tsbAlignLeft.ImageDpi96 = global::Chummer.Properties.Resources.text_align_left;
             this.tsbAlignLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignLeft.Name = "tsbAlignLeft";
             this.tsbAlignLeft.Size = new System.Drawing.Size(23, 20);
@@ -225,6 +286,12 @@ namespace Chummer.UI.Editors
             this.tsbAlignCenter.CheckOnClick = true;
             this.tsbAlignCenter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAlignCenter.Image = global::Chummer.Properties.Resources.text_align_center;
+            this.tsbAlignCenter.ImageDpi120 = null;
+            this.tsbAlignCenter.ImageDpi144 = null;
+            this.tsbAlignCenter.ImageDpi192 = global::Chummer.Properties.Resources.text_align_center1;
+            this.tsbAlignCenter.ImageDpi288 = null;
+            this.tsbAlignCenter.ImageDpi384 = null;
+            this.tsbAlignCenter.ImageDpi96 = global::Chummer.Properties.Resources.text_align_center;
             this.tsbAlignCenter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignCenter.Name = "tsbAlignCenter";
             this.tsbAlignCenter.Size = new System.Drawing.Size(23, 20);
@@ -238,6 +305,12 @@ namespace Chummer.UI.Editors
             this.tsbAlignRight.CheckOnClick = true;
             this.tsbAlignRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbAlignRight.Image = global::Chummer.Properties.Resources.text_align_right;
+            this.tsbAlignRight.ImageDpi120 = null;
+            this.tsbAlignRight.ImageDpi144 = null;
+            this.tsbAlignRight.ImageDpi192 = global::Chummer.Properties.Resources.text_align_right1;
+            this.tsbAlignRight.ImageDpi288 = null;
+            this.tsbAlignRight.ImageDpi384 = null;
+            this.tsbAlignRight.ImageDpi96 = global::Chummer.Properties.Resources.text_align_right;
             this.tsbAlignRight.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignRight.Name = "tsbAlignRight";
             this.tsbAlignRight.Size = new System.Drawing.Size(23, 20);
@@ -256,6 +329,12 @@ namespace Chummer.UI.Editors
             this.tsbUnorderedList.CheckOnClick = true;
             this.tsbUnorderedList.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbUnorderedList.Image = global::Chummer.Properties.Resources.text_list_bullets;
+            this.tsbUnorderedList.ImageDpi120 = null;
+            this.tsbUnorderedList.ImageDpi144 = null;
+            this.tsbUnorderedList.ImageDpi192 = global::Chummer.Properties.Resources.text_list_bullets1;
+            this.tsbUnorderedList.ImageDpi288 = null;
+            this.tsbUnorderedList.ImageDpi384 = null;
+            this.tsbUnorderedList.ImageDpi96 = global::Chummer.Properties.Resources.text_list_bullets;
             this.tsbUnorderedList.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnorderedList.Name = "tsbUnorderedList";
             this.tsbUnorderedList.Size = new System.Drawing.Size(23, 20);
@@ -267,6 +346,12 @@ namespace Chummer.UI.Editors
             // 
             this.tsbIncreaseIndent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbIncreaseIndent.Image = global::Chummer.Properties.Resources.text_indent;
+            this.tsbIncreaseIndent.ImageDpi120 = null;
+            this.tsbIncreaseIndent.ImageDpi144 = null;
+            this.tsbIncreaseIndent.ImageDpi192 = global::Chummer.Properties.Resources.text_indent1;
+            this.tsbIncreaseIndent.ImageDpi288 = null;
+            this.tsbIncreaseIndent.ImageDpi384 = null;
+            this.tsbIncreaseIndent.ImageDpi96 = global::Chummer.Properties.Resources.text_indent;
             this.tsbIncreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbIncreaseIndent.Name = "tsbIncreaseIndent";
             this.tsbIncreaseIndent.Size = new System.Drawing.Size(23, 20);
@@ -278,6 +363,12 @@ namespace Chummer.UI.Editors
             // 
             this.tsbDecreaseIndent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbDecreaseIndent.Image = global::Chummer.Properties.Resources.text_indent_remove;
+            this.tsbDecreaseIndent.ImageDpi120 = null;
+            this.tsbDecreaseIndent.ImageDpi144 = null;
+            this.tsbDecreaseIndent.ImageDpi192 = global::Chummer.Properties.Resources.text_indent_remove1;
+            this.tsbDecreaseIndent.ImageDpi288 = null;
+            this.tsbDecreaseIndent.ImageDpi384 = null;
+            this.tsbDecreaseIndent.ImageDpi96 = global::Chummer.Properties.Resources.text_indent_remove;
             this.tsbDecreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbDecreaseIndent.Name = "tsbDecreaseIndent";
             this.tsbDecreaseIndent.Size = new System.Drawing.Size(23, 20);
@@ -340,26 +431,26 @@ namespace Chummer.UI.Editors
 
         #endregion
         private System.Windows.Forms.ToolStrip tsControls;
-        private System.Windows.Forms.ToolStripButton tsbBold;
-        private System.Windows.Forms.ToolStripButton tsbItalic;
-        private System.Windows.Forms.ToolStripButton tsbUnderline;
         private System.Windows.Forms.ToolStripSeparator tss3;
-        private System.Windows.Forms.ToolStripButton tsbUnorderedList;
-        private System.Windows.Forms.ToolStripButton tsbAlignLeft;
-        private System.Windows.Forms.ToolStripButton tsbAlignCenter;
-        private System.Windows.Forms.ToolStripButton tsbAlignRight;
         private System.Windows.Forms.ToolStripSeparator tss4;
-        private System.Windows.Forms.ToolStripButton tsbIncreaseIndent;
-        private System.Windows.Forms.ToolStripButton tsbDecreaseIndent;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
-        private System.Windows.Forms.ToolStripButton tsbFont;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.ToolStripSeparator tss1;
-        private System.Windows.Forms.ToolStripButton tsbForeColor;
         private System.Windows.Forms.RichTextBox rtbContent;
-        private System.Windows.Forms.ToolStripButton tsbBackColor;
-        private System.Windows.Forms.ToolStripButton tsbStrikeout;
         private System.Windows.Forms.ToolStripSeparator tss2;
-        private System.Windows.Forms.ToolStripButton tsbSuperscript;
-        private System.Windows.Forms.ToolStripButton tsbSubscript;
+        private DpiFriendlyToolStripButton tsbBold;
+        private DpiFriendlyToolStripButton tsbItalic;
+        private DpiFriendlyToolStripButton tsbUnderline;
+        private DpiFriendlyToolStripButton tsbStrikeout;
+        private DpiFriendlyToolStripButton tsbFont;
+        private DpiFriendlyToolStripButton tsbForeColor;
+        private DpiFriendlyToolStripButton tsbBackColor;
+        private DpiFriendlyToolStripButton tsbSuperscript;
+        private DpiFriendlyToolStripButton tsbSubscript;
+        private DpiFriendlyToolStripButton tsbAlignLeft;
+        private DpiFriendlyToolStripButton tsbAlignCenter;
+        private DpiFriendlyToolStripButton tsbAlignRight;
+        private DpiFriendlyToolStripButton tsbUnorderedList;
+        private DpiFriendlyToolStripButton tsbIncreaseIndent;
+        private DpiFriendlyToolStripButton tsbDecreaseIndent;
     }
 }

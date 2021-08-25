@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -71,7 +72,7 @@ namespace Chummer.UI.Shared
                 _indexComparer = new IndexComparer(Contents);
                 _comparison = _comparison ?? _indexComparer;
                 Contents.ListChanged += ContentsChanged;
-                ComptuteDisplayIndex();
+                ComputeDisplayIndex();
                 LoadScreenContent();
                 BindingListDisplay_SizeChanged(null, null);
             }
@@ -143,7 +144,7 @@ namespace Chummer.UI.Shared
             }
         }
 
-        private void ComptuteDisplayIndex()
+        private void ComputeDisplayIndex()
         {
             List<Tuple<TType, int>> objTTypeList = new List<Tuple<TType, int>>(_lstContentList.Count);
             for (int i = 0; i < _lstContentList.Count; ++i)
@@ -158,9 +159,13 @@ namespace Chummer.UI.Shared
             objTTypeList.Sort((x, y) => _comparison.Compare(x.Item1, y.Item1));
 
             // Array is temporary and of primitives, so stackalloc used instead of List.ToArray() (which would put the array on the heap) when possible
-            Span<int> aintOldDisplayIndex = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit
-                ? new int[_lstDisplayIndex.Count]
+            int[] aintSharedOldDisplayIndexes = _lstDisplayIndex.Count > GlobalOptions.MaxStackLimit ? ArrayPool<int>.Shared.Rent(_lstDisplayIndex.Count) : null;
+            // ReSharper disable once MergeConditionalExpression
+#pragma warning disable IDE0029 // Use coalesce expression
+            Span<int> aintOldDisplayIndex = aintSharedOldDisplayIndexes != null
+                ? aintSharedOldDisplayIndexes
                 : stackalloc int[_lstDisplayIndex.Count];
+#pragma warning restore IDE0029 // Use coalesce expression
             for (int i = 0; i < aintOldDisplayIndex.Length; ++i)
                 aintOldDisplayIndex[i] = _lstDisplayIndex[i];
             _lstDisplayIndex.Clear();
@@ -175,6 +180,8 @@ namespace Chummer.UI.Shared
                     _ablnRendered[i] &= _lstDisplayIndex[i] == aintOldDisplayIndex[i];
                 }
             }
+            if (aintSharedOldDisplayIndexes != null)
+                ArrayPool<int>.Shared.Return(aintSharedOldDisplayIndexes);
         }
 
         private void LoadScreenContent()
@@ -219,7 +226,7 @@ namespace Chummer.UI.Shared
                     ++intNumVisible;
             }
             ResetDisplayPanelHeight(intNumVisible);
-            ComptuteDisplayIndex();
+            ComputeDisplayIndex();
             LoadScreenContent();
         }
 
@@ -329,6 +336,7 @@ namespace Chummer.UI.Shared
             {
                 case ListChangedType.ItemChanged:
                     return;
+
                 case ListChangedType.Reset:
                     bool blnIsTopmostSuspendLayout = _blnIsTopmostSuspendLayout;
                     if (blnIsTopmostSuspendLayout)
@@ -358,17 +366,20 @@ namespace Chummer.UI.Shared
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList;
                     break;
+
                 case ListChangedType.ItemAdded:
                     _lstContentList.Insert(intNewIndex, new ControlWithMetaData(Contents[intNewIndex], this));
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList.Skip(intNewIndex);
                     break;
+
                 case ListChangedType.ItemDeleted:
                     _lstContentList[intNewIndex].Cleanup();
                     _lstContentList.RemoveAt(intNewIndex);
                     _indexComparer.Reset(Contents);
                     lstToRedraw = _lstContentList.Skip(intNewIndex);
                     break;
+
                 case ListChangedType.ItemMoved:
                     // Refresh the underlying lists, but do not refresh any displays
                     int intOldIndex = eventArgs.OldIndex;

@@ -32,8 +32,8 @@ namespace ChummerHub.Controllers
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController'
     {
 
-        private readonly UserManager<ApplicationUser> _userManager = null;
-        private readonly SignInManager<ApplicationUser> _signInManager = null;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger _logger;
@@ -341,7 +341,7 @@ namespace ChummerHub.Controllers
                     var user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name ?? string.Empty);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)
@@ -356,14 +356,12 @@ namespace ChummerHub.Controllers
         }
 
         [HttpGet]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Unauthorized)]
-        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
+        [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "LogonUser", typeof(ResultAccountGetUserByAuthorization))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("AccountGetUserByAuthorization")]
         [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         public async Task<ActionResult<ResultAccountGetUserByAuthorization>> GetUserByAuthorization()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'AccountController.GetUserByAuthorization()'
         {
             ResultAccountGetUserByAuthorization res;
             try
@@ -373,9 +371,9 @@ namespace ChummerHub.Controllers
                 if (user == null)
                     return NotFound(res);
 
-                user.PasswordHash = string.Empty;
-                user.SecurityStamp = string.Empty;
-                return Ok(res);
+                res.MyApplicationUser.PasswordHash = string.Empty;
+                res.MyApplicationUser.SecurityStamp = string.Empty;
+                return res;
             }
             catch (Exception e)
             {
@@ -384,7 +382,7 @@ namespace ChummerHub.Controllers
                     var user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)
@@ -416,13 +414,13 @@ namespace ChummerHub.Controllers
                 var count = await _context.SINners.CountAsync();
                 using (var transaction = await _context.Database.BeginTransactionAsync())
                 {
-                    _context.UserRights.RemoveRange(_context.UserRights.ToList());
-                    _context.SINnerComments.RemoveRange(_context.SINnerComments.ToList());
-                    _context.Tags.RemoveRange(_context.Tags.ToList());
-                    _context.SINnerVisibility.RemoveRange(_context.SINnerVisibility.ToList());
-                    _context.SINnerMetaData.RemoveRange(_context.SINnerMetaData.ToList());
-                    _context.SINners.RemoveRange(_context.SINners.ToList());
-                    _context.UploadClients.RemoveRange(_context.UploadClients.ToList());
+                    _context.UserRights.RemoveRange(await _context.UserRights.ToListAsync());
+                    _context.SINnerComments.RemoveRange(await _context.SINnerComments.ToListAsync());
+                    _context.Tags.RemoveRange(await _context.Tags.ToListAsync());
+                    _context.SINnerVisibility.RemoveRange(await _context.SINnerVisibility.ToListAsync());
+                    _context.SINnerMetaData.RemoveRange(await _context.SINnerMetaData.ToListAsync());
+                    _context.SINners.RemoveRange(await _context.SINners.ToListAsync());
+                    _context.UploadClients.RemoveRange(await _context.UploadClients.ToListAsync());
 
                     await _context.SaveChangesAsync();
                     // Commit transaction if all commands succeed, transaction will auto-rollback
@@ -438,7 +436,7 @@ namespace ChummerHub.Controllers
                     var user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name ?? string.Empty);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)
@@ -484,7 +482,7 @@ namespace ChummerHub.Controllers
                     var user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name ?? string.Empty);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)
@@ -542,12 +540,14 @@ namespace ChummerHub.Controllers
                 };
                 return BadRequest(res);
             }
+            res.UserEmail = user.Email;
             user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
             SINnerSearchGroup ssg = new SINnerSearchGroup(sg, user)
             {
                 MyMembers = new List<SINnerSearchGroupMember>()
             };
+
             using (var t = new TransactionScope(TransactionScopeOption.Required,
                 new TransactionOptions
                 {
@@ -561,12 +561,12 @@ namespace ChummerHub.Controllers
                     ssg.Groupname = user.UserName;
                     ssg.Id = Guid.Empty;
                     var worklist = user.FavoriteGroups.Select(a => a.FavoriteGuid).ToList();
-                    var groupworklist = _context.SINnerGroups
+                    var groupworklist = await _context.SINnerGroups
                         .Include(a => a.MyGroups)
                         .ThenInclude(b => b.MyGroups)
                         .ThenInclude(c => c.MyGroups)
                         .ThenInclude(d => d.MyGroups)
-                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value)).ToList();
+                        .Where(a => a.Id != null && worklist.Contains(a.Id.Value)).ToListAsync();
                     ssg.MySINSearchGroups = await RecursiveBuildGroupMembers(groupworklist, user);
                     var memberworklist = _context.SINners
                         .Include(a => a.MyGroup)
@@ -611,7 +611,7 @@ namespace ChummerHub.Controllers
                     {
                         await _signInManager.UserManager.GetUserAsync(User);
                         ExceptionTelemetry et = new ExceptionTelemetry(e);
-                        et.Properties.Add("user", User.Identity.Name);
+                        et.Properties.Add("user", User.Identity?.Name ?? string.Empty);
                         tc.TrackException(et);
                     }
                     catch (Exception ex)
@@ -719,6 +719,7 @@ namespace ChummerHub.Controllers
                 };
                 return BadRequest(res);
             }
+            res.UserEmail = user.Email;
             user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
             SINnerSearchGroup ssg = new SINnerSearchGroup(sg, user)
@@ -775,7 +776,7 @@ namespace ChummerHub.Controllers
                     await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name ?? string.Empty);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)
@@ -812,7 +813,7 @@ namespace ChummerHub.Controllers
                     var user = await _signInManager.UserManager.GetUserAsync(User);
                     //var tc = new Microsoft.ApplicationInsights.TelemetryClient();
                     ExceptionTelemetry et = new ExceptionTelemetry(e);
-                    et.Properties.Add("user", User.Identity.Name);
+                    et.Properties.Add("user", User.Identity?.Name ?? string.Empty);
                     tc.TrackException(et);
                 }
                 catch (Exception ex)

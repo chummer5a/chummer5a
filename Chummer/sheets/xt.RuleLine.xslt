@@ -20,25 +20,25 @@
   ***  Xline
 -->
   <xsl:template name="Xline">
-      <xsl:param name="cntl" select="'1'"/>
-      <xsl:param name="nte" select="false()"/>
-      <xsl:param name="height" select="'L'"/>
+      <xsl:param name="cntl" select="'1'" />
+      <xsl:param name="nte" select="false()" />
+      <xsl:param name="height" select="'L'" />
 
     <xsl:variable name="ht">
       <xsl:choose>
         <xsl:when test="$cntl = '0'">Z</xsl:when>
         <xsl:when test="$nte">R</xsl:when>
         <xsl:when test="contains('LNRWXZ',$height)">
-          <xsl:value-of select="$height"/>
+          <xsl:value-of select="$height" />
         </xsl:when>
         <xsl:when test="contains('lnrwxz',$height)">
           <xsl:call-template name="fnx-uc">
-            <xsl:with-param name="string" select="$height"/>
+            <xsl:with-param name="string" select="$height" />
           </xsl:call-template>
         </xsl:when>
         <xsl:otherwise>
           <xsl:call-template name="fnx-vet-nmbr">
-            <xsl:with-param name="nmbr" select="$height"/>
+            <xsl:with-param name="nmbr" select="$height" />
           </xsl:call-template>
         </xsl:otherwise>
       </xsl:choose>
@@ -54,18 +54,18 @@
         <xsl:when test="$ht = 'Z'">0</xsl:when>
         <xsl:when test="$ht = 'NaN'">0</xsl:when>
         <xsl:otherwise>
-          <xsl:value-of select="substring-before($ht,'.')"/>
+          <xsl:value-of select="substring-before($ht,'.')" />
         </xsl:otherwise>
       </xsl:choose>
     </xsl:variable>
 
     <xsl:call-template name="RuleLine">
-      <xsl:with-param name="count" select="$cnt"/>
+      <xsl:with-param name="count" select="$cnt" />
     </xsl:call-template>
   </xsl:template>
 
   <xsl:template name="RuleLine">
-    <xsl:param name="count" select="1"/>
+    <xsl:param name="count" select="1" />
 
     <xsl:if test="$count > 0">
       <tr><td colspan="100%"><hr style="
@@ -79,9 +79,9 @@
         margin: -0.0625em 0;
         padding: 0;
         width: 100%;
-      "/></td></tr>
+      " /></td></tr>
       <xsl:call-template name="RuleLine">
-        <xsl:with-param name="count" select="$count - 1"/>
+        <xsl:with-param name="count" select="$count - 1" />
       </xsl:call-template>
     </xsl:if>
   </xsl:template>

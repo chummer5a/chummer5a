@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,7 +31,6 @@ namespace Chummer.UI.Table
     public class TableColumn<T>
         where T : INotifyPropertyChanged
     {
-
         private readonly Func<TableCell> _cellFactory;
         private Comparison<object> _sorter;
         private bool _blnLive;
@@ -93,6 +93,7 @@ namespace Chummer.UI.Table
         }
 
         #region Properties
+
         /// <summary>
         /// The dependencies as enumerable.
         /// </summary>
@@ -105,7 +106,8 @@ namespace Chummer.UI.Table
         public Func<T, object> Extractor
         {
             get => _funcExtractor;
-            set {
+            set
+            {
                 CheckLive();
                 _funcExtractor = value;
             }
@@ -122,7 +124,8 @@ namespace Chummer.UI.Table
         public int MinWidth
         {
             get => _intMinWidth;
-            set {
+            set
+            {
                 CheckLive();
                 if (value < 0)
                 {
@@ -177,7 +180,8 @@ namespace Chummer.UI.Table
         public int PrefWidth
         {
             get => _intPrefWidth;
-            set {
+            set
+            {
                 if (value >= _intMinWidth)
                 {
                     _intPrefWidth = value;
@@ -198,6 +202,7 @@ namespace Chummer.UI.Table
             CheckLive();
             _blnLive = true;
         }
-        #endregion
+
+        #endregion Properties
     }
 }

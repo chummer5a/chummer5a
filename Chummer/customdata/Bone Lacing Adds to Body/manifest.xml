@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<manifest>
+  <guid>091a9694-4186-4c2d-96fc-d4dc2ae62505</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>chummer5a</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset causes Bone Lacing cyberware to add its rating to characters' Body attribute instead of having it count as extra Body only for damage resistance tests.</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>

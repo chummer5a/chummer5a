@@ -19,6 +19,7 @@ namespace ChummerHub.Client.UI
             InitializeComponent();
             DialogResult = DialogResult.Ignore;
             AcceptButton = bOk;
+
         }
 
         private void BOk_Click(object sender, EventArgs e)

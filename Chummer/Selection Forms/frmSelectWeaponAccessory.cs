@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Globalization;
- using System.Linq;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml.XPath;
- using Chummer.Backend.Equipment;
+using System.Xml.XPath;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -45,6 +46,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
+
         public frmSelectWeaponAccessory(Character objCharacter)
         {
             if (objCharacter == null)
@@ -131,9 +133,7 @@ namespace Chummer
             string strOldSelected = lstAccessory.SelectedValue?.ToString();
             _blnLoading = true;
             lstAccessory.BeginUpdate();
-            lstAccessory.ValueMember = nameof(ListItem.Value);
-            lstAccessory.DisplayMember = nameof(ListItem.Name);
-            lstAccessory.DataSource = lstAccessories;
+            lstAccessory.PopulateWithListItems(lstAccessories);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstAccessory.SelectedValue = strOldSelected;
@@ -158,12 +158,6 @@ namespace Chummer
             DialogResult = DialogResult.Cancel;
         }
 
-        private void lstAccessory_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
@@ -184,7 +178,7 @@ namespace Chummer
 
         private void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked  && !chkFreeItem.Checked)
+            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
                 RefreshList();
             UpdateGearInfo();
         }
@@ -207,13 +201,16 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_objParentWeapon.DoubledCostModificationSlots))
                 UpdateGearInfo(false);
         }
+
         private void RefreshCurrentList(object sender, EventArgs e)
         {
             RefreshList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -285,9 +282,10 @@ namespace Chummer
         /// </summary>
         public decimal Markup => _decMarkup;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         private void txtSearch_TextChanged(object sender, EventArgs e)
         {
             RefreshList();
@@ -312,7 +310,7 @@ namespace Chummer
             }
         }
 
-        private void UpdateGearInfo(bool blnUpdateMountCBOs = true)
+        private void UpdateGearInfo(bool blnUpdateMountComboBoxes = true)
         {
             if (_blnLoading)
                 return;
@@ -324,27 +322,7 @@ namespace Chummer
                 xmlAccessory = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath() + "]");
             if (xmlAccessory == null)
             {
-                lblRC.Visible = false;
-                lblRCLabel.Visible = false;
-                nudRating.Enabled = false;
-                nudRating.Visible = false;
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                lblMountLabel.Visible = false;
-                cboMount.Visible = false;
-                cboMount.Items.Clear();
-                lblExtraMountLabel.Visible = false;
-                cboExtraMount.Visible = false;
-                cboExtraMount.Items.Clear();
-                lblAvailLabel.Visible = false;
-                lblAvail.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblTestLabel.Visible = false;
-                lblTest.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -394,7 +372,7 @@ namespace Chummer
                 lblRatingLabel.Visible = true;
             }
 
-            if (blnUpdateMountCBOs)
+            if (blnUpdateMountComboBoxes)
             {
                 string strDataMounts = xmlAccessory.SelectSingleNode("mount")?.Value;
                 List<string> strMounts = new List<string>();
@@ -405,7 +383,7 @@ namespace Chummer
 
                 strMounts.Add("None");
 
-                List<string> strAllowed = new List<string>(_lstAllowedMounts) {"None"};
+                List<string> strAllowed = new List<string>(_lstAllowedMounts) { "None" };
                 cboMount.Visible = true;
                 cboMount.Items.Clear();
                 foreach (string strCurrentMount in strMounts)
@@ -536,7 +514,7 @@ namespace Chummer
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
 
-
+            chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             if (!chkBlackMarketDiscount.Checked)
             {
                 chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _blnIsParentWeaponBlackMarketAllowed;
@@ -547,13 +525,14 @@ namespace Chummer
                 chkBlackMarketDiscount.Checked = false;
             }
 
-            chkBlackMarketDiscount.Enabled = _blnIsParentWeaponBlackMarketAllowed;
             string strSource = xmlAccessory.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlAccessory.SelectSingleNode("altpage")?.Value ?? xmlAccessory.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
             SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
             objSourceString.SetControl(lblSource);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
         }
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -574,6 +553,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

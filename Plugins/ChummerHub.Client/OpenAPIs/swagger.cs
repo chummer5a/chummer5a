@@ -1102,6 +1102,9 @@ namespace ChummerHub.Client.Sinners
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task OAsync(string hash, string open, string api_version, System.Threading.CancellationToken cancellationToken)
         {
+            if (hash == null)
+                throw new System.ArgumentNullException("hash");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/O/{Hash}?");
             urlBuilder_.Replace("{Hash}", System.Uri.EscapeDataString(ConvertToString(hash, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1206,6 +1209,9 @@ namespace ChummerHub.Client.Sinners
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task GAsync(string hash, string open, string api_version, System.Threading.CancellationToken cancellationToken)
         {
+            if (hash == null)
+                throw new System.ArgumentNullException("hash");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/G/{Hash}?");
             urlBuilder_.Replace("{Hash}", System.Uri.EscapeDataString(ConvertToString(hash, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1308,6 +1314,9 @@ namespace ChummerHub.Client.Sinners
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task OpenAsync(string hash, string api_version, System.Threading.CancellationToken cancellationToken)
         {
+            if (hash == null)
+                throw new System.ArgumentNullException("hash");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/Open/{Hash}?");
             urlBuilder_.Replace("{Hash}", System.Uri.EscapeDataString(ConvertToString(hash, System.Globalization.CultureInfo.InvariantCulture)));
@@ -1615,7 +1624,9 @@ namespace ChummerHub.Client.Sinners
                     var content_ = new System.Net.Http.MultipartFormDataContent(boundary_);
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
-                    if (uploadedFile != null)
+                    if (uploadedFile == null)
+                        throw new System.ArgumentNullException("uploadedFile");
+                    else
                     {
                         var content_uploadedFile_ = new System.Net.Http.StreamContent(uploadedFile.Data);
                         if (!string.IsNullOrEmpty(uploadedFile.ContentType))
@@ -3005,6 +3016,9 @@ namespace ChummerHub.Client.Sinners
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task<ResultSinnerGetOwnedSINByAlias> SinnerGetOwnedSINByAliasAsync(string id, System.Threading.CancellationToken cancellationToken)
         {
+            if (id == null)
+                throw new System.ArgumentNullException("id");
+    
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append(BaseUrl != null ? BaseUrl.TrimEnd('/') : "").Append("/api/v1/SINner/GetOwnedSINByAlias/{id}");
             urlBuilder_.Replace("{id}", System.Uri.EscapeDataString(ConvertToString(id, System.Globalization.CultureInfo.InvariantCulture)));
@@ -3117,7 +3131,9 @@ namespace ChummerHub.Client.Sinners
                     var content_ = new System.Net.Http.MultipartFormDataContent(boundary_);
                     content_.Headers.Remove("Content-Type");
                     content_.Headers.TryAddWithoutValidation("Content-Type", "multipart/form-data; boundary=" + boundary_);
-                    if (uploadedFile != null)
+                    if (uploadedFile == null)
+                        throw new System.ArgumentNullException("uploadedFile");
+                    else
                     {
                         var content_uploadedFile_ = new System.Net.Http.StreamContent(uploadedFile.Data);
                         if (!string.IsNullOrEmpty(uploadedFile.ContentType))
@@ -3966,87 +3982,6 @@ namespace ChummerHub.Client.Sinners
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultAccountGetPossibleRoles 
-    {
-        [Newtonsoft.Json.JsonProperty("allRoles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> AllRoles { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ProblemDetails 
-    {
-        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Type { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Title { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public int? Status { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("detail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Detail { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Instance { get; set; }
-    
-        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
-    
-        [Newtonsoft.Json.JsonExtensionData]
-        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
-        {
-            get { return _additionalProperties; }
-            set { _additionalProperties = value; }
-        }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultAccountGetRoles 
-    {
-        [Newtonsoft.Json.JsonProperty("roles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> Roles { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("possibleRoles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<string> PossibleRoles { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ApplicationUserFavoriteGroup 
-    {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("favoriteGuid", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid FavoriteGuid { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class ApplicationUser 
     {
         [Newtonsoft.Json.JsonProperty("favoriteGroups", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4101,10 +4036,100 @@ namespace ChummerHub.Client.Sinners
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultAccountGetUserByEmail 
+    public partial class ApplicationUserFavoriteGroup 
     {
-        [Newtonsoft.Json.JsonProperty("myApplicationUser", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public ApplicationUser MyApplicationUser { get; set; }
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("favoriteGuid", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid FavoriteGuid { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ChummerHubVersion 
+    {
+        [Newtonsoft.Json.JsonProperty("assemblyVersion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string AssemblyVersion { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ProblemDetails 
+    {
+        [Newtonsoft.Json.JsonProperty("type", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Type { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("title", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Title { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("status", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public int? Status { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("detail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Detail { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("instance", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Instance { get; set; }
+    
+        private System.Collections.Generic.IDictionary<string, object> _additionalProperties = new System.Collections.Generic.Dictionary<string, object>();
+    
+        [Newtonsoft.Json.JsonExtensionData]
+        public System.Collections.Generic.IDictionary<string, object> AdditionalProperties
+        {
+            get { return _additionalProperties; }
+            set { _additionalProperties = value; }
+        }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultAccountGetPossibleRoles 
+    {
+        [Newtonsoft.Json.JsonProperty("allRoles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> AllRoles { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultAccountGetRoles 
+    {
+        [Newtonsoft.Json.JsonProperty("roles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> Roles { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("possibleRoles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<string> PossibleRoles { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultAccountGetSinnersByAuthorization 
+    {
+        [Newtonsoft.Json.JsonProperty("mySINSearchGroupResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINSearchGroupResult MySINSearchGroupResult { get; set; }
     
         [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public object MyException { get; set; }
@@ -4137,86 +4162,243 @@ namespace ChummerHub.Client.Sinners
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ChummerHubVersion 
+    public partial class ResultAccountGetUserByEmail 
     {
-        [Newtonsoft.Json.JsonProperty("assemblyVersion", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string AssemblyVersion { get; set; }
+        [Newtonsoft.Json.JsonProperty("myApplicationUser", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ApplicationUser MyApplicationUser { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class SINnerUserRight 
+    public partial class ResultGroupGetGroupById 
     {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? Id { get; set; }
+        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINnerGroup MyGroup { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("eMail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(64)]
-        public string EMail { get; set; }
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("canEdit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CanEdit { get; set; }
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class SINnerVisibility 
+    public partial class ResultGroupGetSearchGroups 
     {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? Id { get; set; }
+        [Newtonsoft.Json.JsonProperty("mySearchGroupResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINSearchGroupResult MySearchGroupResult { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("isPublic", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsPublic { get; set; }
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("isGroupVisible", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsGroupVisible { get; set; }
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultGroupPostGroup 
+    {
+        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINnerGroup MyGroup { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultGroupPutGroupInGroup 
+    {
+        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINnerGroup MyGroup { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultGroupPutSetting 
+    {
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultSinnerDelete 
+    {
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultSinnerGetOwnedSINByAlias 
+    {
+        [Newtonsoft.Json.JsonProperty("mySINners", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<SINner> MySINners { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultSinnerGetSINById 
+    {
+        [Newtonsoft.Json.JsonProperty("mySINner", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINner MySINner { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultSinnerGetSINnerGroupFromSINerById 
+    {
+        [Newtonsoft.Json.JsonProperty("mySINnerGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINnerGroup MySINnerGroup { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class ResultSinnerGetSINnerVisibilityById 
+    {
         [Newtonsoft.Json.JsonProperty("userRights", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Collections.Generic.ICollection<SINnerUserRight> UserRights { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public enum TagValueEnum
+    public partial class ResultSinnerPostSIN 
     {
-        [System.Runtime.Serialization.EnumMember(Value = @"list")]
-        List = 0,
+        [Newtonsoft.Json.JsonProperty("mySINners", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<SINner> MySINners { get; set; }
     
-        [System.Runtime.Serialization.EnumMember(Value = @"bool")]
-        Bool = 1,
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
     
-        [System.Runtime.Serialization.EnumMember(Value = @"int")]
-        Int = 2,
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
     
-        [System.Runtime.Serialization.EnumMember(Value = @"Guid")]
-        Guid = 3,
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
     
-        [System.Runtime.Serialization.EnumMember(Value = @"string")]
-        String = 4,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"double")]
-        Double = 5,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"binary")]
-        Binary = 6,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"enum")]
-        Enum = 7,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"other")]
-        Other = 8,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"unknown")]
-        Unknown = 9,
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class Tag 
+    public partial class ResultSINnerPut 
     {
+        [Newtonsoft.Json.JsonProperty("mySINner", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINner MySINner { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public object MyException { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CallSuccess { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string ErrorText { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class SearchTag 
+    {
+        [Newtonsoft.Json.JsonProperty("searchTags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<SearchTag> SearchTags { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("searchOpterator", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public TagOperatorEnum SearchOpterator { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid Id { get; set; }
     
@@ -4256,28 +4438,35 @@ namespace ChummerHub.Client.Sinners
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class SINnerMetaData 
+    public partial class SINner 
     {
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid Id { get; set; }
+        [Newtonsoft.Json.JsonProperty("editionNumber", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(2)]
+        public string EditionNumber { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINnerVisibility Visibility { get; set; }
+        [Newtonsoft.Json.JsonProperty("myHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(8)]
+        public string MyHash { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Tag> Tags { get; set; }
+        [Newtonsoft.Json.JsonProperty("language", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(6)]
+        public string Language { get; set; }
     
+        [Newtonsoft.Json.JsonProperty("siNnerMetaData", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINnerMetaData SiNnerMetaData { get; set; }
     
-    }
+        [Newtonsoft.Json.JsonProperty("lastDownload", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.DateTimeOffset? LastDownload { get; set; }
     
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class SINnerGroupSetting 
-    {
+        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.AllowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINnerGroup MyGroup { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(64)]
+        public string Alias { get; set; }
+    
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid? Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myGroupId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid MyGroupId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("downloadUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string DownloadUrl { get; set; }
@@ -4345,35 +4534,13 @@ namespace ChummerHub.Client.Sinners
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class SINner 
+    public partial class SINnerGroupSetting 
     {
-        [Newtonsoft.Json.JsonProperty("editionNumber", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(2)]
-        public string EditionNumber { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myHash", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(8)]
-        public string MyHash { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("language", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(6)]
-        public string Language { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("siNnerMetaData", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINnerMetaData SiNnerMetaData { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("lastDownload", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.DateTimeOffset? LastDownload { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINnerGroup MyGroup { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("alias", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(64)]
-        public string Alias { get; set; }
-    
         [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public System.Guid? Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("myGroupId", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid MyGroupId { get; set; }
     
         [Newtonsoft.Json.JsonProperty("downloadUrl", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string DownloadUrl { get; set; }
@@ -4391,16 +4558,16 @@ namespace ChummerHub.Client.Sinners
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class SINnerSearchGroupMember 
+    public partial class SINnerMetaData 
     {
-        [Newtonsoft.Json.JsonProperty("mySINner", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINner MySINner { get; set; }
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid Id { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("username", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string Username { get; set; }
+        [Newtonsoft.Json.JsonProperty("visibility", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINnerVisibility Visibility { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("isFavorite", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsFavorite { get; set; }
+        [Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<Tag> Tags { get; set; }
     
     
     }
@@ -4468,6 +4635,55 @@ namespace ChummerHub.Client.Sinners
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class SINnerSearchGroupMember 
+    {
+        [Newtonsoft.Json.JsonProperty("mySINner", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public SINner MySINner { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("username", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public string Username { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("isFavorite", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsFavorite { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class SINnerUserRight 
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("eMail", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(64)]
+        public string EMail { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("canEdit", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool CanEdit { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
+    public partial class SINnerVisibility 
+    {
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? Id { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("isPublic", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsPublic { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("isGroupVisible", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsGroupVisible { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("userRights", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<SINnerUserRight> UserRights { get; set; }
+    
+    
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
     public partial class SINSearchGroupResult 
     {
         [Newtonsoft.Json.JsonProperty("roles", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
@@ -4486,197 +4702,101 @@ namespace ChummerHub.Client.Sinners
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultAccountGetSinnersByAuthorization 
+    public partial class Tag 
     {
-        [Newtonsoft.Json.JsonProperty("mySINSearchGroupResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINSearchGroupResult MySINSearchGroupResult { get; set; }
+        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid Id { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
+        [Newtonsoft.Json.JsonProperty("tagName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(64)]
+        public string TagName { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
+        [Newtonsoft.Json.JsonProperty("tagValue", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(64)]
+        public string TagValue { get; set; }
     
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
+        [Newtonsoft.Json.JsonProperty("tagValueFloat", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public float? TagValueFloat { get; set; }
+    
+        /// <summary>This has NO FUNCTION and is only here for Debugging reasons.</summary>
+        [Newtonsoft.Json.JsonProperty("tagComment", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [System.ComponentModel.DataAnnotations.StringLength(64)]
+        public string TagComment { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("parentTagId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? ParentTagId { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("siNnerId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Guid? SiNnerId { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public System.Collections.Generic.ICollection<Tag> Tags { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("isUserGenerated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public bool IsUserGenerated { get; set; }
+    
+        [Newtonsoft.Json.JsonProperty("tagType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
+        public TagValueEnum TagType { get; set; }
     
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultGroupGetSearchGroups 
+    public enum TagOperatorEnum
     {
-        [Newtonsoft.Json.JsonProperty("mySearchGroupResult", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINSearchGroupResult MySearchGroupResult { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"bigger")]
+        Bigger = 0,
     
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"smaller")]
+        Smaller = 1,
     
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"equal")]
+        Equal = 2,
     
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"contains")]
+        Contains = 3,
     
+        [System.Runtime.Serialization.EnumMember(Value = @"notnull")]
+        Notnull = 4,
+    
+        [System.Runtime.Serialization.EnumMember(Value = @"exists")]
+        Exists = 5,
     
     }
     
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultGroupPutGroupInGroup 
+    public enum TagValueEnum
     {
-        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINnerGroup MyGroup { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"list")]
+        List = 0,
     
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"bool")]
+        Bool = 1,
     
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"int")]
+        Int = 2,
     
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"Guid")]
+        Guid = 3,
     
+        [System.Runtime.Serialization.EnumMember(Value = @"string")]
+        String = 4,
     
-    }
+        [System.Runtime.Serialization.EnumMember(Value = @"double")]
+        Double = 5,
     
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultGroupPutSetting 
-    {
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"binary")]
+        Binary = 6,
     
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"enum")]
+        Enum = 7,
     
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
+        [System.Runtime.Serialization.EnumMember(Value = @"other")]
+        Other = 8,
     
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultGroupPostGroup 
-    {
-        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINnerGroup MyGroup { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultGroupGetGroupById 
-    {
-        [Newtonsoft.Json.JsonProperty("myGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINnerGroup MyGroup { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultSinnerGetSINnerGroupFromSINerById 
-    {
-        [Newtonsoft.Json.JsonProperty("mySINnerGroup", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINnerGroup MySINnerGroup { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultSinnerGetSINById 
-    {
-        [Newtonsoft.Json.JsonProperty("mySINner", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINner MySINner { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultSinnerGetSINnerVisibilityById 
-    {
-        [Newtonsoft.Json.JsonProperty("userRights", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SINnerUserRight> UserRights { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultSinnerGetOwnedSINByAlias 
-    {
-        [Newtonsoft.Json.JsonProperty("mySINners", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SINner> MySINners { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultSINnerPut 
-    {
-        [Newtonsoft.Json.JsonProperty("mySINner", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public SINner MySINner { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
+        [System.Runtime.Serialization.EnumMember(Value = @"unknown")]
+        Unknown = 9,
     
     }
     
@@ -4715,110 +4835,6 @@ namespace ChummerHub.Client.Sinners
     
         [Newtonsoft.Json.JsonProperty("groupname", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
         public string Groupname { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultSinnerPostSIN 
-    {
-        [Newtonsoft.Json.JsonProperty("mySINners", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SINner> MySINners { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class ResultSinnerDelete 
-    {
-        [Newtonsoft.Json.JsonProperty("myException", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public object MyException { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("callSuccess", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool CallSuccess { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("errorText", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public string ErrorText { get; set; }
-    
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public enum TagOperatorEnum
-    {
-        [System.Runtime.Serialization.EnumMember(Value = @"bigger")]
-        Bigger = 0,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"smaller")]
-        Smaller = 1,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"equal")]
-        Equal = 2,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"contains")]
-        Contains = 3,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"notnull")]
-        Notnull = 4,
-    
-        [System.Runtime.Serialization.EnumMember(Value = @"exists")]
-        Exists = 5,
-    
-    }
-    
-    [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "10.2.1.0 (Newtonsoft.Json v11.0.0.0)")]
-    public partial class SearchTag 
-    {
-        [Newtonsoft.Json.JsonProperty("searchTags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<SearchTag> SearchTags { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("searchOpterator", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public TagOperatorEnum SearchOpterator { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("id", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid Id { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("tagName", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(64)]
-        public string TagName { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("tagValue", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(64)]
-        public string TagValue { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("tagValueFloat", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public float? TagValueFloat { get; set; }
-    
-        /// <summary>This has NO FUNCTION and is only here for Debugging reasons.</summary>
-        [Newtonsoft.Json.JsonProperty("tagComment", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [System.ComponentModel.DataAnnotations.StringLength(64)]
-        public string TagComment { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("parentTagId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? ParentTagId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("siNnerId", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Guid? SiNnerId { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("tags", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public System.Collections.Generic.ICollection<Tag> Tags { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("isUserGenerated", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        public bool IsUserGenerated { get; set; }
-    
-        [Newtonsoft.Json.JsonProperty("tagType", Required = Newtonsoft.Json.Required.DisallowNull, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
-        [Newtonsoft.Json.JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public TagValueEnum TagType { get; set; }
     
     
     }

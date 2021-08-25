@@ -44,7 +44,7 @@ namespace Chummer
             this.lblGroupNameLabel = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.cmdChangeColour = new System.Windows.Forms.Button();
-            this.chkFreeContact = new Chummer.ColorableCheckBox();
+            this.chkFreeContact = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
@@ -65,9 +65,9 @@ namespace Chummer
             // 
             // lblMembershipLabel
             // 
-            this.lblMembershipLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMembershipLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMembershipLabel.AutoSize = true;
-            this.lblMembershipLabel.Location = new System.Drawing.Point(67, 32);
+            this.lblMembershipLabel.Location = new System.Drawing.Point(67, 33);
             this.lblMembershipLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMembershipLabel.Name = "lblMembershipLabel";
             this.lblMembershipLabel.Size = new System.Drawing.Size(67, 13);
@@ -89,9 +89,9 @@ namespace Chummer
             // 
             // lblAreaOfInfluenceLabel
             // 
-            this.lblAreaOfInfluenceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblAreaOfInfluenceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAreaOfInfluenceLabel.AutoSize = true;
-            this.lblAreaOfInfluenceLabel.Location = new System.Drawing.Point(43, 59);
+            this.lblAreaOfInfluenceLabel.Location = new System.Drawing.Point(43, 60);
             this.lblAreaOfInfluenceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAreaOfInfluenceLabel.Name = "lblAreaOfInfluenceLabel";
             this.lblAreaOfInfluenceLabel.Size = new System.Drawing.Size(91, 13);
@@ -113,9 +113,9 @@ namespace Chummer
             // 
             // lblMagicalResourcesLabel
             // 
-            this.lblMagicalResourcesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMagicalResourcesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMagicalResourcesLabel.AutoSize = true;
-            this.lblMagicalResourcesLabel.Location = new System.Drawing.Point(33, 86);
+            this.lblMagicalResourcesLabel.Location = new System.Drawing.Point(33, 87);
             this.lblMagicalResourcesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMagicalResourcesLabel.Name = "lblMagicalResourcesLabel";
             this.lblMagicalResourcesLabel.Size = new System.Drawing.Size(101, 13);
@@ -137,9 +137,9 @@ namespace Chummer
             // 
             // lblMatrixResourcesLabel
             // 
-            this.lblMatrixResourcesLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMatrixResourcesLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMatrixResourcesLabel.AutoSize = true;
-            this.lblMatrixResourcesLabel.Location = new System.Drawing.Point(42, 113);
+            this.lblMatrixResourcesLabel.Location = new System.Drawing.Point(42, 114);
             this.lblMatrixResourcesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMatrixResourcesLabel.Name = "lblMatrixResourcesLabel";
             this.lblMatrixResourcesLabel.Size = new System.Drawing.Size(92, 13);
@@ -149,7 +149,7 @@ namespace Chummer
             // 
             // lblTotalConnectionModifierLabel
             // 
-            this.lblTotalConnectionModifierLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblTotalConnectionModifierLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblTotalConnectionModifierLabel.AutoSize = true;
             this.lblTotalConnectionModifierLabel.Location = new System.Drawing.Point(3, 140);
             this.lblTotalConnectionModifierLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -161,6 +161,7 @@ namespace Chummer
             // 
             // lblTotalConnectionModifier
             // 
+            this.lblTotalConnectionModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTotalConnectionModifier.AutoSize = true;
             this.lblTotalConnectionModifier.Location = new System.Drawing.Point(140, 140);
             this.lblTotalConnectionModifier.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -200,7 +201,7 @@ namespace Chummer
             // 
             // lblGroupNameLabel
             // 
-            this.lblGroupNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblGroupNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblGroupNameLabel.AutoSize = true;
             this.lblGroupNameLabel.Location = new System.Drawing.Point(4, 6);
             this.lblGroupNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -221,6 +222,7 @@ namespace Chummer
             // 
             // cmdChangeColour
             // 
+            this.cmdChangeColour.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdChangeColour.AutoSize = true;
             this.cmdChangeColour.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdChangeColour.Location = new System.Drawing.Point(140, 162);
@@ -236,7 +238,9 @@ namespace Chummer
             // 
             this.chkFreeContact.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.chkFreeContact.AutoSize = true;
+            this.chkFreeContact.DefaultColorScheme = true;
             this.chkFreeContact.Location = new System.Drawing.Point(47, 165);
+            this.chkFreeContact.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFreeContact.Name = "chkFreeContact";
             this.chkFreeContact.Size = new System.Drawing.Size(87, 17);
             this.chkFreeContact.TabIndex = 12;
@@ -308,6 +312,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(384, 241);
             this.Controls.Add(this.tlpMain);

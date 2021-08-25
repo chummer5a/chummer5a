@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,7 +40,7 @@ namespace Chummer
         private bool _blnLockGrade;
         private bool _blnLoading = true;
 
-        private readonly string _strNodeXPath = "Drugs/Drug";
+        private const string _strNodeXPath = "Drugs/Drug";
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
@@ -55,6 +56,7 @@ namespace Chummer
         }
 
         #region Control Events
+
         public frmSelectDrug(Character objCharacter)
         {
             InitializeComponent();
@@ -132,7 +134,7 @@ namespace Chummer
             if (xmlGrade != null)
             {
                 _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
-                _intAvailModifier = Convert.ToInt32(xmlGrade.SelectSingleNode("avail")?.Value, GlobalOptions.InvariantCultureInfo);
+                _intAvailModifier = xmlGrade.SelectSingleNode("avail")?.ValueAsInt ?? 0;
 
                 _blnLoading = false;
                 RefreshList();
@@ -143,6 +145,7 @@ namespace Chummer
                 UpdateDrugInfo();
             }
         }
+
         private void cboGrade_EnabledChanged(object sender, EventArgs e)
         {
             if (cboGrade.Enabled != _blnOldGradeEnabled)
@@ -241,9 +244,10 @@ namespace Chummer
 
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                    GlobalOptions.CultureInfo, _objCharacter);
+                lblSource.Text = objSource.ToString();
+                lblSource.SetToolTip(objSource.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
                 Grade objForcedGrade = null;
@@ -265,17 +269,15 @@ namespace Chummer
                     }
                 }
 
-                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-
+                bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")?.Value);
+                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
                 if (!chkBlackMarketDiscount.Checked)
                 {
-                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
-                                                     _setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")
-                                                         ?.Value);
+                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
                 }
-                else if (!_setBlackMarketMaps.Contains(xmlDrug.SelectSingleNode("category")?.Value))
+                else if (!blnCanBlackMarketDiscount)
                 {
-                    //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
                     chkBlackMarketDiscount.Checked = false;
                 }
 
@@ -294,14 +296,11 @@ namespace Chummer
                     lblDrugNotes.Visible = false;
                     lblDrugNotesLabel.Visible = false;
                 }*/
+                tlpRight.Visible = true;
             }
             else
             {
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                nudRating.Minimum = 0;
-                nudRating.Value = 0;
-                nudRating.Visible = false;
+                tlpRight.Visible = false;
                 cboGrade.Enabled = !_blnLockGrade;
                 strForceGrade = string.Empty;
                 Grade objForcedGrade = null;
@@ -312,9 +311,6 @@ namespace Chummer
                 }
                 PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade);
                 chkBlackMarketDiscount.Checked = false;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
             }
             _blnLoading = false;
             UpdateDrugInfo();
@@ -362,12 +358,6 @@ namespace Chummer
             PopulateGrades();
         }
 
-        private void lstDrug_DoubleClick(object sender, EventArgs e)
-        {
-            AddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
@@ -399,27 +389,34 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstDrug.SelectedIndex + 1 < lstDrug.Items.Count)
-                {
+                case Keys.Down when lstDrug.SelectedIndex + 1 < lstDrug.Items.Count:
                     lstDrug.SelectedIndex++;
-                }
-                else if (lstDrug.Items.Count > 0)
-                {
-                    lstDrug.SelectedIndex = 0;
-                }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstDrug.SelectedIndex - 1 >= 0)
-                {
+                    break;
+
+                case Keys.Down:
+                    {
+                        if (lstDrug.Items.Count > 0)
+                        {
+                            lstDrug.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
+                case Keys.Up when lstDrug.SelectedIndex - 1 >= 0:
                     lstDrug.SelectedIndex--;
-                }
-                else if (lstDrug.Items.Count > 0)
-                {
-                    lstDrug.SelectedIndex = lstDrug.Items.Count - 1;
-                }
+                    break;
+
+                case Keys.Up:
+                    {
+                        if (lstDrug.Items.Count > 0)
+                        {
+                            lstDrug.SelectedIndex = lstDrug.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -428,9 +425,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -490,9 +489,11 @@ namespace Chummer
         /// Default text string to filter by.
         /// </summary>
         public string DefaultSearchText { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Update the Drug's information based on the Drug selected and current Rating.
         /// </summary>
@@ -507,12 +508,7 @@ namespace Chummer
             }
             if (objXmlDrug == null)
             {
-                lblCostLabel.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblAvail.Text = string.Empty;
-                lblTest.Text = string.Empty;
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -534,17 +530,19 @@ namespace Chummer
 
                 string strSuffix = string.Empty;
                 char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
-                if (chrSuffix == 'R')
+                switch (chrSuffix)
                 {
-                    strSuffix = LanguageManager.GetString("String_AvailRestricted");
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                }
-                else if (chrSuffix == 'F')
-                {
-                    strSuffix = LanguageManager.GetString("String_AvailForbidden");
-                    // Remove the trailing character if it is "F" or "R".
-                    strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                    case 'R':
+                        strSuffix = LanguageManager.GetString("String_AvailRestricted");
+                        // Remove the trailing character if it is "F" or "R".
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                        break;
+
+                    case 'F':
+                        strSuffix = LanguageManager.GetString("String_AvailForbidden");
+                        // Remove the trailing character if it is "F" or "R".
+                        strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
+                        break;
                 }
 
                 string strPrefix = string.Empty;
@@ -649,13 +647,15 @@ namespace Chummer
             // Test required to find the item.
             lblTest.Text = _objCharacter.AvailTest(decItemCost, lblAvail.Text);
             lblTestLabel.Visible = !string.IsNullOrEmpty(lblTest.Text);
+            tlpRight.Visible = true;
         }
 
         private bool _blnSkipListRefresh;
+
         private List<ListItem> RefreshList(bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
-                return null;
+                return new List<ListItem>();
             StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
@@ -674,7 +674,7 @@ namespace Chummer
         private List<ListItem> BuildDrugList(XPathNodeIterator objXmlDrugList, bool blnDoUIUpdate = true, bool blnTerminateAfterFirst = false)
         {
             if (_blnLoading && blnDoUIUpdate)
-                return null;
+                return new List<ListItem>();
 
             List<ListItem> lstDrugs = new List<ListItem>();
             int intOverLimit = 0;
@@ -683,11 +683,8 @@ namespace Chummer
             foreach (XPathNavigator xmlDrug in objXmlDrugList)
             {
                 bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
-                if (objCurrentGrade != null && blnIsForceGrade)
-                {
-                    if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
-                        continue;
-                }
+                if (objCurrentGrade != null && blnIsForceGrade && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objCurrentGrade.Name.Contains(x.ImprovedName) && x.Enabled))
+                    continue;
 
                 string strMaxRating = xmlDrug.SelectSingleNode("rating")?.Value;
                 string strMinRating = xmlDrug.SelectSingleNode("minrating")?.Value;
@@ -744,9 +741,7 @@ namespace Chummer
             string strOldSelected = lstDrug.SelectedValue?.ToString();
             _blnLoading = true;
             lstDrug.BeginUpdate();
-            lstDrug.ValueMember = nameof(ListItem.Value);
-            lstDrug.DisplayMember = nameof(ListItem.Name);
-            lstDrug.DataSource = lstDrug;
+            lstDrug.PopulateWithListItems(lstDrugs);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstDrug.SelectedValue = strOldSelected;
@@ -814,6 +809,7 @@ namespace Chummer
         }
 
         private bool _blnPopulatingGrades;
+
         /// <summary>
         /// Populate the list of Drug Grades.
         /// </summary>
@@ -858,9 +854,7 @@ namespace Chummer
                 bool blnOldLoading = _blnLoading;
                 _blnLoading = true;
                 cboGrade.BeginUpdate();
-                cboGrade.ValueMember = nameof(ListItem.Value);
-                cboGrade.DisplayMember = nameof(ListItem.Name);
-                cboGrade.DataSource = lstGrade;
+                cboGrade.PopulateWithListItems(lstGrade);
                 _blnLoading = blnOldLoading;
                 if (!string.IsNullOrEmpty(strForceGrade))
                     cboGrade.SelectedValue = strForceGrade;
@@ -880,6 +874,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -94,8 +95,8 @@ namespace Chummer
                             {
                                 XPathDocument xmlSourceDoc;
                                 using (StreamReader sr = new StreamReader(entry.Open(), true))
-                                    using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                        xmlSourceDoc = new XPathDocument(objXmlReader);
+                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                                    xmlSourceDoc = new XPathDocument(objXmlReader);
                                 lstCharacterXmlStatblocks.Add(xmlSourceDoc.CreateNavigator());
                             }
                             // If we run into any problems loading the character cache, fail out early.
@@ -251,6 +252,7 @@ namespace Chummer
         }
 
         #region Classes
+
         /// <summary>
         /// Caches a subset of a full character's properties for loading purposes.
         /// </summary>
@@ -270,7 +272,8 @@ namespace Chummer
             internal Image Mugshot { get; set; }
             internal bool Created { get; set; }
         }
-        #endregion
+
+        #endregion Classes
 
         /// <summary>
         /// Generates a name for the treenode based on values contained in the CharacterCache object.
@@ -431,7 +434,8 @@ namespace Chummer
                 picMugshot.SizeMode = PictureBoxSizeMode.Zoom;
             }
         }
-        #endregion
+
+        #endregion Form Methods
 
         private void DoImport()
         {
@@ -445,14 +449,6 @@ namespace Chummer
             string strCharacterId = _lstCharacterCache[intIndex]?.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            string strFilePath = Path.Combine(Application.StartupPath, "settings", "default.xml");
-            if (!File.Exists(strFilePath)
-                && Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CharacterOptions_OpenOptions"), LanguageManager.GetString("MessageTitle_CharacterOptions_OpenOptions"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                using (new CursorWait(this))
-                	using (frmOptions frmOptions = new frmOptions())
-                    	frmOptions.ShowDialog(this);
-            }
             using (new CursorWait(this))
             {
                 cmdImport.Enabled = false;

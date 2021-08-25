@@ -76,17 +76,14 @@ namespace Chummer
         /// <param name="objReturn">Collection containing all keys that depend on <paramref name="objKey"/> in some way. It's a HashSet to prevent infinite loops in case of cycles</param>
         private void CollectDependents(T2 objParentInstance, T objKey, ICollection<T> objReturn)
         {
-            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode))
+            if (NodeDictionary.TryGetValue(objKey, out DependencyGraphNode<T, T2> objLoopNode) && !objReturn.Contains(objLoopNode.MyObject))
             {
-                if (!objReturn.Contains(objLoopNode.MyObject))
+                objReturn.Add(objLoopNode.MyObject);
+                foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
                 {
-                    objReturn.Add(objLoopNode.MyObject);
-                    foreach (DependencyGraphNodeWithCondition<T, T2> objNode in objLoopNode.UpStreamNodes)
+                    if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
                     {
-                        if (objNode.DependencyCondition?.Invoke(objParentInstance) != false)
-                        {
-                            CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
-                        }
+                        CollectDependents(objParentInstance, objNode.Node.MyObject, objReturn);
                     }
                 }
             }
@@ -117,6 +114,7 @@ namespace Chummer
         }
 
         private readonly Dictionary<T, DependencyGraphNode<T, T2>> _dicNodeDictionary = new Dictionary<T, DependencyGraphNode<T, T2>>();
+
         /// <summary>
         /// Dictionary of nodes in the graph. This is where the graph is actually stored, and doubles as a fast way to get any node in the graph.
         /// It's an IReadOnlyDictionary because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.

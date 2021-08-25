@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -31,16 +32,18 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class MartialArtTechnique : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public MartialArtTechnique(Character objCharacter)
         {
             // Create the GUID for the new Martial Art Technique.
@@ -54,13 +57,17 @@ namespace Chummer
         {
             if (!xmlTechniqueDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
-                Log.Warn(new object[] {"Missing id field for xmlnode", xmlTechniqueDataNode});
+                Log.Warn(new object[] { "Missing id field for xmlnode", xmlTechniqueDataNode });
                 Utils.BreakIfDebug();
             }
 
-            if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName))
-                if (!xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
-                    xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+            if (xmlTechniqueDataNode.TryGetStringFieldQuickly("name", ref _strName) && !xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                xmlTechniqueDataNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            xmlTechniqueDataNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
 
@@ -75,7 +82,7 @@ namespace Chummer
 
                 string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
-                if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (string.IsNullOrEmpty(strQualityNotes) && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     string strTranslatedNameOnPage = CurrentDisplayName;
 
@@ -104,7 +111,17 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source, DisplayPage(GlobalOptions.Language),
+                        GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -119,6 +136,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteEndElement();
@@ -137,7 +155,7 @@ namespace Chummer
                 _guiID = Guid.NewGuid();
             }
             objNode.TryGetStringFieldQuickly("name", ref _strName);
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -145,6 +163,10 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -167,13 +189,16 @@ namespace Chummer
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Martial Art Technique in the Improvement system.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
@@ -208,7 +233,7 @@ namespace Chummer
         public string DisplayName(string strLanguage)
         {
             // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -223,6 +248,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -251,7 +285,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -279,17 +313,15 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
 
-        public bool Remove(bool blnConfirmDelete)
+        public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
+                return false;
             // Find the selected Technique object.
             //TODO: Techniques should know what their parent is.
             _objCharacter.MartialArts.FindMartialArtTechnique(InternalId, out MartialArt objMartialArt);
@@ -300,9 +332,11 @@ namespace Chummer
             objMartialArt.Techniques.Remove(this);
             return true;
         }
-        #endregion
+
+        #endregion Methods
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArtTechnique)
         {
             //if (!string.IsNullOrEmpty(ParentID) && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -323,14 +357,15 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
-        #endregion
+
+        #endregion UI Methods
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

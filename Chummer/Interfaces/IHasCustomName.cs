@@ -19,7 +19,7 @@
 
 namespace Chummer
 {
-    interface IHasCustomName
+    internal interface IHasCustomName
     {
         string CurrentDisplayName { get; }
 

@@ -16,10 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -33,12 +34,14 @@ namespace Chummer
         private readonly XPathNavigator _objXmlDocument;
 
         #region Control Events
+
         public frmSelectWeaponCategory(Character objCharacter)
         {
+            _objXmlDocument =
+                XmlManager.LoadXPath("weapons.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objXmlDocument = XmlManager.LoadXPath("weapons.xml", objCharacter?.Options.EnabledCustomDataDirectoryPaths);
         }
 
         private void frmSelectWeaponCategory_Load(object sender, EventArgs e)
@@ -57,37 +60,56 @@ namespace Chummer
                 }
 
                 string strInnerText = objXmlCategory.Value;
-                lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
+                lstCategory.Add(new ListItem(strInnerText,
+                    objXmlCategory.SelectSingleNode("@translate")?.Value ?? strInnerText));
             }
 
             // Add the Cyberware Category.
-            if (/*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
+            if ( /*string.IsNullOrEmpty(_strForceCategory) ||*/ _strForceCategory == "Cyberware")
             {
                 lstCategory.Add(new ListItem("Cyberware", LanguageManager.GetString("String_Cyberware")));
             }
-            cboCategory.BeginUpdate();
-            cboCategory.DataSource = null;
-            cboCategory.DataSource = lstCategory;
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
 
+            switch (lstCategory.Count)
+            {
+                case 0:
+                    ConfirmSelection(string.Empty);
+                    break;
+
+                case 1:
+                    ConfirmSelection(lstCategory[0].Value.ToString());
+                    break;
+            }
+
+            cboCategory.BeginUpdate();
+            cboCategory.PopulateWithListItems(lstCategory);
             // Select the first Skill in the list.
             if (cboCategory.Items.Count > 0)
                 cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
-
-            if (cboCategory.Items.Count == 1)
-                cmdOK_Click(sender, e);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strSelectedCategory = cboCategory.SelectedValue.ToString();
-            DialogResult = DialogResult.OK;
+            ConfirmSelection(cboCategory.SelectedValue.ToString());
         }
-        #endregion
+
+        private void cmdCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
+        #endregion Control Events
+
+        private void ConfirmSelection(string strSelection)
+        {
+            _strSelectedCategory = strSelection;
+            DialogResult = DialogResult.OK;
+            Close();
+        }
 
         #region Properties
+
         /// <summary>
         /// Weapon Category that was selected in the dialogue.
         /// </summary>
@@ -113,11 +135,7 @@ namespace Chummer
                     _strForceCategory = "Cyberweapon";
             }
         }
-        #endregion
 
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-        }
+        #endregion Properties
     }
 }

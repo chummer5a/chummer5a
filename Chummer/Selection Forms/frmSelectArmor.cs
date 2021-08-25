@@ -16,14 +16,15 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
-using System.Data;
+
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
-using System.Text;
+using Chummer.Backend.Equipment;
 
 // ReSharper disable LocalizableElement
 
@@ -36,7 +37,7 @@ namespace Chummer
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private decimal _decMarkup;
         private Armor _objSelectedArmor;
 
@@ -49,6 +50,7 @@ namespace Chummer
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
+
         public frmSelectArmor(Character objCharacter)
         {
             InitializeComponent();
@@ -110,13 +112,11 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = _lstCategory;
+            cboCategory.PopulateWithListItems(_lstCategory);
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
             // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(s_StrSelectCategory))
-                cboCategory.SelectedValue = s_StrSelectCategory;
+            if (!string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedValue = _strSelectCategory;
 
             if (cboCategory.SelectedIndex == -1)
                 cboCategory.SelectedIndex = 0;
@@ -128,12 +128,6 @@ namespace Chummer
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
-        private void lstArmor_DoubleClick(object sender, EventArgs e)
         {
             _blnAddAgain = false;
             AcceptForm();
@@ -162,10 +156,10 @@ namespace Chummer
 
                 _objSelectedArmor = objArmor;
 
-                string strRating = xmlArmor["rating"]?.InnerText;
-                if (!string.IsNullOrEmpty(strRating))
+                int intRating = 0;
+                if (xmlArmor.TryGetInt32FieldQuickly("rating", ref intRating))
                 {
-                    nudRating.Maximum = Convert.ToInt32(strRating, GlobalOptions.InvariantCultureInfo);
+                    nudRating.Maximum = intRating;
                     if (chkHideOverAvailLimit.Checked)
                     {
                         while (nudRating.Maximum > 1 && !SelectionShared.CheckAvailRestriction(xmlArmor, _objCharacter, nudRating.MaximumAsInt))
@@ -268,27 +262,34 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstArmor.SelectedIndex + 1 < lstArmor.Items.Count)
-                {
+                case Keys.Down when lstArmor.SelectedIndex + 1 < lstArmor.Items.Count:
                     lstArmor.SelectedIndex += 1;
-                }
-                else if (lstArmor.Items.Count > 0)
-                {
-                    lstArmor.SelectedIndex = 0;
-                }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstArmor.SelectedIndex - 1 >= 0)
-                {
+                    break;
+
+                case Keys.Down:
+                    {
+                        if (lstArmor.Items.Count > 0)
+                        {
+                            lstArmor.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
+                case Keys.Up when lstArmor.SelectedIndex - 1 >= 0:
                     lstArmor.SelectedIndex -= 1;
-                }
-                else if (lstArmor.Items.Count > 0)
-                {
-                    lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
-                }
+                    break;
+
+                case Keys.Up:
+                    {
+                        if (lstArmor.Items.Count > 0)
+                        {
+                            lstArmor.SelectedIndex = lstArmor.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -310,9 +311,11 @@ namespace Chummer
         {
             AcceptForm();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -338,15 +341,15 @@ namespace Chummer
         /// </summary>
         public decimal Markup => _decMarkup;
 
-
         /// <summary>
         /// Markup percentage.
         /// </summary>
         public int Rating => _intRating;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Refreshes the displayed lists
         /// </summary>
@@ -428,7 +431,7 @@ namespace Chummer
                             {
                                 strAccessories.AppendLine(objMod.CurrentDisplayName);
                             }
-                            foreach (Gear objGear in objArmor.Gear)
+                            foreach (Gear objGear in objArmor.GearChildren)
                             {
                                 strAccessories.AppendLine(objGear.CurrentDisplayName);
                             }
@@ -448,6 +451,7 @@ namespace Chummer
                     dgvArmor.DataSource = set;
                     dgvArmor.DataMember = "armor";
                     break;
+
                 default:
                     List<ListItem> lstArmors = new List<ListItem>();
                     int intOverLimit = 0;
@@ -496,9 +500,7 @@ namespace Chummer
                     _blnLoading = true;
                     string strOldSelected = lstArmor.SelectedValue?.ToString();
                     lstArmor.BeginUpdate();
-                    lstArmor.ValueMember = nameof(ListItem.Value);
-                    lstArmor.DisplayMember = nameof(ListItem.Name);
-                    lstArmor.DataSource = lstArmors;
+                    lstArmor.PopulateWithListItems(lstArmors);
                     _blnLoading = false;
                     if (!string.IsNullOrEmpty(strOldSelected))
                         lstArmor.SelectedValue = strOldSelected;
@@ -508,6 +510,7 @@ namespace Chummer
                     break;
             }
         }
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -519,13 +522,14 @@ namespace Chummer
                 case 0:
                     strSelectedId = lstArmor.SelectedValue?.ToString();
                     break;
+
                 case 1:
                     strSelectedId = dgvArmor.SelectedRows[0].Cells[0].Value?.ToString();
                     break;
             }
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+                _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                     ? cboCategory.SelectedValue?.ToString()
                     : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + "]/category")?.InnerText;
                 _strSelectedArmor = strSelectedId;
@@ -545,13 +549,22 @@ namespace Chummer
             _blnSkipUpdate = true;
             if (_objSelectedArmor != null)
             {
-                chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
+                if (!chkBlackMarketDiscount.Checked)
+                {
+                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                }
+                else if (!blnCanBlackMarketDiscount)
+                {
+                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                    chkBlackMarketDiscount.Checked = false;
+                }
 
                 _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
                 _objSelectedArmor.Rating = nudRating.ValueAsInt;
 
-                lblSource.Text =     _objSelectedArmor.SourceDetail.ToString();
+                lblSource.Text = _objSelectedArmor.SourceDetail.ToString();
                 lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
@@ -603,6 +616,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

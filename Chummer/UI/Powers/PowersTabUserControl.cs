@@ -76,17 +76,8 @@ namespace Chummer.UI.Powers
                 _objCharacter = new Character();
             }
 
-            _objCharacter.Powers.ListChanged += (sender, e) => {
-                if (e.ListChangedType == ListChangedType.ItemChanged)
-                {
-                    string propertyName = e.PropertyDescriptor?.Name;
-                    if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
-                    {
-                        // recalculation of power points on rating/free levels change
-                        CalculatePowerPoints();
-                    }
-                }
-            };
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return;
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
             Stopwatch parts = Stopwatch.StartNew();
@@ -105,9 +96,9 @@ namespace Chummer.UI.Powers
 
             cboDisplayFilter.BeginUpdate();
             cboDisplayFilter.DataSource = null;
-            cboDisplayFilter.DataSource = _dropDownList;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
+            cboDisplayFilter.DataSource = _dropDownList;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
             cboDisplayFilter.EndUpdate();
@@ -125,8 +116,49 @@ namespace Chummer.UI.Powers
             //this.Update();
             ResumeLayout(true);
             //this.PerformLayout();
+
+            _objCharacter.Powers.ListChanged += OnPowersListChanged;
+            _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+        }
+
+        private void UnbindPowersTabUserControl()
+        {
+            if (_objCharacter != null)
+            {
+                _objCharacter.Powers.ListChanged -= OnPowersListChanged;
+                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+            }
+        }
+
+        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
+                CalculatePowerPoints();
+        }
+
+        private void OnPowersListChanged(object sender, ListChangedEventArgs e)
+        {
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemChanged:
+                    {
+                        string propertyName = e.PropertyDescriptor?.Name;
+                        if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                        {
+                            // recalculation of power points on rating/free levels change
+                            CalculatePowerPoints();
+                        }
+                        break;
+                    }
+                case ListChangedType.Reset:
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                    CalculatePowerPoints();
+                    break;
+            }
         }
 
         private static List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
@@ -232,7 +264,7 @@ namespace Chummer.UI.Powers
         {
             _table = new TableView<Power>
             {
-                Dock = DockStyle.Fill,
+                Dock = DockStyle.Top,
                 ToolTip = _tipTooltip
             };
             // create columns
@@ -260,7 +292,7 @@ namespace Chummer.UI.Powers
                 MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
                 ValueUpdater = (p, newRating) =>
                 {
-                    int delta = ((int) newRating) - p.Rating;
+                    int delta = ((int)newRating) - p.Rating;
                     if (delta != 0)
                     {
                         p.Rating += delta;
@@ -363,8 +395,9 @@ namespace Chummer.UI.Powers
                 Size = GetImageSize(Resources.note_edit),
             })
             {
-                ClickHandler = p => {
-                    using (frmNotes frmPowerNotes = new frmNotes(p.Notes))
+                ClickHandler = p =>
+                {
+                    using (frmNotes frmPowerNotes = new frmNotes(p.Notes, p.NotesColor))
                     {
                         frmPowerNotes.ShowDialog(this);
                         if (frmPowerNotes.DialogResult == DialogResult.OK)
@@ -376,7 +409,8 @@ namespace Chummer.UI.Powers
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (p => {
+                ToolTipExtractor = (p =>
+                {
                     string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
                     if (!string.IsNullOrEmpty(p.Notes))
                         strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
@@ -428,8 +462,7 @@ namespace Chummer.UI.Powers
             _table.Columns.Add(deleteColumn);
             _table.UpdateLightDarkMode();
             _table.TranslateWinForm();
-            tlpMain.SetColumnSpan(_table, 4);
-            tlpMain.Controls.Add(_table, 0, 2);
+            pnlPowers.Controls.Add(_table);
         }
 
         private static Size GetImageSize(Image image)

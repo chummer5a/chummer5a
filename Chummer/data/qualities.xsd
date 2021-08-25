@@ -123,8 +123,8 @@
                     <xs:element name="print" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="refundkarmaonremove" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="stagedpurchase" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
-                    <xs:element name="firstlevelbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
+                    <xs:element name="firstlevelbonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />

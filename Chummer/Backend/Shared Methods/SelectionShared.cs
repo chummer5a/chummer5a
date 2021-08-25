@@ -16,9 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Attributes;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +24,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -69,7 +70,8 @@ namespace Chummer
         {
             return objXmlGear != null && objXmlGear.CreateNavigator().CheckNuyenRestriction(decMaxNuyen, decCostMultiplier, intRating);
         }
-        #endregion
+
+        #endregion XmlNode overloads for selection methods.
 
         //TODO: Might be a better location for this; Class names are screwy.
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
@@ -131,25 +133,22 @@ namespace Chummer
                     }
                     return false;
                 }
-                if (objCharacter.EffectiveBuildMethodUsesPriorityTables)
+                if (objCharacter.EffectiveBuildMethodUsesPriorityTables && xmlNode.SelectSingleNode("onlyprioritygiven") != null)
                 {
-                    if (xmlNode.SelectSingleNode("onlyprioritygiven") != null)
+                    if (blnShowMessage)
                     {
-                        if (blnShowMessage)
-                        {
-                            Program.MainForm.ShowMessageBox(
-                                string.Format(
-                                    GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction"),
-                                    strLocalName),
-                                string.Format(
-                                    GlobalOptions.CultureInfo,
-                                    LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction"),
-                                    strLocalName),
-                                MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                        return false;
+                        Program.MainForm.ShowMessageBox(
+                            string.Format(
+                                GlobalOptions.CultureInfo,
+                                LanguageManager.GetString("Message_SelectGeneric_PriorityRestriction"),
+                                strLocalName),
+                            string.Format(
+                                GlobalOptions.CultureInfo,
+                                LanguageManager.GetString("MessageTitle_SelectGeneric_Restriction"),
+                                strLocalName),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
+                    return false;
                 }
             }
             if (!blnIgnoreLimit)
@@ -458,7 +457,7 @@ namespace Chummer
                     {
                         // Check to see if an Attribute meets a requirement.
                         CharacterAttrib objAttribute = objCharacter.GetAttribute(strNodeName);
-                        int intTargetValue = Convert.ToInt32(xmlNode.SelectSingleNode("total")?.Value, GlobalOptions.InvariantCultureInfo);
+                        int intTargetValue = xmlNode.SelectSingleNode("total")?.ValueAsInt ?? 0;
                         if (blnShowMessage)
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{1}{2}{3}", Environment.NewLine, objAttribute.DisplayAbbrev, strSpace, intTargetValue);
                         // Special cases for when we want to check if a special attribute is enabled
@@ -468,10 +467,13 @@ namespace Chummer
                             {
                                 case "MAG":
                                     return objCharacter.MAGEnabled;
+
                                 case "MAGAdept":
                                     return objCharacter.MAGEnabled && objCharacter.IsMysticAdept;
+
                                 case "RES":
                                     return objCharacter.RESEnabled;
+
                                 case "DEP":
                                     return objCharacter.DEPEnabled;
                             }
@@ -486,23 +488,15 @@ namespace Chummer
                 case "attributetotal":
                     {
                         string strNodeAttributes = xmlNode.SelectSingleNode("attributes")?.Value ?? string.Empty;
-                        int intNodeVal = Convert.ToInt32(xmlNode.SelectSingleNode("val")?.Value, GlobalOptions.InvariantCultureInfo);
+                        int intNodeVal = xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0;
                         // Check if the character's Attributes add up to a particular total.
-                        string strAttributes = strNodeAttributes;
                         string strValue = strNodeAttributes;
-                        foreach (string strAttribute in AttributeSection.AttributeStrings)
-                        {
-                            CharacterAttrib objLoopAttrib = objCharacter.GetAttribute(strAttribute);
-                            if (strNodeAttributes.Contains(objLoopAttrib.Abbrev))
-                            {
-                                strAttributes = strAttributes.Replace(strAttribute, objLoopAttrib.DisplayAbbrev);
-                                strValue = strValue.Replace(strAttribute, xmlNode.SelectSingleNode("natural") != null
-                                    ? objLoopAttrib.Value.ToString(GlobalOptions.InvariantCultureInfo)
-                                    : objLoopAttrib.TotalValue.ToString(GlobalOptions.InvariantCultureInfo));
-                            }
-                        }
+                        strValue = objCharacter.AttributeSection.ProcessAttributesInXPath(strValue);
                         if (blnShowMessage)
-                            strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine, strSpace, strAttributes, intNodeVal);
+                            strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}{3}", Environment.NewLine,
+                                strSpace,
+                                objCharacter.AttributeSection.ProcessAttributesInXPathForTooltip(strNodeAttributes,
+                                    null, string.Empty, false), intNodeVal);
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strValue, out bool blnIsSuccess);
                         return (blnIsSuccess ? ((double)objProcess).StandardRound() : 0) >= intNodeVal;
                     }
@@ -511,7 +505,7 @@ namespace Chummer
                         // Check Career Karma requirement.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_SelectQuality_RequireKarma"), strNodeInnerText);
-                        return objCharacter.CareerKarma >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                        return objCharacter.CareerKarma >= xmlNode.ValueAsInt;
                     }
                 case "chargenonly":
                     {
@@ -549,7 +543,7 @@ namespace Chummer
                     }
                 case "bioware":
                     {
-                        int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1", GlobalOptions.InvariantCultureInfo);
+                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
@@ -564,13 +558,19 @@ namespace Chummer
                     }
                 case "cyberware":
                     {
-                        int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1", GlobalOptions.InvariantCultureInfo);
+                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
                                 "/chummer/cyberwares/cyberware[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}{3}",
                                 Environment.NewLine, strSpace, LanguageManager.GetString("Label_Cyberware"), !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText);
+                        }
+                        if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                        {
+                            if (objParent is Cyberware objCyberware)
+                                return objCyberware.Children.Any(mod => mod.Name == strNodeInnerText);
+                            return false;
                         }
                         string strWareNodeSelectAttribute = xmlNode.SelectSingleNode("@select")?.Value ?? string.Empty;
                         return objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware => objCyberware.Name == strNodeInnerText &&
@@ -579,7 +579,7 @@ namespace Chummer
                     }
                 case "biowarecontains":
                     {
-                        int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1", GlobalOptions.InvariantCultureInfo);
+                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("bioware.xml").SelectSingleNode(
@@ -594,7 +594,7 @@ namespace Chummer
                     }
                 case "cyberwarecontains":
                     {
-                        int count = Convert.ToInt32(xmlNode.SelectSingleNode("@count")?.Value ?? "1", GlobalOptions.InvariantCultureInfo);
+                        int count = xmlNode.SelectSingleNode("@count")?.ValueAsInt ?? 1;
                         if (blnShowMessage)
                         {
                             string strTranslate = objCharacter.LoadDataXPath("cyberware.xml").SelectSingleNode(
@@ -612,8 +612,14 @@ namespace Chummer
                         // Damage Resistance must be a particular value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_DamageResistance");
-                        return objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance) >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                        return objCharacter.BOD.TotalValue + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance) >= xmlNode.ValueAsInt;
                     }
+                case "depenabled":
+                    // Character must be an AI.
+                    if (blnShowMessage)
+                        strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_AttributeDEPLong") + strSpace + '≥' + strSpace + 1.ToString(GlobalOptions.CultureInfo);
+                    return objCharacter.DEPEnabled;
+
                 case "ess":
                     {
                         string strEssNodeGradeAttributeText = xmlNode.SelectSingleNode("@grade")?.Value ?? string.Empty;
@@ -687,30 +693,30 @@ namespace Chummer
                         return false;
                     }
                 case "gameplayoption":
-                {
-                    // A particular gameplay option is required.
-                    if (blnShowMessage)
-                        strName = string.Format("{0}\t{2}{1}={1}{3}", Environment.NewLine, strSpace, LanguageManager.GetString("String_GameplayOption"), strNodeInnerText);
-                    return objCharacter.CharacterOptionsKey == strNodeInnerText;
-                }
+                    {
+                        // A particular gameplay option is required.
+                        if (blnShowMessage)
+                            strName = string.Format("{0}\t{2}{1}={1}{3}", Environment.NewLine, strSpace, LanguageManager.GetString("String_GameplayOption"), strNodeInnerText);
+                        return objCharacter.CharacterOptionsKey == strNodeInnerText;
+                    }
                 case "gear":
                     {
                         Gear objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText);
                         //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
 
-                        if (xmlNode.SelectSingleNode("@minrating")?.Value != null)
+                        if (xmlNode.SelectSingleNode("@minrating") != null)
                         {
-                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@minrating")?.Value, GlobalOptions.InvariantCultureInfo);
+                            int rating = xmlNode.SelectSingleNode("@minrating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating >= rating);
                         }
-                        else if (xmlNode.SelectSingleNode("@rating")?.Value != null)
+                        else if (xmlNode.SelectSingleNode("@rating") != null)
                         {
-                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@rating")?.Value, GlobalOptions.InvariantCultureInfo);
+                            int rating = xmlNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating == rating);
                         }
-                        else if (xmlNode.SelectSingleNode("@maxrating")?.Value != null)
+                        else if (xmlNode.SelectSingleNode("@maxrating") != null)
                         {
-                            int rating = Convert.ToInt32(xmlNode.SelectSingleNode("@maxrating")?.Value, GlobalOptions.InvariantCultureInfo);
+                            int rating = xmlNode.SelectSingleNode("@maxrating")?.ValueAsInt ?? 0;
                             objGear = objCharacter.Gear.FirstOrDefault(x => x.Name == strNodeInnerText && x.Rating <= rating);
                         }
                         if (objGear != null)
@@ -748,21 +754,21 @@ namespace Chummer
                         return blnResult;
                     }
                 case "grouponeof":
-                {
-                    // Check that one of the clustered options are present
-                    bool blnResult = false;
-                    StringBuilder sbdResultName = new StringBuilder(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_OneOf"));
-                    foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
                     {
-                        blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage) || blnResult;
-                        if (blnResult && !blnShowMessage)
-                            break;
-                        sbdResultName.Append(strLoopResult.Replace(Environment.NewLine + '\t', Environment.NewLine + '\t' + '\t'));
+                        // Check that one of the clustered options are present
+                        bool blnResult = false;
+                        StringBuilder sbdResultName = new StringBuilder(Environment.NewLine + '\t' + LanguageManager.GetString("Message_SelectQuality_OneOf"));
+                        foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
+                        {
+                            blnResult = xmlChildNode.TestNodeRequirements(objCharacter, objParent, out string strLoopResult, strIgnoreQuality, blnShowMessage) || blnResult;
+                            if (blnResult && !blnShowMessage)
+                                break;
+                            sbdResultName.Append(strLoopResult.Replace(Environment.NewLine + '\t', Environment.NewLine + '\t' + '\t'));
+                        }
+                        if (blnShowMessage)
+                            strName = sbdResultName.ToString();
+                        return blnResult;
                     }
-                    if (blnShowMessage)
-                        strName = sbdResultName.ToString();
-                    return blnResult;
-                }
                 case "initiategrade":
                     {
                         // Character's initiate grade must be higher than or equal to the required value.
@@ -831,8 +837,8 @@ namespace Chummer
                     }
                 case "metamagicart":
                 case "art":
-                {
-                    // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement
+                    {
+                        // Street Grimoire adds High Arts, which group metamagics and such together. If we're ignoring this requirement
                         if (objCharacter.Options.IgnoreArt)
                         {
                             // If we're looking for an art, return true.
@@ -915,7 +921,7 @@ namespace Chummer
                         strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
                             Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Art"));
                         return false;
-                }
+                    }
                 case "magenabled":
                     {
                         // Character must be Awakened.
@@ -947,7 +953,7 @@ namespace Chummer
                             string strTranslate = objCharacter.LoadDataXPath("metatypes.xml").SelectSingleNode(strXPathFilter)?.Value ??
                                                     objCharacter.LoadDataXPath("critters.xml").SelectSingleNode(strXPathFilter)?.Value;
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
-                                Environment.NewLine, strSpace,!string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_MetatypeCategory"));
+                                Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_MetatypeCategory"));
                         }
                         return strNodeInnerText == objCharacter.MetatypeCategory;
                     }
@@ -960,7 +966,7 @@ namespace Chummer
                             string strTranslate = objCharacter.LoadDataXPath("metatypes.xml").SelectSingleNode(strXPathFilter)?.Value ??
                                                     objCharacter.LoadDataXPath("critters.xml").SelectSingleNode(strXPathFilter)?.Value;
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
-                                Environment.NewLine, strSpace,!string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Metavariant"));
+                                Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Metavariant"));
                         }
                         return strNodeInnerText == objCharacter.Metavariant;
                     }
@@ -969,7 +975,7 @@ namespace Chummer
                         // Character's nuyen must be higher than or equal to the required value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_Nuyen") + strSpace + '≥' + strSpace + strNodeInnerText;
-                        return objCharacter.Nuyen >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                        return objCharacter.Nuyen >= xmlNode.ValueAsInt;
                     }
                 case "onlyprioritygiven":
                     {
@@ -1030,11 +1036,12 @@ namespace Chummer
                     if (blnShowMessage)
                         strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_AttributeRESLong") + strSpace + '≥' + strSpace + 1.ToString(GlobalOptions.CultureInfo);
                     return objCharacter.RESEnabled;
+
                 case "skill":
                     {
                         string strSpec = xmlNode.SelectSingleNode("spec")?.Value;
                         string strValue = xmlNode.SelectSingleNode("val")?.Value;
-                        int intValue = Convert.ToInt32(strValue, GlobalOptions.InvariantCultureInfo);
+                        int intValue = xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0;
                         // Check if the character has the required Skill.
                         if (xmlNode.SelectSingleNode("type") != null)
                         {
@@ -1135,27 +1142,27 @@ namespace Chummer
                                 objOutputString.Length -= 2;
                             strName = objOutputString + strSpace + '(' + LanguageManager.GetString("String_ExpenseSkillGroup") + ')';
                         }
-                        return intTotal >= Convert.ToInt32(xmlNode.SelectSingleNode("val")?.Value, GlobalOptions.InvariantCultureInfo);
+                        return intTotal >= (xmlNode.SelectSingleNode("val")?.ValueAsInt ?? 0);
                     }
                 case "specialmodificationlimit":
-                {
-                    // Add in the cost of all child components.
-                    int intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
-                    intMods += objCharacter.Vehicles.AsParallel().Sum(objVehicle =>
                     {
-                        IEnumerable<Weapon> lstWeapons = objVehicle.Weapons
-                            .Concat(objVehicle.WeaponMounts.SelectMany(objMount => objMount.Weapons))
-                            .GetAllDescendants(x => x.UnderbarrelWeapons);
-                        return lstWeapons.AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
-                    });
-                    if (blnShowMessage)
-                    {
-                        strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}≥{1}{3}",
-                            Environment.NewLine, strSpace, LanguageManager.GetString("String_SpecialModificationLimit"), strNodeInnerText);
-                    }
+                        // Add in the cost of all child components.
+                        int intMods = objCharacter.Weapons.GetAllDescendants(x => x.UnderbarrelWeapons).AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
+                        intMods += objCharacter.Vehicles.AsParallel().Sum(objVehicle =>
+                        {
+                            IEnumerable<Weapon> lstWeapons = objVehicle.Weapons
+                                .Concat(objVehicle.WeaponMounts.SelectMany(objMount => objMount.Weapons))
+                                .GetAllDescendants(x => x.UnderbarrelWeapons);
+                            return lstWeapons.AsParallel().Sum(x => x.WeaponAccessories.Count(y => y.SpecialModification));
+                        });
+                        if (blnShowMessage)
+                        {
+                            strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}≥{1}{3}",
+                                Environment.NewLine, strSpace, LanguageManager.GetString("String_SpecialModificationLimit"), strNodeInnerText);
+                        }
 
-                    return (intMods + Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo)) <= objCharacter.SpecialModificationLimit;
-                }
+                        return (intMods + xmlNode.ValueAsInt) <= objCharacter.SpecialModificationLimit;
+                    }
                 case "spell":
                     {
                         Spell objSpell = objCharacter.Spells.FirstOrDefault(x => x.Name == strNodeInnerText);
@@ -1183,7 +1190,7 @@ namespace Chummer
                             strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
                                 Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_SpellCategory"));
                         }
-                        return objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName) >= Convert.ToInt32(xmlNode.SelectSingleNode("count")?.Value, GlobalOptions.InvariantCultureInfo);
+                        return objCharacter.Spells.Count(objSpell => objSpell.Category == strNodeName) >= (xmlNode.SelectSingleNode("count")?.ValueAsInt ?? 0);
                     }
                 case "spelldescriptor":
                     {
@@ -1191,7 +1198,7 @@ namespace Chummer
                         // Check for a specified amount of a particular Spell Descriptor.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("Label_Descriptors") + strSpace + '≥' + strSpace + strCount;
-                        return objCharacter.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= Convert.ToInt32(strCount, GlobalOptions.InvariantCultureInfo);
+                        return objCharacter.Spells.Count(objSpell => objSpell.Descriptors.Contains(strNodeName)) >= (xmlNode.SelectSingleNode("count")?.ValueAsInt ?? 0);
                     }
                 case "streetcredvsnotoriety":
                     {
@@ -1205,7 +1212,7 @@ namespace Chummer
                         // Character's initiate grade must be higher than or equal to the required value.
                         if (blnShowMessage)
                             strName = Environment.NewLine + '\t' + LanguageManager.GetString("String_SubmersionGrade") + strSpace + '≥' + strSpace + strNodeInnerText;
-                        return objCharacter.SubmersionGrade >= Convert.ToInt32(strNodeInnerText, GlobalOptions.InvariantCultureInfo);
+                        return objCharacter.SubmersionGrade >= xmlNode.ValueAsInt;
                     }
                 case "tradition":
                     {
@@ -1220,53 +1227,57 @@ namespace Chummer
                         return objCharacter.MagicTradition.Name == strNodeInnerText;
                     }
                 case "traditionspiritform":
-                {
-                    // Character needs a specific spirit form provided by their Tradition.
-                    if (blnShowMessage)
                     {
-                        string strTranslate = objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNode(
-                            "/chummer/powers/power[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
-                            Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Tradition"));
+                        // Character needs a specific spirit form provided by their Tradition.
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNode(
+                                "/chummer/powers/power[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                            strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
+                                Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Tradition"));
+                        }
+                        return objCharacter.MagicTradition.SpiritForm == strNodeInnerText;
                     }
-                    return objCharacter.MagicTradition.SpiritForm == strNodeInnerText;
-                }
                 case "weapon":
-                {
-                    // Character needs a specific Weapon.
-                    if (!blnShowMessage) return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
-                    string strTranslate = objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode(
-                        "/chummer/weapons/weapon[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                    strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
-                        Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Weapon"));
-                    return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
-                }
-                case "accessory" when objParent is Weapon objWeapon:
-                {
-                    if (!blnShowMessage)
-                        return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
-                    string strTranslate = objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/accessories/accessory[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                    strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
-                        Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_WeaponAccessory"));
-                    return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
-                }
-                case "armormod":
-                {
-                    if (blnShowMessage)
                     {
-                        string strTranslate = objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer/armormods/armormod[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                        // Character needs a specific Weapon.
+                        if (!blnShowMessage) return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
+                        string strTranslate = objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode(
+                            "/chummer/weapons/weapon[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
                         strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
-                            Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_ArmorMod"));
+                            Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_Weapon"));
+                        return objCharacter.Weapons.Any(w => w.Name == strNodeInnerText);
                     }
-
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                case "accessory" when objParent is Weapon objWeapon:
                     {
-                        if (objParent is Armor objArmor)
-                            return objArmor.ArmorMods.Any(mod => mod.Name == strNodeInnerText);
-                        return false;
+                        if (!blnShowMessage)
+                            return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
+                        string strTranslate = objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/accessories/accessory[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                        strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
+                            Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_WeaponAccessory"));
+                        return objWeapon.WeaponAccessories.Any(objAccessory => objAccessory.Name == strNodeInnerText);
                     }
-                    return objCharacter.Armor.Any(armor => armor.ArmorMods.Any(mod => mod.Name == strNodeInnerText));
-                }
+                case "weapondetails" when objParent is Weapon objWeapon:
+                    {
+                        return objWeapon.GetNode().CreateNavigator().ProcessFilterOperationNode(xmlNode, false);
+                    }
+                case "armormod":
+                    {
+                        if (blnShowMessage)
+                        {
+                            string strTranslate = objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer/armormods/armormod[name = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+                            strName = string.Format(GlobalOptions.CultureInfo, "{0}\t{2}{1}({3})",
+                                Environment.NewLine, strSpace, !string.IsNullOrEmpty(strTranslate) ? strTranslate : strNodeInnerText, LanguageManager.GetString("String_ArmorMod"));
+                        }
+
+                        if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                        {
+                            if (objParent is Armor objArmor)
+                                return objArmor.ArmorMods.Any(mod => mod.Name == strNodeInnerText);
+                            return false;
+                        }
+                        return objCharacter.Armor.Any(armor => armor.ArmorMods.Any(mod => mod.Name == strNodeInnerText));
+                    }
                 default:
                     Utils.BreakIfDebug();
                     break;
@@ -1341,6 +1352,7 @@ namespace Chummer
                 intAvail += ((double)objProcess).StandardRound();
             return intAvail <= objCharacter.Options.MaximumAvailability;
         }
+
         /// <summary>
         ///     Evaluates whether a given node can be purchased.
         /// </summary>

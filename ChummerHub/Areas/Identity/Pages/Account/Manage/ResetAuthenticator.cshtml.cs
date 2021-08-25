@@ -10,9 +10,9 @@ namespace ChummerHub.Areas.Identity.Pages.Account.Manage
     public class ResetAuthenticatorModel : PageModel
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel'
     {
-        readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        ILogger<ResetAuthenticatorModel> _logger;
+        private readonly ILogger<ResetAuthenticatorModel> _logger;
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ResetAuthenticatorModel.ResetAuthenticatorModel(UserManager<ApplicationUser>, SignInManager<ApplicationUser>, ILogger<ResetAuthenticatorModel>)'
         public ResetAuthenticatorModel(

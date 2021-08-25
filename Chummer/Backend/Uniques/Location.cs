@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -36,9 +37,12 @@ namespace Chummer
         private Guid _guiID;
         private string _strName;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
+
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Location(Character objCharacter, ObservableCollection<Location> objParent, string strName = "")
         {
             // Create the GUID for the new art.
@@ -61,6 +65,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
@@ -80,6 +85,10 @@ namespace Chummer
             {
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
             }
 
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -106,9 +115,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
@@ -131,7 +142,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalOptions.Language;
             return strLanguage != GlobalOptions.Language
-                ? LanguageManager.TranslateExtra(GlobalOptions.Language != GlobalOptions.DefaultLanguage
+                ? LanguageManager.TranslateExtra(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                     ? LanguageManager.ReverseTranslateExtra(Name, GlobalOptions.Language, _objCharacter)
                     : Name, strLanguage, _objCharacter)
                 : Name;
@@ -157,6 +168,15 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
+        /// <summary>
         /// Used by our sorting algorithm to remember which order the user moves things to
         /// </summary>
         public int SortOrder
@@ -168,9 +188,11 @@ namespace Chummer
         public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
         public ObservableCollection<Location> Parent { get; }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
             string strText = DisplayName(GlobalOptions.Language);
@@ -189,10 +211,10 @@ namespace Chummer
 
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
-        #endregion
 
+        #endregion UI Methods
 
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -202,16 +224,19 @@ namespace Chummer
                     foreach (IHasLocation objNewItem in e.NewItems)
                         objNewItem.Location = this;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (IHasLocation objOldItem in e.OldItems)
                         objOldItem.Location = null;
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (IHasLocation objOldItem in e.OldItems)
                         objOldItem.Location = null;
                     foreach (IHasLocation objNewItem in e.NewItems)
                         objNewItem.Location = this;
                     break;
+
                 case NotifyCollectionChangedAction.Reset:
                     foreach (IHasLocation objItem in Children)
                     {

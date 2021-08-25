@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -105,26 +106,31 @@ namespace Chummer
             lock (_objLock)
                 base.Move(oldIndex, newIndex);
         }
+
         protected new IDisposable BlockReentrancy()
         {
             lock (_objLock)
                 return base.BlockReentrancy();
         }
+
         protected new void CheckReentrancy()
         {
             lock (_objLock)
                 base.CheckReentrancy();
         }
+
         protected override void ClearItems()
         {
             lock (_objLock)
                 base.ClearItems();
         }
+
         protected override void RemoveItem(int index)
         {
             lock (_objLock)
                 base.RemoveItem(index);
         }
+
         protected override void SetItem(int index, T item)
         {
             lock (_objLock)

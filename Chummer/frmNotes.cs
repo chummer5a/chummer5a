@@ -27,17 +27,25 @@ namespace Chummer
     // only support plaintext and not any kind of formatting, frmNotes and Notes items in general have to use
     // plaintext instead of RTF or HTML formatted text.
     public partial class frmNotes : Form
-	{
+    {
         // Set to DPI-based 640 in constructor, needs to be there because of DPI dependency
         private static int _intWidth = int.MinValue;
+
         // Set to DPI-based 360 in constructor, needs to be there because of DPI dependency
         private static int _intHeight = int.MinValue;
-	    private readonly bool _blnLoading;
+
+        private readonly bool _blnLoading;
         private string _strNotes;
+        private Color _colNotes;
 
         #region Control Events
-        public frmNotes(string strOldNotes)
-		{
+
+        public frmNotes(string strOldNotes) : this(strOldNotes, ColorManager.HasNotesColor)
+        {
+        }
+
+        public frmNotes(string strOldNotes, Color colNotes)
+        {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -53,28 +61,34 @@ namespace Chummer
             }
             _blnLoading = true;
             Width = _intWidth;
-			Height = _intHeight;
+            Height = _intHeight;
             _blnLoading = false;
             txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
-        }
 
-		private void frmNotes_FormClosing(object sender, FormClosingEventArgs e)
-		{
-            if (_strNotes == txtNotes.Text)
-            {
-                DialogResult = DialogResult.Cancel;
-            }
-            else
-            {
-                _strNotes = txtNotes.Text;
-                DialogResult = DialogResult.OK;
-            }
-		}
+            btnColorSelect.Enabled = txtNotes.Text.Length > 0;
+
+            _colNotes = colNotes;
+            if (_colNotes.IsEmpty)
+                _colNotes = ColorManager.HasNotesColor;
+
+            UpdateColorRepresentation();
+        }
 
         private void txtNotes_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape)
-                Close();
+            switch (e.KeyCode)
+            {
+                case Keys.Escape:
+                    Close();
+                    break;
+
+                case Keys.Enter:
+                    {
+                        if (e.Control)
+                            btnOK_Click(sender, e);
+                        break;
+                    }
+            }
         }
 
         private void frmNotes_Resize(object sender, EventArgs e)
@@ -92,7 +106,35 @@ namespace Chummer
             txtNotes.SelectionLength = 0;
             txtNotes.SelectionStart = txtNotes.TextLength;
         }
-        #endregion
+
+        private void btnOK_Click(object sender, EventArgs e)
+        {
+            _strNotes = txtNotes.Text;
+            DialogResult = DialogResult.OK;
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private void btnColorSelect_Click(object sender, EventArgs e)
+        {
+            _colNotes = colorDialog1.Color; //Selected color is always how it is shown in light mode, use the stored one for it.
+            var resNewColor = colorDialog1.ShowDialog();
+            if (resNewColor == DialogResult.OK)
+            {
+                _colNotes = ColorManager.GenerateModeIndependentColor(colorDialog1.Color);
+                UpdateColorRepresentation();
+            }
+        }
+
+        private void txtNotes_TextChanged(object sender, EventArgs e)
+        {
+            btnColorSelect.Enabled = txtNotes.TextLength > 0;
+        }
+
+        #endregion Control Events
 
         #region Properties
 
@@ -101,6 +143,13 @@ namespace Chummer
         /// </summary>
         public string Notes => _strNotes;
 
-        #endregion
+        public Color NotesColor => _colNotes;
+
+        #endregion Properties
+
+        private void UpdateColorRepresentation()
+        {
+            txtNotes.ForeColor = ColorManager.GenerateCurrentModeColor(_colNotes);
+        }
     }
 }

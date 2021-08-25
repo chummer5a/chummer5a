@@ -50,7 +50,7 @@ namespace ChummerHub.Client.UI
 
         private void cmdPrepareModel_Click(object sender, EventArgs e)
         {
-            MySINnersUsercontrol.MyCE.PrepareModel().RunSynchronously();
+            MySINnersUsercontrol.MyCE.PrepareModel();
         }
 
         private async void cmdPostSINnerMetaData_Click(object sender, EventArgs e)

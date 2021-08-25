@@ -58,13 +58,13 @@
     <improvement>
       <name>Replace Attribute</name>
       <id>replaceattribute</id>
-      <internal>replaceattribute</internal>
+      <internal>replaceattributes</internal>
       <fields>
         <field>SelectAttribute</field>
         <field>min</field>
         <field>max</field>
       </fields>
-      <xml><![CDATA[<name>{select}</name><min>{min}</min><max>{max}</max>]]></xml>
+      <xml><![CDATA[<replaceattribute><name>{select}</name><min>{min}</min><max>{max}</max></replaceattribute>]]></xml>
       <page>Overrides the Metatype limitations for an attribute. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum.</page>
     </improvement>
     <improvement>
@@ -837,6 +837,26 @@
       </fields>
       <xml forced="True"><![CDATA[{select}]]></xml>
       <page>Adds a free echo to the character. Any echo can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
+    <improvement>
+      <name>Add Spell</name>
+      <id>addspell</id>
+      <internal>addspell</internal>
+      <fields>
+        <field>SelectSpell</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free spell to the character. Any spell can be added, even ones for which the character would not be normally eligible.</page>
+    </improvement>
+    <improvement>
+      <name>Add Complex Form</name>
+      <id>addcomplexform</id>
+      <internal>addcomplexform</internal>
+      <fields>
+        <field>SelectComplexForm</field>
+      </fields>
+      <xml forced="True"><![CDATA[{select}]]></xml>
+      <page>Adds a free Complex Form to the character. Any Complex Form can be added, even ones for which the character would not be normally eligible.</page>
     </improvement>
   </improvements>
 </chummer>

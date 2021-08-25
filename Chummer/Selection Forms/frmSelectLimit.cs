@@ -16,9 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -28,6 +29,7 @@ namespace Chummer
         private string _strSelectedDisplayLimit = string.Empty;
 
         #region Control Events
+
         public frmSelectLimit(params string[] lstLimits)
         {
             InitializeComponent();
@@ -42,9 +44,7 @@ namespace Chummer
             }
 
             cboLimit.BeginUpdate();
-            cboLimit.ValueMember = nameof(ListItem.Value);
-            cboLimit.DisplayMember = nameof(ListItem.Name);
-            cboLimit.DataSource = lstLimitItems;
+            cboLimit.PopulateWithListItems(lstLimitItems);
             if (lstLimitItems.Count >= 1)
                 cboLimit.SelectedIndex = 0;
             else
@@ -75,9 +75,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Limit that was selected in the dialogue.
         /// </summary>
@@ -95,6 +97,7 @@ namespace Chummer
         {
             set => lblDescription.Text = value;
         }
-        #endregion
+
+        #endregion Properties
     }
 }

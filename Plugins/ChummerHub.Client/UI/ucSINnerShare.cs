@@ -1,7 +1,6 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -9,7 +8,6 @@ using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Sinners;
 using ChummerHub.Client.Properties;
-using Microsoft.Rest;
 using NLog;
 
 
@@ -17,7 +15,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerShare : UserControl
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public frmSINnerShare MyFrmSINnerShare;
 
         public CharacterCache MyCharacterCache { get; set; }
@@ -51,16 +49,16 @@ namespace ChummerHub.Client.UI
             public int ProgressSteps { get; internal set; }
         }
 
-        private async Task<MyUserState> ShareChummer_DoWork()
+        private Task<MyUserState> ShareChummer_DoWork()
         {
             if (MySINnerSearchGroup != null)
             {
-                return await ShareChummerGroup();
+                return ShareChummerGroup();
             }
 
             if (MyCharacterCache != null)
             {
-                return await ShareSingleChummer();
+                return ShareSingleChummer();
             }
 
             throw new ArgumentException("Either MySINnerSearchGroup or MyCharacterCache must be set!");
@@ -98,20 +96,17 @@ namespace ChummerHub.Client.UI
                         {
                             if (checkresult == null)
                                 throw new ArgumentException("Could not parse result from SINners Webservice!");
-                            if (checkresult != null)
+                            if (checkresult.CallSuccess != true)
                             {
-                                if (checkresult.CallSuccess != true)
-                                {
-                                    if (checkresult.MyException != null)
-                                        throw new ArgumentException(
-                                            "Error from SINners Webservice: " + checkresult.ErrorText,
-                                            checkresult.MyException.ToString());
-                                    throw new ArgumentException("Error from SINners Webservice: " +
-                                                                checkresult.ErrorText);
-                                }
-
-                                hash = checkresult.MyGroup.MyHash;
+                                if (checkresult.MyException != null)
+                                    throw new ArgumentException(
+                                        "Error from SINners Webservice: " + checkresult.ErrorText,
+                                        checkresult.MyException.ToString());
+                                throw new ArgumentException("Error from SINners Webservice: " +
+                                                            checkresult.ErrorText);
                             }
+
+                            hash = checkresult.MyGroup.MyHash;
                         }
                     }
 
@@ -183,7 +178,7 @@ namespace ChummerHub.Client.UI
                                     throw new ArgumentNullException("Could not load Character file " +
                                                                     MyCharacterCache.FilePath +
                                                                     ".");
-                                ce = new CharacterExtended(c, null, null, MyCharacterCache);
+                                ce = new CharacterExtended(c, null, MyCharacterCache);
                                 if (ce?.MySINnerFile?.Id != null)
                                     sinnerid = ce.MySINnerFile.Id.ToString();
                                 hash = ce?.MySINnerFile?.MyHash;
@@ -269,12 +264,12 @@ namespace ChummerHub.Client.UI
                                         {
                                             if (result == null)
                                                 throw new ArgumentException("Could not parse result from SINners Webservice!");
-                                            if (result?.CallSuccess != true)
+                                            if (result.CallSuccess != true)
                                             {
-                                                if (result?.MyException != null)
+                                                if (result.MyException != null)
                                                     throw new ArgumentException(
                                                         "Error from SINners Webservice: " + result.ErrorText,
-                                                        result?.MyException.ToString());
+                                                        result.MyException.ToString());
                                                 throw new ArgumentException(
                                                     "Error from SINners Webservice: " + result.ErrorText);
                                             }

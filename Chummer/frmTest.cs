@@ -16,15 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Linq;
- using System.Reflection;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
- using Chummer.Backend.Skills;
+using Chummer.Backend.Equipment;
+using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -52,23 +53,29 @@ namespace Chummer
                 case "armor.xml":
                     TestArmor();
                     break;
+
                 case "bioware.xml":
                 case "cyberware.xml":
                     TestCyberware(cboTest.Text);
                     break;
+
                 case "critters.xml":
                 case "metatypes.xml":
                     TestMetatype(cboTest.Text);
                     break;
+
                 case "gear.xml":
                     TestGear();
                     break;
+
                 case "qualities.xml":
                     TestQuality();
                     break;
+
                 case "vehicles.xml":
                     TestVehicles();
                     break;
+
                 case "weapons.xml":
                     TestWeapons();
                     break;
@@ -559,7 +566,7 @@ namespace Chummer
             }
         }
 
-        void TestMetatype(string strFile)
+        private void TestMetatype(string strFile)
         {
             XmlDocument objXmlDocument = XmlManager.Load(strFile);
 
@@ -649,53 +656,52 @@ namespace Chummer
                             }
                             else
                             {
-                                int intMinModifier = -3;
                                 _objCharacter.BOD.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["bodmin"].InnerText, intForce, 3));
                                 _objCharacter.AGI.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["agimin"].InnerText, intForce, 3));
                                 _objCharacter.REA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["reamin"].InnerText, intForce, 3));
                                 _objCharacter.STR.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["strmin"].InnerText, intForce, 3));
                                 _objCharacter.CHA.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["chamin"].InnerText, intForce, 3));
                                 _objCharacter.INT.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["intmin"].InnerText, intForce, 3));
                                 _objCharacter.LOG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["logmin"].InnerText, intForce, 3));
                                 _objCharacter.WIL.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["wilmin"].InnerText, intForce, 3));
                                 _objCharacter.MAG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3));
                                 _objCharacter.MAGAdept.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["magmin"].InnerText, intForce, 3));
                                 _objCharacter.RES.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["resmin"].InnerText, intForce, 3));
                                 _objCharacter.EDG.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["edgmin"].InnerText, intForce, 3));
                                 _objCharacter.ESS.AssignLimits(
@@ -703,7 +709,7 @@ namespace Chummer
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["essmax"].InnerText, intForce),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["essaug"].InnerText, intForce));
                                 _objCharacter.DEP.AssignLimits(
-                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, intMinModifier),
+                                    CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, -3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, 3),
                                     CommonFunctions.ExpressionToInt(objXmlMetatype["depmin"].InnerText, intForce, 3));
                             }
@@ -816,7 +822,7 @@ namespace Chummer
                             // Set the Skill Ratings for the Critter.
                             foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/skill"))
                             {
-                                if (objXmlSkill.InnerText.Contains("Exotic"))
+                                if (ExoticSkill.IsExoticSkillName(objXmlSkill.InnerText))
                                 {
                                     //Skill objExotic = new Skill(_objCharacter);
                                     //objExotic.ExoticSkill = true;
@@ -904,7 +910,6 @@ namespace Chummer
                                 //    objGroup.RatingMaximum = intMaxRating;
 
                                 // Set the MaxSkillRating for the character so it can be used later when they add new Knowledge Skills or Exotic Skills.
-
                             }
 
                             // Add any Complex Forms the Critter comes with (typically Sprites)

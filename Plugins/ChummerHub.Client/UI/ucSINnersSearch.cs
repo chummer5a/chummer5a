@@ -9,7 +9,6 @@ using Chummer;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Uniques;
 using ChummerHub.Client.Backend;
-using ChummerHub.Client;
 using GroupControls;
 using NLog;
 using ChummerHub.Client.Sinners;
@@ -19,7 +18,7 @@ namespace ChummerHub.Client.UI
     public partial class ucSINnersSearch : UserControl
     {
         public static CharacterExtended MySearchCharacter;
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         public SearchTag motherTag;
         private Action<string> GetSelectedObjectCallback;
@@ -28,7 +27,7 @@ namespace ChummerHub.Client.UI
 
         public ucSINnersSearch()
         {
-            MySearchCharacter = new CharacterExtended(new Character(), null, null, new CharacterCache());
+            MySearchCharacter = new CharacterExtended(new Character(), null, new CharacterCache(), false);
             InitializeComponent();
         }
 
@@ -116,7 +115,7 @@ namespace ChummerHub.Client.UI
                         rdb.Items.Add(ifalse);
                         rdb.SelectedIndexChanged += (sender, e) =>
                         {
-                            System.Reflection.PropertyInfo info = stag.MyPropertyInfo;
+                            PropertyInfo info = stag.MyPropertyInfo;
                             info.SetValue(stag.MyParentTag.MyRuntimePropertyValue, itrue.Checked);
                             MySetTags.Add(stag);
                             UpdateDialog();
@@ -192,7 +191,7 @@ namespace ChummerHub.Client.UI
             {
                 if (obj is IList)
                 {
-                    System.Type listtype = StaticUtils.GetListType(obj);
+                    Type listtype = StaticUtils.GetListType(obj);
                     if (listtype != null)
                         switchname = listtype.Name;
                 }

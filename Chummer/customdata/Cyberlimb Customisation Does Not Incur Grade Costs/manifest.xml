@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+    <guid>45E51F3A-FA85-4A8F-94B4-8A66529A5454</guid>
+    <version>1</version>
+    <authors>
+      <author>
+        <name>chummer5a</name>
+        <main>true</main>
+      </author>
+    </authors>
+    <descriptions>
+      <description>
+        <text>This ruleset sets Cyberware Customization to not use the Grade of its parent cyberware. This reduces the net cost of customization as no nuyen modifier is applied.</text>
+        <lang>en-us</lang>
+      </description>
+    </descriptions>
+  </manifest>

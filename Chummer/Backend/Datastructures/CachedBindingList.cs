@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 
@@ -24,6 +25,7 @@ namespace Chummer
     public class CachedBindingList<T> : BindingList<T>
     {
         public delegate void BeforeRemoveEventHandler(object sender, RemovingOldEventArgs e);
+
         public event BeforeRemoveEventHandler BeforeRemove;
 
         protected override void RemoveItem(int index)

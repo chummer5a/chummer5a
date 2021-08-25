@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-  using System;
+
+using System;
 using System.Collections.Generic;
-  using System.Collections.Specialized;
+using System.Collections.Specialized;
 using System.Windows.Forms;
 using System.Xml;
-  using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -34,6 +35,7 @@ namespace Chummer
         private bool _blnSkipRefresh = true;
 
         #region Control Events
+
         public frmSelectLifestyleAdvanced(Character objCharacter, Lifestyle objLifestyle)
         {
             InitializeComponent();
@@ -49,120 +51,126 @@ namespace Chummer
         {
             _objLifestyle.LifestyleQualities.CollectionChanged -= LifestyleQualitiesOnCollectionChanged;
             _objLifestyle.FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
-            Dispose(true);
         }
 
         private void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
-            {
-                ResetLifestyleQualitiesTree();
-                return;
-            }
-            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Move)
-                return;
-
-            TreeNode nodFreeGridsRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false);
-
             switch (notifyCollectionChangedEventArgs.Action)
             {
-                case NotifyCollectionChangedAction.Add:
-                    {
-                        foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.NewItems)
-                        {
-                            TreeNode objNode = objFreeGrid.CreateTreeNode();
-                            if (objNode == null)
-                                return;
-                            if (nodFreeGridsRoot == null)
-                            {
-                                nodFreeGridsRoot = new TreeNode
-                                {
-                                    Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                    Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                                };
-                                treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                                nodFreeGridsRoot.Expand();
-                            }
+                case NotifyCollectionChangedAction.Reset:
+                    ResetLifestyleQualitiesTree();
+                    return;
 
-                            TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
-                            int intNodesCount = lstParentNodeChildren.Count;
-                            int intTargetIndex = 0;
-                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                            {
-                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                case NotifyCollectionChangedAction.Move:
+                    return;
+
+                default:
+                    {
+                        TreeNode nodFreeGridsRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false);
+
+                        switch (notifyCollectionChangedEventArgs.Action)
+                        {
+                            case NotifyCollectionChangedAction.Add:
                                 {
+                                    foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.NewItems)
+                                    {
+                                        TreeNode objNode = objFreeGrid.CreateTreeNode();
+                                        if (objNode == null)
+                                            return;
+                                        if (nodFreeGridsRoot == null)
+                                        {
+                                            nodFreeGridsRoot = new TreeNode
+                                            {
+                                                Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
+                                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
+                                            };
+                                            treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
+                                            nodFreeGridsRoot.Expand();
+                                        }
+
+                                        TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
+                                        int intNodesCount = lstParentNodeChildren.Count;
+                                        int intTargetIndex = 0;
+                                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                        {
+                                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                                        treLifestyleQualities.SelectedNode = objNode;
+                                    }
                                     break;
                                 }
-                            }
-
-                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                            treLifestyleQualities.SelectedNode = objNode;
-                        }
-                        break;
-                    }
-                case NotifyCollectionChangedAction.Remove:
-                    {
-                        foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.OldItems)
-                        {
-                            TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
-                            if (objNode != null)
-                            {
-                                TreeNode objParent = objNode.Parent;
-                                objNode.Remove();
-                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                    objParent.Remove();
-                            }
-                        }
-                        break;
-                    }
-                case NotifyCollectionChangedAction.Replace:
-                    {
-                        List<TreeNode> lstOldParents = new List<TreeNode>();
-                        foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.OldItems)
-                        {
-                            TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
-                            if (objNode != null)
-                            {
-                                if (objNode.Parent != null)
-                                    lstOldParents.Add(objNode.Parent);
-                                objNode.Remove();
-                            }
-                        }
-                        foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.NewItems)
-                        {
-                            TreeNode objNode = objFreeGrid.CreateTreeNode();
-                            if (objNode == null)
-                                return;
-                            if (nodFreeGridsRoot == null)
-                            {
-                                nodFreeGridsRoot = new TreeNode
+                            case NotifyCollectionChangedAction.Remove:
                                 {
-                                    Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                    Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                                };
-                                treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                                nodFreeGridsRoot.Expand();
-                            }
-
-                            TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
-                            int intNodesCount = lstParentNodeChildren.Count;
-                            int intTargetIndex = 0;
-                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                            {
-                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                {
+                                    foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.OldItems)
+                                    {
+                                        TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
+                                        if (objNode != null)
+                                        {
+                                            TreeNode objParent = objNode.Parent;
+                                            objNode.Remove();
+                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                objParent.Remove();
+                                        }
+                                    }
                                     break;
                                 }
-                            }
+                            case NotifyCollectionChangedAction.Replace:
+                                {
+                                    List<TreeNode> lstOldParents = new List<TreeNode>();
+                                    foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.OldItems)
+                                    {
+                                        TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
+                                        if (objNode != null)
+                                        {
+                                            if (objNode.Parent != null)
+                                                lstOldParents.Add(objNode.Parent);
+                                            objNode.Remove();
+                                        }
+                                    }
+                                    foreach (LifestyleQuality objFreeGrid in notifyCollectionChangedEventArgs.NewItems)
+                                    {
+                                        TreeNode objNode = objFreeGrid.CreateTreeNode();
+                                        if (objNode == null)
+                                            return;
+                                        if (nodFreeGridsRoot == null)
+                                        {
+                                            nodFreeGridsRoot = new TreeNode
+                                            {
+                                                Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
+                                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
+                                            };
+                                            treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
+                                            nodFreeGridsRoot.Expand();
+                                        }
 
-                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                            treLifestyleQualities.SelectedNode = objNode;
+                                        TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
+                                        int intNodesCount = lstParentNodeChildren.Count;
+                                        int intTargetIndex = 0;
+                                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                        {
+                                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                                        treLifestyleQualities.SelectedNode = objNode;
+                                    }
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                    break;
+                                }
                         }
-                        foreach (TreeNode objOldParent in lstOldParents)
-                        {
-                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                objOldParent.Remove();
-                        }
+
                         break;
                     }
             }
@@ -199,6 +207,7 @@ namespace Chummer
                         }
                         nodPositiveQualityRoot.Nodes.Add(objNode);
                         break;
+
                     case QualityType.Negative:
                         if (nodNegativeQualityRoot == null)
                         {
@@ -212,6 +221,7 @@ namespace Chummer
                         }
                         nodNegativeQualityRoot.Nodes.Add(objNode);
                         break;
+
                     default:
                         if (nodEntertainmentsRoot == null)
                         {
@@ -251,13 +261,15 @@ namespace Chummer
 
         private void LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs)
         {
-            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Reset)
+            switch (notifyCollectionChangedEventArgs.Action)
             {
-                ResetLifestyleQualitiesTree();
-                return;
+                case NotifyCollectionChangedAction.Reset:
+                    ResetLifestyleQualitiesTree();
+                    return;
+
+                case NotifyCollectionChangedAction.Move:
+                    return;
             }
-            if (notifyCollectionChangedEventArgs.Action == NotifyCollectionChangedAction.Move)
-                return;
 
             TreeNode nodPositiveQualityRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_PositiveQualities", false);
             TreeNode nodNegativeQualityRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_NegativeQualities", false);
@@ -266,52 +278,52 @@ namespace Chummer
             switch (notifyCollectionChangedEventArgs.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                {
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
                     {
-                        AddToTree(objQuality);
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objQuality);
+                        }
+                        break;
                     }
-                    break;
-                }
                 case NotifyCollectionChangedAction.Remove:
-                {
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                     {
-                        TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
-                        if (objNode != null)
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            TreeNode objParent = objNode.Parent;
-                            objNode.Remove();
-                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                objParent.Remove();
+                            TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
+                            if (objNode != null)
+                            {
+                                TreeNode objParent = objNode.Parent;
+                                objNode.Remove();
+                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                    objParent.Remove();
+                            }
                         }
+                        break;
                     }
-                    break;
-                }
                 case NotifyCollectionChangedAction.Replace:
-                {
-                    List<TreeNode> lstOldParents = new List<TreeNode>();
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                     {
-                        TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
-                        if (objNode != null)
+                        List<TreeNode> lstOldParents = new List<TreeNode>();
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            if (objNode.Parent != null)
-                                lstOldParents.Add(objNode.Parent);
-                            objNode.Remove();
+                            TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
+                            if (objNode != null)
+                            {
+                                if (objNode.Parent != null)
+                                    lstOldParents.Add(objNode.Parent);
+                                objNode.Remove();
+                            }
                         }
+                        foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
+                        {
+                            AddToTree(objQuality);
+                        }
+                        foreach (TreeNode objOldParent in lstOldParents)
+                        {
+                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                objOldParent.Remove();
+                        }
+                        break;
                     }
-                    foreach (LifestyleQuality objQuality in notifyCollectionChangedEventArgs.NewItems)
-                    {
-                        AddToTree(objQuality);
-                    }
-                    foreach (TreeNode objOldParent in lstOldParents)
-                    {
-                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                            objOldParent.Remove();
-                    }
-                    break;
-                }
             }
 
             void AddToTree(LifestyleQuality objQuality)
@@ -335,6 +347,7 @@ namespace Chummer
                         }
                         objParentNode = nodPositiveQualityRoot;
                         break;
+
                     case QualityType.Negative:
                         if (nodNegativeQualityRoot == null)
                         {
@@ -348,6 +361,7 @@ namespace Chummer
                         }
                         objParentNode = nodNegativeQualityRoot;
                         break;
+
                     default:
                         if (nodEntertainmentsRoot == null)
                         {
@@ -404,28 +418,25 @@ namespace Chummer
                 }
             }
 
-            chkBonusLPRandomize.DoNegatableDatabinding("Checked",_objLifestyle, nameof(Lifestyle.AllowBonusLP));
-            nudBonusLP.DoDatabinding("Value", _objLifestyle,nameof(Lifestyle.BonusLP));
+            chkBonusLPRandomize.DoNegatableDataBinding("Checked", _objLifestyle, nameof(Lifestyle.AllowBonusLP));
+            nudBonusLP.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BonusLP));
             ResetLifestyleQualitiesTree();
             cboBaseLifestyle.BeginUpdate();
-            cboBaseLifestyle.ValueMember = nameof(ListItem.Value);
-            cboBaseLifestyle.DisplayMember = nameof(ListItem.Name);
-            cboBaseLifestyle.DataSource = lstLifestyles;
-
-            cboBaseLifestyle.SelectedValue = _objLifestyle.BaseLifestyle;
-            txtLifestyleName.DoDatabinding("Text",_objLifestyle,nameof(Lifestyle.Name));
-            nudRoommates.DoDatabinding("Value",_objLifestyle,nameof(Lifestyle.Roommates));
-            nudPercentage.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.Percentage));
-            nudArea.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableArea));
-            nudComforts.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableComforts));
-            nudSecurity.DoDatabinding("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity));
+            cboBaseLifestyle.PopulateWithListItems(lstLifestyles);
+            cboBaseLifestyle.EndUpdate();
+            txtLifestyleName.DoDataBinding("Text", _objLifestyle, nameof(Lifestyle.Name));
+            nudRoommates.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.Roommates));
+            nudPercentage.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.Percentage));
+            nudArea.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableArea));
+            nudComforts.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableComforts));
+            nudSecurity.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity));
             nudArea.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.AreaDelta));
             nudComforts.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.ComfortsDelta));
             nudSecurity.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.SecurityDelta));
-            cboBaseLifestyle.DoDatabinding("SelectedValue",_objLifestyle,nameof(Lifestyle.BaseLifestyle));
-            chkTrustFund.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.TrustFund));
-            chkTrustFund.DoOneWayDataBinding("Enabled",_objLifestyle,nameof(Lifestyle.IsTrustFundEligible));
-            chkPrimaryTenant.DoDatabinding("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant));
+            cboBaseLifestyle.DoDataBinding("SelectedValue", _objLifestyle, nameof(Lifestyle.BaseLifestyle));
+            chkTrustFund.DoDataBinding("Checked", _objLifestyle, nameof(Lifestyle.TrustFund));
+            chkTrustFund.DoOneWayDataBinding("Enabled", _objLifestyle, nameof(Lifestyle.IsTrustFundEligible));
+            chkPrimaryTenant.DoDataBinding("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant));
             lblCost.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
             lblArea.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedArea));
             lblComforts.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedComforts));
@@ -434,13 +445,12 @@ namespace Chummer
             lblComfortTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
             lblSecurityTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
             lblTotalLP.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
+
             if (cboBaseLifestyle.SelectedIndex == -1)
                 cboBaseLifestyle.SelectedIndex = 0;
-            cboBaseLifestyle.EndUpdate();
 
             _objLifestyle.LifestyleQualities.CollectionChanged += LifestyleQualitiesOnCollectionChanged;
             _objLifestyle.FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
-
 
             // Populate the City ComboBox
             List<ListItem> lstCity = new List<ListItem>();
@@ -458,10 +468,8 @@ namespace Chummer
             }
 
             cboCity.BeginUpdate();
-            cboCity.ValueMember = nameof(ListItem.Value);
-            cboCity.DisplayMember = nameof(ListItem.Name);
-            cboCity.DataSource = lstCity;
-            cboCity.DoDatabinding("SelectedValue", _objLifestyle, nameof(Lifestyle.City));
+            cboCity.PopulateWithListItems(lstCity);
+            cboCity.DoDataBinding("SelectedValue", _objLifestyle, nameof(Lifestyle.City));
             cboCity.EndUpdate();
 
             //Populate District and Borough ComboBox for the first time
@@ -578,11 +586,10 @@ namespace Chummer
             if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
 
-            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality)) return;
-            if (objQuality.Name == "Not a Home" && cboBaseLifestyle.SelectedValue?.ToString() == "Bolt Hole")
-            {
+            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality))
                 return;
-            }
+            if (objQuality.OriginSource == QualitySource.BuiltIn)
+                return;
             _objLifestyle.LifestyleQualities.Remove(objQuality);
         }
 
@@ -590,10 +597,7 @@ namespace Chummer
         {
             if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
             {
-                lblQualityLPLabel.Visible = true;
-                lblQualityCostLabel.Visible = true;
-                lblQualitySourceLabel.Visible = true;
-                chkQualityContributesLP.Visible = true;
+                tlpLifestyleQuality.Visible = true;
                 chkQualityContributesLP.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
 
                 _blnSkipRefresh = true;
@@ -603,18 +607,11 @@ namespace Chummer
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalOptions.CultureInfo);
                 lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
                 objQuality.SetSourceDetail(lblQualitySource);
-                cmdDeleteQuality.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
+                cmdDeleteQuality.Enabled = objQuality.OriginSource != QualitySource.BuiltIn;
             }
             else
             {
-                lblQualityLPLabel.Visible = false;
-                lblQualityCostLabel.Visible = false;
-                lblQualitySourceLabel.Visible = false;
-                chkQualityContributesLP.Visible = false;
-                lblQualityLp.Text = string.Empty;
-                lblQualityCost.Text = string.Empty;
-                lblQualitySource.Text = string.Empty;
-                lblQualitySource.SetToolTip(null);
+                tlpLifestyleQuality.Visible = false;
                 cmdDeleteQuality.Enabled = false;
             }
         }
@@ -641,9 +638,11 @@ namespace Chummer
                 nudBonusLP.Enabled = true;
             }
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -659,9 +658,10 @@ namespace Chummer
         /// </summary>
         public LifestyleType StyleType { get; set; } = LifestyleType.Advanced;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -718,9 +718,10 @@ namespace Chummer
                 string strPage = xmlAspect["altpage"]?.InnerText ?? xmlAspect["page"]?.InnerText ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                    SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                        GlobalOptions.CultureInfo, _objCharacter);
+                    lblSource.Text = objSource.ToString();
+                    lblSource.SetToolTip(objSource.LanguageBookTooltip);
                 }
                 else
                 {
@@ -800,10 +801,7 @@ namespace Chummer
             }
 
             cboDistrict.BeginUpdate();
-            cboDistrict.DataSource = null;
-            cboDistrict.DataSource = lstDistrict;
-            cboDistrict.ValueMember = nameof(ListItem.Value);
-            cboDistrict.DisplayMember = nameof(ListItem.Name);
+            cboDistrict.PopulateWithListItems(lstDistrict);
             cboDistrict.EndUpdate();
         }
 
@@ -828,12 +826,10 @@ namespace Chummer
             }
 
             cboBorough.BeginUpdate();
-            cboBorough.DataSource = null;
-            cboBorough.DataSource = lstBorough;
-            cboBorough.ValueMember = nameof(ListItem.Value);
-            cboBorough.DisplayMember = nameof(ListItem.Name);
+            cboBorough.PopulateWithListItems(lstBorough);
             cboBorough.EndUpdate();
         }
-        #endregion
+
+        #endregion Methods
     }
 }

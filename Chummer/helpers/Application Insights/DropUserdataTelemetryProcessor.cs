@@ -16,28 +16,30 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections;
-using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
+using Microsoft.ApplicationInsights.Extensibility;
 
 namespace Chummer
 {
     public class DropUserdataTelemetryProcessor : ITelemetryProcessor
     {
-        private readonly string UserProfilePath;
+        private readonly string _strUserProfilePath;
         private ITelemetryProcessor Next { get; }
 
         // You can pass values from .config
         public string MyParamFromConfigFile { get; set; }
 
         // Link processors to each other in a chain.
-        public DropUserdataTelemetryProcessor(ITelemetryProcessor next, string UserProfilePath)
+        public DropUserdataTelemetryProcessor(ITelemetryProcessor next, string strUserProfilePath)
         {
             Next = next;
-            this.UserProfilePath = UserProfilePath;
+            _strUserProfilePath = strUserProfilePath;
         }
+
         public void Process(ITelemetry item)
         {
             ModifyItem(item);
@@ -51,25 +53,16 @@ namespace Chummer
             {
                 return;
             }
-            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes)
+            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes && item is ExceptionTelemetry exceptionTelemetry && (exceptionTelemetry.Exception.Data.Contains("IsCrash")
+                || exceptionTelemetry.Properties.ContainsKey("IsCrash")))
             {
-                if (item is ExceptionTelemetry exceptionTelemetry)
-                {
-                    if (exceptionTelemetry.Exception.Data.Contains("IsCrash")
-                        || exceptionTelemetry.Properties.ContainsKey("IsCrash"))
-                    {
-                        Next.Process(item);
-                        return;
-                    }
-                }
+                Next.Process(item);
+                return;
             }
-            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric)
+            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric && item is MetricTelemetry)
             {
-                if (item is MetricTelemetry)
-                {
-                    Next.Process(item);
-                    return;
-                }
+                Next.Process(item);
+                return;
             }
             if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Info && item is TraceTelemetry traceTelemetry && traceTelemetry.SeverityLevel >= SeverityLevel.Information)
             {
@@ -80,38 +73,37 @@ namespace Chummer
         // Example: replace with your own modifiers.
         private void ModifyItem(ITelemetry item)
         {
-            if (item is TraceTelemetry trace)
+            switch (item)
             {
-                trace.Message = trace.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
-                return;
-            }
+                case TraceTelemetry trace:
+                    trace.Message = trace.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    return;
 
-            if (item is RequestTelemetry req)
-            {
-                string newurl = req.Url?.ToString().Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
-                if (!string.IsNullOrEmpty(newurl))
-                    req.Url = new Uri(newurl);
-                return;
-            }
+                case RequestTelemetry req:
+                    {
+                        string newurl = req.Url?.ToString().Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                        if (!string.IsNullOrEmpty(newurl))
+                            req.Url = new Uri(newurl);
+                        return;
+                    }
+                case ExceptionTelemetry exception when exception.Exception != null:
+                    {
+                        foreach (DictionaryEntry de in exception.Exception.Data)
+                        {
+                            if (!exception.Properties.ContainsKey(de.Key.ToString()))
+                                exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
+                        }
+                        if (exception.Message == null)
+                        {
+                            exception.Message = exception.Exception.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                        }
 
-            if (item is ExceptionTelemetry exception)
-            {
-                if (exception.Exception != null)
-                {
-                    foreach (DictionaryEntry de in exception.Exception.Data)
-                    {
-                        if (!exception.Properties.ContainsKey(de.Key.ToString()))
-                            exception.Properties.Add(de.Key.ToString(), de.Value?.ToString());
+                        break;
                     }
-                    if (exception.Message == null)
-                    {
-                        exception.Message = exception.Exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
-                    }
-                }
-                else
-                    exception.Message = exception.Message?.Replace(UserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                case ExceptionTelemetry exception:
+                    exception.Message = exception.Message?.Replace(_strUserProfilePath, @"{username}", StringComparison.OrdinalIgnoreCase);
+                    break;
             }
         }
-
     }
 }

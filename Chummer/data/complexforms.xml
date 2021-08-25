@@ -38,7 +38,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-         <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*"/>
+         <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*" />
       </bonus>
       <source>SR5</source>
       <page>252</page>
@@ -59,7 +59,7 @@
       <duration>S</duration>
       <fv>L-2</fv>
       <bonus>
-        <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*"/>
+        <selecttext xml="strings.xml" xpath="/chummer/matrixattributes/*" />
       </bonus>
       <source>SR5</source>
       <page>252</page>

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -51,6 +52,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public LimitModifier(Character objCharacter, string strGuid = "")
         {
             // Create the GUID for the new Skill Limit Modifier.
@@ -130,9 +132,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Skill Limit Modifier in the Improvement system.
         /// </summary>
@@ -275,9 +279,11 @@ namespace Chummer
                 strReturn += strSpace + '(' + strCondition + ')';
             return strReturn;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLimitModifier)
         {
             TreeNode objNode = new TreeNode
@@ -307,17 +313,15 @@ namespace Chummer
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (_objCharacter.LimitModifiers.Contains(this))
+            if (_objCharacter.LimitModifiers.Contains(this) && blnConfirmDelete)
             {
-                if (blnConfirmDelete)
-                {
-                    return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier"))
-                           && _objCharacter.LimitModifiers.Remove(this);
-                }
+                return CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLimitModifier"))
+                       && _objCharacter.LimitModifiers.Remove(this);
             }
 
             // No character-created limits found, which means it comes from an improvement.

@@ -21,7 +21,25 @@
 <chummer>
   <powers>
     <power>
+      <bonus xpathfilter="specificskill/name = 'Navigation' and specificskill/name = 'Tracking'">
+        <specificskill xpathfilter="name = 'Tracking'" amendoperation="remove" />
+      </bonus>
       <bonus>
+        <specificskill xpathfilter="name = 'Running'">
+          <name>Athletics</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Gymnastics'">
+          <name>Acrobatics</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Swimming'">
+          <name>Aquatics</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Tracking'">
+          <name>Query</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Navigation'">
+          <name>Query</name>
+        </specificskill>
         <unlockskills xpathfilter="@name = 'Assensing'" amendoperation="replace" name="Astral">Name</unlockskills>
         <specificskill xpathfilter="name = 'Perception' or name = 'Assensing' or name = 'Disguise' or name = 'Instruction' or name = 'Intimidation'" amendoperation="remove" />
         <specificskill xpathfilter="name = 'Palming'">

@@ -1441,7 +1441,7 @@
       </qualities>
       <powers>
         <power>Search</power>
-        <power select="Kick: DV (STR + 2)P, AP +1, +1 Reach">Natural Weapon</power>
+        <power select="Kick: DV ({STR} + 2)P, AP +1, +1 Reach">Natural Weapon</power>
       </powers>
       <source>RF</source>
       <page>98</page>
@@ -1516,7 +1516,7 @@
       </qualities>
       <powers>
         <power>Dual Natured</power>
-        <power select="Bite: DV (STR + 1)P, AP -2, Reach -1">Natural Weapon</power>
+        <power select="Bite: DV ({STR} + 1)P, AP -2, Reach -1">Natural Weapon</power>
         <power select="8">Armor</power>
         <power>Venom</power>
         <power>Guard</power>
@@ -1665,7 +1665,7 @@
       <powers>
         <power>Dual Natured</power>
         <power>Mimicry</power>
-        <power select="Claws: DV (STR + 1)P, AP -, +1 Reach">Natural Weapon</power>
+        <power select="Claws: DV ({STR} + 1)P, AP -, +1 Reach">Natural Weapon</power>
       </powers>
       <addweapon>Claws (Sasquatch)</addweapon>
       <metavariants />

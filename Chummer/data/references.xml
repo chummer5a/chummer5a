@@ -39,43 +39,43 @@
 		</rule>
 		<rule>
 			<id>AB2A54DC-0A32-4AAB-9A5F-DC857A514B48</id>
-			<name>Life In The Sixth World</name>
+			<name>Life in the Sixth World</name>
 			<source>SR5</source>
 			<page>20</page>
 		</rule>
 		<rule>
 			<id>BF86ADB5-BC54-45CB-8555-8800604B47D6</id>
-			<name>Everything Has A Price</name>
+			<name>Everything Has a Price</name>
 			<source>SR5</source>
 			<page>20</page>
 		</rule>
 		<rule>
 			<id>34E5866F-D057-436A-9F63-44BFF4B211B3</id>
-			<name>Magic: Paying With Your Mind</name>
+			<name>Magic: Paying with Your Mind</name>
 			<source>SR5</source>
 			<page>20</page>
 		</rule>
 		<rule>
 			<id>B98C4B7D-F5FB-4DD8-9D77-8603C70FBBA7</id>
-			<name>Megacorps: Paying With Your Self</name>
+			<name>Megacorps: Paying with Your Self</name>
 			<source>SR5</source>
 			<page>21</page>
 		</rule>
 		<rule>
 			<id>38CA1CE0-1BF8-490F-AFFD-354361FFEF49</id>
-			<name>‘Wares: Paying With Your Soul</name>
+			<name>‘Wares: Paying with Your Soul</name>
 			<source>SR5</source>
 			<page>23</page>
 		</rule>
 		<rule>
 			<id>BE6E6A5D-0434-4769-A78C-AD3CC11BD0BE</id>
-			<name>Shadows: Paying With Your Blood</name>
+			<name>Shadows: Paying with Your Blood</name>
 			<source>SR5</source>
 			<page>23</page>
 		</rule>
 		<rule>
 			<id>C29E9EAF-331D-4696-90A4-99B0DA2AB4B9</id>
-			<name>Where To Run</name>
+			<name>Where to Run</name>
 			<source>SR5</source>
 			<page>24</page>
 		</rule>
@@ -117,13 +117,13 @@
 		</rule>
 		<rule>
 			<id>445C37EB-E1A0-44F3-B14A-35602BB0AF69</id>
-			<name>Australia And Oceania</name>
+			<name>Australia and Oceania</name>
 			<source>SR5</source>
 			<page>27</page>
 		</rule>
 		<rule>
 			<id>7633D9CF-B54B-4B98-BE5A-FD000E7AF9E5</id>
-			<name>A Day In Your Life</name>
+			<name>A Day in Your Life</name>
 			<source>SR5</source>
 			<page>27</page>
 		</rule>
@@ -135,7 +135,7 @@
 		</rule>
 		<rule>
 			<id>EE8A3313-A083-4B02-8F1A-356056E334CE</id>
-			<name>Doing The Dirty Work</name>
+			<name>Doing the Dirty Work</name>
 			<source>SR5</source>
 			<page>28</page>
 		</rule>
@@ -231,13 +231,13 @@
 		</rule>
 		<rule>
 			<id>C23375C7-4050-42FD-9D88-4444D2705A68</id>
-			<name>Beneath The Surface</name>
+			<name>Beneath the Surface</name>
 			<source>SR5</source>
 			<page>38</page>
 		</rule>
 		<rule>
 			<id>A2FB1AAA-C508-4A74-9492-A18A8D56CD82</id>
-			<name>Off The Job</name>
+			<name>Off the Job</name>
 			<source>SR5</source>
 			<page>39</page>
 		</rule>
@@ -315,7 +315,7 @@
 		</rule>
 		<rule>
 			<id>F59AC2CB-21B1-4C10-8041-02A91A3126EC</id>
-			<name>How To Make Things Happen</name>
+			<name>How to Make Things Happen</name>
 			<source>SR5</source>
 			<page>44</page>
 		</rule>
@@ -339,7 +339,7 @@
 		</rule>
 		<rule>
 			<id>D0142BA4-5F34-4B84-8C33-34AB00A3A9B1</id>
-			<name>Tests And Limits</name>
+			<name>Tests and Limits</name>
 			<source>SR5</source>
 			<page>46</page>
 		</rule>
@@ -435,7 +435,7 @@
 		</rule>
 		<rule>
 			<id>5070A280-4351-49B8-87E9-648F607C1641</id>
-			<name>Initiative And Condition Monitors</name>
+			<name>Initiative and Condition Monitors</name>
 			<source>SR5</source>
 			<page>52</page>
 		</rule>
@@ -549,13 +549,13 @@
 		</rule>
 		<rule>
 			<id>18A69EAB-C562-4C45-91B0-B82C17914F6C</id>
-			<name>Girls With Guns</name>
+			<name>Girls with Guns</name>
 			<source>SR5</source>
 			<page>58</page>
 		</rule>
 		<rule>
 			<id>48FA585A-4157-4C65-9B04-7002CAC7EB21</id>
-			<name>Creating A Shadowrunner</name>
+			<name>Creating a Shadowrunner</name>
 			<source>SR5</source>
 			<page>62</page>
 		</rule>
@@ -567,13 +567,13 @@
 		</rule>
 		<rule>
 			<id>9B10A54E-A33C-494A-8891-206F726A44FD</id>
-			<name>Mental And Physical Attributes</name>
+			<name>Mental and Physical Attributes</name>
 			<source>SR5</source>
 			<page>66</page>
 		</rule>
 		<rule>
 			<id>393A2708-5FB7-4399-A9F2-AF2FD38B3DEB</id>
-			<name>What The Numbers Mean</name>
+			<name>What the Numbers Mean</name>
 			<source>SR5</source>
 			<page>88</page>
 		</rule>
@@ -585,13 +585,13 @@
 		</rule>
 		<rule>
 			<id>2C95B22E-E09E-4F60-9BFC-A208A72FFC52</id>
-			<name>Knowledge And Language Skills</name>
+			<name>Knowledge and Language Skills</name>
 			<source>SR5</source>
 			<page>89</page>
 		</rule>
 		<rule>
 			<id>17A2F05D-67F6-4664-B1D1-1C5FBC279FB1</id>
-			<name>Cyberware And Bioware</name>
+			<name>Cyberware and Bioware</name>
 			<source>SR5</source>
 			<page>94</page>
 		</rule>
@@ -633,7 +633,7 @@
 		</rule>
 		<rule>
 			<id>72C94459-5919-4227-A369-52D3AC829498</id>
-			<name>Attribute And Skill Tables</name>
+			<name>Attribute and Skill Tables</name>
 			<source>SR5</source>
 			<page>105</page>
 		</rule>
@@ -747,7 +747,7 @@
 		</rule>
 		<rule>
 			<id>EB460CFC-95ED-436D-BBA7-9DBA154D9021</id>
-			<name>Climbing Failures And Glitches</name>
+			<name>Climbing Failures and Glitches</name>
 			<source>SR5</source>
 			<page>134</page>
 		</rule>
@@ -783,7 +783,7 @@
 		</rule>
 		<rule>
 			<id>D5F90821-8F9C-40BE-9A42-C9763BF1A5EE</id>
-			<name>Using Disguise And Impersonation</name>
+			<name>Using Disguise and Impersonation</name>
 			<source>SR5</source>
 			<page>136</page>
 		</rule>
@@ -831,7 +831,7 @@
 		</rule>
 		<rule>
 			<id>8A17F57E-8D88-40AC-B2F5-AEDBE6895AC2</id>
-			<name>Social Modifers</name>
+			<name>Social Modifiers</name>
 			<source>SR5</source>
 			<page>139</page>
 		</rule>
@@ -993,7 +993,7 @@
 		</rule>
 		<rule>
 			<id>F17670B4-071F-47B9-8362-EE16393D2BDB</id>
-			<name>Social Skills And Language</name>
+			<name>Social Skills and Language</name>
 			<source>SR5</source>
 			<page>151</page>
 		</rule>
@@ -1089,7 +1089,7 @@
 		</rule>
 		<rule>
 			<id>EBC38FF4-B60D-49A4-A852-61ED3E25E78B</id>
-			<name>Initiative And Edge</name>
+			<name>Initiative and Edge</name>
 			<source>SR5</source>
 			<page>160</page>
 		</rule>
@@ -1125,7 +1125,7 @@
 		</rule>
 		<rule>
 			<id>1A3F6096-B198-4A40-A873-3008ACB262BA</id>
-			<name>Running Modifers</name>
+			<name>Running Modifiers</name>
 			<source>SR5</source>
 			<page>162</page>
 		</rule>
@@ -1149,7 +1149,7 @@
 		</rule>
 		<rule>
 			<id>77E9D956-835E-4059-ACAB-6669A107EFF7</id>
-			<name>Call A Shot</name>
+			<name>Call a Shot</name>
 			<source>SR5</source>
 			<page>163</page>
 		</rule>
@@ -1251,7 +1251,7 @@
 		</rule>
 		<rule>
 			<id>6062144D-4F24-4D1A-8689-4FFDBF825BB0</id>
-			<name>Fire Semi-Auto, Single-Shot, Burst Fire Or Full-Auto</name>
+			<name>Fire Semi-Auto, Single-Shot, Burst Fire or Full-Auto</name>
 			<source>SR5</source>
 			<page>165</page>
 		</rule>
@@ -1263,7 +1263,7 @@
 		</rule>
 		<rule>
 			<id>F7748DC3-14DA-465C-91AA-6932FCB210AE</id>
-			<name>Observe In Detail</name>
+			<name>Observe in Detail</name>
 			<source>SR5</source>
 			<page>165</page>
 		</rule>
@@ -1365,19 +1365,19 @@
 		</rule>
 		<rule>
 			<id>203CDD3C-3743-4819-8A12-FE7435E7D2A4</id>
-			<name>Fire Long Burst Or Semi-Auto Burst</name>
+			<name>Fire Long Burst or Semi-Auto Burst</name>
 			<source>SR5</source>
 			<page>167</page>
 		</rule>
 		<rule>
 			<id>F8386886-5F8C-4162-81F4-DA1A3878F3DE</id>
-			<name>Fire Mounted Or Vehicle Weapon</name>
+			<name>Fire Mounted or Vehicle Weapon</name>
 			<source>SR5</source>
 			<page>167</page>
 		</rule>
 		<rule>
 			<id>6A743F9A-DDFF-4894-B43F-4359F2F573E8</id>
-			<name>Load And Fire Bow</name>
+			<name>Load and Fire Bow</name>
 			<source>SR5</source>
 			<page>167</page>
 		</rule>
@@ -1443,7 +1443,7 @@
 		</rule>
 		<rule>
 			<id>6E878E93-8445-4313-905C-DAF57CE669B5</id>
-			<name>Hit The Dirt</name>
+			<name>Hit the Dirt</name>
 			<source>SR5</source>
 			<page>168</page>
 		</rule>
@@ -1479,7 +1479,7 @@
 		</rule>
 		<rule>
 			<id>C1C20B3B-DD37-4F67-A887-AD32C264A374</id>
-			<name>Armor And Encumbrance</name>
+			<name>Armor and Encumbrance</name>
 			<source>SR5</source>
 			<page>169</page>
 		</rule>
@@ -1503,7 +1503,7 @@
 		</rule>
 		<rule>
 			<id>F06F86FC-7A32-4DBB-9016-4DE26C97B6C9</id>
-			<name>Types Of Injury</name>
+			<name>Types of Injury</name>
 			<source>SR5</source>
 			<page>169</page>
 		</rule>
@@ -1521,13 +1521,13 @@
 		</rule>
 		<rule>
 			<id>03B04C9D-0F0D-4B90-A349-FB9367DDC760</id>
-			<name>Wound Modifers</name>
+			<name>Wound Modifiers</name>
 			<source>SR5</source>
 			<page>169</page>
 		</rule>
 		<rule>
 			<id>AF350287-32E2-4DA4-B050-2A59B798A89B</id>
-			<name>Exceeding The Condition Monitor</name>
+			<name>Exceeding the Condition Monitor</name>
 			<source>SR5</source>
 			<page>170</page>
 		</rule>
@@ -1581,19 +1581,19 @@
 		</rule>
 		<rule>
 			<id>0062D88C-8672-445A-84BB-78752A66B93E</id>
-			<name>Fatigue From Running</name>
+			<name>Fatigue from Running</name>
 			<source>SR5</source>
 			<page>172</page>
 		</rule>
 		<rule>
 			<id>8810D3DB-133F-4752-B80F-3DBDB8C8947E</id>
-			<name>Fatigue From Environments</name>
+			<name>Fatigue from Environments</name>
 			<source>SR5</source>
 			<page>172</page>
 		</rule>
 		<rule>
 			<id>29E41EF9-C7C6-4382-9ADA-6FE5CA7EE92E</id>
-			<name>Hunger, Thirst, And Sleep Deprivation</name>
+			<name>Hunger, Thirst, and Sleep Deprivation</name>
 			<source>SR5</source>
 			<page>172</page>
 		</rule>
@@ -1623,13 +1623,13 @@
 		</rule>
 		<rule>
 			<id>F4472003-5F70-4DB8-BFA7-0F55C4D6BC97</id>
-			<name>Ranged Attack Modifers</name>
+			<name>Ranged Attack Modifiers</name>
 			<source>SR5</source>
 			<page>173</page>
 		</rule>
 		<rule>
 			<id>6FCF30A9-150B-4722-84B1-F2FBFAB590FC</id>
-			<name>Environmental Modifers</name>
+			<name>Environmental Modifiers</name>
 			<source>SR5</source>
 			<page>173</page>
 		</rule>
@@ -1683,31 +1683,31 @@
 		</rule>
 		<rule>
 			<id>6D74632C-5482-4E12-A3C3-16102FBF7AC3</id>
-			<name>Vehicle And Drone Mounted Weapons</name>
+			<name>Vehicle and Drone Mounted Weapons</name>
 			<source>SR5</source>
 			<page>176</page>
 		</rule>
 		<rule>
 			<id>775167E8-C0E2-468E-BAB9-C9BA823BED8A</id>
-			<name>Situational Modifers</name>
+			<name>Situational Modifiers</name>
 			<source>SR5</source>
 			<page>176</page>
 		</rule>
 		<rule>
 			<id>995213F2-387B-456F-A621-866B68A55ADB</id>
-			<name>Attacker Firing From Cover With Imaging Device</name>
+			<name>Attacker Firing from Cover with Imaging Device</name>
 			<source>SR5</source>
 			<page>177</page>
 		</rule>
 		<rule>
 			<id>BFC054DB-E7E4-49C1-AA40-588A9F041E73</id>
-			<name>Attacker Firing From A Moving Vehicle</name>
+			<name>Attacker Firing from a Moving Vehicle</name>
 			<source>SR5</source>
 			<page>177</page>
 		</rule>
 		<rule>
 			<id>696C7C9A-22B0-4107-BE63-BBCE1B6EF5AB</id>
-			<name>Attacker In Melee Combat</name>
+			<name>Attacker in Melee Combat</name>
 			<source>SR5</source>
 			<page>177</page>
 		</rule>
@@ -1749,7 +1749,7 @@
 		</rule>
 		<rule>
 			<id>E30D310B-6A30-4E44-A1AB-C37DE48BF7FA</id>
-			<name>Previously Aimed With Take Aim</name>
+			<name>Previously Aimed with Take Aim</name>
 			<source>SR5</source>
 			<page>178</page>
 		</rule>
@@ -1881,7 +1881,7 @@
 		</rule>
 		<rule>
 			<id>3CA845DD-4326-4E7C-8CD5-7FBC56A58AE4</id>
-			<name>Blasts In A Confined Space</name>
+			<name>Blasts in a Confined Space</name>
 			<source>SR5</source>
 			<page>183</page>
 		</rule>
@@ -1971,13 +1971,13 @@
 		</rule>
 		<rule>
 			<id>5E0D54ED-A7B1-4B24-8E25-691ABFABB5E5</id>
-			<name>Environmental Modifers</name>
+			<name>Environmental Modifiers</name>
 			<source>SR5</source>
 			<page>187</page>
 		</rule>
 		<rule>
 			<id>9411917D-2A19-4F26-B359-009A903437D3</id>
-			<name>Friends In Melee</name>
+			<name>Friends in Melee</name>
 			<source>SR5</source>
 			<page>187</page>
 		</rule>
@@ -2001,7 +2001,7 @@
 		</rule>
 		<rule>
 			<id>4353C6A4-5549-4083-826E-D76DEC7EEFF9</id>
-			<name>Multiple Aattackers</name>
+			<name>Multiple Attackers</name>
 			<source>SR5</source>
 			<page>187</page>
 		</rule>
@@ -2019,7 +2019,7 @@
 		</rule>
 		<rule>
 			<id>9CDBBF49-B6E8-475B-A412-54912D4D5117</id>
-			<name>Defending In Combat</name>
+			<name>Defending in Combat</name>
 			<source>SR5</source>
 			<page>188</page>
 		</rule>
@@ -2050,7 +2050,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>1945A944-8859-4E3B-A5D0-7409337E42D7</id>
-			<name>Defender Unaware Of Attack</name>
+			<name>Defender Unaware of Attack</name>
 			<source>SR5</source>
 			<page>189</page>
 		</rule>
@@ -2074,7 +2074,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>574EC08F-25F9-45E9-A9DF-10E7F8EF5672</id>
-			<name>Defender Receiving A Charge</name>
+			<name>Defender Receiving a Charge</name>
 			<source>SR5</source>
 			<page>189</page>
 		</rule>
@@ -2086,43 +2086,43 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>7ED8CD0A-C951-4BC9-8947-038EFCED527B</id>
-			<name>Firing Flechette On Narrow Spread</name>
+			<name>Firing Flechette on Narrow Spread</name>
 			<source>SR5</source>
 			<page>189</page>
 		</rule>
 		<rule>
 			<id>5DEDF2E3-8668-4384-A332-ED33336AD81A</id>
-			<name>Firing Flechette On Medium Spread</name>
+			<name>Firing Flechette on Medium Spread</name>
 			<source>SR5</source>
 			<page>189</page>
 		</rule>
 		<rule>
 			<id>E742473D-7BDB-4A9C-8737-C5100403F62F</id>
-			<name>Firing Flechette On Wide Spread</name>
+			<name>Firing Flechette on Wide Spread</name>
 			<source>SR5</source>
 			<page>189</page>
 		</rule>
 		<rule>
 			<id>57A253FE-C729-46C3-827C-DD41851E9DEC</id>
-			<name>Attacker Firing Full Auto Burst 190</name>
+			<name>Attacker Firing Full Auto Burst</name>
 			<source>SR5</source>
 			<page>190</page>
 		</rule>
 		<rule>
 			<id>837073A1-4B8F-407B-965F-47F17857EC53</id>
-			<name>Attacker Firing Long Burst Or Full-Auto</name>
+			<name>Attacker Firing Long Burst or Full-Auto</name>
 			<source>SR5</source>
 			<page>190</page>
 		</rule>
 		<rule>
 			<id>0DE8750C-99A2-4C1B-8945-6E3573708B85</id>
-			<name>Attacker Firing Burst Or Semi-Auto Burst</name>
+			<name>Attacker Firing Burst or Semi-Auto Burst</name>
 			<source>SR5</source>
 			<page>190</page>
 		</rule>
 		<rule>
 			<id>451D7CA1-4EED-410D-8402-62DFE68C2D26</id>
-			<name>Defender In Melee Target Of Ranged Attack</name>
+			<name>Defender in Melee Target of Ranged Attack</name>
 			<source>SR5</source>
 			<page>190</page>
 		</rule>
@@ -2146,7 +2146,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>8F513F2C-663F-4DBD-B991-5435DCCE6190</id>
-			<name>Targeted By An Area-Effect Attack</name>
+			<name>Targeted by an Area-Effect Attack</name>
 			<source>SR5</source>
 			<page>190</page>
 		</rule>
@@ -2200,7 +2200,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>78BF8368-2DA5-4826-B7A3-9A95C133C1CE</id>
-			<name>Surprise And Perception</name>
+			<name>Surprise and Perception</name>
 			<source>SR5</source>
 			<page>192</page>
 		</rule>
@@ -2218,13 +2218,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>FCFAB085-175C-4914-BD92-088F614A9D8B</id>
-			<name>Surprise In Combat</name>
+			<name>Surprise in Combat</name>
 			<source>SR5</source>
 			<page>193</page>
 		</rule>
 		<rule>
 			<id>F46DA78C-5E64-43E6-AB22-639B635B868F</id>
-			<name>Effects Of Surprise</name>
+			<name>Effects of Surprise</name>
 			<source>SR5</source>
 			<page>194</page>
 		</rule>
@@ -2260,7 +2260,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>F3C6D56A-914E-4DCD-AB75-187670247DAB</id>
-			<name>Dead Man’S Trigger</name>
+			<name>Dead Man’s Trigger</name>
 			<source>SR5</source>
 			<page>197</page>
 		</rule>
@@ -2272,7 +2272,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>4500CCAD-8815-4AF9-B0D1-97D8794BC023</id>
-			<name>Shooting Through Barriers</name>
+			<name>Shooting through Barriers</name>
 			<source>SR5</source>
 			<page>197</page>
 		</rule>
@@ -2326,13 +2326,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>648F80B2-B358-475F-963A-DCE31F2A5024</id>
-			<name>Piloting In Limited Light Conditions</name>
+			<name>Piloting in Limited Light Conditions</name>
 			<source>SR5</source>
 			<page>201</page>
 		</rule>
 		<rule>
 			<id>064EAAEE-16C9-459A-BE06-774F93512618</id>
-			<name>Pilot Unaware Of Event</name>
+			<name>Pilot Unaware of Event</name>
 			<source>SR5</source>
 			<page>201</page>
 		</rule>
@@ -2344,13 +2344,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>ED1EE231-DB46-46B7-9E21-4A330F786CFE</id>
-			<name>Piloting A Damaged Vehicle</name>
+			<name>Piloting a Damaged Vehicle</name>
 			<source>SR5</source>
 			<page>201</page>
 		</rule>
 		<rule>
 			<id>4D3C38EA-2E78-4604-A032-A9526839CE00</id>
-			<name>Piloting Using Ar/Vr</name>
+			<name>Piloting Using AR/VR</name>
 			<source>SR5</source>
 			<page>201</page>
 		</rule>
@@ -2428,7 +2428,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>D913A766-46C6-47DE-8162-E98EC0D87349</id>
-			<name>Fire A Vehicle Weapon</name>
+			<name>Fire a Vehicle Weapon</name>
 			<source>SR5</source>
 			<page>203</page>
 		</rule>
@@ -2518,13 +2518,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>6AE4539B-DA1B-4242-B741-5EE34C55BF2B</id>
-			<name>Called Shot On Vehicles</name>
+			<name>Called Shot on Vehicles</name>
 			<source>SR5</source>
 			<page>205</page>
 		</rule>
 		<rule>
 			<id>EA06688D-E6D5-43CE-84E1-AFE9F1C0F151</id>
-			<name>Damage And Passengers</name>
+			<name>Damage and Passengers</name>
 			<source>SR5</source>
 			<page>205</page>
 		</rule>
@@ -2572,7 +2572,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>F229C9D8-04F3-4EF0-9A3C-8968921827C8</id>
-			<name>Medkits And Autodocs</name>
+			<name>Medkits and Autodocs</name>
 			<source>SR5</source>
 			<page>208</page>
 		</rule>
@@ -2626,7 +2626,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>374D0F88-FCA6-4ED5-9ADC-0212614ECAE3</id>
-			<name>The Population Of The Matrix</name>
+			<name>The Population of the Matrix</name>
 			<source>SR5</source>
 			<page>218</page>
 		</rule>
@@ -2662,7 +2662,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>8D0C392E-9F6D-4A3C-94F1-88835286DB91</id>
-			<name>The Matrix: For You And Against You</name>
+			<name>The Matrix: For You and Against You</name>
 			<source>SR5</source>
 			<page>219</page>
 		</rule>
@@ -2686,13 +2686,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>6D260276-9791-48B1-B1DA-4FF0E7F356DC</id>
-			<name>Life With A Commlink</name>
+			<name>Life with a Commlink</name>
 			<source>SR5</source>
 			<page>221</page>
 		</rule>
 		<rule>
 			<id>159F1987-C273-475C-85F7-8576368442E1</id>
-			<name>Shadowrunning With A Commlink</name>
+			<name>Shadowrunning with a Commlink</name>
 			<source>SR5</source>
 			<page>223</page>
 		</rule>
@@ -2716,13 +2716,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>E214DF5F-4A88-4F56-9923-571D0E64439E</id>
-			<name>(Mis)Using The Matrix</name>
+			<name>(Mis)Using the Matrix</name>
 			<source>SR5</source>
 			<page>224</page>
 		</rule>
 		<rule>
 			<id>DE489BE9-7F75-422B-90FF-44DA9089A6DB</id>
-			<name>Cracking The Matrix Spine</name>
+			<name>Cracking the Matrix Spine</name>
 			<source>SR5</source>
 			<page>224</page>
 		</rule>
@@ -2818,13 +2818,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>BE099D8A-1B0D-4448-8B46-F3401C0D3D92</id>
-			<name>Deck Confguration</name>
+			<name>Deck Configuration</name>
 			<source>SR5</source>
 			<page>227</page>
 		</rule>
 		<rule>
 			<id>EED692E4-3C87-4D85-A522-AA88C04351C5</id>
-			<name>Reconfguring Your Deck</name>
+			<name>Reconfiguring Your Deck</name>
 			<source>SR5</source>
 			<page>228</page>
 		</rule>
@@ -2848,7 +2848,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>9116FAB9-DBC2-419D-8B2B-400B27A37A7B</id>
-			<name>Non-Devices And Matrix Damage</name>
+			<name>Non-Devices and Matrix Damage</name>
 			<source>SR5</source>
 			<page>229</page>
 		</rule>
@@ -2908,7 +2908,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>472A35D1-3B58-458E-87B9-B23DE22D08C3</id>
-			<name>Overwatch Score And Convergence</name>
+			<name>Overwatch Score and Convergence</name>
 			<source>SR5</source>
 			<page>231</page>
 		</rule>
@@ -2920,7 +2920,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>3A9DA88A-CCBB-4F5C-936B-CD603C77D8AB</id>
-			<name>Pans And Wans</name>
+			<name>PANs and WANs</name>
 			<source>SR5</source>
 			<page>233</page>
 		</rule>
@@ -2932,7 +2932,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>2A2B3BDF-2949-4505-9C42-4339D501FAA0</id>
-			<name>Grids On A Run</name>
+			<name>Grids on a Run</name>
 			<source>SR5</source>
 			<page>233</page>
 		</rule>
@@ -2956,7 +2956,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>793723E8-AD53-4D37-A2B6-D455615CDD32</id>
-			<name>Devices And Personas</name>
+			<name>Devices and Personas</name>
 			<source>SR5</source>
 			<page>234</page>
 		</rule>
@@ -3106,7 +3106,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>D3D14C87-D9FD-413F-BC06-71C656D2C22D</id>
-			<name>Hack On The Fly</name>
+			<name>Hack on the Fly</name>
 			<source>SR5</source>
 			<page>240</page>
 		</rule>
@@ -3262,7 +3262,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>3350C3C7-B95E-4DB5-A8EF-360E68961692</id>
-			<name>Types Of Ic</name>
+			<name>Types of Ic</name>
 			<source>SR5</source>
 			<page>247</page>
 		</rule>
@@ -3472,7 +3472,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>75A07AAE-8598-4841-9A2C-902AF0A5465F</id>
-			<name>Compiling A Sprite</name>
+			<name>Compiling a Sprite</name>
 			<source>SR5</source>
 			<page>254</page>
 		</rule>
@@ -3484,7 +3484,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>DEE9F9BA-A239-4DD3-B1A9-BFA1605A2790</id>
-			<name>Registering A Sprite</name>
+			<name>Registering a Sprite</name>
 			<source>SR5</source>
 			<page>254</page>
 		</rule>
@@ -3580,7 +3580,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>F9CE46E4-CC9B-4322-8992-55FE56A35A8A</id>
-			<name>Access To The Resonance Realms</name>
+			<name>Access to the Resonance Realms</name>
 			<source>SR5</source>
 			<page>257</page>
 		</rule>
@@ -3628,7 +3628,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>22235726-EAA7-45B0-B93D-DB2D90DDB0AF</id>
-			<name>The Danger Of Side Jobs</name>
+			<name>The Danger of Side Jobs</name>
 			<source>SR5</source>
 			<page>260</page>
 		</rule>
@@ -3640,7 +3640,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>C6DEEF72-0A7C-45A7-9A0F-2B340639FCE9</id>
-			<name>Free As A Bird</name>
+			<name>Free As a Bird</name>
 			<source>SR5</source>
 			<page>264</page>
 		</rule>
@@ -3652,13 +3652,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>53D08446-F12D-46F7-B4FC-31EAEADAAA60</id>
-			<name>Riggers In The Shadows</name>
+			<name>Riggers in the Shadows</name>
 			<source>SR5</source>
 			<page>264</page>
 		</rule>
 		<rule>
 			<id>3407B434-8703-425F-A0E8-2B5D5C511D53</id>
-			<name>Being The Machine</name>
+			<name>Being the Machine</name>
 			<source>SR5</source>
 			<page>265</page>
 		</rule>
@@ -3694,31 +3694,31 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>3FD300DA-73C8-4C37-B1DD-A120EB82178B</id>
-			<name>Rigging And You</name>
+			<name>Rigging and You</name>
 			<source>SR5</source>
 			<page>266</page>
 		</rule>
 		<rule>
 			<id>6D3A2FAB-D24D-4A84-9CF5-774D3B7A7192</id>
-			<name>Taking The Jump</name>
+			<name>Taking the Jump</name>
 			<source>SR5</source>
 			<page>266</page>
 		</rule>
 		<rule>
 			<id>C66A7DA5-A596-4C62-A422-C1296F071294</id>
-			<name>Vr And Rigging</name>
+			<name>Vr and Rigging</name>
 			<source>SR5</source>
 			<page>266</page>
 		</rule>
 		<rule>
 			<id>16781C1B-05D9-4041-AE59-BFF2ECAD8895</id>
-			<name>Rigging And Limits</name>
+			<name>Rigging and Limits</name>
 			<source>SR5</source>
 			<page>266</page>
 		</rule>
 		<rule>
 			<id>B2C2F0FA-83B1-4D1B-B2FC-86B8F101CACE</id>
-			<name>Noise And Rigging</name>
+			<name>Noise and Rigging</name>
 			<source>SR5</source>
 			<page>266</page>
 		</rule>
@@ -3742,7 +3742,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>4D1BA123-2512-47F5-B20C-307053409AF6</id>
-			<name>Riggers And Deckers</name>
+			<name>Riggers and Deckers</name>
 			<source>SR5</source>
 			<page>266</page>
 		</rule>
@@ -3766,7 +3766,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>55EDE854-21F1-460C-A655-2A477A1ADDF8</id>
-			<name>Group Command And Jumping Around</name>
+			<name>Group Command and Jumping Around</name>
 			<source>SR5</source>
 			<page>267</page>
 		</rule>
@@ -3778,7 +3778,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>5F69CB46-ABCC-4A02-AA45-0B3CB41BED28</id>
-			<name>Pans &amp; Wans (Rigger Style)</name>
+			<name>PANs &amp; WANs (Rigger Style)</name>
 			<source>SR5</source>
 			<page>267</page>
 		</rule>
@@ -3802,7 +3802,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>B7819F35-1AF0-45AE-BF6E-A5AF0FFD4B91</id>
-			<name>Drones In The Matrix</name>
+			<name>Drones in the Matrix</name>
 			<source>SR5</source>
 			<page>269</page>
 		</rule>
@@ -3832,7 +3832,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>4E118937-593D-4EAC-964D-D98B6A2137E4</id>
-			<name>Drone Infltration</name>
+			<name>Drone Infiltration</name>
 			<source>SR5</source>
 			<page>270</page>
 		</rule>
@@ -4072,7 +4072,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>42E73CA9-D042-445F-A004-BF1F856C1988</id>
-			<name>Spirits And Edge</name>
+			<name>Spirits and Edge</name>
 			<source>SR5</source>
 			<page>304</page>
 		</rule>
@@ -4090,7 +4090,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>A49A41FD-21C3-4010-9073-A1E5DBD00BC7</id>
-			<name>Using A Preparation</name>
+			<name>Using a Preparation</name>
 			<source>SR5</source>
 			<page>305</page>
 		</rule>
@@ -4210,7 +4210,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>D7DFE7F0-B775-4371-A4D6-B9F993844493</id>
-			<name>Getting Around Mana Barriers</name>
+			<name>Getting around Mana Barriers</name>
 			<source>SR5</source>
 			<page>316</page>
 		</rule>
@@ -4324,7 +4324,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>5E422C9E-0ABA-4B13-9464-63935277DED4</id>
-			<name>All The Angles</name>
+			<name>All the Angles</name>
 			<source>SR5</source>
 			<page>328</page>
 		</rule>
@@ -4336,7 +4336,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>25420203-9A95-4473-B2D4-963D583329AB</id>
-			<name>Role Of The Gamemaster</name>
+			<name>Role of the Gamemaster</name>
 			<source>SR5</source>
 			<page>332</page>
 		</rule>
@@ -4360,7 +4360,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>3600CFA1-61D4-4DF8-BCFB-EAA1A80D114C</id>
-			<name>Group Rules And Boundaries</name>
+			<name>Group Rules and Boundaries</name>
 			<source>SR5</source>
 			<page>333</page>
 		</rule>
@@ -4378,7 +4378,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>96471514-CD7B-4D2F-AA33-AD913F2E25C3</id>
-			<name>Designing A Run</name>
+			<name>Designing a Run</name>
 			<source>SR5</source>
 			<page>335</page>
 		</rule>
@@ -4438,7 +4438,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>96895B32-9EC6-4603-BF10-286FE619D7AD</id>
-			<name>Write The Background</name>
+			<name>Write the Background</name>
 			<source>SR5</source>
 			<page>338</page>
 		</rule>
@@ -4516,13 +4516,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>C79F605F-B9B5-40E2-99B5-A2EA9E9318D7</id>
-			<name>Assassination Or Destruction</name>
+			<name>Assassination or Destruction</name>
 			<source>SR5</source>
 			<page>340</page>
 		</rule>
 		<rule>
 			<id>CD33ECA6-DE32-40B6-8048-F63127449C82</id>
-			<name>Extraction Or Insertion</name>
+			<name>Extraction or Insertion</name>
 			<source>SR5</source>
 			<page>340</page>
 		</rule>
@@ -4564,7 +4564,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>DBF1C0B8-9CC6-4A3A-8E18-6346921EAB76</id>
-			<name>Macguffns</name>
+			<name>Macguffins</name>
 			<source>SR5</source>
 			<page>343</page>
 		</rule>
@@ -4636,7 +4636,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>175342AE-8BA2-435F-9851-7C25711C3817</id>
-			<name>Roleplaying The Npc</name>
+			<name>Roleplaying the NPC</name>
 			<source>SR5</source>
 			<page>347</page>
 		</rule>
@@ -4648,7 +4648,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>6674B119-2EE1-46E0-8F95-45819652420C</id>
-			<name>Stay Focused On Players</name>
+			<name>Stay Focused on Players</name>
 			<source>SR5</source>
 			<page>347</page>
 		</rule>
@@ -4768,7 +4768,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>CD30D9F7-915F-46E2-913C-11E44AEFC763</id>
-			<name>Plan To Finish</name>
+			<name>Plan to Finish</name>
 			<source>SR5</source>
 			<page>354</page>
 		</rule>
@@ -4780,7 +4780,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>1F4EEA86-987B-4041-AA70-97F33AC82661</id>
-			<name>Campaign Time And Character Advancement</name>
+			<name>Campaign Time and Character Advancement</name>
 			<source>SR5</source>
 			<page>354</page>
 		</rule>
@@ -4804,7 +4804,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>0ADFE5B1-5140-4915-ABA2-7E9F90105061</id>
-			<name>Military Or Mercenary</name>
+			<name>Military or Mercenary</name>
 			<source>SR5</source>
 			<page>355</page>
 		</rule>
@@ -4822,7 +4822,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>1C57B381-DFA2-4B9F-8C96-40E2D40F4B26</id>
-			<name>Security In The Sixth World</name>
+			<name>Security in the Sixth World</name>
 			<source>SR5</source>
 			<page>355</page>
 		</rule>
@@ -4834,7 +4834,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>E127F5F7-6082-436E-8663-341011C44D00</id>
-			<name>Htr Team Response Time</name>
+			<name>HTR Team Response Time</name>
 			<source>SR5</source>
 			<page>356</page>
 		</rule>
@@ -4882,19 +4882,19 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>4C12EF63-B23E-4AED-9AEE-5FE40B5B6887</id>
-			<name>Pans And Wans</name>
+			<name>PANs and WANs</name>
 			<source>SR5</source>
 			<page>358</page>
 		</rule>
 		<rule>
 			<id>5329A3BA-F4A8-441A-B543-CE83B8E96E1F</id>
-			<name>Hosts And Ic</name>
+			<name>Hosts and IC</name>
 			<source>SR5</source>
 			<page>359</page>
 		</rule>
 		<rule>
 			<id>877830CB-CEC8-4630-B01E-843ED7AE7D9B</id>
-			<name>Gods And Spiders</name>
+			<name>Gods and Spiders</name>
 			<source>SR5</source>
 			<page>360</page>
 		</rule>
@@ -4930,7 +4930,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>E4F6524F-08D7-4D58-961F-6AB6E913065E</id>
-			<name>Critters And Spirits</name>
+			<name>Critters and Spirits</name>
 			<source>SR5</source>
 			<page>361</page>
 		</rule>
@@ -4966,7 +4966,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>5D4F2198-788A-4711-90D2-14E304719706</id>
-			<name>Sensors And Scanners</name>
+			<name>Sensors and Scanners</name>
 			<source>SR5</source>
 			<page>364</page>
 		</rule>
@@ -4984,13 +4984,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>3D7952FD-C8CB-4BAB-BD32-FBCC818FC8D4</id>
-			<name>System Identification Number (Sin)</name>
+			<name>System Identification Number (SIN)</name>
 			<source>SR5</source>
 			<page>366</page>
 		</rule>
 		<rule>
 			<id>00D3BDC9-3480-44C6-B44C-8EAAA6D21827</id>
-			<name>Issuing A Sin</name>
+			<name>Issuing a SIN</name>
 			<source>SR5</source>
 			<page>367</page>
 		</rule>
@@ -5002,19 +5002,19 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>A0469D90-664C-4930-9E48-6638E46B900B</id>
-			<name>Fake Sins</name>
+			<name>Fake SINs</name>
 			<source>SR5</source>
 			<page>367</page>
 		</rule>
 		<rule>
 			<id>3BA6A021-BD18-431D-B2E0-7679BEC2F241</id>
-			<name>Checking A Fake Sin</name>
+			<name>Checking a Fake SIN</name>
 			<source>SR5</source>
 			<page>368</page>
 		</rule>
 		<rule>
 			<id>0F5CD1E4-CE6D-4CBF-AF90-ED6A760ED4AC</id>
-			<name>Burned Sins</name>
+			<name>Burned SINs</name>
 			<source>SR5</source>
 			<page>368</page>
 		</rule>
@@ -5062,7 +5062,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>6F194296-AED9-4499-A452-F05BFCD1CA12</id>
-			<name>Hospital Or Clinic</name>
+			<name>Hospital or Clinic</name>
 			<source>SR5</source>
 			<page>370</page>
 		</rule>
@@ -5110,13 +5110,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>DA6D3191-F924-4886-9CD0-6758BC41EF6B</id>
-			<name>Paying The Bills</name>
+			<name>Paying the Bills</name>
 			<source>SR5</source>
 			<page>374</page>
 		</rule>
 		<rule>
 			<id>1FE56033-4503-472D-B37A-D968BF87459C</id>
-			<name>Buying A Lifestyle</name>
+			<name>Buying a Lifestyle</name>
 			<source>SR5</source>
 			<page>374</page>
 		</rule>
@@ -5152,7 +5152,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>ED3FFD1C-9F0B-4B32-9C51-7E06FE974AE2</id>
-			<name>Helps And Hindrances</name>
+			<name>Helps and Hindrances</name>
 			<source>SR5</source>
 			<page>378</page>
 		</rule>
@@ -5254,7 +5254,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>DF5AA731-C1FF-444C-A169-C695C889DB25</id>
-			<name>The Hand Of God</name>
+			<name>The Hand of God</name>
 			<source>SR5</source>
 			<page>386</page>
 		</rule>
@@ -5266,7 +5266,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>AA517FDE-6AA5-40E1-9511-AC1BC229E2FD</id>
-			<name>Contacts By The Numbers</name>
+			<name>Contacts by the Numbers</name>
 			<source>SR5</source>
 			<page>386</page>
 		</rule>
@@ -5284,7 +5284,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>3B95D96D-7851-42B5-ADC5-C3512BF0B066</id>
-			<name>Favor For A Friend</name>
+			<name>Favor For a Friend</name>
 			<source>SR5</source>
 			<page>389</page>
 		</rule>
@@ -5302,7 +5302,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>2909743E-A4C5-472C-97F6-3E6207E4695A</id>
-			<name>Attributes And Skills</name>
+			<name>Attributes and Skills</name>
 			<source>SR5</source>
 			<page>393</page>
 		</rule>
@@ -5326,7 +5326,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>3BA6C5E6-4B89-4A67-B8F8-E3F325490956</id>
-			<name>Toxins, Drugs, And Btls</name>
+			<name>Toxins, Drugs, and BTLs</name>
 			<source>SR5</source>
 			<page>408</page>
 		</rule>
@@ -5356,7 +5356,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>8703AD1D-90FD-4ED9-98D0-3271C0370C6F</id>
-			<name>Substance Abuse And Addiction</name>
+			<name>Substance Abuse and Addiction</name>
 			<source>SR5</source>
 			<page>413</page>
 		</rule>
@@ -5374,13 +5374,13 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>5EF95F61-E512-4063-BE4E-2EE6F17B98C7</id>
-			<name>Getting A Fix</name>
+			<name>Getting a Fix</name>
 			<source>SR5</source>
 			<page>415</page>
 		</rule>
 		<rule>
 			<id>397A7425-C896-4B75-98E1-6266E80026B6</id>
-			<name>Withdrawal And Staying Clean</name>
+			<name>Withdrawal and Staying Clean</name>
 			<source>SR5</source>
 			<page>415</page>
 		</rule>
@@ -5428,7 +5428,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>F95DF6F8-B913-4E6B-8010-2350A59532A4</id>
-			<name>Contacts And Availability</name>
+			<name>Contacts and Availability</name>
 			<source>SR5</source>
 			<page>418</page>
 		</rule>
@@ -5440,7 +5440,7 @@ A Moving Vehicle</name>
 		</rule>
 		<rule>
 			<id>57BA27B4-35E5-4B05-A491-8A373E0B6E6D</id>
-			<name>Contacts And Fencing</name>
+			<name>Contacts and Fencing</name>
 			<source>SR5</source>
 			<page>419</page>
 		</rule>

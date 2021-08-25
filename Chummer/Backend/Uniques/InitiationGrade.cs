@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -40,10 +41,12 @@ namespace Chummer
         private bool _blnTechnomancer;
         private int _intGrade;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
 
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
+
         public InitiationGrade(Character objCharacter)
         {
             // Create the GUID for the new InitiationGrade.
@@ -68,22 +71,23 @@ namespace Chummer
             //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
-            if (intGrade > 0 && blnTechnomancer && _objCharacter.TechnomancerEnabled && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue
+            if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue
                 && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
             {
                 decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
-                int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int) (
+                int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
                     Math.Ceiling(decNonCyberwareEssence) == Math.Floor(decNonCyberwareEssence)
                         ? Math.Ceiling(_objCharacter.CyberwareEssence)
                         : Math.Floor(_objCharacter.CyberwareEssence)));
                 // Cannot increase RES to be more than what it would be without any Essence loss.
                 intResonanceRecovered = _objCharacter.Options.ESSLossReducesMaximumOnly
-                    ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - _objCharacter.RES.TotalMaximum)
+                    ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
                     // +1 compared to normal because this Grade's effect has not been processed yet.
-                    : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() + 1 - _objCharacter.RES.Value);
+                    : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
                 ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
                     _guiID.ToString("D", GlobalOptions.InvariantCultureInfo),
-                    Improvement.ImprovementType.Attribute, string.Empty, intResonanceRecovered, 1, 0, 0, intResonanceRecovered);
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
+                ImprovementManager.Commit(_objCharacter);
             }
         }
 
@@ -103,6 +107,7 @@ namespace Chummer
             objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }
 
@@ -122,6 +127,10 @@ namespace Chummer
             objNode.TryGetBoolFieldQuickly("ordeal", ref _blnOrdeal);
             objNode.TryGetBoolFieldQuickly("schooling", ref _blnSchooling);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -144,9 +153,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, and Load Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Initiation Grade in the Improvement system.
         /// </summary>
@@ -196,9 +207,11 @@ namespace Chummer
             get => _blnTechnomancer;
             set => _blnTechnomancer = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// The Initiation Grade's Karma cost.
         /// </summary>
@@ -275,13 +288,24 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.WindowText;
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsInitiationGrade)
         {
             TreeNode objNode = new TreeNode
@@ -305,38 +329,42 @@ namespace Chummer
         {
             return objGrade == null ? 1 : Grade.CompareTo(objGrade.Grade);
         }
-        #endregion
+
+        #endregion Methods
 
         public bool Remove(bool blnConfirmDelete = true)
+        {
+            return Remove(blnConfirmDelete, true);
+        }
+
+        public bool Remove(bool blnConfirmDelete, bool blnPerformGradeCheck)
         {
             // Stop if this isn't the highest grade
             if (_objCharacter.MAGEnabled)
             {
-                if (Grade != _objCharacter.InitiateGrade)
+                if (Grade != _objCharacter.InitiateGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"), LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                        LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return false;
                 }
 
-                if (blnConfirmDelete)
-                {
-                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
-                        return false;
-                }
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteInitiateGrade")))
+                    return false;
             }
             else if (_objCharacter.RESEnabled)
             {
-                if (Grade != _objCharacter.SubmersionGrade)
+                if (Grade != _objCharacter.SubmersionGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"), LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                        LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
                     return false;
                 }
 
-                if (blnConfirmDelete)
-                {
-                    if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
-                        return false;
-                }
+                if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
+                    return false;
 
                 ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
             }
@@ -344,6 +372,42 @@ namespace Chummer
                 return false;
 
             _objCharacter.InitiationGrades.Remove(this);
+            // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+            // Arts
+            for (int i = _objCharacter.Arts.Count - 1; i > 0; --i)
+            {
+                Art objLoop = _objCharacter.Arts[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Metamagics
+            for (int i = _objCharacter.Metamagics.Count - 1; i > 0; --i)
+            {
+                Metamagic objLoop = _objCharacter.Metamagics[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Enhancements
+            for (int i = _objCharacter.Enhancements.Count - 1; i > 0; --i)
+            {
+                Enhancement objLoop = _objCharacter.Enhancements[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Spells
+            for (int i = _objCharacter.Spells.Count - 1; i > 0; --i)
+            {
+                Spell objLoop = _objCharacter.Spells[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
+            // Complex Forms
+            for (int i = _objCharacter.ComplexForms.Count - 1; i > 0; --i)
+            {
+                ComplexForm objLoop = _objCharacter.ComplexForms[i];
+                if (objLoop.Grade == Grade)
+                    objLoop.Remove(false);
+            }
             return true;
         }
 
@@ -362,7 +426,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return new {InternalId, Grade, Group, Ordeal, Schooling, Technomancer, Notes}.GetHashCode();
+            return (InternalId, Grade, Group, Ordeal, Schooling, Technomancer, Notes).GetHashCode();
         }
 
         public static bool operator ==(InitiationGrade left, InitiationGrade right)

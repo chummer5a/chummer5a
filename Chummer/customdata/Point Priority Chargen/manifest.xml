@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>14b4dd17-f758-4a7d-966b-50b894f30822</guid>
+  <version>0.1.17</version>
+  <authors>
+    <author>
+      <name>Delnar_Ersike</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset overhauls the entire character creation system and replaces it with one that is both much more balanced and much less punishing for those who go for stranger builds. The entire priority table has been overhauled, Sum-to-Ten rules and metatype costs and special quality costs have been overhauled, and every single item that could be used for karma discounts of some kind was overhauled to have a different effect.\n\nTo view the full details of this ruleset, go to this Google Doc: https://docs.google.com/document/d/1pCoHXLAf7bWLE4trdAsKI7qrLq4QXlsW7W4K4jEka-8/. </text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>

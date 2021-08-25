@@ -3610,7 +3610,7 @@
     </string>
     <string>
       <key>Tip_CommonNuyen</key>
-      <text>O total de Neoienes que seu personagem tem para comprar equipamento. 1 Carma = {0}¥.</text>
+      <text>O total de Neoienes que seu personagem tem para comprar equipamento. {0}.</text>
     </string>
     <string>
       <key>Tip_CommonAIRating</key>
@@ -5802,10 +5802,6 @@
     <string>
       <key>Label_Options_CyberlimbCount</key>
       <text>Membros para Personagens Padrão:</text>
-    </string>
-    <string>
-      <key>Label_Options_NuyenPerBP</key>
-      <text>Neoiene por Ponto de Construção:</text>
     </string>
     <string>
       <key>Checkbox_Options_MayBuyQualities</key>
@@ -8209,7 +8205,7 @@
       <text>Diretório de dados personalizados com este nome já existe.</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Nome de Diretório de Dados Personalizados Duplicado</text>
     </string>
     <string>

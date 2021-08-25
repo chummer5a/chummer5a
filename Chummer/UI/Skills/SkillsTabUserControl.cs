@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -23,13 +24,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
 using Chummer.UI.Shared;
-using Chummer.Backend.Attributes;
 
 namespace Chummer.UI.Skills
 {
@@ -58,18 +57,19 @@ namespace Chummer.UI.Skills
 
         private void UpdateKnoSkillRemaining()
         {
-            StringBuilder sbdText = new StringBuilder(_objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo))
-                .Append(LanguageManager.GetString("String_Of"))
-                .Append(_objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalOptions.CultureInfo));
+            string strText =
+                _objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalOptions.CultureInfo) +
+                LanguageManager.GetString("String_Of") +
+                _objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalOptions.CultureInfo);
             int intSkillPointsSpentOnKnoSkills = _objCharacter.SkillsSection.SkillPointsSpentOnKnoskills;
             if (intSkillPointsSpentOnKnoSkills != 0)
-                sbdText.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent"), intSkillPointsSpentOnKnoSkills);
-            lblKnowledgeSkillPoints.Text = sbdText.ToString();
+                strText += string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent"), intSkillPointsSpentOnKnoSkills);
+            lblKnowledgeSkillPoints.Text = strText;
         }
 
         private Character _objCharacter;
         private List<Tuple<string, Predicate<Skill>>> _lstDropDownActiveSkills;
-        private readonly List<Tuple<string, IComparer<Skill>>>  _sortList;
+        private readonly List<Tuple<string, IComparer<Skill>>> _sortList;
         private bool _blnActiveSkillSearchMode;
         private bool _blnKnowledgeSkillSearchMode;
         private List<Tuple<string, Predicate<KnowledgeSkill>>> _lstDropDownKnowledgeSkills;
@@ -92,6 +92,9 @@ namespace Chummer.UI.Skills
                 _objCharacter = new Character();
                 Utils.BreakIfDebug();
             }
+
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                return;
 
             _lstDropDownActiveSkills = GenerateDropdownFilter(_objCharacter);
             _lstDropDownKnowledgeSkills = GenerateKnowledgeDropdownFilter(_objCharacter);
@@ -149,7 +152,7 @@ namespace Chummer.UI.Skills
                 {
                     Dock = DockStyle.Fill
                 };
-                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.SkillsDictionary.ContainsKey(y.Name)), true);
+                _lstSkillGroups.Filter(x => x.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)), true);
                 _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
                 RefreshSkillGroupLabels();
 
@@ -172,18 +175,18 @@ namespace Chummer.UI.Skills
 
             cboDisplayFilter.BeginUpdate();
             cboDisplayFilter.DataSource = null;
-            cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
             cboDisplayFilter.ValueMember = "Item2";
             cboDisplayFilter.DisplayMember = "Item1";
+            cboDisplayFilter.DataSource = _lstDropDownActiveSkills;
             cboDisplayFilter.SelectedIndex = 1;
             cboDisplayFilter.MaxDropDownItems = _lstDropDownActiveSkills.Count;
             cboDisplayFilter.EndUpdate();
 
             cboDisplayFilterKnowledge.BeginUpdate();
             cboDisplayFilterKnowledge.DataSource = null;
-            cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
             cboDisplayFilterKnowledge.ValueMember = "Item2";
             cboDisplayFilterKnowledge.DisplayMember = "Item1";
+            cboDisplayFilterKnowledge.DataSource = _lstDropDownKnowledgeSkills;
             cboDisplayFilterKnowledge.SelectedIndex = 1;
             cboDisplayFilterKnowledge.MaxDropDownItems = _lstDropDownKnowledgeSkills.Count;
             cboDisplayFilterKnowledge.EndUpdate();
@@ -191,18 +194,18 @@ namespace Chummer.UI.Skills
 
             cboSort.BeginUpdate();
             cboSort.DataSource = null;
-            cboSort.DataSource = _sortList;
             cboSort.ValueMember = "Item2";
             cboSort.DisplayMember = "Item1";
+            cboSort.DataSource = _sortList;
             cboSort.SelectedIndex = 0;
             cboSort.MaxDropDownItems = _sortList.Count;
             cboSort.EndUpdate();
 
             cboSortKnowledge.BeginUpdate();
             cboSortKnowledge.DataSource = null;
-            cboSortKnowledge.DataSource = _lstSortKnowledgeList;
             cboSortKnowledge.ValueMember = "Item2";
             cboSortKnowledge.DisplayMember = "Item1";
+            cboSortKnowledge.DataSource = _lstSortKnowledgeList;
             cboSortKnowledge.SelectedIndex = 0;
             cboSortKnowledge.MaxDropDownItems = _lstSortKnowledgeList.Count;
             cboSortKnowledge.EndUpdate();
@@ -216,12 +219,12 @@ namespace Chummer.UI.Skills
 
             if (!_objCharacter.Created)
             {
-                lblGroupsSp.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                lblActiveSp.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                lblBuyWithKarma.DoDatabinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblGroupsSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblActiveSp.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
+                lblBuyWithKarma.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
 
-                lblKnoSp.DoDatabinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
-                lblKnoBwk.DoDatabinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
+                lblKnoSp.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
+                lblKnoBwk.DoOneWayDataBinding("Visible", _objCharacter.SkillsSection, nameof(SkillsSection.HasKnowledgePoints));
                 UpdateKnoSkillRemaining();
             }
             else
@@ -722,33 +725,25 @@ namespace Chummer.UI.Skills
         private void btnExotic_Click(object sender, EventArgs e)
         {
             ExoticSkill objSkill;
-            XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
             using (frmSelectExoticSkill frmPickExoticSkill = new frmSelectExoticSkill(_objCharacter))
             {
                 frmPickExoticSkill.ShowDialog(this);
 
-                if (frmPickExoticSkill.DialogResult == DialogResult.Cancel)
+                if (frmPickExoticSkill.DialogResult != DialogResult.OK)
                     return;
 
-                XmlNode xmlSkillNode = xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + frmPickExoticSkill.SelectedExoticSkill.CleanXPath() + "]");
-
-                objSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
-                {
-                    Specific = frmPickExoticSkill.SelectedExoticSkillSpecialisation
-                };
+                objSkill = _objCharacter.SkillsSection.AddExoticSkill(frmPickExoticSkill.SelectedExoticSkill,
+                    frmPickExoticSkill.SelectedExoticSkillSpecialisation);
             }
 
             // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
             if (_objCharacter.Created && objSkill.UpgradeKarmaCost > _objCharacter.Karma)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"));
+                _objCharacter.SkillsSection.Skills.Remove(objSkill);
                 return;
             }
             objSkill.Upgrade();
-            _objCharacter.SkillsSection.Skills.Add(objSkill);
-            string key = objSkill.DictionaryKey;
-            if (!_objCharacter.SkillsSection.SkillsDictionary.ContainsKey(key))
-                _objCharacter.SkillsSection.SkillsDictionary.Add(key, objSkill);
         }
 
         private void btnKnowledge_Click(object sender, EventArgs e)
@@ -760,28 +755,33 @@ namespace Chummer.UI.Skills
                     Description = LanguageManager.GetString("Label_Options_NewKnowledgeSkill")
                 })
                 {
-                    form.SetDropdownItemsMode(KnowledgeSkill.DefaultKnowledgeSkills(_objCharacter));
+                    form.SetDropdownItemsMode(_objCharacter.SkillsSection.MyDefaultKnowledgeSkills);
 
                     if (form.ShowDialog(Program.MainForm) != DialogResult.OK)
                         return;
                     KnowledgeSkill skill = new KnowledgeSkill(_objCharacter)
                     {
-                        WriteableName = form.SelectedItem
+                        WritableName = form.SelectedItem
                     };
 
                     if (_objCharacter.SkillsSection.HasAvailableNativeLanguageSlots && (skill.IsLanguage || string.IsNullOrEmpty(skill.Type)))
                     {
                         DialogResult eDialogResult = Program.MainForm.ShowMessageBox(this,
                             string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_NewNativeLanguageSkill"),
-                                1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WriteableName),
+                                1 + ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.NativeLanguageLimit), skill.WritableName),
                             LanguageManager.GetString("Tip_Skill_NativeLanguage"), MessageBoxButtons.YesNoCancel);
-                        if (eDialogResult == DialogResult.Cancel)
-                            return;
-                        if (eDialogResult == DialogResult.Yes)
+                        switch (eDialogResult)
                         {
-                            if (!skill.IsLanguage)
-                                skill.Type = "Language";
-                            skill.IsNativeLanguage = true;
+                            case DialogResult.Cancel:
+                                return;
+
+                            case DialogResult.Yes:
+                                {
+                                    if (!skill.IsLanguage)
+                                        skill.Type = "Language";
+                                    skill.IsNativeLanguage = true;
+                                    break;
+                                }
                         }
                     }
 

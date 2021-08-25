@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -42,6 +43,5 @@ namespace Chummer.Backend.Skills
         {
             return list.AsParallel().Sum(skill => skill.CurrentKarmaCost);
         }
-
     }
 }

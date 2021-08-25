@@ -1,15 +1,10 @@
-using Chummer;
-using Chummer.Plugins;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
+using Chummer;
+using Chummer.Plugins;
+using Newtonsoft.Json;
 using NLog;
 
 namespace SamplePlugin
@@ -17,7 +12,7 @@ namespace SamplePlugin
     public class MySamplePlugin : IPlugin
     {
         //Just use NLog, like we all do... or don'T and implement your own logging...
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         //If you want this plugin NOT to be visible with the default "SamplePlugin.MySamplePlugin"
         public override string ToString()
@@ -29,16 +24,16 @@ namespace SamplePlugin
         {
             try
             {
-                //this function is only for "you"
-                //feel free to initialize yourself and set/change anything in the ChummerMain-Form you want.
-                //as an example, lets change the MAIN TITLE!
-                mainControl.Text = "SamplePlugin changed the title!";
+                // This function is only for "you"
+                // Feel free to initialize yourself and set/change anything in the ChummerMain-Form you want.
+
+                // If you uncomment the following line as an example, the main title of the entire program gets changed!
+                //mainControl.Text = "SamplePlugin changed the title!";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Log.Error(e);
             }
-           
         }
 
         public void Dispose()
@@ -54,7 +49,7 @@ namespace SamplePlugin
 
         public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate)
         {
-            //here you can add nodes to the character roster. 
+            //here you can add nodes to the character roster.
             return null;
         }
 
@@ -68,7 +63,6 @@ namespace SamplePlugin
         {
             try
             {
-
                 //return the UserControl for you options
                 return new ucOptions();
             }
@@ -83,20 +77,16 @@ namespace SamplePlugin
         {
             try
             {
-
-
                 //this is the first thing needed for reflection in Chummer Main. Please don't return null, but your assembly
                 //that is probably bad coding AND we should change it, but for now, just stick with it...
                 return this.GetType().Assembly;
             }
-
             catch (Exception e)
             {
                 Log.Error(e);
             }
             return null;
         }
-
 
         public string GetSaveToFileElement(Character input)
         {
@@ -162,7 +152,6 @@ namespace SamplePlugin
             //here you can tweak telemetry items before they are logged.
             //if you don't know anything about logging or telemetry, just return the object
             return telemetry;
-            
         }
     }
 }

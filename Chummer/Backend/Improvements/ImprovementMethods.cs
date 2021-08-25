@@ -322,10 +322,6 @@ namespace Chummer
                     return objImprovementAdder.selectpowers;
                 case "ARMORENCUMBRANCEPENALTY":
                     return objImprovementAdder.armorencumbrancepenalty;
-                case "INITIATION":
-                    return objImprovementAdder.initiation;
-                case "SUBMERSION":
-                    return objImprovementAdder.submersion;
                 case "ADDART":
                     return objImprovementAdder.addart;
                 case "SELECTART":
@@ -650,6 +646,8 @@ namespace Chummer
                     return objImprovementAdder.freequality;
                 case "SELECTEXPERTISE":
                     return objImprovementAdder.selectexpertise;
+                case "PENALTYFREESUSTAIN":
+                    return objImprovementAdder.penaltyfreesustain;
                 // No method matches, return a null pointer
                 default:
                     return null;

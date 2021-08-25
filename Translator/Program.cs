@@ -2,20 +2,22 @@ using System;
 using System.Windows.Forms;
 
 [assembly: CLSCompliant(true)]
+
 namespace Translator
 {
-    static class Program
+    internal static class Program
     {
-        private static frmTranslatorMain s_FrmMain;
+        private static frmTranslatorMain _frmMain;
+
         [STAThread]
         private static void Main()
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            s_FrmMain = new frmTranslatorMain();
-            Application.Run(s_FrmMain);
+            _frmMain = new frmTranslatorMain();
+            Application.Run(_frmMain);
         }
 
-        public static frmTranslatorMain MainForm => s_FrmMain;
+        public static frmTranslatorMain MainForm => _frmMain;
     }
 }

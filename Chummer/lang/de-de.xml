@@ -2392,7 +2392,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>Die Menge Nuyen die Ihr Charakter für den Kauf von Ausrüstung zur Verfügung hat. 1 GP = 5.000¥.</text>
+            <text>Die Menge Nuyen die Ihr Charakter für den Kauf von Ausrüstung zur Verfügung hat. {0}.</text>
         </string>
         <string>
             <key>Tip_CommonAIRating</key>
@@ -2541,6 +2541,14 @@
       <string>
         <key>Tab_Options_CustomDataDirectories</key>
         <text>Dateipfad der Custom Data Files</text>
+      </string>
+      <string>
+        <key>Tooltip_CharacterOptions_LanguageSpecificManifestMissing</key>
+        <string>Es gibt kein Manifest in deiner Sprache.</string>
+      </string>
+      <string>
+        <key>Tooltip_CharacterOptions_ManifestMissing</key>
+        <string>Für diesen Custom Data Ordner wurde kein oder ein leeres Manifest gefunden.</string>
       </string>
         <!-- End Region -->
         <!-- Region  Martial Arts Tab -->
@@ -3857,6 +3865,10 @@
             <text>Notizen</text>
         </string>
         <string>
+            <key>Button_ChooseCustomColor</key>
+          <text>Farbe für diese Notiz wählen</text>
+        </string>
+        <string>
             <key>Title_Options</key>
             <text>Optionen</text>
         </string>
@@ -3891,10 +3903,6 @@
         <string>
             <key>Label_Options_CyberlimbCount</key>
             <text>Gliedmaßen für Standard-Charaktere:</text>
-        </string>
-        <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>Nuyen pro Generierungspunkt:</text>
         </string>
         <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
@@ -5086,8 +5094,12 @@
         </string>
         <string>
             <key>Label_SelectMentor_ChooseOne</key>
-            <text>Wählen Sie einen Mentor:</text>
+            <text>Bonus wählen:</text>
         </string>
+      <string>
+        <key>Label_SelectMentor_Bonus</key>
+        <text>Bonus:</text>
+      </string>
         <string>
             <key>Title_ExportCharacter</key>
             <text>Charakter exportieren</text>
@@ -8586,6 +8598,14 @@
             <text>Nur für Patzer:</text>
         </string>
         <string>
+          <key>String_NoDiceLeft_Title</key>
+          <text>Keine Würfel übrig</text>
+        </string>
+        <string>
+          <key>String_NoDiceLeft_Text</key>
+          <text>Du hast keine weiteren Würfel, die neu geworfen werden könnten.</text>
+        </string>
+        <string>
             <key>String_Pilot</key>
             <text>Pilot</text>
         </string>
@@ -8642,7 +8662,7 @@
             <text>Ein benutzerdefiniertes Datenverzeichnis dieses Namens ist bereits vorhanden.</text>
         </string>
         <string>
-            <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+            <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
             <text>Doppelter Name eines benutzerdefinierten Datenverzeichnisses</text>
         </string>
         <string>
@@ -9081,6 +9101,10 @@
             <key>Menu_ShowMySINners</key>
             <text>Alle Daten anzeigen</text>
         </string>
+      <string>
+        <key>Menu_SINnersCreateGroup</key>
+        <text>Lege eine neue Gruppe an</text>
+      </string>
         <string>
             <key>Menu_RemovePinnedChummer</key>
             <text>Charakter un-pinnen</text>
@@ -9640,6 +9664,24 @@
         <string>
             <key>LimitCondition_SkillGroupStealthNaked</key>
             <text>Nur für die Fertigkeitsgruppe Heimlichkeit, muss vollständig unbekleidet sein</text>
+        </string>
+        <!--Region Sustained Spells Control-->
+        <string>
+          <key>Label_SustainedSelf</key>
+          <text>Selbst</text>
+        </string>
+        <string>
+          <key>Label_SustainedForce</key>
+          <text>Kraft:</text>
+        </string>
+        <string>
+          <key>Label_NetHits</key>
+          <text>Net Erfolge:</text>
+        </string>
+        <!--End Region-->
+        <string>
+          <key>Button_SustainSpell</key>
+          <text>Aufrechterhalten</text>
         </string>
     </strings>
 </chummer>

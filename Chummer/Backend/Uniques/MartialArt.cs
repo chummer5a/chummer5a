@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -35,7 +36,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -44,10 +45,12 @@ namespace Chummer
         private int _intKarmaCost = 7;
         private readonly TaggedObservableCollection<MartialArtTechnique> _lstTechniques = new TaggedObservableCollection<MartialArtTechnique>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
         private bool _blnIsQuality;
 
         #region Create, Save, Load, and Print Methods
+
         public MartialArt(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -70,12 +73,12 @@ namespace Chummer
                     {
                         if (objImprovement.SourceName == objNewItem.InternalId && objImprovement.Enabled)
                         {
-                            foreach (Tuple<INotifyMultiplePropertyChanged, string> tuplePropertyChanged in objImprovement.GetRelevantPropertyChangers())
+                            foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in objImprovement.GetRelevantPropertyChangers())
                             {
-                                if (dicChangedProperties.TryGetValue(tuplePropertyChanged.Item1, out HashSet<string> setChangedProperties))
-                                    setChangedProperties.Add(tuplePropertyChanged.Item2);
+                                if (dicChangedProperties.TryGetValue(objToUpdate, out HashSet<string> setChangedProperties))
+                                    setChangedProperties.Add(strPropertyName);
                                 else
-                                    dicChangedProperties.Add(tuplePropertyChanged.Item1, new HashSet<string> { tuplePropertyChanged.Item2 });
+                                    dicChangedProperties.Add(objToUpdate, new HashSet<string> { strPropertyName });
                             }
                         }
                     }
@@ -103,6 +106,11 @@ namespace Chummer
             objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
             if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
 
             if (objXmlArtNode["bonus"] != null)
@@ -121,7 +129,7 @@ namespace Chummer
 
                 string strQualityNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
-                if (string.IsNullOrEmpty(strQualityNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (string.IsNullOrEmpty(strQualityNotes) && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     string strTranslatedNameOnPage = CurrentDisplayName;
 
@@ -143,7 +151,17 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source, DisplayPage(GlobalOptions.Language),
+                        GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -168,6 +186,7 @@ namespace Chummer
             }
             objWriter.WriteEndElement();
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
 
             if (!IsQuality)
@@ -225,6 +244,10 @@ namespace Chummer
             }
 
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -256,9 +279,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Name.
         /// </summary>
@@ -300,7 +325,7 @@ namespace Chummer
         public string DisplayNameShort(string strLanguage)
         {
             // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -327,7 +352,6 @@ namespace Chummer
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -345,7 +369,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -373,6 +397,7 @@ namespace Chummer
         /// Selected Martial Arts Techniques.
         /// </summary>
         public TaggedObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
+
         public TaggedObservableCollection<MartialArtTechnique> Children => Techniques;
 
         /// <summary>
@@ -382,6 +407,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -406,9 +440,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtTechnique)
         {
             if (IsQuality && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -441,7 +477,7 @@ namespace Chummer
         public static bool Purchase(Character objCharacter)
         {
             if (objCharacter == null)
-                throw new ArgumentNullException    (nameof(objCharacter));
+                throw new ArgumentNullException(nameof(objCharacter));
             bool blnAddAgain;
             do
             {
@@ -492,12 +528,10 @@ namespace Chummer
         public bool Remove(bool blnConfirmDelete = true)
         {
             // Delete the selected Martial Art.
-            if (IsQuality) return false;
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
-                    return false;
-            }
+            if (IsQuality)
+                return false;
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteMartialArt")))
+                return false;
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
                 InternalId);
@@ -511,6 +545,7 @@ namespace Chummer
             _objCharacter.MartialArts.Remove(this);
             return true;
         }
+
         public Color PreferredColor
         {
             get
@@ -518,20 +553,21 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return IsQuality
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return IsQuality
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion Methods
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

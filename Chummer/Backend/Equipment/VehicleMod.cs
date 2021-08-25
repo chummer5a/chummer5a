@@ -16,7 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Backend.Attributes;
+
 using System;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -26,6 +26,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -34,9 +35,9 @@ namespace Chummer.Backend.Equipment
     /// Vehicle Modification.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalOptions.InvariantCultureInfo, GlobalOptions.DefaultLanguage)}")]
-    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell
+    public class VehicleMod : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanEquip, IHasSource, IHasRating, ICanSort, IHasStolenProperty, ICanPaste, ICanSell, ICanBlackMarketDiscount
     {
-        private readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -59,6 +60,7 @@ namespace Chummer.Backend.Equipment
         private int _intConditionMonitor;
         private readonly TaggedObservableCollection<Weapon> _lstVehicleWeapons = new TaggedObservableCollection<Weapon>();
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strSubsystems = string.Empty;
         private readonly TaggedObservableCollection<Cyberware> _lstCyberware = new TaggedObservableCollection<Cyberware>();
         private string _strExtra = string.Empty;
@@ -77,6 +79,7 @@ namespace Chummer.Backend.Equipment
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public VehicleMod(Character objCharacter)
         {
             // Create the GUID for the new VehicleMod.
@@ -95,10 +98,12 @@ namespace Chummer.Backend.Equipment
                     foreach (Cyberware objNewItem in e.NewItems)
                         objNewItem.ParentVehicle = Parent;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Cyberware objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Cyberware objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
@@ -116,10 +121,12 @@ namespace Chummer.Backend.Equipment
                     foreach (Weapon objNewItem in e.NewItems)
                         objNewItem.ParentVehicle = Parent;
                     break;
+
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Weapon objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
                     break;
+
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Weapon objOldItem in e.OldItems)
                         objOldItem.ParentVehicle = null;
@@ -156,6 +163,10 @@ namespace Chummer.Backend.Equipment
             if (!objXmlMod.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlMod.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlMod.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (string.IsNullOrEmpty(Notes))
             {
                 string strEnglishNameOnPage = Name;
@@ -167,7 +178,7 @@ namespace Chummer.Backend.Equipment
 
                 string strGearNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + Page, strEnglishNameOnPage, _objCharacter);
 
-                if (string.IsNullOrEmpty(strGearNotes) && GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+                if (string.IsNullOrEmpty(strGearNotes) && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     string strTranslatedNameOnPage = CurrentDisplayName;
 
@@ -274,7 +285,18 @@ namespace Chummer.Backend.Equipment
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -326,6 +348,7 @@ namespace Chummer.Backend.Equipment
             if (_nodWirelessBonus != null)
                 objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalOptions.InvariantCultureInfo));
@@ -434,6 +457,11 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn))
                 _blnWirelessOn = false;
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
@@ -479,9 +507,11 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Weapons.
         /// </summary>
@@ -527,7 +557,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayCategory(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
             return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
@@ -610,6 +640,7 @@ namespace Chummer.Backend.Equipment
             get => _strRatingLabel;
             set => _strRatingLabel = value;
         }
+
         /// <summary>
         /// Cost.
         /// </summary>
@@ -646,7 +677,6 @@ namespace Chummer.Backend.Equipment
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -664,7 +694,7 @@ namespace Chummer.Backend.Equipment
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -730,6 +760,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -823,9 +862,11 @@ namespace Chummer.Backend.Equipment
             get => _blnStolen;
             set => _blnStolen = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Complex Properties
+
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
@@ -865,7 +906,8 @@ namespace Chummer.Backend.Equipment
                     {
                         string[] astrValue = strValue.Split('[');
                         string strAvailCode = astrValue[1].Trim('[', ']');
-                        int intMax = Convert.ToInt32(astrValue[0], GlobalOptions.InvariantCultureInfo);
+                        int.TryParse(astrValue[0], NumberStyles.Any, GlobalOptions.InvariantCultureInfo,
+                            out int intMax);
                         if (Rating > intMax)
                             continue;
                         strAvail = Rating.ToString(GlobalOptions.InvariantCultureInfo) + strAvailCode;
@@ -1152,7 +1194,7 @@ namespace Chummer.Backend.Equipment
                 decReturn *= 1 + (_decMarkup / 100.0m);
             }
 
-            return decReturn + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
+            return decReturn + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.CurrentTotalCost);
         }
 
         /// <summary>
@@ -1162,7 +1204,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return OwnCost + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.TotalCost);
+                return OwnCost + Weapons.AsParallel().Sum(objWeapon => objWeapon.TotalCost) + Cyberware.AsParallel().Sum(objCyberware => objCyberware.CurrentTotalCost);
             }
         }
 
@@ -1268,7 +1310,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -1311,12 +1353,17 @@ namespace Chummer.Backend.Equipment
 
                 foreach (Cyberware objChild in Cyberware)
                 {
-                    // If the limb has Customized Strength, this is its new base value.
-                    if (objChild.Name == "Customized Strength")
-                        intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Strength, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Strength")
-                        intBonus = objChild.Rating;
+                    switch (objChild.Name)
+                    {
+                        // If the limb has Customized Strength, this is its new base value.
+                        case "Customized Strength":
+                            intAttribute = objChild.Rating;
+                            break;
+                        // If the limb has Enhanced Strength, this adds to the limb's value.
+                        case "Enhanced Strength":
+                            intBonus = objChild.Rating;
+                            break;
+                    }
                 }
                 return Math.Min(intAttribute + intBonus, Math.Max(bod, 1));
             }
@@ -1344,12 +1391,17 @@ namespace Chummer.Backend.Equipment
 
                 foreach (Cyberware objChild in Cyberware)
                 {
-                    // If the limb has Customized Agility, this is its new base value.
-                    if (objChild.Name == "Customized Agility")
-                        intAttribute = objChild.Rating;
-                    // If the limb has Enhanced Agility, this adds to the limb's value.
-                    if (objChild.Name == "Enhanced Agility")
-                        intBonus = objChild.Rating;
+                    switch (objChild.Name)
+                    {
+                        // If the limb has Customized Agility, this is its new base value.
+                        case "Customized Agility":
+                            intAttribute = objChild.Rating;
+                            break;
+                        // If the limb has Enhanced Agility, this adds to the limb's value.
+                        case "Enhanced Agility":
+                            intBonus = objChild.Rating;
+                            break;
+                    }
                 }
 
                 return Math.Min(intAttribute + intBonus, Math.Max(pilot, 1));
@@ -1389,9 +1441,11 @@ namespace Chummer.Backend.Equipment
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Complex Properties
 
         #region Methods
+
         public decimal DeleteVehicleMod()
         {
             decimal decReturn = 0;
@@ -1473,6 +1527,7 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.
         /// </summary>
@@ -1521,8 +1576,8 @@ namespace Chummer.Backend.Equipment
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return IncludedInVehicle
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return IncludedInVehicle
                     ? ColorManager.GrayText
@@ -1543,13 +1598,14 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        #endregion
-        #endregion
+        #endregion UI Methods
+
+        #endregion Methods
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
 
@@ -1560,10 +1616,10 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalOptions.ClipboardContentType)
                 {
                     case ClipboardContentType.Weapon:
-                    {
-                        // TODO: Make this not depend on string names
-                        return Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) || Name.Contains("Drone Arm");
-                    }
+                        {
+                            // TODO: Make this not depend on string names
+                            return Name.StartsWith("Mechanical Arm", StringComparison.Ordinal) || Name.Contains("Drone Arm");
+                        }
                     default:
                         return false;
                 }
@@ -1577,11 +1633,8 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleMod")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteVehicleMod")))
+                return false;
 
             DeleteVehicleMod();
             return Parent.Mods.Remove(this);

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,12 +50,12 @@ namespace Chummer
 
             //var propnames = boolProperties.Select(a => a.Name).ToList();
             MetricIdentifier micount = new MetricIdentifier(name, "MetricsReportCount");
-            var mcount =  tc.GetMetric(micount);
+            var mcount = tc.GetMetric(micount);
             mcount.TrackValue(1);
 
             foreach (var prop in allProperties.Where(x => x.PropertyType == typeof(bool)))
             {
-                MetricIdentifier mi = new MetricIdentifier(name, prop.Name );
+                MetricIdentifier mi = new MetricIdentifier(name, prop.Name);
                 var metric = tc.GetMetric(mi);
                 var val = prop.GetValue(obj, null);
                 Console.WriteLine("{0}={1}", prop.Name, val);

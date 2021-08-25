@@ -43,11 +43,11 @@
           <source>CF</source>
           <page>121</page>
           <allowaccessory>False</allowaccessory>
-          <hide/>
+          <hide />
           <useskill>Unarmed Combat</useskill>
         </naturalweapon>
       </naturalweapons>
-      <hide/>
+      <hide />
       <source>CF</source>
       <page>121</page>
     </quality>

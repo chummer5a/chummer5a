@@ -16,18 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Windows.Forms;
+using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
- using NLog;
+using Chummer.Backend.Equipment;
+using NLog;
 
 namespace Chummer
 {
     public partial class frmSelectLifestyle : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private bool _blnAddAgain;
         private readonly Lifestyle _objLifestyle;
         private Lifestyle _objSourceLifestyle;
@@ -38,6 +39,7 @@ namespace Chummer
         private bool _blnSkipRefresh = true;
 
         #region Control Events
+
         public frmSelectLifestyle(Character objCharacter)
         {
             InitializeComponent();
@@ -73,9 +75,7 @@ namespace Chummer
             }
 
             cboLifestyle.BeginUpdate();
-            cboLifestyle.ValueMember = nameof(ListItem.Value);
-            cboLifestyle.DisplayMember = nameof(ListItem.Name);
-            cboLifestyle.DataSource = lstLifestyle;
+            cboLifestyle.PopulateWithListItems(lstLifestyle);
 
             if (!string.IsNullOrEmpty(strSelectedId))
                 cboLifestyle.SelectedValue = strSelectedId;
@@ -98,9 +98,7 @@ namespace Chummer
                 }
             }
             cboCity.BeginUpdate();
-            cboCity.ValueMember = nameof(ListItem.Value);
-            cboCity.DisplayMember = nameof(ListItem.Name);
-            cboCity.DataSource = lstCity;
+            cboCity.PopulateWithListItems(lstCity);
             cboCity.EndUpdate();
 
             //Populate District and Borough ComboBox for the first time
@@ -110,7 +108,9 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             // Fill the Options list.
             using (XmlNodeList xmlLifestyleOptionsList = _objXmlDocument.SelectNodes("/chummer/qualities/quality[(source = \"SR5\" or category = \"Contracts\") and (" + _objCharacter.Options.BookXPath() + ")]"))
+            {
                 if (xmlLifestyleOptionsList?.Count > 0)
+                {
                     foreach (XmlNode objXmlOption in xmlLifestyleOptionsList)
                     {
                         string strOptionName = objXmlOption["name"]?.InnerText;
@@ -148,10 +148,10 @@ namespace Chummer
                         }
                         treQualities.Nodes.Add(nodOption);
                     }
+                }
+            }
 
             SortTree(treQualities);
-
-
 
             if (_objSourceLifestyle != null)
             {
@@ -167,6 +167,7 @@ namespace Chummer
                 }
 
                 chkPrimaryTenant.Checked = _objSourceLifestyle.PrimaryTenant;
+                chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
             }
 
             _blnSkipRefresh = false;
@@ -223,6 +224,20 @@ namespace Chummer
             CalculateValues();
         }
 
+        private void chkTrustFund_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkTrustFund.Checked)
+            {
+                nudRoommates.Value = 0;
+            }
+
+            nudRoommates.Enabled = !chkTrustFund.Checked;
+
+            if (_blnSkipRefresh)
+                return;
+            CalculateValues();
+        }
+
         private void treQualities_AfterSelect(object sender, TreeViewEventArgs e)
         {
             string strSource = string.Empty;
@@ -240,9 +255,10 @@ namespace Chummer
 
             if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
             {
-                string strSpace = LanguageManager.GetString("String_Space");
-                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                    GlobalOptions.CultureInfo, _objCharacter);
+                lblSource.Text = objSource.ToString();
+                lblSource.SetToolTip(objSource.LanguageBookTooltip);
             }
             else
             {
@@ -252,7 +268,6 @@ namespace Chummer
 
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
-
 
         private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -267,9 +282,11 @@ namespace Chummer
                 return;
             RefreshBoroughList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -285,9 +302,10 @@ namespace Chummer
         /// </summary>
         public LifestyleType StyleType { get; set; } = LifestyleType.Standard;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -312,6 +330,7 @@ namespace Chummer
                 _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalOptions.InvariantCultureInfo);
                 _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
+                _objLifestyle.TrustFund = chkTrustFund.Checked;
                 _objLifestyle.City = cboCity.Text;
                 _objLifestyle.District = cboDistrict.Text;
                 _objLifestyle.Borough = cboBorough.Text;
@@ -348,6 +367,7 @@ namespace Chummer
             decimal decBaseCost = 0;
             decimal decCost = 0;
             decimal decMod = 0;
+            string strBaseLifestyle = string.Empty;
             // Get the base cost of the lifestyle
             string strSelectedId = cboLifestyle.SelectedValue?.ToString();
             if (strSelectedId != null)
@@ -356,14 +376,18 @@ namespace Chummer
 
                 if (objXmlAspect != null)
                 {
-                    decBaseCost += Convert.ToDecimal(objXmlAspect["cost"]?.InnerText, GlobalOptions.InvariantCultureInfo);
+                    objXmlAspect.TryGetStringFieldQuickly("name", ref strBaseLifestyle);
+                    decimal decTemp = 0;
+                    if (objXmlAspect.TryGetDecFieldQuickly("cost", ref decTemp))
+                        decBaseCost += decTemp;
                     string strSource = objXmlAspect["source"]?.InnerText;
                     string strPage = objXmlAspect["altpage"]?.InnerText ?? objXmlAspect["page"]?.InnerText;
                     if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                     {
-                        string strSpace = LanguageManager.GetString("String_Space");
-                        lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                        lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                        SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                            GlobalOptions.CultureInfo, _objCharacter);
+                        lblSource.Text = objSource.ToString();
+                        lblSource.SetToolTip(objSource.LanguageBookTooltip);
                     }
                     else
                     {
@@ -399,12 +423,10 @@ namespace Chummer
                             objXmlAspect = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + objNode.Tag.ToString().CleanXPath() + "]");
                             if (objXmlAspect == null)
                                 continue;
-                            string strMultiplier = objXmlAspect["multiplier"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strMultiplier))
-                                decMod += Convert.ToDecimal(strMultiplier, GlobalOptions.InvariantCultureInfo) / 100.0m;
-                            strMultiplier = objXmlAspect["multiplierbaseonly"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strMultiplier))
-                                decBaseMultiplier += Convert.ToDecimal(strMultiplier, GlobalOptions.InvariantCultureInfo) / 100.0m;
+                            if (objXmlAspect.TryGetDecFieldQuickly("multiplier", ref decTemp))
+                                decMod += decTemp / 100.0m;
+                            if (objXmlAspect.TryGetDecFieldQuickly("multiplierbaseonly", ref decTemp))
+                                decBaseMultiplier += decTemp / 100.0m;
                         }
 
                         // Check for modifiers in the improvements
@@ -414,10 +436,7 @@ namespace Chummer
                     decBaseCost += decBaseCost * decBaseMultiplier;
                     if (nudRoommates.Value > 0)
                     {
-                        decimal d = nudRoommates.Value * 10;
-                        d += 100M;
-                        d = Math.Max(d / 100, 0);
-                        decBaseCost *= d;
+                        decBaseCost *= 1.0m + Math.Max(nudRoommates.Value / 10.0m, 0);
                     }
                 }
             }
@@ -438,6 +457,18 @@ namespace Chummer
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
+
+            // Characters with the Trust Fund Quality can have the lifestyle discounted.
+            if (Lifestyle.StaticIsTrustFundEligible(_objCharacter, strBaseLifestyle))
+            {
+                chkTrustFund.Visible = true;
+                chkTrustFund.Checked = _objSourceLifestyle.TrustFund;
+            }
+            else
+            {
+                chkTrustFund.Checked = false;
+                chkTrustFund.Visible = false;
+            }
         }
 
         /// <summary>
@@ -491,10 +522,7 @@ namespace Chummer
             }
 
             cboDistrict.BeginUpdate();
-            cboDistrict.DataSource = null;
-            cboDistrict.DataSource = lstDistrict;
-            cboDistrict.ValueMember = nameof(ListItem.Value);
-            cboDistrict.DisplayMember = nameof(ListItem.Name);
+            cboDistrict.PopulateWithListItems(lstDistrict);
             cboDistrict.EndUpdate();
         }
 
@@ -519,10 +547,7 @@ namespace Chummer
             }
 
             cboBorough.BeginUpdate();
-            cboBorough.DataSource = null;
-            cboBorough.DataSource = lstBorough;
-            cboBorough.ValueMember = nameof(ListItem.Value);
-            cboBorough.DisplayMember = nameof(ListItem.Name);
+            cboBorough.PopulateWithListItems(lstBorough);
             cboBorough.EndUpdate();
         }
 
@@ -530,6 +555,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

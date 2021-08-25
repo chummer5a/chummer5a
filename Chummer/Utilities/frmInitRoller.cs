@@ -16,14 +16,16 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Windows.Forms;
+
+using System;
+using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmInitRoller : Form
     {
         #region Control Events
+
         public frmInitRoller()
         {
             InitializeComponent();
@@ -43,9 +45,10 @@ namespace Chummer
             DialogResult = DialogResult.OK;
         }
 
-        #endregion
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Number of dice that are rolled for the lifestyle.
         /// </summary>
@@ -55,6 +58,7 @@ namespace Chummer
         /// Dice roll result.
         /// </summary>
         public int Result => nudDiceResult.ValueAsInt;
-        #endregion
+
+        #endregion Properties
     }
 }

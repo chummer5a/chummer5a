@@ -9,15 +9,7 @@ namespace ChummerHub.Client.Sinners
     {
         public DateTime DownloadedFromSINnersTime { get; set; }
 
-        public string ZipFilePath
-        {
-            get
-            {
-                if (Id == null)
-                    return null;
-                return Path.Combine(Path.GetTempPath(), "SINner", Id.Value.ToString());
-            }
-        }
+        public string ZipFilePath => Id == null ? null : Path.Combine(Path.GetTempPath(), "SINner", Id.Value.ToString());
 
         public string FilePath
         {
@@ -28,7 +20,7 @@ namespace ChummerHub.Client.Sinners
                     foreach (var file in Directory.EnumerateFiles(ZipFilePath, "*.chum5", SearchOption.TopDirectoryOnly))
                     {
                         DateTime lastwrite = File.GetLastWriteTime(file);
-                        if (lastwrite >= LastChange || LastChange == null)
+                        if (lastwrite >= LastChange || LastChange == default)
                         {
                             return file;
                         }
@@ -40,13 +32,28 @@ namespace ChummerHub.Client.Sinners
             }
         }
 
-        public async Task<CharacterCache> GetCharacterCache()
+        public CharacterCache GetCharacterCache()
+        {
+            return GetCharacterCacheCoreAsync(true).GetAwaiter().GetResult();
+        }
+
+        public Task<CharacterCache> GetCharacterCacheAsync()
+        {
+            return GetCharacterCacheCoreAsync(false);
+        }
+
+        private async Task<CharacterCache> GetCharacterCacheCoreAsync(bool blnSync)
         {
             string strPath = FilePath;
             if (!string.IsNullOrEmpty(strPath))
             {
                 CharacterCache objReturn = new CharacterCache();
-                return await objReturn.LoadFromFileAsync(strPath).ContinueWith(x => objReturn);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objReturn.LoadFromFile(strPath);
+                else
+                    await objReturn.LoadFromFileAsync(strPath);
+                return objReturn;
             }
             return null;
         }

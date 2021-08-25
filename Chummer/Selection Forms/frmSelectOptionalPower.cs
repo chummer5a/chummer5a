@@ -16,9 +16,10 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
-﻿using System.Windows.Forms;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -29,25 +30,24 @@ namespace Chummer
         private readonly List<ListItem> _lstPowerItems = new List<ListItem>();
 
         #region Control Events
+
         public frmSelectOptionalPower(Character objCharacter, params Tuple<string, string>[] lstPowerExtraPairs)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            foreach (Tuple<string, string> lstObject in lstPowerExtraPairs)
+            foreach ((string strPowerName, string strPowerExtra) in lstPowerExtraPairs)
             {
-                string strName = objCharacter.TranslateExtra(lstObject.Item1);
-                if (!string.IsNullOrEmpty(lstObject.Item2))
+                string strName = objCharacter.TranslateExtra(strPowerName);
+                if (!string.IsNullOrEmpty(strPowerExtra))
                 {
-                    strName += LanguageManager.GetString("String_Space") + '(' + objCharacter.TranslateExtra(lstObject.Item2) + ')';
+                    strName += LanguageManager.GetString("String_Space") + '(' + objCharacter.TranslateExtra(strPowerExtra) + ')';
                 }
-                _lstPowerItems.Add(new ListItem(lstObject, strName));
+                _lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
             }
             cboPower.BeginUpdate();
-            cboPower.ValueMember = nameof(ListItem.Value);
-            cboPower.DisplayMember = nameof(ListItem.Name);
-            cboPower.DataSource = _lstPowerItems;
+            cboPower.PopulateWithListItems(_lstPowerItems);
             if (_lstPowerItems.Count >= 1)
                 cboPower.SelectedIndex = 0;
             else
@@ -75,9 +75,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
@@ -92,6 +94,7 @@ namespace Chummer
         {
             set => lblDescription.Text = value;
         }
-        #endregion
+
+        #endregion Properties
     }
 }

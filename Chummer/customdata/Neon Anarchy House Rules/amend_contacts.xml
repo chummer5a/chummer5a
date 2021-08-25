@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<contacts amendoperation="replace">
+		<contact>Fixer</contact>
+		<contact>Gear (Augmentations)</contact>
+		<contact>Gear (Armor and Clothing)</contact>
+		<contact>Gear (Chemist)</contact>
+		<contact>Gear (Critters)</contact>
+		<contact>Gear (Weapons and Ammunition)</contact>
+		<contact>Gear (Electronics)</contact>
+		<contact>Gear (Explosives)</contact>
+		<contact>Gear (Vehicles and Drones)</contact>
+		<contact>Gear (SINs and Licenses)</contact>
+		<contact>Gear (Talismonger)</contact>
+		<contact>Gear (Miscellaneous)</contact>
+		<contact>Service ([Service])</contact>
+	</contacts>
+	<types amendoperation="replace">
+		<type>A Stitch In Time</type>
+		<type>Already Trained</type>
+		<type>Attorney</type>
+		<type>Can I Borrow That?</type>
+		<type>Deltaware Clinic</type>
+		<type>Expert Alchemist</type>
+		<type>Harmacist</type>
+		<type>Here Are Your Passports</type>
+		<type>I Want It Now!</type>
+		<type>It Will Be Removed</type>
+		<type>Made Man ([Faction])</type>
+		<type>More Dakka!</type>
+		<type>Misdirection</type>
+		<type>My Kind Of Crazy</type>
+		<type>Nanomachines, Son!</type>
+		<type>On The House</type>
+		<type>Perfect Fit</type>
+		<type>Pet Sematary</type>
+		<type>Refurbished Ware</type>
+		<type>See You On The Other Side</type>
+		<type>Side Business ([Domain])</type>
+		<type>Spirit Mark</type>
+		<type>Tattoo Artist</type>
+		<type>To The STARS!</type>
+		<type>That Costs Extra</type>
+		<type>The Best Breed</type>
+		<type>You Are Safe Here</type>
+	</types>
+	<!--
+	<types amendoperation="replace">
+		<type>Amerindian Tribesperson</type>
+		<type>Antiquities and Oddities Dealer</type>
+		<type>Armorer</type>
+		<type>Bartender</type>
+		<type>Beat Cop</type>
+		<type>Blogger</type>
+		<type>Bodyguard</type>
+		<type>Bookie</type>
+		<type>Cleaner</type>
+		<type>Club Hopper</type>
+		<type>Club Owner</type>
+		<type>Company Man</type>
+		<type>Corporate Headhunter</type>
+		<type>Corporate Manager</type>
+		<type>Corporate Scientist</type>
+		<type>Corporate Secretary</type>
+		<type>Corporate Wage Slave</type>
+		<type>Coyote</type>
+		<type>Cult Member</type>
+		<type>Dockworker</type>
+		<type>Fence</type>
+		<type>Firefighter</type>
+		<type>Fixer</type>
+		<type>Freedom Fighter</type>
+		<type>Forensics Expert</type>
+		<type>Gambler</type>
+		<type>Gang Leader</type>
+		<type>Go-Ganger</type>
+		<type>Grassroots Politician</type>
+		<type>Hate Group Member</type>
+		<type>Hermetic Academic</type>
+		<type>High Stakes Negotiator</type>
+		<type>ID Manufacturer</type>
+		<type>Infobroker</type>
+		<type>Janitor</type>
+		<type>Mafia Consiglieri</type>
+		<type>Mechanic</type>
+		<type>Mercenary Alchemist</type>
+		<type>Mr. Johnson</type>
+		<type>Nomad</type>
+		<type>Ork Nation Organizer</type>
+		<type>Parabotanist</type>
+		<type>Parabiologist</type>
+		<type>Paramed</type>
+		<type>Paramed Shaman</type>
+		<type>Parasecurity Expert</type>
+		<type>Pawn Broker</type>
+		<type>Pimp</type>
+		<type>Pirate</type>
+		<type>Police Chief</type>
+		<type>Political Intern</type>
+		<type>Radical</type>
+		<type>Rent-a-Cop</type>
+		<type>Shark Lawyer</type>
+		<type>Simsense Star</type>
+		<type>Slumlord</type>
+		<type>Smuggler</type>
+		<type>Snitch</type>
+		<type>Spider</type>
+		<type>Squatter</type>
+		<type>Street Doc</type>
+		<type>Street Vendor</type>
+		<type>Stripper</type>
+		<type>Supply Sergeant</type>
+		<type>Talent Scout</type>
+		<type>Talislegger</type>
+		<type>Talismonger</type>
+		<type>Tamanous Member</type>
+		<type>Taxi Driver</type>
+		<type>TerraFirst! Activist</type>
+		<type>Trid Pirate</type>
+		<type>Troll Street Dealer</type>
+		<type>Urban Anthropologist</type>
+		<type>Vory Shestiorka</type>
+		<type>Wiz Kid Ganger</type>
+	</types>
+	-->
+</chummer>

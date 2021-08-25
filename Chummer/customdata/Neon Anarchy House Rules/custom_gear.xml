@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<categories>
+		<category>Jetpacks</category>
+		<category>RCC Accessories</category>
+	</categories>
+	<gears>
+		<gear>
+			<id>4e010d54-c232-11ea-b3de-0242ac130004</id>
+			<name>Vulcan Systems "Hot-Drop" Jetpack Fuel</name>
+			<category>Jetpacks</category>
+			<rating>0</rating>
+			<source>NA</source>
+			<page>33</page>
+			<avail>10F</avail>
+			<cost>500</cost>
+			<costfor>20</costfor>
+		</gear>
+		<gear>
+			<id>a91d8b6c-c22e-11ea-b3de-0242ac130004</id>
+			<name>Vulcan Systems "Hot-Drop" Rapid-Egress Jetpack System</name>
+			<category>Jetpacks</category>
+			<rating>0</rating>
+			<source>NA</source>
+			<page>33</page>
+			<avail>16F</avail>
+			<cost>40000</cost>
+		</gear>
+		<gear>
+		  <id>bfc0eb75-fb25-4f51-92c6-a8460375b5d9</id>
+		  <name>RCC Stealth Expansion</name>
+		  <category>RCC Accessories</category>
+		  <rating>6</rating>
+		  <source>NA</source>
+		  <page>24</page>
+		  <avail>(Rating*2)R</avail>
+		  <armorcapacity>[2]</armorcapacity>
+		  <cost>(Rating*Rating)*1000</cost>
+		  <devicerating>0</devicerating>
+		  <modsleaze>{Rating}</modsleaze>
+		  <required>
+			<geardetails>
+			  <OR>
+				<category>Rigger Command Consoles</category>
+				<category>Custom</category>
+			  </OR>
+			</geardetails>
+		  </required>
+		</gear>
+		<gear>
+			<id>a91d8b6c-c22e-11ea-b3de-0242ac130005</id>
+			<name>Grenade: Painade</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<source>CA</source>
+			<page>135</page>
+			<avail>10R</avail>
+			<addweapon>Grenade: Painade</addweapon>
+			<cost>100</cost>
+		</gear>
+		<gear>
+			<id>49870734-c6dc-11ea-87d0-0242ac130003</id>
+			<name>Grenade: Painade, Aerodynamic</name>
+			<category>Ammunition</category>
+			<rating>0</rating>
+			<source>CA</source>
+			<page>135</page>
+			<avail>10R</avail>
+			<addweapon>Grenade: Painade, Aerodynamic</addweapon>
+			<cost>100</cost>
+		</gear>
+		<gear>
+			<id>a91d8b6c-c22e-11ea-b3de-0242ac130007</id>
+			<name>Cry Wolf</name>
+			<category>Hacking Programs</category>
+			<rating>0</rating>
+			<source>KC</source>
+			<page>63</page>
+			<avail>4F</avail>
+			<cost>250</cost>
+		</gear>
+		<gear>
+			<id>8e165c31-5da9-42ba-9913-3a7465a942c7</id>
+			<name>Zone</name>
+			<category>Drugs</category>
+			<rating>0</rating>
+			<source>CF</source>
+			<page>184</page>
+			<avail>6R</avail>
+			<cost>100</cost>
+		</gear>
+		<gear>
+			<id>dda8e1b0-46db-11eb-b378-0242ac130002</id>
+			<name>Biofiber Pocket Upkeep (1 Month Advance Payment)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>0</rating>
+			<source>HT</source>
+			<page>185</page>
+			<avail>0</avail>
+			<cost>20</cost>
+		</gear>
+		<gear>
+			<id>92dd0818-46dc-11eb-b378-0242ac130002</id>
+			<name>Bi-polar Medication (1 Month Advance Payment)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>0</rating>
+			<source>RF</source>
+			<page>153</page>
+			<avail>0</avail>
+			<cost>500</cost>
+		</gear>
+		<gear>
+			<id>9b5d94d0-46dc-11eb-b378-0242ac130002</id>
+			<name>Bi-polar Medication (Street, Daily Dose)</name>
+			<category>Contracts/Upkeep</category>
+			<rating>0</rating>
+			<source>RF</source>
+			<page>153</page>
+			<avail>0</avail>
+			<cost>100</cost>
+		</gear>
+		<gear>
+			<id>637017c2-eeb0-41eb-92a5-6b662fed3061</id>
+			<name>All Common Programs</name>
+			<category>Common Programs</category>
+			<rating>0</rating>
+			<source>NA</source>
+			<page>1</page>
+			<avail>0</avail>
+			<cost>800</cost>
+			<gears>
+				<usegear>
+					<name>Browse</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Configurator</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Edit</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Encryption</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Signal Scrub</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Toolbox</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Virtual Machine</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Shredder</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Search</name>
+					<category>Common Programs</category>
+				</usegear>
+				<usegear>
+					<name>Bootstrap</name>
+					<category>Common Programs</category>
+				</usegear>
+			</gears>
+		</gear>
+		<gear>
+			<id>e942a969-b776-4de6-b5f0-e2ed22c15353</id>
+			<name>All Hacking Programs</name>
+			<category>Hacking Programs</category>
+			<rating>0</rating>
+			<source>NA</source>
+			<page>1</page>
+			<avail>4R</avail>
+			<cost>8000</cost>
+			<gears>
+				<usegear>
+					<name>Armor</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Baby Monitor</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Biofeedback</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Biofeedback Filter</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Blackout</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Decryption</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Defuse</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Demolition</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Exploit</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Fork</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Guard</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Hammer</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Lockdown</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Mugger</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Shell</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Sneak</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Stealth</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Track</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Wrapper</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Cat's Paw</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Cloudless</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Crash (Program)</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Detonator</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Evaluate</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Fly on a Wall</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Hitchhiker</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Nuke-from-Orbit</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Paintjob</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Smoke and Mirrors</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Swerve</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Tantrum</name>
+					<category>Hacking Programs</category>
+				</usegear>
+				<usegear>
+					<name>Tarball</name>
+					<category>Hacking Programs</category>
+				</usegear>
+			</gears>
+			<notes>Doesn't include Cry Wolf.</notes>
+		</gear>
+	</gears>
+</chummer>

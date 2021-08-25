@@ -16,11 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -32,6 +33,7 @@ namespace Chummer
         private readonly Spell _objSpell;
 
         #region Control Events
+
         public frmCreateSpell(Character objCharacter)
         {
             _objSpell = new Spell(objCharacter);
@@ -59,9 +61,7 @@ namespace Chummer
             cboType.BeginUpdate();
             cboRange.BeginUpdate();
             cboDuration.BeginUpdate();
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
-            cboCategory.DataSource = lstCategory;
+            cboCategory.PopulateWithListItems(lstCategory);
             cboCategory.SelectedIndex = 0;
 
             // Populate the list of Spell Types.
@@ -70,9 +70,7 @@ namespace Chummer
                 new ListItem("P", LanguageManager.GetString("String_DescPhysical")),
                 new ListItem("M", LanguageManager.GetString("String_DescMana"))
             };
-            cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DisplayMember = nameof(ListItem.Name);
-            cboType.DataSource = lstTypes;
+            cboType.PopulateWithListItems(lstTypes);
             cboType.SelectedIndex = 0;
 
             // Populate the list of Ranges.
@@ -81,9 +79,7 @@ namespace Chummer
                 new ListItem("T", LanguageManager.GetString("String_SpellRangeTouchLong")),
                 new ListItem("LOS", LanguageManager.GetString("String_SpellRangeLineOfSight"))
             };
-            cboRange.ValueMember = nameof(ListItem.Value);
-            cboRange.DisplayMember = nameof(ListItem.Name);
-            cboRange.DataSource = lstRanges;
+            cboRange.PopulateWithListItems(lstRanges);
             cboRange.SelectedIndex = 0;
 
             // Populate the list of Durations.
@@ -93,9 +89,7 @@ namespace Chummer
                 new ListItem("P", LanguageManager.GetString("String_SpellDurationPermanentLong")),
                 new ListItem("S", LanguageManager.GetString("String_SpellDurationSustainedLong"))
             };
-            cboDuration.ValueMember = nameof(ListItem.Value);
-            cboDuration.DisplayMember = nameof(ListItem.Name);
-            cboDuration.DataSource = lstDurations;
+            cboDuration.PopulateWithListItems(lstDurations);
             cboDuration.SelectedIndex = 0;
             _blnLoading = false;
             cboCategory.EndUpdate();
@@ -141,232 +135,243 @@ namespace Chummer
             if (_blnSkipRefresh)
                 return;
 
-            if (cboCategory.SelectedValue.ToString() == "Combat")
+            switch (cboCategory.SelectedValue.ToString())
             {
-                // Direct and Indirect cannot be selected at the same time.
-                if (chkModifier1.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier2.Checked = false;
-                    chkModifier2.Enabled = false;
-                    chkModifier3.Checked = false;
-                    chkModifier3.Enabled = false;
-                    nudNumberOfEffects.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier2.Enabled = true;
-                    chkModifier3.Enabled = true;
-                    nudNumberOfEffects.Enabled = true;
-                }
+                case "Combat":
+                    {
+                        // Direct and Indirect cannot be selected at the same time.
+                        if (chkModifier1.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier2.Checked = false;
+                            chkModifier2.Enabled = false;
+                            chkModifier3.Checked = false;
+                            chkModifier3.Enabled = false;
+                            nudNumberOfEffects.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier2.Enabled = true;
+                            chkModifier3.Enabled = true;
+                            nudNumberOfEffects.Enabled = true;
+                        }
 
-                // Indirect Combat Spells must always be physical. Direct and Indirect cannot be selected at the same time.
-                if (chkModifier2.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier1.Checked = false;
-                    chkModifier1.Enabled = false;
-                    cboType.SelectedValue = "P";
-                    cboType.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier1.Enabled = true;
-                }
+                        // Indirect Combat Spells must always be physical. Direct and Indirect cannot be selected at the same time.
+                        if (chkModifier2.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier1.Checked = false;
+                            chkModifier1.Enabled = false;
+                            cboType.SelectedValue = "P";
+                            cboType.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier1.Enabled = true;
+                        }
 
-                // Elemental effect spells must be Indirect (and consequently physical as well).
-                if (chkModifier3.Checked)
-                {
-                    chkModifier2.Checked = true;
-                }
+                        // Elemental effect spells must be Indirect (and consequently physical as well).
+                        if (chkModifier3.Checked)
+                        {
+                            chkModifier2.Checked = true;
+                        }
 
-                // Physical damage and Stun damage cannot be selected at the same time.
-                if (chkModifier4.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier5.Checked = false;
-                    chkModifier5.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier5.Enabled = true;
-                }
-                if (chkModifier5.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier4.Checked = false;
-                    chkModifier4.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier4.Enabled = true;
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Detection")
-            {
-                // Directional, and Area cannot be selected at the same time.
-                if (chkModifier1.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier2.Checked = false;
-                    chkModifier2.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                if (chkModifier2.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier1.Checked = false;
-                    chkModifier1.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
+                        // Physical damage and Stun damage cannot be selected at the same time.
+                        if (chkModifier4.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier5.Checked = false;
+                            chkModifier5.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier5.Enabled = true;
+                        }
+                        if (chkModifier5.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier4.Checked = false;
+                            chkModifier4.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier4.Enabled = true;
+                        }
 
-                // Active and Passive cannot be selected at the same time.
-                if (chkModifier4.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier5.Checked = false;
-                    chkModifier5.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier5.Enabled = true;
-                }
-                if (chkModifier5.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier4.Checked = false;
-                    chkModifier4.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier4.Enabled = true;
-                }
+                        break;
+                    }
+                case "Detection":
+                    {
+                        // Directional, and Area cannot be selected at the same time.
+                        if (chkModifier1.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier2.Checked = false;
+                            chkModifier2.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        if (chkModifier2.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier1.Checked = false;
+                            chkModifier1.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
 
-                // If Extended Area is selected, Area must also be selected.
-                if (chkModifier14.Checked)
-                {
-                    chkModifier1.Checked = false;
-                    chkModifier3.Checked = false;
-                    chkModifier2.Checked = true;
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Health")
-            {
-                // Nothing special for Health Spells.
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Illusion")
-            {
-                // Obvious and Realistic cannot be selected at the same time.
-                if (chkModifier1.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier2.Checked = false;
-                    chkModifier2.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier2.Enabled = true;
-                }
-                if (chkModifier2.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier1.Checked = false;
-                    chkModifier1.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier1.Enabled = true;
-                }
+                        // Active and Passive cannot be selected at the same time.
+                        if (chkModifier4.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier5.Checked = false;
+                            chkModifier5.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier5.Enabled = true;
+                        }
+                        if (chkModifier5.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier4.Checked = false;
+                            chkModifier4.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier4.Enabled = true;
+                        }
 
-                // Single-Sense and Multi-Sense cannot be selected at the same time.
-                if (chkModifier3.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier4.Checked = false;
-                    chkModifier4.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier4.Enabled = true;
-                }
-                if (chkModifier4.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier3.Checked = false;
-                    chkModifier3.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier3.Enabled = true;
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Manipulation")
-            {
-                // Environmental, Mental, and Physical cannot be selected at the same time.
-                if (chkModifier1.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier2.Checked = false;
-                    chkModifier2.Enabled = false;
-                    chkModifier3.Checked = false;
-                    chkModifier3.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                if (chkModifier2.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier1.Checked = false;
-                    chkModifier1.Enabled = false;
-                    chkModifier3.Checked = false;
-                    chkModifier3.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                if (chkModifier3.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier1.Checked = false;
-                    chkModifier1.Enabled = false;
-                    chkModifier2.Checked = false;
-                    chkModifier2.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                chkModifier1.Enabled = (!chkModifier2.Checked && !chkModifier3.Checked);
-                chkModifier2.Enabled = (!chkModifier1.Checked && !chkModifier3.Checked);
-                chkModifier3.Enabled = (!chkModifier1.Checked && !chkModifier2.Checked);
+                        // If Extended Area is selected, Area must also be selected.
+                        if (chkModifier14.Checked)
+                        {
+                            chkModifier1.Checked = false;
+                            chkModifier3.Checked = false;
+                            chkModifier2.Checked = true;
+                        }
 
-                // Minor Change and Major Change cannot be selected at the same time.
-                if (chkModifier4.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier5.Checked = false;
-                    chkModifier5.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier5.Enabled = true;
-                }
-                if (chkModifier5.Checked)
-                {
-                    _blnSkipRefresh = true;
-                    chkModifier4.Checked = false;
-                    chkModifier4.Enabled = false;
-                    _blnSkipRefresh = false;
-                }
-                else
-                {
-                    chkModifier4.Enabled = true;
-                }
+                        break;
+                    }
+                case "Health":
+                    // Nothing special for Health Spells.
+                    break;
+
+                case "Illusion":
+                    {
+                        // Obvious and Realistic cannot be selected at the same time.
+                        if (chkModifier1.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier2.Checked = false;
+                            chkModifier2.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier2.Enabled = true;
+                        }
+                        if (chkModifier2.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier1.Checked = false;
+                            chkModifier1.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier1.Enabled = true;
+                        }
+
+                        // Single-Sense and Multi-Sense cannot be selected at the same time.
+                        if (chkModifier3.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier4.Checked = false;
+                            chkModifier4.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier4.Enabled = true;
+                        }
+                        if (chkModifier4.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier3.Checked = false;
+                            chkModifier3.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier3.Enabled = true;
+                        }
+
+                        break;
+                    }
+                case "Manipulation":
+                    {
+                        // Environmental, Mental, and Physical cannot be selected at the same time.
+                        if (chkModifier1.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier2.Checked = false;
+                            chkModifier2.Enabled = false;
+                            chkModifier3.Checked = false;
+                            chkModifier3.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        if (chkModifier2.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier1.Checked = false;
+                            chkModifier1.Enabled = false;
+                            chkModifier3.Checked = false;
+                            chkModifier3.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        if (chkModifier3.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier1.Checked = false;
+                            chkModifier1.Enabled = false;
+                            chkModifier2.Checked = false;
+                            chkModifier2.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        chkModifier1.Enabled = (!chkModifier2.Checked && !chkModifier3.Checked);
+                        chkModifier2.Enabled = (!chkModifier1.Checked && !chkModifier3.Checked);
+                        chkModifier3.Enabled = (!chkModifier1.Checked && !chkModifier2.Checked);
+
+                        // Minor Change and Major Change cannot be selected at the same time.
+                        if (chkModifier4.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier5.Checked = false;
+                            chkModifier5.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier5.Enabled = true;
+                        }
+                        if (chkModifier5.Checked)
+                        {
+                            _blnSkipRefresh = true;
+                            chkModifier4.Checked = false;
+                            chkModifier4.Enabled = false;
+                            _blnSkipRefresh = false;
+                        }
+                        else
+                        {
+                            chkModifier4.Enabled = true;
+                        }
+
+                        break;
+                    }
             }
 
             CalculateDrain();
@@ -411,9 +416,11 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         /// <summary>
         /// Re-calculate the Drain modifiers based on the currently-selected options.
         /// </summary>
@@ -473,6 +480,7 @@ namespace Chummer
                     chkModifier14.Tag = "+2";
                     chkModifier14.Text = LanguageManager.GetString("Checkbox_DetectionSpell14");
                     break;
+
                 case "Health":
                     chkModifier1.Tag = "+0";
                     chkModifier1.Text = LanguageManager.GetString("Checkbox_HealthSpell1");
@@ -485,6 +493,7 @@ namespace Chummer
                     chkModifier5.Tag = "-2";
                     chkModifier5.Text = LanguageManager.GetString("Checkbox_HealthSpell5");
                     break;
+
                 case "Illusion":
                     chkModifier1.Tag = "-1";
                     chkModifier1.Text = LanguageManager.GetString("Checkbox_IllusionSpell1");
@@ -497,6 +506,7 @@ namespace Chummer
                     chkModifier5.Tag = "+2";
                     chkModifier5.Text = LanguageManager.GetString("Checkbox_IllusionSpell5");
                     break;
+
                 case "Manipulation":
                     chkModifier1.Tag = "-2";
                     chkModifier1.Text = LanguageManager.GetString("Checkbox_ManipulationSpell1");
@@ -513,6 +523,7 @@ namespace Chummer
                     nudNumberOfEffects.Visible = true;
                     nudNumberOfEffects.Top = chkModifier6.Top - 1;
                     break;
+
                 default:
                     // Combat.
                     chkModifier1.Tag = "+0";
@@ -552,10 +563,16 @@ namespace Chummer
 
             if (nudNumberOfEffects.Visible)
             {
-                if (cboCategory.SelectedValue.ToString() == "Combat")
-                    nudNumberOfEffects.Left = chkModifier3.Left + chkModifier3.Width + 6;
-                else if (cboCategory.SelectedValue.ToString() == "Manipulation")
-                    nudNumberOfEffects.Left = chkModifier6.Left + chkModifier6.Width + 6;
+                switch (cboCategory.SelectedValue.ToString())
+                {
+                    case "Combat":
+                        nudNumberOfEffects.Left = chkModifier3.Left + chkModifier3.Width + 6;
+                        break;
+
+                    case "Manipulation":
+                        nudNumberOfEffects.Left = chkModifier6.Left + chkModifier6.Width + 6;
+                        break;
+                }
             }
         }
 
@@ -581,6 +598,7 @@ namespace Chummer
                 case "T":
                     intDV -= 2;
                     break;
+
                 default:
                     // LOS
                     intDV += 0;
@@ -682,82 +700,93 @@ namespace Chummer
                 strMessage += LanguageManager.GetString("Message_SpellRestricted");
             }
 
-            // Make sure the Spell has met all of its requirements.
-            if (cboCategory.SelectedValue.ToString() == "Combat")
+            switch (cboCategory.SelectedValue.ToString())
             {
-                // Either Direct or Indirect must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
-                }
+                // Make sure the Spell has met all of its requirements.
+                case "Combat":
+                    {
+                        // Either Direct or Indirect must be selected.
+                        if (!chkModifier1.Checked && !chkModifier2.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_CombatSpellRequirement1");
+                        }
 
-                // Either Physical damage or Stun damage must be selected.
-                if (!chkModifier4.Checked && !chkModifier5.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Detection")
-            {
-                // Either Directional, Area, or Psychic must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
-                }
+                        // Either Physical damage or Stun damage must be selected.
+                        if (!chkModifier4.Checked && !chkModifier5.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_CombatSpellRequirement2");
+                        }
 
-                // Either Active or Passive must be selected.
-                if (!chkModifier4.Checked && !chkModifier5.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Health")
-            {
-                // Nothing special.
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Illusion")
-            {
-                // Either Obvious or Realistic must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
-                }
+                        break;
+                    }
+                case "Detection":
+                    {
+                        // Either Directional, Area, or Psychic must be selected.
+                        if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement1");
+                        }
 
-                // Either Single-Sense or Multi-Sense must be selected.
-                if (!chkModifier3.Checked && !chkModifier4.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
-                }
-            }
-            else if (cboCategory.SelectedValue.ToString() == "Manipulation")
-            {
-                // Either Environmental, Mental, or Physical must be selected.
-                if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
-                }
+                        // Either Active or Passive must be selected.
+                        if (!chkModifier4.Checked && !chkModifier5.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_DetectionSpellRequirement2");
+                        }
 
-                // Either Minor Change or Major Change must be selected.
-                if (!chkModifier4.Checked && !chkModifier5.Checked)
-                {
-                    if (!string.IsNullOrEmpty(strMessage))
-                        strMessage += Environment.NewLine;
-                    strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
-                }
+                        break;
+                    }
+                case "Health":
+                    // Nothing special.
+                    break;
+
+                case "Illusion":
+                    {
+                        // Either Obvious or Realistic must be selected.
+                        if (!chkModifier1.Checked && !chkModifier2.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement1");
+                        }
+
+                        // Either Single-Sense or Multi-Sense must be selected.
+                        if (!chkModifier3.Checked && !chkModifier4.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_IllusionSpellRequirement2");
+                        }
+
+                        break;
+                    }
+                case "Manipulation":
+                    {
+                        // Either Environmental, Mental, or Physical must be selected.
+                        if (!chkModifier1.Checked && !chkModifier2.Checked && !chkModifier3.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement1");
+                        }
+
+                        // Either Minor Change or Major Change must be selected.
+                        if (!chkModifier4.Checked && !chkModifier5.Checked)
+                        {
+                            if (!string.IsNullOrEmpty(strMessage))
+                                strMessage += Environment.NewLine;
+                            strMessage += LanguageManager.GetString("Message_ManipulationSpellRequirement2");
+                        }
+
+                        break;
+                    }
             }
 
             // Show the message if necessary.
@@ -766,6 +795,10 @@ namespace Chummer
                 Program.MainForm.ShowMessageBox(this, strMessage, LanguageManager.GetString("Title_CreateSpell"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            string strRange = cboRange.SelectedValue.ToString();
+            if (chkArea.Checked)
+                strRange += "(A)";
 
             // If we're made it this far, everything is OK, so create the Spell.
             string strDescriptors = string.Empty;
@@ -785,13 +818,15 @@ namespace Chummer
                         if (!chkModifier14.Checked)
                             strDescriptors += "Area, ";
                         else
-                            strDescriptors += "Extended Area";
+                            strDescriptors += "Extended Area, ";
                     }
                     break;
+
                 case "Health":
                     if (chkModifier4.Checked)
                         strDescriptors += "Negative, ";
                     break;
+
                 case "Illusion":
                     if (chkModifier1.Checked)
                         strDescriptors += "Obvious, ";
@@ -804,6 +839,7 @@ namespace Chummer
                     if (chkArea.Checked)
                         strDescriptors += "Area, ";
                     break;
+
                 case "Manipulation":
                     if (chkModifier1.Checked)
                         strDescriptors += "Environmental, ";
@@ -814,24 +850,19 @@ namespace Chummer
                     if (chkArea.Checked)
                         strDescriptors += "Area, ";
                     break;
+
                 default:
                     // Combat.
                     if (chkModifier1.Checked)
                         strDescriptors += "Direct, ";
                     if (chkModifier2.Checked)
                         strDescriptors += "Indirect, ";
-                    if (cboRange.SelectedValue.ToString() == "T")
-                        strDescriptors += "Touch, ";
-                    if (cboRange.SelectedValue.ToString() == "A")
+                    if (cboRange.SelectedValue.ToString().Contains("(A)"))
                         strDescriptors += "Area, ";
                     if (chkModifier3.Checked)
                         strDescriptors += "Elemental, ";
                     break;
             }
-
-            string strRange = cboRange.SelectedValue.ToString();
-            if (chkArea.Checked)
-                strRange += " (A)";
 
             // Remove the trailing ", " from the Descriptors string.
             if (!string.IsNullOrEmpty(strDescriptors))
@@ -856,14 +887,16 @@ namespace Chummer
 
             DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
+
         /// <summary>
         /// Spell that was created in the dialogue.
         /// </summary>
         public Spell SelectedSpell => _objSpell;
 
-        #endregion
+        #endregion Properties
     }
 }

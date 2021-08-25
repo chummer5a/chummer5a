@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+  <categories>
+    <category>Animals</category>
+  </categories>
+  <gears>
+    <gear>
+      <id>d1bb9849-1d86-451c-92f3-ebe071c260d7</id>
+      <name>Domestic Cat</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>50</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 25 nuyen a month unless you have a Squatter lifestyle or higher.</notes>
+    </gear>
+    <gear>
+      <id>1a381ef2-0e6f-4d0e-b376-00d1e888fd10</id>
+      <name>Rat</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>5</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 25 nuyen a month unless you have a Squatter lifestyle or higher. That's rat</notes>
+    </gear>
+    <gear>
+      <id>eb327224-0b90-42c5-b40b-f405becbf643</id>
+      <name>Goldfish</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>2</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 25 nuyen a month unless you have a Squatter lifestyle or higher.</notes>
+    </gear>
+    <gear>
+      <id>adad1994-9e2b-4441-8207-5ec2ad63f599</id>
+      <name>Devil Rat</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>6R</avail>
+      <cost>300</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 25 nuyen a month unless you have a Squatter lifestyle or higher. That's devil rat</notes>
+    </gear>
+    <gear>
+      <id>b53a4045-f03b-4b2d-be52-69d4c656e9c2</id>
+      <name>Arachnid</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>5</avail>
+      <cost>80</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 25 nuyen a month unless you have a Squatter lifestyle or higher.</notes>
+    </gear>
+    <gear>
+      <id>7761f33e-1a73-44a4-8dbb-7789cd8d3205</id>
+      <name>Nezumi</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>15000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 25 nuyen a month unless you have a Squatter lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>62c5b144-81db-44d8-8a61-d296347921f0</id>
+      <name>Dog</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>75</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>31b17077-2122-46be-b978-fd6f2795f476</id>
+      <name>Snake (non-venomous)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>0</avail>
+      <cost>100</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>771d535c-9767-49e3-a091-8dc86e2079b4</id>
+      <name>Bandit</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>8R</avail>
+      <cost>2000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>0213c2c9-6a0d-497d-a31a-e01e340839ef</id>
+      <name>Ferret</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>6</avail>
+      <cost>150</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>748858d0-8805-4ba1-b106-f16c529f9f3d</id>
+      <name>Corvid</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>8R</avail>
+      <cost>200</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>85454af6-ecf4-48ce-aed1-0233038b270e</id>
+      <name>Bastet</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>15000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>dc1c34bf-49fe-400e-8b83-127af7e71800</id>
+      <name>Rook (small bird or corvid)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>14F</avail>
+      <cost>25000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>abf5e184-c18b-42e1-a9ae-f9a1770265f5</id>
+      <name>Raccoon</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>6</avail>
+      <cost>150</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 150 nuyen a month unless you have a Low lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>7c908df4-e0f0-4d39-99c0-1715f71d3a62</id>
+      <name>Basilisk</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>14R</avail>
+      <cost>40000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>4ebbfac1-b9b9-468b-a546-5b7fb591b958</id>
+      <name>Fenrir Wolf</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>10F</avail>
+      <cost>14000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>c55f60e7-6dea-4355-b103-ae3eac29959a</id>
+      <name>Gomatia</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>8</avail>
+      <cost>5000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>985eb2fa-6bc0-421f-bfea-91a9e3c065c6</id>
+      <name>Snow Snake</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>6R</avail>
+      <cost>2500</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>c9aa7568-19ec-4111-814d-c3333ddcbdee</id>
+      <name>Wolf</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>1000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>454ac700-c680-4af1-a291-8a597de8c0cc</id>
+      <name>Snake (large)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>2000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>7eefb066-cfbb-4303-9038-3315c0085385</id>
+      <name>Alligator</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>6R</avail>
+      <cost>300</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>055c2f86-ef1f-421b-9454-dab836146cc2</id>
+      <name>Snake (small, venomous)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>14R</avail>
+      <cost>500</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>a2be92e1-7733-4ea8-be3d-f83e6478fc0c</id>
+      <name>Nova Scorpion</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>5000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>7c45722b-e6f6-4534-bad3-5309e08064d8</id>
+      <name>Spider-Beast</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>9R</avail>
+      <cost>5000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>c2cdf99c-f265-4052-b9fb-cd4c0fb4f339</id>
+      <name>Ahi (small)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>50000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>babcec97-9b2c-41c7-960a-42d215bfaff0</id>
+      <name>Ahi (large)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>16F</avail>
+      <cost>150000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>ebe90a25-d6da-4819-b66e-f3f903838944</id>
+      <name>Furfur</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>17F</avail>
+      <cost>80000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>9be75704-407b-411a-85bb-485f94edb3c9</id>
+      <name>Libertine</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>16000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>c23996c0-f4b9-4f95-bd99-ba54066eab3c</id>
+      <name>Mongrel</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>20000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>b20c9992-2a54-49af-9606-120ed7388fcc</id>
+      <name>Rook (bird of prey)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>18F</avail>
+      <cost>45000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 500 nuyen a month unless you have a Medium lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>bbbfa7b0-940f-4f88-b7ff-e1d49a3dcd52</id>
+      <name>Boar</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>10</avail>
+      <cost>400</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher. Please do not have thirty to fifty feral hogs though.</notes>
+    </gear>
+	<gear>
+      <id>11183db6-5bd3-4f9d-8a60-857d7b2270d8</id>
+      <name>Eagle</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>7500</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>822e12df-15b5-4b62-a109-72d17d848348</id>
+      <name>Abrams Lobster</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>14F</avail>
+      <cost>7000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>c7f3f6a3-f0f4-419d-b254-72e8c58aea5e</id>
+      <name>Agropelter</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>5000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>456fa656-516e-49e0-bfdd-261d28b0d56f</id>
+      <name>Barghest</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>15R</avail>
+      <cost>11000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>4ee46e61-8e45-4f1d-b66f-cacca31463bd</id>
+      <name>Great Cat</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>5000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>06f86902-59e8-43d9-85ef-390b69e9efab</id>
+      <name>Cerberus Hound</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>16F</avail>
+      <cost>30000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>5b6f363c-1c5d-47db-a8bb-6927c40acdaf</id>
+      <name>Cockatrice</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>10R</avail>
+      <cost>3500</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>ad145fa1-fd8e-44a5-a01e-203b88ffe49c</id>
+      <name>Death Rattle</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>14F</avail>
+      <cost>22000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>656cecce-f759-4693-945d-9ad5660d36eb</id>
+      <name>Demon Rat</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>22F</avail>
+      <cost>30000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>c314fa66-b3c6-4bf0-8c78-803ff8915625</id>
+      <name>Hell Hound</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>15R</avail>
+      <cost>10000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>6e5a108e-fdad-464d-9bf3-4cfddde94ac3</id>
+      <name>Phoenician Bird</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>17F</avail>
+      <cost>70000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>2cc85de6-d2d6-40b4-8945-30188623b05e</id>
+      <name>Roc, Lesser</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>9R</avail>
+      <cost>11500</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>1712553e-af21-483c-a199-dbf05ebd1e92</id>
+      <name>Shadow Hound</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>8R</avail>
+      <cost>3000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>2584d48e-f9f6-4667-b64c-c559d943a6d0</id>
+      <name>Volleying Porcupine</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>8R</avail>
+      <cost>1000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 1000 nuyen a month unless you have a High lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>29c9af2c-128d-48e0-8480-98274ba97b05</id>
+      <name>Chimpanzee</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>20000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>3374fc30-6628-414f-aee9-d0f0a9136f4f</id>
+      <name>Horse</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>4</avail>
+      <cost>2000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a stable included in your lifestyle or Luxury lifestyle or higher. horse</notes>
+    </gear>
+	<gear>
+      <id>dc73ed8a-c0bb-4485-b166-3aef359a41b5</id>
+      <name>Bear</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>16F</avail>
+      <cost>9000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>0a16b822-eb1d-42de-9779-a96e4e7d49e1</id>
+      <name>Elephant</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>55000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>ee354c1c-6cd8-4517-80aa-f0aa192dae6c</id>
+      <name>Horned Bear</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>13R</avail>
+      <cost>50000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>b366bf3d-bc91-46fb-bdea-5431a368b82f</id>
+      <name>Martichoras</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>16F</avail>
+      <cost>40000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>180f2639-0a40-4933-9e7d-2df22678ea9c</id>
+      <name>Ozian Baboon</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>13R</avail>
+      <cost>65000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>c8811a5a-b145-4d71-8583-682e4d40f076</id>
+      <name>Pegasus</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12F</avail>
+      <cost>5000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>376f01d5-a5c2-41a1-88db-03917f5e7b8b</id>
+      <name>Peryton</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>10R</avail>
+      <cost>45000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>4cceb505-5269-4009-b88f-4fe991a00587</id>
+      <name>Saber-Tooth Cat</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>18R</avail>
+      <cost>25000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>bac03193-320f-4f60-b6b9-a071a2cc1e56</id>
+      <name>Sea lion</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>6000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>57c2b2a6-e8fd-4f2a-a1a0-8afa7a0f8f95</id>
+      <name>Unicorn</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>8000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>39b4d487-1656-48dc-86f4-06adee022aa4</id>
+      <name>Wolverine, Greater</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>18F</avail>
+      <cost>46000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>b2267067-986d-45d9-9fa0-40f7f201d5ee</id>
+      <name>Giraffe</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>18F</avail>
+      <cost>40000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>562c8d15-cb37-4e2c-926e-a9cec4f79ec6</id>
+      <name>Shark (small)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>14R</avail>
+      <cost>5000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>a02b6ede-b41c-41b0-8010-db64a0252574</id>
+      <name>Barracuda</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>12R</avail>
+      <cost>2500</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>eeeb8d36-1c06-4ca3-8300-0b9c92b21777</id>
+      <name>Afanc</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>20F</avail>
+      <cost>68000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>6331d64f-c7d2-4631-b925-f44e865d4dae</id>
+      <name>Bastet (big cat)</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>24F</avail>
+      <cost>500000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>e21c3bb4-322c-470e-9ae4-90393ff02c67</id>
+      <name>Dolphin</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>20F</avail>
+      <cost>100000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>596715f7-9246-46e8-a763-0344df3fb8d1</id>
+      <name>Killer whale</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>24F</avail>
+      <cost>300000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher. Also known as an orca. They don't like being kept in captivity.</notes>
+    </gear>
+	<gear>
+      <id>025b87e2-7e76-4514-b41c-c765d73670c5</id>
+      <name>Devil Jack Diamond</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>16R</avail>
+      <cost>40000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>fa34f908-937a-4d33-91fa-7be1b0ffdc68</id>
+      <name>Flipper</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>24F</avail>
+      <cost>600000</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher.</notes>
+    </gear>
+	<gear>
+      <id>f68475c7-d466-481e-8c88-235d0c2e33a9</id>
+      <name>Octopus</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <avail>11R</avail>
+      <cost>3500</cost>
+      <source>NA</source>
+      <page>12</page>
+	  <notes>Upkeep: 10000 nuyen a month unless you have a Luxury lifestyle or higher. Also represents squids of similar size.</notes>
+    </gear>
+  </gears>
+</chummer>

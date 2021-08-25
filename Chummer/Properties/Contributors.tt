@@ -29,9 +29,9 @@ namespace Chummer.Properties
 {
     public static class Contributors
     {
-        public static ReadOnlyCollection<string> Usernames => Array.AsReadOnly(_lstUsernames);
+        public static ReadOnlyCollection<string> Usernames => Array.AsReadOnly(s_LstUsernames);
 
-        private static readonly string[] _lstUsernames = {
+        private static readonly string[] s_LstUsernames = {
 <#
     // Code originally written by joha4270
 

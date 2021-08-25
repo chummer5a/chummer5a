@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -138,7 +139,7 @@ namespace Chummer
             return null;
         }
 
-        public void GeneratePersistents(CultureInfo objCulture, string strLanguage)
+        public async Task GeneratePersistents(CultureInfo objCulture, string strLanguage)
         {
             List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
             foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
@@ -150,16 +151,20 @@ namespace Chummer
             foreach (string strKey in lstPersistentKeysToRemove)
                 _dicPersistentModules.TryRemove(strKey, out StoryModule _);
 
-            Parallel.ForEach(Modules, x => x.TestRunToGeneratePersistents(objCulture, strLanguage));
+            foreach (StoryModule objModule in Modules)
+                await objModule.TestRunToGeneratePersistents(objCulture, strLanguage);
             _blnNeedToRegeneratePersistents = false;
         }
 
-        public string PrintStory(CultureInfo objCulture, string strLanguage)
+        public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage)
         {
             if (_blnNeedToRegeneratePersistents)
-                GeneratePersistents(objCulture, strLanguage);
+                await GeneratePersistents(objCulture, strLanguage);
             string[] strModuleOutputStrings = new string[Modules.Count];
-            Parallel.For(0, Modules.Count, i => strModuleOutputStrings[i] = Modules[i].PrintModule(objCulture, strLanguage));
+            for (int i = 0; i < Modules.Count; ++i)
+            {
+                strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage);
+            }
             return string.Concat(strModuleOutputStrings);
         }
     }

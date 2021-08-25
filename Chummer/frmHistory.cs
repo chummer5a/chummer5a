@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-﻿using System;
+
+using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -25,6 +26,7 @@ namespace Chummer
     public partial class frmHistory : Form
     {
         #region Control Events
+
         public frmHistory()
         {
             InitializeComponent();
@@ -48,6 +50,7 @@ namespace Chummer
             txtHistory.SelectionStart = 0;
             txtHistory.SelectionLength = 0;
         }
-        #endregion
+
+        #endregion Control Events
     }
 }

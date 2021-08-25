@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
@@ -52,10 +51,7 @@ namespace ChummerHub.Client.Backend
 
         private bool IsIgnored(Type type, string jsonPropertyName)
         {
-            if (!_ignores.ContainsKey(type))
-                return false;
-
-            return _ignores[type].Contains(jsonPropertyName);
+            return _ignores.ContainsKey(type) && _ignores[type].Contains(jsonPropertyName);
         }
 
         private bool IsRenamed(Type type, string jsonPropertyName, out string newJsonPropertyName)

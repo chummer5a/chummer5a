@@ -34,13 +34,17 @@ namespace Chummer
             this.lstMetamagic = new System.Windows.Forms.ListBox();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.chkLimitList = new Chummer.ColorableCheckBox();
+            this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.txtSearch = new System.Windows.Forms.TextBox();
-            this.lblSearchLabel = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblSearchLabel = new System.Windows.Forms.Label();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
+            this.tlpTopRight.SuspendLayout();
+            this.tlpRight.SuspendLayout();
             this.SuspendLayout();
             // 
             // cmdCancel
@@ -78,17 +82,18 @@ namespace Chummer
             this.lstMetamagic.FormattingEnabled = true;
             this.lstMetamagic.Location = new System.Drawing.Point(3, 3);
             this.lstMetamagic.Name = "lstMetamagic";
-            this.tlpMain.SetRowSpan(this.lstMetamagic, 4);
-            this.lstMetamagic.Size = new System.Drawing.Size(295, 417);
+            this.tlpMain.SetRowSpan(this.lstMetamagic, 5);
+            this.lstMetamagic.Size = new System.Drawing.Size(297, 417);
             this.lstMetamagic.TabIndex = 0;
             this.lstMetamagic.SelectedIndexChanged += new System.EventHandler(this.lstMetamagic_SelectedIndexChanged);
             this.lstMetamagic.DoubleClick += new System.EventHandler(this.lstMetamagic_DoubleClick);
             // 
             // lblSource
             // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(354, 32);
+            this.lblSource.Location = new System.Drawing.Point(53, 6);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -98,9 +103,9 @@ namespace Chummer
             // 
             // lblSourceLabel
             // 
-            this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(304, 32);
+            this.lblSourceLabel.Location = new System.Drawing.Point(3, 6);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -110,15 +115,16 @@ namespace Chummer
             // 
             // chkLimitList
             // 
-            this.chkLimitList.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLimitList.AutoSize = true;
             this.chkLimitList.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.chkLimitList.Checked = true;
             this.chkLimitList.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.tlpMain.SetColumnSpan(this.chkLimitList, 2);
-            this.chkLimitList.Location = new System.Drawing.Point(304, 54);
+            this.chkLimitList.DefaultColorScheme = true;
+            this.chkLimitList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.chkLimitList.Location = new System.Drawing.Point(306, 373);
+            this.chkLimitList.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLimitList.Name = "chkLimitList";
-            this.chkLimitList.Size = new System.Drawing.Size(186, 17);
+            this.chkLimitList.Size = new System.Drawing.Size(297, 17);
             this.chkLimitList.TabIndex = 3;
             this.chkLimitList.Tag = "Checkbox_SelectGeneric_LimitList";
             this.chkLimitList.Text = "Show only Metamagics I can take";
@@ -130,49 +136,25 @@ namespace Chummer
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 3;
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.ColumnCount = 2;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.lstMetamagic, 0, 0);
-            this.tlpMain.Controls.Add(this.txtSearch, 2, 0);
-            this.tlpMain.Controls.Add(this.lblSearchLabel, 1, 0);
-            this.tlpMain.Controls.Add(this.chkLimitList, 1, 2);
-            this.tlpMain.Controls.Add(this.lblSource, 2, 1);
-            this.tlpMain.Controls.Add(this.lblSourceLabel, 1, 1);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 3);
+            this.tlpMain.Controls.Add(this.chkLimitList, 1, 3);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 4);
+            this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
+            this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 4;
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowCount = 5;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 7;
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.Location = new System.Drawing.Point(354, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(249, 20);
-            this.txtSearch.TabIndex = 75;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
-            // lblSearchLabel
-            // 
-            this.lblSearchLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(304, 6);
-            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSearchLabel.Name = "lblSearchLabel";
-            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSearchLabel.TabIndex = 74;
-            this.lblSearchLabel.Tag = "Label_Search";
-            this.lblSearchLabel.Text = "&Search:";
             // 
             // tlpButtons
             // 
@@ -180,7 +162,6 @@ namespace Chummer
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 2;
-            this.tlpMain.SetColumnSpan(this.tlpButtons, 2);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
@@ -193,11 +174,70 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 29);
             this.tlpButtons.TabIndex = 77;
             // 
+            // tlpTopRight
+            // 
+            this.tlpTopRight.AutoSize = true;
+            this.tlpTopRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpTopRight.ColumnCount = 2;
+            this.tlpTopRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpTopRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpTopRight.Controls.Add(this.lblSearchLabel, 0, 0);
+            this.tlpTopRight.Controls.Add(this.txtSearch, 1, 0);
+            this.tlpTopRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpTopRight.Location = new System.Drawing.Point(303, 0);
+            this.tlpTopRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpTopRight.Name = "tlpTopRight";
+            this.tlpTopRight.RowCount = 1;
+            this.tlpTopRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpTopRight.Size = new System.Drawing.Size(303, 26);
+            this.tlpTopRight.TabIndex = 78;
+            // 
+            // lblSearchLabel
+            // 
+            this.lblSearchLabel.AutoSize = true;
+            this.lblSearchLabel.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSearchLabel.Name = "lblSearchLabel";
+            this.lblSearchLabel.Size = new System.Drawing.Size(44, 14);
+            this.lblSearchLabel.TabIndex = 74;
+            this.lblSearchLabel.Tag = "Label_Search";
+            this.lblSearchLabel.Text = "&Search:";
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtSearch.Location = new System.Drawing.Point(53, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(247, 20);
+            this.txtSearch.TabIndex = 75;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
+            // tlpRight
+            // 
+            this.tlpRight.AutoSize = true;
+            this.tlpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.ColumnCount = 2;
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.lblSource, 1, 0);
+            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRight.Location = new System.Drawing.Point(303, 26);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpRight.Name = "tlpRight";
+            this.tlpRight.RowCount = 1;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Size = new System.Drawing.Size(303, 25);
+            this.tlpRight.TabIndex = 79;
+            // 
             // frmSelectMetamagic
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
@@ -215,6 +255,10 @@ namespace Chummer
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            this.tlpTopRight.ResumeLayout(false);
+            this.tlpTopRight.PerformLayout();
+            this.tlpRight.ResumeLayout(false);
+            this.tlpRight.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -232,5 +276,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.TextBox txtSearch;
         private BufferedTableLayoutPanel tlpButtons;
+        private BufferedTableLayoutPanel tlpTopRight;
+        private BufferedTableLayoutPanel tlpRight;
     }
 }

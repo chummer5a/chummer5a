@@ -1,21 +1,22 @@
- /*  This file is part of Chummer5a.
- *
- *  Chummer5a is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  Chummer5a is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
- *
- *  You can obtain the full source code for Chummer5a at
- *  https://github.com/chummer5a/chummer5a
- */
+/*  This file is part of Chummer5a.
+*
+*  Chummer5a is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  Chummer5a is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+*
+*  You can obtain the full source code for Chummer5a at
+*  https://github.com/chummer5a/chummer5a
+*/
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -47,7 +48,7 @@ namespace Chummer
                 using (StreamReader objStream = new StreamReader(strFile, Encoding.UTF8, true))
                     report.AddData("chummerlog.txt", objStream.BaseStream);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 report.AddData("chummerlog.txt", ex.ToString());
             }
@@ -57,24 +58,26 @@ namespace Chummer
             //And reflection to all savefiles
             //here
 
-            //try to include default settings file
-            try
+            //try to include all settings files
+            foreach (string strSettingFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
             {
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", "default.xml");
-                using (StreamReader objStream = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    report.AddData("default.xml", objStream.BaseStream);
+                string strName = Path.GetFileName(strSettingFile);
+                try
+                {
+                    using (StreamReader objStream = new StreamReader(strSettingFile, Encoding.UTF8, true))
+                        report.AddData(strName, objStream.BaseStream);
+                }
+                catch (Exception ex)
+                {
+                    report.AddData(strName, ex.ToString());
+                }
             }
-            catch (Exception ex)
-            {
-                report.AddData("default.xml", ex.ToString());
-            }
-
 
             report.Send();
             Program.MainForm.ShowMessageBox("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);
         }
 
-        private readonly List<KeyValuePair<string, Stream>> values;
+        private readonly List<KeyValuePair<string, Stream>> _lstValues;
 
         /// <summary>
         /// Unique ID for the crash report, makes a user able to refer to a specific report
@@ -82,22 +85,17 @@ namespace Chummer
         public Guid Id { get; }
 
         private string _subject;
+
         public string Subject
         {
-            get
-            {
-                if (_subject == null)
-                    return Id.ToString("D", GlobalOptions.InvariantCultureInfo);
-
-                return _subject;
-            }
+            get => _subject ?? Id.ToString("D", GlobalOptions.InvariantCultureInfo);
             set => _subject = value;
         }
 
         public CrashReportData(Guid repordGuid)
         {
             Id = repordGuid;
-            values = new List<KeyValuePair<string, Stream>>(1);
+            _lstValues = new List<KeyValuePair<string, Stream>>(1);
         }
 
         public CrashReportData AddDefaultData()
@@ -177,7 +175,7 @@ namespace Chummer
 
         public CrashReportData AddData(string title, Stream contents)
         {
-            values.Add(new KeyValuePair<string, Stream>(title, contents));
+            _lstValues.Add(new KeyValuePair<string, Stream>(title, contents));
             return this;
         }
 
@@ -209,7 +207,7 @@ namespace Chummer
                         message.Body = DefaultInfo();
 
                         //Compression?
-                        foreach (KeyValuePair<string, Stream> pair in values)
+                        foreach (KeyValuePair<string, Stream> pair in _lstValues)
                         {
                             message.Attachments.Add(new Attachment(pair.Value, pair.Key));
                         }

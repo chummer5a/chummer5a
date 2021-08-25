@@ -35,22 +35,24 @@ namespace Chummer.UI.Shared
             this.cmdAddLimitModifier = new System.Windows.Forms.Button();
             this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
             this.tlpParent = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblMentalLimitLabel = new System.Windows.Forms.Label();
-            this.lblSocialLimitLabel = new System.Windows.Forms.Label();
-            this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
+            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblAstral = new Chummer.LabelWithToolTip();
-            this.lblPhysical = new Chummer.LabelWithToolTip();
-            this.lblMental = new Chummer.LabelWithToolTip();
+            this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
             this.lblSocial = new Chummer.LabelWithToolTip();
             this.lblAstralLabel = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblSocialLimitLabel = new System.Windows.Forms.Label();
+            this.lblMentalLimitLabel = new System.Windows.Forms.Label();
+            this.lblPhysical = new Chummer.LabelWithToolTip();
+            this.lblMental = new Chummer.LabelWithToolTip();
             this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tssLimitModifierEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.tssLimitModifierNotes = new System.Windows.Forms.ToolStripMenuItem();
             this.cmsLimitModifierNotesOnly = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tssLimitModifierNotesOnlyNotes = new System.Windows.Forms.ToolStripMenuItem();
+            this.tssLimitModifierEdit = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tssLimitModifierNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tssLimitModifierNotesOnlyNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tlpParent.SuspendLayout();
             this.tlpButtons.SuspendLayout();
+            this.tlpRight.SuspendLayout();
             this.cmsLimitModifier.SuspendLayout();
             this.cmsLimitModifierNotesOnly.SuspendLayout();
             this.SuspendLayout();
@@ -61,7 +63,6 @@ namespace Chummer.UI.Shared
             this.treLimit.HideSelection = false;
             this.treLimit.Location = new System.Drawing.Point(3, 32);
             this.treLimit.Name = "treLimit";
-            this.tlpParent.SetRowSpan(this.treLimit, 5);
             this.treLimit.ShowNodeToolTips = true;
             this.treLimit.ShowPlusMinus = false;
             this.treLimit.ShowRootLines = false;
@@ -103,135 +104,32 @@ namespace Chummer.UI.Shared
             // 
             this.tlpParent.AutoSize = true;
             this.tlpParent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpParent.ColumnCount = 3;
-            this.tlpParent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpParent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpParent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpParent.Controls.Add(this.lblAstral, 2, 4);
-            this.tlpParent.Controls.Add(this.lblSocialLimitLabel, 1, 3);
-            this.tlpParent.Controls.Add(this.lblSocial, 2, 3);
-            this.tlpParent.Controls.Add(this.lblMental, 2, 2);
-            this.tlpParent.Controls.Add(this.lblPhysical, 2, 1);
-            this.tlpParent.Controls.Add(this.lblMentalLimitLabel, 1, 2);
+            this.tlpParent.ColumnCount = 2;
+            this.tlpParent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
+            this.tlpParent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68F));
+            this.tlpParent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpParent.Controls.Add(this.treLimit, 0, 1);
-            this.tlpParent.Controls.Add(this.lblAstralLabel, 1, 4);
-            this.tlpParent.Controls.Add(this.lblPhysicalLimitLabel, 1, 1);
             this.tlpParent.Controls.Add(this.tlpButtons, 0, 0);
+            this.tlpParent.Controls.Add(this.tlpRight, 1, 1);
             this.tlpParent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpParent.Location = new System.Drawing.Point(0, 0);
             this.tlpParent.Name = "tlpParent";
-            this.tlpParent.RowCount = 6;
-            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpParent.RowCount = 2;
             this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpParent.Size = new System.Drawing.Size(480, 426);
+            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpParent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpParent.Size = new System.Drawing.Size(941, 426);
             this.tlpParent.TabIndex = 93;
-            // 
-            // lblMentalLimitLabel
-            // 
-            this.lblMentalLimitLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMentalLimitLabel.AutoSize = true;
-            this.lblMentalLimitLabel.Location = new System.Drawing.Point(311, 60);
-            this.lblMentalLimitLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMentalLimitLabel.Name = "lblMentalLimitLabel";
-            this.lblMentalLimitLabel.Size = new System.Drawing.Size(39, 13);
-            this.lblMentalLimitLabel.TabIndex = 83;
-            this.lblMentalLimitLabel.Tag = "Node_Mental";
-            this.lblMentalLimitLabel.Text = "Mental";
-            // 
-            // lblSocialLimitLabel
-            // 
-            this.lblSocialLimitLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSocialLimitLabel.AutoSize = true;
-            this.lblSocialLimitLabel.Location = new System.Drawing.Point(314, 85);
-            this.lblSocialLimitLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSocialLimitLabel.Name = "lblSocialLimitLabel";
-            this.lblSocialLimitLabel.Size = new System.Drawing.Size(36, 13);
-            this.lblSocialLimitLabel.TabIndex = 85;
-            this.lblSocialLimitLabel.Tag = "Node_Social";
-            this.lblSocialLimitLabel.Text = "Social";
-            // 
-            // lblPhysicalLimitLabel
-            // 
-            this.lblPhysicalLimitLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblPhysicalLimitLabel.AutoSize = true;
-            this.lblPhysicalLimitLabel.Location = new System.Drawing.Point(304, 35);
-            this.lblPhysicalLimitLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPhysicalLimitLabel.Name = "lblPhysicalLimitLabel";
-            this.lblPhysicalLimitLabel.Size = new System.Drawing.Size(46, 13);
-            this.lblPhysicalLimitLabel.TabIndex = 81;
-            this.lblPhysicalLimitLabel.Tag = "Node_Physical";
-            this.lblPhysicalLimitLabel.Text = "Physical";
-            // 
-            // lblAstral
-            // 
-            this.lblAstral.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblAstral.AutoSize = true;
-            this.lblAstral.Location = new System.Drawing.Point(356, 110);
-            this.lblAstral.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblAstral.Name = "lblAstral";
-            this.lblAstral.Size = new System.Drawing.Size(19, 13);
-            this.lblAstral.TabIndex = 88;
-            this.lblAstral.Text = "[0]";
-            this.lblAstral.ToolTipText = "";
-            // 
-            // lblPhysical
-            // 
-            this.lblPhysical.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblPhysical.AutoSize = true;
-            this.lblPhysical.Location = new System.Drawing.Point(356, 35);
-            this.lblPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPhysical.Name = "lblPhysical";
-            this.lblPhysical.Size = new System.Drawing.Size(19, 13);
-            this.lblPhysical.TabIndex = 82;
-            this.lblPhysical.Text = "[0]";
-            this.lblPhysical.ToolTipText = "";
-            // 
-            // lblMental
-            // 
-            this.lblMental.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblMental.AutoSize = true;
-            this.lblMental.Location = new System.Drawing.Point(356, 60);
-            this.lblMental.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMental.Name = "lblMental";
-            this.lblMental.Size = new System.Drawing.Size(19, 13);
-            this.lblMental.TabIndex = 84;
-            this.lblMental.Text = "[0]";
-            this.lblMental.ToolTipText = "";
-            // 
-            // lblSocial
-            // 
-            this.lblSocial.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSocial.AutoSize = true;
-            this.lblSocial.Location = new System.Drawing.Point(356, 85);
-            this.lblSocial.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSocial.Name = "lblSocial";
-            this.lblSocial.Size = new System.Drawing.Size(19, 13);
-            this.lblSocial.TabIndex = 86;
-            this.lblSocial.Text = "[0]";
-            this.lblSocial.ToolTipText = "";
-            // 
-            // lblAstralLabel
-            // 
-            this.lblAstralLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblAstralLabel.AutoSize = true;
-            this.lblAstralLabel.Location = new System.Drawing.Point(317, 110);
-            this.lblAstralLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblAstralLabel.Name = "lblAstralLabel";
-            this.lblAstralLabel.Size = new System.Drawing.Size(33, 13);
-            this.lblAstralLabel.TabIndex = 87;
-            this.lblAstralLabel.Tag = "Node_Astral";
-            this.lblAstralLabel.Text = "Astral";
             // 
             // tlpButtons
             // 
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 2;
-            this.tlpParent.SetColumnSpan(this.tlpButtons, 3);
+            this.tlpParent.SetColumnSpan(this.tlpButtons, 2);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdAddLimitModifier, 0, 0);
@@ -244,6 +142,127 @@ namespace Chummer.UI.Shared
             this.tlpButtons.Size = new System.Drawing.Size(212, 29);
             this.tlpButtons.TabIndex = 94;
             // 
+            // tlpRight
+            // 
+            this.tlpRight.ColumnCount = 2;
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpRight.Controls.Add(this.lblAstral, 1, 3);
+            this.tlpRight.Controls.Add(this.lblPhysicalLimitLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.lblSocial, 1, 2);
+            this.tlpRight.Controls.Add(this.lblAstralLabel, 0, 3);
+            this.tlpRight.Controls.Add(this.lblSocialLimitLabel, 0, 2);
+            this.tlpRight.Controls.Add(this.lblMentalLimitLabel, 0, 1);
+            this.tlpRight.Controls.Add(this.lblPhysical, 1, 0);
+            this.tlpRight.Controls.Add(this.lblMental, 1, 1);
+            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpRight.Location = new System.Drawing.Point(301, 29);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpRight.Name = "tlpRight";
+            this.tlpRight.RowCount = 4;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.Size = new System.Drawing.Size(640, 100);
+            this.tlpRight.TabIndex = 95;
+            // 
+            // lblAstral
+            // 
+            this.lblAstral.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblAstral.AutoSize = true;
+            this.lblAstral.Location = new System.Drawing.Point(55, 81);
+            this.lblAstral.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblAstral.Name = "lblAstral";
+            this.lblAstral.Size = new System.Drawing.Size(19, 13);
+            this.lblAstral.TabIndex = 88;
+            this.lblAstral.Text = "[0]";
+            this.lblAstral.ToolTipText = "";
+            // 
+            // lblPhysicalLimitLabel
+            // 
+            this.lblPhysicalLimitLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblPhysicalLimitLabel.AutoSize = true;
+            this.lblPhysicalLimitLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblPhysicalLimitLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPhysicalLimitLabel.Name = "lblPhysicalLimitLabel";
+            this.lblPhysicalLimitLabel.Size = new System.Drawing.Size(46, 13);
+            this.lblPhysicalLimitLabel.TabIndex = 81;
+            this.lblPhysicalLimitLabel.Tag = "Node_Physical";
+            this.lblPhysicalLimitLabel.Text = "Physical";
+            // 
+            // lblSocial
+            // 
+            this.lblSocial.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSocial.AutoSize = true;
+            this.lblSocial.Location = new System.Drawing.Point(55, 56);
+            this.lblSocial.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSocial.Name = "lblSocial";
+            this.lblSocial.Size = new System.Drawing.Size(19, 13);
+            this.lblSocial.TabIndex = 86;
+            this.lblSocial.Text = "[0]";
+            this.lblSocial.ToolTipText = "";
+            // 
+            // lblAstralLabel
+            // 
+            this.lblAstralLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblAstralLabel.AutoSize = true;
+            this.lblAstralLabel.Location = new System.Drawing.Point(16, 81);
+            this.lblAstralLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblAstralLabel.Name = "lblAstralLabel";
+            this.lblAstralLabel.Size = new System.Drawing.Size(33, 13);
+            this.lblAstralLabel.TabIndex = 87;
+            this.lblAstralLabel.Tag = "Node_Astral";
+            this.lblAstralLabel.Text = "Astral";
+            // 
+            // lblSocialLimitLabel
+            // 
+            this.lblSocialLimitLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSocialLimitLabel.AutoSize = true;
+            this.lblSocialLimitLabel.Location = new System.Drawing.Point(13, 56);
+            this.lblSocialLimitLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSocialLimitLabel.Name = "lblSocialLimitLabel";
+            this.lblSocialLimitLabel.Size = new System.Drawing.Size(36, 13);
+            this.lblSocialLimitLabel.TabIndex = 85;
+            this.lblSocialLimitLabel.Tag = "Node_Social";
+            this.lblSocialLimitLabel.Text = "Social";
+            // 
+            // lblMentalLimitLabel
+            // 
+            this.lblMentalLimitLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMentalLimitLabel.AutoSize = true;
+            this.lblMentalLimitLabel.Location = new System.Drawing.Point(10, 31);
+            this.lblMentalLimitLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMentalLimitLabel.Name = "lblMentalLimitLabel";
+            this.lblMentalLimitLabel.Size = new System.Drawing.Size(39, 13);
+            this.lblMentalLimitLabel.TabIndex = 83;
+            this.lblMentalLimitLabel.Tag = "Node_Mental";
+            this.lblMentalLimitLabel.Text = "Mental";
+            // 
+            // lblPhysical
+            // 
+            this.lblPhysical.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblPhysical.AutoSize = true;
+            this.lblPhysical.Location = new System.Drawing.Point(55, 6);
+            this.lblPhysical.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPhysical.Name = "lblPhysical";
+            this.lblPhysical.Size = new System.Drawing.Size(19, 13);
+            this.lblPhysical.TabIndex = 82;
+            this.lblPhysical.Text = "[0]";
+            this.lblPhysical.ToolTipText = "";
+            // 
+            // lblMental
+            // 
+            this.lblMental.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblMental.AutoSize = true;
+            this.lblMental.Location = new System.Drawing.Point(55, 31);
+            this.lblMental.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMental.Name = "lblMental";
+            this.lblMental.Size = new System.Drawing.Size(19, 13);
+            this.lblMental.TabIndex = 84;
+            this.lblMental.Text = "[0]";
+            this.lblMental.ToolTipText = "";
+            // 
             // cmsLimitModifier
             // 
             this.cmsLimitModifier.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -252,9 +271,22 @@ namespace Chummer.UI.Shared
             this.cmsLimitModifier.Name = "cmsLimitModifier";
             this.cmsLimitModifier.Size = new System.Drawing.Size(106, 48);
             // 
+            // cmsLimitModifierNotesOnly
+            // 
+            this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tssLimitModifierNotesOnlyNotes});
+            this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
+            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(106, 26);
+            // 
             // tssLimitModifierEdit
             // 
             this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
+            this.tssLimitModifierEdit.ImageDpi120 = null;
+            this.tssLimitModifierEdit.ImageDpi144 = null;
+            this.tssLimitModifierEdit.ImageDpi192 = global::Chummer.Properties.Resources.house_edit1;
+            this.tssLimitModifierEdit.ImageDpi288 = null;
+            this.tssLimitModifierEdit.ImageDpi384 = null;
+            this.tssLimitModifierEdit.ImageDpi96 = global::Chummer.Properties.Resources.house_edit;
             this.tssLimitModifierEdit.Name = "tssLimitModifierEdit";
             this.tssLimitModifierEdit.Size = new System.Drawing.Size(105, 22);
             this.tssLimitModifierEdit.Tag = "Menu_Main_Edit";
@@ -264,24 +296,29 @@ namespace Chummer.UI.Shared
             // tssLimitModifierNotes
             // 
             this.tssLimitModifierNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tssLimitModifierNotes.ImageDpi120 = null;
+            this.tssLimitModifierNotes.ImageDpi144 = null;
+            this.tssLimitModifierNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tssLimitModifierNotes.ImageDpi288 = null;
+            this.tssLimitModifierNotes.ImageDpi384 = null;
+            this.tssLimitModifierNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tssLimitModifierNotes.Name = "tssLimitModifierNotes";
             this.tssLimitModifierNotes.Size = new System.Drawing.Size(105, 22);
             this.tssLimitModifierNotes.Tag = "Menu_Notes";
             this.tssLimitModifierNotes.Text = "&Notes";
             this.tssLimitModifierNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
             // 
-            // cmsLimitModifierNotesOnly
-            // 
-            this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tssLimitModifierNotesOnlyNotes});
-            this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
-            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(106, 26);
-            // 
             // tssLimitModifierNotesOnlyNotes
             // 
             this.tssLimitModifierNotesOnlyNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi120 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi144 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi288 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi384 = null;
+            this.tssLimitModifierNotesOnlyNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tssLimitModifierNotesOnlyNotes.Name = "tssLimitModifierNotesOnlyNotes";
-            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(105, 22);
+            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(180, 22);
             this.tssLimitModifierNotesOnlyNotes.Tag = "Menu_Notes";
             this.tssLimitModifierNotesOnlyNotes.Text = "&Notes";
             this.tssLimitModifierNotesOnlyNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
@@ -295,12 +332,14 @@ namespace Chummer.UI.Shared
             this.DoubleBuffered = true;
             this.MinimumSize = new System.Drawing.Size(480, 0);
             this.Name = "LimitTabUserControl";
-            this.Size = new System.Drawing.Size(480, 426);
+            this.Size = new System.Drawing.Size(941, 426);
             this.Load += new System.EventHandler(this.LimitTabUserControl_Load);
             this.tlpParent.ResumeLayout(false);
             this.tlpParent.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            this.tlpRight.ResumeLayout(false);
+            this.tlpRight.PerformLayout();
             this.cmsLimitModifier.ResumeLayout(false);
             this.cmsLimitModifierNotesOnly.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -323,10 +362,11 @@ namespace Chummer.UI.Shared
         private LabelWithToolTip lblSocial;
         private System.Windows.Forms.Label lblAstralLabel;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifier;
-        private System.Windows.Forms.ToolStripMenuItem tssLimitModifierEdit;
-        private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotes;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifierNotesOnly;
-        private System.Windows.Forms.ToolStripMenuItem tssLimitModifierNotesOnlyNotes;
         private BufferedTableLayoutPanel tlpButtons;
+        private BufferedTableLayoutPanel tlpRight;
+        private DpiFriendlyToolStripMenuItem tssLimitModifierEdit;
+        private DpiFriendlyToolStripMenuItem tssLimitModifierNotes;
+        private DpiFriendlyToolStripMenuItem tssLimitModifierNotesOnlyNotes;
     }
 }

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Globalization;
 using System.Linq;
@@ -35,6 +36,7 @@ namespace Chummer.Backend.Skills
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter;
@@ -67,10 +69,13 @@ namespace Chummer.Backend.Skills
         /// <param name="xmlNode">XmlNode to load.</param>
         public static SkillSpecialization Load(Character objCharacter, XmlNode xmlNode)
         {
-            if (!xmlNode.TryGetField("guid",Guid.TryParse, out Guid guiTemp))
+            string strName = string.Empty;
+            if (!xmlNode.TryGetStringFieldQuickly("name", ref strName) || string.IsNullOrEmpty(strName))
+                return null;
+            if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(objCharacter, xmlNode["name"]?.InnerText, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
+            return new SkillSpecialization(objCharacter, strName, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
             {
                 _guiID = guiTemp
             };
@@ -99,7 +104,7 @@ namespace Chummer.Backend.Skills
             objWriter.WriteEndElement();
         }
 
-        #endregion
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
 
@@ -113,7 +118,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?.Attributes?["translate"]?.InnerText ?? Name;
@@ -164,7 +169,7 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
-        /// Is this a forced specialization or player entered
+        /// Is this a forced specialization (true) or player entered (false)
         /// </summary>
         public bool Free => _blnFree;
 
@@ -178,6 +183,6 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public int SpecializationBonus => _objCharacter.Options.SpecializationBonus + (Expertise ? 1 : 0);
 
-        #endregion
+        #endregion Properties
     }
 }

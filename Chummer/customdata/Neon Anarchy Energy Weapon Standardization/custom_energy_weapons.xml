@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<accessories>
+		<accessory>
+			<id>6c0af59c-f2e5-45fd-b4d7-6afd7782fc3c</id>
+			<name>Peak-Discharge Battery Pack, Power Clip (Twin)</name>
+			<mount />
+			<avail>12R</avail>
+			<cost>800</cost>
+			<source>RG</source>
+			<page>52</page>
+			<ammoreplace>20 or External Source</ammoreplace>
+			<ammoslots>1</ammoslots>
+			<rating>0</rating>
+			<required>
+				<weapondetails>
+					<OR>
+						<name>Ares Lancer MP Laser</name>
+						<name>Narcoject PEP</name>
+					</OR>
+				</weapondetails>
+			</required>
+		</accessory>
+	</accessories>
+</chummer>

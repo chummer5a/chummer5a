@@ -16,12 +16,12 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
-using System.Runtime.InteropServices;
 using System.Xml.XPath;
 using NLog;
 
@@ -29,7 +29,7 @@ namespace Chummer
 {
     public partial class Chummy : Form
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private const int EyeBallWidth = 20;
         private const int EyeBallHeight = 32;
         private const int DistanceBetweenEyes = 10;
@@ -41,7 +41,7 @@ namespace Chummer
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
 
-        readonly ToolTip _myToolTip = new ToolTip
+        private readonly ToolTip _myToolTip = new ToolTip
         {
             IsBalloon = true
         };
@@ -59,13 +59,13 @@ namespace Chummer
 
             Paint += panel1_Paint;
 
-            using (var tmrDraw = new Timer {Interval = 100})
+            using (var tmrDraw = new Timer { Interval = 100 })
             {
                 tmrDraw.Tick += tmr_DrawTick;
                 tmrDraw.Start();
             }
 
-            using (var tmrTip = new Timer {Interval = 300000})
+            using (var tmrTip = new Timer { Interval = 300000 })
             {
                 tmrTip.Tick += tmr_TipTick;
                 tmrTip.Start();
@@ -74,7 +74,9 @@ namespace Chummer
             _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(), this, _mouthCenter);
             _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).SelectSingleNode("/chummer/tips");
         }
+
         #region Event Handlers
+
         private void tmr_DrawTick(object sender, EventArgs e)
         {
             // See if the cursor has moved.
@@ -104,30 +106,20 @@ namespace Chummer
                     // drag the form without the caption bar
                     // present on left mouse button
                     HideBalloonTip();
-                    ReleaseCapture();
-                    SendMessage(Handle, 0xa1, 0x2, 0);
+                    NativeMethods.ReleaseCapture();
+                    NativeMethods.SendMessage(Handle, 0xa1, 0x2, IntPtr.Zero);
                     break;
+
                 case MouseButtons.Left:
                     ShowBalloonTip();
                     break;
             }
         }
-        #endregion
-        #region Form Dragging API Support
-        //The SendMessage function sends a message to a window or windows.
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+        #endregion Event Handlers
 
-        static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
-
-        //ReleaseCapture releases a mouse capture
-
-        [DllImportAttribute("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-
-        public static extern bool ReleaseCapture();
-
-        #endregion
         #region Draw Eyes
+
         private void DrawEyes(Graphics gr)
         {
             // Convert the cursor position into form units.
@@ -146,7 +138,7 @@ namespace Chummer
             DrawEye(gr, localPos, x2, _eyeballCenter.Y, (int)(EyeBallWidth * gr.DpiX / 96.0f), (int)(EyeBallHeight * gr.DpiY / 96.0f));
         }
 
-        private void DrawEye(Graphics gr, Point local_pos,
+        private void DrawEye(Graphics gr, Point localPos,
             int x1, int y1, int wid, int hgt)
         {
             // Draw the outside.
@@ -158,8 +150,8 @@ namespace Chummer
             int cy = y1 + hgt / 2;
 
             // Get the unit vector pointing towards the mouse position.
-            double dx = local_pos.X - cx;
-            double dy = local_pos.Y - cy;
+            double dx = localPos.X - cx;
+            double dy = localPos.Y - cy;
             double dist = Math.Sqrt(dx * dx + dy * dy);
             dx /= dist;
             dy /= dist;
@@ -186,7 +178,9 @@ namespace Chummer
                 Log.Warn(e, msg);
             }
         }
-        #endregion
+
+        #endregion Draw Eyes
+
         #region Chat Bubble
 
         private string HelpfulAdvice()
@@ -205,6 +199,7 @@ namespace Chummer
             }
             return string.Empty;
         }
+
         private void ShowBalloonTip()
         {
             _myToolTip.Show(HelpfulAdvice().WordWrap(), this, _mouthCenter);
@@ -214,7 +209,9 @@ namespace Chummer
         {
             _myToolTip.Hide(this);
         }
-        #endregion
+
+        #endregion Chat Bubble
+
         #region Properties
 
         public Character CharacterObject
@@ -227,6 +224,6 @@ namespace Chummer
             }
         }
 
-        #endregion
+        #endregion Properties
     }
 }

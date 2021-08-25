@@ -2673,7 +2673,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>装備購入のためにキャラクターが使える新円の額. 1 BP = {0} \.</text>
+            <text>装備購入のためにキャラクターが使える新円の額. {0}.</text>
         </string>
         <string>
             <key>Tip_CommonAIRating</key>
@@ -4415,10 +4415,6 @@
         <string>
             <key>Label_Options_CyberlimbCount</key>
             <text>通常のキャラクターの四肢:</text>
-        </string>
-        <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>1BPあたりの新円:</text>
         </string>
         <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
@@ -8601,7 +8597,7 @@
             <text>Custom data directory of this name already exists.</text>
         </string>
         <string>
-            <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+            <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
             <text>Duplicate Custom Data Directory Name</text>
         </string>
         <string>

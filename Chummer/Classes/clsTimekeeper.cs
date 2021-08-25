@@ -16,23 +16,24 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
- using System.Diagnostics;
- using System.Text;
- using NLog;
+using System.Diagnostics;
+using System.Text;
+using NLog;
 
 namespace Chummer
 {
     public static class Timekeeper
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly ConcurrentDictionary<string, TimeSpan> s_DictionaryStarts = new ConcurrentDictionary<string, TimeSpan>();
         private static readonly ConcurrentDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new ConcurrentDictionary<string, Tuple<TimeSpan, int>>();
 
-        static Timekeeper ()
+        static Timekeeper()
         {
             s_Time.Start();
         }
@@ -70,11 +71,13 @@ namespace Chummer
             {
                 final = s_Time.Elapsed - objStartTimeSpan;
 
-                string logentry = string.Format(GlobalOptions.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
+#if DEBUG
+                string strLogEntry = string.Format(GlobalOptions.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
                     taskname, final);
-                //Logger.Trace(logentry);
+                //Log.Trace(strLogEntry);
 
-                Debug.WriteLine(logentry);
+                Debug.WriteLine(strLogEntry);
+#endif
 
                 if (s_DictionaryStatistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
                 {
@@ -92,20 +95,19 @@ namespace Chummer
             return final;
         }
 
-        public static void Log()
+        public static void MakeLog()
         {
-            StringBuilder sb = new StringBuilder().AppendLine("Time statistics");
+            StringBuilder sbdLog = new StringBuilder("Time statistics" + Environment.NewLine);
 
             foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {
-                sb.AppendFormat(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}",
-                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1).AppendLine();
+                sbdLog.AppendFormat(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}{3}",
+                    keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1, Environment.NewLine);
             }
 
-            string strined = sb.ToString();
-            Debug.WriteLine(strined);
-            Logger.Info(strined);
+            string strLog = sbdLog.ToString();
+            Debug.WriteLine(strLog);
+            Log.Info(strLog);
         }
-
     }
 }

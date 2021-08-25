@@ -16,18 +16,22 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Forms;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using Chummer.Backend.Equipment;
-using System.Xml;
-using System.Xml.XPath;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Windows.Forms;
+using System.Xml;
+using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
@@ -37,12 +41,63 @@ namespace Chummer
     public static class CommonFunctions
     {
         #region XPath Evaluators
+
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
         private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
+
         private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
 
+        private static readonly ConcurrentDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
+            new ConcurrentDictionary<string, Tuple<bool, object>>();
+
         private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(string strXPath)
+        {
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
+            {
+                return objCachedEvaluation.Item2;
+            }
+            if (string.IsNullOrWhiteSpace(strXPath))
+            {
+                s_DicCompiledEvaluations.TryAdd(strXPath, null);
+                return null;
+            }
+            if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
+            {
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
+                return strXPath;
+            }
+
+            object objReturn;
+            bool blnIsSuccess;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
+                blnIsSuccess = true;
+            }
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strXPath;
+                blnIsSuccess = false;
+            }
+            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
+            return objReturn;
+        }
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
@@ -53,13 +108,20 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
         {
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
+            {
+                blnIsSuccess = objCachedEvaluation.Item1;
+                return objCachedEvaluation.Item2;
+            }
             if (string.IsNullOrWhiteSpace(strXPath))
             {
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, null));
                 blnIsSuccess = false;
                 return null;
             }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
+                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
                 blnIsSuccess = false;
                 return strXPath;
             }
@@ -82,6 +144,43 @@ namespace Chummer
                 objReturn = strXPath;
                 blnIsSuccess = false;
             }
+            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
+            return objReturn;
+        }
+
+        /// <summary>
+        /// Evaluate an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        {
+            string strExpression = objXPath.Expression;
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
+            {
+                return objCachedEvaluation.Item2;
+            }
+            object objReturn;
+            bool blnIsSuccess;
+            try
+            {
+                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
+                blnIsSuccess = true;
+            }
+            catch (ArgumentException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strExpression;
+                blnIsSuccess = false;
+            }
+            catch (XPathException)
+            {
+                Utils.BreakIfDebug();
+                objReturn = strExpression;
+                blnIsSuccess = false;
+            }
+            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
 
@@ -94,6 +193,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess)
         {
+            string strExpression = objXPath.Expression;
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
+            {
+                blnIsSuccess = objCachedEvaluation.Item1;
+                return objCachedEvaluation.Item2;
+            }
             object objReturn;
             try
             {
@@ -103,20 +208,23 @@ namespace Chummer
             catch (ArgumentException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
             }
             catch (XPathException)
             {
                 Utils.BreakIfDebug();
-                objReturn = objXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
             }
+            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
             return objReturn;
         }
-        #endregion
+
+        #endregion XPath Evaluators
 
         #region Find Functions
+
         /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
@@ -146,6 +254,7 @@ namespace Chummer
 
             return null;
         }
+
         /// <summary>
         /// Locate a piece of Gear within the character's Vehicles.
         /// </summary>
@@ -162,7 +271,7 @@ namespace Chummer
             {
                 foreach (Vehicle objVehicle in lstVehicles)
                 {
-                    Gear objReturn = objVehicle.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objVehicle.GearChildren.DeepFindById(strGuid);
                     if (!string.IsNullOrEmpty(objReturn?.Name))
                     {
                         objFoundVehicle = objVehicle;
@@ -336,6 +445,7 @@ namespace Chummer
             objFoundVehicleMod = null;
             return null;
         }
+
         /// <summary>
         /// Locate a Weapon Mount within the character's Vehicles.
         /// </summary>
@@ -364,6 +474,7 @@ namespace Chummer
             objFoundVehicle = null;
             return null;
         }
+
         /// <summary>
         /// Locate a Vehicle Mod within the character's Vehicles' weapon mounts.
         /// </summary>
@@ -500,7 +611,7 @@ namespace Chummer
             {
                 foreach (Armor objArmor in lstArmors)
                 {
-                    Gear objReturn = objArmor.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objArmor.GearChildren.DeepFindById(strGuid);
                     if (objReturn != null)
                     {
                         objFoundArmor = objArmor;
@@ -510,7 +621,7 @@ namespace Chummer
 
                     foreach (ArmorMod objMod in objArmor.ArmorMods)
                     {
-                        objReturn = objMod.Gear.DeepFindById(strGuid);
+                        objReturn = objMod.GearChildren.DeepFindById(strGuid);
                         if (objReturn != null)
                         {
                             objFoundArmor = objArmor;
@@ -574,9 +685,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.Gear.Count > 0))
+                foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
                 {
-                    Gear objReturn = objCyberware.Gear.DeepFindById(strGuid);
+                    Gear objReturn = objCyberware.GearChildren.DeepFindById(strGuid);
 
                     if (objReturn != null)
                     {
@@ -640,11 +751,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.Gear.Count > 0)))
+                foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0)))
                 {
                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                     {
-                        Gear objReturn = objAccessory.Gear.DeepFindById(strGuid);
+                        Gear objReturn = objAccessory.GearChildren.DeepFindById(strGuid);
 
                         if (objReturn != null)
                         {
@@ -727,7 +838,8 @@ namespace Chummer
             objFoundMartialArt = null;
             return null;
         }
-        #endregion
+
+        #endregion Find Functions
 
         /// <summary>
         /// Book code (using the translated version if applicable).
@@ -797,14 +909,60 @@ namespace Chummer
             if (string.IsNullOrEmpty(strNeedle))
                 return string.Empty;
             string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
+            // Construct a second needle for French where we have zero-width spaces between a starting consonant and an apostrophe in order to fix ListView's weird way of alphabetically sorting names
+            string strSearchText2 = string.Empty;
+            if (GlobalOptions.Language.ToUpperInvariant().StartsWith("FR") && strSearchText.Contains('\''))
+            {
+                strSearchText2 = strSearchText
+                    .Replace("D\'A", "D\u200B\'A")
+                    .Replace("D\'À", "D\u200B\'À")
+                    .Replace("D\'Â", "D\u200B\'Â")
+                    .Replace("D\'E", "D\u200B\'E")
+                    .Replace("D\'É", "D\u200B\'É")
+                    .Replace("D\'È", "D\u200B\'È")
+                    .Replace("D\'Ê", "D\u200B\'Ê")
+                    .Replace("D\'I", "D\u200B\'I")
+                    .Replace("D\'Î", "D\u200B\'Î")
+                    .Replace("D\'Ï", "D\u200B\'Ï")
+                    .Replace("D\'O", "D\u200B\'O")
+                    .Replace("D\'Ô", "D\u200B\'Ô")
+                    .Replace("D\'Œ", "D\u200B\'Œ")
+                    .Replace("D\'U", "D\u200B\'U")
+                    .Replace("D\'Û", "D\u200B\'Û")
+                    .Replace("L\'A", "L\u200B\'A")
+                    .Replace("L\'À", "L\u200B\'À")
+                    .Replace("L\'Â", "L\u200B\'Â")
+                    .Replace("L\'E", "L\u200B\'E")
+                    .Replace("L\'É", "L\u200B\'É")
+                    .Replace("L\'È", "L\u200B\'È")
+                    .Replace("L\'Ê", "L\u200B\'Ê")
+                    .Replace("L\'I", "L\u200B\'I")
+                    .Replace("L\'Î", "L\u200B\'Î")
+                    .Replace("L\'Ï", "L\u200B\'Ï")
+                    .Replace("L\'O", "L\u200B\'O")
+                    .Replace("L\'Ô", "L\u200B\'Ô")
+                    .Replace("L\'Œ", "L\u200B\'Œ")
+                    .Replace("L\'U", "L\u200B\'U")
+                    .Replace("L\'Û", "L\u200B\'Û");
+            }
             // Treat everything as being uppercase so the search is case-insensitive.
             string strReturn = string.Format(
                 GlobalOptions.InvariantCultureInfo,
-                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
-                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2}))",
+                "((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
+                "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2}))",
                 strTranslateElement,
                 strNameElement,
                 strSearchText);
+            if (!string.IsNullOrEmpty(strSearchText2))
+            {
+                strReturn = '(' + strReturn + string.Format(
+                    GlobalOptions.InvariantCultureInfo,
+                    " or ((not({0}) and contains(translate({1},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})) " +
+                    "or contains(translate({0},'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), {2})))",
+                    strTranslateElement,
+                    strNameElement,
+                    strSearchText2);
+            }
             return strReturn;
         }
 
@@ -898,7 +1056,52 @@ namespace Chummer
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
+        public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, params Character[] lstCharacters)
+        {
+            return GenerateCharactersExportXml(objCultureInfo, strLanguage, CancellationToken.None, lstCharacters);
+        }
+
+        public static XmlDocument GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
+        {
+            XmlDocument objReturn = new XmlDocument { XmlResolver = null };
+            // Write the Character information to a MemoryStream so we don't need to create any files.
+            using (MemoryStream objStream = new MemoryStream())
+            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+            {
+                // Begin the document.
+                objWriter.WriteStartDocument();
+
+                // </characters>
+                objWriter.WriteStartElement("characters");
+
+                foreach (Character objCharacter in lstCharacters)
+                {
+                    objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
+                    if (objToken.IsCancellationRequested)
+                        return objReturn;
+                }
+
+                // </characters>
+                objWriter.WriteEndElement();
+
+                // Finish the document and flush the Writer and Stream.
+                objWriter.WriteEndDocument();
+                objWriter.Flush();
+
+                if (objToken.IsCancellationRequested)
+                    return objReturn;
+
+                // Read the stream.
+                objStream.Position = 0;
+                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalOptions.UnSafeXmlReaderSettings))
+                    objReturn.Load(objXmlReader);
+            }
+            return objReturn;
+        }
+
         #region PDF Functions
+
         /// <summary>
         /// Opens a PDF file using the provided source information.
         /// </summary>
@@ -919,7 +1122,7 @@ namespace Chummer
                     }
                     objLoopControl = objLoopControl.Parent;
                 }
-                OpenPdf(objControl.Text, objCharacter);
+                OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
             }
         }
 
@@ -928,32 +1131,43 @@ namespace Chummer
         /// </summary>
         /// <param name="strSource">Book code and page number to open.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
-        /// <param name="strPdfParamaters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
+        /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalOptions.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalOptions.PdfAppPath.</param>
-        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParamaters = "", string strPdfAppPath = "")
+        /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
+        public static void OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
-            if (string.IsNullOrEmpty(strPdfParamaters))
-                strPdfParamaters = GlobalOptions.PDFParameters;
-            // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPdfParamaters))
-                return;
-
+            if (string.IsNullOrEmpty(strPdfParameters))
+                strPdfParameters = GlobalOptions.PdfParameters;
             if (string.IsNullOrEmpty(strPdfAppPath))
-                strPdfAppPath = GlobalOptions.PDFAppPath;
+                strPdfAppPath = GlobalOptions.PdfAppPath;
             // The user must have specified the arguments of their PDF application in order to use this functionality.
-            if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
-                return;
+            while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+            {
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoPDFProgramSet"),
+                    LanguageManager.GetString("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+                using (new CursorWait(Program.MainForm))
+                using (frmOptions frmOptions = new frmOptions())
+                {
+                    if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+                        frmOptions.DoLinkPdfReader();
+                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                        return;
+                    strPdfParameters = GlobalOptions.PdfParameters;
+                    strPdfAppPath = GlobalOptions.PdfAppPath;
+                }
+            }
 
             string strSpace = LanguageManager.GetString("String_Space");
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                astrSourceParts = new [] { "SR5", strSource.Substring(3) };
+                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                astrSourceParts = new [] { "R5", strSource.Substring(2) };
+                astrSourceParts = new[] { "R5", strSource.Substring(2) };
             else
             {
                 int i = strSource.Length - 1;
@@ -964,7 +1178,7 @@ namespace Chummer
                         break;
                     }
                 }
-                astrSourceParts = new [] { strSource.Substring(0, i), strSource.Substring(i) };
+                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
             }
             if (astrSourceParts.Length < 2)
                 return;
@@ -983,7 +1197,7 @@ namespace Chummer
             // If the sourcebook was not found, we can't open anything.
             if (objBookInfo == null)
                 return;
-            Uri uriPath;
+            Uri uriPath = null;
             try
             {
                 uriPath = new Uri(objBookInfo.Path);
@@ -992,24 +1206,45 @@ namespace Chummer
             {
                 // Silently swallow the error because PDF fetching is usually done in the background
                 objBookInfo.Path = string.Empty;
-                return;
             }
 
             // Check if the file actually exists.
-            if (!File.Exists(uriPath.LocalPath))
-                return;
+            while (uriPath == null || !File.Exists(uriPath.LocalPath))
+            {
+                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(string.Format(LanguageManager.GetString("Message_NoLinkedPDF"), LanguageBookLong(strBook)),
+                        LanguageManager.GetString("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+                using (new CursorWait(Program.MainForm))
+                using (frmOptions frmOptions = new frmOptions())
+                {
+                    frmOptions.DoLinkPdf(objBookInfo.Code);
+                    if (frmOptions.ShowDialog(Program.MainForm) != DialogResult.OK)
+                        return;
+                    uriPath = null;
+                    try
+                    {
+                        uriPath = new Uri(objBookInfo.Path);
+                    }
+                    catch (UriFormatException)
+                    {
+                        // Silently swallow the error because PDF fetching is usually done in the background
+                        objBookInfo.Path = string.Empty;
+                    }
+                }
+            }
+
             intPage += objBookInfo.Offset;
 
-            string strParams = strPdfParamaters
+            string strParams = strPdfParameters
                 .Replace("{page}", intPage.ToString(GlobalOptions.InvariantCultureInfo))
                 .Replace("{localpath}", uriPath.LocalPath)
                 .Replace("{absolutepath}", uriPath.AbsolutePath);
-            ProcessStartInfo objProgress = new ProcessStartInfo
+            ProcessStartInfo objProcess = new ProcessStartInfo
             {
                 FileName = strPdfAppPath,
                 Arguments = strParams
             };
-            Process.Start(objProgress);
+            objProcess.Start();
         }
 
         /// <summary>
@@ -1111,12 +1346,14 @@ namespace Chummer
                             if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                             {
                                 // now just add more lines to it until it is enough
-                                while (strCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                StringBuilder sbdCurrentLine = new StringBuilder(strCurrentLine);
+                                while (sbdCurrentLine.Length < intTextToSearchLength && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
                                 {
                                     intTitleExtraLines++;
                                     // add the content plus a space
-                                    strCurrentLine += ' ' + lstStringFromPdf[i + intTitleExtraLines];
+                                    sbdCurrentLine.Append(' ' + lstStringFromPdf[i + intTitleExtraLines]);
                                 }
+                                strCurrentLine = sbdCurrentLine.ToString();
                             }
                             else
                             {
@@ -1150,14 +1387,11 @@ namespace Chummer
                                 }
                             }
                             // if we found the tile lets finish some things before finding the text block
-                            if (intTitleIndex != -1)
+                            if (intTitleIndex != -1 && intTitleExtraLines > 0)
                             {
                                 // if we had to concatenate stuff lets fix the list of strings before continuing
-                                if (intTitleExtraLines > 0)
-                                {
-                                    lstStringFromPdf[i] = strCurrentLine;
-                                    lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
-                                }
+                                lstStringFromPdf[i] = strCurrentLine;
+                                lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
                             }
                         }
                     }
@@ -1242,6 +1476,7 @@ namespace Chummer
                             case '…':
                                 sbdResultContent.AppendLine(strContentString);
                                 break;
+
                             default:
                                 sbdResultContent.Append(strContentString + ' ');
                                 break;
@@ -1252,9 +1487,11 @@ namespace Chummer
             }
             return string.Empty;
         }
-        #endregion
+
+        #endregion PDF Functions
 
         #region Timescale
+
         public enum Timescale
         {
             Instant = 0,
@@ -1264,6 +1501,7 @@ namespace Chummer
             Hours = 4,
             Days = 5
         }
+
         /// <summary>
         /// Convert a string to a Timescale.
         /// </summary>
@@ -1275,21 +1513,27 @@ namespace Chummer
                 case "INSTANT":
                 case "IMMEDIATE":
                     return Timescale.Instant;
+
                 case "SECOND":
                 case "SECONDS":
                     return Timescale.Seconds;
+
                 case "COMBATTURN":
                 case "COMBATTURNS":
                     return Timescale.CombatTurns;
+
                 case "MINUTE":
                 case "MINUTES":
                     return Timescale.Minutes;
+
                 case "HOUR":
                 case "HOURS":
                     return Timescale.Hours;
+
                 case "DAY":
                 case "DAYS":
                     return Timescale.Days;
+
                 default:
                     return Timescale.Instant;
             }
@@ -1307,30 +1551,42 @@ namespace Chummer
             {
                 case Timescale.Seconds when blnSingle:
                     return LanguageManager.GetString("String_Second", strLanguage);
+
                 case Timescale.Seconds:
                     return LanguageManager.GetString("String_Seconds", strLanguage);
+
                 case Timescale.CombatTurns when blnSingle:
                     return LanguageManager.GetString("String_CombatTurn", strLanguage);
+
                 case Timescale.CombatTurns:
                     return LanguageManager.GetString("String_CombatTurns", strLanguage);
+
                 case Timescale.Minutes when blnSingle:
                     return LanguageManager.GetString("String_Minute", strLanguage);
+
                 case Timescale.Minutes:
                     return LanguageManager.GetString("String_Minutes", strLanguage);
+
                 case Timescale.Hours when blnSingle:
                     return LanguageManager.GetString("String_Hour", strLanguage);
+
                 case Timescale.Hours:
                     return LanguageManager.GetString("String_Hours", strLanguage);
+
                 case Timescale.Days when blnSingle:
                     return LanguageManager.GetString("String_Day", strLanguage);
+
                 case Timescale.Days:
                     return LanguageManager.GetString("String_Days", strLanguage);
+
                 case Timescale.Instant:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
+
                 default:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
             }
         }
-        #endregion
+
+        #endregion Timescale
     }
 }

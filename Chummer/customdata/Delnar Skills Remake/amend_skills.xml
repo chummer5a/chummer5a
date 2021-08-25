@@ -19,7 +19,7 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <skillgroups amendoperation="replace" >
+  <skillgroups amendoperation="replace">
     <name>Firearms</name>
     <name>Close Combat</name>
     <name>Projectile Weapons</name>
@@ -39,7 +39,7 @@
     <name>Processing</name>
     <name>Tasking</name>
   </skillgroups>
-  <categories amendoperation="replace" >
+  <categories amendoperation="replace">
     <category type="active">Combat Active</category>
     <category type="active">Physical Active</category>
     <category type="active">Social Active</category>
@@ -139,7 +139,7 @@
       <specs>
         <spec>Arcane Lore</spec>
         <spec>Artificing</spec>
-        <spec>Disrupt Ritual</spec>
+        <spec>Disenchanting</spec>
       </specs>
       <source>SR5</source>
       <page>142</page>
@@ -451,7 +451,7 @@
       <specs>
         <spec>Artillery</spec>
         <spec>Energy</spec>
-        <spec>Rocket/Missile</spec>
+        <spec>Rocket/Missile Launchers</spec>
         <spec>Small Arms</spec>
       </specs>
       <source>SR5</source>
@@ -490,7 +490,7 @@
     </skill>
     <skill>
       <id>470d49b8-69b5-496a-8f28-349625c14859</id>
-      <name>Launcher Weapons</name>
+      <name>Projectile Launchers</name>
       <attribute>AGI</attribute>
       <category>Combat Active</category>
       <default>True</default>
@@ -500,7 +500,6 @@
         <spec>Grapple Guns</spec>
         <spec>Grenade Launchers</spec>
         <spec>Harpoon Guns</spec>
-        <spec>Missile/Rocket Launchers</spec>
         <spec>Net Guns</spec>
       </specs>
       <source>SR5</source>
@@ -716,13 +715,14 @@
     </skill>
     <skill>
       <id>a6287e62-6a3b-43ce-b6e0-20f3655910e2</id>
-      <name>Ritual Spellcasting</name>
+      <name>Ceremony</name>
       <attribute>MAG</attribute>
       <category>Magical Active</category>
       <default>True</default>
       <skillgroup>Aetherology</skillgroup>
       <specs>
         <spec>[Specific Ritual]</spec>
+        <spec>Disrupt Ritual</spec>
       </specs>
       <source>SR5</source>
       <page>142</page>

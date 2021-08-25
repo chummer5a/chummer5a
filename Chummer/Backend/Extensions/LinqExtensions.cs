@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,43 +27,69 @@ namespace Chummer
     public static class LinqExtensions
     {
         /// <summary>
-        /// Similar to Linq's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static TSource DeepAggregate<TSource>(this IEnumerable<TSource> objParentList, Func<TSource, IEnumerable<TSource>> funcGetChildrenMethod, Func<TSource, TSource, TSource> funcAggregate)
         {
-            if (objParentList == null)
-                return default;
-            TSource objReturn = default;
-            foreach (TSource objLoopChild in objParentList)
-            {
-                objReturn = funcAggregate(funcAggregate(objReturn, objLoopChild), funcGetChildrenMethod(objLoopChild).DeepAggregate(funcGetChildrenMethod, funcAggregate));
-            }
-            return objReturn;
+            return objParentList == null
+                ? default
+                : objParentList.Aggregate<TSource, TSource>(default,
+                    (current, objLoopChild) => funcAggregate(funcAggregate(current, objLoopChild),
+                        funcGetChildrenMethod(objLoopChild).DeepAggregate(funcGetChildrenMethod, funcAggregate)));
         }
 
         /// <summary>
-        /// Similar to Linq's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static TAccumulate DeepAggregate<TSource, TAccumulate>(this IEnumerable<TSource> objParentList, Func<TSource, IEnumerable<TSource>> funcGetChildrenMethod, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> funcAggregate)
         {
-            if (objParentList == null)
-                return seed;
-            TAccumulate objReturn = seed;
-            foreach (TSource objLoopChild in objParentList)
-            {
-                objReturn = funcGetChildrenMethod(objLoopChild).DeepAggregate(funcGetChildrenMethod, funcAggregate(objReturn, objLoopChild), funcAggregate);
-            }
-            return objReturn;
+            return objParentList == null
+                ? seed
+                : objParentList.Aggregate(seed,
+                    (current, objLoopChild) => funcGetChildrenMethod(objLoopChild).DeepAggregate(funcGetChildrenMethod,
+                        funcAggregate(current, objLoopChild), funcAggregate));
         }
 
         /// <summary>
-        /// Similar to Linq's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static TResult DeepAggregate<TSource, TAccumulate, TResult>(this IEnumerable<TSource> objParentList, Func<TSource, IEnumerable<TSource>> funcGetChildrenMethod, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> funcAggregate, Func<TAccumulate, TResult> resultSelector)
         {
-            if (resultSelector == null)
-                return default;
-            return resultSelector(objParentList.DeepAggregate(funcGetChildrenMethod, seed, funcAggregate));
+            return resultSelector == null
+                ? default
+                : resultSelector(objParentList.DeepAggregate(funcGetChildrenMethod, seed, funcAggregate));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just the two collections' contents.
+        /// </summary>
+        /// <param name="first">First collection to compare.</param>
+        /// <param name="second">Second collection to compare.</param>
+        /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
+        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second)
+        {
+            if (first.Count != second.Count)
+                return false;
+            // Use built-in, faster implementations if they are available
+            if (first is ISet<T> setFirst)
+                return setFirst.SetEquals(second);
+            if (second is ISet<T> setSecond)
+                return setSecond.SetEquals(first);
+            return first.Concat(second).Distinct().All(objItem => first.Count(x => x.Equals(objItem)) == second.Count(x => x.Equals(objItem)));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of SequenceEquals that does not care about the order of elements, just the two collections' contents.
+        /// </summary>
+        /// <param name="first">First collection to compare.</param>
+        /// <param name="second">Second collection to compare.</param>
+        /// <param name="comparer">Special equality comparer to use instead of the default one.</param>
+        /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
+        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, IEqualityComparer<T> comparer)
+        {
+            // Sets do not have IEqualityComparer versions for SetEquals, so we always need to do this the slow way
+            return first.Count == second.Count && first.Concat(second).Distinct().All(objItem =>
+                first.Count(x => comparer.Equals(x, objItem)) == second.Count(x => comparer.Equals(x, objItem)));
         }
 
         /// <summary>
@@ -72,7 +99,7 @@ namespace Chummer
         /// <param name="objTargetList">Target list against which we're checking</param>
         /// <param name="funcGetChildrenMethod">Method used to get children of both the base list and the target list against which we're checking.</param>
         /// <param name="predicate">Two-argument function that takes its first argument from the base list and the second from the target list. If it does not return true on any available pair, the method returns false.</param>
-        public static bool DeepMatch<T>(this ICollection<T> objParentList, ICollection<T> objTargetList, Func<T, ICollection<T>> funcGetChildrenMethod, Func<T, T, bool> predicate)
+        public static bool DeepMatch<T>(this IReadOnlyCollection<T> objParentList, IReadOnlyCollection<T> objTargetList, Func<T, IReadOnlyCollection<T>> funcGetChildrenMethod, Func<T, T, bool> predicate)
         {
             if (objParentList == null || objTargetList == null)
                 return objParentList == null && objTargetList == null;
@@ -93,43 +120,33 @@ namespace Chummer
                 }
                 // No matching item was found, return false
                 return false;
-                NextItem:;
+            NextItem:;
             }
             return true;
         }
 
         /// <summary>
-        /// Similar to Linq's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static bool DeepAll<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
-            foreach (T objLoopChild in objParentList)
-            {
-                if (!predicate(objLoopChild) || !funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate))
-                    return false;
-            }
-            return true;
+            return objParentList.All(objLoopChild =>
+                predicate(objLoopChild) &&
+                funcGetChildrenMethod(objLoopChild).DeepAll(funcGetChildrenMethod, predicate));
         }
 
         /// <summary>
-        /// Similar to Linq's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static bool DeepAny<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
-            foreach (T objLoopChild in objParentList)
-            {
-                if (predicate(objLoopChild) || funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate))
-                    return true;
-            }
-            return false;
+            return objParentList.Any(objLoopChild =>
+                predicate(objLoopChild) ||
+                funcGetChildrenMethod(objLoopChild).DeepAny(funcGetChildrenMethod, predicate));
         }
 
         /// <summary>
-        /// Similar to Linq's Count(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Count(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static int DeepCount<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
@@ -146,27 +163,19 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Linq's Count() without predicate, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Count() without predicate, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static int DeepCount<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
-            if (objParentList == null)
-                return 0;
-            int intReturn = 0;
-            foreach (T objLoopChild in objParentList)
-            {
-                intReturn += 1 + funcGetChildrenMethod(objLoopChild).DeepCount(funcGetChildrenMethod);
-            }
-            return intReturn;
+            return objParentList?.Sum(objLoopChild =>
+                1 + funcGetChildrenMethod(objLoopChild).DeepCount(funcGetChildrenMethod)) ?? 0;
         }
 
         /// <summary>
-        /// Similar to Linq's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepFirst<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
@@ -179,7 +188,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Linq's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepFirstOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
@@ -197,12 +206,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Linq's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static T DeepLast<T>([NotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
+        public static T DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod, predicate);
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -210,12 +217,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Linq's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static T DeepLast<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
+        public static T DeepLast<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             T objReturn = objParentList.DeepLastOrDefault(funcGetChildrenMethod);
             if (objReturn?.Equals(default(T)) == false)
                 return objReturn;
@@ -223,7 +228,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Linq's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
@@ -242,7 +247,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Linq's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLastOrDefault<T>(this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
@@ -263,12 +268,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Linq's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static IEnumerable<T> DeepWhere<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod, Func<T, bool> predicate)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 if (predicate(objLoopChild))
@@ -284,8 +287,6 @@ namespace Chummer
         /// </summary>
         public static IEnumerable<T> GetAllDescendants<T>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, IEnumerable<T>> funcGetChildrenMethod)
         {
-            if (objParentList == null)
-                throw new ArgumentNullException(nameof(objParentList));
             foreach (T objLoopChild in objParentList)
             {
                 yield return objLoopChild;

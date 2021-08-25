@@ -16,7 +16,7 @@ namespace Chummer.UI.Table
             if (disposing)
             {
                 components?.Dispose();
-                contentField?.Dispose();
+                ContentField?.Dispose();
             }
             base.Dispose(disposing);
         }
