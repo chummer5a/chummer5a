@@ -1,17 +1,10 @@
 using Chummer;
 using Chummer.Plugins;
-using Microsoft.ApplicationInsights.Extensibility.Implementation;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 using NLog;
-using Chummer.Backend.Equipment;
 using Microsoft.ApplicationInsights.Channel;
 using System.Diagnostics;
 using System.Xml;
@@ -24,7 +17,7 @@ namespace MatrixPlugin
         
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         List<MatrixAction> Actions;
-
+        MatrixAction currentAction;
 
         public override string ToString()
         {
@@ -41,9 +34,10 @@ namespace MatrixPlugin
                 if (xmlAction.SelectSingleNode("test/limit") != null)
                 {
                     MatrixAction newAction = new MatrixAction(xmlAction);
-                    if (newAction.Attribute != "" && newAction.Skill != "")
+                    if (newAction.ActionAttribute != "" && newAction.ActionSkill != "")
                         Actions.Add(newAction);
                 }
+                int a = Actions.Count;
             }
             catch (Exception e)
             {
@@ -108,7 +102,8 @@ namespace MatrixPlugin
 
         public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCareer input)
         {
-            MatrixForm FormFrom = new MatrixForm(input, Actions);
+            MatrixLogic logic = new MatrixLogic(input.CharacterObject,Actions);
+            MatrixForm FormFrom = new MatrixForm(Actions, logic);
             return new System.Windows.Forms.TabPage[] { FormFrom.MatrixTabPage };
         }
 

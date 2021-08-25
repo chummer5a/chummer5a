@@ -1,4 +1,6 @@
 
+using System.Windows.Forms;
+
 namespace MatrixPlugin
 {
     partial class MatrixForm
@@ -31,14 +33,20 @@ namespace MatrixPlugin
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.MatrixTabPage = new System.Windows.Forms.TabPage();
+            this.listCyberDecks = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.listSoftware = new System.Windows.Forms.CheckedListBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cSilent = new System.Windows.Forms.CheckBox();
+            this.cHotVR = new System.Windows.Forms.CheckBox();
+            this.nNoize = new System.Windows.Forms.NumericUpDown();
+            this.lNoize = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.lDefendModifier = new System.Windows.Forms.Label();
             this.lSkillLimitValue = new System.Windows.Forms.Label();
             this.lSkillLimitName = new System.Windows.Forms.Label();
             this.lSkillDescription = new System.Windows.Forms.Label();
-            this.lActionModValue = new System.Windows.Forms.Label();
+            this.lActionModifier = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.lDefendSkillValue = new System.Windows.Forms.Label();
@@ -49,8 +57,8 @@ namespace MatrixPlugin
             this.label6 = new System.Windows.Forms.Label();
             this.lActionSkillValue = new System.Windows.Forms.Label();
             this.lActionSkillName = new System.Windows.Forms.Label();
-            this.lSkillAttributeValue = new System.Windows.Forms.Label();
-            this.lSkillAttributeName = new System.Windows.Forms.Label();
+            this.lActionAttributeValue = new System.Windows.Forms.Label();
+            this.lActionAttributeName = new System.Windows.Forms.Label();
             this.dpcDefendDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.dpcActionDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.cbActions = new System.Windows.Forms.ComboBox();
@@ -76,18 +84,14 @@ namespace MatrixPlugin
             this.cbSleaze = new System.Windows.Forms.ComboBox();
             this.lAttack = new System.Windows.Forms.Label();
             this.cbAttack = new System.Windows.Forms.ComboBox();
-            this.listCyberDecks = new System.Windows.Forms.ListBox();
-            this.lNoize = new System.Windows.Forms.Label();
-            this.nNoize = new System.Windows.Forms.NumericUpDown();
-            this.cHotVR = new System.Windows.Forms.CheckBox();
-            this.cSilent = new System.Windows.Forms.CheckBox();
+            this.lActionType = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.MatrixTabPage.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nNoize)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nNoize)).BeginInit();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -96,7 +100,7 @@ namespace MatrixPlugin
             this.tabControl1.Location = new System.Drawing.Point(1, 2);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(797, 443);
+            this.tabControl1.Size = new System.Drawing.Size(985, 657);
             this.tabControl1.TabIndex = 0;
             // 
             // MatrixTabPage
@@ -110,16 +114,25 @@ namespace MatrixPlugin
             this.MatrixTabPage.Location = new System.Drawing.Point(4, 22);
             this.MatrixTabPage.Name = "MatrixTabPage";
             this.MatrixTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MatrixTabPage.Size = new System.Drawing.Size(789, 417);
+            this.MatrixTabPage.Size = new System.Drawing.Size(977, 631);
             this.MatrixTabPage.TabIndex = 0;
             this.MatrixTabPage.Text = "Matrix";
+            // 
+            // listCyberDecks
+            // 
+            this.listCyberDecks.FormattingEnabled = true;
+            this.listCyberDecks.Location = new System.Drawing.Point(7, 8);
+            this.listCyberDecks.Name = "listCyberDecks";
+            this.listCyberDecks.Size = new System.Drawing.Size(208, 186);
+            this.listCyberDecks.TabIndex = 6;
+            this.listCyberDecks.SelectedIndexChanged += new System.EventHandler(this.listCyberDecks_SelectedIndexChanged);
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.listSoftware);
-            this.groupBox4.Location = new System.Drawing.Point(7, 263);
+            this.groupBox4.Location = new System.Drawing.Point(7, 354);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(208, 139);
+            this.groupBox4.Size = new System.Drawing.Size(208, 271);
             this.groupBox4.TabIndex = 5;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Software";
@@ -129,7 +142,7 @@ namespace MatrixPlugin
             this.listSoftware.FormattingEnabled = true;
             this.listSoftware.Location = new System.Drawing.Point(6, 19);
             this.listSoftware.Name = "listSoftware";
-            this.listSoftware.Size = new System.Drawing.Size(196, 109);
+            this.listSoftware.Size = new System.Drawing.Size(196, 244);
             this.listSoftware.TabIndex = 2;
             this.listSoftware.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listSoftware_ItemCheck);
             // 
@@ -146,12 +159,58 @@ namespace MatrixPlugin
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Modifiers";
             // 
+            // cSilent
+            // 
+            this.cSilent.AutoSize = true;
+            this.cSilent.Location = new System.Drawing.Point(9, 68);
+            this.cSilent.Name = "cSilent";
+            this.cSilent.Size = new System.Drawing.Size(52, 17);
+            this.cSilent.TabIndex = 3;
+            this.cSilent.Text = "Silent";
+            this.cSilent.UseVisualStyleBackColor = true;
+            this.cSilent.CheckedChanged += new System.EventHandler(this.ValueChanged);
+            // 
+            // cHotVR
+            // 
+            this.cHotVR.AutoSize = true;
+            this.cHotVR.Location = new System.Drawing.Point(9, 45);
+            this.cHotVR.Name = "cHotVR";
+            this.cHotVR.Size = new System.Drawing.Size(61, 17);
+            this.cHotVR.TabIndex = 2;
+            this.cHotVR.Text = "Hot VR";
+            this.cHotVR.UseVisualStyleBackColor = true;
+            this.cHotVR.CheckedChanged += new System.EventHandler(this.ValueChanged);
+            // 
+            // nNoize
+            // 
+            this.nNoize.Location = new System.Drawing.Point(46, 19);
+            this.nNoize.Maximum = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
+            this.nNoize.Name = "nNoize";
+            this.nNoize.Size = new System.Drawing.Size(45, 20);
+            this.nNoize.TabIndex = 1;
+            this.nNoize.ValueChanged += new System.EventHandler(this.ValueChanged);
+            // 
+            // lNoize
+            // 
+            this.lNoize.AutoSize = true;
+            this.lNoize.Location = new System.Drawing.Point(6, 21);
+            this.lNoize.Name = "lNoize";
+            this.lNoize.Size = new System.Drawing.Size(34, 13);
+            this.lNoize.TabIndex = 0;
+            this.lNoize.Text = "Noize";
+            // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.lActionType);
+            this.groupBox2.Controls.Add(this.lDefendModifier);
             this.groupBox2.Controls.Add(this.lSkillLimitValue);
             this.groupBox2.Controls.Add(this.lSkillLimitName);
             this.groupBox2.Controls.Add(this.lSkillDescription);
-            this.groupBox2.Controls.Add(this.lActionModValue);
+            this.groupBox2.Controls.Add(this.lActionModifier);
             this.groupBox2.Controls.Add(this.label7);
             this.groupBox2.Controls.Add(this.label8);
             this.groupBox2.Controls.Add(this.lDefendSkillValue);
@@ -162,26 +221,35 @@ namespace MatrixPlugin
             this.groupBox2.Controls.Add(this.label6);
             this.groupBox2.Controls.Add(this.lActionSkillValue);
             this.groupBox2.Controls.Add(this.lActionSkillName);
-            this.groupBox2.Controls.Add(this.lSkillAttributeValue);
-            this.groupBox2.Controls.Add(this.lSkillAttributeName);
+            this.groupBox2.Controls.Add(this.lActionAttributeValue);
+            this.groupBox2.Controls.Add(this.lActionAttributeName);
             this.groupBox2.Controls.Add(this.dpcDefendDicePool);
             this.groupBox2.Controls.Add(this.dpcActionDicePool);
             this.groupBox2.Controls.Add(this.cbActions);
-            this.groupBox2.Location = new System.Drawing.Point(227, 109);
+            this.groupBox2.Location = new System.Drawing.Point(221, 200);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(354, 293);
+            this.groupBox2.Size = new System.Drawing.Size(354, 425);
             this.groupBox2.TabIndex = 3;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Actions";
+            // 
+            // lDefendModifier
+            // 
+            this.lDefendModifier.AutoSize = true;
+            this.lDefendModifier.Location = new System.Drawing.Point(152, 143);
+            this.lDefendModifier.Name = "lDefendModifier";
+            this.lDefendModifier.Size = new System.Drawing.Size(22, 13);
+            this.lDefendModifier.TabIndex = 140;
+            this.lDefendModifier.Text = " [0]";
             // 
             // lSkillLimitValue
             // 
             this.lSkillLimitValue.AutoSize = true;
             this.lSkillLimitValue.Location = new System.Drawing.Point(212, 81);
             this.lSkillLimitValue.Name = "lSkillLimitValue";
-            this.lSkillLimitValue.Size = new System.Drawing.Size(10, 13);
+            this.lSkillLimitValue.Size = new System.Drawing.Size(22, 13);
             this.lSkillLimitValue.TabIndex = 139;
-            this.lSkillLimitValue.Text = " ";
+            this.lSkillLimitValue.Text = " [0]";
             // 
             // lSkillLimitName
             // 
@@ -194,19 +262,19 @@ namespace MatrixPlugin
             // 
             // lSkillDescription
             // 
-            this.lSkillDescription.Location = new System.Drawing.Point(6, 173);
+            this.lSkillDescription.Location = new System.Drawing.Point(6, 219);
             this.lSkillDescription.Name = "lSkillDescription";
-            this.lSkillDescription.Size = new System.Drawing.Size(342, 109);
+            this.lSkillDescription.Size = new System.Drawing.Size(342, 198);
             this.lSkillDescription.TabIndex = 137;
             // 
-            // lActionModValue
+            // lActionModifier
             // 
-            this.lActionModValue.AutoSize = true;
-            this.lActionModValue.Location = new System.Drawing.Point(152, 81);
-            this.lActionModValue.Name = "lActionModValue";
-            this.lActionModValue.Size = new System.Drawing.Size(10, 13);
-            this.lActionModValue.TabIndex = 136;
-            this.lActionModValue.Text = " ";
+            this.lActionModifier.AutoSize = true;
+            this.lActionModifier.Location = new System.Drawing.Point(152, 81);
+            this.lActionModifier.Name = "lActionModifier";
+            this.lActionModifier.Size = new System.Drawing.Size(22, 13);
+            this.lActionModifier.TabIndex = 136;
+            this.lActionModifier.Text = " [0]";
             // 
             // label7
             // 
@@ -231,9 +299,9 @@ namespace MatrixPlugin
             this.lDefendSkillValue.AutoSize = true;
             this.lDefendSkillValue.Location = new System.Drawing.Point(66, 143);
             this.lDefendSkillValue.Name = "lDefendSkillValue";
-            this.lDefendSkillValue.Size = new System.Drawing.Size(10, 13);
+            this.lDefendSkillValue.Size = new System.Drawing.Size(22, 13);
             this.lDefendSkillValue.TabIndex = 133;
-            this.lDefendSkillValue.Text = " ";
+            this.lDefendSkillValue.Text = " [0]";
             // 
             // lDefendSkillName
             // 
@@ -249,9 +317,9 @@ namespace MatrixPlugin
             this.lDefendAttributeValue.AutoSize = true;
             this.lDefendAttributeValue.Location = new System.Drawing.Point(6, 143);
             this.lDefendAttributeValue.Name = "lDefendAttributeValue";
-            this.lDefendAttributeValue.Size = new System.Drawing.Size(10, 13);
+            this.lDefendAttributeValue.Size = new System.Drawing.Size(22, 13);
             this.lDefendAttributeValue.TabIndex = 131;
-            this.lDefendAttributeValue.Text = " ";
+            this.lDefendAttributeValue.Text = " [0]";
             // 
             // lDefendAttributeName
             // 
@@ -285,9 +353,9 @@ namespace MatrixPlugin
             this.lActionSkillValue.AutoSize = true;
             this.lActionSkillValue.Location = new System.Drawing.Point(66, 81);
             this.lActionSkillValue.Name = "lActionSkillValue";
-            this.lActionSkillValue.Size = new System.Drawing.Size(10, 13);
+            this.lActionSkillValue.Size = new System.Drawing.Size(22, 13);
             this.lActionSkillValue.TabIndex = 127;
-            this.lActionSkillValue.Text = " ";
+            this.lActionSkillValue.Text = " [0]";
             // 
             // lActionSkillName
             // 
@@ -298,23 +366,23 @@ namespace MatrixPlugin
             this.lActionSkillName.TabIndex = 126;
             this.lActionSkillName.Text = " ";
             // 
-            // lSkillAttributeValue
+            // lActionAttributeValue
             // 
-            this.lSkillAttributeValue.AutoSize = true;
-            this.lSkillAttributeValue.Location = new System.Drawing.Point(6, 81);
-            this.lSkillAttributeValue.Name = "lSkillAttributeValue";
-            this.lSkillAttributeValue.Size = new System.Drawing.Size(10, 13);
-            this.lSkillAttributeValue.TabIndex = 125;
-            this.lSkillAttributeValue.Text = " ";
+            this.lActionAttributeValue.AutoSize = true;
+            this.lActionAttributeValue.Location = new System.Drawing.Point(6, 81);
+            this.lActionAttributeValue.Name = "lActionAttributeValue";
+            this.lActionAttributeValue.Size = new System.Drawing.Size(22, 13);
+            this.lActionAttributeValue.TabIndex = 125;
+            this.lActionAttributeValue.Text = " [0]";
             // 
-            // lSkillAttributeName
+            // lActionAttributeName
             // 
-            this.lSkillAttributeName.AutoSize = true;
-            this.lSkillAttributeName.Location = new System.Drawing.Point(6, 57);
-            this.lSkillAttributeName.Name = "lSkillAttributeName";
-            this.lSkillAttributeName.Size = new System.Drawing.Size(10, 13);
-            this.lSkillAttributeName.TabIndex = 124;
-            this.lSkillAttributeName.Text = " ";
+            this.lActionAttributeName.AutoSize = true;
+            this.lActionAttributeName.Location = new System.Drawing.Point(6, 57);
+            this.lActionAttributeName.Name = "lActionAttributeName";
+            this.lActionAttributeName.Size = new System.Drawing.Size(10, 13);
+            this.lActionAttributeName.TabIndex = 124;
+            this.lActionAttributeName.Text = " ";
             // 
             // dpcDefendDicePool
             // 
@@ -326,7 +394,7 @@ namespace MatrixPlugin
             this.dpcDefendDicePool.CanEverBeRolled = true;
             this.dpcDefendDicePool.DicePool = 0;
             this.dpcDefendDicePool.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.dpcDefendDicePool.Location = new System.Drawing.Point(284, 132);
+            this.dpcDefendDicePool.Location = new System.Drawing.Point(284, 111);
             this.dpcDefendDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcDefendDicePool.Name = "dpcDefendDicePool";
             this.dpcDefendDicePool.Size = new System.Drawing.Size(64, 24);
@@ -343,7 +411,7 @@ namespace MatrixPlugin
             this.dpcActionDicePool.CanEverBeRolled = true;
             this.dpcActionDicePool.DicePool = 0;
             this.dpcActionDicePool.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.dpcActionDicePool.Location = new System.Drawing.Point(284, 70);
+            this.dpcActionDicePool.Location = new System.Drawing.Point(284, 57);
             this.dpcActionDicePool.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.dpcActionDicePool.Name = "dpcActionDicePool";
             this.dpcActionDicePool.Size = new System.Drawing.Size(64, 24);
@@ -383,7 +451,7 @@ namespace MatrixPlugin
             this.groupBox1.Controls.Add(this.cbSleaze);
             this.groupBox1.Controls.Add(this.lAttack);
             this.groupBox1.Controls.Add(this.cbAttack);
-            this.groupBox1.Location = new System.Drawing.Point(7, 109);
+            this.groupBox1.Location = new System.Drawing.Point(7, 200);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(208, 148);
             this.groupBox1.TabIndex = 0;
@@ -471,7 +539,6 @@ namespace MatrixPlugin
             this.rbOverFirewall.TabIndex = 12;
             this.rbOverFirewall.TabStop = true;
             this.rbOverFirewall.UseVisualStyleBackColor = true;
-            this.rbOverFirewall.CheckedChanged += new System.EventHandler(this.rbOverFirewall_CheckedChanged);
             // 
             // rbOverDataProc
             // 
@@ -482,7 +549,6 @@ namespace MatrixPlugin
             this.rbOverDataProc.TabIndex = 11;
             this.rbOverDataProc.TabStop = true;
             this.rbOverDataProc.UseVisualStyleBackColor = true;
-            this.rbOverDataProc.CheckedChanged += new System.EventHandler(this.rbOverDataProc_CheckedChanged);
             // 
             // rbOverSleaze
             // 
@@ -493,7 +559,6 @@ namespace MatrixPlugin
             this.rbOverSleaze.TabIndex = 10;
             this.rbOverSleaze.TabStop = true;
             this.rbOverSleaze.UseVisualStyleBackColor = true;
-            this.rbOverSleaze.CheckedChanged += new System.EventHandler(this.rbOverSleaze_CheckedChanged);
             // 
             // rbOverAttack
             // 
@@ -504,7 +569,6 @@ namespace MatrixPlugin
             this.rbOverAttack.TabIndex = 9;
             this.rbOverAttack.TabStop = true;
             this.rbOverAttack.UseVisualStyleBackColor = true;
-            this.rbOverAttack.CheckedChanged += new System.EventHandler(this.rbOverAttack_CheckedChanged);
             // 
             // lOverClocker
             // 
@@ -591,64 +655,21 @@ namespace MatrixPlugin
             this.cbAttack.TabIndex = 0;
             this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.cbAttribute_SelectedIndexChanged);
             // 
-            // listCyberDecks
+            // lActionType
             // 
-            this.listCyberDecks.FormattingEnabled = true;
-            this.listCyberDecks.Location = new System.Drawing.Point(7, 8);
-            this.listCyberDecks.Name = "listCyberDecks";
-            this.listCyberDecks.Size = new System.Drawing.Size(208, 95);
-            this.listCyberDecks.TabIndex = 6;
-            this.listCyberDecks.SelectedIndexChanged += new System.EventHandler(this.listCyberDecks_SelectedIndexChanged);
-            // 
-            // lNoize
-            // 
-            this.lNoize.AutoSize = true;
-            this.lNoize.Location = new System.Drawing.Point(6, 21);
-            this.lNoize.Name = "lNoize";
-            this.lNoize.Size = new System.Drawing.Size(34, 13);
-            this.lNoize.TabIndex = 0;
-            this.lNoize.Text = "Noize";
-            // 
-            // nNoize
-            // 
-            this.nNoize.Location = new System.Drawing.Point(46, 19);
-            this.nNoize.Maximum = new decimal(new int[] {
-            20,
-            0,
-            0,
-            0});
-            this.nNoize.Name = "nNoize";
-            this.nNoize.Size = new System.Drawing.Size(45, 20);
-            this.nNoize.TabIndex = 1;
-            this.nNoize.ValueChanged += new System.EventHandler(this.ValueChanged);
-            // 
-            // cHotVR
-            // 
-            this.cHotVR.AutoSize = true;
-            this.cHotVR.Location = new System.Drawing.Point(9, 45);
-            this.cHotVR.Name = "cHotVR";
-            this.cHotVR.Size = new System.Drawing.Size(61, 17);
-            this.cHotVR.TabIndex = 2;
-            this.cHotVR.Text = "Hot VR";
-            this.cHotVR.UseVisualStyleBackColor = true;
-            this.cHotVR.CheckedChanged += new System.EventHandler(this.ValueChanged);
-            // 
-            // cSilent
-            // 
-            this.cSilent.AutoSize = true;
-            this.cSilent.Location = new System.Drawing.Point(9, 68);
-            this.cSilent.Name = "cSilent";
-            this.cSilent.Size = new System.Drawing.Size(52, 17);
-            this.cSilent.TabIndex = 3;
-            this.cSilent.Text = "Silent";
-            this.cSilent.UseVisualStyleBackColor = true;
-            this.cSilent.CheckedChanged += new System.EventHandler(this.ValueChanged);
+            this.lActionType.AutoSize = true;
+            this.lActionType.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.lActionType.Location = new System.Drawing.Point(6, 185);
+            this.lActionType.Name = "lActionType";
+            this.lActionType.Size = new System.Drawing.Size(26, 13);
+            this.lActionType.TabIndex = 141;
+            this.lActionType.Text = " [0]";
             // 
             // MatrixForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(984, 661);
             this.Controls.Add(this.tabControl1);
             this.Name = "MatrixForm";
             this.Text = "MatrixForm";
@@ -657,11 +678,11 @@ namespace MatrixPlugin
             this.groupBox4.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nNoize)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nNoize)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -703,15 +724,15 @@ namespace MatrixPlugin
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lActionSkillValue;
         private System.Windows.Forms.Label lActionSkillName;
-        private System.Windows.Forms.Label lSkillAttributeValue;
-        private System.Windows.Forms.Label lSkillAttributeName;
+        private System.Windows.Forms.Label lActionAttributeValue;
+        private System.Windows.Forms.Label lActionAttributeName;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label lDefendSkillValue;
         private System.Windows.Forms.Label lDefendSkillName;
         private System.Windows.Forms.Label lDefendAttributeValue;
         private System.Windows.Forms.Label lDefendAttributeName;
-        private System.Windows.Forms.Label lActionModValue;
+        private System.Windows.Forms.Label lActionModifier;
         private System.Windows.Forms.Label lSkillDescription;
         private System.Windows.Forms.Label lSkillLimitValue;
         private System.Windows.Forms.Label lSkillLimitName;
@@ -720,5 +741,7 @@ namespace MatrixPlugin
         private System.Windows.Forms.Label lNoize;
         private System.Windows.Forms.CheckBox cSilent;
         private System.Windows.Forms.CheckBox cHotVR;
+        private Label lDefendModifier;
+        private Label lActionType;
     }
 }
