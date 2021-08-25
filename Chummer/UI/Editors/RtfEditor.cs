@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -175,7 +176,7 @@ namespace Chummer.UI.Editors
 
         private bool IsJustifyRight => rtbContent.SelectionAlignment == HorizontalAlignment.Right;
 
-        #endregion
+        #endregion Properties
 
         #region Control Methods
 
@@ -312,6 +313,6 @@ namespace Chummer.UI.Editors
             ContentKeyDown?.Invoke(sender, e);
         }
 
-        #endregion
+        #endregion Control Methods
     }
 }

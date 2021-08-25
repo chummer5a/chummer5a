@@ -7,7 +7,7 @@ image: Visual Studio 2019
 configuration: Release
 platform: Any CPU
 init:
-- ps: ''
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 assembly_info:
   patch: true
   file: '**\AssemblyInfo.*'
@@ -16,10 +16,6 @@ assembly_info:
   assembly_informational_version: '{version}'
 environment:
   SolutionDir: C:\projects\chummer\
-  CHUMMER_OAUTH_TOKEN: 831e3c01126ca8da4661fe3d48a15c1c0bb2c5cb
-  matrix:
-  - project_name: Chummer
-    api_token: 'secure: Ez1QcWiKJJWMAO+xXkQglJNI4OnWM5/JMjXgy6gwJH5IuUX4ttzrpthVYNjHWS12'
 install:
 - ps: ''
 nuget:
@@ -44,8 +40,16 @@ before_build:
         Write-host "Previous Commit ID: $PreviousCommitID"
         if (($CurrentCommitID -eq $PreviousCommitID) -and ($env:APPVEYOR_SCHEDULED_BUILD -eq $true))
         {
-            Write-host "Current Commit ID is the same as previous, exiting build."
-            $exitBuild = $true
+            $PreviousCommitStatus = $history.builds[1].status
+            if ($PreviousCommitStatus -eq "failed")
+            {
+                Write-Host "Current Commit ID is the same as previous, but previous build failed, so going ahead and building."
+            }
+            else
+            {
+                Write-host "Current Commit ID is the same as previous, exiting build."
+                $exitBuild = $true
+            }
         }
     }
     # Needs to be in this format, otherwise Exit-AppVeyorBuild won't work. That command has to be the final one executed in the script
@@ -91,7 +95,7 @@ before_build:
     }
 build:
   project: Chummer.sln
-  verbosity: normal
+  verbosity: minimal
 after_build:
 - ps: 7z a Chummer.Nightly.zip C:\projects\chummer\Chummer\bin\release\* -r
 test_script:
@@ -113,5 +117,5 @@ on_failure:
     if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
     {
       Invoke-RestMethod https://raw.githubusercontent.com/DiscordHooks/appveyor-discord-webhook/master/send.ps1 -o send.ps1
-      ./send.ps1 failure https://discord.com/api/webhooks/776194471510671361/IZvRFV0SdIlwNO4b2PzSfvMmRtkc-bZeiDqoimm_CbaVwOCsyQmAOhH5WfL0fSgLZqRu
+      ./send.ps1 failure $env:DISCORD_WEBHOOK_URL
     }

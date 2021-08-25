@@ -17,8 +17,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360 
-     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0 
+<!-- 由纯美苹果园暗影狂奔板块“Shadowrunner集散地”社群翻译，qq群：201635360
+     translated by Shadowrun Hang-outs, a shadowrun community on http://www.goddessfantasy.net/bbs/index.php?board=1145.0
 -->
 <chummer>
     <version>-350</version>
@@ -2669,7 +2669,7 @@
         </string>
         <string>
             <key>Tip_CommonNuyen</key>
-            <text>你角色用来购买装备的新円数量。1业力＝{0}¥。</text>
+            <text>你角色用来购买装备的新円数量。{0}。</text>
         </string>
         <string>
             <key>Tip_CommonContacts</key>
@@ -4347,10 +4347,6 @@
         <string>
             <key>Label_Options_CyberlimbCount</key>
             <text>通常的角色肢体</text>
-        </string>
-        <string>
-            <key>Label_Options_NuyenPerBP</key>
-            <text>每点业力能兑换的新円：</text>
         </string>
         <string>
             <key>Checkbox_Options_AutomaticUpdates</key>
@@ -8113,7 +8109,7 @@
             <text>该名称的个性化数据目录已存在。</text>
         </string>
         <string>
-            <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+            <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
             <text>个性化数据目录名称重复</text>
         </string>
         <string>

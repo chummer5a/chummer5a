@@ -16,16 +16,19 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Text;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public interface IHasMatrixAttributes : IHasMatrixConditionMonitor
+    public interface IHasMatrixAttributes
     {
         int GetBaseMatrixAttribute(string strAttributeName);
+
         int GetBonusMatrixAttribute(string strAttributeName);
 
         bool IsProgram { get; }
@@ -46,21 +49,21 @@ namespace Chummer
         int BaseMatrixBoxes { get; }
         int BonusMatrixBoxes { get; set; }
         int TotalBonusMatrixBoxes { get; }
-        new int MatrixCM { get; }
-        new int MatrixCMFilled { get; set; }
+        int MatrixCM { get; }
+        int MatrixCMFilled { get; set; }
         string ProgramLimit { get; set; }
 
         bool CanSwapAttributes { get; set; }
         string AttributeArray { get; set; }
         string ModAttributeArray { get; set; }
 
-        List<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
+        IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
     }
 
     public static class MatrixAttributes
     {
-        private static readonly string[] s_LstMatrixAttributeStrings = { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" };
-        public static ReadOnlyCollection<string> MatrixAttributeStrings => Array.AsReadOnly(s_LstMatrixAttributeStrings);
+        public static readonly ReadOnlyCollection<string> MatrixAttributeStrings = Array.AsReadOnly(new[]
+            { "Attack", "Sleaze", "Data Processing", "Firewall", "Device Rating", "Program Limit" });
 
         /// <summary>
         /// Get the total value of a Matrix attribute of this gear after children and Overclocker
@@ -138,24 +141,34 @@ namespace Chummer
             {
                 case "Attack":
                     return objThis.Attack;
+
                 case "Sleaze":
                     return objThis.Sleaze;
+
                 case "Data Processing":
                     return objThis.DataProcessing;
+
                 case "Firewall":
                     return objThis.Firewall;
+
                 case "Mod Attack":
                     return objThis.ModAttack;
+
                 case "Mod Sleaze":
                     return objThis.ModSleaze;
+
                 case "Mod Data Processing":
                     return objThis.ModDataProcessing;
+
                 case "Mod Firewall":
                     return objThis.ModFirewall;
+
                 case "Device Rating":
                     return objThis.DeviceRating;
+
                 case "Program Limit":
                     return objThis.ProgramLimit;
+
                 default:
                     return string.Empty;
             }
@@ -164,7 +177,7 @@ namespace Chummer
         /// <summary>
         /// Refreshes a set of ComboBoxes corresponding to Matrix attributes
         /// </summary>
-        public static void RefreshMatrixAttributeCBOs(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
+        public static void RefreshMatrixAttributeComboBoxes(this IHasMatrixAttributes objThis, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
         {
             if (objThis == null)
                 return;
@@ -172,111 +185,103 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(cboAttack));
             if (cboSleaze == null)
                 throw new ArgumentNullException(nameof(cboSleaze));
-            if (cboDP == null)
-                throw new ArgumentNullException(nameof(cboDP));
+            if (cboDataProcessing == null)
+                throw new ArgumentNullException(nameof(cboDataProcessing));
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
             int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
             int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
-            int intBaseDP = objThis.GetBaseMatrixAttribute("Data Processing");
+            int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
             int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
             int intBonusAttack = objThis.GetBonusMatrixAttribute("Attack");
             int intBonusSleaze = objThis.GetBonusMatrixAttribute("Sleaze");
-            int intBonusDP = objThis.GetBonusMatrixAttribute("Data Processing");
+            int intBonusDataProcessing = objThis.GetBonusMatrixAttribute("Data Processing");
             int intBonusFirewall = objThis.GetBonusMatrixAttribute("Firewall");
 
             cboAttack.SuspendLayout();
             cboSleaze.SuspendLayout();
-            cboDP.SuspendLayout();
+            cboDataProcessing.SuspendLayout();
             cboFirewall.SuspendLayout();
             cboAttack.BeginUpdate();
             cboSleaze.BeginUpdate();
-            cboDP.BeginUpdate();
+            cboDataProcessing.BeginUpdate();
             cboFirewall.BeginUpdate();
 
             cboAttack.Enabled = false;
             cboAttack.BindingContext = new BindingContext();
-            cboAttack.ValueMember = nameof(ListItem.Value);
-            cboAttack.DisplayMember = nameof(ListItem.Name);
-            cboAttack.DataSource = new List<string>(4) { (intBaseAttack + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboAttack.DataSource = new List<string>(4) { (intBaseAttack + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusAttack).ToString(GlobalOptions.InvariantCultureInfo) };
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
             cboAttack.Enabled = objThis.CanSwapAttributes;
 
             cboSleaze.Enabled = false;
             cboSleaze.BindingContext = new BindingContext();
-            cboSleaze.ValueMember = nameof(ListItem.Value);
-            cboSleaze.DisplayMember = nameof(ListItem.Name);
-            cboSleaze.DataSource = new List<string>(4) { (intBaseAttack + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboSleaze.DataSource = new List<string>(4) { (intBaseAttack + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusSleaze).ToString(GlobalOptions.InvariantCultureInfo) };
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
             cboSleaze.Enabled = objThis.CanSwapAttributes;
 
-            cboDP.Enabled = false;
-            cboDP.BindingContext = new BindingContext();
-            cboDP.ValueMember = nameof(ListItem.Value);
-            cboDP.DisplayMember = nameof(ListItem.Name);
-            cboDP.DataSource = new List<string>(4) { (intBaseAttack + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusDP).ToString(GlobalOptions.InvariantCultureInfo) };
-            cboDP.SelectedIndex = 2;
-            cboDP.Visible = true;
-            cboDP.Enabled = objThis.CanSwapAttributes;
+            cboDataProcessing.Enabled = false;
+            cboDataProcessing.BindingContext = new BindingContext();
+            cboDataProcessing.DataSource = new List<string>(4) { (intBaseAttack + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusDataProcessing).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboDataProcessing.SelectedIndex = 2;
+            cboDataProcessing.Visible = true;
+            cboDataProcessing.Enabled = objThis.CanSwapAttributes;
 
             cboFirewall.Enabled = false;
             cboFirewall.BindingContext = new BindingContext();
-            cboFirewall.ValueMember = nameof(ListItem.Value);
-            cboFirewall.DisplayMember = nameof(ListItem.Name);
-            cboFirewall.DataSource = new List<string>(4) { (intBaseAttack + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo) };
+            cboFirewall.DataSource = new List<string>(4) { (intBaseAttack + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDataProcessing + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall + intBonusFirewall).ToString(GlobalOptions.InvariantCultureInfo) };
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
             cboFirewall.Enabled = objThis.CanSwapAttributes;
 
             cboAttack.EndUpdate();
             cboSleaze.EndUpdate();
-            cboDP.EndUpdate();
+            cboDataProcessing.EndUpdate();
             cboFirewall.EndUpdate();
             cboAttack.ResumeLayout();
             cboSleaze.ResumeLayout();
-            cboDP.ResumeLayout();
+            cboDataProcessing.ResumeLayout();
             cboFirewall.ResumeLayout();
         }
 
-        public static bool ProcessMatrixAttributeCBOChange(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttributeCBO, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDP, ComboBox cboFirewall)
+        public static bool ProcessMatrixAttributeComboBoxChange(this IHasMatrixAttributes objThis, Character objCharacter, ComboBox cboChangedAttribute, ComboBox cboAttack, ComboBox cboSleaze, ComboBox cboDataProcessing, ComboBox cboFirewall)
         {
             if (objThis == null)
                 return false;
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            if (cboChangedAttributeCBO == null)
-                throw new ArgumentNullException(nameof(cboChangedAttributeCBO));
+            if (cboChangedAttribute == null)
+                throw new ArgumentNullException(nameof(cboChangedAttribute));
             if (cboAttack == null)
                 throw new ArgumentNullException(nameof(cboAttack));
             if (cboSleaze == null)
                 throw new ArgumentNullException(nameof(cboSleaze));
-            if (cboDP == null)
-                throw new ArgumentNullException(nameof(cboDP));
+            if (cboDataProcessing == null)
+                throw new ArgumentNullException(nameof(cboDataProcessing));
             if (cboFirewall == null)
                 throw new ArgumentNullException(nameof(cboFirewall));
 
             string strTemp;
             Action<string> funcAttributePropertySetter;
 
-            if (cboChangedAttributeCBO == cboAttack)
+            if (cboChangedAttribute == cboAttack)
             {
                 strTemp = objThis.Attack;
                 funcAttributePropertySetter = (x => objThis.Attack = x);
             }
-            else if (cboChangedAttributeCBO == cboSleaze)
+            else if (cboChangedAttribute == cboSleaze)
             {
                 strTemp = objThis.Sleaze;
                 funcAttributePropertySetter = (x => objThis.Sleaze = x);
             }
-            else if (cboChangedAttributeCBO == cboDP)
+            else if (cboChangedAttribute == cboDataProcessing)
             {
                 strTemp = objThis.DataProcessing;
                 funcAttributePropertySetter = (x => objThis.DataProcessing = x);
             }
-            else if (cboChangedAttributeCBO == cboFirewall)
+            else if (cboChangedAttribute == cboFirewall)
             {
                 strTemp = objThis.Firewall;
                 funcAttributePropertySetter = (x => objThis.Firewall = x);
@@ -284,28 +289,28 @@ namespace Chummer
             else
                 return false;
 
-            int intCurrentIndex = cboChangedAttributeCBO.SelectedIndex;
+            int intCurrentIndex = cboChangedAttribute.SelectedIndex;
             bool blnRefreshCharacter = false;
             // Find the combo with the same value as this one and change it to the missing value.
-            if (cboChangedAttributeCBO != cboAttack && cboAttack.SelectedIndex == intCurrentIndex)
+            if (cboChangedAttribute != cboAttack && cboAttack.SelectedIndex == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Attack);
                 objThis.Attack = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttributeCBO != cboSleaze && cboSleaze.SelectedIndex == intCurrentIndex)
+            else if (cboChangedAttribute != cboSleaze && cboSleaze.SelectedIndex == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Sleaze);
                 objThis.Sleaze = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttributeCBO != cboDP && cboDP.SelectedIndex == intCurrentIndex)
+            else if (cboChangedAttribute != cboDataProcessing && cboDataProcessing.SelectedIndex == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.DataProcessing);
                 objThis.DataProcessing = strTemp;
                 blnRefreshCharacter = true;
             }
-            else if (cboChangedAttributeCBO != cboFirewall && cboFirewall.SelectedIndex == intCurrentIndex)
+            else if (cboChangedAttribute != cboFirewall && cboFirewall.SelectedIndex == intCurrentIndex)
             {
                 funcAttributePropertySetter.Invoke(objThis.Firewall);
                 objThis.Firewall = strTemp;
@@ -314,7 +319,7 @@ namespace Chummer
 
             if (blnRefreshCharacter)
             {
-                objThis.RefreshMatrixAttributeCBOs(cboAttack, cboSleaze, cboDP, cboFirewall);
+                objThis.RefreshMatrixAttributeComboBoxes(cboAttack, cboSleaze, cboDataProcessing, cboFirewall);
             }
 
             return blnRefreshCharacter && (objThis.IsActiveCommlink(objCharacter) || objThis.IsHomeNode(objCharacter));
@@ -332,19 +337,26 @@ namespace Chummer
                 return;
             int intBaseAttack = objThis.GetBaseMatrixAttribute("Attack");
             int intBaseSleaze = objThis.GetBaseMatrixAttribute("Sleaze");
-            int intBaseDP = objThis.GetBaseMatrixAttribute("Data Processing");
+            int intBaseDataProcessing = objThis.GetBaseMatrixAttribute("Data Processing");
             int intBaseFirewall = objThis.GetBaseMatrixAttribute("Firewall");
             List<int> lstStatsArray = new List<int>(4)
             {
                 intBaseAttack,
                 intBaseSleaze,
-                intBaseDP,
+                intBaseDataProcessing,
                 intBaseFirewall
             };
             lstStatsArray.Sort();
             lstStatsArray.Reverse();
 
             string[] strCyberdeckArray = objThis.AttributeArray.Split(',');
+            StringBuilder[] asbdCyberdeckArray =
+            {
+                new StringBuilder(strCyberdeckArray[0]),
+                new StringBuilder(strCyberdeckArray[1]),
+                new StringBuilder(strCyberdeckArray[2]),
+                new StringBuilder(strCyberdeckArray[3])
+            };
             foreach (IHasMatrixAttributes objChild in objThis.ChildrenWithMatrixAttributes)
             {
                 string strLoopArrayText = objChild.ModAttributeArray;
@@ -353,7 +365,7 @@ namespace Chummer
                     string[] strLoopArray = strLoopArrayText.Split(',');
                     for (int i = 0; i < 4; ++i)
                     {
-                        strCyberdeckArray[i] += "+(" + strLoopArray[i] + ')';
+                        asbdCyberdeckArray[i].Append("+(" + strLoopArray[i] + ')');
                     }
                 }
             }
@@ -361,7 +373,7 @@ namespace Chummer
             {
                 if (intBaseAttack == lstStatsArray[i])
                 {
-                    objThis.Attack = strCyberdeckArray[i];
+                    objThis.Attack = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -370,16 +382,16 @@ namespace Chummer
             {
                 if (intBaseSleaze == lstStatsArray[i])
                 {
-                    objThis.Sleaze = strCyberdeckArray[i];
+                    objThis.Sleaze = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
             }
             for (int i = 0; i < 4; ++i)
             {
-                if (intBaseDP == lstStatsArray[i])
+                if (intBaseDataProcessing == lstStatsArray[i])
                 {
-                    objThis.DataProcessing = strCyberdeckArray[i];
+                    objThis.DataProcessing = asbdCyberdeckArray[i].ToString();
                     lstStatsArray[i] = int.MinValue;
                     break;
                 }
@@ -388,7 +400,7 @@ namespace Chummer
             {
                 if (intBaseFirewall == lstStatsArray[i])
                 {
-                    objThis.Firewall = strCyberdeckArray[i];
+                    objThis.Firewall = asbdCyberdeckArray[i].ToString();
                     break;
                 }
             }

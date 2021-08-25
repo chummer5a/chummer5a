@@ -38,6 +38,7 @@ namespace Chummer
         private readonly HashSet<string> _setAllowedTechniques = new HashSet<string>();
 
         #region Control Events
+
         public frmSelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
             InitializeComponent();
@@ -71,11 +72,10 @@ namespace Chummer
                     foreach (XPathNavigator xmlTechnique in objTechniquesList)
                     {
                         if (_objMartialArt.Techniques.Any(x => x.Name == xmlTechnique.Value) || xmlTechnique.SelectSingleNode("name") == null) continue;
-                            _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
+                        _setAllowedTechniques.Add(xmlTechnique.SelectSingleNode("name")?.Value);
                     }
                 }
             }
-
         }
 
         private void frmSelectMartialArtTechnique_Load(object sender, EventArgs e)
@@ -93,12 +93,6 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
-        }
-
-        private void lstTechniques_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -124,19 +118,16 @@ namespace Chummer
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    tlpRight.Visible = true;
                 }
                 else
                 {
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
-                    lblSourceLabel.Visible = false;
+                    tlpRight.Visible = false;
                 }
             }
             else
             {
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
-                lblSourceLabel.Visible = false;
+                tlpRight.Visible = false;
             }
         }
 
@@ -144,9 +135,11 @@ namespace Chummer
         {
             RefreshTechniquesList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -157,9 +150,10 @@ namespace Chummer
         /// </summary>
         public string SelectedTechnique => _strSelectedTechnique;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -204,9 +198,7 @@ namespace Chummer
             string strOldSelected = lstTechniques.SelectedValue?.ToString();
             _blnLoading = true;
             lstTechniques.BeginUpdate();
-            lstTechniques.ValueMember = nameof(ListItem.Value);
-            lstTechniques.DisplayMember = nameof(ListItem.Name);
-            lstTechniques.DataSource = lstTechniqueItems;
+            lstTechniques.PopulateWithListItems(lstTechniqueItems);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstTechniques.SelectedValue = strOldSelected;
@@ -219,6 +211,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

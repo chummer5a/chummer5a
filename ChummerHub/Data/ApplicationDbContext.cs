@@ -55,20 +55,16 @@ namespace ChummerHub.Data
             }
             if (error)
             {
-                int counter = 0;
                 string wholeMessage = "Error while validating Entities:" + Environment.NewLine;
                 foreach (var valResult in validationResults)
                 {
-                    counter++;
                     string msg = "Members " + string.Join(", ", valResult.MemberNames) + " not valid: ";
                     msg += valResult.ErrorMessage;
                     wholeMessage += msg + Environment.NewLine;
                 }
                 var ex = new HubException(wholeMessage);
-                counter = 0;
                 foreach (var valResult in validationResults)
                 {
-                    counter++;
                     foreach (var member in valResult.MemberNames)
                     {
                         ex.Data.Add("member_" + member, valResult.ErrorMessage);

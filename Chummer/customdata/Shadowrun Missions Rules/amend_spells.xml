@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <spells>
+    <spell>
+      <name>Manablade</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Powerblade</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Corps Cadavre</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Zombie</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Necro Summoning</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Boil Blood</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Corpse Explosion</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Embolism</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Giger Spit</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Ice Veins</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Pyrohemetics</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Rupture</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Clot</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Share Damage</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Somatic Healing</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Sympathetic Reprisal</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Blood Puppet</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Corpse Spikes</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Corpse Lash</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Blood Whip</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Blood Blade</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Viscera Web</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Blood Bath</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Blood Oath</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Death Curse</name>
+      <hide />
+    </spell>
+    <spell>
+      <name>Guardian Bond</name>
+      <hide />
+    </spell>
+  </spells>
+</chummer>

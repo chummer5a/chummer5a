@@ -352,6 +352,7 @@
     </drug>
     <drug>
       <id>5929d3b9-451b-4be8-a292-8b6509d0aeb9</id>
+      <!-- ReSharper disable once MarkupTextTypo -->
       <name>HemoSynth</name>
       <category>Drugs</category>
       <rating>0</rating>

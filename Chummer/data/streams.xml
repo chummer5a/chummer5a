@@ -25,7 +25,7 @@
     <tradition>
       <id>7a3ecfbe-616e-425d-b204-329de37ffdbb</id>
       <name>Default</name>
-      <drain>WIL + RES</drain>
+      <drain>{WIL} + {RES}</drain>
       <spirits>
         <spirit>Courier Sprite</spirit>
         <spirit>Crack Sprite</spirit>

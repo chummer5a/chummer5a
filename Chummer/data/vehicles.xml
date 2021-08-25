@@ -48,9 +48,11 @@
     <category blackmarket="Vehicles" >Model-Specific</category>
     <category blackmarket="Vehicles" >Powertrain</category>
     <category blackmarket="Vehicles" >Protection</category>
-    <category blackmarket="Vehicles" >Vehicle Weapon Mount</category>
     <category blackmarket="Vehicles" >Weapons</category>
   </modcategories>
+  <weaponmountcategories>
+    <category blackmarket="Vehicles">Size</category>
+  </weaponmountcategories>
   <vehicles>
     <vehicle>
       <id>c0d3e7fd-d5fd-48c4-b49d-0c7dea26895d</id>
@@ -3519,6 +3521,7 @@
           <flexibility>Fixed</flexibility>
           <size>Built-In</size>
           <visibility>Concealed</visibility>
+          <allowedweapons>Melee Bite</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -3653,8 +3656,9 @@
         <weaponmount>
           <control>Remote</control>
           <flexibility>Fixed</flexibility>
-          <size>Standard [SR5]</size>
+          <size>Standard (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Colt Cobra TZ-120</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -3770,6 +3774,7 @@
           <flexibility>Fixed</flexibility>
           <size>Mini (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Defiance EX Shocker</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4178,6 +4183,7 @@
           <flexibility>Fixed</flexibility>
           <size>Built-In</size>
           <visibility>External</visibility>
+          <allowedweapons>Micro-Torpedo Launcher</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4381,6 +4387,7 @@
           <flexibility>Fixed</flexibility>
           <size>Built-In</size>
           <visibility>Concealed</visibility>
+          <allowedweapons>Jaws</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4496,6 +4503,7 @@
           <flexibility>Fixed</flexibility>
           <size>Mini (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Yamaha Pulsar</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -4557,6 +4565,21 @@
           <flexibility>Fixed</flexibility>
           <size>Standard (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Underbarrel Grenade Launcher</allowedweapons>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
+        </weaponmount>
+        <weaponmount>
+          <control>Remote</control>
+          <flexibility>Fixed</flexibility>
+          <size>Standard (Drone)</size>
+          <visibility>External</visibility>
+          <allowedweapons>Riot Shield</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -5796,10 +5819,20 @@
           <maxrating>7</maxrating>
         </gear>
       </gears>
-      <mods>
-        <name>Heavy Weapon Mount, Manual</name>
-        <name>Heavy Weapon Mount, Manual</name>
-      </mods>
+      <weaponmounts>
+        <weaponmount>
+          <control>Armored Manual</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+        <weaponmount>
+          <control>Armored Manual</control>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
+          <visibility>External</visibility>
+        </weaponmount>
+      </weaponmounts>
       <seats>6</seats>
     </vehicle>
     <vehicle>
@@ -5981,14 +6014,14 @@
       <weaponmounts>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Standard [SR5]</size>
+          <flexibility>Flexible</flexibility>
+          <size>Standard</size>
           <visibility>External</visibility>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Standard [SR5]</size>
+          <flexibility>Flexible</flexibility>
+          <size>Standard</size>
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
@@ -6020,8 +6053,8 @@
       <weaponmounts>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Heavy [SR5]</size>
+          <flexibility>Flexible</flexibility>
+          <size>Heavy</size>
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
@@ -6355,15 +6388,17 @@
       <weaponmounts>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Standard [SR5]</size>
+          <flexibility>Flexible</flexibility>
+          <size>Light</size>
           <visibility>External</visibility>
+          <allowedweapons>Sword</allowedweapons>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Standard [SR5]</size>
+          <flexibility>Flexible</flexibility>
+          <size>Light</size>
           <visibility>External</visibility>
+          <allowedweapons>Sword</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -6450,8 +6485,8 @@
       <weaponmounts>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Standard [SR5]</size>
+          <flexibility>Flexible</flexibility>
+          <size>Standard</size>
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
@@ -6607,8 +6642,8 @@
       <weaponmounts>
         <weaponmount>
           <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <size>Heavy [SR5]</size>
+          <flexibility>Turret</flexibility>
+          <size>Heavy</size>
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
@@ -6716,6 +6751,7 @@
           <flexibility>Fixed</flexibility>
           <size>Heavy [SR5]</size>
           <visibility>External</visibility>
+          <allowedweapons>Stoner-Ares M202</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -8885,6 +8921,7 @@
           <flexibility>Fixed</flexibility>
           <size>Mini (Drone)</size>
           <visibility>External</visibility>
+          <allowedweapons>Yamaha Pulsar</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -9862,6 +9899,7 @@
           <flexibility>Turret</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
+          <allowedweapons>Krupp Munitions 3E Firefighting Cannon</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -9915,6 +9953,7 @@
           <flexibility>Turret</flexibility>
           <size>Heavy</size>
           <visibility>External</visibility>
+          <allowedweapons>Krupp Munitions 3E Firefighting Cannon</allowedweapons>
         </weaponmount>
       </weaponmounts>
       <weapons>
@@ -10436,13 +10475,13 @@
         <weaponmount>
           <control>Remote</control>
           <flexibility>Turret</flexibility>
-          <size>Heavy [SR5]</size>
+          <size>Heavy</size>
           <visibility>External</visibility>
         </weaponmount>
         <weaponmount>
           <control>Remote</control>
           <flexibility>Turret</flexibility>
-          <size>Standard [SR5]</size>
+          <size>Standard</size>
           <visibility>External</visibility>
         </weaponmount>
       </weaponmounts>
@@ -10450,43 +10489,6 @@
     <!-- End Region -->
   </vehicles>
   <mods>
-    <!-- Region Vehicle Weapon Mount -->
-    <mod>
-      <id>079a5c61-aee6-4383-81b7-32540f7a0a0b</id>
-      <name>Weapon Mount</name>
-      <page>461</page>
-      <source>SR5</source>
-      <avail>8F</avail>
-      <category>Vehicle Weapon Mount</category>
-      <cost>2500</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-      <weaponmountcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Sporting Rifles</weaponmountcategories>
-    </mod>
-    <mod>
-      <id>a567c5d3-38b8-496a-add8-1e176384e935</id>
-      <name>Heavy Weapon Mount</name>
-      <page>461</page>
-      <source>SR5</source>
-      <avail>14F</avail>
-      <category>Vehicle Weapon Mount</category>
-      <cost>5000</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-      <weaponmountcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles,Exotic Ranged Weapons</weaponmountcategories>
-    </mod>
-    <mod>
-      <id>ef9dcce5-7b1d-4469-9d3c-861dcb25684e</id>
-      <name>Manual Operation</name>
-      <page>461</page>
-      <source>SR5</source>
-      <avail>+1</avail>
-      <category>Vehicle Weapon Mount</category>
-      <cost>500</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-    </mod>
-    <!-- End Region -->
     <!-- Region Model-Specific -->
     <mod>
       <id>b062f16a-52ab-40d5-8985-d71b8ee1923c</id>
@@ -11239,155 +11241,6 @@
       <slots>2</slots>
     </mod>
     <mod>
-      <id>ebedb0c7-64ff-4817-8fb3-6a5fc9b3086f</id>
-      <name>Weapon Mount Type (Light)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>6F</avail>
-      <category>Weapons</category>
-      <cost>750</cost>
-      <rating>0</rating>
-      <slots>1</slots>
-      <hide />
-      <weaponmountcategories>Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns</weaponmountcategories>
-    </mod>
-    <mod>
-      <id>86741661-11c2-4781-b365-b02dbb9fd7c0</id>
-      <name>Weapon Mount Type (Standard)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>8F</avail>
-      <category>Weapons</category>
-      <cost>1500</cost>
-      <rating>0</rating>
-      <slots>2</slots>
-      <hide />
-      <!-- TODO: Add Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
-      <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons</weaponmountcategories>
-    </mod>
-    <mod>
-      <id>4eecb2ee-ad33-4bc2-b8b3-d35e0df40836</id>
-      <name>Weapon Mount Type (Heavy)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>10F</avail>
-      <category>Weapons</category>
-      <cost>4000</cost>
-      <rating>0</rating>
-      <slots>4</slots>
-      <hide />
-      <!-- TODO: Add Blades,Clubs,Improvised Weapons,Exotic Melee Weapons,Cyberweapon,Bio-Weapon,Unarmed, Machine Pistols, and Submachine Guns as soon as Errata comes out -->
-      <weaponmountcategories>Tasers,Holdouts,Light Pistols,Heavy Pistols,Assault Rifles,Sniper Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Grenade Launchers,Missile Launchers,Laser Weapons</weaponmountcategories>
-    </mod>
-    <mod>
-      <id>906c1b0a-4c53-4f11-9b1b-6bdac3caa9e3</id>
-      <name>Weapon Mount Visibility (External)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>0</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>4387e71e-d359-468d-b0c7-d41c9ec6404f</id>
-      <name>Weapon Mount Visibility (Internal)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>1500</cost>
-      <rating>0</rating>
-      <slots>2</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>50e84b26-a09c-4f90-8b7a-7974a9133311</id>
-      <name>Weapon Mount Visibility (Concealed)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>4000</cost>
-      <rating>0</rating>
-      <slots>4</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>ec031f5b-8b2c-4289-a4f0-1cce29f36f3e</id>
-      <name>Weapon Mount Flexibility (Fixed)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>0</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>cfa4d3c5-d970-490a-81fd-5617f96f6556</id>
-      <name>Weapon Mount Flexibility (Flexible)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>2000</cost>
-      <rating>0</rating>
-      <slots>1</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>886f7678-d957-4804-b0fe-01a8506b31ca</id>
-      <name>Weapon Mount Flexibility (Turret)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>5000</cost>
-      <rating>0</rating>
-      <slots>2</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>1cd32dd6-3520-4ab5-a6d9-d5932f4b2188</id>
-      <name>Weapon Mount Control (Remote)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>0</cost>
-      <rating>0</rating>
-      <slots>0</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>6e4ec837-1c16-4813-adc1-6009e410737a</id>
-      <name>Weapon Mount Control (Manual)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>500</cost>
-      <rating>0</rating>
-      <slots>1</slots>
-      <hide />
-    </mod>
-    <mod>
-      <id>8d988a80-45df-4656-80a6-98579ce44e43</id>
-      <name>Weapon Mount Control (Armored Manual)</name>
-      <page>163</page>
-      <source>R5</source>
-      <avail>0</avail>
-      <category>Weapons</category>
-      <cost>1500</cost>
-      <rating>0</rating>
-      <slots>2</slots>
-      <hide />
-    </mod>
-    <mod>
       <id>4b7ce902-a8b2-4bdb-9095-05b029750dde</id>
       <name>Assembly/Disassembly</name>
       <page>163</page>
@@ -11814,6 +11667,17 @@
           <seats operation="greaterthanequals">1</seats>
         </vehicledetails>
       </required>
+    </mod>
+    <mod>
+      <id>ef9dcce5-7b1d-4469-9d3c-861dcb25684e</id>
+      <name>Manual Operation</name>
+      <page>461</page>
+      <source>SR5</source>
+      <avail>+1</avail>
+      <category>Cosmetic</category>
+      <cost>500</cost>
+      <rating>0</rating>
+      <slots>0</slots>
     </mod>
     <mod>
       <id>354bd92f-dafc-42a4-979c-e3631be6cf45</id>
@@ -12630,10 +12494,10 @@
       <name>Off-Road Tires</name>
       <page>152</page>
       <source>R5</source>
-      <avail>4</avail>
+      <avail>6</avail>
       <category>All</category>
-      <cost>Rating * 250</cost>
-      <rating>50</rating>
+      <cost>Rating * 400</cost>
+      <rating>qty</rating>
       <slots>0</slots>
       <bonus>
         <handling>-1</handling>
@@ -12648,7 +12512,7 @@
       <avail>6</avail>
       <category>All</category>
       <cost>Rating * 250</cost>
-      <rating>50</rating>
+      <rating>qty</rating>
       <slots>0</slots>
       <bonus>
         <handling>+1</handling>
@@ -12663,7 +12527,7 @@
       <avail>4</avail>
       <category>All</category>
       <cost>Rating * 250</cost>
-      <rating>50</rating>
+      <rating>qty</rating>
       <slots>0</slots>
     </mod>
     <mod>
@@ -13085,9 +12949,9 @@
       <required>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
-          <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <visibility>External</visibility>
+          <control>Remote [SR5]</control>
+          <flexibility>Flexible [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
         </weaponmountdetails>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Shotguns,Exotic Ranged Weapons,Flamethrowers,Special Weapons,Sporting Rifles</weaponcategories>
@@ -13104,9 +12968,9 @@
       <required>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
-          <control>Remote</control>
-          <flexibility>Fixed</flexibility>
-          <visibility>External</visibility>
+          <control>Remote [SR5]</control>
+          <flexibility>Flexible [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
         </weaponmountdetails>
       </required>
       <weaponcategories>Blades,Clubs,Exotic Melee Weapons,Crossbows,Tasers,Holdouts,Light Pistols,Heavy Pistols,Machine Pistols,Submachine Guns,Assault Rifles,Sniper Rifles,Shotguns,Grenade Launchers,Missile Launchers,Laser Weapons,Light Machine Guns,Medium Machine Guns,Heavy Machine Guns,Assault Cannons,Flamethrowers,Sporting Rifles,Exotic Ranged Weapons</weaponcategories>
@@ -13123,6 +12987,9 @@
       <forbidden>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
+          <control>Remote [SR5]</control>
+          <flexibility>Flexible [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
           <visibility>None</visibility>
@@ -13142,6 +13009,9 @@
       <forbidden>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
+          <control>Remote [SR5]</control>
+          <flexibility>Flexible [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
           <visibility>None</visibility>
@@ -13161,6 +13031,9 @@
       <forbidden>
         <weaponmountdetails>
           <control>Manual [SR5]</control>
+          <control>Remote [SR5]</control>
+          <flexibility>Flexible [SR5]</flexibility>
+          <visibility>External [SR5]</visibility>
           <control>None</control>
           <flexibility>None</flexibility>
           <visibility>None</visibility>
@@ -13170,6 +13043,16 @@
     </weaponmount>
     <!-- End Region -->
     <!-- Region Visibility -->
+    <weaponmount>
+      <id>582c31e0-1374-4ebb-b201-a20cb815d6dd</id>
+      <name>External [SR5]</name>
+      <page>461</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Visibility</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>20e7d5d5-da20-4466-99b7-977a578155e4</id>
       <name>External</name>
@@ -13202,6 +13085,16 @@
     </weaponmount>
     <!-- End Region -->
     <!-- Region Flexibility -->
+    <weaponmount>
+      <id>4a020775-9258-486a-a03f-7a48dd5c3bf9</id>
+      <name>Flexible [SR5]</name>
+      <page>461</page>
+      <source>SR5</source>
+      <avail>0</avail>
+      <category>Flexibility</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
     <weaponmount>
       <id>5d53c232-c18d-4546-bb50-5325f57eb422</id>
       <name>Fixed</name>
@@ -13239,6 +13132,16 @@
       <name>Remote</name>
       <page>163</page>
       <source>R5</source>
+      <avail>0</avail>
+      <category>Control</category>
+      <cost>0</cost>
+      <slots>0</slots>
+    </weaponmount>
+    <weaponmount>
+      <id>70f99fae-470f-442c-a607-ef3465e27f37</id>
+      <name>Remote [SR5]</name>
+      <page>461</page>
+      <source>SR5</source>
       <avail>0</avail>
       <category>Control</category>
       <cost>0</cost>

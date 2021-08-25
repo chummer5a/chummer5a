@@ -5,7 +5,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using PropertyInfo = System.Reflection.PropertyInfo;
 
 namespace ChummerHub.Client.Backend
@@ -27,7 +26,7 @@ namespace ChummerHub.Client.Backend
             {
                 if (obj is IEnumerable islist)
                 {
-                    System.Type listtype = StaticUtils.GetListType(islist);
+                    Type listtype = StaticUtils.GetListType(islist);
                     object generic;
                     try
                     {

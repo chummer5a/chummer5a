@@ -3297,7 +3297,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Tip_CommonNuyen</key>
-      <text>La quantité de Nuyen que votre personnage a pour acheter de l'équipment. 1 PC = 5,000¥.</text>
+      <text>La quantité de Nuyen que votre personnage a pour acheter de l'équipment. {0}.</text>
     </string>
     <string>
       <key>Tip_CommonAIRating</key>
@@ -5075,10 +5075,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Label_Options_CyberlimbCount</key>
       <text>Nb de membres standard :</text>
-    </string>
-    <string>
-      <key>Label_Options_NuyenPerBP</key>
-      <text>Nuyen par PC :</text>
     </string>
     <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
@@ -8021,7 +8017,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
       <text>Répertoires de données personnalisés à utiliser (les modifications ne sont appliquées qu'après un redémarrage)</text>
     </string>
     <string>
-      <key>Message_Duplicate_CustomDataDirectoryName_Title</key>
+      <key>MessageTitle_Duplicate_CustomDataDirectoryName</key>
       <text>Dupliquer le nom d'un répertoire de données personnalisé</text>
     </string>
     <string>
@@ -8043,7 +8039,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>Message_Updater_CleanReinstallPrompt</key>
       <text>Effectuer une réinstallation complète supprimera tous les fichiers du répertoire Chummer5a qui ne sont pas dans le téléchargement principal. Cela inclut les fichiers de données personnalisés, les sauvegardes automatiques, les fichiers de fiches personnalisées, les localisations personnalisées et tous les paramètres différents de ceux par défaut.\n\nÊtes-vous sûr de souhaiter une réinstallation propre ?
-
 </text>
     </string>
     <string>
@@ -8145,7 +8140,6 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     <string>
       <key>About_Description_Text</key>
       <text>Générateur de personnages pour Shadowrun 5e édition\n\r\n\rMerci à Keith pour tout le travail incroyable qu'il a fait pour créer et maintenir Chummer pour 4e édition. Sans lui, rien de tout cela ne serait possible. Merci beaucoup à tous les membres de la communauté Dumpshock d'avoir soutenu ce projet avec tous leurs précieux commentaires, leurs bonnes idées, leurs rapports de problèmes, et avoir souligné mes erreurs stupides. Un grand merci aussi à tous ceux qui ont donné de leur temps pour traduire Chummer dans d'autres langues !
-
 </text>
     </string>
     <string>

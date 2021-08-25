@@ -21,7 +21,7 @@
   <qualities>
     <quality>
       <name>Stolen Gear</name>
-      <contributetobp amendoperation="remove"/>
+      <contributetobp amendoperation="remove" />
     </quality>
   </qualities>
 </chummer>

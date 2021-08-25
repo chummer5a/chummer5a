@@ -35,7 +35,7 @@
       <category>LifeModule</category>
       <name>United Canadian American States</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
@@ -7236,7 +7236,7 @@
       <category>LifeModule</category>
       <name>Caribbean League</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>62a71e87-d427-4b96-93f2-33d96c6226f2</id>
@@ -8474,7 +8474,7 @@
       <category>LifeModule</category>
       <name>Amazonian</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>047e3fb2-1d43-480c-baed-2b333472eb7d</id>
@@ -10894,7 +10894,7 @@
         <addqualities>
           <!-- todo: should have 3 levels of records on file -->
           <addquality>Daredevil</addquality>
-          <addquality>Records On File</addquality>
+          <addquality>Records on File</addquality>
           <addquality>SINner (Corporate Limited)</addquality>
         </addqualities>
         <skilllevel>
@@ -11152,7 +11152,7 @@
           <addquality>Driven</addquality>
           <addquality>Natural Leader</addquality>
           <addquality>Legendary Rep</addquality>
-          <addquality>Stay Out Of My Way</addquality>
+          <addquality>Stay Out of My Way</addquality>
         </addqualities>
         <skilllevel>
           <name>Con</name>
@@ -11202,7 +11202,7 @@
         </attributelevel>
         <addqualities>
           <!-- todo: should have 4 ratings of records on file -->
-          <addquality>Records On File</addquality>
+          <addquality>Records on File</addquality>
           <addquality>Solid Rep</addquality>
           <addquality>Observant</addquality>
           <addquality>SINner (Corporate Limited)</addquality>
@@ -11439,7 +11439,7 @@
         <addqualities>
           <addquality>Adrenaline Surge</addquality>
           <addquality>Battle Hardened</addquality>
-          <addquality>Thousand Yard Stare</addquality>
+          <addquality>Thousand-Yard Stare</addquality>
         </addqualities>
         <skilllevel>
           <name>Blades</name>
@@ -11517,7 +11517,7 @@
         </attributelevel>
         <addqualities>
           <addquality>Battle Hardened</addquality>
-          <addquality>Tough As Nails (Physical)</addquality>
+          <addquality>Tough as Nails (Physical)</addquality>
           <addquality>Impassive</addquality>
           <addquality>Social Stress</addquality>
         </addqualities>
@@ -11635,7 +11635,7 @@
           <name>CHA</name>
         </attributelevel>
         <addqualities>
-          <addquality>Pacifist</addquality>
+          <addquality>Pacifist I</addquality>
           <addquality>Prejudiced (Common, Biased)</addquality>
         </addqualities>
         <skilllevel>

@@ -11,7 +11,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerVisibility : UserControl
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private SINnerVisibility _mySINnerVisibility;
         public SINnerVisibility MyVisibility
         {
@@ -35,6 +35,10 @@ namespace ChummerHub.Client.UI
             {
                 UserRights = new List<SINnerUserRight>()
             };
+            string tooltip = "not checked: Character is only visible to users in the list above." + Environment.NewLine;
+            tooltip += "checked: Character is visible to users, who can see/own other characters that are members of the same group." + Environment.NewLine + Environment.NewLine;
+            tooltip += "This is ment to be used by GMs managing multiple groups and want to put NPCs into groups mixing them with player-characters.";                
+            clbVisibilityToUsers.SetToolTip(tooltip);
             clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
@@ -42,7 +46,7 @@ namespace ChummerHub.Client.UI
         {
             MyVisibility = vis;
             InitializeComponent();
-            cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible == null ? false : MyVisibility.IsGroupVisible;
+            cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible != null && MyVisibility.IsGroupVisible;
             clbVisibilityToUsers.ItemCheck += clbVisibilityToUsers_ItemCheck;
         }
 
@@ -65,7 +69,7 @@ namespace ChummerHub.Client.UI
                         clbVisibilityToUsers.SetItemChecked(i, obj.CanEdit);
                     }
                     clbVisibilityToUsers.Refresh();
-                    cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible==null?false:MyVisibility.IsGroupVisible;
+                    cbVisibleInGroups.Checked = MyVisibility?.IsGroupVisible != null && MyVisibility.IsGroupVisible;
                 }
                 catch (Exception e)
                 {
@@ -108,7 +112,8 @@ namespace ChummerHub.Client.UI
                 {
                     if (selectedItems[i] is SINnerUserRight userright)
                     {
-                        MyVisibility.UserRightsObservable.Remove(userright);
+                        MyVisibility.UserRights.Remove(userright);
+                        MyVisibility.UserRightsObservable = null;
                     }
                 }
                 FillVisibilityListBox();

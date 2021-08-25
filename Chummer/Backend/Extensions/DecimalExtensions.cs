@@ -16,6 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
+using System;
 using System.Runtime.CompilerServices;
 
 namespace Chummer
@@ -42,6 +44,80 @@ namespace Chummer
         internal static int ToInt32(this decimal decIn)
         {
             return decimal.ToInt32(decIn);
+        }
+
+        /// <summary>
+        /// Exponentiates a decimal by another decimal without casting to floating point (and therefore maintaining exact precision) unless absolutely necessary.
+        /// Note: can be quite slow compared to just using Math.Pow and casting the result, so use with care.
+        /// </summary>
+        /// <param name="decBase">Number to exponentiate.</param>
+        /// <param name="decPower">Power to which to raise <paramref name="decBase"/>.</param>
+        /// <returns><paramref name="decBase"/> to the power of <paramref name="decPower"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static decimal RaiseToPower(this decimal decBase, decimal decPower)
+        {
+            int intPower = decPower.ToInt32();
+            return intPower == decPower
+                ? decBase.RaiseToPower(intPower)
+                // Use Math.Pow for doing (square) roots and fractional exponents because we kind of have to, there's no easy way to do roots with built-in decimal arithmetic
+                : Convert.ToDecimal(Math.Pow(Convert.ToDouble(decBase), Convert.ToDouble(decPower)));
+        }
+
+        /// <summary>
+        /// Exponentiates a decimal by an integer without casting to float, maintaining maximum precision.
+        /// </summary>
+        /// <param name="decBase">Number to exponentiate.</param>
+        /// <param name="intPower">Power to which to raise <paramref name="decBase"/>.</param>
+        /// <returns><paramref name="decBase"/> to the power of <paramref name="intPower"/>.</returns>
+        internal static decimal RaiseToPower(this decimal decBase, int intPower)
+        {
+            switch (intPower)
+            {
+                case 2: // Extremely common case, so handle it explicitly
+                    return decBase * decBase;
+
+                case 1:
+                    return decBase;
+
+                case 0: // Yes, even 0^0 should return 1 per IEEE specifications
+                    return 1;
+
+                case -1:
+                    if (decBase == decimal.Zero)
+                        throw new DivideByZeroException();
+                    return 1.0m / decBase;
+            }
+            switch (decBase)
+            {
+                case decimal.One:
+                    return 1;
+
+                case decimal.Zero:
+                    if (intPower < 0)
+                        throw new DivideByZeroException();
+                    return 0;
+
+                case decimal.MinusOne:
+                    return 1 - 2 * (Math.Abs(intPower) & 1);
+            }
+            // Handle negative powers by dividing by the result of the positive power right before we return
+            bool blnNegativePower = intPower < 0;
+            if (blnNegativePower)
+                intPower = -intPower;
+            decimal decReturn = 1;
+            int i;
+            // Dual loop structure looks funky, but cuts down on number of multiplication operations in worst case scenarios compared to a single loop
+            for (; intPower > 1; intPower -= i / 2)
+            {
+                decimal decLoopElement = decBase;
+                for (i = 2; i < intPower; i *= 2)
+                {
+                    decLoopElement *= decLoopElement;
+                }
+                decReturn *= decLoopElement;
+            }
+
+            return blnNegativePower ? 1.0m / decReturn : decReturn;
         }
     }
 }

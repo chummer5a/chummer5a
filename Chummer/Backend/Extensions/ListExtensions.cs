@@ -16,8 +16,11 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Chummer.Annotations;
 
 namespace Chummer
 {
@@ -242,6 +245,14 @@ namespace Chummer
                 {
                     lstCollection.RemoveAt(i);
                 }
+            }
+        }
+
+        public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection)
+        {
+            foreach (T item in collection.Reverse())
+            {
+                lstCollection.Insert(index, item);
             }
         }
     }

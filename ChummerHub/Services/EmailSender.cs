@@ -39,9 +39,9 @@ namespace ChummerHub.Services
 
         public Task Execute(string apiKey, string subject, string message, string email)
         {
-            if (String.IsNullOrEmpty(apiKey))
+            if (string.IsNullOrEmpty(apiKey))
             {
-                throw new ArgumentNullException("EmailSender.cs: apiKey is null!");
+                throw new ArgumentNullException(nameof(apiKey), "EmailSender.cs: apiKey is null!");
             }
             var httpClientHandler = new HttpClientHandler()
             {
@@ -54,7 +54,7 @@ namespace ChummerHub.Services
             httpClientHandler.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
             httpClientHandler.PreAuthenticate = true;
             httpClientHandler.SslProtocols = System.Security.Authentication.SslProtocols.Ssl3 | System.Security.Authentication.SslProtocols.Tls12 | System.Security.Authentication.SslProtocols.Tls11 | System.Security.Authentication.SslProtocols.Tls;
-            httpClientHandler.ServerCertificateCustomValidationCallback = (message2, cert, chain, errors) => { return true; };
+            httpClientHandler.ServerCertificateCustomValidationCallback = (message2, cert, chain, errors) => true;
             var httpClient = new HttpClient(httpClientHandler);
 
             var client = new SendGridClient(httpClient, apiKey);

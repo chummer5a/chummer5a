@@ -16,87 +16,91 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
-using Chummer.Annotations;
-using Chummer.Backend.Equipment;
-using Chummer.Backend.Attributes;
-using System.Drawing;
 using System.Xml.XPath;
+using Chummer.Annotations;
+using Chummer.Backend.Attributes;
+using Chummer.Backend.Equipment;
 
 namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma} {Rating}")]
     [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
-    public partial class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
+    public class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlNode, IHasNotes
     {
         private CharacterAttrib _objAttribute;
         private string _strDefaultAttribute;
-        private bool _blnCheckSwapSkillImprovements = true;
         private bool _blnRequiresGroundMovement;
         private bool _blnRequiresSwimMovement;
         private bool _blnRequiresFlyMovement;
+        private int _intBase;
+        private int _intKarma;
+        private bool _blnBuyWithKarma;
 
         public CharacterAttrib AttributeObject
         {
-            get
+            get => _objAttribute;
+            private set
             {
-                if (!_blnCheckSwapSkillImprovements && _objAttribute != null) return _objAttribute;
-                if (CharacterObject.Improvements.Any(imp =>
-                        imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && imp.Target == Name))
-                {
-                    AttributeObject = CharacterObject.GetAttribute(CharacterObject.Improvements.First(imp =>
-                            imp.ImproveType == Improvement.ImprovementType.SwapSkillAttribute &&
-                            imp.Target == Name).ImprovedName);
-                }
-                else if (_strDefaultAttribute != _objAttribute?.Abbrev || _objAttribute == null)
-                {
-                    AttributeObject = CharacterObject.GetAttribute(_strDefaultAttribute);
-                }
-
-                return _objAttribute;
-            }
-            protected set
-            {
-                if (_objAttribute == value) return;
-                if (_objAttribute != null)
-                    _objAttribute.PropertyChanged -= OnLinkedAttributeChanged;
-                if (value != null)
-                    value.PropertyChanged += OnLinkedAttributeChanged;
+                if (_objAttribute == value)
+                    return;
                 _objAttribute = value;
-                _strDefaultAttribute = _objAttribute?.Abbrev;
                 OnPropertyChanged();
             }
-        } //Attribute this skill primarily depends on
+        }
+
+        private void RecacheAttribute()
+        {
+            string strAttributeString = DefaultAttribute;
+            Improvement objImprovementOverride = CharacterObject.Improvements.FirstOrDefault(x =>
+                x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && x.Target == DictionaryKey && x.Enabled);
+            if (objImprovementOverride != null)
+                strAttributeString = objImprovementOverride.ImprovedName;
+            CharacterAttrib objNewAttribute = CharacterObject.GetAttribute(strAttributeString);
+            if (AttributeObject == objNewAttribute)
+                return;
+            if (AttributeObject != null)
+                AttributeObject.PropertyChanged -= OnLinkedAttributeChanged;
+            if (objNewAttribute != null)
+                objNewAttribute.PropertyChanged += OnLinkedAttributeChanged;
+            AttributeObject = objNewAttribute;
+        }
 
         private string _strName = string.Empty; //English name of this skill
         private string _strNotes = string.Empty; //Text of any notes that were entered by the user
+        private Color _colNotes = ColorManager.HasNotesColor;
         public List<ListItem> SuggestedSpecializations { get; } = new List<ListItem>(10); //List of suggested specializations for this skill
         private bool _blnDefault;
 
-        public virtual void WriteTo(XmlTextWriter objWriter)
+        public void WriteTo(XmlTextWriter objWriter)
         {
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("skill");
             objWriter.WriteElementString("guid", Id.ToString("D", GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("suid", SkillId.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("isknowledge", bool.FalseString);
+            objWriter.WriteElementString("isknowledge", IsKnowledgeSkill.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("skillcategory", SkillCategory);
             objWriter.WriteElementString("requiresgroundmovement", RequiresGroundMovement.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("requiresswimmovement", RequiresSwimMovement.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("requiresflymovement", RequiresFlyMovement.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("karma", _intKarma.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("base", _intBase.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
-            objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("karma", KarmaPoints.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("base", BasePoints.ToString(GlobalOptions.InvariantCultureInfo)); //this could actually be saved in karma too during career
+            objWriter.WriteElementString("notes", Regex.Replace(Notes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+            objWriter.WriteElementString("name", Name);
             if (!CharacterObject.Created)
             {
                 objWriter.WriteElementString("buywithkarma", BuyWithKarma.ToString(GlobalOptions.InvariantCultureInfo));
@@ -112,8 +116,13 @@ namespace Chummer.Backend.Skills
                 objWriter.WriteEndElement();
             }
 
-            objWriter.WriteEndElement();
+            WriteToDerived(objWriter);
 
+            objWriter.WriteEndElement();
+        }
+
+        public virtual void WriteToDerived(XmlTextWriter objWriter)
+        {
         }
 
         public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
@@ -173,6 +182,7 @@ namespace Chummer.Backend.Skills
         }
 
         #region Factory
+
         /// <summary>
         /// Load a skill from a xml node from a saved .chum5 file
         /// </summary>
@@ -250,6 +260,10 @@ namespace Chummer.Backend.Skills
             if (!xmlSkillNode.TryGetMultiLineStringFieldQuickly("altnotes", ref objLoadingSkill._strNotes))
                 xmlSkillNode.TryGetMultiLineStringFieldQuickly("notes", ref objLoadingSkill._strNotes);
 
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            xmlSkillNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            objLoadingSkill._colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             if (!objLoadingSkill.IsNativeLanguage)
             {
                 xmlSkillNode.TryGetInt32FieldQuickly("karma", ref objLoadingSkill._intKarma);
@@ -261,7 +275,9 @@ namespace Chummer.Backend.Skills
                         return objLoadingSkill;
                     foreach (XmlNode xmlSpec in xmlSpecList)
                     {
-                        objLoadingSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpec));
+                        SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                        if (objSpec != null)
+                            objLoadingSkill.Specializations.Add(objSpec);
                     }
                 }
             }
@@ -293,7 +309,7 @@ namespace Chummer.Backend.Skills
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = strName,
+                    WritableName = strName,
                     Base = intBaseRating,
                     Karma = intKarmaRating,
 
@@ -311,7 +327,6 @@ namespace Chummer.Backend.Skills
                                                                  + "']")
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
                     ?? xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
-
 
                 objSkill = FromData(xmlSkillDataNode, objCharacter);
                 objSkill._intBase = intBaseRating;
@@ -331,9 +346,11 @@ namespace Chummer.Backend.Skills
             {
                 if (xmlSpecList != null)
                 {
-                    foreach (XmlNode xmlSpecializationNode in xmlSpecList)
+                    foreach (XmlNode xmlSpec in xmlSpecList)
                     {
-                        objSkill.Specializations.Add(SkillSpecialization.Load(objCharacter, xmlSpecializationNode));
+                        SkillSpecialization objSpec = SkillSpecialization.Load(objCharacter, xmlSpec);
+                        if (objSpec != null)
+                            objSkill.Specializations.Add(objSpec);
                     }
                 }
             }
@@ -367,7 +384,7 @@ namespace Chummer.Backend.Skills
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(objCharacter)
                 {
-                    WriteableName = strName,
+                    WritableName = strName,
                     Karma = intKarmaRating,
                     Type = !string.IsNullOrEmpty(strSkillType) ? strSkillType : (xmlSkillDataNode?["category"]?.InnerText ?? "Academic"),
                     IsNativeLanguage = blnIsNativeLanguage
@@ -420,7 +437,7 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-        protected static readonly Dictionary<string, bool> SkillTypeCache = new Dictionary<string, bool>();
+        protected static Dictionary<string, bool> SkillTypeCache { get; } = new Dictionary<string, bool>();
         //TODO CACHE INVALIDATE
 
         /// <summary>
@@ -447,11 +464,13 @@ namespace Chummer.Backend.Skills
                     return null;
                 if (SkillTypeCache == null || !SkillTypeCache.TryGetValue(category, out bool blnIsKnowledgeSkill))
                 {
-                    blnIsKnowledgeSkill = character.LoadDataXPath("skills.xml").SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")?.Value != "active";
+                    blnIsKnowledgeSkill =
+                        character.LoadDataXPath("skills.xml")
+                            .SelectSingleNode("/chummer/categories/category[. = " + category.CleanXPath() + "]/@type")
+                            ?.Value != "active";
                     if (SkillTypeCache != null)
                         SkillTypeCache[category] = blnIsKnowledgeSkill;
                 }
-
 
                 if (blnIsKnowledgeSkill)
                 {
@@ -468,7 +487,6 @@ namespace Chummer.Backend.Skills
                 }
             }
 
-
             return objSkill;
         }
 
@@ -483,39 +501,36 @@ namespace Chummer.Backend.Skills
             Specializations.BeforeRemove += SpecializationsOnBeforeRemove;
         }
 
-        private void OnAttributesCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Add:
                     {
                         if (e.NewItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
                             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                            AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+                            RecacheAttribute();
                             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
                             AttributeActiveOnPropertyChanged(sender, null);
                         }
                         break;
                     }
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Remove:
                     {
                         if (e.OldItems.Cast<CharacterAttrib>().Any(x => x.Abbrev == Attribute))
                         {
                             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                            AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+                            RecacheAttribute();
                             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
                             AttributeActiveOnPropertyChanged(sender, null);
                         }
                         break;
                     }
-                case System.Collections.Specialized.NotifyCollectionChangedAction.Reset:
+                case NotifyCollectionChangedAction.Reset:
                     {
                         AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-                        AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+                        RecacheAttribute();
                         AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
                         AttributeActiveOnPropertyChanged(sender, null);
                         break;
@@ -525,10 +540,10 @@ namespace Chummer.Backend.Skills
 
         private void OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName != nameof(AttributeSection.AttributeCategory)) return;
+            if (e.PropertyName != nameof(AttributeSection.AttributeCategory))
+                return;
             AttributeObject.PropertyChanged -= AttributeActiveOnPropertyChanged;
-            AttributeObject = CharacterObject.GetAttribute(Attribute);
-
+            RecacheAttribute();
             AttributeObject.PropertyChanged += AttributeActiveOnPropertyChanged;
             AttributeActiveOnPropertyChanged(sender, e);
         }
@@ -556,7 +571,7 @@ namespace Chummer.Backend.Skills
             if (xmlNode == null)
                 return;
             _strName = xmlNode["name"]?.InnerText; //No need to catch errors (for now), if missing we are fsked anyway
-            _strDefaultAttribute = xmlNode["attribute"]?.InnerText;
+            DefaultAttribute = xmlNode["attribute"]?.InnerText;
             SkillCategory = xmlNode["category"]?.InnerText ?? string.Empty;
             Default = xmlNode["default"]?.InnerText == bool.TrueString;
             Source = xmlNode["source"]?.InnerText;
@@ -630,12 +645,480 @@ namespace Chummer.Backend.Skills
             }
             OnPropertyChanged(nameof(SuggestedSpecializations));
         }
-        #endregion
+
+        #endregion Factory
+
+        /// <summary>
+        /// How many points REALLY are in _base. Better than subclasses calculating Base - FreeBase()
+        /// </summary>
+        public int BasePoints
+        {
+            get => _intBase;
+            set
+            {
+                if (_intBase != value)
+                {
+                    _intBase = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
+        /// </summary>
+        public int KarmaPoints
+        {
+            get => _intKarma;
+            set
+            {
+                if (_intKarma != value)
+                {
+                    _intKarma = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Is it possible to place points in Base or is it prevented? (Build method or skill group)
+        /// </summary>
+        public bool BaseUnlocked => CharacterObject.EffectiveBuildMethodUsesPriorityTables
+                                    && (SkillGroupObject == null
+                                        || SkillGroupObject.Base <= 0
+                                        || (CharacterObject.Options.UsePointsOnBrokenGroups
+                                            && (!CharacterObject.Options.StrictSkillGroupsInCreateMode
+                                                || CharacterObject.Created)));
+
+        /// <summary>
+        /// Is it possible to place points in Karma or is it prevented a stricter interpretation of the rules
+        /// </summary>
+        public bool KarmaUnlocked
+        {
+            get
+            {
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                {
+                    return (SkillGroupObject == null || SkillGroupObject.Rating <= 0);
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// The amount of points this skill have from skill points and bonuses
+        /// to the skill rating that would be obtained in some points of character creation
+        /// </summary>
+        public int Base
+        {
+            get
+            {
+                if (SkillGroupObject?.Base > 0)
+                {
+                    if ((CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        || !CharacterObject.Options.UsePointsOnBrokenGroups)
+                        BasePoints = 0;
+                    return Math.Min(SkillGroupObject.Base + BasePoints + FreeBase, RatingMaximum);
+                }
+
+                return Math.Min(BasePoints + FreeBase, RatingMaximum);
+            }
+            set
+            {
+                if (SkillGroupObject?.Base > 0
+                    && ((CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        || !CharacterObject.Options.UsePointsOnBrokenGroups))
+                    return;
+
+                //Calculate how far above maximum we are.
+                int intOverMax = value + Karma - RatingMaximum + RatingModifiers(Attribute);
+
+                if (intOverMax > 0) //Too much
+                {
+                    //Get the smaller value, how far above, how much we can reduce
+                    int intMax = Math.Min(intOverMax, KarmaPoints);
+
+                    KarmaPoints -= intMax; //reduce both by that amount
+                    intOverMax -= intMax;
+                }
+
+                value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
+
+                BasePoints = Math.Max(0, value - (FreeBase + (SkillGroupObject?.Base ?? 0)));
+            }
+        }
+
+        /// <summary>
+        /// Amount of skill points bought with karma and bonuses to the skills rating
+        /// </summary>
+        public int Karma
+        {
+            get
+            {
+                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created && SkillGroupObject?.Karma > 0)
+                {
+                    _intKarma = 0;
+                    Specializations.RemoveAll(x => !x.Free);
+                    return SkillGroupObject.Karma;
+                }
+                return Math.Min(KarmaPoints + FreeKarma + (SkillGroupObject?.Karma ?? 0), RatingMaximum);
+            }
+            set
+            {
+                //Calculate how far above maximum we are.
+                int intOverMax = value + Base - RatingMaximum + RatingModifiers(Attribute);
+
+                if (intOverMax > 0) //Too much
+                {
+                    //Get the smaller value, how far above, how much we can reduce
+                    int intMax = Math.Min(intOverMax, BasePoints);
+
+                    BasePoints -= intMax; //reduce both by that amount
+                    intOverMax -= intMax;
+                }
+
+                value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
+
+                //Handle free levels, don,t go below 0
+                KarmaPoints = Math.Max(0, value - (FreeKarma + (SkillGroupObject?.Karma ?? 0)));
+            }
+        }
+
+        /// <summary>
+        /// Levels in this skill. Read only. You probably want to increase
+        /// Karma instead
+        /// </summary>
+        public int Rating => Math.Max(CyberwareRating, TotalBaseRating);
+
+        /// <summary>
+        /// The rating the character has paid for, plus any improvement-based bonuses to skill rating.
+        /// </summary>
+        public int TotalBaseRating => LearnedRating + RatingModifiers(Attribute);
+
+        /// <summary>
+        /// The rating the character have actually paid for, not including skillwires
+        /// or other overrides for skill Rating. Read only, you probably want to
+        /// increase Karma instead.
+        /// </summary>
+        public int LearnedRating => Karma + Base;
+
+        /// <summary>
+        /// Is the specialization bought with karma. During career mode this is undefined
+        /// </summary>
+        public bool BuyWithKarma
+        {
+            get => (_blnBuyWithKarma || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && !string.IsNullOrEmpty(Specialization);
+            set
+            {
+                bool blnNewValue = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma && !string.IsNullOrEmpty(Specialization);
+                if (_blnBuyWithKarma != blnNewValue)
+                {
+                    _blnBuyWithKarma = blnNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum possible rating
+        /// </summary>
+        public int RatingMaximum
+        {
+            get
+            {
+                int intOtherBonus = RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled).Sum(x => x.Maximum);
+                if (CharacterObject.Created || CharacterObject.IgnoreRules)
+                    return 12 + intOtherBonus;
+                return (IsKnowledgeSkill && CharacterObject.EffectiveBuildMethodIsLifeModule ? 9 : 6) + intOtherBonus;
+            }
+        }
+
+        /// <summary>
+        /// The total, general purpose dice pool for this skill, using another
+        /// value for the attribute part of the test. This allows calculation of dice pools
+        /// while using cyberlimbs or while rigging
+        /// </summary>
+        /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. int.MinValue is equivalent to not overriding.</param>
+        /// <param name="strAttribute">The English abbreviation of the used attribute.</param>
+        /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
+        /// <returns></returns>
+        public int PoolOtherAttribute(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue)
+        {
+            if (!Enabled && !IsNativeLanguage)
+                return 0;
+            int intValue = intAttributeOverrideValue > int.MinValue
+                ? intAttributeOverrideValue
+                : CharacterObject.AttributeSection.GetAttributeByName(strAttribute).TotalValue;
+            if (intValue <= 0)
+                return 0;
+            if (IsNativeLanguage)
+                return int.MaxValue;
+            int intRating = Rating;
+            if (intRating > 0)
+                return Math.Max(0, intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
+            return Default
+                ? Math.Max(0,
+                    intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier +
+                    CharacterObject.WoundModifier + CharacterObject.SustainingPenalty)
+                : 0;
+        }
+
+        private static readonly Guid s_GuiReflexRecorderId = new Guid("17a6ba49-c21c-461b-9830-3beae8a237fc");
+
+        public int DefaultModifier
+        {
+            get
+            {
+                if (SkillGroupObject != null && CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled))
+                {
+                    HashSet<string> setSkillNames = SkillGroupObject.SkillList.Select(x => x.DictionaryKey).ToHashSet();
+                    if (CharacterObject.Cyberware.Where(x => x.SourceID == s_GuiReflexRecorderId)
+                        .Any(x => setSkillNames.Contains(x.Extra)))
+                    {
+                        return 0;
+                    }
+                }
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// Things that modify the dicepool of the skill
+        /// </summary>
+        public int PoolModifiers(string strUseAttribute, bool blnIncludeConditionals = false) => Bonus(false, strUseAttribute, blnIncludeConditionals);
+
+        /// <summary>
+        /// Things that modify the dicepool of the skill
+        /// </summary>
+        public int RatingModifiers(string strUseAttribute, bool blnIncludeConditionals = false) => Bonus(true, strUseAttribute, blnIncludeConditionals);
+
+        protected int Bonus(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false)
+        {
+            //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
+            return (RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, blnIncludeConditionals).Sum(x => x.Value)).StandardRound();
+        }
+
+        private IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExistAfterFirst = false)
+        {
+            string strNameToUse = DictionaryKey;
+            if (string.IsNullOrEmpty(strUseAttribute))
+                strUseAttribute = Attribute;
+            foreach (Improvement objImprovement in CharacterObject.Improvements)
+            {
+                if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
+                if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
+                switch (objImprovement.ImproveType)
+                {
+                    case Improvement.ImprovementType.SwapSkillAttribute:
+                    case Improvement.ImprovementType.SwapSkillSpecAttribute:
+                        if (objImprovement.Target == strNameToUse)
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.Skill:
+                    case Improvement.ImprovementType.SkillDisable:
+                        if (objImprovement.ImprovedName == strNameToUse)
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.SkillGroup:
+                    case Improvement.ImprovementType.SkillGroupDisable:
+                        if (objImprovement.ImprovedName == SkillGroup && !objImprovement.Exclude.Contains(strNameToUse) && !objImprovement.Exclude.Contains(SkillCategory))
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.SkillCategory:
+                        if (objImprovement.ImprovedName == SkillCategory && !objImprovement.Exclude.Contains(strNameToUse))
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.SkillAttribute:
+                        if (objImprovement.ImprovedName == strUseAttribute && !objImprovement.Exclude.Contains(strNameToUse))
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.SkillLinkedAttribute:
+                        if (objImprovement.ImprovedName == Attribute && !objImprovement.Exclude.Contains(strNameToUse))
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.BlockSkillDefault:
+                        if (objImprovement.ImprovedName == SkillGroup)
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+
+                    case Improvement.ImprovementType.EnhancedArticulation:
+                        if (SkillCategory == "Physical Active" && AttributeSection.PhysicalAttributes.Contains(Attribute))
+                        {
+                            yield return objImprovement;
+                            if (blnExistAfterFirst)
+                                yield break;
+                        }
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// How much Sp this costs. Price during career mode is undefined
+        /// </summary>
+        /// <returns></returns>
+        public virtual int CurrentSpCost
+        {
+            get
+            {
+                int cost = BasePoints + ((string.IsNullOrWhiteSpace(Specialization) || BuyWithKarma) ? 0 : 1);
+
+                decimal decExtra = 0;
+                decimal decMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= BasePoints &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == DictionaryKey || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.ActiveSkillPointCost:
+                                    decExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                    break;
+
+                                case Improvement.ImprovementType.ActiveSkillPointCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                        else if (objLoopImprovement.ImprovedName == SkillCategory)
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillCategoryPointCost:
+                                    decExtra += objLoopImprovement.Value * (Math.Min(BasePoints, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                    break;
+
+                                case Improvement.ImprovementType.SkillCategoryPointCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    cost = (cost * decMultiplier + decExtra).StandardRound();
+                else
+                    cost += decExtra.StandardRound();
+
+                return Math.Max(cost, 0);
+            }
+        }
+
+        /// <summary>
+        /// How much karma this costs. Return value during career mode is undefined
+        /// </summary>
+        /// <returns></returns>
+        public virtual int CurrentKarmaCost
+        {
+            get
+            {
+                //No rating can obv not cost anything
+                //Makes debugging easier as we often only care about value calculation
+                int intTotalBaseRating = TotalBaseRating;
+                if (intTotalBaseRating == 0) return 0;
+
+                int intCost;
+                int intLower;
+                if (SkillGroupObject?.Karma > 0)
+                {
+                    int intGroupUpper = SkillGroupObject.SkillList.Min(x => x.Base + x.Karma + x.RatingModifiers(x.Attribute));
+                    int intGroupLower = intGroupUpper - SkillGroupObject.Karma;
+
+                    intLower = Base + FreeKarma + RatingModifiers(Attribute); //Might be an error here
+
+                    intCost = RangeCost(intLower, intGroupLower) + RangeCost(intGroupUpper, intTotalBaseRating);
+                }
+                else
+                {
+                    intLower = Base + FreeKarma + RatingModifiers(Attribute);
+
+                    intCost = RangeCost(intLower, intTotalBaseRating);
+                }
+
+                //Don't think this is going to happen, but if it happens i want to know
+                if (intCost < 0)
+                    Utils.BreakIfDebug();
+
+                int intSpecCount = 0;
+                foreach (SkillSpecialization objSpec in Specializations)
+                {
+                    if (!objSpec.Free && (BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables))
+                        intSpecCount += 1;
+                }
+                int intSpecCost = intSpecCount * CharacterObject.Options.KarmaSpecialization;
+                decimal decExtraSpecCost = 0;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName != SkillCategory)
+                            continue;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                decExtraSpecCost += objLoopImprovement.Value * intSpecCount;
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
+                    }
+                }
+                if (decSpecCostMultiplier != 1.0m)
+                    intSpecCost = (intSpecCost * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                else
+                    intSpecCost += decExtraSpecCost.StandardRound(); //Spec
+                intCost += intSpecCost;
+
+                return Math.Max(0, intCost);
+            }
+        }
 
         /// <summary>
         /// The total, general purpose dice pool for this skill
         /// </summary>
-        public int Pool => IsNativeLanguage ? int.MaxValue : PoolOtherAttribute(Attribute);
+        public int Pool => PoolOtherAttribute(Attribute);
 
         public bool Leveled => Rating > 0;
 
@@ -656,9 +1139,16 @@ namespace Chummer.Backend.Skills
                     _intCachedCanHaveSpecs = 0;
                     return _intCachedCanHaveSpecs > 0;
                 }
+
                 _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
-                                         !CharacterObject.Improvements.Any(x => ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == Name)) ||
-                                                                                 (x.ImproveType == Improvement.ImprovementType.BlockSkillCategorySpecializations && x.ImprovedName == SkillCategory)) && x.Enabled) ? 1 : 0;
+                                         !CharacterObject.Improvements.Any(x =>
+                                             ((x.ImproveType == Improvement.ImprovementType.BlockSkillSpecializations &&
+                                               (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == DictionaryKey)) ||
+                                              (x.ImproveType == Improvement.ImprovementType
+                                                   .BlockSkillCategorySpecializations &&
+                                               x.ImprovedName == SkillCategory)) && x.Enabled)
+                    ? 1
+                    : 0;
                 if (_intCachedCanHaveSpecs <= 0 && Specializations.Count > 0)
                 {
                     Specializations.Clear();
@@ -676,12 +1166,24 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public string Attribute => AttributeObject.Abbrev;
 
+        public string DefaultAttribute
+        {
+            get => _strDefaultAttribute;
+            set
+            {
+                if (_strDefaultAttribute == value)
+                    return;
+                _strDefaultAttribute = value;
+                OnPropertyChanged();
+            }
+        }
+
         /// <summary>
         /// The translated abbreviation of the linked attribute.
         /// </summary>
         public string DisplayAttributeMethod(string strLanguage)
         {
-            return LanguageManager.GetString("String_Attribute" + Attribute +  "Short", strLanguage);
+            return LanguageManager.GetString("String_Attribute" + Attribute + "Short", strLanguage);
         }
 
         public string DisplayAttribute => DisplayAttributeMethod(GlobalOptions.Language);
@@ -689,6 +1191,7 @@ namespace Chummer.Backend.Skills
         private int _intCachedEnabled = -1;
 
         private bool _blnForceDisabled;
+
         //TODO handle aspected/adepts who cannot (always) get magic skills
         public bool Enabled
         {
@@ -705,13 +1208,13 @@ namespace Chummer.Backend.Skills
                 // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
                 if (CharacterObject.IsCritter && Rating == 0 && !CharacterObject.Improvements.Any(x =>
                         x.ImproveType == Improvement.ImprovementType.AllowSkillDefault &&
-                        (x.ImprovedName == Name || string.IsNullOrEmpty(x.ImprovedName)) && x.Enabled))
+                        (x.ImprovedName == DictionaryKey || string.IsNullOrEmpty(x.ImprovedName)) && x.Enabled))
                 {
                     _intCachedEnabled = 0;
                     return false;
                 }
 
-                if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillDisable && x.ImprovedName == Name && x.Enabled))
+                if (CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.SkillDisable && x.ImprovedName == DictionaryKey && x.Enabled))
                 {
                     _intCachedEnabled = 0;
                     return false;
@@ -749,14 +1252,26 @@ namespace Chummer.Backend.Skills
                         return false;
                     }
                 }
+
                 //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
-                if (CharacterObject.IsAI)
+                switch (Attribute)
                 {
-                    _intCachedEnabled = Attribute != "MAG" && Attribute != "MAGAdept" && Attribute != "RES" ? 1 : 0;
-                }
-                else
-                {
-                    _intCachedEnabled = AttributeObject.Value != 0 ? 1 : 0;
+                    case "MAG":
+                    case "MAGAdept":
+                        _intCachedEnabled = CharacterObject.MAGEnabled ? 1 : 0;
+                        break;
+
+                    case "RES":
+                        _intCachedEnabled = CharacterObject.RESEnabled ? 1 : 0;
+                        break;
+
+                    case "DEP":
+                        _intCachedEnabled = CharacterObject.DEPEnabled ? 1 : 0;
+                        break;
+
+                    default:
+                        _intCachedEnabled = 1;
+                        break;
                 }
 
                 return _intCachedEnabled > 0;
@@ -826,7 +1341,11 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                return _blnDefault && !RelevantImprovements(objImprovement => objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault, string.Empty, false, true).Any();
+                return _blnDefault &&
+                       !RelevantImprovements(
+                           objImprovement =>
+                               objImprovement.ImproveType == Improvement.ImprovementType.BlockSkillDefault,
+                           string.Empty, false, true).Any();
             }
             set
             {
@@ -849,6 +1368,7 @@ namespace Chummer.Backend.Skills
         public virtual bool IsNativeLanguage
         {
             get => false;
+            // ReSharper disable once ValueParameterNotUsed
             set
             {
                 // Dummy setter that is only set up so that Language skills can have a setter that is functional
@@ -856,6 +1376,7 @@ namespace Chummer.Backend.Skills
         }
 
         private string _strDictionaryKey;
+
         public string DictionaryKey => _strDictionaryKey = _strDictionaryKey
                                                            ?? (IsExoticSkill
                                                                ? Name + " (" + DisplaySpecialization(GlobalOptions.DefaultLanguage) + ')'
@@ -877,6 +1398,7 @@ namespace Chummer.Backend.Skills
 
         //TODO RENAME DESCRIPTIVE
         private Guid _guidInternalId = Guid.NewGuid();
+
         /// <summary>
         /// The Unique ID for this skill. This is unique and never repeating
         /// </summary>
@@ -885,9 +1407,11 @@ namespace Chummer.Backend.Skills
             get => _guidInternalId;
             private set => _guidInternalId = value;
         }
+
         public string InternalId => _guidInternalId.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private Guid _guidSkillId = Guid.Empty;
+
         /// <summary>
         /// The ID for this skill. This is persistent for active skills over
         /// multiple characters, ?and predefined knowledge skills,? but not
@@ -920,7 +1444,7 @@ namespace Chummer.Backend.Skills
                 {
                     _lstCachedSuggestedSpecializations = new List<ListItem>(SuggestedSpecializations);
                     foreach (Improvement objImprovement in CharacterObject.Improvements.Where(x =>
-                        x.ImprovedName == Name && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption &&
+                        x.ImprovedName == DictionaryKey && x.ImproveType == Improvement.ImprovementType.SkillSpecializationOption &&
                         _lstCachedSuggestedSpecializations.All(y => y.Value?.ToString() != x.UniqueName) && x.Enabled))
                     {
                         string strSpecializationName = objImprovement.UniqueName;
@@ -933,6 +1457,7 @@ namespace Chummer.Backend.Skills
         }
 
         private readonly Dictionary<string, string> _cachedStringSpec = new Dictionary<string, string>();
+
         public virtual string DisplaySpecialization(string strLanguage)
         {
             if (_cachedStringSpec.TryGetValue(strLanguage, out string strReturn)) return strReturn;
@@ -953,37 +1478,23 @@ namespace Chummer.Backend.Skills
         {
             get
             {
-                if (TotalBaseRating == 0)
-                {
-                    return string.Empty; //Unlevelled skills cannot have a specialization;
-                }
-
                 if (IsExoticSkill)
                 {
-                    return ((ExoticSkill) this).Specific;
+                    return ((ExoticSkill)this).Specific;
                 }
-
-                return Specializations.Count > 0 ? Specializations[0].CurrentDisplayName : string.Empty;
+                
+                return Specializations.FirstOrDefault(x => !x.Free)?.CurrentDisplayName ?? string.Empty;
             }
             set
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    int index = -1;
-                    for (int i = 0; i < Specializations.Count; i++)
-                    {
-                        if (Specializations[i].Free) continue;
-                        index = i;
-                        break;
-                    }
+                    Specializations.RemoveAll(x => !x.Free);
+                    return;
+                }
 
-                    if (index >= 0) Specializations.RemoveAt(index);
-                }
-                else if (Specializations.Count == 0)
-                {
-                    Specializations.Add(new SkillSpecialization(CharacterObject, value));
-                }
-                else if (Specializations[0].Free)
+                int intIndexToReplace = Specializations.FindIndex(x => !x.Free);
+                if (intIndexToReplace < 0)
                 {
                     Specializations.AddWithSort(new SkillSpecialization(CharacterObject, value), (x, y) =>
                     {
@@ -993,12 +1504,21 @@ namespace Chummer.Backend.Skills
                                 return 0;
                             return x.Expertise ? 1 : -1;
                         }
+
                         return x.Free ? 1 : -1;
                     });
+                    return;
                 }
-                else
+
+                Specializations[intIndexToReplace] = new SkillSpecialization(CharacterObject, value);
+                // For safety's, remove all non-free specializations after the one we are replacing.
+                intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
+                if (intIndexToReplace > 0)
+                    Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
+                while (intIndexToReplace > 0)
                 {
-                    Specializations[0] = new SkillSpecialization(CharacterObject, value);
+                    Specializations.RemoveAt(intIndexToReplace);
+                    intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
                 }
             }
         }
@@ -1009,13 +1529,15 @@ namespace Chummer.Backend.Skills
             {
                 return ((ExoticSkill)this).Specific == strSpecialization;
             }
+
             return Specializations.Any(x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
-                   && !CharacterObject.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects && x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled);
+                   && !CharacterObject.Improvements.Any(x =>
+                       x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
+                       x.ImprovedName == DictionaryKey && string.IsNullOrEmpty(x.Condition) && x.Enabled);
         }
 
         public SkillSpecialization GetSpecialization(string strSpecialization)
         {
-
             if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
             {
                 return Specializations[0];
@@ -1025,26 +1547,40 @@ namespace Chummer.Backend.Skills
                 : null;
         }
 
-        public string PoolToolTip => IsNativeLanguage ? LanguageManager.GetString("Tip_Skill_NativeLanguage") : CompileDicepoolTooltip(Attribute);
+        public string PoolToolTip => CompileDicepoolTooltip();
 
-        public string CompileDicepoolTooltip(string abbrev = "")
+        public string CompileDicepoolTooltip(string abbrev = "", string strExtraStart = "", string strExtra = "", bool blnListAllLimbs = true, Cyberware objShowOnlyCyberware = null)
         {
-            CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
-            if (!Default && !Leveled)
+            if (!Default && !Leveled && !IsNativeLanguage)
             {
-                return LanguageManager.GetString("Tip_Skill_Cannot_Default");
+                return strExtraStart + LanguageManager.GetString("Tip_Skill_Cannot_Default");
+            }
+
+            if (string.IsNullOrEmpty(abbrev))
+                abbrev = Attribute;
+
+            CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
+
+            if (att.TotalValue <= 0)
+            {
+                return strExtraStart + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Tip_Skill_Zero_Attribute"), att.DisplayNameShort(GlobalOptions.Language));
+            }
+
+            if (IsNativeLanguage)
+            {
+                return strExtraStart + LanguageManager.GetString("Tip_Skill_NativeLanguage");
             }
 
             string strSpace = LanguageManager.GetString("String_Space");
             List<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
-            StringBuilder s = new StringBuilder();
+            StringBuilder s;
             if (CyberwareRating > TotalBaseRating)
             {
-                s.Append(LanguageManager.GetString("Tip_Skill_SkillsoftRating") + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
+                s = new StringBuilder(strExtraStart + LanguageManager.GetString("Tip_Skill_SkillsoftRating") + strSpace + '(' + CyberwareRating.ToString(GlobalOptions.CultureInfo) + ')');
             }
             else
             {
-                s.Append(LanguageManager.GetString("Tip_Skill_SkillRating") + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
+                s = new StringBuilder(strExtraStart + LanguageManager.GetString("Tip_Skill_SkillRating") + strSpace + '(' + Rating.ToString(GlobalOptions.CultureInfo));
                 bool first = true;
                 foreach (Improvement objImprovement in lstRelevantImprovements)
                 {
@@ -1056,26 +1592,48 @@ namespace Chummer.Backend.Skills
                         s.Append(strSpace + "(Base" + strSpace + '(' + LearnedRating.ToString(GlobalOptions.CultureInfo) + ')');
                     }
 
-                    s.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace + '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
+                    s.Append(strSpace + '+' + strSpace + CharacterObject.GetObjectName(objImprovement) + strSpace +
+                             '(' + objImprovement.Value.ToString(GlobalOptions.CultureInfo) + ')');
                 }
 
-                if (!first)
-                    s.Append(')');
-                s.Append(')');
+                s.Append(first ? ")" : "))");
             }
 
-            s.Append(strSpace + '+' + strSpace + att.DisplayAbbrev + strSpace + '(' + att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+            if (blnListAllLimbs || (att.Abbrev != "STR" && att.Abbrev != "AGI") || objShowOnlyCyberware == null)
+                s.Append(strSpace + '+' + strSpace + att.DisplayAbbrev + strSpace + '(' + att.TotalValue.ToString(GlobalOptions.CultureInfo) + ')');
+            else
+            {
+                s.Append(strSpace + '+' + strSpace + objShowOnlyCyberware.CurrentDisplayName + strSpace +
+                         att.DisplayAbbrev + strSpace + '(' + (att.Abbrev == "STR"
+                             ? objShowOnlyCyberware.TotalStrength
+                             : objShowOnlyCyberware.TotalAgility).ToString(GlobalOptions.CultureInfo) + ')');
+                if ((objShowOnlyCyberware.LimbSlot == "arm"
+                     || objShowOnlyCyberware.Name.Contains(" Arm")
+                     || objShowOnlyCyberware.Name.Contains(" Hand"))
+                    && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
+                    && !CharacterObject.Ambidextrous
+                    && objShowOnlyCyberware.LimbSlotCount <= 1)
+                {
+                    s.Append(strSpace + '-' + strSpace + 2.ToString(GlobalOptions.CultureInfo) + strSpace + '(' +
+                             LanguageManager.GetString("Tip_Skill_OffHand") + ')');
+                }
+            }
+
+            Improvement objAttributeSwapImprovement =
+                lstRelevantImprovements.FirstOrDefault(x =>
+                    x.ImproveType != Improvement.ImprovementType.SwapSkillAttribute);
+            if (objAttributeSwapImprovement != null)
+                s.Append(strSpace + CharacterObject.GetObjectName(objAttributeSwapImprovement));
 
             if (Default && !Leveled)
             {
-                s.Append(strSpace);
                 int intDefaultModifier = DefaultModifier;
                 if (intDefaultModifier == 0)
-                    s.Append(CharacterObject.GetObjectName(
+                    s.Append(strSpace + CharacterObject.GetObjectName(
                         CharacterObject.Improvements.FirstOrDefault(x =>
                             x.ImproveType == Improvement.ImprovementType.ReflexRecorderOptimization && x.Enabled)));
                 else
-                    s.Append((intDefaultModifier > 0 ? '+' : '-') + strSpace + LanguageManager.GetString("Tip_Skill_Defaulting")
+                    s.Append(strSpace + (intDefaultModifier > 0 ? '+' : '-') + strSpace + LanguageManager.GetString("Tip_Skill_Defaulting")
                              + strSpace + '(' + Math.Abs(intDefaultModifier).ToString(GlobalOptions.CultureInfo) + ')');
             }
 
@@ -1096,23 +1654,39 @@ namespace Chummer.Backend.Skills
             int wound = CharacterObject.WoundModifier;
             if (wound != 0)
             {
-                s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds") + strSpace + '(' + wound.ToString(GlobalOptions.CultureInfo) + ')');
+                s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Wounds") + strSpace + '(' +
+                         wound.ToString(GlobalOptions.CultureInfo) + ')');
             }
 
-            if (att.Abbrev == "STR" || att.Abbrev == "AGI")
+            int sustains = CharacterObject.SustainingPenalty;
+            if (sustains != 0)
+            {
+                s.Append(strSpace + '-' + strSpace + LanguageManager.GetString("Tip_Skill_Sustain") + strSpace + '(' +
+                         sustains.ToString(GlobalOptions.CultureInfo) + ')');
+            }
+
+            if (!string.IsNullOrEmpty(strExtra))
+                s.Append(strExtra);
+
+            if (blnListAllLimbs && (att.Abbrev == "STR" || att.Abbrev == "AGI"))
             {
                 foreach (Cyberware cyberware in CharacterObject.Cyberware)
                 {
-                    if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
+                    if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
                         continue;
-                    s.Append(Environment.NewLine + cyberware.Location + strSpace + cyberware.DisplayNameShort(GlobalOptions.Language));
+                    s.Append(Environment.NewLine + Environment.NewLine + strExtraStart + cyberware.CurrentDisplayName);
                     if (cyberware.Grade.Name != "Standard")
                     {
                         s.Append(strSpace + '(' + cyberware.Grade.CurrentDisplayName + ')');
                     }
 
-                    int pool = PoolOtherAttribute(att.Abbrev, false, att.Abbrev == "STR" ? cyberware.TotalStrength : cyberware.TotalAgility);
-                    if (cyberware.Location == CharacterObject.PrimaryArm
+                    int pool = PoolOtherAttribute(att.Abbrev, false, att.Abbrev == "STR"
+                        ? cyberware.TotalStrength
+                        : cyberware.TotalAgility);
+                    if ((cyberware.LimbSlot != "arm"
+                         && !cyberware.Name.Contains(" Arm")
+                         && !cyberware.Name.Contains(" Hand"))
+                        || cyberware.Location == CharacterObject.PrimaryArm
                         || CharacterObject.Ambidextrous
                         || cyberware.LimbSlotCount > 1)
                     {
@@ -1122,6 +1696,9 @@ namespace Chummer.Backend.Skills
                     {
                         s.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2, strSpace, -2, LanguageManager.GetString("Tip_Skill_OffHand"));
                     }
+
+                    if (!string.IsNullOrEmpty(strExtra))
+                        s.Append(strExtra);
                 }
             }
 
@@ -1129,13 +1706,11 @@ namespace Chummer.Backend.Skills
                 return s.ToString();
             foreach (Improvement objSwapSkillAttribute in lstRelevantImprovements)
             {
-                if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillAttribute
-                    && objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
+                if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
                     continue;
-                s.AppendLine();
-                if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                    s.Append(objSwapSkillAttribute.Exclude + LanguageManager.GetString("String_Colon") + strSpace);
-                s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace);
+                s.Append(Environment.NewLine + Environment.NewLine + strExtraStart + objSwapSkillAttribute.Exclude +
+                         LanguageManager.GetString("String_Colon") + strSpace +
+                         CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace);
                 int intBasePool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false, CharacterObject.GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
                 SkillSpecialization objSpecialization = null;
                 if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
@@ -1152,16 +1727,19 @@ namespace Chummer.Backend.Skills
                 }
 
                 s.Append(intBasePool.ToString(GlobalOptions.CultureInfo));
-                if (objSwapSkillAttribute.ImprovedName != "STR" &&
-                    objSwapSkillAttribute.ImprovedName != "AGI") continue;
+                if (!string.IsNullOrEmpty(strExtra))
+                    s.Append(strExtra);
+                if (!blnListAllLimbs || (objSwapSkillAttribute.ImprovedName != "STR" &&
+                                         objSwapSkillAttribute.ImprovedName != "AGI"))
+                    continue;
                 foreach (Cyberware cyberware in CharacterObject.Cyberware)
                 {
-                    if (!cyberware.Name.Contains(" Arm") && !cyberware.Name.Contains(" Hand"))
+                    if (cyberware.Category != "Cyberlimb" || !cyberware.IsModularCurrentlyEquipped)
                         continue;
-                    s.AppendLine();
-                    if (objSwapSkillAttribute.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
-                        s.Append(objSwapSkillAttribute.Exclude + LanguageManager.GetString("String_Colon") + strSpace);
-                    s.Append(CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace + cyberware.Location + strSpace + cyberware.CurrentDisplayNameShort);
+                    s.Append(Environment.NewLine + Environment.NewLine + strExtraStart + objSwapSkillAttribute.Exclude +
+                             LanguageManager.GetString("String_Colon") + strSpace +
+                             CharacterObject.GetObjectName(objSwapSkillAttribute) + strSpace
+                             + cyberware.CurrentDisplayName);
                     if (cyberware.Grade.Name != "Standard")
                     {
                         s.Append(strSpace + '(' + cyberware.Grade.CurrentDisplayName + ')');
@@ -1177,7 +1755,10 @@ namespace Chummer.Backend.Skills
                         intLoopPool += objSpecialization.SpecializationBonus;
                     }
 
-                    if (cyberware.Location == CharacterObject.PrimaryArm
+                    if ((cyberware.LimbSlot != "arm"
+                         && !cyberware.Name.Contains(" Arm")
+                         && !cyberware.Name.Contains(" Hand"))
+                        || cyberware.Location == CharacterObject.PrimaryArm
                         || CharacterObject.Ambidextrous
                         || cyberware.LimbSlotCount > 1)
                     {
@@ -1188,6 +1769,8 @@ namespace Chummer.Backend.Skills
                         s.AppendFormat(GlobalOptions.CultureInfo, "{1}{0}{1}({2}{1}{3})",
                             intLoopPool - 2, strSpace, -2, LanguageManager.GetString("Tip_Skill_OffHand"));
                     }
+                    if (!string.IsNullOrEmpty(strExtra))
+                        s.Append(strExtra);
                 }
             }
 
@@ -1220,6 +1803,7 @@ namespace Chummer.Backend.Skills
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
                             decExtraSpecCost += objLoopImprovement.Value;
                             break;
+
                         case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
                             decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
                             break;
@@ -1233,7 +1817,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string HtmlSkillToolTip => SkillToolTip.CleanForHTML();
+        public string HtmlSkillToolTip => SkillToolTip.CleanForHtml();
 
         public string SkillToolTip
         {
@@ -1241,14 +1825,16 @@ namespace Chummer.Backend.Skills
             {
                 string strSpace = LanguageManager.GetString("String_Space");
                 string strReturn = !string.IsNullOrEmpty(Notes)
-                    ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine + Environment.NewLine
+                    ? LanguageManager.GetString("Label_Notes") + strSpace + Notes + Environment.NewLine +
+                      Environment.NewLine
                     : string.Empty;
                 string strMiddle = !string.IsNullOrWhiteSpace(SkillGroup)
-                    ? SkillGroupObject.CurrentDisplayName + strSpace + LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
+                    ? SkillGroupObject.CurrentDisplayName + strSpace +
+                      LanguageManager.GetString("String_ExpenseSkillGroup") + Environment.NewLine
                     : string.Empty;
-                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle
-                             + CharacterObject.LanguageBookLong(Source) + strSpace + LanguageManager.GetString("String_Page")
-                             + strSpace + DisplayPage(GlobalOptions.Language);
+                strReturn += DisplayCategory(GlobalOptions.Language) + Environment.NewLine + strMiddle +
+                             new SourceString(Source, Page, GlobalOptions.Language, GlobalOptions.CultureInfo,
+                                 CharacterObject).LanguageBookTooltip;
                 return strReturn;
             }
         }
@@ -1264,9 +1850,18 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
-                ? ColorManager.HasNotesColor
+                ? ColorManager.GenerateCurrentModeColor(NotesColor)
                 : ColorManager.ControlText;
 
         public SkillGroup SkillGroupObject { get; }
@@ -1281,7 +1876,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -1298,7 +1893,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayName(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -1308,7 +1903,7 @@ namespace Chummer.Backend.Skills
 
         public string DisplayCategory(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return SkillCategory;
 
             string strReturn = CharacterObject.LoadDataXPath("skills.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + SkillCategory.CleanXPath() + "]/@translate")?.Value;
@@ -1323,7 +1918,7 @@ namespace Chummer.Backend.Skills
             int intPool = PoolOtherAttribute(strAttribute);
             if ((IsExoticSkill || string.IsNullOrWhiteSpace(Specialization) || CharacterObject.Improvements.Any(x =>
                      x.ImproveType == Improvement.ImprovementType.DisableSpecializationEffects &&
-                     x.ImprovedName == Name && string.IsNullOrEmpty(x.Condition) && x.Enabled)) &&
+                     x.ImprovedName == DictionaryKey && string.IsNullOrEmpty(x.Condition) && x.Enabled)) &&
                  !CharacterObject.Improvements.Any(i =>
                      i.ImproveType == Improvement.ImprovementType.Skill && !string.IsNullOrEmpty(i.Condition)))
             {
@@ -1343,18 +1938,14 @@ namespace Chummer.Backend.Skills
             if (IsExoticSkill || TotalBaseRating == 0 || Specializations.Count <= 0)
                 return 0;
             SkillSpecialization objTargetSpecialization = string.IsNullOrEmpty(strSpecialization)
-                ? Specializations.FirstOrDefault(y => CharacterObject.Improvements.All(x => x.ImproveType != Improvement.ImprovementType.DisableSpecializationEffects
-                                                                                            || x.ImprovedName != Name
-                                                                                            || !string.IsNullOrEmpty(x.Condition)
-                                                                                            || !x.Enabled))
+                ? Specializations.FirstOrDefault(y => CharacterObject.Improvements.All(x =>
+                    x.ImproveType != Improvement.ImprovementType.DisableSpecializationEffects
+                    || x.ImprovedName != DictionaryKey
+                    || !string.IsNullOrEmpty(x.Condition)
+                    || !x.Enabled))
                 : GetSpecialization(strSpecialization);
-            if (objTargetSpecialization == null)
-                return 0;
-            return objTargetSpecialization.SpecializationBonus;
+            return objTargetSpecialization?.SpecializationBonus ?? 0;
         }
-
-        // ReSharper disable once InconsistentNaming
-        private protected int _intCachedCyberwareRating = int.MinValue;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -1380,6 +1971,14 @@ namespace Chummer.Backend.Skills
             return _objCachedMyXmlNode;
         }
 
+        // ReSharper disable once InconsistentNaming
+        private int _intCachedCyberwareRating = int.MinValue;
+
+        protected virtual void ResetCachedCyberwareRating()
+        {
+            _intCachedCyberwareRating = int.MinValue;
+        }
+
         /// <summary>
         /// The attributeValue this skill have from Skillwires + Skilljack or Active Hardwires
         /// </summary>
@@ -1391,21 +1990,14 @@ namespace Chummer.Backend.Skills
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                ExoticSkill objThisAsExoticSkill = this as ExoticSkill;
                 //TODO: method is here, but not used in any form, needs testing (worried about child items...)
                 //this might do hardwires if i understand how they works correctly
                 int intMaxHardwire = -1;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
-                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.Enabled)
+                    if (objImprovement.ImproveType == Improvement.ImprovementType.Hardwire && objImprovement.Enabled && objImprovement.ImprovedName == DictionaryKey)
                     {
-                        if (objThisAsExoticSkill != null)
-                        {
-                            if (objImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
-                                intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                        }
-                        else if (objImprovement.ImprovedName == Name)
-                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
+                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                     }
                 }
                 if (intMaxHardwire >= 0)
@@ -1413,22 +2005,19 @@ namespace Chummer.Backend.Skills
                     return _intCachedCyberwareRating = intMaxHardwire;
                 }
 
-                int intMaxActivesoftRating = Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire), ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess)).StandardRound();
+                int intMaxActivesoftRating =
+                    Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire),
+                            ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillsoftAccess))
+                        .StandardRound();
                 if (intMaxActivesoftRating > 0)
                 {
                     int intMax = 0;
                     //TODO this works with translate?
                     foreach (Improvement objSkillsoftImprovement in CharacterObject.Improvements)
                     {
-                        if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Activesoft && objSkillsoftImprovement.Enabled)
+                        if (objSkillsoftImprovement.ImproveType == Improvement.ImprovementType.Activesoft && objSkillsoftImprovement.Enabled && objSkillsoftImprovement.ImprovedName == DictionaryKey)
                         {
-                            if (objThisAsExoticSkill != null)
-                            {
-                                if (objSkillsoftImprovement.ImprovedName == Name + " (" + objThisAsExoticSkill.Specific + ')')
-                                    intMaxHardwire = Math.Max(intMaxHardwire, objSkillsoftImprovement.Value.StandardRound());
-                            }
-                            else if (objSkillsoftImprovement.ImprovedName == Name)
-                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
                         }
                     }
                     return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
@@ -1437,7 +2026,8 @@ namespace Chummer.Backend.Skills
                 return _intCachedCyberwareRating = 0;
             }
         }
-        #endregion
+
+        #endregion Calculations
 
         #region Static
 
@@ -1456,6 +2046,7 @@ namespace Chummer.Backend.Skills
                         new DependencyGraphNode<string, Skill>(nameof(DisplayOtherAttribute),
                             new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute),
                                 new DependencyGraphNode<string, Skill>(nameof(Enabled)),
+                                new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage)),
                                 new DependencyGraphNode<string, Skill>(nameof(Rating)),
                                 new DependencyGraphNode<string, Skill>(nameof(GetSpecializationBonus),
                                     new DependencyGraphNode<string, Skill>(nameof(Specializations))
@@ -1481,8 +2072,7 @@ namespace Chummer.Backend.Skills
                                 new DependencyGraphNode<string, Skill>(nameof(AttributeObject))
                             ),
                             new DependencyGraphNode<string, Skill>(nameof(PoolOtherAttribute)),
-                            new DependencyGraphNode<string, Skill>(nameof(Attribute)),
-                            new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage))
+                            new DependencyGraphNode<string, Skill>(nameof(Attribute))
                         )
                     )
                 ),
@@ -1612,12 +2202,12 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(CanHaveSpecs)),
                     new DependencyGraphNode<string, Skill>(nameof(TotalBaseRating))
                 ),
-                new DependencyGraphNode<string, Skill>(nameof(AllowDelete), x => x.IsKnowledgeSkill,
-                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.ForcedName)),
+                new DependencyGraphNode<string, Skill>(nameof(AllowDelete), x => x.IsKnowledgeSkill || x.IsExoticSkill,
+                    new DependencyGraphNode<string, Skill>(nameof(KnowledgeSkill.ForcedName), x => x.IsKnowledgeSkill),
                     new DependencyGraphNode<string, Skill>(nameof(FreeBase)),
                     new DependencyGraphNode<string, Skill>(nameof(FreeKarma)),
                     new DependencyGraphNode<string, Skill>(nameof(RatingModifiers)),
-                    new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage))
+                    new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage), x => x.IsKnowledgeSkill)
                 ),
                 new DependencyGraphNode<string, Skill>(nameof(DictionaryKey),
                     new DependencyGraphNode<string, Skill>(nameof(Name)),
@@ -1640,7 +2230,8 @@ namespace Chummer.Backend.Skills
                     new DependencyGraphNode<string, Skill>(nameof(IsNativeLanguage))
                 )
             );
-        #endregion
+
+        #endregion Static
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -1684,40 +2275,49 @@ namespace Chummer.Backend.Skills
             if (lstNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
                 _intCachedForcedNotBuyWithKarma = -1;
             if (lstNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
-                _intCachedCyberwareRating = int.MinValue;
+                ResetCachedCyberwareRating();
             if (lstNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
                 _lstCachedSuggestedSpecializations = null;
             foreach (string strPropertyToChange in lstNamesOfChangedProperties)
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
             }
+            // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
+            if (lstNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
+                RecacheAttribute();
         }
 
         private void OnSkillGroupChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Skills.SkillGroup.Base))
+            switch (e.PropertyName)
             {
-                if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
+                case nameof(Skills.SkillGroup.Base) when CharacterObject.EffectiveBuildMethodUsesPriorityTables:
                     OnMultiplePropertyChanged(nameof(Base),
-                                              nameof(BaseUnlocked),
-                                              nameof(ForcedBuyWithKarma));
-                else
+                        nameof(BaseUnlocked),
+                        nameof(ForcedBuyWithKarma));
+                    break;
+
+                case nameof(Skills.SkillGroup.Base):
                     OnMultiplePropertyChanged(nameof(Base),
-                                              nameof(ForcedBuyWithKarma));
-            }
-            else if (e.PropertyName == nameof(Skills.SkillGroup.Karma))
-            {
-                OnMultiplePropertyChanged(nameof(Karma),
-                                          nameof(CurrentKarmaCost),
-                                          nameof(ForcedBuyWithKarma),
-                                          nameof(ForcedNotBuyWithKarma));
-            }
-            else if (e.PropertyName == nameof(Skills.SkillGroup.Rating))
-            {
-                if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
-                {
-                    OnPropertyChanged(nameof(KarmaUnlocked));
-                }
+                        nameof(ForcedBuyWithKarma));
+                    break;
+
+                case nameof(Skills.SkillGroup.Karma):
+                    OnMultiplePropertyChanged(nameof(Karma),
+                        nameof(CurrentKarmaCost),
+                        nameof(ForcedBuyWithKarma),
+                        nameof(ForcedNotBuyWithKarma));
+                    break;
+
+                case nameof(Skills.SkillGroup.Rating):
+                    {
+                        if (CharacterObject.Options.StrictSkillGroupsInCreateMode && !CharacterObject.Created)
+                        {
+                            OnPropertyChanged(nameof(KarmaUnlocked));
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -1728,38 +2328,54 @@ namespace Chummer.Backend.Skills
                 case nameof(Character.Karma):
                     OnMultiplePropertyChanged(nameof(CanUpgradeCareer), nameof(CanAffordSpecialization));
                     break;
+
                 case nameof(Character.WoundModifier):
                     OnPropertyChanged(nameof(PoolOtherAttribute));
                     break;
+
+                case nameof(Character.SustainingPenalty):
+                    OnPropertyChanged(nameof(PoolOtherAttribute));
+                    break;
+
                 case nameof(Character.PrimaryArm):
                     OnPropertyChanged(nameof(PoolToolTip));
                     break;
+
                 case nameof(Character.GetMovement):
                     if (RequiresGroundMovement)
                         OnPropertyChanged(nameof(Enabled));
                     break;
+
                 case nameof(Character.GetSwim):
                     if (RequiresSwimMovement)
                         OnPropertyChanged(nameof(Enabled));
                     break;
+
                 case nameof(Character.GetFly):
                     if (RequiresFlyMovement)
                         OnPropertyChanged(nameof(Enabled));
                     break;
+
+                case nameof(Character.MAGEnabled):
+                    if (Attribute == "MAG" || Attribute == "MAGAdept")
+                        OnPropertyChanged(nameof(Enabled));
+                    break;
+
+                case nameof(Character.RESEnabled):
+                    if (Attribute == "RES")
+                        OnPropertyChanged(nameof(Enabled));
+                    break;
+
+                case nameof(Character.DEPEnabled):
+                    if (Attribute == "DEP")
+                        OnPropertyChanged(nameof(Enabled));
+                    break;
+
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
                     OnMultiplePropertyChanged(nameof(Base),
                         nameof(BaseUnlocked),
                         nameof(ForcedBuyWithKarma));
                     break;
-                case nameof(Character.Improvements):
-                {
-                    //TODO: Dear god outbound improvements please this is is minimal an impact we can have and it's going to be a nightmare.
-                    if (CharacterObject.Improvements.Any(i =>
-                            i.ImproveType == Improvement.ImprovementType.SwapSkillAttribute && i.Target == "Name")
-                        || _strDefaultAttribute != _objAttribute.Abbrev)
-                        _blnCheckSwapSkillImprovements = true;
-                    break;
-                }
             }
         }
 
@@ -1768,85 +2384,85 @@ namespace Chummer.Backend.Skills
             switch (e.PropertyName)
             {
                 case nameof(CharacterOptions.StrictSkillGroupsInCreateMode):
-                {
-                    if (SkillGroupObject != null)
                     {
-                        if (!CharacterObject.Created)
+                        if (SkillGroupObject != null)
                         {
-                            OnPropertyChanged(nameof(KarmaUnlocked));
-                        }
+                            if (!CharacterObject.Created)
+                            {
+                                OnPropertyChanged(nameof(KarmaUnlocked));
+                            }
 
-                        OnMultiplePropertyChanged(nameof(BaseUnlocked), nameof(ForcedNotBuyWithKarma));
+                            OnMultiplePropertyChanged(nameof(BaseUnlocked), nameof(ForcedNotBuyWithKarma));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.UsePointsOnBrokenGroups):
-                {
-                    if (SkillGroupObject != null)
                     {
-                        OnPropertyChanged(nameof(BaseUnlocked));
+                        if (SkillGroupObject != null)
+                        {
+                            OnPropertyChanged(nameof(BaseUnlocked));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.KarmaNewKnowledgeSkill):
                 case nameof(CharacterOptions.KarmaImproveKnowledgeSkill):
-                {
-                    if (IsKnowledgeSkill)
                     {
-                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                        if (IsKnowledgeSkill)
+                        {
+                            OnPropertyChanged(nameof(CurrentKarmaCost));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.KarmaKnowledgeSpecialization):
-                {
-                    if (IsKnowledgeSkill)
                     {
-                        OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                        if (IsKnowledgeSkill)
+                        {
+                            OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.KarmaNewActiveSkill):
                 case nameof(CharacterOptions.KarmaImproveActiveSkill):
-                {
-                    if (!IsKnowledgeSkill)
                     {
-                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                        if (!IsKnowledgeSkill)
+                        {
+                            OnPropertyChanged(nameof(CurrentKarmaCost));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.KarmaSpecialization):
-                {
-                    if (!IsKnowledgeSkill)
                     {
-                        OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                        if (!IsKnowledgeSkill)
+                        {
+                            OnMultiplePropertyChanged(nameof(CurrentKarmaCost), nameof(CanAffordSpecialization), nameof(AddSpecToolTip));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.CompensateSkillGroupKarmaDifference):
-                {
-                    if (SkillGroupObject != null)
                     {
-                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                        if (SkillGroupObject != null)
+                        {
+                            OnPropertyChanged(nameof(CurrentKarmaCost));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.KarmaNewSkillGroup):
                 case nameof(CharacterOptions.KarmaImproveSkillGroup):
-                {
-                    if (SkillGroupObject != null && CharacterObject.Options.CompensateSkillGroupKarmaDifference)
                     {
-                        OnPropertyChanged(nameof(CurrentKarmaCost));
+                        if (SkillGroupObject != null && CharacterObject.Options.CompensateSkillGroupKarmaDifference)
+                        {
+                            OnPropertyChanged(nameof(CurrentKarmaCost));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.SpecializationBonus):
-                {
-                    if (Specializations.Count > 0)
                     {
-                        OnPropertyChanged(nameof(PoolOtherAttribute));
+                        if (Specializations.Count > 0)
+                        {
+                            OnPropertyChanged(nameof(PoolOtherAttribute));
+                        }
+                        break;
                     }
-                    break;
-                }
             }
         }
 
@@ -1857,7 +2473,7 @@ namespace Chummer.Backend.Skills
                 case nameof(CharacterAttrib.TotalValue):
                     OnPropertyChanged(nameof(AttributeModifiers));
                     break;
-                case nameof(CharacterAttrib.Value):
+
                 case nameof(CharacterAttrib.Abbrev):
                     OnPropertyChanged(nameof(Enabled));
                     break;
@@ -1865,6 +2481,7 @@ namespace Chummer.Backend.Skills
         }
 
         private bool _blnSkipSpecializationRefresh;
+
         private void SpecializationsOnListChanged(object sender, ListChangedEventArgs listChangedEventArgs)
         {
             if (_blnSkipSpecializationRefresh)
@@ -1879,6 +2496,7 @@ namespace Chummer.Backend.Skills
             _blnSkipSpecializationRefresh = false;
             OnPropertyChanged(nameof(Specializations));
         }
+
         private void SpecializationsOnBeforeRemove(object sender, RemovingOldEventArgs e)
         {
             if (_blnSkipSpecializationRefresh)
@@ -1886,6 +2504,474 @@ namespace Chummer.Backend.Skills
             _blnSkipSpecializationRefresh = true; // Needed to make sure we don't call this method another time when we set the specialization's Parent
             Specializations[e.OldIndex].Parent = null;
             _blnSkipSpecializationRefresh = false;
+        }
+
+        /// <summary>
+        /// Calculate the karma cost of increasing a skill from lower to upper
+        /// </summary>
+        /// <param name="lower">Staring rating of skill</param>
+        /// <param name="upper">End rating of the skill</param>
+        /// <returns></returns>
+        protected int RangeCost(int lower, int upper)
+        {
+            if (lower >= upper)
+                return 0;
+
+            int intLevelsModded = upper * (upper + 1); //cost if nothing else was there
+            intLevelsModded -= lower * (lower + 1); //remove "karma" costs from base + free
+
+            intLevelsModded /= 2; //we get square, we need triangle
+
+            int cost;
+            if (lower == 0)
+                cost = (intLevelsModded - 1) * CharacterObject.Options.KarmaImproveActiveSkill + CharacterObject.Options.KarmaNewActiveSkill;
+            else
+                cost = intLevelsModded * CharacterObject.Options.KarmaImproveActiveSkill;
+
+            if (CharacterObject.Options.CompensateSkillGroupKarmaDifference)
+            {
+                SkillGroup objMySkillGroup = SkillGroupObject;
+                if (objMySkillGroup != null)
+                {
+                    int intSkillGroupUpper = int.MaxValue;
+                    foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
+                    {
+                        if (objSkillGroupMember != this)
+                        {
+                            int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
+                            if (intLoopTotalBaseRating < intSkillGroupUpper)
+                                intSkillGroupUpper = intLoopTotalBaseRating;
+                        }
+                    }
+                    if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > lower)
+                    {
+                        if (intSkillGroupUpper > upper)
+                            intSkillGroupUpper = upper;
+                        int intGroupLevelsModded = intSkillGroupUpper * (intSkillGroupUpper + 1); //cost if nothing else was there
+                        intGroupLevelsModded -= lower * (lower + 1); //remove "karma" costs from base + free
+
+                        intGroupLevelsModded /= 2; //we get square, we need triangle
+
+                        int intGroupCost;
+                        int intNakedSkillCost = objMySkillGroup.SkillList.Count;
+                        if (lower == 0)
+                        {
+                            intGroupCost = (intGroupLevelsModded - 1) * CharacterObject.Options.KarmaImproveSkillGroup + CharacterObject.Options.KarmaNewSkillGroup;
+                            intNakedSkillCost *= (intGroupLevelsModded - 1) * CharacterObject.Options.KarmaImproveActiveSkill + CharacterObject.Options.KarmaNewActiveSkill;
+                        }
+                        else
+                        {
+                            intGroupCost = intGroupLevelsModded * CharacterObject.Options.KarmaImproveSkillGroup;
+                            intNakedSkillCost *= intGroupLevelsModded * CharacterObject.Options.KarmaImproveActiveSkill;
+                        }
+
+                        cost += (intGroupCost - intNakedSkillCost);
+                    }
+                }
+            }
+
+            decimal decMultiplier = 1.0m;
+            decimal decExtra = 0;
+            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+            {
+                if (objLoopImprovement.Minimum <= lower &&
+                    (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                {
+                    if (objLoopImprovement.ImprovedName == DictionaryKey || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                    {
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.ActiveSkillKarmaCost:
+                                decExtra += objLoopImprovement.Value * (Math.Min(upper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(lower, objLoopImprovement.Minimum - 1));
+                                break;
+
+                            case Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
+                    }
+                    else if (objLoopImprovement.ImprovedName == SkillCategory)
+                    {
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SkillCategoryKarmaCost:
+                                decExtra += objLoopImprovement.Value * (Math.Min(upper, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(lower, objLoopImprovement.Minimum - 1));
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
+                    }
+                }
+            }
+            if (decMultiplier != 1.0m)
+                cost = (cost * decMultiplier + decExtra).StandardRound();
+            else
+                cost += decExtra.StandardRound();
+
+            if (cost < 0 && !CharacterObject.Options.CompensateSkillGroupKarmaDifference)
+                cost = 0;
+            return cost;
+        }
+
+        /// <summary>
+        /// Karma price to upgrade. Returns negative if impossible
+        /// </summary>
+        /// <returns>Price in karma</returns>
+        public virtual int UpgradeKarmaCost
+        {
+            get
+            {
+                int intTotalBaseRating = TotalBaseRating;
+                if (intTotalBaseRating >= RatingMaximum)
+                {
+                    return -1;
+                }
+                int upgrade = 0;
+                int intOptionsCost;
+                if (intTotalBaseRating == 0)
+                {
+                    intOptionsCost = CharacterObject.Options.KarmaNewActiveSkill;
+                    upgrade += intOptionsCost;
+                }
+                else
+                {
+                    intOptionsCost = CharacterObject.Options.KarmaImproveActiveSkill;
+                    upgrade += (intTotalBaseRating + 1) * intOptionsCost;
+                }
+
+                if (CharacterObject.Options.CompensateSkillGroupKarmaDifference)
+                {
+                    SkillGroup objMySkillGroup = SkillGroupObject;
+                    if (objMySkillGroup != null)
+                    {
+                        int intSkillGroupUpper = int.MaxValue;
+                        foreach (Skill objSkillGroupMember in objMySkillGroup.SkillList)
+                        {
+                            if (objSkillGroupMember != this)
+                            {
+                                int intLoopTotalBaseRating = objSkillGroupMember.TotalBaseRating;
+                                if (intLoopTotalBaseRating < intSkillGroupUpper)
+                                    intSkillGroupUpper = intLoopTotalBaseRating;
+                            }
+                        }
+                        if (intSkillGroupUpper != int.MaxValue && intSkillGroupUpper > intTotalBaseRating)
+                        {
+                            int intGroupCost;
+                            int intNakedSkillCost = objMySkillGroup.SkillList.Count;
+                            if (intTotalBaseRating == 0)
+                            {
+                                intGroupCost = CharacterObject.Options.KarmaNewSkillGroup;
+                                intNakedSkillCost *= CharacterObject.Options.KarmaNewActiveSkill;
+                            }
+                            else
+                            {
+                                intGroupCost = (intTotalBaseRating + 1) * CharacterObject.Options.KarmaImproveSkillGroup;
+                                intNakedSkillCost *= (intTotalBaseRating + 1) * CharacterObject.Options.KarmaImproveActiveSkill;
+                            }
+
+                            upgrade += (intGroupCost - intNakedSkillCost);
+                        }
+                    }
+                }
+
+                decimal decMultiplier = 1.0m;
+                decimal decExtra = 0;
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                {
+                    if ((objLoopImprovement.Maximum == 0 || intTotalBaseRating + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intTotalBaseRating + 1 &&
+                        (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == CharacterObject.Created || (objLoopImprovement.Condition == "create") != CharacterObject.Created) && objLoopImprovement.Enabled)
+                    {
+                        if (objLoopImprovement.ImprovedName == DictionaryKey || string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.ActiveSkillKarmaCost:
+                                    decExtra += objLoopImprovement.Value;
+                                    break;
+
+                                case Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                        else if (objLoopImprovement.ImprovedName == SkillCategory)
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillCategoryKarmaCost:
+                                    decExtra += objLoopImprovement.Value;
+                                    break;
+
+                                case Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if (decMultiplier != 1.0m)
+                    upgrade = (upgrade * decMultiplier + decExtra).StandardRound();
+                else
+                    upgrade += decExtra.StandardRound();
+
+                int intMinCost = Math.Min(1, intOptionsCost);
+                if (upgrade < intMinCost && !CharacterObject.Options.CompensateSkillGroupKarmaDifference)
+                    upgrade = intMinCost;
+                return upgrade;
+            }
+        }
+
+        public void Upgrade()
+        {
+            if (CharacterObject.Created)
+            {
+                if (!CanUpgradeCareer)
+                    return;
+
+                int price = UpgradeKarmaCost;
+                int intTotalBaseRating = TotalBaseRating;
+                //If data file contains {4} this crashes but...
+                string upgradetext =
+                    string.Format(GlobalOptions.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
+                        LanguageManager.GetString(IsKnowledgeSkill ? "String_ExpenseKnowledgeSkill" : "String_ExpenseActiveSkill"),
+                        CurrentDisplayName,
+                        intTotalBaseRating,
+                        intTotalBaseRating + 1,
+                        LanguageManager.GetString("String_Space"));
+
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                objExpense.Undo = new ExpenseUndo().CreateKarma(intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill, InternalId);
+
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+
+                CharacterObject.Karma -= price;
+            }
+
+            Karma += 1;
+        }
+
+        private int _intCachedCanAffordSpecialization = -1;
+
+        public bool CanAffordSpecialization
+        {
+            get
+            {
+                if (_intCachedCanAffordSpecialization < 0)
+                {
+                    if (!CanHaveSpecs)
+                        _intCachedCanAffordSpecialization = 0;
+                    else
+                    {
+                        int intPrice = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+
+                        decimal decExtraSpecCost = 0;
+                        int intTotalBaseRating = TotalBaseRating;
+                        decimal decSpecCostMultiplier = 1.0m;
+                        foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                        {
+                            if (objLoopImprovement.Minimum <= intTotalBaseRating
+                                && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                                    || (objLoopImprovement.Condition == "career") == CharacterObject.Created
+                                    || (objLoopImprovement.Condition == "create") != CharacterObject.Created)
+                                && objLoopImprovement.Enabled
+                                && objLoopImprovement.ImprovedName == SkillCategory)
+                            {
+                                switch (objLoopImprovement.ImproveType)
+                                {
+                                    case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                        decExtraSpecCost += objLoopImprovement.Value;
+                                        break;
+
+                                    case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                                        decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                        break;
+                                }
+                            }
+                        }
+                        if (decSpecCostMultiplier != 1.0m)
+                            intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                        else
+                            intPrice += decExtraSpecCost.StandardRound(); //Spec
+
+                        _intCachedCanAffordSpecialization = intPrice <= CharacterObject.Karma ? 1 : 0;
+                    }
+                }
+
+                return _intCachedCanAffordSpecialization > 0;
+            }
+        }
+
+        public void AddSpecialization(string strName)
+        {
+            SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
+            if (CharacterObject.Created)
+            {
+                int intPrice = IsKnowledgeSkill ? CharacterObject.Options.KarmaKnowledgeSpecialization : CharacterObject.Options.KarmaSpecialization;
+
+                decimal decExtraSpecCost = 0;
+                int intTotalBaseRating = TotalBaseRating;
+                decimal decSpecCostMultiplier = 1.0m;
+                foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                {
+                    if (objLoopImprovement.Minimum <= intTotalBaseRating
+                        && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                            || (objLoopImprovement.Condition == "career") == CharacterObject.Created
+                            || (objLoopImprovement.Condition == "create") != CharacterObject.Created)
+                        && objLoopImprovement.Enabled && objLoopImprovement.ImprovedName == SkillCategory)
+                    {
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                decExtraSpecCost += objLoopImprovement.Value;
+                                break;
+
+                            case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                                decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
+                    }
+                }
+                if (decSpecCostMultiplier != 1.0m)
+                    intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                else
+                    intPrice += decExtraSpecCost.StandardRound(); //Spec
+
+                if (intPrice > CharacterObject.Karma)
+                    return;
+
+                //If data file contains {4} this crashes but...
+                string upgradetext = //TODO WRONG
+                    string.Format(GlobalOptions.CultureInfo, "{0}{3}{1}{3}({2})",
+                        LanguageManager.GetString("String_ExpenseLearnSpecialization"),
+                        CurrentDisplayName,
+                        strName,
+                        LanguageManager.GetString("String_Space"));
+
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(intPrice * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
+                objExpense.Undo = new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
+
+                CharacterObject.ExpenseEntries.AddWithSort(objExpense);
+
+                CharacterObject.Karma -= intPrice;
+            }
+
+            Specializations.Add(nspec);
+        }
+
+        /// <summary>
+        /// How many free points of this skill have gotten, with the exception of some things during character creation
+        /// </summary>
+        /// <returns></returns>
+        private int _intCachedFreeKarma = int.MinValue;
+
+        public int FreeKarma
+        {
+            get
+            {
+                if (_intCachedFreeKarma != int.MinValue)
+                    return _intCachedFreeKarma;
+
+                return _intCachedFreeKarma = string.IsNullOrEmpty(Name)
+                    ? 0
+                    : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillLevel, false, DictionaryKey).StandardRound();
+            }
+        }
+
+        /// <summary>
+        /// How many free points this skill have gotten during some parts of character creation
+        /// </summary>
+        /// <returns></returns>
+        private int _intCachedFreeBase = int.MinValue;
+
+        public int FreeBase
+        {
+            get
+            {
+                if (_intCachedFreeBase != int.MinValue)
+                    return _intCachedFreeBase;
+
+                return _intCachedFreeBase = string.IsNullOrEmpty(Name)
+                    ? 0
+                    : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillBase, false, DictionaryKey).StandardRound();
+            }
+        }
+
+        private int _intCachedForcedBuyWithKarma = -1;
+
+        /// <summary>
+        /// Do circumstances force the Specialization to be bought with karma?
+        /// </summary>
+        /// <returns></returns>
+        private bool ForcedBuyWithKarma
+        {
+            get
+            {
+                if (_intCachedForcedBuyWithKarma < 0)
+                {
+                    _intCachedForcedBuyWithKarma = !string.IsNullOrWhiteSpace(Specialization)
+                                                   && ((KarmaPoints > 0
+                                                        && BasePoints + FreeBase == 0
+                                                        && !CharacterObject.Options
+                                                            .AllowPointBuySpecializationsOnKarmaSkills)
+                                                       || SkillGroupObject?.Karma > 0
+                                                       || SkillGroupObject?.Base > 0)
+                        ? 1
+                        : 0;
+                }
+
+                return _intCachedForcedBuyWithKarma > 0;
+            }
+        }
+
+        private int _intCachedForcedNotBuyWithKarma = -1;
+
+        /// <summary>
+        /// Do circumstances force the Specialization to not be bought with karma?
+        /// </summary>
+        /// <returns></returns>
+        private bool ForcedNotBuyWithKarma
+        {
+            get
+            {
+                if (_intCachedForcedNotBuyWithKarma < 0)
+                {
+                    _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0
+                                                      || (CharacterObject.Options.StrictSkillGroupsInCreateMode
+                                                          && !CharacterObject.Created
+                                                          && SkillGroupObject?.Karma > 0)
+                        ? 1
+                        : 0;
+                }
+
+                return _intCachedForcedNotBuyWithKarma > 0;
+            }
+        }
+
+        /// <summary>
+        /// Dicepool of the skill, formatted for use in tooltips by other objects.
+        /// </summary>
+        /// <param name="intPool">Dicepool to use. In most </param>
+        /// <param name="strValidSpec">A specialization to check for. If not empty, will be checked for and added to the string.</param>
+        /// <returns></returns>
+        public string FormattedDicePool(int intPool, string strValidSpec = "")
+        {
+            string strSpace = LanguageManager.GetString("String_Space");
+            string strReturn = string.Format(GlobalOptions.CultureInfo, "{0}{1}({2})", CurrentDisplayName, strSpace, intPool);
+            // Add any Specialization bonus if applicable.
+            if (!string.IsNullOrWhiteSpace(strValidSpec))
+            {
+                int intSpecBonus = GetSpecializationBonus(strValidSpec);
+                if (intSpecBonus != 0)
+                    strReturn +=
+                        string.Format(GlobalOptions.CultureInfo, "{0}{1}{0}{2}{3}{0}{4}{0}({5})", strSpace, '+', LanguageManager.GetString("String_ExpenseSpecialization"),
+                            LanguageManager.GetString("String_Colon"), strValidSpec, intSpecBonus);
+            }
+
+            return strReturn;
         }
     }
 }

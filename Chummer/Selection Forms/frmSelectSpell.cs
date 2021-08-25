@@ -16,7 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,7 +37,7 @@ namespace Chummer
         private string _strForceSpell = string.Empty;
         private bool _blnCanGenericSpellBeFree;
         private bool _blnCanTouchOnlySpellBeFree;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
 
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
@@ -44,6 +45,7 @@ namespace Chummer
         private bool _blnRefresh;
 
         #region Control Events
+
         public frmSelectSpell(Character objCharacter)
         {
             InitializeComponent();
@@ -65,9 +67,9 @@ namespace Chummer
                 _strSelectedSpell = _strForceSpell;
                 DialogResult = DialogResult.OK;
             }
-
-            _blnCanGenericSpellBeFree = _objCharacter.AllowFreeSpells.Item2;
-            _blnCanTouchOnlySpellBeFree = _objCharacter.AllowFreeSpells.Item1;
+            (bool blnCanTouchOnlySpellBeFree, bool blnCanGenericSpellBeFree) = _objCharacter.AllowFreeSpells;
+            _blnCanTouchOnlySpellBeFree = blnCanTouchOnlySpellBeFree;
+            _blnCanGenericSpellBeFree = blnCanGenericSpellBeFree;
             txtSearch.Text = string.Empty;
             // Populate the Category list.
             HashSet<string> limit = new HashSet<string>();
@@ -115,14 +117,14 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.DataSource = null;
-            cboCategory.DataSource = _lstCategory;
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
+            cboCategory.PopulateWithListItems(_lstCategory);
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory)) cboCategory.SelectedIndex = 0;
-            else cboCategory.SelectedValue = s_StrSelectCategory;
-            if (cboCategory.SelectedIndex == -1) cboCategory.SelectedIndex = 0;
+            if (string.IsNullOrEmpty(_strSelectCategory))
+                cboCategory.SelectedIndex = 0;
+            else
+                cboCategory.SelectedValue = _strSelectCategory;
+            if (cboCategory.SelectedIndex == -1)
+                cboCategory.SelectedIndex = 0;
             cboCategory.EndUpdate();
 
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
@@ -169,21 +171,26 @@ namespace Chummer
             {
                 lstSpells.SelectedIndex = 0;
             }
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                int intNewIndex = lstSpells.SelectedIndex + 1;
-                if (intNewIndex >= lstSpells.Items.Count)
-                    intNewIndex = 0;
-                if (lstSpells.Items.Count > 0)
-                    lstSpells.SelectedIndex = intNewIndex;
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                int intNewIndex = lstSpells.SelectedIndex - 1;
-                if (intNewIndex <= 0)
-                    intNewIndex = lstSpells.Items.Count - 1;
-                if (lstSpells.Items.Count > 0)
-                    lstSpells.SelectedIndex = intNewIndex;
+                case Keys.Down:
+                    {
+                        int intNewIndex = lstSpells.SelectedIndex + 1;
+                        if (intNewIndex >= lstSpells.Items.Count)
+                            intNewIndex = 0;
+                        if (lstSpells.Items.Count > 0)
+                            lstSpells.SelectedIndex = intNewIndex;
+                        break;
+                    }
+                case Keys.Up:
+                    {
+                        int intNewIndex = lstSpells.SelectedIndex - 1;
+                        if (intNewIndex <= 0)
+                            intNewIndex = lstSpells.Items.Count - 1;
+                        if (lstSpells.Items.Count > 0)
+                            lstSpells.SelectedIndex = intNewIndex;
+                        break;
+                    }
             }
         }
 
@@ -195,17 +202,22 @@ namespace Chummer
 
         private void chkExtended_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnRefresh) return;
+            if (_blnRefresh)
+                return;
             UpdateSpellInfo();
         }
+
         private void chkLimited_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnRefresh) return;
+            if (_blnRefresh)
+                return;
             UpdateSpellInfo();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -256,9 +268,11 @@ namespace Chummer
         }
 
         public bool FreeBonus { get; set; }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void BuildSpellList()
         {
             string strSpace = LanguageManager.GetString("String_Space");
@@ -359,9 +373,7 @@ namespace Chummer
             string strOldSelected = lstSpells.SelectedValue?.ToString();
             _blnLoading = true;
             lstSpells.BeginUpdate();
-            lstSpells.ValueMember = nameof(ListItem.Value);
-            lstSpells.DisplayMember = nameof(ListItem.Name);
-            lstSpells.DataSource = lstSpellItems;
+            lstSpells.PopulateWithListItems(lstSpellItems);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstSpells.SelectedValue = strOldSelected;
@@ -448,7 +460,7 @@ namespace Chummer
             }
 
             _strSelectedSpell = strSelectedItem;
-            s_StrSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()
                 : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + _strSelectedSpell.CleanXPath() + "]/category")?.Value ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;
@@ -478,27 +490,7 @@ namespace Chummer
             }
             if (xmlSpell == null)
             {
-                lblDescriptorsLabel.Visible = false;
-                chkAlchemical.Visible = false;
-                lblTypeLabel.Visible = false;
-                lblDurationLabel.Visible = false;
-                chkExtended.Visible = false;
-                lblRangeLabel.Visible = false;
-                lblDamageLabel.Visible = false;
-                lblDVLabel.Visible = false;
-                chkFreeBonus.Visible = false;
-                lblSourceLabel.Visible = false;
-                lblDescriptors.Text = string.Empty;
-                chkAlchemical.Checked = false;
-                lblType.Text = string.Empty;
-                lblDuration.Text = string.Empty;
-                chkExtended.Checked = false;
-                lblRange.Text = string.Empty;
-                lblDamage.Text = string.Empty;
-                lblDV.Text = string.Empty;
-                chkFreeBonus.Checked = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
 
@@ -518,22 +510,28 @@ namespace Chummer
                             blnAlchemicalFound = true;
                             objDescriptors.Append(LanguageManager.GetString("String_DescAlchemicalPreparation"));
                             break;
+
                         case "Extended Area":
                             blnExtendedFound = true;
                             objDescriptors.Append(LanguageManager.GetString("String_DescExtendedArea"));
                             break;
+
                         case "Material Link":
                             objDescriptors.Append(LanguageManager.GetString("String_DescMaterialLink"));
                             break;
+
                         case "Multi-Sense":
                             objDescriptors.Append(LanguageManager.GetString("String_DescMultiSense"));
                             break;
+
                         case "Organic Link":
                             objDescriptors.Append(LanguageManager.GetString("String_DescOrganicLink"));
                             break;
+
                         case "Single-Sense":
                             objDescriptors.Append(LanguageManager.GetString("String_DescSingleSense"));
                             break;
+
                         default:
                             objDescriptors.Append(LanguageManager.GetString("String_Desc" + strDescriptor.Trim()));
                             break;
@@ -583,6 +581,7 @@ namespace Chummer
                 case "M":
                     lblType.Text = LanguageManager.GetString("String_SpellTypeMana");
                     break;
+
                 default:
                     lblType.Text = LanguageManager.GetString("String_SpellTypePhysical");
                     break;
@@ -594,9 +593,11 @@ namespace Chummer
                 case "P":
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationPermanent");
                     break;
+
                 case "S":
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
                     break;
+
                 default:
                     lblDuration.Text = LanguageManager.GetString("String_SpellDurationInstant");
                     break;
@@ -609,9 +610,11 @@ namespace Chummer
                 chkExtended.Checked = true;
                 chkExtended.Enabled = false;
             }
-            else if (xmlSpell.SelectSingleNode("category")?.Value == "Detection")
+            else if (_objCharacter.Options.ExtendAnyDetectionSpell && xmlSpell.SelectSingleNode("category")?.Value == "Detection")
             {
                 chkExtended.Visible = true;
+                if (!chkExtended.Enabled) // Resets this checkbox if we just selected an Extended Area spell
+                    chkExtended.Checked = false;
                 chkExtended.Enabled = true;
             }
             else
@@ -621,11 +624,12 @@ namespace Chummer
             }
 
             string strRange = xmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"))
                     .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"))
                     .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"))
+                    .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouchLong"))
                     .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"))
                     .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea") + ')')
                     .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
@@ -639,10 +643,12 @@ namespace Chummer
                     lblDamageLabel.Visible = true;
                     lblDamage.Text = LanguageManager.GetString("String_DamagePhysical");
                     break;
+
                 case "S":
                     lblDamageLabel.Visible = true;
                     lblDamage.Text = LanguageManager.GetString("String_DamageStun");
                     break;
+
                 default:
                     lblDamageLabel.Visible = false;
                     lblDamage.Text = string.Empty;
@@ -650,7 +656,7 @@ namespace Chummer
             }
 
             string strDV = xmlSpell.SelectSingleNode("dv")?.Value.Replace('/', '÷') ?? string.Empty;
-            if (GlobalOptions.Language != GlobalOptions.DefaultLanguage)
+            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strDV = strDV.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"))
                     .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
@@ -688,7 +694,7 @@ namespace Chummer
             {
                 strDV += " + -2";
             }
-            if (Extended && !Name.EndsWith("Extended", StringComparison.Ordinal))
+            if (Extended && !blnExtendedFound)
             {
                 strDV += " + 2";
             }
@@ -723,12 +729,15 @@ namespace Chummer
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace +
-                                 LanguageManager.GetString("String_Page") + strSpace + strPage);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                GlobalOptions.CultureInfo, _objCharacter);
+            lblSource.Text = objSource.ToString();
+            lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
             _blnRefresh = false;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

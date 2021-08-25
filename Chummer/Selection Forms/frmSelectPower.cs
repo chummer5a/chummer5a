@@ -37,6 +37,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBasePowerDataNode;
 
         #region Control Events
+
         public frmSelectPower(Character objCharacter)
         {
             InitializeComponent();
@@ -55,12 +56,6 @@ namespace Chummer
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
-        {
-            AddAgain = false;
-            AcceptForm();
-        }
-
-        private void lstPowers_DoubleClick(object sender, EventArgs e)
         {
             AddAgain = false;
             AcceptForm();
@@ -94,18 +89,18 @@ namespace Chummer
 
                 string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + strSpace + strPage);
+                SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                    GlobalOptions.CultureInfo, _objCharacter);
+                lblSource.Text = objSource.ToString();
+                lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                lblPowerPointsLabel.Visible = !string.IsNullOrEmpty(lblPowerPoints.Text);
+                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                tlpRight.Visible = true;
             }
             else
             {
-                lblPowerPoints.Text = string.Empty;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
             }
-
-            lblPowerPointsLabel.Visible = !string.IsNullOrEmpty(lblPowerPoints.Text);
-            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -126,27 +121,34 @@ namespace Chummer
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Down)
+            switch (e.KeyCode)
             {
-                if (lstPowers.SelectedIndex + 1 < lstPowers.Items.Count)
-                {
+                case Keys.Down when lstPowers.SelectedIndex + 1 < lstPowers.Items.Count:
                     lstPowers.SelectedIndex += 1;
-                }
-                else if (lstPowers.Items.Count > 0)
-                {
-                    lstPowers.SelectedIndex = 0;
-                }
-            }
-            if (e.KeyCode == Keys.Up)
-            {
-                if (lstPowers.SelectedIndex - 1 >= 0)
-                {
+                    break;
+
+                case Keys.Down:
+                    {
+                        if (lstPowers.Items.Count > 0)
+                        {
+                            lstPowers.SelectedIndex = 0;
+                        }
+
+                        break;
+                    }
+                case Keys.Up when lstPowers.SelectedIndex - 1 >= 0:
                     lstPowers.SelectedIndex -= 1;
-                }
-                else if (lstPowers.Items.Count > 0)
-                {
-                    lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
-                }
+                    break;
+
+                case Keys.Up:
+                    {
+                        if (lstPowers.Items.Count > 0)
+                        {
+                            lstPowers.SelectedIndex = lstPowers.Items.Count - 1;
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -155,9 +157,11 @@ namespace Chummer
             if (e.KeyCode == Keys.Up)
                 txtSearch.Select(txtSearch.Text.Length, 0);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -172,7 +176,6 @@ namespace Chummer
         /// Power that was selected in the dialogue.
         /// </summary>
         public string SelectedPower { get; private set; } = string.Empty;
-
 
         /// <summary>
         /// Only the provided Powers should be shown in the list.
@@ -195,9 +198,10 @@ namespace Chummer
         /// </summary>
         public decimal PointsPerLevel { set; get; } = 0.25m;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         private void BuildPowerList()
         {
             if (_blnLoading)
@@ -225,11 +229,10 @@ namespace Chummer
                 decimal decPoints = Convert.ToDecimal(objXmlPower.SelectSingleNode("points")?.Value, GlobalOptions.InvariantCultureInfo);
                 string strExtraPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
                 string strName = objXmlPower.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown");
-                if (!string.IsNullOrEmpty(strExtraPointCost))
+                if (!string.IsNullOrEmpty(strExtraPointCost) && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                 {
                     //If this power has already had its rating paid for with PP, we don't care about the extrapoints cost.
-                    if (!_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
-                        decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
+                    decPoints += Convert.ToDecimal(strExtraPointCost, GlobalOptions.InvariantCultureInfo);
                 }
                 if (_decLimitToRating > 0 && decPoints > _decLimitToRating)
                 {
@@ -245,9 +248,7 @@ namespace Chummer
             _blnLoading = true;
             string strOldSelected = lstPowers.SelectedValue?.ToString();
             lstPowers.BeginUpdate();
-            lstPowers.ValueMember = nameof(ListItem.Value);
-            lstPowers.DisplayMember = nameof(ListItem.Name);
-            lstPowers.DataSource = lstPower;
+            lstPowers.PopulateWithListItems(lstPower);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstPowers.SelectedValue = strOldSelected;
@@ -279,6 +280,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

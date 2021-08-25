@@ -17,6 +17,8 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <TransformOnBuild>True</TransformOnBuild>
     <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
     <PublishUrl>M:\Chummer 5\</PublishUrl>
     <Install>false</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -27,14 +29,11 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>2</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -108,32 +107,32 @@
     <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.barcodes, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.barcodes.dll</HintPath>
+    <Reference Include="itext.barcodes, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.barcodes.dll</HintPath>
     </Reference>
-    <Reference Include="itext.forms, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.forms.dll</HintPath>
+    <Reference Include="itext.forms, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.forms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.io, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.io.dll</HintPath>
+    <Reference Include="itext.io, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.io.dll</HintPath>
     </Reference>
-    <Reference Include="itext.kernel, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.kernel.dll</HintPath>
+    <Reference Include="itext.kernel, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.kernel.dll</HintPath>
     </Reference>
-    <Reference Include="itext.layout, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.layout.dll</HintPath>
+    <Reference Include="itext.layout, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.layout.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfa, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.pdfa.dll</HintPath>
+    <Reference Include="itext.pdfa, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.pdfa.dll</HintPath>
     </Reference>
-    <Reference Include="itext.sign, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.sign.dll</HintPath>
+    <Reference Include="itext.sign, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.sign.dll</HintPath>
     </Reference>
-    <Reference Include="itext.styledxmlparser, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.styledxmlparser.dll</HintPath>
+    <Reference Include="itext.styledxmlparser, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.styledxmlparser.dll</HintPath>
     </Reference>
-    <Reference Include="itext.svg, Version=7.1.15.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.1.15\lib\net45\itext.svg.dll</HintPath>
+    <Reference Include="itext.svg, Version=7.1.16.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.1.16\lib\net45\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -144,21 +143,21 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.17.0.146, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\lib\net452\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.18.0.315, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.18.0\lib\net452\Microsoft.AI.PerfCounterCollector.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.17.0.146, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.17.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.18.0.315, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.18.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights.NLogTarget, Version=2.17.0.146, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.17.0\lib\net452\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights.NLogTarget, Version=2.18.0.315, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.18.0\lib\net452\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.9\lib\net45\NLog.dll</HintPath>
+      <HintPath>..\packages\NLog.4.7.10\lib\net45\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -238,15 +237,20 @@
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="XoshiroPRNG.Net, Version=1.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\XoshiroPRNG.Net.1.4.0\lib\net452\XoshiroPRNG.Net.dll</HintPath>
+    <Reference Include="XoshiroPRNG.Net, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\XoshiroPRNG.Net.1.6.0\lib\net452\XoshiroPRNG.Net.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
-    <Compile Include="Backend\Datastructures\ConcurrentStack.cs" />
+    <Compile Include="Backend\Datastructures\ConcurrentHashSet.cs" />
+    <Compile Include="Backend\Datastructures\KeyArray.cs" />
+    <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
+    <Compile Include="Backend\Datastructures\OrderedSet.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
     <Compile Include="Backend\Datastructures\ObservableCollectionWithMaxSize.cs" />
@@ -257,17 +261,25 @@
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
+    <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
     <Compile Include="Backend\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Extensions\FloatExtensions.cs" />
     <Compile Include="Backend\Extensions\IntegerExtensions.cs" />
     <Compile Include="Backend\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Extensions\LinqExtensions.cs" />
+    <Compile Include="Backend\Extensions\MathExtensions.cs" />
     <Compile Include="Backend\Extensions\ObservableCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Extensions\ReadOnlyCollectionExtensions.cs" />
+    <Compile Include="Backend\Extensions\ReadOnlyDictionaryExtensions.cs" />
+    <Compile Include="Backend\Extensions\ReadOnlyListExtensions.cs" />
     <Compile Include="Backend\Extensions\StringExtensions.cs" />
+    <Compile Include="Backend\Extensions\VersionExtensions.cs" />
     <Compile Include="Backend\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Extensions\XmlDocumentExtensions.cs" />
     <Compile Include="Backend\Extensions\XPathNavigatorExtensions.cs" />
@@ -302,7 +314,6 @@
     <Compile Include="Backend\Powers\PowerSorters.cs" />
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
-    <Compile Include="Backend\Skills\Skill.core.cs" />
     <Compile Include="Backend\Skills\Skill.cs" />
     <Compile Include="Backend\Skills\SkillExtensions.cs" />
     <Compile Include="Backend\Skills\SkillGroup.cs" />
@@ -329,6 +340,7 @@
     <Compile Include="Backend\Uniques\Spell.cs" />
     <Compile Include="Backend\Uniques\Spirit.cs" />
     <Compile Include="Backend\Uniques\StackedFocus.cs" />
+    <Compile Include="Backend\Uniques\SustainedObject.cs" />
     <Compile Include="Backend\Uniques\Tradition.cs" />
     <Compile Include="Character Creation\frmSelectLifeModule.cs">
       <SubType>Form</SubType>
@@ -340,6 +352,7 @@
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\CharacterOptions.cs" />
+    <Compile Include="Classes\clsCustomDataDirectoryInfo.cs" />
     <Compile Include="Classes\clsCommon.cs" />
     <Compile Include="Classes\clsCrashReportData.cs" />
     <Compile Include="Backend\Equipment\ArmorMod.cs" />
@@ -355,17 +368,37 @@
     <Compile Include="Classes\clsStoryBuilder.cs" />
     <Compile Include="Classes\clsTimekeeper.cs" />
     <Compile Include="Classes\clsUtils.cs" />
-    <Compile Include="Classes\clsXmlExtensions.cs" />
+    <Compile Include="Backend\Extensions\XmlNodeExtensions.cs" />
     <Compile Include="Classes\clsXmlManager.cs" />
     <Compile Include="Backend\Skills\SkillSpecialization.cs" />
     <Compile Include="Backend\Powers\Power.cs" />
     <Compile Include="Classes\ColorManager.cs" />
-    <Compile Include="Classes\ITranslatable.cs" />
+    <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
+      <DependentUpon>DpiFriendlyCheckBoxDisguisedAsButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyImagedButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyImagedButton.Designer.cs">
+      <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
+    <Compile Include="Interfaces\ITranslatable.cs" />
+    <Compile Include="Classes\NativeMethods.cs" />
     <Compile Include="Classes\OptionsManager.cs" />
     <Compile Include="Classes\RemoveImprovementCollection.cs">
       <DependentUpon>clsImprovement.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\TooltipFactory.cs" />
+    <Compile Include="Controls\SustainedObjectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\SustainedObjectControl.Designer.cs">
+      <DependentUpon>SustainedObjectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="frmCharacterRoster.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -411,6 +444,19 @@
     </Compile>
     <Compile Include="helpers\CursorWait.cs" />
     <Compile Include="helpers\DataGridViewTextBoxColumnTranslated.cs" />
+    <Compile Include="helpers\DiceRollerListViewItem.cs" />
+    <Compile Include="helpers\DpiFriendlyToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripButton.Designer.cs">
+      <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="helpers\DpiFriendlyToolStripMenuItem.Designer.cs">
+      <DependentUpon>DpiFriendlyToolStripMenuItem.cs</DependentUpon>
+    </Compile>
     <Compile Include="helpers\ElasticComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -471,12 +517,6 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
     </Compile>
     <Content Include=".gitignore" />
-    <None Include="Controls\DiceRollerControl.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="Controls\DiceRollerControl.Designer.cs">
-      <DependentUpon>DiceRollerControl.cs</DependentUpon>
-    </None>
     <Compile Include="frmAddToken.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -525,6 +565,9 @@
     <Compile Include="frmCreateSpell.Designer.cs">
       <DependentUpon>frmCreateSpell.cs</DependentUpon>
     </Compile>
+    <None Include="customdata\manifest.xsd">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="data\drugcomponents.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -626,13 +669,64 @@
     <Compile Include="UI\Shared\LimitTabUserControl.Designer.cs">
       <DependentUpon>LimitTabUserControl.cs</DependentUpon>
     </Compile>
+    <Content Include="customdata\Adapsin Applied as Multiplier, Not Grade\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Add Schattenload Items\custom_books.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Add Schattenload Items\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Add Schattenload Items\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Add Schattenload Items\custom_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Ammo Skip Internal Mount\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Ammo Skip Internal Mount\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Bone Lacing Adds to Body\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\College Education Qualities Stack\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\amend_encumbrance_armor.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Custom Fit %28Stack%29 Does Not Encumber\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimb Customisation Does Not Incur Grade Costs\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Cyberlimbs Cannot Add Headware\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_critters.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_lifemodules.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Exclude German Sourcebooks\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Flashback System Enables Cyberzombies\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Flashback System Enables Cyberzombies\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes\amend_armor.xml">
@@ -647,7 +741,9 @@
     <Content Include="customdata\German Data Changes\amend_lifestyles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\German Data Changes\amend_mentors.xml" />
+    <Content Include="customdata\German Data Changes\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes\amend_powers.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -666,24 +762,163 @@
     <Content Include="customdata\German Data Changes\custom_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\German Data Changes\custom_lifemodules.xml" />
+    <Content Include="customdata\German Data Changes\custom_lifemodules.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes\custom_lifestyles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\German Data Changes\custom_mentors.xml" />
-    <Content Include="customdata\German Data Changes\custom_spells.xml" />
-    <Content Include="customdata\German Data Changes\custom_traditions.xml" />
-    <Content Include="customdata\German Data Changes\custom_vehicles.xml" />
+    <Content Include="customdata\German Data Changes\custom_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes\custom_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes\custom_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes\custom_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\German Data Changes\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\German Data Changes\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Hand-Based Cyberware Can Go Anywhere\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Helmets Are Mods, SWAT and MilSpec Are FBA\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Herolab Vehicle Ram Plate Stats\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\In Debt Does Not Contribute to BP\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Kill Code Sprite Optional Powers\amend_sprite_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Kill Code Sprite Optional Powers\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Legal SIN and Licenses\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Liminal Centaur Legs Prevent Digigrade\amend_digigradeleg_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Liminal Centaur Legs Prevent Digigrade\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Morrissey Alta Availability\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Morrissey Alta Availability\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy Energy Weapon Standardization\amend_energy_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy Energy Weapon Standardization\custom_energy_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy Energy Weapon Standardization\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_contacts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_drugcomponents.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_echoes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_licenses.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_metamagic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_animals_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_books.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_critterpowers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_lifestyles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_metamagic.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_ranges.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Neon Anarchy House Rules\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Orks Have Natural Weapon Tusks\amend_orktusk_metatypes.xml">
@@ -692,7 +927,25 @@
     <Content Include="customdata\Orks Have Natural Weapon Tusks\custom_orktusk_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Orks Have Natural Weapon Tusks\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Point Priority Chargen\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Purchasable X-Ray Sensor Function\amend_purchasablexraysensorfunction_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Purchasable X-Ray Sensor Function\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Radar Sensor as Sensor Function\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Rainforest Carbine Missions Errata\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Ranger Sliver Has Standard Crossbow Ammo Capacity\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Remove Automatics as a Skill\amend_critters.xml">
@@ -716,37 +969,85 @@
     <Content Include="customdata\Remove Automatics as a Skill\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Remove Automatics as a Skill\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Rigger 5 Weapon Mounts - Allow Sporting Rifles\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shadowrun Missions Rules\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shadowrun Missions Rules\amend_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shadowrun Missions Rules\custom_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Shapeshifter Initiative Bonus\amend_shapeshifter_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_gear.xml">
+    <Content Include="customdata\Shapeshifter Initiative Bonus\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_qualities.xml">
+    <Content Include="customdata\Shadowrun Missions Neotokyo Rules\amend_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Neotokyo\amend_weapons.xml">
+    <Content Include="customdata\Shadowrun Missions Neotokyo Rules\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shadowrun Missions Neotokyo Rules\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\In Debt Does Not Contribute to BP\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Shadowrun Missions Neotokyo Rules\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shadowrun Missions Rules\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shadowrun Missions Animal Prices\custom_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Shadowrun Missions Animal Prices\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Stolen Gear Contributes to BP\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Stolen Gear Contributes to BP\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\amend_mentors.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Toxic Mentors Only Require Toxic Tradition\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Toxic Tradition Has No Requirement\amend_traditions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Toxic Tradition Has No Requirement\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Trolls Have Natural Weapon Horns\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Unrestricted Kill Code Qualities\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Unrestricted Kill Code Qualities\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Visible Rigid Stock\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Rigger 5 Weapon Mounts - Allow Sporting Rifles\amend_r5_vehicles.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Visible Rigid Stock\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\actions.xml">
@@ -1268,8 +1569,8 @@
       <DependentUpon>ContactControl.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\DiceRollerControl.resx">
-      <DependentUpon>DiceRollerControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\SustainedObjectControl.resx">
+      <DependentUpon>SustainedObjectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="frmCharacterRoster.resx">
       <DependentUpon>frmCharacterRoster.cs</DependentUpon>
@@ -1932,70 +2233,16 @@
     <Content Include="customdata\Runnerhub Rules\amend_traditions.xml" />
     <Content Include="customdata\Runnerhub Rules\amend_vehicles.xml" />
     <Content Include="customdata\Runnerhub Rules\amend_weapons.xml" />
-    <Content Include="customdata\ShadowNET Rules\amend_armor.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_bioware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_bioware.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_books.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_weapons.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_contacts.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_cyberware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_gear.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_licenses.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_lifestyles.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_martialarts.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_mentors.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_metamagic.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_metatypes.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_qualities.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_ranges.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_spells.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_traditions.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_vehicles.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\ShadowNET Rules\amend_weapons.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_bioware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_cyberware.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_weapons.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="customdata\SR Missions Animal Prices\amend_gear.xml">
+    <Content Include="customdata\Shadowrun Missions Animal Prices\amend_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Trolls Have Natural Weapon Horns\amend_trollhorn_metatypes.xml">
@@ -2007,34 +2254,34 @@
     <Content Include="data\sheets.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_books.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_books.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_gear.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_gear.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_lifestyles.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_lifestyles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_mentors.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_mentors.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_metamagic.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_metamagic.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_metatypes.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_metatypes.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_qualities.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_spells.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_traditions.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_traditions.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\SR Missions 1.4 Rules\amend_vehicles.xml">
+    <Content Include="customdata\Shadowrun Missions Rules\amend_vehicles.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\tips.xml">
@@ -2046,7 +2293,10 @@
     <Content Include="Resources\Chummy.png" />
     <Content Include="Resources\HeroLab.ico" />
     <Content Include="Resources\icons\defaulted.png" />
+    <Content Include="Resources\icons\defaulted_32.png" />
     <Content Include="Resources\icons\die.png" />
+    <Content Include="Resources\icons\discord_16px.png" />
+    <Content Include="Resources\icons\discord_32px.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\32_bit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\3d_glasses.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\64_bit.png" />
@@ -10215,6 +10465,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\box_resize_actual.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\box_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain_add.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain_edit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\brain_trainer.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\bread.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\breadcrumb.png" />
@@ -10419,6 +10671,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\cart_remove.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_delete.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_gear.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\car_taxi.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\cash_register_left.png" />
@@ -11632,6 +11885,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashdisk.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashdisk_logo.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashlight.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashlight_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flashlight_shine.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flask.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\flask_empty.png" />
@@ -11800,6 +12054,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\group_link.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\group_stroke.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\gun.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\gun_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\half_moon.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hamburger.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hammer.png" />
@@ -11815,6 +12070,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hand_property.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hardware_building_oem.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hard_hat_military.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hard_hat_military_edit.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hard_hat_military_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hat.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hbox.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\hdividedbox.png" />
@@ -11992,6 +12249,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\labels_page.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\label_link.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\ladybird.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\ladybird_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\landmarks.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\languange.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\laptop.png" />
@@ -12645,6 +12903,8 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\print_tiles.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\private.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\processor.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\processor_add.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\processor_edit.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\process_marked_headers.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\production_copyleft.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\profiles.png" />
@@ -13179,6 +13439,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel_common.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel_racing.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\steering_wheel_racing_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\stethoscope.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\stethoscope_vintage.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\stickman.png" />
@@ -13210,6 +13471,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\switch.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\switch_windows.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\sword.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\sword_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\synchronize_ftp_password.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\synchronous_scrolling.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\system_monitor.png" />
@@ -13611,6 +13873,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_king.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_king_black.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_knight.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_knight_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_leprechaun.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_level_filtering.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\user_lisa.png" />
@@ -17781,7 +18044,11 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\zoom_selection.ico" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32_Ico\zootool.ico" />
     <Content Include="Resources\icons\HeroLab_16.png" />
+    <Content Include="Resources\icons\Locate_48.png" />
+    <Content Include="Resources\icons\HeroLab_32.png" />
+    <Content Include="Resources\icons\HeroLab_48.png" />
     <Content Include="Resources\icons\noimagedots.png" />
+    <Content Include="Resources\icons\noimagedots_32.png" />
     <Content Include="Resources\troll.ico" />
     <Content Include="Resources\troll.png" />
     <Content Include="lang\pt-br.xml">
@@ -18307,7 +18574,7 @@
     <Content Include="wkhtmltopdf.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <EmbeddedResource Include="Collapse.png" />
+    <EmbeddedResource Include="Resources\Collapse.png" />
     <Content Include="data\options.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -18449,7 +18716,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
-    <EmbeddedResource Include="Expand.png" />
+    <EmbeddedResource Include="Resources\Expand.png" />
     <Content Include="export\Squad Manager.xsl">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -18505,12 +18772,15 @@
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
+  <PropertyGroup>
+    <PreBuildEvent>copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"</PreBuildEvent>
+  </PropertyGroup>
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.18.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.18.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.17.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.18.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.18.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

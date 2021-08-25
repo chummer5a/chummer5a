@@ -3,7 +3,7 @@
 <!-- Version -500 -->
 <!-- ext:xml -->
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns="http://www.stauer-online.de/sr/characters.xsd">
-    <xsl:output method="xml" version="1.0" encoding="utf-8" indent="yes"/>
+    <xsl:output method="xml" version="1.0" encoding="utf-8" indent="yes" />
     <xsl:key name="loadedWeapon" match="weapons/weapon" use="ammoloaded" />
     <xsl:template match="/characters/character">
         <Shadowrun>
@@ -11,10 +11,10 @@
                 <Name>
                     <xsl:choose>
                         <xsl:when test="string-length(alias) &gt; 0">
-                            <xsl:value-of select="alias"/>
+                            <xsl:value-of select="alias" />
                         </xsl:when>
                         <xsl:when test="string-length(name) &gt; 0">
-                            <xsl:value-of select="name"/>
+                            <xsl:value-of select="name" />
                         </xsl:when>
                         <xsl:otherwise>Chummer</xsl:otherwise>
                     </xsl:choose>
@@ -41,28 +41,28 @@
                     <xsl:if test="string-length(concept) &gt; 0">
                         <xsl:text>
 </xsl:text>
-                        <xsl:value-of select="concept"/>
+                        <xsl:value-of select="concept" />
                         <xsl:text>
 </xsl:text>
                     </xsl:if>
                     <xsl:if test="string-length(description) &gt; 0">
                         <xsl:text>
 </xsl:text>
-                        <xsl:value-of select="description"/>
+                        <xsl:value-of select="description" />
                         <xsl:text>
 </xsl:text>
                     </xsl:if>
                     <xsl:if test="string-length(background) &gt; 0">
                         <xsl:text>
 </xsl:text>
-                        <xsl:value-of select="background"/>
+                        <xsl:value-of select="background" />
                         <xsl:text>
 </xsl:text>
                     </xsl:if>
                     <xsl:text>
 </xsl:text>
                     <xsl:if test="string-length(notes) &gt; 0">
-                        <xsl:value-of select="notes"/>
+                        <xsl:value-of select="notes" />
                         <xsl:text>
 </xsl:text>
                     </xsl:if>
@@ -77,7 +77,7 @@
                     <xsl:choose>
                         <xsl:when test="metatype_english = 'Human'">Norm</xsl:when>
                         <xsl:otherwise>
-                            <xsl:value-of select="metatype_english"/>
+                            <xsl:value-of select="metatype_english" />
                         </xsl:otherwise>
                     </xsl:choose>
                 </Metatype>
@@ -85,7 +85,7 @@
                     <!-- Chummer stores age as free string, Squad Manager expects years as a number -->
                     <xsl:if test="number(age) = number(age)">
                         <Age>
-                            <xsl:value-of select="age"/>
+                            <xsl:value-of select="age" />
                         </Age>
                     </xsl:if>
                 </xsl:if>
@@ -121,59 +121,59 @@
                 </xsl:if>
                 <!--<xsl:if test="string-length(height) &gt; 0">
                     <Size>
-                        <xsl:value-of select="substring((substring-before(height, &quot;'&quot;) div 3.28) + (substring-before(substring-after(height, &quot;'&quot;), '&quot;') div 39.37), 1, 4)"/>
+                        <xsl:value-of select="substring((substring-before(height, &quot;'&quot;) div 3.28) + (substring-before(substring-after(height, &quot;'&quot;), '&quot;') div 39.37), 1, 4)" />
                     </Size>
                 </xsl:if>
                 <xsl:if test="string-length(weight) &gt; 0">
                     <Weight>
-                        <xsl:value-of select="substring(weight div 2.2, 1, 5)"/>
+                        <xsl:value-of select="substring(weight div 2.2, 1, 5)" />
                     </Weight>
                 </xsl:if>-->
                 <xsl:if test="string-length(mugshotbase64) &gt; 0">
                     <Picture>
-                        <xsl:value-of select="mugshotbase64"/>
+                        <xsl:value-of select="mugshotbase64" />
                     </Picture>
                 </xsl:if>
                 <xsl:if test="string-length(eyes) &gt; 0">
                     <EyeColor>
-                        <xsl:value-of select="eyes"/>
+                        <xsl:value-of select="eyes" />
                     </EyeColor>
                 </xsl:if>
                 <xsl:if test="string-length(hair) &gt; 0">
                     <HairColor>
-                        <xsl:value-of select="hair"/>
+                        <xsl:value-of select="hair" />
                     </HairColor>
                 </xsl:if>
                 <xsl:if test="nuyen &gt; 0">
                     <Money>
-                        <xsl:value-of select="nuyen"/>
+                        <xsl:value-of select="nuyen" />
                     </Money>
                 </xsl:if>
                 <xsl:choose>
                     <xsl:when test="totalkarma &gt; 0">
                         <TotalKarma>
-                            <xsl:value-of select="totalkarma"/>
+                            <xsl:value-of select="totalkarma" />
                         </TotalKarma>
                     </xsl:when>
                     <xsl:when test="count(expenses/expense[type = 'Karma' and refund = 'False' and amount &gt; 0]) &gt; 0">
                         <TotalKarma>
-                            <xsl:value-of select="sum(expenses/expense[type = 'Karma' and refund = 'False' and amount &gt; 0]/amount)"/>
+                            <xsl:value-of select="sum(expenses/expense[type = 'Karma' and refund = 'False' and amount &gt; 0]/amount)" />
                         </TotalKarma>
                     </xsl:when>
                 </xsl:choose>
                 <xsl:if test="karma &gt; 0">
                     <RemainingKarma>
-                        <xsl:value-of select="karma"/>
+                        <xsl:value-of select="karma" />
                     </RemainingKarma>
                 </xsl:if>
                 <xsl:if test="streetcred &gt; 0">
                     <StreetCred>
-                        <xsl:value-of select="streetcred"/>
+                        <xsl:value-of select="streetcred" />
                     </StreetCred>
                 </xsl:if>
                 <xsl:if test="notoriety &gt; 0">
                     <Notoriety>
-                        <xsl:value-of select="notoriety"/>
+                        <xsl:value-of select="notoriety" />
                     </Notoriety>
                 </xsl:if>
                 <Awakened>
@@ -198,111 +198,111 @@
                 <Essence>
                     <xsl:choose>
                         <xsl:when test="string-length(totaless) &gt; 0 and number(translate(totaless, ',', '.')) = number(translate(totaless, ',', '.'))">
-                            <xsl:value-of select="number(translate(totaless, ',', '.'))"/>
+                            <xsl:value-of select="number(translate(totaless, ',', '.'))" />
                         </xsl:when>
                         <xsl:otherwise>6</xsl:otherwise>
                     </xsl:choose>
                 </Essence>
                 <Edge>
-                    <xsl:value-of select="attributes/attribute[name = 'EDG']/total"/>
+                    <xsl:value-of select="attributes/attribute[name = 'EDG']/total" />
                 </Edge>
                 <Passes>
-                    <xsl:value-of select="1 + sum(improvements/improvement[improvementttype = 'InitiativePass' and unique = 'initiativepass']/val)"/>
+                    <xsl:value-of select="1 + sum(improvements/improvement[improvementttype = 'InitiativePass' and unique = 'initiativepass']/val)" />
                 </Passes>
                 <CurrentPhysicalDamage>
-                    <xsl:value-of select="physicalcmfilled"/>
+                    <xsl:value-of select="physicalcmfilled" />
                 </CurrentPhysicalDamage>
                 <CurrentStunDamage>
-                    <xsl:value-of select="stuncmfilled"/>
+                    <xsl:value-of select="stuncmfilled" />
                 </CurrentStunDamage>
 
                 <Attributes>
                     <Attribute type="Body">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'BOD']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'BOD']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'BOD']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'BOD']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'BOD']/max" />
                         </naturalMaximum>
                     </Attribute>
                     <Attribute type="Agility">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'AGI']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'AGI']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'AGI']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'AGI']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'AGI']/max" />
                         </naturalMaximum>
                     </Attribute>
                     <Attribute type="Reaction">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'REA']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'REA']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'REA']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'REA']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'REA']/max" />
                         </naturalMaximum>
                     </Attribute>
                     <Attribute type="Strength">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'STR']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'STR']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'STR']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'STR']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'STR']/max" />
                         </naturalMaximum>
                     </Attribute>
                     <Attribute type="Charisma">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'CHA']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'CHA']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'CHA']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'CHA']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'CHA']/max" />
                         </naturalMaximum>
                     </Attribute>
                     <Attribute type="Intuition">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'INT']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'INT']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'INT']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'INT']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'INT']/max" />
                         </naturalMaximum>
                     </Attribute>
                     <Attribute type="Logic">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'LOG']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'LOG']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'LOG']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'LOG']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'LOG']/max" />
                         </naturalMaximum>
                     </Attribute>
                     <Attribute type="Willpower">
                         <naturalValue>
-                            <xsl:value-of select="attributes/attribute[name = 'WIL']/base"/>
+                            <xsl:value-of select="attributes/attribute[name = 'WIL']/base" />
                         </naturalValue>
                         <augmentedValue>
                             <xsl:value-of select="attributes/attribute[name = 'WIL']/total" />
                         </augmentedValue>
                         <naturalMaximum>
-                            <xsl:value-of select="attributes/attribute[name = 'WIL']/max"/>
+                            <xsl:value-of select="attributes/attribute[name = 'WIL']/max" />
                         </naturalMaximum>
                     </Attribute>
                 </Attributes>
@@ -312,10 +312,10 @@
                         <xsl:for-each select="skillgroups/skillgroup[rating &gt; 0]">
                             <xsl:element name="Skill">
                                 <xsl:attribute name="name">
-                                    <xsl:value-of select="name"/>
+                                    <xsl:value-of select="name" />
                                 </xsl:attribute>
                                 <Rank>
-                                    <xsl:value-of select="rating"/>
+                                    <xsl:value-of select="rating" />
                                 </Rank>
                                 <LinkedAttribute>
                                     <!-- For the conversion, we just assume the first attribute to be linked to the group and manually set every actually used attribute, so this value is of no real interest. -->
@@ -325,7 +325,7 @@
                                     <xsl:for-each select="../../skills/skill[skillgroup_english = current()/name]">
                                         <xsl:element name="Skill">
                                             <xsl:attribute name="name">
-                                                <xsl:value-of select="name"/>
+                                                <xsl:value-of select="name" />
                                             </xsl:attribute>
                                             <LinkedAttribute>
                                                 <xsl:apply-templates select="attribute" />
@@ -338,17 +338,17 @@
                         <xsl:for-each select="skills/skill[rating &gt; 0 and substring(skillcategory_english, string-length(skillcategory_english) - 5) = 'Active' and grouped = 'False']">
                             <xsl:element name="Skill">
                                 <xsl:attribute name="name">
-                                    <xsl:value-of select="name"/>
+                                    <xsl:value-of select="name" />
                                 </xsl:attribute>
                                 <Rank>
-                                    <xsl:value-of select="rating"/>
+                                    <xsl:value-of select="rating" />
                                 </Rank>
                                 <LinkedAttribute>
-                                    <xsl:apply-templates select="attribute"/>
+                                    <xsl:apply-templates select="attribute" />
                                 </LinkedAttribute>
                                 <xsl:if test="string-length(spec) &gt; 0">
                                     <Specialization>
-                                        <xsl:value-of select="spec"/>
+                                        <xsl:value-of select="spec" />
                                     </Specialization>
                                 </xsl:if>
                             </xsl:element>
@@ -362,18 +362,18 @@
                             <!-- newer file format has fully detailed qualities -->
                             <xsl:element name="Quality">
                                 <xsl:attribute name="name">
-                                    <xsl:value-of select="name"/>
+                                    <xsl:value-of select="name" />
                                 </xsl:attribute>
                                 <xsl:attribute name="type">
-                                    <xsl:value-of select="translate(qualitytype_english, 'NP', 'np')"/>
+                                    <xsl:value-of select="translate(qualitytype_english, 'NP', 'np')" />
                                 </xsl:attribute>
                                 <xsl:if test="string-length(extra) &gt; 0">
                                     <xsl:attribute name="specialization">
-                                        <xsl:value-of select="extra"/>
+                                        <xsl:value-of select="extra" />
                                     </xsl:attribute>
                                 </xsl:if>
                                 <xsl:attribute name="costs">
-                                    <xsl:value-of select="number(format-number(bp, '#,0.##'))"/>
+                                    <xsl:value-of select="number(format-number(bp, '#,0.##'))" />
                                 </xsl:attribute>
                             </xsl:element>
                         </xsl:for-each>
@@ -385,29 +385,29 @@
                         <xsl:for-each select="contacts/contact">
                             <xsl:element name="Contact">
                                 <xsl:attribute name="name">
-                                    <xsl:value-of select="name"/>
+                                    <xsl:value-of select="name" />
                                 </xsl:attribute>
                                 <xsl:attribute name="connection">
-                                    <xsl:value-of select="connection"/>
+                                    <xsl:value-of select="connection" />
                                 </xsl:attribute>
                                 <xsl:attribute name="loyalty">
-                                    <xsl:value-of select="loyalty"/>
+                                    <xsl:value-of select="loyalty" />
                                 </xsl:attribute>
                                 <xsl:if test="membership + areaofinfluence + magicalresources + matrixresources &gt; 0">
                                     <xsl:attribute name="modifiedConnection">
-                                        <xsl:value-of select="connection + membership + areaofinfluence + magicalresources + matrixresources"/>
+                                        <xsl:value-of select="connection + membership + areaofinfluence + magicalresources + matrixresources" />
                                     </xsl:attribute>
                                 </xsl:if>
                                 <xsl:if test="string-length(file) &gt; 0">
                                     <xsl:attribute name="filename">
-                                        <xsl:value-of select="file"/>
+                                        <xsl:value-of select="file" />
                                     </xsl:attribute>
                                 </xsl:if>
                                 <Type>
-                                    <xsl:value-of select="type"/>
+                                    <xsl:value-of select="type" />
                                 </Type>
                                 <Description>
-                                    <xsl:value-of select="notes"/>
+                                    <xsl:value-of select="notes" />
                                 </Description>
                             </xsl:element>
                         </xsl:for-each>
@@ -419,10 +419,10 @@
                         <xsl:for-each select="gears/gear[name = 'Fake SIN']">
                             <xsl:element name="SIN">
                                 <xsl:attribute name="name">
-                                    <xsl:value-of select="extra"/>
+                                    <xsl:value-of select="extra" />
                                 </xsl:attribute>
                                 <xsl:attribute name="rating">
-                                    <xsl:value-of select="rating"/>
+                                    <xsl:value-of select="rating" />
                                 </xsl:attribute>
                             </xsl:element>
                         </xsl:for-each>
@@ -434,35 +434,35 @@
                         <xsl:for-each select="gears/gear[category_english = 'Commlink']">
                             <xsl:element name="Commlink">
                                 <xsl:attribute name="Name">
-                                    <xsl:value-of select="name"/>
+                                    <xsl:value-of select="name" />
                                 </xsl:attribute>
                                 <Response>
                                     <xsl:choose>
                                         <xsl:when test="count(children/gear[category_english = 'Commlink Upgrade' and ./response &gt; 0]) &gt; 0">
-                                            <xsl:value-of select="children/gear[category_english = 'Commlink Upgrade' and not(../gear[category_english = 'Commlink Upgrade']/response &gt; ./respose)]/response"/>
+                                            <xsl:value-of select="children/gear[category_english = 'Commlink Upgrade' and not(../gear[category_english = 'Commlink Upgrade']/response &gt; ./respose)]/response" />
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            <xsl:value-of select="response"/>
+                                            <xsl:value-of select="response" />
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </Response>
                                 <Signal>
                                     <xsl:choose>
                                         <xsl:when test="count(children/gear[category_english = 'Commlink Upgrade' and ./signal &gt; 0]) &gt; 0">
-                                            <xsl:value-of select="children/gear[category_english = 'Commlink Upgrade' and not(../gear[category_english = 'Commlink Upgrade']/signal &gt; ./signal)]/signal"/>
+                                            <xsl:value-of select="children/gear[category_english = 'Commlink Upgrade' and not(../gear[category_english = 'Commlink Upgrade']/signal &gt; ./signal)]/signal" />
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            <xsl:value-of select="signal"/>
+                                            <xsl:value-of select="signal" />
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </Signal>
                                 <System>
                                     <xsl:choose>
                                         <xsl:when test="count(children/gear[category_english = 'Commlink Operating System Upgrade' and ./system &gt; 0]) &gt; 0">
-                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System Upgrade' and not(../gear[category_english = 'Commlink Operating System Upgrade']/system &gt; ./system)]/system"/>
+                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System Upgrade' and not(../gear[category_english = 'Commlink Operating System Upgrade']/system &gt; ./system)]/system" />
                                         </xsl:when>
                                         <xsl:when test="count(children/gear[category_english = 'Commlink Operating System']) &gt; 0">
-                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System']/system"/>
+                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System']/system" />
                                         </xsl:when>
                                         <xsl:otherwise>0</xsl:otherwise>
                                     </xsl:choose>
@@ -470,10 +470,10 @@
                                 <Firewall>
                                     <xsl:choose>
                                         <xsl:when test="count(children/gear[category_english = 'Commlink Operating System Upgrade' and ./firewall &gt; 0]) &gt; 0">
-                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System Upgrade' and not(../gear[category_english = 'Commlink Operating System Upgrade']/firewall &gt; ./firewall)]/firewall"/>
+                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System Upgrade' and not(../gear[category_english = 'Commlink Operating System Upgrade']/firewall &gt; ./firewall)]/firewall" />
                                         </xsl:when>
                                         <xsl:when test="count(children/gear[category_english = 'Commlink Operating System']) &gt; 0">
-                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System']/firewall"/>
+                                            <xsl:value-of select="children/gear[category_english = 'Commlink Operating System']/firewall" />
                                         </xsl:when>
                                         <xsl:otherwise>0</xsl:otherwise>
                                     </xsl:choose>
@@ -486,10 +486,10 @@
                                         <xsl:for-each select="children/gear[category_english = 'Matrix Programs']">
                                             <xsl:element name="Program">
                                                 <xsl:attribute name="Name">
-                                                    <xsl:value-of select="name"/>
+                                                    <xsl:value-of select="name" />
                                                 </xsl:attribute>
                                                 <xsl:attribute name="Rank">
-                                                    <xsl:value-of select="rating"/>
+                                                    <xsl:value-of select="rating" />
                                                 </xsl:attribute>
                                                 <xsl:attribute name="Type">
                                                     <xsl:choose>
@@ -517,12 +517,12 @@
                                             <xsl:value-of select="armorname" />
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            <xsl:value-of select="name"/>
+                                            <xsl:value-of select="name" />
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:attribute>
                                 <xsl:attribute name="active">
-                                    <xsl:value-of select="translate(equipped, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')"/>
+                                    <xsl:value-of select="translate(equipped, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" />
                                 </xsl:attribute>
                                 <xsl:choose>
                                     <xsl:when test="contains(name_english, 'Form-Fitting')">
@@ -533,36 +533,36 @@
                                     </xsl:when>
                                 </xsl:choose>
                                 <Ballistic>
-                                    <xsl:value-of select="b"/>
+                                    <xsl:value-of select="b" />
                                 </Ballistic>
                                 <Impact>
-                                    <xsl:value-of select="i"/>
+                                    <xsl:value-of select="i" />
                                 </Impact>
                                 <xsl:for-each select="armormods/armormod">
                                     <xsl:choose>
                                         <xsl:when test="name_english = 'Chemical Protection'">
                                             <ChemicalProtection>
-                                                <xsl:value-of select="current()/rating"/>
+                                                <xsl:value-of select="current()/rating" />
                                             </ChemicalProtection>
                                         </xsl:when>
                                         <xsl:when test="name_english = 'Fire Resistance'">
                                             <FireResistance>
-                                                <xsl:value-of select="current()/rating"/>
+                                                <xsl:value-of select="current()/rating" />
                                             </FireResistance>
                                         </xsl:when>
                                         <xsl:when test="name_english = 'Insulation'">
                                             <Insulation>
-                                                <xsl:value-of select="current()/rating"/>
+                                                <xsl:value-of select="current()/rating" />
                                             </Insulation>
                                         </xsl:when>
                                         <xsl:when test="name_english = 'Nonconductivity'">
                                             <Nonconductivity>
-                                                <xsl:value-of select="current()/rating"/>
+                                                <xsl:value-of select="current()/rating" />
                                             </Nonconductivity>
                                         </xsl:when>
                                         <xsl:when test="name_english = 'Thermal Damping'">
                                             <ThermalDamping>
-                                                <xsl:value-of select="current()/rating"/>
+                                                <xsl:value-of select="current()/rating" />
                                             </ThermalDamping>
                                         </xsl:when>
                                     </xsl:choose>
@@ -601,13 +601,13 @@
                                             <xsl:attribute name="isFixed">true</xsl:attribute>
                                             <xsl:choose>
                                                 <xsl:when test="substring(weaponbonus/damagereplace, string-length(weaponbonus/damagereplace) - 3) = 'S(e)'">
-                                                    <xsl:value-of select="substring(weaponbonus/damagereplace, 1, string-length(weaponbonus/damagereplace) - 4)"/>
+                                                    <xsl:value-of select="substring(weaponbonus/damagereplace, 1, string-length(weaponbonus/damagereplace) - 4)" />
                                                 </xsl:when>
                                                 <xsl:when test="substring(weaponbonus/damagereplace, string-length(weaponbonus/damagereplace) - 3) = 'P(f)'">
-                                                    <xsl:value-of select="substring(weaponbonus/damagereplace, 1, string-length(weaponbonus/damagereplace) - 4)"/>
+                                                    <xsl:value-of select="substring(weaponbonus/damagereplace, 1, string-length(weaponbonus/damagereplace) - 4)" />
                                                 </xsl:when>
                                                 <xsl:otherwise>
-                                                    <xsl:value-of select="substring(weaponbonus/damagereplace, 1, string-length(weaponbonus/damagereplace) - 1)"/>
+                                                    <xsl:value-of select="substring(weaponbonus/damagereplace, 1, string-length(weaponbonus/damagereplace) - 1)" />
                                                 </xsl:otherwise>
                                             </xsl:choose>
                                         </xsl:when>
@@ -681,23 +681,23 @@
                         <xsl:for-each select="weapons/weapon[type != 'Melee' and category_english != 'Gear']">
                             <xsl:element name="Weapon">
                                 <xsl:attribute name="name">
-                                    <xsl:value-of select="name"/>
+                                    <xsl:value-of select="name" />
                                 </xsl:attribute>
                                 <xsl:element name="DV">
                                     <xsl:choose>
                                         <xsl:when test="substring(damage_english, string-length(damage_english) - 3) = 'S(e)'">
                                             <xsl:attribute name="physical">false</xsl:attribute>
-                                            <xsl:value-of select="substring(damage_english, 1, string-length(damage_english) - 4)"/>
+                                            <xsl:value-of select="substring(damage_english, 1, string-length(damage_english) - 4)" />
                                         </xsl:when>
                                         <xsl:when test="substring(damage, string-length(damage) - 3) = 'S(e)'">
                                             <xsl:attribute name="physical">false</xsl:attribute>
-                                            <xsl:value-of select="substring(damage, 1, string-length(damage) - 4)"/>
+                                            <xsl:value-of select="substring(damage, 1, string-length(damage) - 4)" />
                                         </xsl:when>
                                         <xsl:when test="substring(damage_english, string-length(damage_english) - 3) = 'P(f)'">
-                                            <xsl:value-of select="substring(damage_english, 1, string-length(damage_english) - 4)"/>
+                                            <xsl:value-of select="substring(damage_english, 1, string-length(damage_english) - 4)" />
                                         </xsl:when>
                                         <xsl:when test="substring(damage, string-length(damage) - 3) = 'P(f)'">
-                                            <xsl:value-of select="substring(damage, 1, string-length(damage) - 4)"/>
+                                            <xsl:value-of select="substring(damage, 1, string-length(damage) - 4)" />
                                         </xsl:when>
                                         <xsl:when test="not(number(substring(damage, 1, 1)) = number(substring(damage, 1, 1)))">
                                             <!-- no direct DV, assume something like "as toxin", and try to reconstruct the netto value -->
@@ -729,7 +729,7 @@
                                                     <xsl:attribute name="physical">false</xsl:attribute>
                                                 </xsl:when>
                                             </xsl:choose>
-                                            <xsl:value-of select="substring(damage, 1, string-length(damage) - 1)"/>
+                                            <xsl:value-of select="substring(damage, 1, string-length(damage) - 1)" />
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </xsl:element>
@@ -738,7 +738,7 @@
                                         <xsl:when test="ap = '-'">0</xsl:when>
                                         <xsl:when test="contains(ap, 'half')">0</xsl:when>
                                         <xsl:otherwise>
-                                            <xsl:value-of select="ap"/>
+                                            <xsl:value-of select="ap" />
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </AP>
@@ -780,10 +780,10 @@
                                 <AmmoSize>
                                     <xsl:choose>
                                         <xsl:when test="number(ammo) = number(ammo)">
-                                            <xsl:value-of select="ammo"/>
+                                            <xsl:value-of select="ammo" />
                                         </xsl:when>
                                         <xsl:otherwise>
-                                            <xsl:value-of select="substring-before(ammo, '(')"/>
+                                            <xsl:value-of select="substring-before(ammo, '(')" />
                                         </xsl:otherwise>
                                     </xsl:choose>
                                 </AmmoSize>
@@ -808,7 +808,7 @@
                                     </xsl:choose>
                                 </AmmunitionType>
                                 <FireModes>
-                                    <xsl:value-of select="translate(mode, '/', ' ')"/>
+                                    <xsl:value-of select="translate(mode, '/', ' ')" />
                                 </FireModes>
                                 <CurrentFireMode>
                                     <xsl:choose>
@@ -821,7 +821,7 @@
                                     </xsl:choose>
                                 </CurrentFireMode>
                                 <Type>
-                                    <xsl:apply-templates select="category_english"/>
+                                    <xsl:apply-templates select="category_english" />
                                 </Type>
                                 <xsl:if test="string-length(weaponname) + string-length(notes) &gt; 0">
                                     <Comment>
@@ -862,7 +862,7 @@
             <xsl:when test=". = 'MAG'">Magic</xsl:when>
             <xsl:when test=". = 'RES'">Resonance</xsl:when>
             <xsl:otherwise>
-                <xsl:value-of select="."/>
+                <xsl:value-of select="." />
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>

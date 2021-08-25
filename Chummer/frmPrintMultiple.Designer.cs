@@ -16,11 +16,7 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                _workerPrinter?.Dispose();
                 _frmPrintView?.Dispose();
-                if (_lstCharacters?.Count > 0)
-                    foreach (Character objCharacter in _lstCharacters)
-                        objCharacter.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -41,7 +37,7 @@ namespace Chummer
             this.cmdDelete = new System.Windows.Forms.Button();
             this.treCharacters = new System.Windows.Forms.TreeView();
             this.prgProgress = new System.Windows.Forms.ProgressBar();
-            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -174,6 +170,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_PrintMultiple";
             this.Text = "Select Characters to Print";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmPrintMultiple_FormClosing);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
@@ -191,7 +188,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.TreeView treCharacters;
         private System.Windows.Forms.ProgressBar prgProgress;
-        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

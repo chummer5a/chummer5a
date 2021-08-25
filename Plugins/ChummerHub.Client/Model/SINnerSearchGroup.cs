@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace ChummerHub.Client.Sinners
@@ -8,19 +7,21 @@ namespace ChummerHub.Client.Sinners
 
         public SINnerSearchGroup(SINnerGroup myGroup)
         {
-            if (myGroup == null)
-                throw new ArgumentNullException(nameof(myGroup));
-            MyMembers = new List<SINnerSearchGroupMember>();
+            if (myGroup != null)
+            {
 
-            Id = myGroup.Id;
-            MyParentGroupId = myGroup.MyParentGroupId;
-            IsPublic = myGroup.IsPublic;
-            MySettings = myGroup.MySettings;
-            Groupname = myGroup.Groupname;
-            //PasswordHash = myGroup.PasswordHash;
-            Language = myGroup.Language;
-            MyGroups = myGroup.MyGroups;
-            MyAdminIdentityRole = myGroup.MyAdminIdentityRole;
+                MyMembers = new List<SINnerSearchGroupMember>();
+
+                Id = myGroup.Id;
+                MyParentGroupId = myGroup.MyParentGroupId;
+                IsPublic = myGroup.IsPublic;
+                MySettings = myGroup.MySettings;
+                Groupname = myGroup.Groupname;
+                //PasswordHash = myGroup.PasswordHash;
+                Language = myGroup.Language;
+                MyGroups = myGroup.MyGroups;
+                MyAdminIdentityRole = myGroup.MyAdminIdentityRole;
+            }
         }
 
         public override string ToString()

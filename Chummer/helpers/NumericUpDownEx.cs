@@ -30,7 +30,6 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -84,35 +83,51 @@ namespace Chummer
         private bool _blnSkipOnMarginChanged;
         private float _fltMyDpiX = 96.0f;
         private float _fltMyDpiY = 96.0f;
+        private Padding _objSavedMargins;
+        private bool _blnMarginsSaved;
 
         private void OnMarginChanged(object sender, EventArgs e)
         {
             if (_blnSkipOnMarginChanged)
                 return;
-            using (Graphics g = CreateGraphics())
+            try
             {
-                // Only care about adjusting margins for non-standard DPI
-                if (Math.Abs(g.DpiX - _fltMyDpiX) < float.Epsilon &&
-                    Math.Abs(g.DpiY - _fltMyDpiY) < float.Epsilon)
-                    return;
-                float fltOldDpiX = _fltMyDpiX;
-                float fltOldDpiY = _fltMyDpiY;
-                _fltMyDpiX = g.DpiX;
-                _fltMyDpiY = g.DpiY;
-                // No non-zero margins, exit
-                if (Margin.All == 0)
-                    return;
-                Padding objNewMargins = new Padding(
-                    (int)(Margin.Left * _fltMyDpiX / fltOldDpiX),
-                    (int)(Margin.Top * _fltMyDpiY / fltOldDpiY),
-                    (int)(Margin.Right * _fltMyDpiX / fltOldDpiX),
-                    (int)(Margin.Bottom * _fltMyDpiY / fltOldDpiY));
-                this.DoThreadSafe(() =>
+                using (Graphics g = CreateGraphics())
                 {
+                    // Only care about adjusting margins for non-standard DPI
+                    if (Math.Abs(g.DpiX - _fltMyDpiX) < float.Epsilon &&
+                        Math.Abs(g.DpiY - _fltMyDpiY) < float.Epsilon)
+                    {
+                        if (_blnMarginsSaved)
+                        {
+                            _blnSkipOnMarginChanged = true;
+                            this.DoThreadSafe(() => Margin = _objSavedMargins);
+                        }
+                        return;
+                    }
+                    float fltOldDpiX = _fltMyDpiX;
+                    float fltOldDpiY = _fltMyDpiY;
+                    _fltMyDpiX = g.DpiX;
+                    _fltMyDpiY = g.DpiY;
+                    // No non-zero margins, exit
+                    if (Margin.All == 0)
+                        return;
+                    Padding objNewMargins = new Padding(
+                        (Margin.Left * _fltMyDpiX / fltOldDpiX).StandardRound(),
+                        (Margin.Top * _fltMyDpiY / fltOldDpiY).StandardRound(),
+                        (Margin.Right * _fltMyDpiX / fltOldDpiX).StandardRound(),
+                        (Margin.Bottom * _fltMyDpiY / fltOldDpiY).StandardRound());
+                    if (objNewMargins.Equals(Margin))
+                        return;
                     _blnSkipOnMarginChanged = true;
-                    Margin = objNewMargins;
-                    _blnSkipOnMarginChanged = false;
-                });
+                    this.DoThreadSafe(() => Margin = objNewMargins);
+                }
+            }
+            finally
+            {
+                _objSavedMargins = Margin;
+                _blnSkipOnMarginChanged = false;
+                _blnMarginsSaved = true;
             }
         }
 
@@ -157,14 +172,13 @@ namespace Chummer
 
             if (m.Msg == WM_MOUSEWHEEL)
             {
-
                 switch (_interceptMouseWheel)
                 {
-
                     case InterceptMouseWheelMode.Always:
                         // standard message
                         base.WndProc(ref m);
                         break;
+
                     case InterceptMouseWheelMode.WhenMouseOver:
                         if (_mouseOver)
                         {
@@ -172,25 +186,24 @@ namespace Chummer
                             base.WndProc(ref m);
                         }
                         break;
+
                     case InterceptMouseWheelMode.WhenFocus:
                         if (_haveFocus)
                         {
                             base.WndProc(ref m);
                         }
                         break;
+
                     case InterceptMouseWheelMode.Never:
                         // kill the message
                         return;
                 }
-
             }
             else
             {
                 base.WndProc(ref m);
             }
-
         }
-
 
         #region New properties
 
@@ -198,7 +211,6 @@ namespace Chummer
         [Category("Behavior")]
         [Description("Automatically select control text when it receives focus.")]
         public bool AutoSelect { get; set; }
-
 
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
@@ -208,7 +220,6 @@ namespace Chummer
             set => _textbox.SelectionStart = value;
         }
 
-
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public int SelectionLength
@@ -217,7 +228,6 @@ namespace Chummer
             set => _textbox.SelectionLength = value;
         }
 
-
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string SelectedText
@@ -225,7 +235,6 @@ namespace Chummer
             get => _textbox.SelectedText;
             set => _textbox.SelectedText = value;
         }
-
 
         [DefaultValue(typeof(InterceptMouseWheelMode), "Always")]
         [Category("Behavior")]
@@ -242,14 +251,16 @@ namespace Chummer
         {
             /// <summary>MouseWheel always works (defauld behavior)</summary>
             Always,
+
             /// <summary>MouseWheel works only when mouse is over the (focused) control</summary>
             WhenMouseOver,
+
             /// <summary>UpDownButtons are visible only when control has focus</summary>
             WhenFocus,
+
             /// <summary>MouseWheel never works</summary>
             Never
         }
-
 
         [Category("Behavior")]
         [DefaultValue(typeof(ShowUpDownButtonsMode), "Always")]
@@ -271,12 +282,16 @@ namespace Chummer
         {
             /// <summary>UpDownButtons are always visible (defauld behavior)</summary>
             Always,
+
             /// <summary>UpDownButtons are visible only when mouse is over the control</summary>
             WhenMouseOver,
+
             /// <summary>UpDownButtons are visible only when control has focus</summary>
             WhenFocus,
+
             /// <summary>UpDownButtons are visible when control has focus or mouse is over it</summary>
             WhenFocusOrMouseOver,
+
             /// <summary>UpDownButtons are never visible</summary>
             Never
         }
@@ -306,10 +321,10 @@ namespace Chummer
             get => _wrapValue;
             set => _wrapValue = value;
         }
+
         private bool _wrapValue;
 
-        #endregion
-
+        #endregion New properties
 
         #region Text selection
 
@@ -329,7 +344,6 @@ namespace Chummer
             base.OnGotFocus(e);
         }
 
-
         // indicate that we have lost the focus
         protected override void OnLostFocus(EventArgs e)
         {
@@ -342,7 +356,6 @@ namespace Chummer
             base.OnLostFocus(e);
         }
 
-
         // MouseUp will kill the SelectAll made on GotFocus.
         // Will restore it, but only if user have not made a partial text selection.
         protected override void OnMouseUp(MouseEventArgs mevent)
@@ -354,17 +367,18 @@ namespace Chummer
             base.OnMouseUp(mevent);
         }
 
-        #endregion
-
+        #endregion Text selection
 
         #region Additional events
 
         // these events will be raised correctly, when mouse enters on the textbox
         public new event EventHandler<EventArgs> MouseEnter;
+
         public new event EventHandler<EventArgs> MouseLeave;
 
         // Events raised BEFORE value decrement(increment
         public event CancelEventHandler BeforeValueDecrement;
+
         public event CancelEventHandler BeforeValueIncrement;
 
         // flag to track mouse position
@@ -402,11 +416,9 @@ namespace Chummer
             {
                 UpdateUpDownButtonsVisibility();
             }
-
         }
 
-        #endregion
-
+        #endregion Additional events
 
         #region Value increment/decrement management
 
@@ -437,6 +449,7 @@ namespace Chummer
                 }
             }
         }
+
         public override void UpButton()
         {
             if (ReadOnly) return;
@@ -474,9 +487,11 @@ namespace Chummer
             else if (e.Delta < 0)
                 Value = Math.Max(Value - MouseIncrement, Minimum);
         }
-        #endregion
+
+        #endregion Value increment/decrement management
 
         #region Integer Value Stuff
+
         private int _intValue;
         private int _intMinimum;
         private int _intMaximum;
@@ -558,8 +573,8 @@ namespace Chummer
                 base.Maximum = value;
             }
         }
-        #endregion
 
+        #endregion Integer Value Stuff
 
         #region UpDownButtons visibility management
 
@@ -575,15 +590,19 @@ namespace Chummer
                 case ShowUpDownButtonsMode.WhenMouseOver:
                     newVisible = _mouseOver;
                     break;
+
                 case ShowUpDownButtonsMode.WhenFocus:
                     newVisible = _haveFocus;
                     break;
+
                 case ShowUpDownButtonsMode.WhenFocusOrMouseOver:
                     newVisible = _mouseOver || _haveFocus;
                     break;
+
                 case ShowUpDownButtonsMode.Never:
                     newVisible = false;
                     break;
+
                 default:
                     newVisible = true;
                     break;
@@ -606,7 +625,6 @@ namespace Chummer
             }
         }
 
-
         /// <summary>
         /// Custom textbox size management
         /// </summary>
@@ -628,8 +646,8 @@ namespace Chummer
 
                 using (Graphics g = CreateGraphics())
                 {
-                    int int2PxWidth = (int) (2 * g.DpiX / 96.0f);
-                    int int16PxWidth = (int) (16 * g.DpiX / 96.0f);
+                    int int2PxWidth = (int)(2 * g.DpiX / 96.0f);
+                    int int16PxWidth = (int)(16 * g.DpiX / 96.0f);
                     if (_mouseOver)
                     {
                         _textbox.Width = ClientSize.Width - _textbox.Left - _upDownButtons.Width - int2PxWidth;
@@ -646,7 +664,6 @@ namespace Chummer
             }
         }
 
-        #endregion
-
+        #endregion UpDownButtons visibility management
     }
 }

@@ -19,15 +19,15 @@
 
 using System;
 using System.Collections.Generic;
- using System.Text.RegularExpressions;
- using Chummer.Backend.Equipment;
+using System.Text.RegularExpressions;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
     /// <summary>
     /// This class allows to read more advanced Values out of an XmlNode
     /// Such as "FixedValues([523],[42],[421])" or "Rating * 3"
-    /// 
+    ///
     /// Provided it doesn't contain "FixedValues" the expression is evaluated
     /// at runtime as a mathematical expression, allowing stuff such as
     /// "Rating * Rating * 4", "Rating * 5 + 2" or "(Rating / 2) * 4000"
@@ -36,35 +36,37 @@ namespace Chummer
     /// </summary>
     public sealed class ParameterAttribute
     {
-         //Keep a single regex to not create one for each class.
+        //Keep a single regex to not create one for each class.
         //This might not be thread save if winforms ever gets multithreaded
-        private static readonly Regex FixedExtract = new Regex(@"FixedValues\(([^)]*)\)");
-        private readonly Gear _gear;
-        private readonly string _attribute;
-        private readonly double[] fixedDoubles;
+        private static readonly Regex s_RgxFixedExtract = new Regex(@"FixedValues\(([^)]*)\)", RegexOptions.Compiled);
+
+        private readonly Gear _objGear;
+        private readonly string _strAttribute;
+        private readonly double[] _dblFixedValues;
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="gear"></param>
         /// <param name="attribute"></param>
         public ParameterAttribute(Gear gear, string attribute)
         {
-            _gear = gear ?? throw new ArgumentNullException(nameof(gear));
-            _attribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
+            _objGear = gear ?? throw new ArgumentNullException(nameof(gear));
+            _strAttribute = attribute ?? throw new ArgumentNullException(nameof(attribute));
 
             //If we have FixedValues use that
             //I wasn't to create array with rating as index for future, but
             //this is kept for backwards/laziness
-            if (_attribute.StartsWith("FixedValues(", StringComparison.Ordinal))
+            if (_strAttribute.StartsWith("FixedValues(", StringComparison.Ordinal))
             {
                 //Regex to extract anything between ( ) in Param
-                Match m = FixedExtract.Match(_attribute);
-                string vals = m.Groups[1].Value;
+                Match m = s_RgxFixedExtract.Match(_strAttribute);
+                string strValues = m.Groups[1].Value;
 
                 //Regex to extract anything in between [ ]
                 //Not sure why i don't just split by , and remove it during
                 //next phase
-                MatchCollection m2 = Regex.Matches(vals, @"\[([^\]]*)\]");
+                MatchCollection m2 = Regex.Matches(strValues, @"\[([^\]]*)\]");
 
                 //double junk; //Not used, tryparse needs out
 
@@ -74,45 +76,43 @@ namespace Chummer
                     if (double.TryParse(objMatch.Groups[1].Value, System.Globalization.NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out double dblValue))
                         lstValues.Add(dblValue);
                 }
-                fixedDoubles = lstValues.ToArray();
+                _dblFixedValues = lstValues.ToArray();
             }
         }
 
-        public Gear Gear => _gear;
+        public Gear Gear => _objGear;
 
-        public string AttributeString => _attribute;
+        public string AttributeString => _strAttribute;
 
         public double AttributeDouble
         {
             get
             {
-                if (fixedDoubles != null)
-                {
-                    if (_gear.Rating < 0)
-                    {
-                        //In case of underflow return lowest
-                        return fixedDoubles[_gear.Rating];
-                    }
-                    else if (_gear.Rating >= fixedDoubles.Length)
-                    {
-                        //Return highest if overflow
-                        return fixedDoubles[fixedDoubles.Length - 1];
-                    }
-                    else  //Structured like this to allow easy disabling of
-                         //above code if IndexOutOfRangeException turns out to be
-                        //preferred. This is an elseif
-                        if(true)
-                        {
-                            return fixedDoubles[_gear.Rating];
-                    /**/}
-                }
-                else
-                {
+                if (_dblFixedValues == null)
                     return 0;
+
+                if (_objGear.Rating < 0)
+                {
+                    //In case of underflow return lowest
+                    return _dblFixedValues[_objGear.Rating];
+                }
+
+                if (_objGear.Rating >= _dblFixedValues.Length)
+                {
+                    //Return highest if overflow
+                    return _dblFixedValues[_dblFixedValues.Length - 1];
+                }
+                //Structured like this to allow easy disabling of
+                //above code if IndexOutOfRangeException turns out to be
+                //preferred. This is an elseif
+                if (true)
+                {
+                    return _dblFixedValues[_objGear.Rating];
+                    /**/
                 }
             }
         }
 
-        public int AttributeInt => (int) AttributeDouble;
+        public int AttributeInt => (int)AttributeDouble;
     }
 }

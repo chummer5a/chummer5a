@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -29,7 +30,7 @@ namespace Chummer
     {
         private string _strSelectedPower = string.Empty;
         private int _intSelectedRating;
-        private static string s_StrSelectCategory = string.Empty;
+        private static string _strSelectCategory = string.Empty;
         private decimal _decPowerPoints;
         private bool _blnAddAgain;
 
@@ -40,6 +41,7 @@ namespace Chummer
         private readonly List<ListItem> _lstCategory = new List<ListItem>();
 
         #region Control Events
+
         public frmSelectCritterPower(Character objCharacter)
         {
             InitializeComponent();
@@ -93,18 +95,15 @@ namespace Chummer
             }
 
             cboCategory.BeginUpdate();
-            cboCategory.DataSource = null;
-            cboCategory.DataSource = _lstCategory;
-            cboCategory.ValueMember = nameof(ListItem.Value);
-            cboCategory.DisplayMember = nameof(ListItem.Name);
+            cboCategory.PopulateWithListItems(_lstCategory);
             cboCategory.EndUpdate();
 
             // Select the first Category in the list.
-            if (string.IsNullOrEmpty(s_StrSelectCategory))
+            if (string.IsNullOrEmpty(_strSelectCategory))
                 cboCategory.SelectedIndex = 0;
-            else if (cboCategory.Items.Contains(s_StrSelectCategory))
+            else if (cboCategory.Items.Contains(_strSelectCategory))
             {
-                cboCategory.SelectedValue = s_StrSelectCategory;
+                cboCategory.SelectedValue = _strSelectCategory;
             }
 
             if (cboCategory.SelectedIndex == -1)
@@ -139,9 +138,11 @@ namespace Chummer
                         case "M":
                             lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypeMana");
                             break;
+
                         case "P":
                             lblCritterPowerType.Text = LanguageManager.GetString("String_SpellTypePhysical");
                             break;
+
                         default:
                             lblCritterPowerType.Text = string.Empty;
                             break;
@@ -152,18 +153,23 @@ namespace Chummer
                         case "Auto":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionAutomatic");
                             break;
+
                         case "Free":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionFree");
                             break;
+
                         case "Simple":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionSimple");
                             break;
+
                         case "Complex":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_ActionComplex");
                             break;
+
                         case "Special":
                             lblCritterPowerAction.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                             break;
+
                         default:
                             lblCritterPowerAction.Text = string.Empty;
                             break;
@@ -176,6 +182,7 @@ namespace Chummer
                             .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial"))
                             .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"))
                             .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence"))
+                            .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouchLong"))
                             .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch"))
                             .CheapReplace("(A)", () => "(" + LanguageManager.GetString("String_SpellRangeArea") + ')')
                             .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort"));
@@ -188,15 +195,19 @@ namespace Chummer
                         case "Instant":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationInstantLong");
                             break;
+
                         case "Sustained":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSustained");
                             break;
+
                         case "Always":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationAlways");
                             break;
+
                         case "Special":
                             lblCritterPowerDuration.Text = LanguageManager.GetString("String_SpellDurationSpecial");
                             break;
+
                         default:
                             lblCritterPowerDuration.Text = strDuration;
                             break;
@@ -204,9 +215,10 @@ namespace Chummer
 
                     string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlPower.SelectSingleNode("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    string strSpace = LanguageManager.GetString("String_Space");
-                    lblCritterPowerSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-                    lblCritterPowerSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+                    SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                        GlobalOptions.CultureInfo, _objCharacter);
+                    lblCritterPowerSource.Text = objSource.ToString();
+                    lblCritterPowerSource.SetToolTip(objSource.LanguageBookTooltip);
 
                     nudCritterPowerRating.Visible = objXmlPower.SelectSingleNode("rating") != null;
 
@@ -224,14 +236,18 @@ namespace Chummer
                         }
                     }
                 }
+                lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
+                lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
+                lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
+                lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
+                lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
+                lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+                tlpRight.Visible = true;
             }
-
-            lblCritterPowerTypeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerType.Text);
-            lblCritterPowerActionLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerAction.Text);
-            lblCritterPowerRangeLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerRange.Text);
-            lblCritterPowerDurationLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerDuration.Text);
-            lblCritterPowerSourceLabel.Visible = !string.IsNullOrEmpty(lblCritterPowerSource.Text);
-            lblKarmaLabel.Visible = !string.IsNullOrEmpty(lblKarma.Text);
+            else
+            {
+                tlpRight.Visible = false;
+            }
         }
 
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
@@ -276,29 +292,33 @@ namespace Chummer
                         lstPowerWhitelist.Add(objXmlCritterPower.Value);
 
                         // If Manifestation is one of the Powers, also include Inhabitation and Possess if they're not already in the list.
-                        if (!blnPhysicalPresence)
+                        if (!blnPhysicalPresence && objXmlCritterPower.Value == "Materialization")
                         {
-                            if (objXmlCritterPower.Value == "Materialization")
+                            bool blnFoundPossession = false;
+                            bool blnFoundInhabitation = false;
+                            foreach (string strCheckPower in lstPowerWhitelist)
                             {
-                                bool blnFoundPossession = false;
-                                bool blnFoundInhabitation = false;
-                                foreach (string strCheckPower in lstPowerWhitelist)
+                                switch (strCheckPower)
                                 {
-                                    if (strCheckPower == "Possession")
+                                    case "Possession":
                                         blnFoundPossession = true;
-                                    else if (strCheckPower == "Inhabitation")
+                                        break;
+
+                                    case "Inhabitation":
                                         blnFoundInhabitation = true;
-                                    if (blnFoundInhabitation && blnFoundPossession)
                                         break;
                                 }
-                                if (!blnFoundPossession)
-                                {
-                                    lstPowerWhitelist.Add("Possession");
-                                }
-                                if (!blnFoundInhabitation)
-                                {
-                                    lstPowerWhitelist.Add("Inhabitation");
-                                }
+
+                                if (blnFoundInhabitation && blnFoundPossession)
+                                    break;
+                            }
+                            if (!blnFoundPossession)
+                            {
+                                lstPowerWhitelist.Add("Possession");
+                            }
+                            if (!blnFoundInhabitation)
+                            {
+                                lstPowerWhitelist.Add("Inhabitation");
                             }
                         }
                     }
@@ -351,12 +371,6 @@ namespace Chummer
             trePowers.Sort();
         }
 
-        private void trePowers_DoubleClick(object sender, EventArgs e)
-        {
-            _blnAddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
@@ -367,9 +381,11 @@ namespace Chummer
         {
             cboCategory_SelectedIndexChanged(sender, e);
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -386,7 +402,7 @@ namespace Chummer
             if (nudCritterPowerRating.Visible)
                 _intSelectedRating = nudCritterPowerRating.ValueAsInt;
 
-            s_StrSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
+            _strSelectCategory = cboCategory.SelectedValue?.ToString() ?? string.Empty;
             _strSelectedPower = strSelectedPower;
 
             // If the character is a Free Spirit (PC, not the Critter version), populate the Power Points Cost as well.
@@ -408,9 +424,11 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -431,6 +449,6 @@ namespace Chummer
         /// </summary>
         public decimal PowerPoints => _decPowerPoints;
 
-        #endregion
+        #endregion Properties
     }
 }

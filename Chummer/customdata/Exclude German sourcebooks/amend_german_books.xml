@@ -22,5 +22,10 @@
     <book xpathfilter="contains(name, 'German')">
       <hide />
     </book>
+    <book>
+      <!-- Shadowrun 2050 is for 5e in German, but 4e in English. So we need to hide it because we only have the 5e version in Chummer5a, which is German-only -->
+      <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
+      <hide />
+    </book>
   </books>
 </chummer>

@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Text;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -31,16 +32,20 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
+
         public frmCreatePACKSKit(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            if (_objCharacter == null)
+                throw new ArgumentNullException(nameof(_objCharacter));
+
             // Make sure the kit and file name fields are populated.
             if (string.IsNullOrEmpty(txtName.Text))
             {
@@ -67,7 +72,7 @@ namespace Chummer
             if (XmlManager.LoadXPath("packs.xml", _objCharacter?.Options.EnabledCustomDataDirectoryPaths)
                 .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
             {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo,LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
+                Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_DuplicateName"), strName),
                     LanguageManager.GetString("MessageTitle_CreatePACKSKit_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -177,10 +182,17 @@ namespace Chummer
                         // Determine if Positive or Negative Qualities exist.
                         foreach (Quality objQuality in _objCharacter.Qualities)
                         {
-                            if (objQuality.Type == QualityType.Positive)
-                                blnPositive = true;
-                            if (objQuality.Type == QualityType.Negative)
-                                blnNegative = true;
+                            switch (objQuality.Type)
+                            {
+                                case QualityType.Positive:
+                                    blnPositive = true;
+                                    break;
+
+                                case QualityType.Negative:
+                                    blnNegative = true;
+                                    break;
+                            }
+
                             if (blnPositive && blnNegative)
                                 break;
                         }
@@ -384,10 +396,17 @@ namespace Chummer
                         bool blnBioware = false;
                         foreach (Cyberware objCharacterCyberware in _objCharacter.Cyberware)
                         {
-                            if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Bioware)
-                                blnBioware = true;
-                            if (objCharacterCyberware.SourceType == Improvement.ImprovementSource.Cyberware)
-                                blnCyberware = true;
+                            switch (objCharacterCyberware.SourceType)
+                            {
+                                case Improvement.ImprovementSource.Bioware:
+                                    blnBioware = true;
+                                    break;
+
+                                case Improvement.ImprovementSource.Cyberware:
+                                    blnCyberware = true;
+                                    break;
+                            }
+
                             if (blnCyberware && blnBioware)
                                 break;
                         }
@@ -420,8 +439,8 @@ namespace Chummer
                                                 if (objChildCyberware.Rating > 0)
                                                     objWriter.WriteElementString("rating", objChildCyberware.Rating.ToString(GlobalOptions.InvariantCultureInfo));
 
-                                                if (objChildCyberware.Gear.Count > 0)
-                                                    WriteGear(objWriter, objChildCyberware.Gear);
+                                                if (objChildCyberware.GearChildren.Count > 0)
+                                                    WriteGear(objWriter, objChildCyberware.GearChildren);
                                                 // </cyberware>
                                                 objWriter.WriteEndElement();
                                             }
@@ -431,8 +450,8 @@ namespace Chummer
                                         objWriter.WriteEndElement();
                                     }
 
-                                    if (objCyberware.Gear.Count > 0)
-                                        WriteGear(objWriter, objCyberware.Gear);
+                                    if (objCyberware.GearChildren.Count > 0)
+                                        WriteGear(objWriter, objCyberware.GearChildren);
 
                                     // </cyberware>
                                     objWriter.WriteEndElement();
@@ -458,8 +477,8 @@ namespace Chummer
                                         objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalOptions.InvariantCultureInfo));
                                     objWriter.WriteElementString("grade", objCyberware.Grade.ToString());
 
-                                    if (objCyberware.Gear.Count > 0)
-                                        WriteGear(objWriter, objCyberware.Gear);
+                                    if (objCyberware.GearChildren.Count > 0)
+                                        WriteGear(objWriter, objCyberware.GearChildren);
                                     // </bioware>
                                     objWriter.WriteEndElement();
                                 }
@@ -536,8 +555,8 @@ namespace Chummer
                                 objWriter.WriteEndElement();
                             }
 
-                            if (objArmor.Gear.Count > 0)
-                                WriteGear(objWriter, objArmor.Gear);
+                            if (objArmor.GearChildren.Count > 0)
+                                WriteGear(objWriter, objArmor.GearChildren);
 
                             // </armor>
                             objWriter.WriteEndElement();
@@ -577,8 +596,8 @@ namespace Chummer
                                             objWriter.WriteElementString("mount", objAccessory.Mount);
                                             objWriter.WriteElementString("extramount", objAccessory.ExtraMount);
 
-                                            if (objAccessory.Gear.Count > 0)
-                                                WriteGear(objWriter, objAccessory.Gear);
+                                            if (objAccessory.GearChildren.Count > 0)
+                                                WriteGear(objWriter, objAccessory.GearChildren);
 
                                             // </accessory>
                                             objWriter.WriteEndElement();
@@ -712,9 +731,9 @@ namespace Chummer
                             }
 
                             // Gear.
-                            if (objVehicle.Gear.Count > 0)
+                            if (objVehicle.GearChildren.Count > 0)
                             {
-                                WriteGear(objWriter, objVehicle.Gear);
+                                WriteGear(objWriter, objVehicle.GearChildren);
                             }
 
                             // </vehicle>
@@ -736,7 +755,6 @@ namespace Chummer
                 }
             }
 
-
             Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_CreatePACKSKit_SuiteCreated"), txtName.Text),
                 LanguageManager.GetString("MessageTitle_CreatePACKSKit_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
             DialogResult = DialogResult.OK;
@@ -746,15 +764,17 @@ namespace Chummer
         {
             DialogResult = DialogResult.Cancel;
         }
-#endregion
 
-#region Methods
+        #endregion Control Events
+
+        #region Methods
+
         /// <summary>
         /// Recursively write out all Gear information since these can be nested pretty deep.
         /// </summary>
         /// <param name="objWriter">XmlWriter to use.</param>
         /// <param name="lstGear">List of Gear to write.</param>
-        private void WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
+        private static void WriteGear(XmlWriter objWriter, IEnumerable<Gear> lstGear)
         {
             // <gears>
             objWriter.WriteStartElement("gears");
@@ -782,6 +802,7 @@ namespace Chummer
             // </gears>
             objWriter.WriteEndElement();
         }
-#endregion
+
+        #endregion Methods
     }
 }

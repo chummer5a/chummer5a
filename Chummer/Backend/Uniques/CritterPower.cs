@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -33,7 +34,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class CritterPower : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource, ICanSort
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -49,6 +50,7 @@ namespace Chummer
         private decimal _decPowerPoints;
         private XmlNode _nodBonus;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private readonly Character _objCharacter;
         private bool _blnCountTowardsLimit = true;
         private int _intRating;
@@ -56,6 +58,7 @@ namespace Chummer
         private int _intSortOrder;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public CritterPower(Character objCharacter)
         {
             // Create the GUID for the new Power.
@@ -80,6 +83,11 @@ namespace Chummer
             _nodBonus = objXmlPowerNode.SelectSingleNode("bonus");
             if (!objXmlPowerNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlPowerNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlPowerNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             // If the piece grants a bonus, pass the information to the Improvement Manager.
             if (_nodBonus != null)
             {
@@ -122,7 +130,18 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -154,6 +173,7 @@ namespace Chummer
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
 
@@ -188,11 +208,17 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("duration", ref _strDuration);
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
+            objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
             objNode.TryGetDecFieldQuickly("points", ref _decPowerPoints);
             objNode.TryGetBoolFieldQuickly("counttowardslimit", ref _blnCountTowardsLimit);
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             _nodBonus = objNode["bonus"];
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
         }
 
@@ -218,16 +244,17 @@ namespace Chummer
             objWriter.WriteElementString("action", DisplayAction(strLanguageToPrint));
             objWriter.WriteElementString("range", DisplayRange(strLanguageToPrint));
             objWriter.WriteElementString("duration", DisplayDuration(strLanguageToPrint));
+            objWriter.WriteElementString("karma", Karma.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             if (GlobalOptions.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -290,7 +317,7 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -344,7 +371,6 @@ namespace Chummer
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -362,7 +388,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -383,7 +409,7 @@ namespace Chummer
         public string DisplayCategory(string strLanguage)
         {
             // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
             return _objCharacter.LoadDataXPath("critterpowers.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
@@ -419,9 +445,11 @@ namespace Chummer
                 case "M":
                     strReturn = LanguageManager.GetString("String_SpellTypeMana", strLanguage);
                     break;
+
                 case "P":
                     strReturn = LanguageManager.GetString("String_SpellTypePhysical", strLanguage);
                     break;
+
                 default:
                     strReturn = LanguageManager.GetString("String_None", strLanguage);
                     break;
@@ -451,18 +479,23 @@ namespace Chummer
                 case "Auto":
                     strReturn = LanguageManager.GetString("String_ActionAutomatic", strLanguage);
                     break;
+
                 case "Free":
                     strReturn = LanguageManager.GetString("String_ActionFree", strLanguage);
                     break;
+
                 case "Simple":
                     strReturn = LanguageManager.GetString("String_ActionSimple", strLanguage);
                     break;
+
                 case "Complex":
                     strReturn = LanguageManager.GetString("String_ActionComplex", strLanguage);
                     break;
+
                 case "Special":
                     strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
                     break;
+
                 default:
                     strReturn = LanguageManager.GetString("String_None", strLanguage);
                     break;
@@ -491,6 +524,7 @@ namespace Chummer
                 .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguage))
                 .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight", strLanguage))
                 .CheapReplace("LOI", () => LanguageManager.GetString("String_SpellRangeLineOfInfluence", strLanguage))
+                .CheapReplace("Touch", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage)) // Short form to remain export-friendly
                 .CheapReplace("T", () => LanguageManager.GetString("String_SpellRangeTouch", strLanguage))
                 .CheapReplace("(A)", () => '(' + LanguageManager.GetString("String_SpellRangeArea", strLanguage) + ')')
                 .CheapReplace("MAG", () => LanguageManager.GetString("String_AttributeMAGShort", strLanguage));
@@ -519,12 +553,15 @@ namespace Chummer
                 case "Instant":
                     strReturn = LanguageManager.GetString("String_SpellDurationInstantLong", strLanguage);
                     break;
+
                 case "Sustained":
                     strReturn = LanguageManager.GetString("String_SpellDurationSustained", strLanguage);
                     break;
+
                 case "Always":
                     strReturn = LanguageManager.GetString("String_SpellDurationAlways", strLanguage);
                     break;
+
                 case "Special":
                     strReturn = LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
                     break;
@@ -549,6 +586,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -600,9 +646,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsCritterPower)
         {
             if (Grade != 0 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -627,23 +675,21 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return Grade != 0
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return Grade != 0
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteCritterPower")))
+                return false;
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, InternalId);
 
@@ -652,8 +698,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

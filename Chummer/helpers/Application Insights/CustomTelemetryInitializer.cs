@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -25,24 +26,24 @@ namespace Chummer
 {
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        // Set session data:
-        private static readonly string SessionId = Guid.NewGuid().ToString();
-        //private static string Hostname =  Dns.GetHostName();
-        private static readonly string Version = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        private static readonly bool IsMilestone = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
+        // Set session data:
+        //private static string Hostname =  Dns.GetHostName();
+        private static string Version { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
+        private static bool IsMilestone { get; } = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.Revision == 0;
 
         public void Initialize(ITelemetry telemetry)
         {
             if (telemetry == null)
                 throw new ArgumentNullException(nameof(telemetry));
-            //personal data should not be submitted
-            //telemetry.Context.User.Id = Environment.UserName;
             if (!telemetry.Context.GlobalProperties.ContainsKey("Milestone"))
+            {
                 telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString(GlobalOptions.InvariantCultureInfo));
-            telemetry.Context.Session.Id = SessionId;
-            telemetry.Context.User.Id = SessionId;
+            }
+            else
+                telemetry.Context.GlobalProperties["Milestone"] = IsMilestone.ToString(GlobalOptions.InvariantCultureInfo);
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
             {
@@ -55,6 +56,9 @@ namespace Chummer
                 telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
                 telemetry.Context.Device.Id = Properties.Settings.Default.UploadClientId.ToString();
             }
+            telemetry.Context.Session.Id = Properties.Settings.Default.UploadClientId.ToString();
+            telemetry.Context.User.Id = Properties.Settings.Default.UploadClientId.ToString();
+
             telemetry.Context.User.Id = telemetry.Context.Device.Id;
             telemetry.Context.Component.Version = Version;
             if (System.Diagnostics.Debugger.IsAttached)

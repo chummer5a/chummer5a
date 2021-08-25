@@ -16,20 +16,22 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
- using System.Text;
- using System.Windows.Forms;
+using System.Text;
+using System.Windows.Forms;
 
 namespace Chummer
 {
     public partial class frmDiceRoller : Form
     {
         private readonly frmChummerMain _frmMain;
-        private readonly List<ListItem> _lstResults = new List<ListItem>(40);
+        private readonly List<DiceRollerListViewItem> _lstResults = new List<DiceRollerListViewItem>(40);
 
         #region Control Events
+
         public frmDiceRoller(frmChummerMain frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
@@ -52,9 +54,7 @@ namespace Chummer
             };
 
             cboMethod.BeginUpdate();
-            cboMethod.ValueMember = nameof(ListItem.Value);
-            cboMethod.DisplayMember = nameof(ListItem.Name);
-            cboMethod.DataSource = lstMethod;
+            cboMethod.PopulateWithListItems(lstMethod);
             cboMethod.SelectedIndex = 0;
             cboMethod.EndUpdate();
 
@@ -65,13 +65,30 @@ namespace Chummer
         private void cmdRollDice_Click(object sender, EventArgs e)
         {
             List<int> lstRandom = new List<int>(nudDice.ValueAsInt);
-            int intHitCount = 0;
-            int intGlitchCount = 0;
             int intGlitchMin = 1;
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             if (chkRushJob.Checked)
                 intGlitchMin = 2;
+
+            int intTarget = 5;
+            // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
+            if (chkCinematicGameplay.Checked)
+                intTarget = 4;
+            switch (cboMethod.SelectedValue.ToString())
+            {
+                case "Large":
+                    {
+                        intTarget = 3;
+                        break;
+                    }
+                case "ReallyLarge":
+                    {
+                        intTarget = 1;
+                        intGlitchMin = 7;
+                        break;
+                    }
+            }
 
             for (int intCounter = 1; intCounter <= nudDice.Value; intCounter++)
             {
@@ -94,32 +111,12 @@ namespace Chummer
             _lstResults.Clear();
             foreach (int intResult in lstRandom)
             {
-                _lstResults.Add(new ListItem(intResult.ToString(GlobalOptions.InvariantCultureInfo), intResult.ToString(GlobalOptions.CultureInfo)));
-
-                if (cboMethod.SelectedValue.ToString() == "Standard")
-                {
-                    int intTarget = 5;
-                    // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
-                    if (chkCinematicGameplay.Checked)
-                        intTarget = 4;
-
-                    if (intResult >= intTarget)
-                        intHitCount++;
-                    if (intResult <= intGlitchMin)
-                        intGlitchCount++;
-                }
-                else if (cboMethod.SelectedValue.ToString() == "Large")
-                {
-                    if (intResult >= 3)
-                        intHitCount++;
-                    if (intResult <= intGlitchMin)
-                        intGlitchCount++;
-                }
-                else if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
-                {
-                    intHitCount += intResult;
-                }
+                DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intResult, intTarget, intGlitchMin);
+                _lstResults.Add(lviCur);
             }
+
+            int intHitCount = cboMethod.SelectedValue?.ToString() == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
+            int intGlitchCount = _lstResults.Count(x => x.IsGlitch);
 
             int intGlitchThreshold = chkVariableGlitch.Checked
                 ? intHitCount + 1
@@ -137,14 +134,10 @@ namespace Chummer
                         && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
-                    LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
-                if ((cboMethod.SelectedValue.ToString() == "Standard"
-                     || cboMethod.SelectedValue.ToString() == "Large")
-                    && intBubbleDieResult <= intGlitchMin)
-                {
-                    intGlitchCount++;
-                }
+                DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
+                if (lviCur.IsGlitch)
+                    intGlitchCount += 1;
+                _lstResults.Add(lviCur);
             }
 
             lblResultsLabel.Visible = true;
@@ -172,14 +165,17 @@ namespace Chummer
             else
                 sbdResults.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
 
-            sbdResults.Append(Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace + lstRandom.Sum().ToString(GlobalOptions.CultureInfo));
+            sbdResults.Append(Environment.NewLine + Environment.NewLine +
+                              LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace +
+                              _lstResults.Sum(x => x.Result).ToString(GlobalOptions.CultureInfo));
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
-            lstResults.DataSource = null;
-            lstResults.DataSource = _lstResults;
-            lstResults.ValueMember = nameof(ListItem.Value);
-            lstResults.DisplayMember = nameof(ListItem.Name);
+            lstResults.Items.Clear();
+            foreach (DiceRollerListViewItem objItem in _lstResults)
+            {
+                lstResults.Items.Add(objItem);
+            }
             lstResults.EndUpdate();
         }
 
@@ -202,76 +198,75 @@ namespace Chummer
 
         private void cmdReroll_Click(object sender, EventArgs e)
         {
-            int intKeepThreshold = 5;
-            if (cboMethod.SelectedValue.ToString() == "Standard" && chkCinematicGameplay.Checked)
-            {
-                // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
-                intKeepThreshold = 4;
-            }
-
-            int intKeepSum = 0;
-            int intResult;
-            // Remove everything that is not a hit
-            for (int i = _lstResults.Count - 1; i >= 0; --i)
-            {
-                if (!int.TryParse(_lstResults[i].Value.ToString(), out intResult) || intResult < intKeepThreshold)
-                {
-                    _lstResults.RemoveAt(i);
-                }
-                else
-                    intKeepSum += intResult;
-            }
-
-            int intHitCount = _lstResults.Count;
-            if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
-                intHitCount = intKeepSum;
-            int intGlitchCount = 0;
-            List<int> lstRandom = new List<int>(nudDice.ValueAsInt - intHitCount);
+            //Remove the BubbleDie (it is always at the end)
+            _lstResults.RemoveAll(x => x.BubbleDie);
 
             // If Rushed Job is checked, the minimum die result for a Glitch becomes 2.
             int intGlitchMin = 1;
             if (chkRushJob.Checked)
                 intGlitchMin = 2;
 
-            for (int intCounter = 1; intCounter <= nudDice.Value - intHitCount; intCounter++)
+            int intTarget = 5;
+            // If Cinematic Gameplay is turned on, Hits occur on 4, 5, or 6 instead.
+            if (chkCinematicGameplay.Checked)
+                intTarget = 4;
+            switch (cboMethod.SelectedValue.ToString())
+            {
+                case "Large":
+                    {
+                        intTarget = 3;
+                        break;
+                    }
+                case "ReallyLarge":
+                    {
+                        intTarget = 1;
+                        intGlitchMin = 7;
+                        break;
+                    }
+            }
+
+            foreach (DiceRollerListViewItem objItem in _lstResults)
+            {
+                objItem.Target = intTarget;
+                objItem.GlitchMin = intGlitchMin;
+            }
+
+            // Remove everything that is not a hit
+            int intNewDicePool = _lstResults.Count(x => !x.IsHit);
+            _lstResults.RemoveAll(x => !x.IsHit);
+
+            if (intNewDicePool == 0)
+            {
+                MessageBox.Show(LanguageManager.GetString("String_NoDiceLeft_Text"), LanguageManager.GetString("String_NoDiceLeft_Title"));
+                return;
+            }
+
+            int intHitCount = cboMethod.SelectedValue?.ToString() == "ReallyLarge" ? _lstResults.Sum(x => x.Result) : _lstResults.Count(x => x.IsHit);
+            int intGlitchCount = _lstResults.Count(x => x.IsGlitch);
+            List<int> lstRandom = new List<int>(intNewDicePool);
+
+            for (int intCounter = 1; intCounter <= intNewDicePool; intCounter++)
             {
                 if (chkRuleOf6.Checked)
                 {
+                    int intLoopResult;
                     do
                     {
-                        intResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                        lstRandom.Add(intResult);
-                    } while (intResult == 6);
+                        intLoopResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                        lstRandom.Add(intLoopResult);
+                    } while (intLoopResult == 6);
                 }
                 else
                 {
-                    intResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                    lstRandom.Add(intResult);
+                    int intLoopResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
+                    lstRandom.Add(intLoopResult);
                 }
             }
 
-            foreach (int intLoopResult in lstRandom)
+            foreach (int intResult in lstRandom)
             {
-                _lstResults.Add(new ListItem(intLoopResult.ToString(GlobalOptions.InvariantCultureInfo), intLoopResult.ToString(GlobalOptions.CultureInfo)));
-
-                if (cboMethod.SelectedValue.ToString() == "Standard")
-                {
-                    if (intLoopResult >= intKeepThreshold)
-                        intHitCount++;
-                    if (intLoopResult <= intGlitchMin)
-                        intGlitchCount++;
-                }
-                else if (cboMethod.SelectedValue.ToString() == "Large")
-                {
-                    if (intLoopResult >= 3)
-                        intHitCount++;
-                    if (intLoopResult <= intGlitchMin)
-                        intGlitchCount++;
-                }
-                else if (cboMethod.SelectedValue.ToString() == "ReallyLarge")
-                {
-                    intHitCount += intLoopResult;
-                }
+                DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intResult, intTarget, intGlitchMin);
+                _lstResults.Add(lviCur);
             }
 
             int intGlitchThreshold = chkVariableGlitch.Checked
@@ -290,16 +285,11 @@ namespace Chummer
                         && (nudDice.ValueAsInt & 1) == 0)))
             {
                 int intBubbleDieResult = GlobalOptions.RandomGenerator.NextD6ModuloBiasRemoved();
-                _lstResults.Add(new ListItem(intBubbleDieResult.ToString(GlobalOptions.InvariantCultureInfo),
-                    LanguageManager.GetString("String_BubbleDie") + strSpace + '(' + intBubbleDieResult.ToString(GlobalOptions.CultureInfo) + ')'));
-                if ((cboMethod.SelectedValue.ToString() == "Standard"
-                     || cboMethod.SelectedValue.ToString() == "Large")
-                    && intBubbleDieResult <= intGlitchMin)
-                {
-                    intGlitchCount++;
-                }
+                DiceRollerListViewItem lviCur = new DiceRollerListViewItem(intBubbleDieResult, intTarget, intGlitchMin, true);
+                if (lviCur.IsGlitch)
+                    intGlitchCount += 1;
+                _lstResults.Add(lviCur);
             }
-
 
             lblResultsLabel.Visible = true;
             StringBuilder sbdResults = new StringBuilder();
@@ -327,26 +317,31 @@ namespace Chummer
             else
                 sbdResults.AppendFormat(GlobalOptions.CultureInfo, LanguageManager.GetString("String_DiceRoller_Hits"), intHitCount);
 
-            sbdResults.Append(Environment.NewLine + Environment.NewLine + LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace
-                              + (lstRandom.Sum() + intKeepSum).ToString(GlobalOptions.CultureInfo));
+            sbdResults.Append(Environment.NewLine + Environment.NewLine +
+                              LanguageManager.GetString("Label_DiceRoller_Sum") + strSpace +
+                              _lstResults.Sum(x => x.Result).ToString(GlobalOptions.CultureInfo));
             lblResults.Text = sbdResults.ToString();
 
             lstResults.BeginUpdate();
-            lstResults.DataSource = null;
-            lstResults.DataSource = _lstResults;
-            lstResults.ValueMember = nameof(ListItem.Value);
-            lstResults.DisplayMember = nameof(ListItem.Name);
+            lstResults.Items.Clear();
+            foreach (DiceRollerListViewItem objItem in _lstResults)
+            {
+                lstResults.Items.Add(objItem);
+            }
             lstResults.EndUpdate();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Number of dice to roll.
         /// </summary>
         public int Dice
         {
-            set => nudDice.Value = value;
+            get => nudDice.ValueAsInt;
+            set => nudDice.ValueAsInt = value;
         }
 
         /// <summary>
@@ -357,19 +352,18 @@ namespace Chummer
             set
             {
                 nudGremlins.Value = 0;
-                if (value != null)
+                if (value == null)
+                    return;
+                foreach (Quality objQuality in value)
                 {
-                    foreach (Quality objQuality in value)
+                    if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
                     {
-                        if (objQuality.Name.StartsWith("Gremlins", StringComparison.Ordinal))
-                        {
-                            int intRating = Convert.ToInt32(objQuality.Name.Substring(objQuality.Name.Length - 2, 1), GlobalOptions.InvariantCultureInfo);
-                            nudGremlins.Value = intRating;
-                        }
+                        nudGremlins.Value = objQuality.Levels;
                     }
                 }
             }
         }
-        #endregion
+
+        #endregion Properties
     }
 }

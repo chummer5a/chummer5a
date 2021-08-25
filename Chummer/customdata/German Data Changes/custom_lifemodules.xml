@@ -26,7 +26,7 @@
       <category>LifeModule</category>
       <name>Allied German States (AGS)</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>4be3aea3-b0f9-4a6c-b963-50bca3b2000e</id>
@@ -223,7 +223,7 @@
       <category>LifeModule</category>
       <name>Berlin</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>8bb2073b-a4f6-4745-acd9-55d326c57497</id>
@@ -384,7 +384,7 @@
       <category>LifeModule</category>
       <name>Pomorya</name>
       <karma>15</karma>
-      <!--<selectable/>-->
+      <!--<selectable />-->
       <versions>
         <version>
           <id>7562d2a4-6e86-4d85-a3c3-06ce1172fbc1</id>

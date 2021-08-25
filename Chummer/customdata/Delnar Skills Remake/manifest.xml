@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>21079230-7ae7-4842-8dbb-2625bba40b12</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>Delnar_Ersike</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset overhauls the entire Skills system and replaces it with the 5th Edition-Like version of Delnar_Ersike's Active Skills Remake. The remake is meant to fix a lot of the issues and nebulousness that comes with the rules for skills in Shadowrun 5th edition.\n\nTo view the full details of this remake, go to this Google Doc: https://docs.google.com/document/d/1Km8Os33xNXZK8MFLiwn1CUG_sDzGC8WYaBlKokJkHrQ/. </text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+  <incompatibilities>
+    <incompatibility>
+      <name>Remove Automatics as a Skill</name>
+      <guid>1D72E8C0-8FBA-4B85-B2FF-EBD68153BCF5</guid>
+    </incompatibility>
+  </incompatibilities>
+</manifest>

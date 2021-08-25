@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
- using System.Text;
- using System.Windows.Forms;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
- using System.Xml.XPath;
- using Chummer.Backend.Equipment;
+using System.Xml.XPath;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -39,6 +40,7 @@ namespace Chummer
         private readonly HashSet<string> _setBlackMarketMaps;
 
         #region Control Events
+
         public frmSelectArmorMod(Character objCharacter, Armor objParentNode = null)
         {
             InitializeComponent();
@@ -97,12 +99,6 @@ namespace Chummer
             UpdateSelectedArmor();
         }
 
-        private void lstMod_DoubleClick(object sender, EventArgs e)
-        {
-            AddAgain = false;
-            AcceptForm();
-        }
-
         private void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
@@ -126,18 +122,20 @@ namespace Chummer
             }
             UpdateSelectedArmor();
         }
-		#endregion
 
-		#region Properties
-		/// <summary>
-		/// Whether or not the user wants to add another item after this one.
-		/// </summary>
-		public bool AddAgain { get; private set; }
+        #endregion Control Events
 
-		/// <summary>
-		/// Armor's Cost.
-		/// </summary>
-		public decimal ArmorCost
+        #region Properties
+
+        /// <summary>
+        /// Whether or not the user wants to add another item after this one.
+        /// </summary>
+        public bool AddAgain { get; private set; }
+
+        /// <summary>
+        /// Armor's Cost.
+        /// </summary>
+        public decimal ArmorCost
         {
             set => _decArmorCost = value;
         }
@@ -150,55 +148,58 @@ namespace Chummer
             set => _decArmorCapacity = value;
         }
 
-		/// <summary>
-		/// Whether or not the selected Vehicle is used.
-		/// </summary>
-		public bool BlackMarketDiscount { get; private set; }
+        /// <summary>
+        /// Whether or not the selected Vehicle is used.
+        /// </summary>
+        public bool BlackMarketDiscount { get; private set; }
 
-		/// <summary>
-		/// Name of Accessory that was selected in the dialogue.
-		/// </summary>
-		public string SelectedArmorMod { get; private set; } = string.Empty;
+        /// <summary>
+        /// Name of Accessory that was selected in the dialogue.
+        /// </summary>
+        public string SelectedArmorMod { get; private set; } = string.Empty;
 
         /// <summary>
         /// Rating that was selected in the dialogue.
         /// </summary>
         public int SelectedRating => nudRating.ValueAsInt;
 
-		/// <summary>
-		/// Categories that the Armor allows to be used.
-		/// </summary>
-		public string AllowedCategories { get; set; } = string.Empty;
+        /// <summary>
+        /// Categories that the Armor allows to be used.
+        /// </summary>
+        public string AllowedCategories { get; set; } = string.Empty;
 
-		/// <summary>
-		/// Whether or not the General category should be included.
-		/// </summary>
-		public bool ExcludeGeneralCategory { get; set; }
+        /// <summary>
+        /// Whether or not the General category should be included.
+        /// </summary>
+        public bool ExcludeGeneralCategory { get; set; }
 
-		/// <summary>
-		/// Whether or not the item should be added for free.
-		/// </summary>
-		public bool FreeCost => chkFreeItem.Checked;
+        /// <summary>
+        /// Whether or not the item should be added for free.
+        /// </summary>
+        public bool FreeCost => chkFreeItem.Checked;
 
-		/// <summary>
-		/// Markup percentage.
-		/// </summary>
-		public decimal Markup { get; private set; }
+        /// <summary>
+        /// Markup percentage.
+        /// </summary>
+        public decimal Markup { get; private set; }
 
-		/// <summary>
-		/// Capacity display style.
-		/// </summary>
-		public CapacityStyle CapacityDisplayStyle
+        /// <summary>
+        /// Capacity display style.
+        /// </summary>
+        public CapacityStyle CapacityDisplayStyle
         {
             set => _eCapacityStyle = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             UpdateSelectedArmor();
         }
+
         /// <summary>
         /// Update the information for the selected Armor Mod.
         /// </summary>
@@ -213,24 +214,10 @@ namespace Chummer
                 objXmlMod = _xmlBaseDataNode.SelectSingleNode("/chummer/mods/mod[id = " + strSelectedId.CleanXPath() + "]");
             if (objXmlMod == null)
             {
-                lblALabel.Visible = false;
-                lblA.Text = string.Empty;
-                lblRatingLabel.Visible = false;
-                lblRatingNALabel.Visible = false;
-                nudRating.Enabled = false;
-                nudRating.Visible = false;
-                lblAvailLabel.Visible = false;
-                lblAvail.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                chkBlackMarketDiscount.Checked = false;
-                lblCapacityLabel.Visible = false;
-                lblCapacity.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
                 return;
             }
+            SuspendLayout();
             // Extract the Avil and Cost values from the Cyberware info since these may contain formulas and/or be based off of the Rating.
             // This is done using XPathExpression.
 
@@ -285,17 +272,15 @@ namespace Chummer
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
 
             // Cost.
-            chkBlackMarketDiscount.Enabled = _objCharacter.BlackMarketDiscount;
-
+            bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value);
+            chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
             if (!chkBlackMarketDiscount.Checked)
             {
-                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket &&
-                                                 _setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")
-                                                     ?.Value);
+                chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
             }
-            else if (!_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNode("category")?.Value))
+            else if (!blnCanBlackMarketDiscount)
             {
-                //Prevent chkBlackMarketDiscount from being checked if the gear category doesn't match.
+                //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
                 chkBlackMarketDiscount.Checked = false;
             }
 
@@ -368,7 +353,7 @@ namespace Chummer
 
             // Handle YNT Softweave
             if (_eCapacityStyle == CapacityStyle.Zero || string.IsNullOrEmpty(strCapacity))
-                lblCapacity.Text = '['+ 0.ToString(GlobalOptions.CultureInfo) + ']';
+                lblCapacity.Text = '[' + 0.ToString(GlobalOptions.CultureInfo) + ']';
             else
             {
                 if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -396,10 +381,13 @@ namespace Chummer
 
             string strSource = objXmlMod.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = objXmlMod.SelectSingleNode("altpage")?.Value ?? objXmlMod.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblSource.Text = _objCharacter.LanguageBookShort(strSource) + strSpace + strPage;
-            lblSource.SetToolTip(_objCharacter.LanguageBookLong(strSource) + strSpace + LanguageManager.GetString("String_Page") + ' ' + strPage);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
+                GlobalOptions.CultureInfo, _objCharacter);
+            lblSource.Text = objSource.ToString();
+            lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            tlpRight.Visible = true;
+            ResumeLayout();
         }
 
         private void RefreshCurrentList(object sender, EventArgs e)
@@ -408,7 +396,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         private void RefreshList()
         {
@@ -438,23 +426,17 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMod in objXmlModList)
                 {
                     XPathNavigator xmlTestNode = objXmlMod.SelectSingleNode("forbidden/parentdetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     xmlTestNode = objXmlMod.SelectSingleNode("required/parentdetails");
-                    if (xmlTestNode != null)
+                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
                     {
                         // Assumes topmost parent is an AND node
-                        if (!_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     string strId = objXmlMod.SelectSingleNode("id")?.Value;
@@ -484,9 +466,7 @@ namespace Chummer
             string strOldSelected = lstMod.SelectedValue?.ToString();
             _blnLoading = true;
             lstMod.BeginUpdate();
-            lstMod.ValueMember = nameof(ListItem.Value);
-            lstMod.DisplayMember = nameof(ListItem.Name);
-            lstMod.DataSource = lstMods;
+            lstMod.PopulateWithListItems(lstMods);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstMod.SelectedValue = strOldSelected;
@@ -514,6 +494,7 @@ namespace Chummer
         {
             CommonFunctions.OpenPdfFromControl(sender, e);
         }
-        #endregion
+
+        #endregion Methods
     }
 }

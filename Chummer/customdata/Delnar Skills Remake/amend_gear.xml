@@ -21,20 +21,96 @@
 <chummer>
   <gears>
     <gear xpathfilter="name = 'Disenchanting Focus'">
-      <name>Artificing Focus</name>
+      <name>Arcana Focus</name>
       <bonus>
         <specificskill xpathfilter="name = 'Disenchanting'">
-          <name>Artificing</name>
+          <name>Arcana</name>
+        </specificskill>
+      </bonus>
+    </gear>
+    <gear xpathfilter="name = 'Disenchanting Focus, Individualized, Partial'">
+      <name>Arcana Focus, Individualized, Partial</name>
+      <bonus>
+        <specificskill xpathfilter="name = 'Disenchanting'">
+          <name>Arcana</name>
+        </specificskill>
+      </bonus>
+    </gear>
+    <gear xpathfilter="name = 'Disenchanting Focus, Individualized, Complete'">
+      <name>Arcana Focus, Individualized, Complete</name>
+      <bonus>
+        <specificskill xpathfilter="name = 'Disenchanting'">
+          <name>Arcana</name>
         </specificskill>
       </bonus>
     </gear>
     <gear xpathfilter="name = 'Disenchanting Focus Formula'">
-      <name>Artificing Focus Formula</name>
+      <name>Arcana Focus Formula</name>
       <bonus>
         <specificskill xpathfilter="name = 'Disenchanting'">
-          <name>Artificing</name>
+          <name>Arcana</name>
         </specificskill>
       </bonus>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Manipulation'">
+      <name>Ceremony Focus, Manipulation</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Manipulation, Individualized, Partial'">
+      <name>Ceremony Focus, Manipulation, Individualized, Partial</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Manipulation, Individualized, Complete'">
+      <name>Ceremony Focus, Manipulation, Individualized, Complete</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Illusion'">
+      <name>Ceremony Focus, Illusion</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Illusion, Individualized, Partial'">
+      <name>Ceremony Focus, Illusion, Individualized, Partial</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Illusion, Individualized, Complete'">
+      <name>Ceremony Focus, Illusion, Individualized, Complete</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Health'">
+      <name>Ceremony Focus, Health</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Health, Individualized, Partial'">
+      <name>Ceremony Focus, Health, Individualized, Partial</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Health, Individualized, Complete'">
+      <name>Ceremony Focus, Health, Individualized, Complete</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Detection'">
+      <name>Ceremony Focus, Detection</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Detection, Individualized, Partial'">
+      <name>Ceremony Focus, Detection, Individualized, Partial</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Detection, Individualized, Complete'">
+      <name>Ceremony Focus, Detection, Individualized, Complete</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Combat'">
+      <name>Ceremony Focus, Combat</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Combat, Individualized, Partial'">
+      <name>Ceremony Focus, Combat, Individualized, Partial</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus, Combat, Individualized, Complete'">
+      <name>Ceremony Focus, Combat, Individualized, Complete</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus Formula, Manipulation'">
+      <name>Ceremony Focus Formula, Manipulation</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus Formula, Illusion'">
+      <name>Ceremony Focus Formula, Illusion</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus Formula, Health'">
+      <name>Ceremony Focus Formula, Health</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus Formula, Detection'">
+      <name>Ceremony Focus Formula, Detection</name>
+    </gear>
+    <gear xpathfilter="name = 'Ritual Spellcasting Focus Formula, Combat'">
+      <name>Ceremony Focus Formula, Combat</name>
     </gear>
   </gears>
 </chummer>

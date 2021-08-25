@@ -3,8 +3,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using ChummerHub.Client.Sinners;
-using ChummerHub.Client;
-using System.Runtime;
 using IntPtr = System.IntPtr;
 using StructLayoutAttribute = System.Runtime.InteropServices.StructLayoutAttribute;
 using LayoutKind = System.Runtime.InteropServices.LayoutKind;
@@ -59,7 +57,7 @@ namespace ChummerHub.Client.UI
 
             public override int GetHashCode()
             {
-                return new {cbSize, hIcon, iSysIconIndex, iIcon, szPath}.GetHashCode();
+                return (cbSize, hIcon, iSysIconIndex, iIcon, szPath).GetHashCode();
             }
 
             public static bool operator ==(SHSTOCKICONINFO left, SHSTOCKICONINFO right)

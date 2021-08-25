@@ -16,7 +16,6 @@ namespace Chummer
             if (disposing)
             {
                 components?.Dispose();
-                _workerConnectionLoader?.Dispose();
                 _clientDownloader?.Dispose();
                 _clientChangelogDownloader?.Dispose();
             }
@@ -70,7 +69,7 @@ namespace Chummer
             this.cmdUpdate.Tag = "Button_Download";
             this.cmdUpdate.Text = "Download";
             this.cmdUpdate.UseVisualStyleBackColor = true;
-            this.cmdUpdate.Click += new System.EventHandler(this.cmdDownload_Click);
+            this.cmdUpdate.Click += new System.EventHandler(this.cmdUpdate_Click);
             // 
             // pgbOverallProgress
             // 

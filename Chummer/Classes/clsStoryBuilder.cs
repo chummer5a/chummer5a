@@ -16,33 +16,34 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Collections.Concurrent;
- using System.Collections.Generic;
+
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
     public sealed class StoryBuilder
     {
-        private readonly ConcurrentDictionary<string, string> persistenceDictionary = new ConcurrentDictionary<string, string>();
+        private readonly ConcurrentDictionary<string, string> _dicPersistence = new ConcurrentDictionary<string, string>();
         private readonly Character _objCharacter;
 
         public StoryBuilder(Character objCharacter)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
-            persistenceDictionary.TryAdd("metatype", _objCharacter.Metatype.ToLowerInvariant());
-            persistenceDictionary.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
+            _dicPersistence.TryAdd("metatype", _objCharacter.Metatype.ToLowerInvariant());
+            _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
-        public string GetStory(string strLanguage)
+        public async Task<string> GetStory(string strLanguage)
         {
             //Little bit of data required for following steps
-            XmlDocument xmlDoc = _objCharacter.LoadData("lifemodules.xml", strLanguage);
-            XPathNavigator xdoc = _objCharacter.LoadDataXPath("lifemodules.xml", strLanguage);
+            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage);
+            XPathNavigator xdoc = await _objCharacter.LoadDataXPathAsync("lifemodules.xml", strLanguage);
 
             //Generate list of all life modules (xml, we don't save required data to quality) this character has
             List<XmlNode> modules = new List<XmlNode>(10);
@@ -76,7 +77,9 @@ namespace Chummer
             string[] story = new string[modules.Count];
             XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNode("/chummer/storybuilder/macros");
             //Actually "write" the story
-            Parallel.For(0, modules.Count, i => story[i] = Write(new StringBuilder(), modules[i]["story"]?.InnerText ?? string.Empty, 5, xmlBaseMacrosNode).ToString());
+            await Task.Run(() => Parallel.For(0, modules.Count,
+                i => story[i] = Write(new StringBuilder(), modules[i]["story"]?.InnerText ?? string.Empty, 5,
+                    xmlBaseMacrosNode).ToString()));
             return string.Join(Environment.NewLine + Environment.NewLine, story);
         }
 
@@ -149,34 +152,22 @@ namespace Chummer
                 macroName = macroPool = endString;
             }
 
-            //$DOLLAR is defined elsewhere to prevent recursive calling
-            if (macroName == "street")
+            switch (macroName)
             {
-                if (!string.IsNullOrEmpty(_objCharacter.Alias))
-                {
-                    return _objCharacter.Alias;
-                }
-                return "Alias ";
-            }
-            if(macroName == "real")
-            {
-                if (!string.IsNullOrEmpty(_objCharacter.Name))
-                {
-                    return _objCharacter.Name;
-                }
-                return "Unnamed John Doe ";
-            }
-            if (macroName == "year")
-            {
-                if (int.TryParse(_objCharacter.Age, out int year))
-                {
-                    if (int.TryParse(macroPool, out int age))
-                    {
-                        return (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo);
-                    }
-                    return (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
-                }
-                return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
+                //$DOLLAR is defined elsewhere to prevent recursive calling
+                case "street":
+                    return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
+
+                case "real":
+                    return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
+
+                case "year" when int.TryParse(_objCharacter.Age, out int year):
+                    return int.TryParse(macroPool, out int age)
+                        ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalOptions.CultureInfo)
+                        : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalOptions.CultureInfo);
+
+                case "year":
+                    return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
             }
 
             //Did not meet predefined macros, check user defined
@@ -189,46 +180,60 @@ namespace Chummer
                 if (xmlUserMacroFirstChild != null)
                 {
                     //Already defined, no need to do anything fancy
-                    if (!persistenceDictionary.TryGetValue(macroPool, out string strSelectedNodeName))
+                    if (!_dicPersistence.TryGetValue(macroPool, out string strSelectedNodeName))
                     {
-                        if (xmlUserMacroFirstChild.Name == "random")
+                        switch (xmlUserMacroFirstChild.Name)
                         {
-                            XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
-                            if (xmlPossibleNodeList.Count > 0)
-                            {
-                                string[] strNames = new string[xmlPossibleNodeList.Count];
-                                int i = 0;
-                                foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                            case "random":
                                 {
-                                    strNames[i] = xmlLoopNode.Name;
-                                    ++i;
-                                }
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    if (xmlPossibleNodeList.Count > 0)
+                                    {
+                                        int intUseIndex = xmlPossibleNodeList.Count > 1
+                                            ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            : 0;
+                                        int i = 0;
+                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                        {
+                                            if (i == intUseIndex)
+                                            {
+                                                strSelectedNodeName = xmlLoopNode.Name;
+                                                break;
+                                            }
+                                            ++i;
+                                        }
+                                    }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
-                            }
-                        }
-                        else if (xmlUserMacroFirstChild.Name == "persistent")
-                        {
-                            //Any node not named
-                            XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
-                            if (xmlPossibleNodeList.Count > 0)
-                            {
-                                string[] strNames = new string[xmlPossibleNodeList.Count];
-                                int i = 0;
-                                foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                    break;
+                                }
+                            case "persistent":
                                 {
-                                    strNames[i] = xmlLoopNode.Name;
-                                    ++i;
-                                }
+                                    //Any node not named
+                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.Select("./*[not(self::default)]");
+                                    if (xmlPossibleNodeList.Count > 0)
+                                    {
+                                        int intUseIndex = xmlPossibleNodeList.Count > 1
+                                            ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
+                                            : 0;
+                                        int i = 0;
+                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                        {
+                                            if (i == intUseIndex)
+                                            {
+                                                strSelectedNodeName = xmlLoopNode.Name;
+                                                break;
+                                            }
+                                            ++i;
+                                        }
 
-                                strSelectedNodeName = strNames[strNames.Length > 1 ? GlobalOptions.RandomGenerator.NextModuloBiasRemoved(strNames.Length) : 0];
-                                if (!persistenceDictionary.TryAdd(macroPool, strSelectedNodeName))
-                                    persistenceDictionary.TryGetValue(macroPool, out strSelectedNodeName);
-                            }
-                        }
-                        else
-                        {
-                            return "(Formating error in $DOLLAR" + macroName + ")";
+                                        if (!_dicPersistence.TryAdd(macroPool, strSelectedNodeName))
+                                            _dicPersistence.TryGetValue(macroPool, out strSelectedNodeName);
+                                    }
+
+                                    break;
+                                }
+                            default:
+                                return "(Formating error in $DOLLAR" + macroName + ")";
                         }
                     }
 

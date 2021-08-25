@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Windows.Forms;
@@ -28,8 +29,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
-
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strAdvantage = string.Empty;
@@ -47,19 +47,19 @@ namespace Chummer
         private bool _blnMentorMask;
 
         #region Constructor
+
         public MentorSpirit(Character objCharacter, XmlNode xmlNodeMentor = null)
         {
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
             XmlNode namenode = xmlNodeMentor?.SelectSingleNode("name");
-            if(namenode != null)
+            if (namenode != null)
                 Name = namenode.InnerText;
             XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
-            if (typenode != null)
+            if (typenode != null && Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
             {
-                if(Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
-                    _eMentorType = outEnum;
+                _eMentorType = outEnum;
             }
         }
 
@@ -173,7 +173,18 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -208,9 +219,9 @@ namespace Chummer
                 objWriter.WriteElementString("choice2", string.Empty);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
 
-            if (!string.IsNullOrEmpty(strSourceID))
+            if (SourceID != Guid.Empty && !string.IsNullOrEmpty(SourceIDString))
             {
-                objWriter.WriteElementString("id", strSourceID);
+                objWriter.WriteElementString("id", SourceIDString);
             }
 
             objWriter.WriteEndElement();
@@ -230,7 +241,7 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
@@ -282,10 +293,10 @@ namespace Chummer
                 objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor
 
         #region Properties
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -304,10 +315,9 @@ namespace Chummer
         {
             get
             {
-                if (string.IsNullOrEmpty(_strName))
+                if (string.IsNullOrEmpty(_strName) && _objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
                 {
-                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                        _strName = _objCharacter.MentorSpirits[0].Name;
+                    _strName = _objCharacter.MentorSpirits[0].Name;
                 }
                 return _strName;
             }
@@ -404,7 +414,7 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -436,16 +446,11 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
-
-        /// <summary>
-        /// Guid of the Xml Node containing data on this Mentor Spirit or Paragon.
-        /// </summary>
-        public string strSourceID => _guiSourceID.Equals(Guid.Empty) ? string.Empty : _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -472,12 +477,12 @@ namespace Chummer
 
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        #endregion
+        #endregion Properties
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

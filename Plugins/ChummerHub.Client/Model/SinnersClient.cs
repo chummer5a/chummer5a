@@ -1,37 +1,41 @@
-using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Client.Sinners
 {
-    public class MySinnersClient : SinnersClient
+    public partial class SinnersClient
     {
-        public MySinnersClient(string baseUrl, System.Net.Http.HttpClient httpClient): base (baseUrl, httpClient)
-        {
+        private readonly List<string> errors = new List<string>();
 
+        partial void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings)
+        {
+            settings.NullValueHandling = NullValueHandling.Ignore;
+            settings.DateParseHandling = DateParseHandling.None;
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            //settings.Error = delegate (object sender, ErrorEventArgs args)
+            //{
+            //    errors.Add(args.ErrorContext.Error.Message);
+            //    args.ErrorContext.Handled = true;
+            //};
+            settings.Converters.Add(new FixedIsoDateTimeOffsetConverter());
+            settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
         }
 
-        //public override void UpdateJsonSerializerSettings(Newtonsoft.Json.JsonSerializerSettings settings)
+        
+
+        //protected override Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers)
         //{
-        //    settings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-        //}
-
-        protected override Task<ObjectResponseResult<T>> ReadObjectResponseAsync<T>(HttpResponseMessage response, IReadOnlyDictionary<string, IEnumerable<string>> headers)
-        {
-            try
-            {
-                return base.ReadObjectResponseAsync<T>(response, headers);
-            }
-            catch(Exception ae)
-            {
-                this.ReadResponseAsString = !ReadResponseAsString;
-                return base.ReadObjectResponseAsync<T>(response, headers);
-            }
+        //    try
+        //    {
+        //        return base.ReadObjectResponseAsync<T>(response, headers);
+        //    }
+        //    catch(Exception ae)
+        //    {
+        //        this.ReadResponseAsString = !ReadResponseAsString;
+        //        return base.ReadObjectResponseAsync<T>(response, headers);
+        //    }
             
-        }
+        //}
 
         
     }

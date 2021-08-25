@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -31,7 +32,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayName(GlobalOptions.DefaultLanguage)}")]
     public class Enhancement : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -41,11 +42,13 @@ namespace Chummer
         private int _intGrade;
         private Improvement.ImprovementSource _objImprovementSource = Improvement.ImprovementSource.Enhancement;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private SourceString _objCachedSourceDetail;
 
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public Enhancement(Character objCharacter)
         {
             // Create the GUID for the new art.
@@ -70,6 +73,11 @@ namespace Chummer
             _objImprovementSource = objSource;
             if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             _nodBonus = objXmlArtNode["bonus"];
             if (_nodBonus != null)
@@ -118,6 +126,7 @@ namespace Chummer
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
 
             if (Grade >= 0)
@@ -136,7 +145,7 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -151,6 +160,10 @@ namespace Chummer
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -175,9 +188,11 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
@@ -202,7 +217,17 @@ namespace Chummer
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
 
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Bonus node from the XML file.
@@ -242,7 +267,7 @@ namespace Chummer
         public string DisplayNameShort(string strLanguage)
         {
             // Get the translated name if applicable.
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -276,7 +301,6 @@ namespace Chummer
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -294,7 +318,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -307,6 +331,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -336,9 +369,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsEnhancement, bool blnAddCategory = false)
         {
             if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -366,25 +401,23 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return Grade == -1
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return Grade == -1
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
             if (Grade <= 0)
                 return false;
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement")))
-                    return false;
-            }
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteEnhancement")))
+                return false;
 
             _objCharacter.Enhancements.Remove(this);
             foreach (Power objPower in _objCharacter.Powers)
@@ -400,8 +433,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

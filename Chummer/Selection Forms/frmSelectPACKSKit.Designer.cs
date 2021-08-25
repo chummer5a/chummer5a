@@ -39,8 +39,8 @@ namespace Chummer
             this.treContents = new System.Windows.Forms.TreeView();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
-            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpLeft.SuspendLayout();
@@ -93,9 +93,9 @@ namespace Chummer
             // 
             // lblCategory
             // 
-            this.lblCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblCategory.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCategory.AutoSize = true;
-            this.lblCategory.Location = new System.Drawing.Point(3, 6);
+            this.lblCategory.Location = new System.Drawing.Point(3, 7);
             this.lblCategory.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCategory.Name = "lblCategory";
             this.lblCategory.Size = new System.Drawing.Size(52, 13);
@@ -105,8 +105,7 @@ namespace Chummer
             // 
             // cboCategory
             // 
-            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(61, 3);
@@ -126,7 +125,7 @@ namespace Chummer
             this.lstKits.Size = new System.Drawing.Size(297, 361);
             this.lstKits.TabIndex = 2;
             this.lstKits.SelectedIndexChanged += new System.EventHandler(this.lstKits_SelectedIndexChanged);
-            this.lstKits.DoubleClick += new System.EventHandler(this.lstKits_DoubleClick);
+            this.lstKits.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // label1
             // 
@@ -289,8 +288,8 @@ namespace Chummer
         private System.Windows.Forms.TreeView treContents;
         private System.Windows.Forms.Button cmdDelete;
         private Chummer.BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.TableLayoutPanel tlpLeft;
-        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private Chummer.BufferedTableLayoutPanel tlpLeft;
+        private Chummer.BufferedTableLayoutPanel tlpRight;
         private BufferedTableLayoutPanel tlpButtons;
     }
 }

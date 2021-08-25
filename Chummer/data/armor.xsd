@@ -49,7 +49,7 @@
                         </xs:sequence>
                       </xs:complexType>
                     </xs:element>
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="addmodcategory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="forcemodcategory" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="mods" minOccurs="0" maxOccurs="1">
@@ -109,7 +109,7 @@
                     <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="addweapon" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
                     <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="gears" minOccurs="0" maxOccurs="1">
                       <xs:complexType>
                         <xs:sequence>

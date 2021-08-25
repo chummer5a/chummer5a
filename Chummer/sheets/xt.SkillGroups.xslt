@@ -9,12 +9,11 @@
         <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
       </xsl:if>
       <td valign="top" style="valign: top; text-align: right;">
-        * <xsl:value-of select="name"/>
+        * <xsl:value-of select="name" />
       </td>
       <td colspan="2" style="valign: top; text-align: center;">
-        <xsl:value-of select="rating"/>
+        <xsl:value-of select="rating" />
       </td>
     </tr>
-
   </xsl:template>
 </xsl:stylesheet>

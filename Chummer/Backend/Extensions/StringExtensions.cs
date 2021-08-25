@@ -16,11 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using RtfPipe;
 
@@ -62,8 +65,7 @@ namespace Chummer
             // intHead already set to the index of the first instance, for loop's initializer can be left empty
             for (; intHead != -1; intHead = strInput.IndexOf(strOldValue, intEndPositionOfLastReplace, eStringComparison))
             {
-                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace))
-                    .Append(strNewValue);
+                sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace, intHead - intEndPositionOfLastReplace) + strNewValue);
                 intEndPositionOfLastReplace = intHead + strOldValue.Length;
             }
             sbdReturn.Append(strInput.Substring(intEndPositionOfLastReplace));
@@ -85,7 +87,7 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
@@ -96,7 +98,9 @@ namespace Chummer
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrent);
+                string strReturn = new string(achrNewChars, 0, intCurrent);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -134,7 +138,7 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                 int intCurrent = 0;
                 for (int i = 0; i < intLength; ++i)
@@ -149,11 +153,13 @@ namespace Chummer
                     }
 
                     achrNewChars[intCurrent++] = chrLoop;
-                    SkipChar: ;
+                SkipChar:;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                return new string(achrNewChars, 0, intCurrent);
+                string strReturn = new string(achrNewChars, 0, intCurrent);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -173,7 +179,7 @@ namespace Chummer
                     }
 
                     achrNewChars[intCurrent++] = chrLoop;
-                    SkipChar:;
+                SkipChar:;
                 }
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
@@ -272,7 +278,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
+        /// Syntactic sugar for string::Split that uses one separator string in its argument in addition to StringSplitOptions.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="strSeparator">Separator to use.</param>
@@ -405,10 +411,10 @@ namespace Chummer
             if (intLength == 0)
                 return strInput;
             if (funcIsWhiteSpace == null)
-                funcIsWhiteSpace = (x) => char.IsWhiteSpace(x) && !char.IsControl(x);
+                funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalOptions.MaxStackLimit)
             {
-                char[] achrNewChars = new char[intLength];
+                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
                 // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                 int intCurrent = 0;
                 int intLoopWhitespaceCount = 0;
@@ -438,7 +444,9 @@ namespace Chummer
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                 // If the last char is whitespace, we don't copy that, either.
-                return new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                string strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                ArrayPool<char>.Shared.Return(achrNewChars);
+                return strReturn;
             }
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
@@ -584,35 +592,12 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
         {
-            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
+                                                // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
+                                                && (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
-                // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                if (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal))
-                {
-                    int intTrimLength = strToTrim.Length;
-                    return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
-                }
-            }
-            return strInput;
-        }
-
-        /// <summary>
-        /// Trims a substring out of a string if the string ends with it.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="strToTrim">Substring to trim</param>
-        /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
-        /// <returns>Trimmed String</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
-        {
-            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim))
-            {
-                // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                if (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal))
-                {
-                    return strInput.Substring(0, strInput.Length - strToTrim.Length);
-                }
+                int intTrimLength = strToTrim.Length;
+                return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
             }
             return strInput;
         }
@@ -649,6 +634,55 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Escapes a char once out of a string if the string begins with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToTrim">Char to escape</param>
+        /// <returns>String with <paramref name="chrToTrim"/> escaped out once from the beginning of it.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, char chrToTrim)
+        {
+            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
+            {
+                return strInput.Substring(1, strInput.Length - 1);
+            }
+            return strInput;
+        }
+
+        /// <summary>
+        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="achrToTrim">Chars to trim</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
+        {
+            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
+                return strInput.Substring(1, strInput.Length - 1);
+            return strInput;
+        }
+
+        /// <summary>
+        /// Trims a substring out of a string if the string ends with it.
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="strToTrim">Substring to trim</param>
+        /// <param name="blnOmitCheck">If we already know that the string ends with the substring</param>
+        /// <returns>Trimmed String</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string TrimEndOnce(this string strInput, string strToTrim, bool blnOmitCheck = false)
+        {
+            if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
+                                                // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
+                                                && (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
+            {
+                return strInput.Substring(0, strInput.Length - strToTrim.Length);
+            }
+            return strInput;
+        }
+
+        /// <summary>
         /// If a string ends with any substrings, the one with which it begins is trimmed out of the string once.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -680,22 +714,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Escapes a char once out of a string if the string begins with it.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="chrToTrim">Char to escape</param>
-        /// <returns>String with <paramref name="chrToTrim"/> escaped out once from the beginning of it.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStartOnce(this string strInput, char chrToTrim)
-        {
-            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
-            {
-                return strInput.Substring(1, strInput.Length - 1);
-            }
-            return strInput;
-        }
-
-        /// <summary>
         /// Trims a char out of a string if the string ends with it.
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -710,20 +728,6 @@ namespace Chummer
                 if (strInput[intLength - 1] == chrToTrim)
                     return strInput.Substring(0, intLength - 1);
             }
-            return strInput;
-        }
-
-        /// <summary>
-        /// If a string begins with any chars, the one with which it begins is trimmed out of the string once.
-        /// </summary>
-        /// <param name="strInput">String on which to operate</param>
-        /// <param name="achrToTrim">Chars to trim</param>
-        /// <returns>Trimmed String</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
-        {
-            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
-                return strInput.Substring(1, strInput.Length - 1);
             return strInput;
         }
 
@@ -932,6 +936,96 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        string strFactoryResult = string.Empty;
+                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        return strInput.Replace(strOldValue, strFactoryResult);
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    string strFactoryResult = string.Empty;
+                    await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                    return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task<StringBuilder> CheapReplaceAsync(this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            return sbdInput.CheapReplaceAsync(sbdInput?.ToString() ?? string.Empty, strOldValue, funcNewValueFactory, eStringComparison);
+        }
+
+        /// <summary>
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> CheapReplaceAsync(this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        {
+            if (sbdInput?.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strOriginal.Contains(strOldValue))
+                    {
+                        string strFactoryResult = string.Empty;
+                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        sbdInput.Replace(strOldValue, strFactoryResult);
+                    }
+                }
+                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    string strFactoryResult = string.Empty;
+                    Task tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                        x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                    string strOldStringBuilderValue = sbdInput.ToString();
+                    sbdInput.Clear();
+                    await tskGetValue;
+                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, strFactoryResult, eStringComparison));
+                }
+            }
+
+            return sbdInput;
+        }
+
+        /// <summary>
         /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -949,11 +1043,8 @@ namespace Chummer
             bool blnFirst = true;
             foreach (T objValue in lstValues)
             {
-                if (blnFirst)
-                    blnFirst = false;
-                else
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(objValue);
+                sbdInput.Append(blnFirst ? objValue.ToString() : strSeparator + objValue);
+                blnFirst = false;
             }
             return sbdInput;
         }
@@ -975,11 +1066,8 @@ namespace Chummer
             bool blnFirst = true;
             foreach (string strValue in lstValues)
             {
-                if (blnFirst)
-                    blnFirst = false;
-                else
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(strValue);
+                sbdInput.Append(blnFirst ? strValue : strSeparator + strValue);
+                blnFirst = false;
             }
             return sbdInput;
         }
@@ -1008,9 +1096,8 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             for (int i = 0; i < intCount; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i + intStartIndex]);
+                string strLoop = astrValues[i + intStartIndex];
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1029,11 +1116,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(sbdInput));
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for(int i = 0; i < astrValues.Length; ++i)
+            for (int i = 0; i < astrValues.Length; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i]);
+                string strLoop = astrValues[i];
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1054,9 +1140,8 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(aobjValues));
             for (int i = 0; i < aobjValues.Length; ++i)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(aobjValues[i]);
+                string strLoop = aobjValues[i].ToString();
+                sbdInput.Append(i > 0 ? strSeparator + strLoop : strLoop);
             }
             return sbdInput;
         }
@@ -1072,7 +1157,7 @@ namespace Chummer
             return Guid.TryParse(strGuid, out Guid _);
         }
 
-        private static readonly Dictionary<string, string> s_dicLigaturesMap = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> s_DicLigaturesMap = new Dictionary<string, string>
         {
             {"ﬀ", "ff"},
             {"ﬃ", "ffi"},
@@ -1094,7 +1179,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             string strReturn = strInput;
-            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+            foreach (KeyValuePair<string, string> kvpLigature in s_DicLigaturesMap)
                 strReturn = strReturn.Replace(kvpLigature.Key, kvpLigature.Value);
             return strReturn;
         }
@@ -1107,7 +1192,7 @@ namespace Chummer
         {
             if (sbdInput == null)
                 throw new ArgumentNullException(nameof(sbdInput));
-            foreach (KeyValuePair<string, string> kvpLigature in s_dicLigaturesMap)
+            foreach (KeyValuePair<string, string> kvpLigature in s_DicLigaturesMap)
                 sbdInput.Replace(kvpLigature.Key, kvpLigature.Value);
             return sbdInput;
         }
@@ -1207,8 +1292,8 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             return blnEscaped
-                ? rgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
-                : rgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
+                ? s_RgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
+                : s_RgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
         }
 
         /// <summary>
@@ -1217,8 +1302,8 @@ namespace Chummer
         /// <param name="strSearch">String to clean.</param>
         public static string CleanXPath(this string strSearch)
         {
-            if(string.IsNullOrEmpty(strSearch))
-                return "\"\"" ;
+            if (string.IsNullOrEmpty(strSearch))
+                return "\"\"";
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
@@ -1240,7 +1325,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strToClean">String to clean.</param>
         /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
-        public static string CleanForHTML(this string strToClean)
+        public static string CleanForHtml(this string strToClean)
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
@@ -1249,7 +1334,7 @@ namespace Chummer
                 .Replace("&amp;amp;", "&amp;")
                 .Replace("<", "&lt;")
                 .Replace(">", "&gt;");
-            return rgxLineEndingsExpression.Replace(strReturn, "<br />");
+            return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
         }
 
         /// <summary>
@@ -1263,12 +1348,13 @@ namespace Chummer
                 return string.Empty;
             if (strInput.IsRtf())
                 return strInput;
-            lock (rtbRtfManipulatorLock)
+            strInput = strInput.NormalizeWhiteSpace();
+            lock (s_RtbRtfManipulatorLock)
             {
-                if (!rtbRtfManipulator.IsHandleCreated)
-                    rtbRtfManipulator.CreateControl();
-                rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Text = strInput.NormalizeWhiteSpace());
-                return rtbRtfManipulator.Rtf;
+                if (!s_RtbRtfManipulator.IsHandleCreated)
+                    s_RtbRtfManipulator.CreateControl();
+                s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Text = strInput);
+                return s_RtbRtfManipulator.Rtf;
             }
         }
 
@@ -1285,20 +1371,20 @@ namespace Chummer
             if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                lock (rtbRtfManipulatorLock)
+                lock (s_RtbRtfManipulatorLock)
                 {
-                    if (!rtbRtfManipulator.IsHandleCreated)
-                        rtbRtfManipulator.CreateControl();
+                    if (!s_RtbRtfManipulator.IsHandleCreated)
+                        s_RtbRtfManipulator.CreateControl();
                     try
                     {
-                        rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Rtf = strInput);
+                        s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
                     }
                     catch (ArgumentException)
                     {
                         return strInput.NormalizeWhiteSpace();
                     }
 
-                    return rtbRtfManipulator.Text.NormalizeWhiteSpace();
+                    return s_RtbRtfManipulator.Text.NormalizeWhiteSpace();
                 }
             }
             return strInput.NormalizeWhiteSpace();
@@ -1308,7 +1394,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHTML();
+            return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
         }
 
         /// <summary>
@@ -1324,13 +1410,13 @@ namespace Chummer
                 if (strInputTrimmed.StartsWith(@"{/rtf1", StringComparison.Ordinal)
                     || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
                 {
-                    lock (rtbRtfManipulatorLock)
+                    lock (s_RtbRtfManipulatorLock)
                     {
-                        if (!rtbRtfManipulator.IsHandleCreated)
-                            rtbRtfManipulator.CreateControl();
+                        if (!s_RtbRtfManipulator.IsHandleCreated)
+                            s_RtbRtfManipulator.CreateControl();
                         try
                         {
-                            rtbRtfManipulator.DoThreadSafe(() => rtbRtfManipulator.Rtf = strInput);
+                            s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
                         }
                         catch (ArgumentException)
                         {
@@ -1351,16 +1437,19 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && rgxHtmlTagExpression.IsMatch(strInput);
+            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.IsMatch(strInput);
         }
 
-        private static readonly Regex rgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
+        private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private static readonly Regex rgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
+
+        private static readonly Regex s_RgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private static readonly Regex rgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
+
+        private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
-        private static readonly object rtbRtfManipulatorLock = new object();
-        private static readonly RichTextBox rtbRtfManipulator = new RichTextBox();
+
+        private static readonly object s_RtbRtfManipulatorLock = new object();
+        private static readonly RichTextBox s_RtbRtfManipulator = new RichTextBox();
     }
 }

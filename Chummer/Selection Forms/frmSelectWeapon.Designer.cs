@@ -60,58 +60,60 @@ namespace Chummer
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
             this.tlpWeapon = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblWeaponConceal = new System.Windows.Forms.Label();
-            this.lblWeaponConcealLabel = new System.Windows.Forms.Label();
             this.lstWeapon = new System.Windows.Forms.ListBox();
-            this.lblWeaponRC = new System.Windows.Forms.Label();
-            this.lblWeaponRCLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAmmo = new System.Windows.Forms.Label();
-            this.lblWeaponAmmoLabel = new System.Windows.Forms.Label();
-            this.lblWeaponMode = new System.Windows.Forms.Label();
-            this.lblWeaponModeLabel = new System.Windows.Forms.Label();
-            this.lblWeaponDamageLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAPLabel = new System.Windows.Forms.Label();
-            this.lblWeaponReachLabel = new System.Windows.Forms.Label();
-            this.lblWeaponReach = new System.Windows.Forms.Label();
-            this.lblWeaponDamage = new System.Windows.Forms.Label();
-            this.lblWeaponAP = new System.Windows.Forms.Label();
-            this.lblSourceLabel = new System.Windows.Forms.Label();
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.lblSource = new System.Windows.Forms.Label();
-            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
             this.gpbIncludedAccessories = new System.Windows.Forms.GroupBox();
             this.pnlIncludedAccessories = new System.Windows.Forms.Panel();
             this.lblIncludedAccessories = new System.Windows.Forms.Label();
-            this.lblWeaponCostLabel = new System.Windows.Forms.Label();
-            this.lblWeaponCost = new System.Windows.Forms.Label();
-            this.lblMarkupLabel = new System.Windows.Forms.Label();
+            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblWeaponConceal = new System.Windows.Forms.Label();
+            this.lblSourceLabel = new System.Windows.Forms.Label();
+            this.lblWeaponDamageLabel = new System.Windows.Forms.Label();
+            this.lblSource = new System.Windows.Forms.Label();
+            this.lblWeaponConcealLabel = new System.Windows.Forms.Label();
+            this.lblWeaponDamage = new System.Windows.Forms.Label();
+            this.lblWeaponRCLabel = new System.Windows.Forms.Label();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAvail = new System.Windows.Forms.Label();
-            this.lblTestLabel = new System.Windows.Forms.Label();
-            this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
+            this.lblMarkupLabel = new System.Windows.Forms.Label();
+            this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
+            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.lblWeaponMode = new System.Windows.Forms.Label();
+            this.lblWeaponCost = new System.Windows.Forms.Label();
+            this.lblWeaponCostLabel = new System.Windows.Forms.Label();
+            this.lblWeaponAmmo = new System.Windows.Forms.Label();
+            this.lblWeaponModeLabel = new System.Windows.Forms.Label();
+            this.lblWeaponRC = new System.Windows.Forms.Label();
+            this.lblWeaponReach = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
+            this.lblTestLabel = new System.Windows.Forms.Label();
+            this.lblWeaponAvail = new System.Windows.Forms.Label();
+            this.lblWeaponAvailLabel = new System.Windows.Forms.Label();
+            this.lblWeaponReachLabel = new System.Windows.Forms.Label();
+            this.lblWeaponAmmoLabel = new System.Windows.Forms.Label();
+            this.lblWeaponAPLabel = new System.Windows.Forms.Label();
+            this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
             this.lblWeaponAccuracy = new System.Windows.Forms.Label();
+            this.lblWeaponAP = new System.Windows.Forms.Label();
             this.tabBrowse = new System.Windows.Forms.TabPage();
             this.tmrSearch = new System.Windows.Forms.Timer(this.components);
-            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.dgvWeapons)).BeginInit();
             this.tabControl.SuspendLayout();
             this.tabListView.SuspendLayout();
             this.tlpWeapon.SuspendLayout();
-            this.flpCheckBoxes.SuspendLayout();
             this.gpbIncludedAccessories.SuspendLayout();
             this.pnlIncludedAccessories.SuspendLayout();
+            this.tlpRight.SuspendLayout();
             this.flpMarkup.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
+            this.flpCheckBoxes.SuspendLayout();
             this.tabBrowse.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -213,6 +215,8 @@ namespace Chummer
             this.dgvWeapons.AllowUserToDeleteRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
             this.dgvWeapons.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
+            this.dgvWeapons.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvWeapons.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
             dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
@@ -248,7 +252,7 @@ namespace Chummer
             this.dgvWeapons.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvWeapons.Size = new System.Drawing.Size(752, 455);
             this.dgvWeapons.TabIndex = 36;
-            this.dgvWeapons.DoubleClick += new System.EventHandler(this.dgvWeapons_DoubleClick);
+            this.dgvWeapons.DoubleClick += new System.EventHandler(this.cmdOK_Click);
             // 
             // dgvc_Guid
             // 
@@ -434,7 +438,7 @@ namespace Chummer
             // 
             // tabControl
             // 
-            this.tableLayoutPanel2.SetColumnSpan(this.tabControl, 4);
+            this.tlpMain.SetColumnSpan(this.tabControl, 4);
             this.tabControl.Controls.Add(this.tabListView);
             this.tabControl.Controls.Add(this.tabBrowse);
             this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -462,86 +466,32 @@ namespace Chummer
             // 
             this.tlpWeapon.AutoSize = true;
             this.tlpWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpWeapon.ColumnCount = 5;
-            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpWeapon.Controls.Add(this.lblWeaponConceal, 1, 3);
-            this.tlpWeapon.Controls.Add(this.lblWeaponConcealLabel, 0, 3);
+            this.tlpWeapon.ColumnCount = 2;
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tlpWeapon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tlpWeapon.Controls.Add(this.lstWeapon, 0, 0);
-            this.tlpWeapon.Controls.Add(this.lblWeaponRC, 4, 0);
-            this.tlpWeapon.Controls.Add(this.lblWeaponRCLabel, 3, 0);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAmmo, 4, 1);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAmmoLabel, 3, 1);
-            this.tlpWeapon.Controls.Add(this.lblWeaponMode, 4, 2);
-            this.tlpWeapon.Controls.Add(this.lblWeaponModeLabel, 3, 2);
-            this.tlpWeapon.Controls.Add(this.lblWeaponDamageLabel, 1, 0);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAPLabel, 1, 1);
-            this.tlpWeapon.Controls.Add(this.lblWeaponReachLabel, 1, 2);
-            this.tlpWeapon.Controls.Add(this.lblWeaponReach, 2, 2);
-            this.tlpWeapon.Controls.Add(this.lblWeaponDamage, 2, 0);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAP, 2, 1);
-            this.tlpWeapon.Controls.Add(this.lblSourceLabel, 1, 7);
-            this.tlpWeapon.Controls.Add(this.chkHideOverAvailLimit, 1, 8);
-            this.tlpWeapon.Controls.Add(this.chkShowOnlyAffordItems, 1, 9);
-            this.tlpWeapon.Controls.Add(this.lblSource, 2, 7);
-            this.tlpWeapon.Controls.Add(this.flpCheckBoxes, 1, 6);
-            this.tlpWeapon.Controls.Add(this.gpbIncludedAccessories, 1, 10);
-            this.tlpWeapon.Controls.Add(this.lblWeaponCostLabel, 1, 5);
-            this.tlpWeapon.Controls.Add(this.lblWeaponCost, 2, 5);
-            this.tlpWeapon.Controls.Add(this.lblMarkupLabel, 3, 5);
-            this.tlpWeapon.Controls.Add(this.flpMarkup, 4, 5);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAvailLabel, 1, 4);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAvail, 2, 4);
-            this.tlpWeapon.Controls.Add(this.lblTestLabel, 3, 4);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAccuracyLabel, 3, 3);
-            this.tlpWeapon.Controls.Add(this.lblTest, 4, 4);
-            this.tlpWeapon.Controls.Add(this.lblWeaponAccuracy, 4, 3);
+            this.tlpWeapon.Controls.Add(this.chkHideOverAvailLimit, 1, 2);
+            this.tlpWeapon.Controls.Add(this.chkShowOnlyAffordItems, 1, 3);
+            this.tlpWeapon.Controls.Add(this.gpbIncludedAccessories, 1, 1);
+            this.tlpWeapon.Controls.Add(this.tlpRight, 1, 0);
             this.tlpWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpWeapon.Location = new System.Drawing.Point(3, 3);
             this.tlpWeapon.Name = "tlpWeapon";
-            this.tlpWeapon.RowCount = 11;
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowCount = 4;
             this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpWeapon.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpWeapon.Size = new System.Drawing.Size(752, 455);
             this.tlpWeapon.TabIndex = 71;
-            // 
-            // lblWeaponConceal
-            // 
-            this.lblWeaponConceal.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponConceal.AutoSize = true;
-            this.lblWeaponConceal.Location = new System.Drawing.Point(360, 81);
-            this.lblWeaponConceal.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponConceal.Name = "lblWeaponConceal";
-            this.lblWeaponConceal.Size = new System.Drawing.Size(52, 13);
-            this.lblWeaponConceal.TabIndex = 76;
-            this.lblWeaponConceal.Text = "[Conceal]";
-            this.lblWeaponConceal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblWeaponConcealLabel
-            // 
-            this.lblWeaponConcealLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponConcealLabel.AutoSize = true;
-            this.lblWeaponConcealLabel.Location = new System.Drawing.Point(305, 81);
-            this.lblWeaponConcealLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponConcealLabel.Name = "lblWeaponConcealLabel";
-            this.lblWeaponConcealLabel.Size = new System.Drawing.Size(49, 13);
-            this.lblWeaponConcealLabel.TabIndex = 75;
-            this.lblWeaponConcealLabel.Tag = "Label_Conceal";
-            this.lblWeaponConcealLabel.Text = "Conceal:";
-            this.lblWeaponConcealLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lstWeapon
             // 
@@ -549,182 +499,18 @@ namespace Chummer
             this.lstWeapon.FormattingEnabled = true;
             this.lstWeapon.Location = new System.Drawing.Point(3, 3);
             this.lstWeapon.Name = "lstWeapon";
-            this.tlpWeapon.SetRowSpan(this.lstWeapon, 11);
-            this.lstWeapon.Size = new System.Drawing.Size(295, 449);
+            this.tlpWeapon.SetRowSpan(this.lstWeapon, 4);
+            this.lstWeapon.Size = new System.Drawing.Size(294, 449);
             this.lstWeapon.TabIndex = 66;
             this.lstWeapon.SelectedIndexChanged += new System.EventHandler(this.lstWeapon_SelectedIndexChanged);
             this.lstWeapon.DoubleClick += new System.EventHandler(this.cmdOK_Click);
-            // 
-            // lblWeaponRC
-            // 
-            this.lblWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponRC.AutoSize = true;
-            this.lblWeaponRC.Location = new System.Drawing.Point(588, 6);
-            this.lblWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponRC.Name = "lblWeaponRC";
-            this.lblWeaponRC.Size = new System.Drawing.Size(28, 13);
-            this.lblWeaponRC.TabIndex = 43;
-            this.lblWeaponRC.Text = "[RC]";
-            this.lblWeaponRC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblWeaponRCLabel
-            // 
-            this.lblWeaponRCLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponRCLabel.AutoSize = true;
-            this.lblWeaponRCLabel.Location = new System.Drawing.Point(557, 6);
-            this.lblWeaponRCLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponRCLabel.Name = "lblWeaponRCLabel";
-            this.lblWeaponRCLabel.Size = new System.Drawing.Size(25, 13);
-            this.lblWeaponRCLabel.TabIndex = 42;
-            this.lblWeaponRCLabel.Tag = "Label_RC";
-            this.lblWeaponRCLabel.Text = "RC:";
-            this.lblWeaponRCLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblWeaponAmmo
-            // 
-            this.lblWeaponAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponAmmo.AutoSize = true;
-            this.lblWeaponAmmo.Location = new System.Drawing.Point(588, 31);
-            this.lblWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponAmmo.Name = "lblWeaponAmmo";
-            this.lblWeaponAmmo.Size = new System.Drawing.Size(42, 13);
-            this.lblWeaponAmmo.TabIndex = 47;
-            this.lblWeaponAmmo.Text = "[Ammo]";
-            this.lblWeaponAmmo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblWeaponAmmoLabel
-            // 
-            this.lblWeaponAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponAmmoLabel.AutoSize = true;
-            this.lblWeaponAmmoLabel.Location = new System.Drawing.Point(543, 31);
-            this.lblWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponAmmoLabel.Name = "lblWeaponAmmoLabel";
-            this.lblWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
-            this.lblWeaponAmmoLabel.TabIndex = 46;
-            this.lblWeaponAmmoLabel.Tag = "Label_Ammo";
-            this.lblWeaponAmmoLabel.Text = "Ammo:";
-            this.lblWeaponAmmoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblWeaponMode
-            // 
-            this.lblWeaponMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponMode.AutoSize = true;
-            this.lblWeaponMode.Location = new System.Drawing.Point(588, 56);
-            this.lblWeaponMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponMode.Name = "lblWeaponMode";
-            this.lblWeaponMode.Size = new System.Drawing.Size(40, 13);
-            this.lblWeaponMode.TabIndex = 51;
-            this.lblWeaponMode.Text = "[Mode]";
-            this.lblWeaponMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblWeaponModeLabel
-            // 
-            this.lblWeaponModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponModeLabel.AutoSize = true;
-            this.lblWeaponModeLabel.Location = new System.Drawing.Point(545, 56);
-            this.lblWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponModeLabel.Name = "lblWeaponModeLabel";
-            this.lblWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
-            this.lblWeaponModeLabel.TabIndex = 50;
-            this.lblWeaponModeLabel.Tag = "Label_Mode";
-            this.lblWeaponModeLabel.Text = "Mode:";
-            this.lblWeaponModeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblWeaponDamageLabel
-            // 
-            this.lblWeaponDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponDamageLabel.AutoSize = true;
-            this.lblWeaponDamageLabel.Location = new System.Drawing.Point(304, 6);
-            this.lblWeaponDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponDamageLabel.Name = "lblWeaponDamageLabel";
-            this.lblWeaponDamageLabel.Size = new System.Drawing.Size(50, 13);
-            this.lblWeaponDamageLabel.TabIndex = 40;
-            this.lblWeaponDamageLabel.Tag = "Label_Damage";
-            this.lblWeaponDamageLabel.Text = "Damage:";
-            this.lblWeaponDamageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblWeaponAPLabel
-            // 
-            this.lblWeaponAPLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponAPLabel.AutoSize = true;
-            this.lblWeaponAPLabel.Location = new System.Drawing.Point(330, 31);
-            this.lblWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponAPLabel.Name = "lblWeaponAPLabel";
-            this.lblWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
-            this.lblWeaponAPLabel.TabIndex = 44;
-            this.lblWeaponAPLabel.Tag = "Label_AP";
-            this.lblWeaponAPLabel.Text = "AP:";
-            this.lblWeaponAPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblWeaponReachLabel
-            // 
-            this.lblWeaponReachLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponReachLabel.AutoSize = true;
-            this.lblWeaponReachLabel.Location = new System.Drawing.Point(312, 56);
-            this.lblWeaponReachLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponReachLabel.Name = "lblWeaponReachLabel";
-            this.lblWeaponReachLabel.Size = new System.Drawing.Size(42, 13);
-            this.lblWeaponReachLabel.TabIndex = 48;
-            this.lblWeaponReachLabel.Tag = "Label_Reach";
-            this.lblWeaponReachLabel.Text = "Reach:";
-            this.lblWeaponReachLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblWeaponReach
-            // 
-            this.lblWeaponReach.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponReach.AutoSize = true;
-            this.lblWeaponReach.Location = new System.Drawing.Point(360, 56);
-            this.lblWeaponReach.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponReach.Name = "lblWeaponReach";
-            this.lblWeaponReach.Size = new System.Drawing.Size(45, 13);
-            this.lblWeaponReach.TabIndex = 49;
-            this.lblWeaponReach.Text = "[Reach]";
-            this.lblWeaponReach.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblWeaponDamage
-            // 
-            this.lblWeaponDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponDamage.AutoSize = true;
-            this.lblWeaponDamage.Location = new System.Drawing.Point(360, 6);
-            this.lblWeaponDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponDamage.Name = "lblWeaponDamage";
-            this.lblWeaponDamage.Size = new System.Drawing.Size(53, 13);
-            this.lblWeaponDamage.TabIndex = 41;
-            this.lblWeaponDamage.Text = "[Damage]";
-            this.lblWeaponDamage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblWeaponAP
-            // 
-            this.lblWeaponAP.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponAP.AutoSize = true;
-            this.lblWeaponAP.Location = new System.Drawing.Point(360, 31);
-            this.lblWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponAP.Name = "lblWeaponAP";
-            this.lblWeaponAP.Size = new System.Drawing.Size(27, 13);
-            this.lblWeaponAP.TabIndex = 45;
-            this.lblWeaponAP.Text = "[AP]";
-            this.lblWeaponAP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblSourceLabel
-            // 
-            this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(310, 180);
-            this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSourceLabel.Name = "lblSourceLabel";
-            this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSourceLabel.TabIndex = 64;
-            this.lblSourceLabel.Tag = "Label_Source";
-            this.lblSourceLabel.Text = "Source:";
-            this.lblSourceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // chkHideOverAvailLimit
             // 
             this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
-            this.tlpWeapon.SetColumnSpan(this.chkHideOverAvailLimit, 4);
             this.chkHideOverAvailLimit.DefaultColorScheme = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(304, 203);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(303, 409);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
@@ -738,9 +524,8 @@ namespace Chummer
             // 
             this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
-            this.tlpWeapon.SetColumnSpan(this.chkShowOnlyAffordItems, 4);
             this.chkShowOnlyAffordItems.DefaultColorScheme = true;
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(304, 228);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(303, 434);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
@@ -750,71 +535,15 @@ namespace Chummer
             this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
             this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
-            // lblSource
-            // 
-            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblSource.AutoSize = true;
-            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(360, 180);
-            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSource.TabIndex = 65;
-            this.lblSource.Text = "[Source]";
-            this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
-            // flpCheckBoxes
-            // 
-            this.flpCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flpCheckBoxes.AutoSize = true;
-            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpWeapon.SetColumnSpan(this.flpCheckBoxes, 4);
-            this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
-            this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
-            this.flpCheckBoxes.Location = new System.Drawing.Point(301, 151);
-            this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
-            this.flpCheckBoxes.Name = "flpCheckBoxes";
-            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 23);
-            this.flpCheckBoxes.TabIndex = 73;
-            // 
-            // chkFreeItem
-            // 
-            this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkFreeItem.AutoSize = true;
-            this.chkFreeItem.DefaultColorScheme = true;
-            this.chkFreeItem.Location = new System.Drawing.Point(3, 3);
-            this.chkFreeItem.Name = "chkFreeItem";
-            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
-            this.chkFreeItem.TabIndex = 58;
-            this.chkFreeItem.Tag = "Checkbox_Free";
-            this.chkFreeItem.Text = "Free!";
-            this.chkFreeItem.UseVisualStyleBackColor = true;
-            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
-            // 
-            // chkBlackMarketDiscount
-            // 
-            this.chkBlackMarketDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkBlackMarketDiscount.AutoSize = true;
-            this.chkBlackMarketDiscount.DefaultColorScheme = true;
-            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 3);
-            this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
-            this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
-            this.chkBlackMarketDiscount.TabIndex = 69;
-            this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
-            this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
-            this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
-            this.chkBlackMarketDiscount.Visible = false;
-            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
-            // 
             // gpbIncludedAccessories
             // 
-            this.tlpWeapon.SetColumnSpan(this.gpbIncludedAccessories, 4);
+            this.gpbIncludedAccessories.AutoSize = true;
+            this.gpbIncludedAccessories.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbIncludedAccessories.Controls.Add(this.pnlIncludedAccessories);
             this.gpbIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpbIncludedAccessories.Location = new System.Drawing.Point(304, 252);
+            this.gpbIncludedAccessories.Location = new System.Drawing.Point(303, 204);
             this.gpbIncludedAccessories.Name = "gpbIncludedAccessories";
-            this.gpbIncludedAccessories.Size = new System.Drawing.Size(445, 200);
+            this.gpbIncludedAccessories.Size = new System.Drawing.Size(446, 198);
             this.gpbIncludedAccessories.TabIndex = 74;
             this.gpbIncludedAccessories.TabStop = false;
             this.gpbIncludedAccessories.Tag = "Label_SelectWeapon_IncludedItems";
@@ -824,62 +553,165 @@ namespace Chummer
             // 
             this.pnlIncludedAccessories.AutoScroll = true;
             this.pnlIncludedAccessories.AutoScrollMinSize = new System.Drawing.Size(0, 60);
-            this.pnlIncludedAccessories.AutoSize = true;
             this.pnlIncludedAccessories.Controls.Add(this.lblIncludedAccessories);
             this.pnlIncludedAccessories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pnlIncludedAccessories.Location = new System.Drawing.Point(3, 16);
             this.pnlIncludedAccessories.Name = "pnlIncludedAccessories";
-            this.pnlIncludedAccessories.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.pnlIncludedAccessories.Size = new System.Drawing.Size(439, 181);
+            this.pnlIncludedAccessories.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlIncludedAccessories.Size = new System.Drawing.Size(440, 179);
             this.pnlIncludedAccessories.TabIndex = 0;
             // 
             // lblIncludedAccessories
             // 
             this.lblIncludedAccessories.AutoSize = true;
-            this.lblIncludedAccessories.Location = new System.Drawing.Point(0, 0);
+            this.lblIncludedAccessories.Location = new System.Drawing.Point(3, 6);
             this.lblIncludedAccessories.Name = "lblIncludedAccessories";
-            this.lblIncludedAccessories.Padding = new System.Windows.Forms.Padding(0, 3, 0, 3);
-            this.lblIncludedAccessories.Size = new System.Drawing.Size(39, 19);
+            this.lblIncludedAccessories.Size = new System.Drawing.Size(39, 13);
             this.lblIncludedAccessories.TabIndex = 63;
             this.lblIncludedAccessories.Text = "[None]";
             // 
-            // lblWeaponCostLabel
+            // tlpRight
             // 
-            this.lblWeaponCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponCostLabel.AutoSize = true;
-            this.lblWeaponCostLabel.Location = new System.Drawing.Point(323, 131);
-            this.lblWeaponCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponCostLabel.Name = "lblWeaponCostLabel";
-            this.lblWeaponCostLabel.Size = new System.Drawing.Size(31, 13);
-            this.lblWeaponCostLabel.TabIndex = 56;
-            this.lblWeaponCostLabel.Tag = "Label_Cost";
-            this.lblWeaponCostLabel.Text = "Cost:";
-            this.lblWeaponCostLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.tlpRight.AutoSize = true;
+            this.tlpRight.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.ColumnCount = 4;
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpRight.Controls.Add(this.lblWeaponConceal, 1, 3);
+            this.tlpRight.Controls.Add(this.lblSourceLabel, 0, 7);
+            this.tlpRight.Controls.Add(this.lblWeaponDamageLabel, 0, 0);
+            this.tlpRight.Controls.Add(this.lblSource, 1, 7);
+            this.tlpRight.Controls.Add(this.lblWeaponConcealLabel, 0, 3);
+            this.tlpRight.Controls.Add(this.lblWeaponDamage, 1, 0);
+            this.tlpRight.Controls.Add(this.lblWeaponRCLabel, 2, 0);
+            this.tlpRight.Controls.Add(this.flpMarkup, 3, 5);
+            this.tlpRight.Controls.Add(this.lblMarkupLabel, 2, 5);
+            this.tlpRight.Controls.Add(this.flpCheckBoxes, 0, 6);
+            this.tlpRight.Controls.Add(this.lblWeaponMode, 3, 2);
+            this.tlpRight.Controls.Add(this.lblWeaponCost, 1, 5);
+            this.tlpRight.Controls.Add(this.lblWeaponCostLabel, 0, 5);
+            this.tlpRight.Controls.Add(this.lblWeaponAmmo, 3, 1);
+            this.tlpRight.Controls.Add(this.lblWeaponModeLabel, 2, 2);
+            this.tlpRight.Controls.Add(this.lblWeaponRC, 3, 0);
+            this.tlpRight.Controls.Add(this.lblWeaponReach, 1, 2);
+            this.tlpRight.Controls.Add(this.lblTest, 3, 4);
+            this.tlpRight.Controls.Add(this.lblTestLabel, 2, 4);
+            this.tlpRight.Controls.Add(this.lblWeaponAvail, 1, 4);
+            this.tlpRight.Controls.Add(this.lblWeaponAvailLabel, 0, 4);
+            this.tlpRight.Controls.Add(this.lblWeaponReachLabel, 0, 2);
+            this.tlpRight.Controls.Add(this.lblWeaponAmmoLabel, 2, 1);
+            this.tlpRight.Controls.Add(this.lblWeaponAPLabel, 0, 1);
+            this.tlpRight.Controls.Add(this.lblWeaponAccuracyLabel, 2, 3);
+            this.tlpRight.Controls.Add(this.lblWeaponAccuracy, 3, 3);
+            this.tlpRight.Controls.Add(this.lblWeaponAP, 1, 1);
+            this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpRight.Location = new System.Drawing.Point(300, 0);
+            this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpRight.Name = "tlpRight";
+            this.tlpRight.RowCount = 8;
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpRight.Size = new System.Drawing.Size(452, 201);
+            this.tlpRight.TabIndex = 77;
             // 
-            // lblWeaponCost
+            // lblWeaponConceal
             // 
-            this.lblWeaponCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponCost.AutoSize = true;
-            this.lblWeaponCost.Location = new System.Drawing.Point(360, 131);
-            this.lblWeaponCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponCost.Name = "lblWeaponCost";
-            this.lblWeaponCost.Size = new System.Drawing.Size(34, 13);
-            this.lblWeaponCost.TabIndex = 57;
-            this.lblWeaponCost.Text = "[Cost]";
-            this.lblWeaponCost.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblWeaponConceal.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponConceal.AutoSize = true;
+            this.lblWeaponConceal.Location = new System.Drawing.Point(59, 81);
+            this.lblWeaponConceal.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponConceal.Name = "lblWeaponConceal";
+            this.lblWeaponConceal.Size = new System.Drawing.Size(52, 13);
+            this.lblWeaponConceal.TabIndex = 76;
+            this.lblWeaponConceal.Text = "[Conceal]";
+            this.lblWeaponConceal.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblMarkupLabel
+            // lblSourceLabel
             // 
-            this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(536, 131);
-            this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMarkupLabel.Name = "lblMarkupLabel";
-            this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
-            this.lblMarkupLabel.TabIndex = 59;
-            this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
-            this.lblMarkupLabel.Text = "Markup:";
-            this.lblMarkupLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSourceLabel.AutoSize = true;
+            this.lblSourceLabel.Location = new System.Drawing.Point(9, 182);
+            this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSourceLabel.Name = "lblSourceLabel";
+            this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSourceLabel.TabIndex = 64;
+            this.lblSourceLabel.Tag = "Label_Source";
+            this.lblSourceLabel.Text = "Source:";
+            this.lblSourceLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblWeaponDamageLabel
+            // 
+            this.lblWeaponDamageLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponDamageLabel.AutoSize = true;
+            this.lblWeaponDamageLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblWeaponDamageLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponDamageLabel.Name = "lblWeaponDamageLabel";
+            this.lblWeaponDamageLabel.Size = new System.Drawing.Size(50, 13);
+            this.lblWeaponDamageLabel.TabIndex = 40;
+            this.lblWeaponDamageLabel.Tag = "Label_Damage";
+            this.lblWeaponDamageLabel.Text = "Damage:";
+            this.lblWeaponDamageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblSource
+            // 
+            this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblSource.AutoSize = true;
+            this.tlpRight.SetColumnSpan(this.lblSource, 3);
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSource.Location = new System.Drawing.Point(59, 182);
+            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSource.Name = "lblSource";
+            this.lblSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSource.TabIndex = 65;
+            this.lblSource.Text = "[Source]";
+            this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
+            // 
+            // lblWeaponConcealLabel
+            // 
+            this.lblWeaponConcealLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponConcealLabel.AutoSize = true;
+            this.lblWeaponConcealLabel.Location = new System.Drawing.Point(4, 81);
+            this.lblWeaponConcealLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponConcealLabel.Name = "lblWeaponConcealLabel";
+            this.lblWeaponConcealLabel.Size = new System.Drawing.Size(49, 13);
+            this.lblWeaponConcealLabel.TabIndex = 75;
+            this.lblWeaponConcealLabel.Tag = "Label_Conceal";
+            this.lblWeaponConcealLabel.Text = "Conceal:";
+            this.lblWeaponConcealLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblWeaponDamage
+            // 
+            this.lblWeaponDamage.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponDamage.AutoSize = true;
+            this.lblWeaponDamage.Location = new System.Drawing.Point(59, 6);
+            this.lblWeaponDamage.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponDamage.Name = "lblWeaponDamage";
+            this.lblWeaponDamage.Size = new System.Drawing.Size(53, 13);
+            this.lblWeaponDamage.TabIndex = 41;
+            this.lblWeaponDamage.Text = "[Damage]";
+            this.lblWeaponDamage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponRCLabel
+            // 
+            this.lblWeaponRCLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponRCLabel.AutoSize = true;
+            this.lblWeaponRCLabel.Location = new System.Drawing.Point(256, 6);
+            this.lblWeaponRCLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponRCLabel.Name = "lblWeaponRCLabel";
+            this.lblWeaponRCLabel.Size = new System.Drawing.Size(25, 13);
+            this.lblWeaponRCLabel.TabIndex = 42;
+            this.lblWeaponRCLabel.Tag = "Label_RC";
+            this.lblWeaponRCLabel.Text = "RC:";
+            this.lblWeaponRCLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // flpMarkup
             // 
@@ -888,11 +720,12 @@ namespace Chummer
             this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Location = new System.Drawing.Point(585, 125);
+            this.flpMarkup.Location = new System.Drawing.Point(284, 125);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
             this.flpMarkup.Size = new System.Drawing.Size(83, 26);
             this.flpMarkup.TabIndex = 72;
+            this.flpMarkup.WrapContents = false;
             // 
             // nudMarkup
             // 
@@ -917,46 +750,177 @@ namespace Chummer
             // 
             // lblMarkupPercentLabel
             // 
+            this.lblMarkupPercentLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMarkupPercentLabel.AutoSize = true;
-            this.lblMarkupPercentLabel.Dock = System.Windows.Forms.DockStyle.Left;
             this.lblMarkupPercentLabel.Location = new System.Drawing.Point(65, 6);
             this.lblMarkupPercentLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupPercentLabel.Name = "lblMarkupPercentLabel";
-            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 14);
+            this.lblMarkupPercentLabel.Size = new System.Drawing.Size(15, 13);
             this.lblMarkupPercentLabel.TabIndex = 61;
             this.lblMarkupPercentLabel.Text = "%";
             this.lblMarkupPercentLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblWeaponAvailLabel
+            // lblMarkupLabel
             // 
-            this.lblWeaponAvailLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblWeaponAvailLabel.AutoSize = true;
-            this.lblWeaponAvailLabel.Location = new System.Drawing.Point(321, 106);
-            this.lblWeaponAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponAvailLabel.Name = "lblWeaponAvailLabel";
-            this.lblWeaponAvailLabel.Size = new System.Drawing.Size(33, 13);
-            this.lblWeaponAvailLabel.TabIndex = 52;
-            this.lblWeaponAvailLabel.Tag = "Label_Avail";
-            this.lblWeaponAvailLabel.Text = "Avail:";
-            this.lblWeaponAvailLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMarkupLabel.AutoSize = true;
+            this.lblMarkupLabel.Location = new System.Drawing.Point(235, 131);
+            this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMarkupLabel.Name = "lblMarkupLabel";
+            this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
+            this.lblMarkupLabel.TabIndex = 59;
+            this.lblMarkupLabel.Tag = "Label_SelectGear_Markup";
+            this.lblMarkupLabel.Text = "Markup:";
+            this.lblMarkupLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblWeaponAvail
+            // flpCheckBoxes
             // 
-            this.lblWeaponAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblWeaponAvail.AutoSize = true;
-            this.lblWeaponAvail.Location = new System.Drawing.Point(360, 106);
-            this.lblWeaponAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblWeaponAvail.Name = "lblWeaponAvail";
-            this.lblWeaponAvail.Size = new System.Drawing.Size(36, 13);
-            this.lblWeaponAvail.TabIndex = 53;
-            this.lblWeaponAvail.Text = "[Avail]";
-            this.lblWeaponAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.flpCheckBoxes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.flpCheckBoxes.AutoSize = true;
+            this.flpCheckBoxes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpRight.SetColumnSpan(this.flpCheckBoxes, 4);
+            this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
+            this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
+            this.flpCheckBoxes.Location = new System.Drawing.Point(0, 151);
+            this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
+            this.flpCheckBoxes.Name = "flpCheckBoxes";
+            this.flpCheckBoxes.Size = new System.Drawing.Size(225, 25);
+            this.flpCheckBoxes.TabIndex = 73;
+            // 
+            // chkFreeItem
+            // 
+            this.chkFreeItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkFreeItem.AutoSize = true;
+            this.chkFreeItem.DefaultColorScheme = true;
+            this.chkFreeItem.Location = new System.Drawing.Point(3, 4);
+            this.chkFreeItem.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkFreeItem.Name = "chkFreeItem";
+            this.chkFreeItem.Size = new System.Drawing.Size(50, 17);
+            this.chkFreeItem.TabIndex = 58;
+            this.chkFreeItem.Tag = "Checkbox_Free";
+            this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.UseVisualStyleBackColor = true;
+            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
+            // 
+            // chkBlackMarketDiscount
+            // 
+            this.chkBlackMarketDiscount.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkBlackMarketDiscount.AutoSize = true;
+            this.chkBlackMarketDiscount.DefaultColorScheme = true;
+            this.chkBlackMarketDiscount.Location = new System.Drawing.Point(59, 4);
+            this.chkBlackMarketDiscount.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkBlackMarketDiscount.Name = "chkBlackMarketDiscount";
+            this.chkBlackMarketDiscount.Size = new System.Drawing.Size(163, 17);
+            this.chkBlackMarketDiscount.TabIndex = 69;
+            this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
+            this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
+            this.chkBlackMarketDiscount.Visible = false;
+            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
+            // 
+            // lblWeaponMode
+            // 
+            this.lblWeaponMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponMode.AutoSize = true;
+            this.lblWeaponMode.Location = new System.Drawing.Point(287, 56);
+            this.lblWeaponMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponMode.Name = "lblWeaponMode";
+            this.lblWeaponMode.Size = new System.Drawing.Size(40, 13);
+            this.lblWeaponMode.TabIndex = 51;
+            this.lblWeaponMode.Text = "[Mode]";
+            this.lblWeaponMode.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponCost
+            // 
+            this.lblWeaponCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponCost.AutoSize = true;
+            this.lblWeaponCost.Location = new System.Drawing.Point(59, 131);
+            this.lblWeaponCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponCost.Name = "lblWeaponCost";
+            this.lblWeaponCost.Size = new System.Drawing.Size(34, 13);
+            this.lblWeaponCost.TabIndex = 57;
+            this.lblWeaponCost.Text = "[Cost]";
+            this.lblWeaponCost.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponCostLabel
+            // 
+            this.lblWeaponCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponCostLabel.AutoSize = true;
+            this.lblWeaponCostLabel.Location = new System.Drawing.Point(22, 131);
+            this.lblWeaponCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponCostLabel.Name = "lblWeaponCostLabel";
+            this.lblWeaponCostLabel.Size = new System.Drawing.Size(31, 13);
+            this.lblWeaponCostLabel.TabIndex = 56;
+            this.lblWeaponCostLabel.Tag = "Label_Cost";
+            this.lblWeaponCostLabel.Text = "Cost:";
+            this.lblWeaponCostLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblWeaponAmmo
+            // 
+            this.lblWeaponAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponAmmo.AutoSize = true;
+            this.lblWeaponAmmo.Location = new System.Drawing.Point(287, 31);
+            this.lblWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAmmo.Name = "lblWeaponAmmo";
+            this.lblWeaponAmmo.Size = new System.Drawing.Size(42, 13);
+            this.lblWeaponAmmo.TabIndex = 47;
+            this.lblWeaponAmmo.Text = "[Ammo]";
+            this.lblWeaponAmmo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponModeLabel
+            // 
+            this.lblWeaponModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponModeLabel.AutoSize = true;
+            this.lblWeaponModeLabel.Location = new System.Drawing.Point(244, 56);
+            this.lblWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponModeLabel.Name = "lblWeaponModeLabel";
+            this.lblWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
+            this.lblWeaponModeLabel.TabIndex = 50;
+            this.lblWeaponModeLabel.Tag = "Label_Mode";
+            this.lblWeaponModeLabel.Text = "Mode:";
+            this.lblWeaponModeLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblWeaponRC
+            // 
+            this.lblWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponRC.AutoSize = true;
+            this.lblWeaponRC.Location = new System.Drawing.Point(287, 6);
+            this.lblWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponRC.Name = "lblWeaponRC";
+            this.lblWeaponRC.Size = new System.Drawing.Size(28, 13);
+            this.lblWeaponRC.TabIndex = 43;
+            this.lblWeaponRC.Text = "[RC]";
+            this.lblWeaponRC.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponReach
+            // 
+            this.lblWeaponReach.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponReach.AutoSize = true;
+            this.lblWeaponReach.Location = new System.Drawing.Point(59, 56);
+            this.lblWeaponReach.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponReach.Name = "lblWeaponReach";
+            this.lblWeaponReach.Size = new System.Drawing.Size(45, 13);
+            this.lblWeaponReach.TabIndex = 49;
+            this.lblWeaponReach.Text = "[Reach]";
+            this.lblWeaponReach.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblTest
+            // 
+            this.lblTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblTest.AutoSize = true;
+            this.lblTest.Location = new System.Drawing.Point(287, 106);
+            this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblTest.Name = "lblTest";
+            this.lblTest.Size = new System.Drawing.Size(19, 13);
+            this.lblTest.TabIndex = 55;
+            this.lblTest.Text = "[0]";
+            this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblTestLabel
             // 
             this.lblTestLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblTestLabel.AutoSize = true;
-            this.lblTestLabel.Location = new System.Drawing.Point(551, 106);
+            this.lblTestLabel.Location = new System.Drawing.Point(250, 106);
             this.lblTestLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTestLabel.Name = "lblTestLabel";
             this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
@@ -965,11 +929,75 @@ namespace Chummer
             this.lblTestLabel.Text = "Test:";
             this.lblTestLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // lblWeaponAvail
+            // 
+            this.lblWeaponAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponAvail.AutoSize = true;
+            this.lblWeaponAvail.Location = new System.Drawing.Point(59, 106);
+            this.lblWeaponAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAvail.Name = "lblWeaponAvail";
+            this.lblWeaponAvail.Size = new System.Drawing.Size(36, 13);
+            this.lblWeaponAvail.TabIndex = 53;
+            this.lblWeaponAvail.Text = "[Avail]";
+            this.lblWeaponAvail.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponAvailLabel
+            // 
+            this.lblWeaponAvailLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponAvailLabel.AutoSize = true;
+            this.lblWeaponAvailLabel.Location = new System.Drawing.Point(20, 106);
+            this.lblWeaponAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAvailLabel.Name = "lblWeaponAvailLabel";
+            this.lblWeaponAvailLabel.Size = new System.Drawing.Size(33, 13);
+            this.lblWeaponAvailLabel.TabIndex = 52;
+            this.lblWeaponAvailLabel.Tag = "Label_Avail";
+            this.lblWeaponAvailLabel.Text = "Avail:";
+            this.lblWeaponAvailLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblWeaponReachLabel
+            // 
+            this.lblWeaponReachLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponReachLabel.AutoSize = true;
+            this.lblWeaponReachLabel.Location = new System.Drawing.Point(11, 56);
+            this.lblWeaponReachLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponReachLabel.Name = "lblWeaponReachLabel";
+            this.lblWeaponReachLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblWeaponReachLabel.TabIndex = 48;
+            this.lblWeaponReachLabel.Tag = "Label_Reach";
+            this.lblWeaponReachLabel.Text = "Reach:";
+            this.lblWeaponReachLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblWeaponAmmoLabel
+            // 
+            this.lblWeaponAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponAmmoLabel.AutoSize = true;
+            this.lblWeaponAmmoLabel.Location = new System.Drawing.Point(242, 31);
+            this.lblWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAmmoLabel.Name = "lblWeaponAmmoLabel";
+            this.lblWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
+            this.lblWeaponAmmoLabel.TabIndex = 46;
+            this.lblWeaponAmmoLabel.Tag = "Label_Ammo";
+            this.lblWeaponAmmoLabel.Text = "Ammo:";
+            this.lblWeaponAmmoLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblWeaponAPLabel
+            // 
+            this.lblWeaponAPLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblWeaponAPLabel.AutoSize = true;
+            this.lblWeaponAPLabel.Location = new System.Drawing.Point(29, 31);
+            this.lblWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAPLabel.Name = "lblWeaponAPLabel";
+            this.lblWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
+            this.lblWeaponAPLabel.TabIndex = 44;
+            this.lblWeaponAPLabel.Tag = "Label_AP";
+            this.lblWeaponAPLabel.Text = "AP:";
+            this.lblWeaponAPLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
             // lblWeaponAccuracyLabel
             // 
             this.lblWeaponAccuracyLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblWeaponAccuracyLabel.AutoSize = true;
-            this.lblWeaponAccuracyLabel.Location = new System.Drawing.Point(527, 81);
+            this.lblWeaponAccuracyLabel.Location = new System.Drawing.Point(226, 81);
             this.lblWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponAccuracyLabel.Name = "lblWeaponAccuracyLabel";
             this.lblWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
@@ -978,29 +1006,29 @@ namespace Chummer
             this.lblWeaponAccuracyLabel.Text = "Accuracy:";
             this.lblWeaponAccuracyLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // lblTest
-            // 
-            this.lblTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(588, 106);
-            this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblTest.Name = "lblTest";
-            this.lblTest.Size = new System.Drawing.Size(19, 13);
-            this.lblTest.TabIndex = 55;
-            this.lblTest.Text = "[0]";
-            this.lblTest.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblWeaponAccuracy
             // 
             this.lblWeaponAccuracy.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblWeaponAccuracy.AutoSize = true;
-            this.lblWeaponAccuracy.Location = new System.Drawing.Point(588, 81);
+            this.lblWeaponAccuracy.Location = new System.Drawing.Point(287, 81);
             this.lblWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeaponAccuracy.Name = "lblWeaponAccuracy";
             this.lblWeaponAccuracy.Size = new System.Drawing.Size(58, 13);
             this.lblWeaponAccuracy.TabIndex = 68;
             this.lblWeaponAccuracy.Text = "[Accuracy]";
             this.lblWeaponAccuracy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblWeaponAP
+            // 
+            this.lblWeaponAP.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblWeaponAP.AutoSize = true;
+            this.lblWeaponAP.Location = new System.Drawing.Point(59, 31);
+            this.lblWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeaponAP.Name = "lblWeaponAP";
+            this.lblWeaponAP.Size = new System.Drawing.Size(27, 13);
+            this.lblWeaponAP.TabIndex = 45;
+            this.lblWeaponAP.Text = "[AP]";
+            this.lblWeaponAP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tabBrowse
             // 
@@ -1018,30 +1046,30 @@ namespace Chummer
             // 
             this.tmrSearch.Interval = 250;
             // 
-            // tableLayoutPanel2
+            // tlpMain
             // 
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel2.ColumnCount = 4;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tableLayoutPanel2.Controls.Add(this.tabControl, 0, 1);
-            this.tableLayoutPanel2.Controls.Add(this.lblCategory, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cboCategory, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.txtSearch, 3, 0);
-            this.tableLayoutPanel2.Controls.Add(this.lblSearchLabel, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.tlpButtons, 0, 2);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(9, 9);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 3;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(766, 543);
-            this.tableLayoutPanel2.TabIndex = 39;
+            this.tlpMain.AutoSize = true;
+            this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpMain.ColumnCount = 4;
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.tabControl, 0, 1);
+            this.tlpMain.Controls.Add(this.lblCategory, 0, 0);
+            this.tlpMain.Controls.Add(this.cboCategory, 1, 0);
+            this.tlpMain.Controls.Add(this.txtSearch, 3, 0);
+            this.tlpMain.Controls.Add(this.lblSearchLabel, 2, 0);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 2);
+            this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.Location = new System.Drawing.Point(9, 9);
+            this.tlpMain.Name = "tlpMain";
+            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(766, 543);
+            this.tlpMain.TabIndex = 39;
             // 
             // tlpButtons
             // 
@@ -1049,7 +1077,7 @@ namespace Chummer
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 3;
-            this.tableLayoutPanel2.SetColumnSpan(this.tlpButtons, 4);
+            this.tlpMain.SetColumnSpan(this.tlpButtons, 4);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
@@ -1069,9 +1097,11 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.Controls.Add(this.tableLayoutPanel2);
+            this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -1089,18 +1119,19 @@ namespace Chummer
             this.tabListView.PerformLayout();
             this.tlpWeapon.ResumeLayout(false);
             this.tlpWeapon.PerformLayout();
-            this.flpCheckBoxes.ResumeLayout(false);
-            this.flpCheckBoxes.PerformLayout();
             this.gpbIncludedAccessories.ResumeLayout(false);
-            this.gpbIncludedAccessories.PerformLayout();
             this.pnlIncludedAccessories.ResumeLayout(false);
             this.pnlIncludedAccessories.PerformLayout();
+            this.tlpRight.ResumeLayout(false);
+            this.tlpRight.PerformLayout();
             this.flpMarkup.ResumeLayout(false);
             this.flpMarkup.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
+            this.flpCheckBoxes.ResumeLayout(false);
+            this.flpCheckBoxes.PerformLayout();
             this.tabBrowse.ResumeLayout(false);
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.tlpMain.ResumeLayout(false);
+            this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.ResumeLayout(false);
@@ -1153,7 +1184,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
         private Chummer.BufferedTableLayoutPanel tlpWeapon;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
+        private Chummer.BufferedTableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private System.Windows.Forms.GroupBox gpbIncludedAccessories;
@@ -1176,5 +1207,6 @@ namespace Chummer
         private DataGridViewTextBoxColumnTranslated Label_Source;
         private DataGridViewTextBoxColumnTranslated dgvc_Cost;
         private BufferedTableLayoutPanel tlpButtons;
+        private BufferedTableLayoutPanel tlpRight;
     }
 }

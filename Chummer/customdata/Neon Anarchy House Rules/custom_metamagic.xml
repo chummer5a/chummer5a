@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<metamagics>
+		<metamagic>
+			<id>68785c2f-b1cc-4256-be16-8f774999475a</id>
+			<name>Power Point (Purity)</name>
+			<adept>True</adept>
+			<magician>False</magician>
+			<limit>False</limit>
+			<bonus>
+				<adeptpowerpoints>1.5</adeptpowerpoints>
+			</bonus>
+			<required>
+				<oneof>
+					<quality>Purity Bonus (Adept)</quality>
+				</oneof>
+			</required>
+			<source>SR5</source>
+			<page>326</page>
+		</metamagic>
+	</metamagics>
+	<!--
+	<arts>
+		<art>
+			<name>Blood Magic</name>
+			<hide />
+		</art>
+	</arts>
+	-->
+</chummer>

@@ -15,7 +15,7 @@
                     <xs:element name="name" type="xs:string" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="drain" type="xs:string" />
-                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1"/>
+                    <xs:element name="bonus" type="bonusTypes"  minOccurs="0" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" />
                     <xs:element name="page" type="xs:unsignedShort" />
                     <xs:element minOccurs="0" name="spiritform" type="xs:string" />

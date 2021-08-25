@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -32,7 +33,7 @@ namespace Chummer
     [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
     public class AIProgram : IHasInternalId, IHasName, IHasXmlNode, IHasNotes, ICanRemove, IHasSource
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -40,12 +41,14 @@ namespace Chummer
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private string _strNotes = string.Empty;
+        private Color _colNotes = ColorManager.HasNotesColor;
         private string _strExtra = string.Empty;
         private bool _boolIsAdvancedProgram;
         private bool _boolCanDelete = true;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
+
         public AIProgram(Character objCharacter)
         {
             // Create the GUID for the new Program.
@@ -73,6 +76,11 @@ namespace Chummer
             objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
             if (!objXmlProgramNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlProgramNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlProgramNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             _strExtra = strExtra;
             string strCategory = string.Empty;
             if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
@@ -80,7 +88,18 @@ namespace Chummer
         }
 
         private SourceString _objCachedSourceDetail;
-        public SourceString SourceDetail => _objCachedSourceDetail = _objCachedSourceDetail ?? new SourceString(Source, DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+
+        public SourceString SourceDetail
+        {
+            get
+            {
+                if (_objCachedSourceDetail == default)
+                    _objCachedSourceDetail = new SourceString(Source,
+                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        _objCharacter);
+                return _objCachedSourceDetail;
+            }
+        }
 
         /// <summary>
         /// Save the object's XML to the XmlWriter.
@@ -99,6 +118,7 @@ namespace Chummer
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteEndElement();
             _objCharacter.SourceProcess(_strSource);
@@ -116,7 +136,7 @@ namespace Chummer
             {
                 _guiID = Guid.NewGuid();
             }
-            if(!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -129,6 +149,11 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            String sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
             _boolIsAdvancedProgram = objNode["isadvancedprogram"]?.InnerText == bool.TrueString;
         }
 
@@ -157,10 +182,10 @@ namespace Chummer
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, Load, and Print Methods
 
         #region Properties
-
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -207,13 +232,13 @@ namespace Chummer
         {
             string strReturn = Name;
             // Get the translated name if applicable.
-            if (strLanguage != GlobalOptions.DefaultLanguage)
+            if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 strReturn = GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
 
             if (!string.IsNullOrEmpty(Extra))
             {
                 string strExtra = Extra;
-                if (strLanguage != GlobalOptions.DefaultLanguage)
+                if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     strExtra = _objCharacter.TranslateExtra(Extra, strLanguage);
                 strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
             }
@@ -265,7 +290,6 @@ namespace Chummer
             set => _strSource = value;
         }
 
-
         /// <summary>
         /// Sourcebook Page Number.
         /// </summary>
@@ -283,7 +307,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage == GlobalOptions.DefaultLanguage)
+            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -296,6 +320,15 @@ namespace Chummer
         {
             get => _strNotes;
             set => _strNotes = value;
+        }
+
+        /// <summary>
+        /// Forecolor to use for Notes in treeviews.
+        /// </summary>
+        public Color NotesColor
+        {
+            get => _colNotes;
+            set => _colNotes = value;
         }
 
         /// <summary>
@@ -325,9 +358,11 @@ namespace Chummer
             }
             return _objCachedMyXmlNode;
         }
-        #endregion
+
+        #endregion Properties
 
         #region UI Methods
+
         public TreeNode CreateTreeNode(ContextMenuStrip cmsAIProgram)
         {
             if (!CanDelete && !string.IsNullOrEmpty(Source) && !_objCharacter.Options.BookEnabled(Source))
@@ -352,24 +387,23 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Notes))
                 {
                     return !CanDelete
-                        ? ColorManager.GrayHasNotesColor
-                        : ColorManager.HasNotesColor;
+                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                        : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
                 return !CanDelete
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
         }
-        #endregion
+
+        #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (!CanDelete) return false;
-            if (blnConfirmDelete)
-            {
-                if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram")))
-                    return false;
-            }
+            if (!CanDelete)
+                return false;
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram")))
+                return false;
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram,
                 InternalId);
@@ -379,8 +413,8 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail?.Language != GlobalOptions.Language)
-                _objCachedSourceDetail = null;
+            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+                _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }
     }

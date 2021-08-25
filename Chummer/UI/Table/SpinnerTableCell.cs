@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.ComponentModel;
 
@@ -28,7 +29,7 @@ namespace Chummer.UI.Table
         public SpinnerTableCell(TableView<T> table)
         {
             InitializeComponent();
-            contentField = _spinner;
+            ContentField = _spinner;
             Enter += (a, b) => table.PauseSort(this);
             Leave += (a, b) => table.ResumeSort(this);
         }
@@ -57,7 +58,7 @@ namespace Chummer.UI.Table
 
             if (!_blnUpdating && ValueGetter != null)
             {
-                decimal value = Convert.ToDecimal(ValueGetter(tValue));
+                decimal value = ValueGetter(tValue);
 
                 _blnUpdating = true;
                 _spinner.Value = value;
@@ -106,7 +107,6 @@ namespace Chummer.UI.Table
             {
                 _blnUpdating = false;
             }
-
         }
     }
 }

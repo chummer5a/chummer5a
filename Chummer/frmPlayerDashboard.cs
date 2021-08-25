@@ -16,8 +16,8 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.Windows.Forms;
+using System;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -42,9 +42,10 @@ namespace Chummer
             Hide();
         }
 
-        #endregion
+        #endregion Singleton
 
         #region Properties
+
         /// <summary>
         /// The current NPC that the GM is controlling
         /// </summary>
@@ -56,20 +57,21 @@ namespace Chummer
 
         public DiceRollerControl DiceRoller => tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
 
-        #endregion
+        #endregion Properties
 
         #region Events
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        #endregion
+        #endregion Events
 
         #region Private helper methods
 
         /*
-         * Updates the tabs 
+         * Updates the tabs
          */
         private void UpdateTabs()
         {
@@ -87,9 +89,10 @@ namespace Chummer
         private void UpdateControls()
         {
             // tosses the character information relevant to each character
+
             #region Condition Monitor
 
-            if (tabControl.TabPages[(int) DashBoardPages.CM].Controls[0] is ConditionMonitorUserControl uc)
+            if (tabControl.TabPages[(int)DashBoardPages.CM].Controls[0] is ConditionMonitorUserControl uc)
             {
                 uc.MaxPhysical = CurrentNPC.PhysicalCM;
                 uc.MaxStun = CurrentNPC.StunCM;
@@ -97,16 +100,19 @@ namespace Chummer
                 uc.Stun = uc.MaxStun;
             }
 
-            #endregion
+            #endregion Condition Monitor
 
             #region Dice Roller
+
             /*
             DiceRollerControl dice =
                 tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
             dice.NumberOfEdge = this.CurrentNPC.EDG;    // todo figure out number of edge dice
             */
-            #endregion
+
+            #endregion Dice Roller
         }
-        #endregion
+
+        #endregion Private helper methods
     }
 }

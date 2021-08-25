@@ -47,53 +47,55 @@ namespace Chummer
             this.lblPriorityTable = new System.Windows.Forms.Label();
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
-            this.lblMaxNuyenKarma = new System.Windows.Forms.Label();
             this.lblMaxAvail = new System.Windows.Forms.Label();
-            this.nudMaxNuyenKarma = new Chummer.NumericUpDownEx();
             this.flpAllowedCyberwareGrades = new System.Windows.Forms.FlowLayoutPanel();
             this.lblKnowledgePoints = new Chummer.LabelWithToolTip();
-            this.lblContactPoints = new Chummer.LabelWithToolTip();
             this.txtKnowledgePoints = new System.Windows.Forms.TextBox();
-            this.lblQualityKarmaLimit = new System.Windows.Forms.Label();
-            this.txtContactPoints = new System.Windows.Forms.TextBox();
-            this.nudQualityKarmaLimit = new Chummer.NumericUpDownEx();
             this.lblStartingKarma = new System.Windows.Forms.Label();
             this.nudStartingKarma = new Chummer.NumericUpDownEx();
             this.lblPriorities = new Chummer.LabelWithToolTip();
             this.txtPriorities = new System.Windows.Forms.TextBox();
             this.nudSumToTen = new Chummer.NumericUpDownEx();
             this.lblSumToTen = new System.Windows.Forms.Label();
+            this.lblMaxNuyenKarma = new System.Windows.Forms.Label();
+            this.lblQualityKarmaLimit = new System.Windows.Forms.Label();
+            this.nudMaxNuyenKarma = new Chummer.NumericUpDownEx();
+            this.nudQualityKarmaLimit = new Chummer.NumericUpDownEx();
+            this.lblNuyenExpression = new Chummer.LabelWithToolTip();
+            this.txtNuyenExpression = new System.Windows.Forms.TextBox();
+            this.lblContactPoints = new Chummer.LabelWithToolTip();
+            this.txtContactPoints = new System.Windows.Forms.TextBox();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkEnemyKarmaQualityLimit = new System.Windows.Forms.CheckBox();
-            this.chkAllowFreeGrids = new System.Windows.Forms.CheckBox();
-            this.chkAllowPointBuySpecializationsOnKarmaSkills = new System.Windows.Forms.CheckBox();
-            this.chkStrictSkillGroups = new System.Windows.Forms.CheckBox();
-            this.chkEnforceCapacity = new System.Windows.Forms.CheckBox();
-            this.chkLicenseEachRestrictedItem = new System.Windows.Forms.CheckBox();
-            this.chkRestrictRecoil = new System.Windows.Forms.CheckBox();
-            this.chkDronemodsMaximumPilot = new System.Windows.Forms.CheckBox();
-            this.chkDronemods = new System.Windows.Forms.CheckBox();
+            this.chkEnemyKarmaQualityLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowFreeGrids = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowPointBuySpecializationsOnKarmaSkills = new Chummer.ColorableCheckBox(this.components);
+            this.chkStrictSkillGroups = new Chummer.ColorableCheckBox(this.components);
+            this.chkEnforceCapacity = new Chummer.ColorableCheckBox(this.components);
+            this.chkLicenseEachRestrictedItem = new Chummer.ColorableCheckBox(this.components);
+            this.chkRestrictRecoil = new Chummer.ColorableCheckBox(this.components);
+            this.chkDronemodsMaximumPilot = new Chummer.ColorableCheckBox(this.components);
+            this.chkDronemods = new Chummer.ColorableCheckBox(this.components);
             this.gpbBasicOptionsCyberlimbs = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsCyberlimbs = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblRedlinerLimbs = new System.Windows.Forms.Label();
-            this.chkCyberlegMovement = new System.Windows.Forms.CheckBox();
-            this.chkDontUseCyberlimbCalculation = new System.Windows.Forms.CheckBox();
+            this.chkCyberlegMovement = new Chummer.ColorableCheckBox(this.components);
+            this.chkDontUseCyberlimbCalculation = new Chummer.ColorableCheckBox(this.components);
             this.lblLimbCount = new System.Windows.Forms.Label();
             this.cboLimbCount = new Chummer.ElasticComboBox();
             this.tlpCyberlimbAttributeBonusCap = new Chummer.BufferedTableLayoutPanel(this.components);
             this.nudCyberlimbAttributeBonusCap = new Chummer.NumericUpDownEx();
             this.flpCyberlimbAttributeBonusCap = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkCyberlimbAttributeBonusCap = new System.Windows.Forms.CheckBox();
+            this.chkCyberlimbAttributeBonusCap = new Chummer.ColorableCheckBox(this.components);
             this.lblCyberlimbAttributeBonusCapPlus = new System.Windows.Forms.Label();
             this.flpRedlinerLimbs = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkRedlinerLimbsSkull = new System.Windows.Forms.CheckBox();
-            this.chkRedlinerLimbsTorso = new System.Windows.Forms.CheckBox();
-            this.chkRedlinerLimbsArms = new System.Windows.Forms.CheckBox();
-            this.chkRedlinerLimbsLegs = new System.Windows.Forms.CheckBox();
+            this.chkRedlinerLimbsSkull = new Chummer.ColorableCheckBox(this.components);
+            this.chkRedlinerLimbsTorso = new Chummer.ColorableCheckBox(this.components);
+            this.chkRedlinerLimbsArms = new Chummer.ColorableCheckBox(this.components);
+            this.chkRedlinerLimbsLegs = new Chummer.ColorableCheckBox(this.components);
             this.gpbBasicOptionsRounding = new System.Windows.Forms.GroupBox();
             this.tlpBasicOptionsRounding = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkDontRoundEssenceInternally = new System.Windows.Forms.CheckBox();
+            this.chkDontRoundEssenceInternally = new Chummer.ColorableCheckBox(this.components);
             this.lblNuyenDecimalsMinimumLabel = new System.Windows.Forms.Label();
             this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
             this.lblEssenceDecimals = new System.Windows.Forms.Label();
@@ -173,35 +175,11 @@ namespace Chummer
             this.lblKarmaSpirit = new System.Windows.Forms.Label();
             this.nudKarmaSpirit = new Chummer.NumericUpDownEx();
             this.lblKarmaSpiritExtra = new System.Windows.Forms.Label();
-            this.lblKarmaNewComplexForm = new System.Windows.Forms.Label();
-            this.nudKarmaNewComplexForm = new Chummer.NumericUpDownEx();
-            this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
-            this.nudKarmaMysticAdeptPowerPoint = new Chummer.NumericUpDownEx();
-            this.lblKarmaNuyenPer = new System.Windows.Forms.Label();
-            this.nudKarmaNuyenPer = new Chummer.NumericUpDownEx();
-            this.lblKarmaNuyenPerExtra = new System.Windows.Forms.Label();
             this.lblKarmaJoinGroup = new System.Windows.Forms.Label();
             this.nudKarmaJoinGroup = new Chummer.NumericUpDownEx();
-            this.lblKarmaNewAIProgram = new System.Windows.Forms.Label();
-            this.nudKarmaNewAIProgram = new Chummer.NumericUpDownEx();
-            this.lblKarmaNewAIAdvancedProgram = new System.Windows.Forms.Label();
-            this.nudKarmaNewAIAdvancedProgram = new Chummer.NumericUpDownEx();
-            this.lblKarmaMetamagic = new System.Windows.Forms.Label();
-            this.nudKarmaMetamagic = new Chummer.NumericUpDownEx();
-            this.lblKarmaTechnique = new System.Windows.Forms.Label();
-            this.nudKarmaTechnique = new Chummer.NumericUpDownEx();
-            this.flpKarmaInitiation = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblKarmaInitiation = new System.Windows.Forms.Label();
-            this.lblKarmaInitiationBracket = new System.Windows.Forms.Label();
-            this.nudKarmaInitiation = new Chummer.NumericUpDownEx();
-            this.lblKarmaInitiationExtra = new System.Windows.Forms.Label();
-            this.nudKarmaInitiationFlat = new Chummer.NumericUpDownEx();
             this.lblKarmaCarryover = new System.Windows.Forms.Label();
             this.nudKarmaCarryover = new Chummer.NumericUpDownEx();
             this.lblKarmaCarryoverExtra = new System.Windows.Forms.Label();
-            this.lblKarmaQuality = new System.Windows.Forms.Label();
-            this.nudKarmaQuality = new Chummer.NumericUpDownEx();
-            this.lblKarmaQualityExtra = new System.Windows.Forms.Label();
             this.lblKarmaSummoningFocus = new System.Windows.Forms.Label();
             this.nudKarmaSummoningFocus = new Chummer.NumericUpDownEx();
             this.lblKarmaSpellShapingFocus = new System.Windows.Forms.Label();
@@ -214,60 +192,108 @@ namespace Chummer
             this.lblKarmaWeaponFocusExtra = new System.Windows.Forms.Label();
             this.nudKarmaSustainingFocus = new Chummer.NumericUpDownEx();
             this.nudKarmaWeaponFocus = new Chummer.NumericUpDownEx();
+            this.lblKarmaTechnique = new System.Windows.Forms.Label();
+            this.lblKarmaMetamagic = new System.Windows.Forms.Label();
+            this.flpKarmaInitiation = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblKarmaInitiation = new System.Windows.Forms.Label();
+            this.lblKarmaInitiationBracket = new System.Windows.Forms.Label();
+            this.lblKarmaNewAIAdvancedProgram = new System.Windows.Forms.Label();
+            this.lblKarmaNewAIProgram = new System.Windows.Forms.Label();
+            this.lblKarmaNewComplexForm = new System.Windows.Forms.Label();
+            this.lblKarmaMysticAdeptPowerPoint = new System.Windows.Forms.Label();
+            this.nudKarmaTechnique = new Chummer.NumericUpDownEx();
+            this.nudKarmaMetamagic = new Chummer.NumericUpDownEx();
+            this.nudKarmaInitiation = new Chummer.NumericUpDownEx();
+            this.lblKarmaInitiationExtra = new System.Windows.Forms.Label();
+            this.nudKarmaInitiationFlat = new Chummer.NumericUpDownEx();
+            this.nudKarmaNewAIAdvancedProgram = new Chummer.NumericUpDownEx();
+            this.nudKarmaNewAIProgram = new Chummer.NumericUpDownEx();
+            this.nudKarmaNewComplexForm = new Chummer.NumericUpDownEx();
+            this.nudKarmaMysticAdeptPowerPoint = new Chummer.NumericUpDownEx();
+            this.lblKarmaSpiritFettering = new System.Windows.Forms.Label();
+            this.nudKarmaSpiritFettering = new Chummer.NumericUpDownEx();
+            this.lblKarmaSpiritFetteringExtra = new System.Windows.Forms.Label();
+            this.lblKarmaQuality = new System.Windows.Forms.Label();
+            this.nudKarmaQuality = new Chummer.NumericUpDownEx();
+            this.lblKarmaQualityExtra = new System.Windows.Forms.Label();
             this.lblMetatypeCostsKarmaMultiplierLabel = new System.Windows.Forms.Label();
             this.nudMetatypeCostsKarmaMultiplier = new Chummer.NumericUpDownEx();
+            this.lblKarmaNuyenPerWftM = new System.Windows.Forms.Label();
+            this.nudKarmaNuyenPerWftM = new Chummer.NumericUpDownEx();
+            this.lblKarmaNuyenPerExtraWftM = new System.Windows.Forms.Label();
+            this.lblKarmaNuyenPerExtraWftP = new System.Windows.Forms.Label();
+            this.lblKarmaNuyenPerWftP = new System.Windows.Forms.Label();
+            this.nudKarmaNuyenPerWftP = new Chummer.NumericUpDownEx();
             this.tabCustomData = new System.Windows.Forms.TabPage();
             this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
             this.treCustomDataDirectories = new System.Windows.Forms.TreeView();
-            this.cmdIncreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
+            this.gpbDirectoryInfo = new System.Windows.Forms.GroupBox();
+            this.tlpDirectoryInfo = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.gbpDirectoryInfoDependencies = new System.Windows.Forms.GroupBox();
+            this.pnlDirectoryDependencies = new System.Windows.Forms.Panel();
+            this.lblDependencies = new System.Windows.Forms.Label();
+            this.gbpDirectoryInfoIncompatibilities = new System.Windows.Forms.GroupBox();
+            this.pnlDirectoryIncompatibilities = new System.Windows.Forms.Panel();
+            this.lblIncompatibilities = new System.Windows.Forms.Label();
+            this.txtDirectoryDescription = new System.Windows.Forms.TextBox();
+            this.tlpDirectoryInfoLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblDirectoryNameLabel = new System.Windows.Forms.Label();
+            this.lblDirectoryVersion = new System.Windows.Forms.Label();
+            this.lblDirectoryName = new System.Windows.Forms.Label();
+            this.lblDirectoryVersionLabel = new System.Windows.Forms.Label();
+            this.gpbDirectoryAuthors = new System.Windows.Forms.GroupBox();
+            this.pnlDirectoryAuthors = new System.Windows.Forms.Panel();
+            this.lblDirectoryAuthors = new System.Windows.Forms.Label();
+            this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
+            this.tlpOptionalRulesButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdDecreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
+            this.cmdIncreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.cmdGlobalOptionsCustomData = new System.Windows.Forms.Button();
             this.tabHouseRules = new System.Windows.Forms.TabPage();
             this.flpHouseRules = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbHouseRulesQualities = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesQualities = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkExceedNegativeQualities = new System.Windows.Forms.CheckBox();
-            this.chkDontDoubleQualityPurchases = new System.Windows.Forms.CheckBox();
-            this.chkExceedPositiveQualities = new System.Windows.Forms.CheckBox();
-            this.chkDontDoubleQualityRefunds = new System.Windows.Forms.CheckBox();
-            this.chkExceedPositiveQualitiesCostDoubled = new System.Windows.Forms.CheckBox();
-            this.chkExceedNegativeQualitiesLimit = new System.Windows.Forms.CheckBox();
+            this.chkExceedNegativeQualities = new Chummer.ColorableCheckBox(this.components);
+            this.chkDontDoubleQualityPurchases = new Chummer.ColorableCheckBox(this.components);
+            this.chkExceedPositiveQualities = new Chummer.ColorableCheckBox(this.components);
+            this.chkDontDoubleQualityRefunds = new Chummer.ColorableCheckBox(this.components);
+            this.chkExceedPositiveQualitiesCostDoubled = new Chummer.ColorableCheckBox(this.components);
+            this.chkExceedNegativeQualitiesLimit = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesAttributes = new System.Windows.Forms.GroupBox();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkESSLossReducesMaximumOnly = new System.Windows.Forms.CheckBox();
-            this.chkAllowCyberwareESSDiscounts = new System.Windows.Forms.CheckBox();
-            this.chkAlternateMetatypeAttributeKarma = new System.Windows.Forms.CheckBox();
-            this.chkReverseAttributePriorityOrder = new System.Windows.Forms.CheckBox();
+            this.tlpHouseRulesAttributes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkESSLossReducesMaximumOnly = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowCyberwareESSDiscounts = new Chummer.ColorableCheckBox(this.components);
+            this.chkAlternateMetatypeAttributeKarma = new Chummer.ColorableCheckBox(this.components);
+            this.chkReverseAttributePriorityOrder = new Chummer.ColorableCheckBox(this.components);
             this.flpDroneArmorMultiplier = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkDroneArmorMultiplier = new System.Windows.Forms.CheckBox();
+            this.chkDroneArmorMultiplier = new Chummer.ColorableCheckBox(this.components);
             this.lblDroneArmorMultiplierTimes = new System.Windows.Forms.Label();
             this.nudDroneArmorMultiplier = new Chummer.NumericUpDownEx();
-            this.chkUseCalculatedPublicAwareness = new System.Windows.Forms.CheckBox();
-            this.chkUnclampAttributeMinimum = new System.Windows.Forms.CheckBox();
+            this.chkUseCalculatedPublicAwareness = new Chummer.ColorableCheckBox(this.components);
+            this.chkUnclampAttributeMinimum = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesSkills = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesSkills = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkCompensateSkillGroupKarmaDifference = new System.Windows.Forms.CheckBox();
-            this.chkAllowSkillRegrouping = new System.Windows.Forms.CheckBox();
-            this.chkFreeMartialArtSpecialization = new System.Windows.Forms.CheckBox();
-            this.chkUsePointsOnBrokenGroups = new System.Windows.Forms.CheckBox();
+            this.chkCompensateSkillGroupKarmaDifference = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowSkillRegrouping = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeMartialArtSpecialization = new Chummer.ColorableCheckBox(this.components);
+            this.chkUsePointsOnBrokenGroups = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesCombat = new System.Windows.Forms.GroupBox();
-            this.bufferedTableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkNoArmorEncumbrance = new System.Windows.Forms.CheckBox();
-            this.chkMoreLethalGameplay = new System.Windows.Forms.CheckBox();
-            this.chkUnarmedSkillImprovements = new System.Windows.Forms.CheckBox();
+            this.tlpHouseRulesCombat = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkNoArmorEncumbrance = new Chummer.ColorableCheckBox(this.components);
+            this.chkMoreLethalGameplay = new Chummer.ColorableCheckBox(this.components);
+            this.chkUnarmedSkillImprovements = new Chummer.ColorableCheckBox(this.components);
             this.gpbHouseRulesMagicResonance = new System.Windows.Forms.GroupBox();
             this.tlpHouseRulesMagicResonance = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkMysAdPp = new System.Windows.Forms.CheckBox();
-            this.chkPrioritySpellsAsAdeptPowers = new System.Windows.Forms.CheckBox();
-            this.chkExtendAnyDetectionSpell = new System.Windows.Forms.CheckBox();
-            this.chkIncreasedImprovedAbilityModifier = new System.Windows.Forms.CheckBox();
-            this.chkIgnoreComplexFormLimit = new System.Windows.Forms.CheckBox();
-            this.chkSpecialKarmaCost = new System.Windows.Forms.CheckBox();
-            this.chkAllowTechnomancerSchooling = new System.Windows.Forms.CheckBox();
-            this.chkAllowInitiation = new System.Windows.Forms.CheckBox();
-            this.chkMysAdeptSecondMAGAttribute = new System.Windows.Forms.CheckBox();
-            this.chkIgnoreArt = new System.Windows.Forms.CheckBox();
+            this.chkMysAdPp = new Chummer.ColorableCheckBox(this.components);
+            this.chkPrioritySpellsAsAdeptPowers = new Chummer.ColorableCheckBox(this.components);
+            this.chkExtendAnyDetectionSpell = new Chummer.ColorableCheckBox(this.components);
+            this.chkIncreasedImprovedAbilityModifier = new Chummer.ColorableCheckBox(this.components);
+            this.chkIgnoreComplexFormLimit = new Chummer.ColorableCheckBox(this.components);
+            this.chkSpecialKarmaCost = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowTechnomancerSchooling = new Chummer.ColorableCheckBox(this.components);
+            this.chkAllowInitiation = new Chummer.ColorableCheckBox(this.components);
+            this.chkMysAdeptSecondMAGAttribute = new Chummer.ColorableCheckBox(this.components);
+            this.chkIgnoreArt = new Chummer.ColorableCheckBox(this.components);
             this.lblSettingName = new System.Windows.Forms.Label();
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdRename = new System.Windows.Forms.Button();
@@ -276,6 +302,8 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
+            this.cmdToBottomCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
+            this.cmdToTopCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -285,10 +313,10 @@ namespace Chummer
             this.gpbBasicOptionsCreateSettings.SuspendLayout();
             this.tlpBasicOptionsCreateSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
             this.tlpBasicOptionsOfficialRules.SuspendLayout();
             this.gpbBasicOptionsCyberlimbs.SuspendLayout();
@@ -330,38 +358,50 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPer)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).BeginInit();
-            this.flpKarmaInitiation.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellShapingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).BeginInit();
+            this.flpKarmaInitiation.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftM)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftP)).BeginInit();
             this.tabCustomData.SuspendLayout();
             this.tlpOptionalRules.SuspendLayout();
+            this.gpbDirectoryInfo.SuspendLayout();
+            this.tlpDirectoryInfo.SuspendLayout();
+            this.gbpDirectoryInfoDependencies.SuspendLayout();
+            this.pnlDirectoryDependencies.SuspendLayout();
+            this.gbpDirectoryInfoIncompatibilities.SuspendLayout();
+            this.pnlDirectoryIncompatibilities.SuspendLayout();
+            this.tlpDirectoryInfoLeft.SuspendLayout();
+            this.gpbDirectoryAuthors.SuspendLayout();
+            this.pnlDirectoryAuthors.SuspendLayout();
+            this.tlpOptionalRulesButtons.SuspendLayout();
             this.tabHouseRules.SuspendLayout();
             this.flpHouseRules.SuspendLayout();
             this.gpbHouseRulesQualities.SuspendLayout();
             this.tlpHouseRulesQualities.SuspendLayout();
             this.gpbHouseRulesAttributes.SuspendLayout();
-            this.bufferedTableLayoutPanel1.SuspendLayout();
+            this.tlpHouseRulesAttributes.SuspendLayout();
             this.flpDroneArmorMultiplier.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
             this.gpbHouseRulesSkills.SuspendLayout();
             this.tlpHouseRulesSkills.SuspendLayout();
             this.gpbHouseRulesCombat.SuspendLayout();
-            this.bufferedTableLayoutPanel2.SuspendLayout();
+            this.tlpHouseRulesCombat.SuspendLayout();
             this.gpbHouseRulesMagicResonance.SuspendLayout();
             this.tlpHouseRulesMagicResonance.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -432,8 +472,8 @@ namespace Chummer
             this.tlpBasicOptions.AutoSize = true;
             this.tlpBasicOptions.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpBasicOptions.ColumnCount = 2;
-            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpBasicOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 75F));
             this.tlpBasicOptions.Controls.Add(this.cmdEnableSourcebooks, 0, 1);
             this.tlpBasicOptions.Controls.Add(this.gpbSourcebook, 0, 0);
             this.tlpBasicOptions.Controls.Add(this.flpBasicOptions, 1, 0);
@@ -452,7 +492,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 558);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
-            this.cmdEnableSourcebooks.Size = new System.Drawing.Size(295, 23);
+            this.cmdEnableSourcebooks.Size = new System.Drawing.Size(297, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
             this.cmdEnableSourcebooks.Tag = "Button_ToggleSourcebooks";
             this.cmdEnableSourcebooks.Text = "Toggle all Sourcebooks On/Off";
@@ -461,11 +501,13 @@ namespace Chummer
             // 
             // gpbSourcebook
             // 
+            this.gpbSourcebook.AutoSize = true;
+            this.gpbSourcebook.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbSourcebook.Controls.Add(this.treSourcebook);
             this.gpbSourcebook.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbSourcebook.Location = new System.Drawing.Point(3, 3);
             this.gpbSourcebook.Name = "gpbSourcebook";
-            this.gpbSourcebook.Size = new System.Drawing.Size(295, 549);
+            this.gpbSourcebook.Size = new System.Drawing.Size(297, 549);
             this.gpbSourcebook.TabIndex = 38;
             this.gpbSourcebook.TabStop = false;
             this.gpbSourcebook.Tag = "Label_Options_SourcebooksToUse";
@@ -480,7 +522,7 @@ namespace Chummer
             this.treSourcebook.ShowLines = false;
             this.treSourcebook.ShowPlusMinus = false;
             this.treSourcebook.ShowRootLines = false;
-            this.treSourcebook.Size = new System.Drawing.Size(289, 530);
+            this.treSourcebook.Size = new System.Drawing.Size(291, 530);
             this.treSourcebook.TabIndex = 1;
             this.treSourcebook.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treSourcebook_AfterCheck);
             // 
@@ -492,11 +534,11 @@ namespace Chummer
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsCyberlimbs);
             this.flpBasicOptions.Controls.Add(this.gpbBasicOptionsRounding);
             this.flpBasicOptions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.flpBasicOptions.Location = new System.Drawing.Point(301, 0);
+            this.flpBasicOptions.Location = new System.Drawing.Point(303, 0);
             this.flpBasicOptions.Margin = new System.Windows.Forms.Padding(0);
             this.flpBasicOptions.Name = "flpBasicOptions";
             this.tlpBasicOptions.SetRowSpan(this.flpBasicOptions, 2);
-            this.flpBasicOptions.Size = new System.Drawing.Size(913, 584);
+            this.flpBasicOptions.Size = new System.Drawing.Size(911, 584);
             this.flpBasicOptions.TabIndex = 39;
             // 
             // gpbBasicOptionsCreateSettings
@@ -506,7 +548,7 @@ namespace Chummer
             this.gpbBasicOptionsCreateSettings.Controls.Add(this.tlpBasicOptionsCreateSettings);
             this.gpbBasicOptionsCreateSettings.Location = new System.Drawing.Point(3, 3);
             this.gpbBasicOptionsCreateSettings.Name = "gpbBasicOptionsCreateSettings";
-            this.gpbBasicOptionsCreateSettings.Size = new System.Drawing.Size(468, 202);
+            this.gpbBasicOptionsCreateSettings.Size = new System.Drawing.Size(464, 202);
             this.gpbBasicOptionsCreateSettings.TabIndex = 5;
             this.gpbBasicOptionsCreateSettings.TabStop = false;
             this.gpbBasicOptionsCreateSettings.Tag = "Label_CharacterOptions_CharacterCreationSettings";
@@ -521,28 +563,30 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpBasicOptionsCreateSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBasicOptionsCreateSettings.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblAllowedCyberwareGrades, 2, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblAllowedCyberwareGrades, 2, 5);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxAvail, 3, 0);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.cboPriorityTable, 1, 1);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblPriorityTable, 0, 1);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblBuildMethod, 0, 0);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.cboBuildMethod, 1, 0);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxNuyenKarma, 2, 3);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxAvail, 2, 0);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxNuyenKarma, 3, 3);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.flpAllowedCyberwareGrades, 2, 5);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.flpAllowedCyberwareGrades, 2, 6);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblKnowledgePoints, 0, 6);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblContactPoints, 0, 5);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtKnowledgePoints, 1, 6);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblQualityKarmaLimit, 0, 4);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtContactPoints, 1, 5);
-            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudQualityKarmaLimit, 1, 4);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblStartingKarma, 0, 3);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudStartingKarma, 1, 3);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblPriorities, 2, 1);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtPriorities, 3, 1);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudSumToTen, 3, 2);
             this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblSumToTen, 2, 2);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblMaxNuyenKarma, 2, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblQualityKarmaLimit, 2, 3);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudMaxNuyenKarma, 3, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.nudQualityKarmaLimit, 3, 3);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblNuyenExpression, 0, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtNuyenExpression, 1, 4);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.lblContactPoints, 0, 5);
+            this.tlpBasicOptionsCreateSettings.Controls.Add(this.txtContactPoints, 1, 5);
             this.tlpBasicOptionsCreateSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBasicOptionsCreateSettings.Location = new System.Drawing.Point(3, 16);
             this.tlpBasicOptionsCreateSettings.Name = "tlpBasicOptionsCreateSettings";
@@ -555,8 +599,7 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsCreateSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpBasicOptionsCreateSettings.Size = new System.Drawing.Size(462, 183);
+            this.tlpBasicOptionsCreateSettings.Size = new System.Drawing.Size(458, 183);
             this.tlpBasicOptionsCreateSettings.TabIndex = 0;
             // 
             // lblAllowedCyberwareGrades
@@ -564,7 +607,7 @@ namespace Chummer
             this.lblAllowedCyberwareGrades.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblAllowedCyberwareGrades.AutoSize = true;
             this.tlpBasicOptionsCreateSettings.SetColumnSpan(this.lblAllowedCyberwareGrades, 2);
-            this.lblAllowedCyberwareGrades.Location = new System.Drawing.Point(291, 112);
+            this.lblAllowedCyberwareGrades.Location = new System.Drawing.Point(287, 138);
             this.lblAllowedCyberwareGrades.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAllowedCyberwareGrades.Name = "lblAllowedCyberwareGrades";
             this.lblAllowedCyberwareGrades.Size = new System.Drawing.Size(134, 13);
@@ -577,7 +620,7 @@ namespace Chummer
             // 
             this.nudMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudMaxAvail.AutoSize = true;
-            this.nudMaxAvail.Location = new System.Drawing.Point(400, 3);
+            this.nudMaxAvail.Location = new System.Drawing.Point(396, 3);
             this.nudMaxAvail.Maximum = new decimal(new int[] {
             100,
             0,
@@ -597,7 +640,7 @@ namespace Chummer
             this.cboPriorityTable.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPriorityTable.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPriorityTable.FormattingEnabled = true;
-            this.cboPriorityTable.Location = new System.Drawing.Point(105, 42);
+            this.cboPriorityTable.Location = new System.Drawing.Point(101, 42);
             this.cboPriorityTable.Name = "cboPriorityTable";
             this.tlpBasicOptionsCreateSettings.SetRowSpan(this.cboPriorityTable, 2);
             this.cboPriorityTable.Size = new System.Drawing.Size(180, 21);
@@ -609,7 +652,7 @@ namespace Chummer
             // 
             this.lblPriorityTable.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPriorityTable.AutoSize = true;
-            this.lblPriorityTable.Location = new System.Drawing.Point(31, 46);
+            this.lblPriorityTable.Location = new System.Drawing.Point(27, 46);
             this.lblPriorityTable.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPriorityTable.Name = "lblPriorityTable";
             this.tlpBasicOptionsCreateSettings.SetRowSpan(this.lblPriorityTable, 2);
@@ -623,7 +666,7 @@ namespace Chummer
             // 
             this.lblBuildMethod.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblBuildMethod.AutoSize = true;
-            this.lblBuildMethod.Location = new System.Drawing.Point(30, 7);
+            this.lblBuildMethod.Location = new System.Drawing.Point(26, 7);
             this.lblBuildMethod.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblBuildMethod.Name = "lblBuildMethod";
             this.lblBuildMethod.Size = new System.Drawing.Size(69, 13);
@@ -637,30 +680,17 @@ namespace Chummer
             this.cboBuildMethod.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboBuildMethod.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboBuildMethod.FormattingEnabled = true;
-            this.cboBuildMethod.Location = new System.Drawing.Point(105, 3);
+            this.cboBuildMethod.Location = new System.Drawing.Point(101, 3);
             this.cboBuildMethod.Name = "cboBuildMethod";
             this.cboBuildMethod.Size = new System.Drawing.Size(180, 21);
             this.cboBuildMethod.TabIndex = 1;
             this.cboBuildMethod.TooltipText = "";
             // 
-            // lblMaxNuyenKarma
-            // 
-            this.lblMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxNuyenKarma.AutoSize = true;
-            this.lblMaxNuyenKarma.Location = new System.Drawing.Point(300, 85);
-            this.lblMaxNuyenKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxNuyenKarma.Name = "lblMaxNuyenKarma";
-            this.lblMaxNuyenKarma.Size = new System.Drawing.Size(94, 13);
-            this.lblMaxNuyenKarma.TabIndex = 16;
-            this.lblMaxNuyenKarma.Tag = "Label_SelectBP_MaxNuyen";
-            this.lblMaxNuyenKarma.Text = "Nuyen Karma Max";
-            this.lblMaxNuyenKarma.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
             // lblMaxAvail
             // 
             this.lblMaxAvail.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMaxAvail.AutoSize = true;
-            this.lblMaxAvail.Location = new System.Drawing.Point(291, 7);
+            this.lblMaxAvail.Location = new System.Drawing.Point(287, 7);
             this.lblMaxAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaxAvail.Name = "lblMaxAvail";
             this.lblMaxAvail.Size = new System.Drawing.Size(103, 13);
@@ -669,25 +699,6 @@ namespace Chummer
             this.lblMaxAvail.Text = "Maximum Availability";
             this.lblMaxAvail.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // nudMaxNuyenKarma
-            // 
-            this.nudMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxNuyenKarma.AutoSize = true;
-            this.nudMaxNuyenKarma.Location = new System.Drawing.Point(400, 82);
-            this.nudMaxNuyenKarma.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudMaxNuyenKarma.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxNuyenKarma.Name = "nudMaxNuyenKarma";
-            this.nudMaxNuyenKarma.Size = new System.Drawing.Size(59, 20);
-            this.nudMaxNuyenKarma.TabIndex = 25;
-            // 
             // flpAllowedCyberwareGrades
             // 
             this.flpAllowedCyberwareGrades.AutoSize = true;
@@ -695,11 +706,11 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.SetColumnSpan(this.flpAllowedCyberwareGrades, 2);
             this.flpAllowedCyberwareGrades.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpAllowedCyberwareGrades.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpAllowedCyberwareGrades.Location = new System.Drawing.Point(288, 131);
+            this.flpAllowedCyberwareGrades.Location = new System.Drawing.Point(284, 157);
             this.flpAllowedCyberwareGrades.Margin = new System.Windows.Forms.Padding(0);
             this.flpAllowedCyberwareGrades.Name = "flpAllowedCyberwareGrades";
-            this.tlpBasicOptionsCreateSettings.SetRowSpan(this.flpAllowedCyberwareGrades, 3);
-            this.flpAllowedCyberwareGrades.Size = new System.Drawing.Size(174, 52);
+            this.tlpBasicOptionsCreateSettings.SetRowSpan(this.flpAllowedCyberwareGrades, 2);
+            this.flpAllowedCyberwareGrades.Size = new System.Drawing.Size(174, 26);
             this.flpAllowedCyberwareGrades.TabIndex = 29;
             this.flpAllowedCyberwareGrades.WrapContents = false;
             // 
@@ -707,7 +718,7 @@ namespace Chummer
             // 
             this.lblKnowledgePoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKnowledgePoints.AutoSize = true;
-            this.lblKnowledgePoints.Location = new System.Drawing.Point(7, 163);
+            this.lblKnowledgePoints.Location = new System.Drawing.Point(3, 163);
             this.lblKnowledgePoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKnowledgePoints.Name = "lblKnowledgePoints";
             this.lblKnowledgePoints.Size = new System.Drawing.Size(92, 13);
@@ -717,77 +728,21 @@ namespace Chummer
             this.lblKnowledgePoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblKnowledgePoints.ToolTipText = "";
             // 
-            // lblContactPoints
-            // 
-            this.lblContactPoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblContactPoints.AutoSize = true;
-            this.lblContactPoints.Location = new System.Drawing.Point(23, 137);
-            this.lblContactPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblContactPoints.Name = "lblContactPoints";
-            this.lblContactPoints.Size = new System.Drawing.Size(76, 13);
-            this.lblContactPoints.TabIndex = 0;
-            this.lblContactPoints.Tag = "String_ContactPoints";
-            this.lblContactPoints.Text = "Contact Points";
-            this.lblContactPoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblContactPoints.ToolTipText = "";
-            // 
             // txtKnowledgePoints
             // 
             this.txtKnowledgePoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtKnowledgePoints.Location = new System.Drawing.Point(105, 160);
+            this.txtKnowledgePoints.Location = new System.Drawing.Point(101, 160);
             this.txtKnowledgePoints.Name = "txtKnowledgePoints";
             this.txtKnowledgePoints.Size = new System.Drawing.Size(180, 20);
             this.txtKnowledgePoints.TabIndex = 3;
             this.txtKnowledgePoints.Text = "({INTUnaug} + {LOGUnaug}) * 2";
             this.txtKnowledgePoints.TextChanged += new System.EventHandler(this.txtKnowledgePoints_TextChanged);
             // 
-            // lblQualityKarmaLimit
-            // 
-            this.lblQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblQualityKarmaLimit.AutoSize = true;
-            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(3, 111);
-            this.lblQualityKarmaLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblQualityKarmaLimit.Name = "lblQualityKarmaLimit";
-            this.lblQualityKarmaLimit.Size = new System.Drawing.Size(96, 13);
-            this.lblQualityKarmaLimit.TabIndex = 30;
-            this.lblQualityKarmaLimit.Tag = "Label_SelectBP_QualityKarmaLimit";
-            this.lblQualityKarmaLimit.Text = "Quality Karma Limit";
-            this.lblQualityKarmaLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtContactPoints
-            // 
-            this.txtContactPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtContactPoints.Location = new System.Drawing.Point(105, 134);
-            this.txtContactPoints.Name = "txtContactPoints";
-            this.txtContactPoints.Size = new System.Drawing.Size(180, 20);
-            this.txtContactPoints.TabIndex = 2;
-            this.txtContactPoints.Text = "{CHAUnaug} * 3";
-            this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
-            // 
-            // nudQualityKarmaLimit
-            // 
-            this.nudQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudQualityKarmaLimit.AutoSize = true;
-            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(105, 108);
-            this.nudQualityKarmaLimit.Maximum = new decimal(new int[] {
-            1000000,
-            0,
-            0,
-            0});
-            this.nudQualityKarmaLimit.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudQualityKarmaLimit.Name = "nudQualityKarmaLimit";
-            this.nudQualityKarmaLimit.Size = new System.Drawing.Size(59, 20);
-            this.nudQualityKarmaLimit.TabIndex = 31;
-            // 
             // lblStartingKarma
             // 
             this.lblStartingKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblStartingKarma.AutoSize = true;
-            this.lblStartingKarma.Location = new System.Drawing.Point(23, 85);
+            this.lblStartingKarma.Location = new System.Drawing.Point(19, 85);
             this.lblStartingKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblStartingKarma.Name = "lblStartingKarma";
             this.lblStartingKarma.Size = new System.Drawing.Size(76, 13);
@@ -800,7 +755,7 @@ namespace Chummer
             // 
             this.nudStartingKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudStartingKarma.AutoSize = true;
-            this.nudStartingKarma.Location = new System.Drawing.Point(105, 82);
+            this.nudStartingKarma.Location = new System.Drawing.Point(101, 82);
             this.nudStartingKarma.Maximum = new decimal(new int[] {
             1000000,
             0,
@@ -819,7 +774,7 @@ namespace Chummer
             // 
             this.lblPriorities.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPriorities.AutoSize = true;
-            this.lblPriorities.Location = new System.Drawing.Point(348, 33);
+            this.lblPriorities.Location = new System.Drawing.Point(344, 33);
             this.lblPriorities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPriorities.Name = "lblPriorities";
             this.lblPriorities.Size = new System.Drawing.Size(46, 13);
@@ -832,7 +787,7 @@ namespace Chummer
             // txtPriorities
             // 
             this.txtPriorities.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtPriorities.Location = new System.Drawing.Point(400, 30);
+            this.txtPriorities.Location = new System.Drawing.Point(396, 30);
             this.txtPriorities.MaxLength = 5;
             this.txtPriorities.Name = "txtPriorities";
             this.txtPriorities.Size = new System.Drawing.Size(59, 20);
@@ -844,7 +799,7 @@ namespace Chummer
             // 
             this.nudSumToTen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudSumToTen.AutoSize = true;
-            this.nudSumToTen.Location = new System.Drawing.Point(400, 56);
+            this.nudSumToTen.Location = new System.Drawing.Point(396, 56);
             this.nudSumToTen.Maximum = new decimal(new int[] {
             100,
             0,
@@ -863,7 +818,7 @@ namespace Chummer
             // 
             this.lblSumToTen.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSumToTen.AutoSize = true;
-            this.lblSumToTen.Location = new System.Drawing.Point(332, 59);
+            this.lblSumToTen.Location = new System.Drawing.Point(328, 59);
             this.lblSumToTen.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSumToTen.Name = "lblSumToTen";
             this.lblSumToTen.Size = new System.Drawing.Size(62, 13);
@@ -871,6 +826,118 @@ namespace Chummer
             this.lblSumToTen.Tag = "Label_SelectBP_SumToX";
             this.lblSumToTen.Text = "Sum to Ten";
             this.lblSumToTen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblMaxNuyenKarma
+            // 
+            this.lblMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxNuyenKarma.AutoSize = true;
+            this.lblMaxNuyenKarma.Location = new System.Drawing.Point(296, 111);
+            this.lblMaxNuyenKarma.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxNuyenKarma.Name = "lblMaxNuyenKarma";
+            this.lblMaxNuyenKarma.Size = new System.Drawing.Size(94, 13);
+            this.lblMaxNuyenKarma.TabIndex = 16;
+            this.lblMaxNuyenKarma.Tag = "Label_SelectBP_MaxNuyen";
+            this.lblMaxNuyenKarma.Text = "Nuyen Karma Max";
+            this.lblMaxNuyenKarma.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblQualityKarmaLimit
+            // 
+            this.lblQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblQualityKarmaLimit.AutoSize = true;
+            this.lblQualityKarmaLimit.Location = new System.Drawing.Point(294, 85);
+            this.lblQualityKarmaLimit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblQualityKarmaLimit.Name = "lblQualityKarmaLimit";
+            this.lblQualityKarmaLimit.Size = new System.Drawing.Size(96, 13);
+            this.lblQualityKarmaLimit.TabIndex = 30;
+            this.lblQualityKarmaLimit.Tag = "Label_SelectBP_QualityKarmaLimit";
+            this.lblQualityKarmaLimit.Text = "Quality Karma Limit";
+            this.lblQualityKarmaLimit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxNuyenKarma
+            // 
+            this.nudMaxNuyenKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxNuyenKarma.AutoSize = true;
+            this.nudMaxNuyenKarma.Location = new System.Drawing.Point(396, 108);
+            this.nudMaxNuyenKarma.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudMaxNuyenKarma.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxNuyenKarma.Name = "nudMaxNuyenKarma";
+            this.nudMaxNuyenKarma.Size = new System.Drawing.Size(59, 20);
+            this.nudMaxNuyenKarma.TabIndex = 25;
+            // 
+            // nudQualityKarmaLimit
+            // 
+            this.nudQualityKarmaLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudQualityKarmaLimit.AutoSize = true;
+            this.nudQualityKarmaLimit.Location = new System.Drawing.Point(396, 82);
+            this.nudQualityKarmaLimit.Maximum = new decimal(new int[] {
+            1000000,
+            0,
+            0,
+            0});
+            this.nudQualityKarmaLimit.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudQualityKarmaLimit.Name = "nudQualityKarmaLimit";
+            this.nudQualityKarmaLimit.Size = new System.Drawing.Size(59, 20);
+            this.nudQualityKarmaLimit.TabIndex = 31;
+            // 
+            // lblNuyenExpression
+            // 
+            this.lblNuyenExpression.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblNuyenExpression.AutoSize = true;
+            this.lblNuyenExpression.Location = new System.Drawing.Point(3, 111);
+            this.lblNuyenExpression.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblNuyenExpression.Name = "lblNuyenExpression";
+            this.lblNuyenExpression.Size = new System.Drawing.Size(92, 13);
+            this.lblNuyenExpression.TabIndex = 32;
+            this.lblNuyenExpression.Tag = "Label_CharacterOptions_NuyenExpression";
+            this.lblNuyenExpression.Text = "Nuyen Expression";
+            this.lblNuyenExpression.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblNuyenExpression.ToolTipText = "";
+            // 
+            // txtNuyenExpression
+            // 
+            this.txtNuyenExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtNuyenExpression.Location = new System.Drawing.Point(101, 108);
+            this.txtNuyenExpression.Name = "txtNuyenExpression";
+            this.txtNuyenExpression.Size = new System.Drawing.Size(180, 20);
+            this.txtNuyenExpression.TabIndex = 33;
+            this.txtNuyenExpression.Text = "{Karma} * 2000 + {PriorityNuyen}";
+            this.txtNuyenExpression.TextChanged += new System.EventHandler(this.txtNuyenExpression_TextChanged);
+            // 
+            // lblContactPoints
+            // 
+            this.lblContactPoints.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblContactPoints.AutoSize = true;
+            this.lblContactPoints.Location = new System.Drawing.Point(19, 137);
+            this.lblContactPoints.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblContactPoints.Name = "lblContactPoints";
+            this.lblContactPoints.Size = new System.Drawing.Size(76, 13);
+            this.lblContactPoints.TabIndex = 0;
+            this.lblContactPoints.Tag = "String_ContactPoints";
+            this.lblContactPoints.Text = "Contact Points";
+            this.lblContactPoints.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblContactPoints.ToolTipText = "";
+            // 
+            // txtContactPoints
+            // 
+            this.txtContactPoints.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtContactPoints.Location = new System.Drawing.Point(101, 134);
+            this.txtContactPoints.Name = "txtContactPoints";
+            this.txtContactPoints.Size = new System.Drawing.Size(180, 20);
+            this.txtContactPoints.TabIndex = 2;
+            this.txtContactPoints.Text = "{CHAUnaug} * 3";
+            this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
             // 
             // gpbBasicOptionsOfficialRules
             // 
@@ -922,6 +989,7 @@ namespace Chummer
             this.chkEnemyKarmaQualityLimit.AutoSize = true;
             this.chkEnemyKarmaQualityLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpBasicOptionsOfficialRules.SetColumnSpan(this.chkEnemyKarmaQualityLimit, 4);
+            this.chkEnemyKarmaQualityLimit.DefaultColorScheme = true;
             this.chkEnemyKarmaQualityLimit.Location = new System.Drawing.Point(3, 189);
             this.chkEnemyKarmaQualityLimit.Name = "chkEnemyKarmaQualityLimit";
             this.chkEnemyKarmaQualityLimit.Size = new System.Drawing.Size(389, 17);
@@ -935,6 +1003,7 @@ namespace Chummer
             this.chkAllowFreeGrids.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowFreeGrids.AutoSize = true;
             this.tlpBasicOptionsOfficialRules.SetColumnSpan(this.chkAllowFreeGrids, 5);
+            this.chkAllowFreeGrids.DefaultColorScheme = true;
             this.chkAllowFreeGrids.Location = new System.Drawing.Point(3, 166);
             this.chkAllowFreeGrids.Name = "chkAllowFreeGrids";
             this.chkAllowFreeGrids.Size = new System.Drawing.Size(460, 17);
@@ -949,6 +1018,7 @@ namespace Chummer
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowPointBuySpecializationsOnKarmaSkills.AutoSize = true;
             this.tlpBasicOptionsOfficialRules.SetColumnSpan(this.chkAllowPointBuySpecializationsOnKarmaSkills, 4);
+            this.chkAllowPointBuySpecializationsOnKarmaSkills.DefaultColorScheme = true;
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Location = new System.Drawing.Point(3, 143);
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Name = "chkAllowPointBuySpecializationsOnKarmaSkills";
             this.chkAllowPointBuySpecializationsOnKarmaSkills.Size = new System.Drawing.Size(366, 17);
@@ -962,6 +1032,7 @@ namespace Chummer
             this.chkStrictSkillGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkStrictSkillGroups.AutoSize = true;
             this.tlpBasicOptionsOfficialRules.SetColumnSpan(this.chkStrictSkillGroups, 4);
+            this.chkStrictSkillGroups.DefaultColorScheme = true;
             this.chkStrictSkillGroups.Location = new System.Drawing.Point(3, 120);
             this.chkStrictSkillGroups.Name = "chkStrictSkillGroups";
             this.chkStrictSkillGroups.Size = new System.Drawing.Size(304, 17);
@@ -974,6 +1045,7 @@ namespace Chummer
             // 
             this.chkEnforceCapacity.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkEnforceCapacity.AutoSize = true;
+            this.chkEnforceCapacity.DefaultColorScheme = true;
             this.chkEnforceCapacity.Location = new System.Drawing.Point(3, 3);
             this.chkEnforceCapacity.Name = "chkEnforceCapacity";
             this.chkEnforceCapacity.Size = new System.Drawing.Size(132, 17);
@@ -986,6 +1058,7 @@ namespace Chummer
             // 
             this.chkLicenseEachRestrictedItem.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLicenseEachRestrictedItem.AutoSize = true;
+            this.chkLicenseEachRestrictedItem.DefaultColorScheme = true;
             this.chkLicenseEachRestrictedItem.Location = new System.Drawing.Point(3, 26);
             this.chkLicenseEachRestrictedItem.Name = "chkLicenseEachRestrictedItem";
             this.chkLicenseEachRestrictedItem.Size = new System.Drawing.Size(163, 17);
@@ -998,6 +1071,7 @@ namespace Chummer
             // 
             this.chkRestrictRecoil.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRestrictRecoil.AutoSize = true;
+            this.chkRestrictRecoil.DefaultColorScheme = true;
             this.chkRestrictRecoil.Location = new System.Drawing.Point(3, 96);
             this.chkRestrictRecoil.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkRestrictRecoil.Name = "chkRestrictRecoil";
@@ -1011,6 +1085,7 @@ namespace Chummer
             // 
             this.chkDronemodsMaximumPilot.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDronemodsMaximumPilot.AutoSize = true;
+            this.chkDronemodsMaximumPilot.DefaultColorScheme = true;
             this.chkDronemodsMaximumPilot.Location = new System.Drawing.Point(23, 72);
             this.chkDronemodsMaximumPilot.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
             this.chkDronemodsMaximumPilot.Name = "chkDronemodsMaximumPilot";
@@ -1024,6 +1099,7 @@ namespace Chummer
             // 
             this.chkDronemods.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDronemods.AutoSize = true;
+            this.chkDronemods.DefaultColorScheme = true;
             this.chkDronemods.Location = new System.Drawing.Point(3, 49);
             this.chkDronemods.Name = "chkDronemods";
             this.chkDronemods.Size = new System.Drawing.Size(206, 17);
@@ -1088,6 +1164,7 @@ namespace Chummer
             this.chkCyberlegMovement.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCyberlegMovement.AutoSize = true;
             this.tlpBasicOptionsCyberlimbs.SetColumnSpan(this.chkCyberlegMovement, 2);
+            this.chkCyberlegMovement.DefaultColorScheme = true;
             this.chkCyberlegMovement.Location = new System.Drawing.Point(3, 53);
             this.chkCyberlegMovement.Name = "chkCyberlegMovement";
             this.chkCyberlegMovement.Size = new System.Drawing.Size(184, 17);
@@ -1101,6 +1178,7 @@ namespace Chummer
             this.chkDontUseCyberlimbCalculation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontUseCyberlimbCalculation.AutoSize = true;
             this.tlpBasicOptionsCyberlimbs.SetColumnSpan(this.chkDontUseCyberlimbCalculation, 2);
+            this.chkDontUseCyberlimbCalculation.DefaultColorScheme = true;
             this.chkDontUseCyberlimbCalculation.Location = new System.Drawing.Point(3, 30);
             this.chkDontUseCyberlimbCalculation.Name = "chkDontUseCyberlimbCalculation";
             this.chkDontUseCyberlimbCalculation.Size = new System.Drawing.Size(317, 17);
@@ -1194,6 +1272,7 @@ namespace Chummer
             // chkCyberlimbAttributeBonusCap
             // 
             this.chkCyberlimbAttributeBonusCap.AutoSize = true;
+            this.chkCyberlimbAttributeBonusCap.DefaultColorScheme = true;
             this.chkCyberlimbAttributeBonusCap.Dock = System.Windows.Forms.DockStyle.Left;
             this.chkCyberlimbAttributeBonusCap.Location = new System.Drawing.Point(3, 3);
             this.chkCyberlimbAttributeBonusCap.Name = "chkCyberlimbAttributeBonusCap";
@@ -1233,6 +1312,7 @@ namespace Chummer
             // 
             this.chkRedlinerLimbsSkull.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRedlinerLimbsSkull.AutoSize = true;
+            this.chkRedlinerLimbsSkull.DefaultColorScheme = true;
             this.chkRedlinerLimbsSkull.Location = new System.Drawing.Point(3, 3);
             this.chkRedlinerLimbsSkull.Name = "chkRedlinerLimbsSkull";
             this.chkRedlinerLimbsSkull.Size = new System.Drawing.Size(49, 17);
@@ -1245,6 +1325,7 @@ namespace Chummer
             // 
             this.chkRedlinerLimbsTorso.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRedlinerLimbsTorso.AutoSize = true;
+            this.chkRedlinerLimbsTorso.DefaultColorScheme = true;
             this.chkRedlinerLimbsTorso.Location = new System.Drawing.Point(58, 3);
             this.chkRedlinerLimbsTorso.Name = "chkRedlinerLimbsTorso";
             this.chkRedlinerLimbsTorso.Size = new System.Drawing.Size(53, 17);
@@ -1257,6 +1338,7 @@ namespace Chummer
             // 
             this.chkRedlinerLimbsArms.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRedlinerLimbsArms.AutoSize = true;
+            this.chkRedlinerLimbsArms.DefaultColorScheme = true;
             this.chkRedlinerLimbsArms.Location = new System.Drawing.Point(117, 3);
             this.chkRedlinerLimbsArms.Name = "chkRedlinerLimbsArms";
             this.chkRedlinerLimbsArms.Size = new System.Drawing.Size(49, 17);
@@ -1269,6 +1351,7 @@ namespace Chummer
             // 
             this.chkRedlinerLimbsLegs.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRedlinerLimbsLegs.AutoSize = true;
+            this.chkRedlinerLimbsLegs.DefaultColorScheme = true;
             this.chkRedlinerLimbsLegs.Location = new System.Drawing.Point(172, 3);
             this.chkRedlinerLimbsLegs.Name = "chkRedlinerLimbsLegs";
             this.chkRedlinerLimbsLegs.Size = new System.Drawing.Size(49, 17);
@@ -1320,6 +1403,7 @@ namespace Chummer
             this.chkDontRoundEssenceInternally.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontRoundEssenceInternally.AutoSize = true;
             this.tlpBasicOptionsRounding.SetColumnSpan(this.chkDontRoundEssenceInternally, 2);
+            this.chkDontRoundEssenceInternally.DefaultColorScheme = true;
             this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(3, 81);
             this.chkDontRoundEssenceInternally.Name = "chkDontRoundEssenceInternally";
             this.chkDontRoundEssenceInternally.Size = new System.Drawing.Size(349, 17);
@@ -1528,33 +1612,11 @@ namespace Chummer
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpirit, 3, 3);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaSpirit, 4, 3);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpiritExtra, 5, 3);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNewComplexForm, 3, 5);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNewComplexForm, 4, 5);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaMysticAdeptPowerPoint, 3, 4);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaMysticAdeptPowerPoint, 4, 4);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPer, 0, 12);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNuyenPer, 1, 12);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtra, 2, 12);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaJoinGroup, 3, 0);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaJoinGroup, 4, 0);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNewAIProgram, 3, 6);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNewAIProgram, 4, 6);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNewAIAdvancedProgram, 3, 7);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNewAIAdvancedProgram, 4, 7);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaMetamagic, 3, 9);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaMetamagic, 4, 9);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaTechnique, 3, 10);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaTechnique, 4, 10);
-            this.tlpKarmaCosts.Controls.Add(this.flpKarmaInitiation, 3, 8);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaInitiation, 4, 8);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaInitiationExtra, 5, 8);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaInitiationFlat, 6, 8);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaCarryover, 0, 9);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaCarryover, 1, 9);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaCarryoverExtra, 2, 9);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQuality, 0, 13);
-            this.tlpKarmaCosts.Controls.Add(this.nudKarmaQuality, 1, 13);
-            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQualityExtra, 2, 13);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSummoningFocus, 7, 13);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaSummoningFocus, 8, 13);
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpellShapingFocus, 7, 12);
@@ -1567,8 +1629,36 @@ namespace Chummer
             this.tlpKarmaCosts.Controls.Add(this.lblKarmaWeaponFocusExtra, 9, 15);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaSustainingFocus, 8, 14);
             this.tlpKarmaCosts.Controls.Add(this.nudKarmaWeaponFocus, 8, 15);
-            this.tlpKarmaCosts.Controls.Add(this.lblMetatypeCostsKarmaMultiplierLabel, 0, 14);
-            this.tlpKarmaCosts.Controls.Add(this.nudMetatypeCostsKarmaMultiplier, 1, 14);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaTechnique, 3, 11);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaMetamagic, 3, 10);
+            this.tlpKarmaCosts.Controls.Add(this.flpKarmaInitiation, 3, 9);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNewAIAdvancedProgram, 3, 8);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNewAIProgram, 3, 7);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNewComplexForm, 3, 6);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaMysticAdeptPowerPoint, 3, 5);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaTechnique, 4, 11);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaMetamagic, 4, 10);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaInitiation, 4, 9);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaInitiationExtra, 5, 9);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaInitiationFlat, 6, 9);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNewAIAdvancedProgram, 4, 8);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNewAIProgram, 4, 7);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNewComplexForm, 4, 6);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaMysticAdeptPowerPoint, 4, 5);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpiritFettering, 3, 4);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaSpiritFettering, 4, 4);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaSpiritFetteringExtra, 5, 4);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQuality, 0, 12);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaQuality, 1, 12);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaQualityExtra, 2, 12);
+            this.tlpKarmaCosts.Controls.Add(this.lblMetatypeCostsKarmaMultiplierLabel, 0, 13);
+            this.tlpKarmaCosts.Controls.Add(this.nudMetatypeCostsKarmaMultiplier, 1, 13);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerWftM, 0, 14);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNuyenPerWftM, 1, 14);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtraWftM, 2, 14);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerExtraWftP, 2, 15);
+            this.tlpKarmaCosts.Controls.Add(this.lblKarmaNuyenPerWftP, 0, 15);
+            this.tlpKarmaCosts.Controls.Add(this.nudKarmaNuyenPerWftP, 1, 15);
             this.tlpKarmaCosts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpKarmaCosts.Location = new System.Drawing.Point(9, 9);
             this.tlpKarmaCosts.Name = "tlpKarmaCosts";
@@ -1598,7 +1688,7 @@ namespace Chummer
             // 
             this.lblKarmaSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaSpecialization.AutoSize = true;
-            this.lblKarmaSpecialization.Location = new System.Drawing.Point(26, 6);
+            this.lblKarmaSpecialization.Location = new System.Drawing.Point(32, 6);
             this.lblKarmaSpecialization.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaSpecialization.Name = "lblKarmaSpecialization";
             this.lblKarmaSpecialization.Size = new System.Drawing.Size(152, 13);
@@ -1611,7 +1701,7 @@ namespace Chummer
             // 
             this.nudKarmaSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpecialization.AutoSize = true;
-            this.nudKarmaSpecialization.Location = new System.Drawing.Point(184, 3);
+            this.nudKarmaSpecialization.Location = new System.Drawing.Point(190, 3);
             this.nudKarmaSpecialization.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1623,14 +1713,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaSpecialization.Name = "nudKarmaSpecialization";
-            this.nudKarmaSpecialization.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaSpecialization.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaSpecialization.TabIndex = 1;
             // 
             // lblKarmaKnowledgeSpecialization
             // 
             this.lblKarmaKnowledgeSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaKnowledgeSpecialization.AutoSize = true;
-            this.lblKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(3, 32);
+            this.lblKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(9, 32);
             this.lblKarmaKnowledgeSpecialization.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaKnowledgeSpecialization.Name = "lblKarmaKnowledgeSpecialization";
             this.lblKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(175, 13);
@@ -1643,7 +1733,7 @@ namespace Chummer
             // 
             this.nudKarmaKnowledgeSpecialization.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaKnowledgeSpecialization.AutoSize = true;
-            this.nudKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(184, 29);
+            this.nudKarmaKnowledgeSpecialization.Location = new System.Drawing.Point(190, 29);
             this.nudKarmaKnowledgeSpecialization.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1655,14 +1745,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaKnowledgeSpecialization.Name = "nudKarmaKnowledgeSpecialization";
-            this.nudKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaKnowledgeSpecialization.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaKnowledgeSpecialization.TabIndex = 120;
             // 
             // lblKarmaNewKnowledgeSkill
             // 
             this.lblKarmaNewKnowledgeSkill.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaNewKnowledgeSkill.AutoSize = true;
-            this.lblKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(71, 58);
+            this.lblKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(77, 58);
             this.lblKarmaNewKnowledgeSkill.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaNewKnowledgeSkill.Name = "lblKarmaNewKnowledgeSkill";
             this.lblKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(107, 13);
@@ -1675,7 +1765,7 @@ namespace Chummer
             // 
             this.nudKarmaNewKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewKnowledgeSkill.AutoSize = true;
-            this.nudKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(184, 55);
+            this.nudKarmaNewKnowledgeSkill.Location = new System.Drawing.Point(190, 55);
             this.nudKarmaNewKnowledgeSkill.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1687,14 +1777,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaNewKnowledgeSkill.Name = "nudKarmaNewKnowledgeSkill";
-            this.nudKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaNewKnowledgeSkill.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaNewKnowledgeSkill.TabIndex = 3;
             // 
             // lblKarmaLeaveGroup
             // 
             this.lblKarmaLeaveGroup.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaLeaveGroup.AutoSize = true;
-            this.lblKarmaLeaveGroup.Location = new System.Drawing.Point(403, 32);
+            this.lblKarmaLeaveGroup.Location = new System.Drawing.Point(415, 32);
             this.lblKarmaLeaveGroup.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaLeaveGroup.Name = "lblKarmaLeaveGroup";
             this.lblKarmaLeaveGroup.Size = new System.Drawing.Size(114, 13);
@@ -1707,7 +1797,7 @@ namespace Chummer
             // 
             this.nudKarmaLeaveGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaLeaveGroup.AutoSize = true;
-            this.nudKarmaLeaveGroup.Location = new System.Drawing.Point(523, 29);
+            this.nudKarmaLeaveGroup.Location = new System.Drawing.Point(535, 29);
             this.nudKarmaLeaveGroup.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1726,7 +1816,7 @@ namespace Chummer
             // 
             this.lblKarmaNewActiveSkill.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaNewActiveSkill.AutoSize = true;
-            this.lblKarmaNewActiveSkill.Location = new System.Drawing.Point(94, 84);
+            this.lblKarmaNewActiveSkill.Location = new System.Drawing.Point(100, 84);
             this.lblKarmaNewActiveSkill.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaNewActiveSkill.Name = "lblKarmaNewActiveSkill";
             this.lblKarmaNewActiveSkill.Size = new System.Drawing.Size(84, 13);
@@ -1739,7 +1829,7 @@ namespace Chummer
             // 
             this.nudKarmaNewActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewActiveSkill.AutoSize = true;
-            this.nudKarmaNewActiveSkill.Location = new System.Drawing.Point(184, 81);
+            this.nudKarmaNewActiveSkill.Location = new System.Drawing.Point(190, 81);
             this.nudKarmaNewActiveSkill.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1751,14 +1841,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaNewActiveSkill.Name = "nudKarmaNewActiveSkill";
-            this.nudKarmaNewActiveSkill.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaNewActiveSkill.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaNewActiveSkill.TabIndex = 5;
             // 
             // lblKarmaNewSkillGroup
             // 
             this.lblKarmaNewSkillGroup.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaNewSkillGroup.AutoSize = true;
-            this.lblKarmaNewSkillGroup.Location = new System.Drawing.Point(95, 110);
+            this.lblKarmaNewSkillGroup.Location = new System.Drawing.Point(101, 110);
             this.lblKarmaNewSkillGroup.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaNewSkillGroup.Name = "lblKarmaNewSkillGroup";
             this.lblKarmaNewSkillGroup.Size = new System.Drawing.Size(83, 13);
@@ -1771,7 +1861,7 @@ namespace Chummer
             // 
             this.nudKarmaNewSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaNewSkillGroup.AutoSize = true;
-            this.nudKarmaNewSkillGroup.Location = new System.Drawing.Point(184, 107);
+            this.nudKarmaNewSkillGroup.Location = new System.Drawing.Point(190, 107);
             this.nudKarmaNewSkillGroup.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1783,14 +1873,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaNewSkillGroup.Name = "nudKarmaNewSkillGroup";
-            this.nudKarmaNewSkillGroup.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaNewSkillGroup.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaNewSkillGroup.TabIndex = 7;
             // 
             // lblKarmaImproveKnowledgeSkill
             // 
             this.lblKarmaImproveKnowledgeSkill.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaImproveKnowledgeSkill.AutoSize = true;
-            this.lblKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(32, 136);
+            this.lblKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(38, 136);
             this.lblKarmaImproveKnowledgeSkill.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaImproveKnowledgeSkill.Name = "lblKarmaImproveKnowledgeSkill";
             this.lblKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(146, 13);
@@ -1803,7 +1893,7 @@ namespace Chummer
             // 
             this.nudKarmaImproveKnowledgeSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaImproveKnowledgeSkill.AutoSize = true;
-            this.nudKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(184, 133);
+            this.nudKarmaImproveKnowledgeSkill.Location = new System.Drawing.Point(190, 133);
             this.nudKarmaImproveKnowledgeSkill.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1815,14 +1905,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaImproveKnowledgeSkill.Name = "nudKarmaImproveKnowledgeSkill";
-            this.nudKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaImproveKnowledgeSkill.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaImproveKnowledgeSkill.TabIndex = 9;
             // 
             // lblKarmaImproveKnowledgeSkillExtra
             // 
             this.lblKarmaImproveKnowledgeSkillExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaImproveKnowledgeSkillExtra.AutoSize = true;
-            this.lblKarmaImproveKnowledgeSkillExtra.Location = new System.Drawing.Point(237, 136);
+            this.lblKarmaImproveKnowledgeSkillExtra.Location = new System.Drawing.Point(249, 136);
             this.lblKarmaImproveKnowledgeSkillExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaImproveKnowledgeSkillExtra.Name = "lblKarmaImproveKnowledgeSkillExtra";
             this.lblKarmaImproveKnowledgeSkillExtra.Size = new System.Drawing.Size(71, 13);
@@ -1835,7 +1925,7 @@ namespace Chummer
             // 
             this.lblKarmaImproveActiveSkill.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaImproveActiveSkill.AutoSize = true;
-            this.lblKarmaImproveActiveSkill.Location = new System.Drawing.Point(55, 162);
+            this.lblKarmaImproveActiveSkill.Location = new System.Drawing.Point(61, 162);
             this.lblKarmaImproveActiveSkill.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaImproveActiveSkill.Name = "lblKarmaImproveActiveSkill";
             this.lblKarmaImproveActiveSkill.Size = new System.Drawing.Size(123, 13);
@@ -1848,7 +1938,7 @@ namespace Chummer
             // 
             this.nudKarmaImproveActiveSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaImproveActiveSkill.AutoSize = true;
-            this.nudKarmaImproveActiveSkill.Location = new System.Drawing.Point(184, 159);
+            this.nudKarmaImproveActiveSkill.Location = new System.Drawing.Point(190, 159);
             this.nudKarmaImproveActiveSkill.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1860,14 +1950,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaImproveActiveSkill.Name = "nudKarmaImproveActiveSkill";
-            this.nudKarmaImproveActiveSkill.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaImproveActiveSkill.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaImproveActiveSkill.TabIndex = 12;
             // 
             // lblKarmaImproveActiveSkillExtra
             // 
             this.lblKarmaImproveActiveSkillExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaImproveActiveSkillExtra.AutoSize = true;
-            this.lblKarmaImproveActiveSkillExtra.Location = new System.Drawing.Point(237, 162);
+            this.lblKarmaImproveActiveSkillExtra.Location = new System.Drawing.Point(249, 162);
             this.lblKarmaImproveActiveSkillExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaImproveActiveSkillExtra.Name = "lblKarmaImproveActiveSkillExtra";
             this.lblKarmaImproveActiveSkillExtra.Size = new System.Drawing.Size(71, 13);
@@ -1880,7 +1970,7 @@ namespace Chummer
             // 
             this.lblKarmaImproveSkillGroup.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaImproveSkillGroup.AutoSize = true;
-            this.lblKarmaImproveSkillGroup.Location = new System.Drawing.Point(56, 188);
+            this.lblKarmaImproveSkillGroup.Location = new System.Drawing.Point(62, 188);
             this.lblKarmaImproveSkillGroup.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaImproveSkillGroup.Name = "lblKarmaImproveSkillGroup";
             this.lblKarmaImproveSkillGroup.Size = new System.Drawing.Size(122, 13);
@@ -1893,7 +1983,7 @@ namespace Chummer
             // 
             this.nudKarmaImproveSkillGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaImproveSkillGroup.AutoSize = true;
-            this.nudKarmaImproveSkillGroup.Location = new System.Drawing.Point(184, 185);
+            this.nudKarmaImproveSkillGroup.Location = new System.Drawing.Point(190, 185);
             this.nudKarmaImproveSkillGroup.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1905,14 +1995,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaImproveSkillGroup.Name = "nudKarmaImproveSkillGroup";
-            this.nudKarmaImproveSkillGroup.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaImproveSkillGroup.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaImproveSkillGroup.TabIndex = 15;
             // 
             // lblKarmaImproveSkillGroupExtra
             // 
             this.lblKarmaImproveSkillGroupExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaImproveSkillGroupExtra.AutoSize = true;
-            this.lblKarmaImproveSkillGroupExtra.Location = new System.Drawing.Point(237, 188);
+            this.lblKarmaImproveSkillGroupExtra.Location = new System.Drawing.Point(249, 188);
             this.lblKarmaImproveSkillGroupExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaImproveSkillGroupExtra.Name = "lblKarmaImproveSkillGroupExtra";
             this.lblKarmaImproveSkillGroupExtra.Size = new System.Drawing.Size(71, 13);
@@ -1925,7 +2015,7 @@ namespace Chummer
             // 
             this.lblKarmaAttribute.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaAttribute.AutoSize = true;
-            this.lblKarmaAttribute.Location = new System.Drawing.Point(68, 214);
+            this.lblKarmaAttribute.Location = new System.Drawing.Point(74, 214);
             this.lblKarmaAttribute.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaAttribute.Name = "lblKarmaAttribute";
             this.lblKarmaAttribute.Size = new System.Drawing.Size(110, 13);
@@ -1938,7 +2028,7 @@ namespace Chummer
             // 
             this.nudKarmaAttribute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaAttribute.AutoSize = true;
-            this.nudKarmaAttribute.Location = new System.Drawing.Point(184, 211);
+            this.nudKarmaAttribute.Location = new System.Drawing.Point(190, 211);
             this.nudKarmaAttribute.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1950,14 +2040,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaAttribute.Name = "nudKarmaAttribute";
-            this.nudKarmaAttribute.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaAttribute.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaAttribute.TabIndex = 18;
             // 
             // lblKarmaAttributeExtra
             // 
             this.lblKarmaAttributeExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaAttributeExtra.AutoSize = true;
-            this.lblKarmaAttributeExtra.Location = new System.Drawing.Point(237, 214);
+            this.lblKarmaAttributeExtra.Location = new System.Drawing.Point(249, 214);
             this.lblKarmaAttributeExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaAttributeExtra.Name = "lblKarmaAttributeExtra";
             this.lblKarmaAttributeExtra.Size = new System.Drawing.Size(71, 13);
@@ -1970,7 +2060,7 @@ namespace Chummer
             // 
             this.lblKarmaAlchemicalFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaAlchemicalFocus.AutoSize = true;
-            this.lblKarmaAlchemicalFocus.Location = new System.Drawing.Point(742, 6);
+            this.lblKarmaAlchemicalFocus.Location = new System.Drawing.Point(754, 6);
             this.lblKarmaAlchemicalFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaAlchemicalFocus.Name = "lblKarmaAlchemicalFocus";
             this.lblKarmaAlchemicalFocus.Size = new System.Drawing.Size(90, 13);
@@ -1983,7 +2073,7 @@ namespace Chummer
             // 
             this.nudKarmaAlchemicalFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaAlchemicalFocus.AutoSize = true;
-            this.nudKarmaAlchemicalFocus.Location = new System.Drawing.Point(838, 3);
+            this.nudKarmaAlchemicalFocus.Location = new System.Drawing.Point(850, 3);
             this.nudKarmaAlchemicalFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2002,7 +2092,7 @@ namespace Chummer
             // 
             this.lblKarmaAlchemicalFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaAlchemicalFocusExtra.AutoSize = true;
-            this.lblKarmaAlchemicalFocusExtra.Location = new System.Drawing.Point(885, 6);
+            this.lblKarmaAlchemicalFocusExtra.Location = new System.Drawing.Point(897, 6);
             this.lblKarmaAlchemicalFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaAlchemicalFocusExtra.Name = "lblKarmaAlchemicalFocusExtra";
             this.lblKarmaAlchemicalFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2015,7 +2105,7 @@ namespace Chummer
             // 
             this.lblKarmaBanishingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaBanishingFocus.AutoSize = true;
-            this.lblKarmaBanishingFocus.Location = new System.Drawing.Point(747, 32);
+            this.lblKarmaBanishingFocus.Location = new System.Drawing.Point(759, 32);
             this.lblKarmaBanishingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaBanishingFocus.Name = "lblKarmaBanishingFocus";
             this.lblKarmaBanishingFocus.Size = new System.Drawing.Size(85, 13);
@@ -2028,7 +2118,7 @@ namespace Chummer
             // 
             this.nudKarmaBanishingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaBanishingFocus.AutoSize = true;
-            this.nudKarmaBanishingFocus.Location = new System.Drawing.Point(838, 29);
+            this.nudKarmaBanishingFocus.Location = new System.Drawing.Point(850, 29);
             this.nudKarmaBanishingFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2047,7 +2137,7 @@ namespace Chummer
             // 
             this.lblKarmaBindingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaBindingFocus.AutoSize = true;
-            this.lblKarmaBindingFocus.Location = new System.Drawing.Point(758, 58);
+            this.lblKarmaBindingFocus.Location = new System.Drawing.Point(770, 58);
             this.lblKarmaBindingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaBindingFocus.Name = "lblKarmaBindingFocus";
             this.lblKarmaBindingFocus.Size = new System.Drawing.Size(74, 13);
@@ -2060,7 +2150,7 @@ namespace Chummer
             // 
             this.nudKarmaBindingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaBindingFocus.AutoSize = true;
-            this.nudKarmaBindingFocus.Location = new System.Drawing.Point(838, 55);
+            this.nudKarmaBindingFocus.Location = new System.Drawing.Point(850, 55);
             this.nudKarmaBindingFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2079,7 +2169,7 @@ namespace Chummer
             // 
             this.lblKarmaBanishingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaBanishingFocusExtra.AutoSize = true;
-            this.lblKarmaBanishingFocusExtra.Location = new System.Drawing.Point(885, 32);
+            this.lblKarmaBanishingFocusExtra.Location = new System.Drawing.Point(897, 32);
             this.lblKarmaBanishingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaBanishingFocusExtra.Name = "lblKarmaBanishingFocusExtra";
             this.lblKarmaBanishingFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2092,7 +2182,7 @@ namespace Chummer
             // 
             this.lblKarmaCenteringFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaCenteringFocus.AutoSize = true;
-            this.lblKarmaCenteringFocus.Location = new System.Drawing.Point(748, 84);
+            this.lblKarmaCenteringFocus.Location = new System.Drawing.Point(760, 84);
             this.lblKarmaCenteringFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaCenteringFocus.Name = "lblKarmaCenteringFocus";
             this.lblKarmaCenteringFocus.Size = new System.Drawing.Size(84, 13);
@@ -2105,7 +2195,7 @@ namespace Chummer
             // 
             this.nudKarmaCenteringFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaCenteringFocus.AutoSize = true;
-            this.nudKarmaCenteringFocus.Location = new System.Drawing.Point(838, 81);
+            this.nudKarmaCenteringFocus.Location = new System.Drawing.Point(850, 81);
             this.nudKarmaCenteringFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2124,7 +2214,7 @@ namespace Chummer
             // 
             this.lblKarmaBindingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaBindingFocusExtra.AutoSize = true;
-            this.lblKarmaBindingFocusExtra.Location = new System.Drawing.Point(885, 58);
+            this.lblKarmaBindingFocusExtra.Location = new System.Drawing.Point(897, 58);
             this.lblKarmaBindingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaBindingFocusExtra.Name = "lblKarmaBindingFocusExtra";
             this.lblKarmaBindingFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2137,7 +2227,7 @@ namespace Chummer
             // 
             this.lblKarmaCenteringFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaCenteringFocusExtra.AutoSize = true;
-            this.lblKarmaCenteringFocusExtra.Location = new System.Drawing.Point(885, 84);
+            this.lblKarmaCenteringFocusExtra.Location = new System.Drawing.Point(897, 84);
             this.lblKarmaCenteringFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaCenteringFocusExtra.Name = "lblKarmaCenteringFocusExtra";
             this.lblKarmaCenteringFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2150,7 +2240,7 @@ namespace Chummer
             // 
             this.lblKarmaCounterspellingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaCounterspellingFocus.AutoSize = true;
-            this.lblKarmaCounterspellingFocus.Location = new System.Drawing.Point(721, 110);
+            this.lblKarmaCounterspellingFocus.Location = new System.Drawing.Point(733, 110);
             this.lblKarmaCounterspellingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaCounterspellingFocus.Name = "lblKarmaCounterspellingFocus";
             this.lblKarmaCounterspellingFocus.Size = new System.Drawing.Size(111, 13);
@@ -2163,7 +2253,7 @@ namespace Chummer
             // 
             this.nudKarmaCounterspellingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaCounterspellingFocus.AutoSize = true;
-            this.nudKarmaCounterspellingFocus.Location = new System.Drawing.Point(838, 107);
+            this.nudKarmaCounterspellingFocus.Location = new System.Drawing.Point(850, 107);
             this.nudKarmaCounterspellingFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2182,7 +2272,7 @@ namespace Chummer
             // 
             this.lblKarmaCounterspellingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaCounterspellingFocusExtra.AutoSize = true;
-            this.lblKarmaCounterspellingFocusExtra.Location = new System.Drawing.Point(885, 110);
+            this.lblKarmaCounterspellingFocusExtra.Location = new System.Drawing.Point(897, 110);
             this.lblKarmaCounterspellingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaCounterspellingFocusExtra.Name = "lblKarmaCounterspellingFocusExtra";
             this.lblKarmaCounterspellingFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2195,7 +2285,7 @@ namespace Chummer
             // 
             this.lblKarmaDisenchantingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaDisenchantingFocus.AutoSize = true;
-            this.lblKarmaDisenchantingFocus.Location = new System.Drawing.Point(725, 136);
+            this.lblKarmaDisenchantingFocus.Location = new System.Drawing.Point(737, 136);
             this.lblKarmaDisenchantingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaDisenchantingFocus.Name = "lblKarmaDisenchantingFocus";
             this.lblKarmaDisenchantingFocus.Size = new System.Drawing.Size(107, 13);
@@ -2208,7 +2298,7 @@ namespace Chummer
             // 
             this.nudKarmaDisenchantingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaDisenchantingFocus.AutoSize = true;
-            this.nudKarmaDisenchantingFocus.Location = new System.Drawing.Point(838, 133);
+            this.nudKarmaDisenchantingFocus.Location = new System.Drawing.Point(850, 133);
             this.nudKarmaDisenchantingFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2227,7 +2317,7 @@ namespace Chummer
             // 
             this.lblKarmaDisenchantingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaDisenchantingFocusExtra.AutoSize = true;
-            this.lblKarmaDisenchantingFocusExtra.Location = new System.Drawing.Point(885, 136);
+            this.lblKarmaDisenchantingFocusExtra.Location = new System.Drawing.Point(897, 136);
             this.lblKarmaDisenchantingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaDisenchantingFocusExtra.Name = "lblKarmaDisenchantingFocusExtra";
             this.lblKarmaDisenchantingFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2240,7 +2330,7 @@ namespace Chummer
             // 
             this.lblKarmaFlexibleSignatureFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaFlexibleSignatureFocus.AutoSize = true;
-            this.lblKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(710, 162);
+            this.lblKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(722, 162);
             this.lblKarmaFlexibleSignatureFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaFlexibleSignatureFocus.Name = "lblKarmaFlexibleSignatureFocus";
             this.lblKarmaFlexibleSignatureFocus.Size = new System.Drawing.Size(122, 13);
@@ -2253,7 +2343,7 @@ namespace Chummer
             // 
             this.nudKarmaFlexibleSignatureFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaFlexibleSignatureFocus.AutoSize = true;
-            this.nudKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(838, 159);
+            this.nudKarmaFlexibleSignatureFocus.Location = new System.Drawing.Point(850, 159);
             this.nudKarmaFlexibleSignatureFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2272,7 +2362,7 @@ namespace Chummer
             // 
             this.lblFlexibleSignatureFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblFlexibleSignatureFocusExtra.AutoSize = true;
-            this.lblFlexibleSignatureFocusExtra.Location = new System.Drawing.Point(885, 162);
+            this.lblFlexibleSignatureFocusExtra.Location = new System.Drawing.Point(897, 162);
             this.lblFlexibleSignatureFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFlexibleSignatureFocusExtra.Name = "lblFlexibleSignatureFocusExtra";
             this.lblFlexibleSignatureFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2285,7 +2375,7 @@ namespace Chummer
             // 
             this.lblKarmaMaskingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaMaskingFocus.AutoSize = true;
-            this.lblKarmaMaskingFocus.Location = new System.Drawing.Point(753, 188);
+            this.lblKarmaMaskingFocus.Location = new System.Drawing.Point(765, 188);
             this.lblKarmaMaskingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaMaskingFocus.Name = "lblKarmaMaskingFocus";
             this.lblKarmaMaskingFocus.Size = new System.Drawing.Size(79, 13);
@@ -2298,7 +2388,7 @@ namespace Chummer
             // 
             this.nudKarmaMaskingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaMaskingFocus.AutoSize = true;
-            this.nudKarmaMaskingFocus.Location = new System.Drawing.Point(838, 185);
+            this.nudKarmaMaskingFocus.Location = new System.Drawing.Point(850, 185);
             this.nudKarmaMaskingFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2317,7 +2407,7 @@ namespace Chummer
             // 
             this.lblKarmaMaskingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaMaskingFocusExtra.AutoSize = true;
-            this.lblKarmaMaskingFocusExtra.Location = new System.Drawing.Point(885, 188);
+            this.lblKarmaMaskingFocusExtra.Location = new System.Drawing.Point(897, 188);
             this.lblKarmaMaskingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaMaskingFocusExtra.Name = "lblKarmaMaskingFocusExtra";
             this.lblKarmaMaskingFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2330,7 +2420,7 @@ namespace Chummer
             // 
             this.lblKarmaPowerFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaPowerFocus.AutoSize = true;
-            this.lblKarmaPowerFocus.Location = new System.Drawing.Point(763, 214);
+            this.lblKarmaPowerFocus.Location = new System.Drawing.Point(775, 214);
             this.lblKarmaPowerFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaPowerFocus.Name = "lblKarmaPowerFocus";
             this.lblKarmaPowerFocus.Size = new System.Drawing.Size(69, 13);
@@ -2343,7 +2433,7 @@ namespace Chummer
             // 
             this.nudKarmaPowerFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaPowerFocus.AutoSize = true;
-            this.nudKarmaPowerFocus.Location = new System.Drawing.Point(838, 211);
+            this.nudKarmaPowerFocus.Location = new System.Drawing.Point(850, 211);
             this.nudKarmaPowerFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2362,7 +2452,7 @@ namespace Chummer
             // 
             this.lblKarmaPowerFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaPowerFocusExtra.AutoSize = true;
-            this.lblKarmaPowerFocusExtra.Location = new System.Drawing.Point(885, 214);
+            this.lblKarmaPowerFocusExtra.Location = new System.Drawing.Point(897, 214);
             this.lblKarmaPowerFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaPowerFocusExtra.Name = "lblKarmaPowerFocusExtra";
             this.lblKarmaPowerFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2375,7 +2465,7 @@ namespace Chummer
             // 
             this.lblKarmaQiFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaQiFocus.AutoSize = true;
-            this.lblKarmaQiFocus.Location = new System.Drawing.Point(783, 240);
+            this.lblKarmaQiFocus.Location = new System.Drawing.Point(795, 240);
             this.lblKarmaQiFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaQiFocus.Name = "lblKarmaQiFocus";
             this.lblKarmaQiFocus.Size = new System.Drawing.Size(49, 13);
@@ -2388,7 +2478,7 @@ namespace Chummer
             // 
             this.nudKarmaQiFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaQiFocus.AutoSize = true;
-            this.nudKarmaQiFocus.Location = new System.Drawing.Point(838, 237);
+            this.nudKarmaQiFocus.Location = new System.Drawing.Point(850, 237);
             this.nudKarmaQiFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2407,7 +2497,7 @@ namespace Chummer
             // 
             this.lblKarmaQiFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaQiFocusExtra.AutoSize = true;
-            this.lblKarmaQiFocusExtra.Location = new System.Drawing.Point(885, 240);
+            this.lblKarmaQiFocusExtra.Location = new System.Drawing.Point(897, 240);
             this.lblKarmaQiFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaQiFocusExtra.Name = "lblKarmaQiFocusExtra";
             this.lblKarmaQiFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2420,7 +2510,7 @@ namespace Chummer
             // 
             this.lblKarmaRitualSpellcastingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaRitualSpellcastingFocus.AutoSize = true;
-            this.lblKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(706, 266);
+            this.lblKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(718, 266);
             this.lblKarmaRitualSpellcastingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaRitualSpellcastingFocus.Name = "lblKarmaRitualSpellcastingFocus";
             this.lblKarmaRitualSpellcastingFocus.Size = new System.Drawing.Size(126, 13);
@@ -2433,7 +2523,7 @@ namespace Chummer
             // 
             this.nudKarmaRitualSpellcastingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaRitualSpellcastingFocus.AutoSize = true;
-            this.nudKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(838, 263);
+            this.nudKarmaRitualSpellcastingFocus.Location = new System.Drawing.Point(850, 263);
             this.nudKarmaRitualSpellcastingFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2452,7 +2542,7 @@ namespace Chummer
             // 
             this.lblKarmaRitualSpellcastingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaRitualSpellcastingFocusExtra.AutoSize = true;
-            this.lblKarmaRitualSpellcastingFocusExtra.Location = new System.Drawing.Point(885, 266);
+            this.lblKarmaRitualSpellcastingFocusExtra.Location = new System.Drawing.Point(897, 266);
             this.lblKarmaRitualSpellcastingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaRitualSpellcastingFocusExtra.Name = "lblKarmaRitualSpellcastingFocusExtra";
             this.lblKarmaRitualSpellcastingFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2465,7 +2555,7 @@ namespace Chummer
             // 
             this.lblKarmaSpellcastingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaSpellcastingFocus.AutoSize = true;
-            this.lblKarmaSpellcastingFocus.Location = new System.Drawing.Point(736, 292);
+            this.lblKarmaSpellcastingFocus.Location = new System.Drawing.Point(748, 292);
             this.lblKarmaSpellcastingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaSpellcastingFocus.Name = "lblKarmaSpellcastingFocus";
             this.lblKarmaSpellcastingFocus.Size = new System.Drawing.Size(96, 13);
@@ -2478,7 +2568,7 @@ namespace Chummer
             // 
             this.nudKarmaSpellcastingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpellcastingFocus.AutoSize = true;
-            this.nudKarmaSpellcastingFocus.Location = new System.Drawing.Point(838, 289);
+            this.nudKarmaSpellcastingFocus.Location = new System.Drawing.Point(850, 289);
             this.nudKarmaSpellcastingFocus.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2497,7 +2587,7 @@ namespace Chummer
             // 
             this.lblKarmaSpellcastingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaSpellcastingFocusExtra.AutoSize = true;
-            this.lblKarmaSpellcastingFocusExtra.Location = new System.Drawing.Point(885, 292);
+            this.lblKarmaSpellcastingFocusExtra.Location = new System.Drawing.Point(897, 292);
             this.lblKarmaSpellcastingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaSpellcastingFocusExtra.Name = "lblKarmaSpellcastingFocusExtra";
             this.lblKarmaSpellcastingFocusExtra.Size = new System.Drawing.Size(42, 13);
@@ -2510,7 +2600,7 @@ namespace Chummer
             // 
             this.lblKarmaSpell.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaSpell.AutoSize = true;
-            this.lblKarmaSpell.Location = new System.Drawing.Point(462, 58);
+            this.lblKarmaSpell.Location = new System.Drawing.Point(474, 58);
             this.lblKarmaSpell.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaSpell.Name = "lblKarmaSpell";
             this.lblKarmaSpell.Size = new System.Drawing.Size(55, 13);
@@ -2523,7 +2613,7 @@ namespace Chummer
             // 
             this.nudKarmaSpell.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpell.AutoSize = true;
-            this.nudKarmaSpell.Location = new System.Drawing.Point(523, 55);
+            this.nudKarmaSpell.Location = new System.Drawing.Point(535, 55);
             this.nudKarmaSpell.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2542,7 +2632,7 @@ namespace Chummer
             // 
             this.lblKarmaContact.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaContact.AutoSize = true;
-            this.lblKarmaContact.Location = new System.Drawing.Point(129, 266);
+            this.lblKarmaContact.Location = new System.Drawing.Point(135, 266);
             this.lblKarmaContact.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaContact.Name = "lblKarmaContact";
             this.lblKarmaContact.Size = new System.Drawing.Size(49, 13);
@@ -2555,7 +2645,7 @@ namespace Chummer
             // 
             this.nudKarmaContact.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaContact.AutoSize = true;
-            this.nudKarmaContact.Location = new System.Drawing.Point(184, 263);
+            this.nudKarmaContact.Location = new System.Drawing.Point(190, 263);
             this.nudKarmaContact.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2567,14 +2657,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaContact.Name = "nudKarmaContact";
-            this.nudKarmaContact.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaContact.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaContact.TabIndex = 45;
             // 
             // lblKarmaContactExtra
             // 
             this.lblKarmaContactExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaContactExtra.AutoSize = true;
-            this.lblKarmaContactExtra.Location = new System.Drawing.Point(237, 266);
+            this.lblKarmaContactExtra.Location = new System.Drawing.Point(249, 266);
             this.lblKarmaContactExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaContactExtra.Name = "lblKarmaContactExtra";
             this.lblKarmaContactExtra.Size = new System.Drawing.Size(120, 13);
@@ -2587,7 +2677,7 @@ namespace Chummer
             // 
             this.lblKarmaEnemyExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaEnemyExtra.AutoSize = true;
-            this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(237, 292);
+            this.lblKarmaEnemyExtra.Location = new System.Drawing.Point(249, 292);
             this.lblKarmaEnemyExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaEnemyExtra.Name = "lblKarmaEnemyExtra";
             this.lblKarmaEnemyExtra.Size = new System.Drawing.Size(120, 13);
@@ -2600,7 +2690,7 @@ namespace Chummer
             // 
             this.nudKarmaEnemy.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaEnemy.AutoSize = true;
-            this.nudKarmaEnemy.Location = new System.Drawing.Point(184, 289);
+            this.nudKarmaEnemy.Location = new System.Drawing.Point(190, 289);
             this.nudKarmaEnemy.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2612,14 +2702,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaEnemy.Name = "nudKarmaEnemy";
-            this.nudKarmaEnemy.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaEnemy.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaEnemy.TabIndex = 48;
             // 
             // lblKarmaEnemy
             // 
             this.lblKarmaEnemy.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaEnemy.AutoSize = true;
-            this.lblKarmaEnemy.Location = new System.Drawing.Point(131, 292);
+            this.lblKarmaEnemy.Location = new System.Drawing.Point(137, 292);
             this.lblKarmaEnemy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaEnemy.Name = "lblKarmaEnemy";
             this.lblKarmaEnemy.Size = new System.Drawing.Size(47, 13);
@@ -2632,7 +2722,7 @@ namespace Chummer
             // 
             this.lblKarmaSpirit.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaSpirit.AutoSize = true;
-            this.lblKarmaSpirit.Location = new System.Drawing.Point(487, 84);
+            this.lblKarmaSpirit.Location = new System.Drawing.Point(499, 84);
             this.lblKarmaSpirit.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaSpirit.Name = "lblKarmaSpirit";
             this.lblKarmaSpirit.Size = new System.Drawing.Size(30, 13);
@@ -2645,7 +2735,7 @@ namespace Chummer
             // 
             this.nudKarmaSpirit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaSpirit.AutoSize = true;
-            this.nudKarmaSpirit.Location = new System.Drawing.Point(523, 81);
+            this.nudKarmaSpirit.Location = new System.Drawing.Point(535, 81);
             this.nudKarmaSpirit.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2665,7 +2755,7 @@ namespace Chummer
             this.lblKarmaSpiritExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaSpiritExtra.AutoSize = true;
             this.tlpKarmaCosts.SetColumnSpan(this.lblKarmaSpiritExtra, 2);
-            this.lblKarmaSpiritExtra.Location = new System.Drawing.Point(570, 84);
+            this.lblKarmaSpiritExtra.Location = new System.Drawing.Point(582, 84);
             this.lblKarmaSpiritExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaSpiritExtra.Name = "lblKarmaSpiritExtra";
             this.lblKarmaSpiritExtra.Size = new System.Drawing.Size(87, 13);
@@ -2674,120 +2764,11 @@ namespace Chummer
             this.lblKarmaSpiritExtra.Text = "x Services Owed";
             this.lblKarmaSpiritExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblKarmaNewComplexForm
-            // 
-            this.lblKarmaNewComplexForm.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNewComplexForm.AutoSize = true;
-            this.lblKarmaNewComplexForm.Location = new System.Drawing.Point(419, 136);
-            this.lblKarmaNewComplexForm.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNewComplexForm.Name = "lblKarmaNewComplexForm";
-            this.lblKarmaNewComplexForm.Size = new System.Drawing.Size(98, 13);
-            this.lblKarmaNewComplexForm.TabIndex = 25;
-            this.lblKarmaNewComplexForm.Tag = "Label_Options_NewComplexForm";
-            this.lblKarmaNewComplexForm.Text = "New Complex Form";
-            this.lblKarmaNewComplexForm.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaNewComplexForm
-            // 
-            this.nudKarmaNewComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNewComplexForm.AutoSize = true;
-            this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(523, 133);
-            this.nudKarmaNewComplexForm.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaNewComplexForm.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
-            this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaNewComplexForm.TabIndex = 26;
-            // 
-            // lblKarmaMysticAdeptPowerPoint
-            // 
-            this.lblKarmaMysticAdeptPowerPoint.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaMysticAdeptPowerPoint.AutoSize = true;
-            this.lblKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(389, 110);
-            this.lblKarmaMysticAdeptPowerPoint.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaMysticAdeptPowerPoint.Name = "lblKarmaMysticAdeptPowerPoint";
-            this.lblKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(128, 13);
-            this.lblKarmaMysticAdeptPowerPoint.TabIndex = 122;
-            this.lblKarmaMysticAdeptPowerPoint.Tag = "Label_Options_KarmaMysticAdeptPowerPoint";
-            this.lblKarmaMysticAdeptPowerPoint.Text = "Mystic Adept Power Point";
-            this.lblKarmaMysticAdeptPowerPoint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaMysticAdeptPowerPoint
-            // 
-            this.nudKarmaMysticAdeptPowerPoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaMysticAdeptPowerPoint.AutoSize = true;
-            this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(523, 107);
-            this.nudKarmaMysticAdeptPowerPoint.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaMysticAdeptPowerPoint.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
-            this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
-            // 
-            // lblKarmaNuyenPer
-            // 
-            this.lblKarmaNuyenPer.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNuyenPer.AutoSize = true;
-            this.lblKarmaNuyenPer.Location = new System.Drawing.Point(140, 318);
-            this.lblKarmaNuyenPer.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNuyenPer.Name = "lblKarmaNuyenPer";
-            this.lblKarmaNuyenPer.Size = new System.Drawing.Size(38, 13);
-            this.lblKarmaNuyenPer.TabIndex = 41;
-            this.lblKarmaNuyenPer.Tag = "Label_Options_Nuyen";
-            this.lblKarmaNuyenPer.Text = "Nuyen";
-            this.lblKarmaNuyenPer.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaNuyenPer
-            // 
-            this.nudKarmaNuyenPer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNuyenPer.AutoSize = true;
-            this.nudKarmaNuyenPer.Location = new System.Drawing.Point(184, 315);
-            this.nudKarmaNuyenPer.Maximum = new decimal(new int[] {
-            9999,
-            0,
-            0,
-            0});
-            this.nudKarmaNuyenPer.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaNuyenPer.Name = "nudKarmaNuyenPer";
-            this.nudKarmaNuyenPer.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaNuyenPer.TabIndex = 42;
-            // 
-            // lblKarmaNuyenPerExtra
-            // 
-            this.lblKarmaNuyenPerExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaNuyenPerExtra.AutoSize = true;
-            this.lblKarmaNuyenPerExtra.Location = new System.Drawing.Point(237, 318);
-            this.lblKarmaNuyenPerExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNuyenPerExtra.Name = "lblKarmaNuyenPerExtra";
-            this.lblKarmaNuyenPerExtra.Size = new System.Drawing.Size(55, 13);
-            this.lblKarmaNuyenPerExtra.TabIndex = 43;
-            this.lblKarmaNuyenPerExtra.Tag = "Label_Options_PerKarma";
-            this.lblKarmaNuyenPerExtra.Text = "per Karma";
-            this.lblKarmaNuyenPerExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // lblKarmaJoinGroup
             // 
             this.lblKarmaJoinGroup.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaJoinGroup.AutoSize = true;
-            this.lblKarmaJoinGroup.Location = new System.Drawing.Point(414, 6);
+            this.lblKarmaJoinGroup.Location = new System.Drawing.Point(426, 6);
             this.lblKarmaJoinGroup.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaJoinGroup.Name = "lblKarmaJoinGroup";
             this.lblKarmaJoinGroup.Size = new System.Drawing.Size(103, 13);
@@ -2800,7 +2781,7 @@ namespace Chummer
             // 
             this.nudKarmaJoinGroup.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaJoinGroup.AutoSize = true;
-            this.nudKarmaJoinGroup.Location = new System.Drawing.Point(523, 3);
+            this.nudKarmaJoinGroup.Location = new System.Drawing.Point(535, 3);
             this.nudKarmaJoinGroup.Maximum = new decimal(new int[] {
             100,
             0,
@@ -2815,107 +2796,236 @@ namespace Chummer
             this.nudKarmaJoinGroup.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaJoinGroup.TabIndex = 57;
             // 
-            // lblKarmaNewAIProgram
+            // lblKarmaCarryover
             // 
-            this.lblKarmaNewAIProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNewAIProgram.AutoSize = true;
-            this.lblKarmaNewAIProgram.Location = new System.Drawing.Point(427, 162);
-            this.lblKarmaNewAIProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNewAIProgram.Name = "lblKarmaNewAIProgram";
-            this.lblKarmaNewAIProgram.Size = new System.Drawing.Size(90, 13);
-            this.lblKarmaNewAIProgram.TabIndex = 109;
-            this.lblKarmaNewAIProgram.Tag = "Label_Options_NewAIProgram";
-            this.lblKarmaNewAIProgram.Text = "New Program (AI)";
-            this.lblKarmaNewAIProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblKarmaCarryover.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaCarryover.AutoSize = true;
+            this.lblKarmaCarryover.Location = new System.Drawing.Point(43, 240);
+            this.lblKarmaCarryover.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaCarryover.Name = "lblKarmaCarryover";
+            this.lblKarmaCarryover.Size = new System.Drawing.Size(141, 13);
+            this.lblKarmaCarryover.TabIndex = 50;
+            this.lblKarmaCarryover.Tag = "Label_Options_Carryover";
+            this.lblKarmaCarryover.Text = "Carryover for New Character";
+            this.lblKarmaCarryover.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // nudKarmaNewAIProgram
+            // nudKarmaCarryover
             // 
-            this.nudKarmaNewAIProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNewAIProgram.AutoSize = true;
-            this.nudKarmaNewAIProgram.Location = new System.Drawing.Point(523, 159);
-            this.nudKarmaNewAIProgram.Maximum = new decimal(new int[] {
+            this.nudKarmaCarryover.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaCarryover.AutoSize = true;
+            this.nudKarmaCarryover.Location = new System.Drawing.Point(190, 237);
+            this.nudKarmaCarryover.Maximum = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.nudKarmaNewAIProgram.Minimum = new decimal(new int[] {
+            this.nudKarmaCarryover.Minimum = new decimal(new int[] {
             0,
             0,
             0,
             0});
-            this.nudKarmaNewAIProgram.Name = "nudKarmaNewAIProgram";
-            this.nudKarmaNewAIProgram.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaNewAIProgram.TabIndex = 111;
+            this.nudKarmaCarryover.Name = "nudKarmaCarryover";
+            this.nudKarmaCarryover.Size = new System.Drawing.Size(53, 20);
+            this.nudKarmaCarryover.TabIndex = 51;
             // 
-            // lblKarmaNewAIAdvancedProgram
+            // lblKarmaCarryoverExtra
             // 
-            this.lblKarmaNewAIAdvancedProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaNewAIAdvancedProgram.AutoSize = true;
-            this.lblKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(375, 188);
-            this.lblKarmaNewAIAdvancedProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaNewAIAdvancedProgram.Name = "lblKarmaNewAIAdvancedProgram";
-            this.lblKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(142, 13);
-            this.lblKarmaNewAIAdvancedProgram.TabIndex = 110;
-            this.lblKarmaNewAIAdvancedProgram.Tag = "Label_Options_NewAIAdvancedProgram";
-            this.lblKarmaNewAIAdvancedProgram.Text = "New Advanced Program (AI)";
-            this.lblKarmaNewAIAdvancedProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblKarmaCarryoverExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaCarryoverExtra.AutoSize = true;
+            this.lblKarmaCarryoverExtra.Location = new System.Drawing.Point(249, 240);
+            this.lblKarmaCarryoverExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaCarryoverExtra.Name = "lblKarmaCarryoverExtra";
+            this.lblKarmaCarryoverExtra.Size = new System.Drawing.Size(51, 13);
+            this.lblKarmaCarryoverExtra.TabIndex = 52;
+            this.lblKarmaCarryoverExtra.Tag = "Label_Options_Maximum";
+            this.lblKarmaCarryoverExtra.Text = "Maximum";
+            this.lblKarmaCarryoverExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // nudKarmaNewAIAdvancedProgram
+            // lblKarmaSummoningFocus
             // 
-            this.nudKarmaNewAIAdvancedProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaNewAIAdvancedProgram.AutoSize = true;
-            this.nudKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(523, 185);
-            this.nudKarmaNewAIAdvancedProgram.Maximum = new decimal(new int[] {
+            this.lblKarmaSummoningFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaSummoningFocus.AutoSize = true;
+            this.lblKarmaSummoningFocus.Location = new System.Drawing.Point(750, 344);
+            this.lblKarmaSummoningFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSummoningFocus.Name = "lblKarmaSummoningFocus";
+            this.lblKarmaSummoningFocus.Size = new System.Drawing.Size(94, 13);
+            this.lblKarmaSummoningFocus.TabIndex = 96;
+            this.lblKarmaSummoningFocus.Tag = "Label_Options_SummoningFocus";
+            this.lblKarmaSummoningFocus.Text = "Summoning Focus";
+            this.lblKarmaSummoningFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaSummoningFocus
+            // 
+            this.nudKarmaSummoningFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSummoningFocus.AutoSize = true;
+            this.nudKarmaSummoningFocus.Location = new System.Drawing.Point(850, 341);
+            this.nudKarmaSummoningFocus.Maximum = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.nudKarmaNewAIAdvancedProgram.Minimum = new decimal(new int[] {
+            this.nudKarmaSummoningFocus.Minimum = new decimal(new int[] {
             0,
             0,
             0,
             0});
-            this.nudKarmaNewAIAdvancedProgram.Name = "nudKarmaNewAIAdvancedProgram";
-            this.nudKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaNewAIAdvancedProgram.TabIndex = 112;
+            this.nudKarmaSummoningFocus.Name = "nudKarmaSummoningFocus";
+            this.nudKarmaSummoningFocus.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaSummoningFocus.TabIndex = 97;
             // 
-            // lblKarmaMetamagic
+            // lblKarmaSpellShapingFocus
             // 
-            this.lblKarmaMetamagic.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaMetamagic.AutoSize = true;
-            this.lblKarmaMetamagic.Location = new System.Drawing.Point(363, 240);
-            this.lblKarmaMetamagic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaMetamagic.Name = "lblKarmaMetamagic";
-            this.lblKarmaMetamagic.Size = new System.Drawing.Size(154, 13);
-            this.lblKarmaMetamagic.TabIndex = 57;
-            this.lblKarmaMetamagic.Tag = "Label_Options_Metamagics";
-            this.lblKarmaMetamagic.Text = "Additional Metamagics/Echoes";
-            this.lblKarmaMetamagic.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblKarmaSpellShapingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaSpellShapingFocus.AutoSize = true;
+            this.lblKarmaSpellShapingFocus.Location = new System.Drawing.Point(740, 318);
+            this.lblKarmaSpellShapingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSpellShapingFocus.Name = "lblKarmaSpellShapingFocus";
+            this.lblKarmaSpellShapingFocus.Size = new System.Drawing.Size(104, 13);
+            this.lblKarmaSpellShapingFocus.TabIndex = 102;
+            this.lblKarmaSpellShapingFocus.Tag = "Label_Options_SpellShapingFocus";
+            this.lblKarmaSpellShapingFocus.Text = "Spell Shaping Focus";
+            this.lblKarmaSpellShapingFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // nudKarmaMetamagic
+            // lblKarmaSpellShapingFocusExtra
             // 
-            this.nudKarmaMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaMetamagic.AutoSize = true;
-            this.nudKarmaMetamagic.Location = new System.Drawing.Point(523, 237);
-            this.nudKarmaMetamagic.Maximum = new decimal(new int[] {
+            this.lblKarmaSpellShapingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaSpellShapingFocusExtra.AutoSize = true;
+            this.lblKarmaSpellShapingFocusExtra.Location = new System.Drawing.Point(897, 318);
+            this.lblKarmaSpellShapingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSpellShapingFocusExtra.Name = "lblKarmaSpellShapingFocusExtra";
+            this.lblKarmaSpellShapingFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaSpellShapingFocusExtra.TabIndex = 104;
+            this.lblKarmaSpellShapingFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaSpellShapingFocusExtra.Text = "x Force";
+            this.lblKarmaSpellShapingFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // nudKarmaSpellShapingFocus
+            // 
+            this.nudKarmaSpellShapingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpellShapingFocus.AutoSize = true;
+            this.nudKarmaSpellShapingFocus.Location = new System.Drawing.Point(850, 315);
+            this.nudKarmaSpellShapingFocus.Maximum = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.nudKarmaMetamagic.Minimum = new decimal(new int[] {
+            this.nudKarmaSpellShapingFocus.Minimum = new decimal(new int[] {
             0,
             0,
             0,
             0});
-            this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
-            this.nudKarmaMetamagic.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaMetamagic.TabIndex = 58;
+            this.nudKarmaSpellShapingFocus.Name = "nudKarmaSpellShapingFocus";
+            this.nudKarmaSpellShapingFocus.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaSpellShapingFocus.TabIndex = 103;
+            // 
+            // lblKarmaSummoningFocusExtra
+            // 
+            this.lblKarmaSummoningFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaSummoningFocusExtra.AutoSize = true;
+            this.lblKarmaSummoningFocusExtra.Location = new System.Drawing.Point(897, 344);
+            this.lblKarmaSummoningFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSummoningFocusExtra.Name = "lblKarmaSummoningFocusExtra";
+            this.lblKarmaSummoningFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaSummoningFocusExtra.TabIndex = 98;
+            this.lblKarmaSummoningFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaSummoningFocusExtra.Text = "x Force";
+            this.lblKarmaSummoningFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarmaSustainingFocus
+            // 
+            this.lblKarmaSustainingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaSustainingFocus.AutoSize = true;
+            this.lblKarmaSustainingFocus.Location = new System.Drawing.Point(756, 370);
+            this.lblKarmaSustainingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSustainingFocus.Name = "lblKarmaSustainingFocus";
+            this.lblKarmaSustainingFocus.Size = new System.Drawing.Size(88, 13);
+            this.lblKarmaSustainingFocus.TabIndex = 99;
+            this.lblKarmaSustainingFocus.Tag = "Label_Options_SustainingFocus";
+            this.lblKarmaSustainingFocus.Text = "Sustaining Focus";
+            this.lblKarmaSustainingFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaWeaponFocus
+            // 
+            this.lblKarmaWeaponFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaWeaponFocus.AutoSize = true;
+            this.lblKarmaWeaponFocus.Location = new System.Drawing.Point(764, 396);
+            this.lblKarmaWeaponFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaWeaponFocus.Name = "lblKarmaWeaponFocus";
+            this.lblKarmaWeaponFocus.Size = new System.Drawing.Size(80, 13);
+            this.lblKarmaWeaponFocus.TabIndex = 105;
+            this.lblKarmaWeaponFocus.Tag = "Label_Options_WeaponFocus";
+            this.lblKarmaWeaponFocus.Text = "Weapon Focus";
+            this.lblKarmaWeaponFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaSustainingFocusExtra
+            // 
+            this.lblKarmaSustainingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaSustainingFocusExtra.AutoSize = true;
+            this.lblKarmaSustainingFocusExtra.Location = new System.Drawing.Point(897, 370);
+            this.lblKarmaSustainingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSustainingFocusExtra.Name = "lblKarmaSustainingFocusExtra";
+            this.lblKarmaSustainingFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaSustainingFocusExtra.TabIndex = 101;
+            this.lblKarmaSustainingFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaSustainingFocusExtra.Text = "x Force";
+            this.lblKarmaSustainingFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarmaWeaponFocusExtra
+            // 
+            this.lblKarmaWeaponFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaWeaponFocusExtra.AutoSize = true;
+            this.lblKarmaWeaponFocusExtra.Location = new System.Drawing.Point(897, 396);
+            this.lblKarmaWeaponFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaWeaponFocusExtra.Name = "lblKarmaWeaponFocusExtra";
+            this.lblKarmaWeaponFocusExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaWeaponFocusExtra.TabIndex = 107;
+            this.lblKarmaWeaponFocusExtra.Tag = "Label_Options_Force";
+            this.lblKarmaWeaponFocusExtra.Text = "x Force";
+            this.lblKarmaWeaponFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // nudKarmaSustainingFocus
+            // 
+            this.nudKarmaSustainingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSustainingFocus.AutoSize = true;
+            this.nudKarmaSustainingFocus.Location = new System.Drawing.Point(850, 367);
+            this.nudKarmaSustainingFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSustainingFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaSustainingFocus.Name = "nudKarmaSustainingFocus";
+            this.nudKarmaSustainingFocus.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaSustainingFocus.TabIndex = 100;
+            // 
+            // nudKarmaWeaponFocus
+            // 
+            this.nudKarmaWeaponFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaWeaponFocus.AutoSize = true;
+            this.nudKarmaWeaponFocus.Location = new System.Drawing.Point(850, 393);
+            this.nudKarmaWeaponFocus.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaWeaponFocus.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaWeaponFocus.Name = "nudKarmaWeaponFocus";
+            this.nudKarmaWeaponFocus.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaWeaponFocus.TabIndex = 106;
             // 
             // lblKarmaTechnique
             // 
             this.lblKarmaTechnique.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaTechnique.AutoSize = true;
-            this.lblKarmaTechnique.Location = new System.Drawing.Point(409, 266);
+            this.lblKarmaTechnique.Location = new System.Drawing.Point(421, 292);
             this.lblKarmaTechnique.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaTechnique.Name = "lblKarmaTechnique";
             this.lblKarmaTechnique.Size = new System.Drawing.Size(108, 13);
@@ -2924,24 +3034,18 @@ namespace Chummer
             this.lblKarmaTechnique.Text = "Martial Art Technique";
             this.lblKarmaTechnique.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // nudKarmaTechnique
+            // lblKarmaMetamagic
             // 
-            this.nudKarmaTechnique.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaTechnique.AutoSize = true;
-            this.nudKarmaTechnique.Location = new System.Drawing.Point(523, 263);
-            this.nudKarmaTechnique.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaTechnique.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaTechnique.Name = "nudKarmaTechnique";
-            this.nudKarmaTechnique.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaTechnique.TabIndex = 40;
+            this.lblKarmaMetamagic.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaMetamagic.AutoSize = true;
+            this.lblKarmaMetamagic.Location = new System.Drawing.Point(375, 266);
+            this.lblKarmaMetamagic.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaMetamagic.Name = "lblKarmaMetamagic";
+            this.lblKarmaMetamagic.Size = new System.Drawing.Size(154, 13);
+            this.lblKarmaMetamagic.TabIndex = 57;
+            this.lblKarmaMetamagic.Tag = "Label_Options_Metamagics";
+            this.lblKarmaMetamagic.Text = "Additional Metamagics/Echoes";
+            this.lblKarmaMetamagic.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // flpKarmaInitiation
             // 
@@ -2950,7 +3054,7 @@ namespace Chummer
             this.flpKarmaInitiation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpKarmaInitiation.Controls.Add(this.lblKarmaInitiation);
             this.flpKarmaInitiation.Controls.Add(this.lblKarmaInitiationBracket);
-            this.flpKarmaInitiation.Location = new System.Drawing.Point(386, 208);
+            this.flpKarmaInitiation.Location = new System.Drawing.Point(398, 234);
             this.flpKarmaInitiation.Margin = new System.Windows.Forms.Padding(0);
             this.flpKarmaInitiation.Name = "flpKarmaInitiation";
             this.flpKarmaInitiation.Size = new System.Drawing.Size(134, 25);
@@ -2982,11 +3086,101 @@ namespace Chummer
             this.lblKarmaInitiationBracket.Text = "(";
             this.lblKarmaInitiationBracket.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // lblKarmaNewAIAdvancedProgram
+            // 
+            this.lblKarmaNewAIAdvancedProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNewAIAdvancedProgram.AutoSize = true;
+            this.lblKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(387, 214);
+            this.lblKarmaNewAIAdvancedProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNewAIAdvancedProgram.Name = "lblKarmaNewAIAdvancedProgram";
+            this.lblKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(142, 13);
+            this.lblKarmaNewAIAdvancedProgram.TabIndex = 110;
+            this.lblKarmaNewAIAdvancedProgram.Tag = "Label_Options_NewAIAdvancedProgram";
+            this.lblKarmaNewAIAdvancedProgram.Text = "New Advanced Program (AI)";
+            this.lblKarmaNewAIAdvancedProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaNewAIProgram
+            // 
+            this.lblKarmaNewAIProgram.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNewAIProgram.AutoSize = true;
+            this.lblKarmaNewAIProgram.Location = new System.Drawing.Point(439, 188);
+            this.lblKarmaNewAIProgram.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNewAIProgram.Name = "lblKarmaNewAIProgram";
+            this.lblKarmaNewAIProgram.Size = new System.Drawing.Size(90, 13);
+            this.lblKarmaNewAIProgram.TabIndex = 109;
+            this.lblKarmaNewAIProgram.Tag = "Label_Options_NewAIProgram";
+            this.lblKarmaNewAIProgram.Text = "New Program (AI)";
+            this.lblKarmaNewAIProgram.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaNewComplexForm
+            // 
+            this.lblKarmaNewComplexForm.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNewComplexForm.AutoSize = true;
+            this.lblKarmaNewComplexForm.Location = new System.Drawing.Point(431, 162);
+            this.lblKarmaNewComplexForm.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNewComplexForm.Name = "lblKarmaNewComplexForm";
+            this.lblKarmaNewComplexForm.Size = new System.Drawing.Size(98, 13);
+            this.lblKarmaNewComplexForm.TabIndex = 25;
+            this.lblKarmaNewComplexForm.Tag = "Label_Options_NewComplexForm";
+            this.lblKarmaNewComplexForm.Text = "New Complex Form";
+            this.lblKarmaNewComplexForm.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblKarmaMysticAdeptPowerPoint
+            // 
+            this.lblKarmaMysticAdeptPowerPoint.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaMysticAdeptPowerPoint.AutoSize = true;
+            this.lblKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(401, 136);
+            this.lblKarmaMysticAdeptPowerPoint.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaMysticAdeptPowerPoint.Name = "lblKarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(128, 13);
+            this.lblKarmaMysticAdeptPowerPoint.TabIndex = 122;
+            this.lblKarmaMysticAdeptPowerPoint.Tag = "Label_Options_KarmaMysticAdeptPowerPoint";
+            this.lblKarmaMysticAdeptPowerPoint.Text = "Mystic Adept Power Point";
+            this.lblKarmaMysticAdeptPowerPoint.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaTechnique
+            // 
+            this.nudKarmaTechnique.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaTechnique.AutoSize = true;
+            this.nudKarmaTechnique.Location = new System.Drawing.Point(535, 289);
+            this.nudKarmaTechnique.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaTechnique.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaTechnique.Name = "nudKarmaTechnique";
+            this.nudKarmaTechnique.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaTechnique.TabIndex = 40;
+            // 
+            // nudKarmaMetamagic
+            // 
+            this.nudKarmaMetamagic.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMetamagic.AutoSize = true;
+            this.nudKarmaMetamagic.Location = new System.Drawing.Point(535, 263);
+            this.nudKarmaMetamagic.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaMetamagic.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaMetamagic.Name = "nudKarmaMetamagic";
+            this.nudKarmaMetamagic.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaMetamagic.TabIndex = 58;
+            // 
             // nudKarmaInitiation
             // 
             this.nudKarmaInitiation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaInitiation.AutoSize = true;
-            this.nudKarmaInitiation.Location = new System.Drawing.Point(523, 211);
+            this.nudKarmaInitiation.Location = new System.Drawing.Point(535, 237);
             this.nudKarmaInitiation.Maximum = new decimal(new int[] {
             100,
             0,
@@ -3005,7 +3199,7 @@ namespace Chummer
             // 
             this.lblKarmaInitiationExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaInitiationExtra.AutoSize = true;
-            this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(570, 214);
+            this.lblKarmaInitiationExtra.Location = new System.Drawing.Point(582, 240);
             this.lblKarmaInitiationExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaInitiationExtra.Name = "lblKarmaInitiationExtra";
             this.lblKarmaInitiationExtra.Size = new System.Drawing.Size(83, 13);
@@ -3018,7 +3212,7 @@ namespace Chummer
             // 
             this.nudKarmaInitiationFlat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaInitiationFlat.AutoSize = true;
-            this.nudKarmaInitiationFlat.Location = new System.Drawing.Point(659, 211);
+            this.nudKarmaInitiationFlat.Location = new System.Drawing.Point(671, 237);
             this.nudKarmaInitiationFlat.Maximum = new decimal(new int[] {
             100,
             0,
@@ -3033,56 +3227,133 @@ namespace Chummer
             this.nudKarmaInitiationFlat.Size = new System.Drawing.Size(41, 20);
             this.nudKarmaInitiationFlat.TabIndex = 121;
             // 
-            // lblKarmaCarryover
+            // nudKarmaNewAIAdvancedProgram
             // 
-            this.lblKarmaCarryover.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaCarryover.AutoSize = true;
-            this.lblKarmaCarryover.Location = new System.Drawing.Point(37, 240);
-            this.lblKarmaCarryover.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaCarryover.Name = "lblKarmaCarryover";
-            this.lblKarmaCarryover.Size = new System.Drawing.Size(141, 13);
-            this.lblKarmaCarryover.TabIndex = 50;
-            this.lblKarmaCarryover.Tag = "Label_Options_Carryover";
-            this.lblKarmaCarryover.Text = "Carryover for New Character";
-            this.lblKarmaCarryover.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaCarryover
-            // 
-            this.nudKarmaCarryover.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaCarryover.AutoSize = true;
-            this.nudKarmaCarryover.Location = new System.Drawing.Point(184, 237);
-            this.nudKarmaCarryover.Maximum = new decimal(new int[] {
+            this.nudKarmaNewAIAdvancedProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIAdvancedProgram.AutoSize = true;
+            this.nudKarmaNewAIAdvancedProgram.Location = new System.Drawing.Point(535, 211);
+            this.nudKarmaNewAIAdvancedProgram.Maximum = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.nudKarmaCarryover.Minimum = new decimal(new int[] {
+            this.nudKarmaNewAIAdvancedProgram.Minimum = new decimal(new int[] {
             0,
             0,
             0,
             0});
-            this.nudKarmaCarryover.Name = "nudKarmaCarryover";
-            this.nudKarmaCarryover.Size = new System.Drawing.Size(47, 20);
-            this.nudKarmaCarryover.TabIndex = 51;
+            this.nudKarmaNewAIAdvancedProgram.Name = "nudKarmaNewAIAdvancedProgram";
+            this.nudKarmaNewAIAdvancedProgram.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaNewAIAdvancedProgram.TabIndex = 112;
             // 
-            // lblKarmaCarryoverExtra
+            // nudKarmaNewAIProgram
             // 
-            this.lblKarmaCarryoverExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaCarryoverExtra.AutoSize = true;
-            this.lblKarmaCarryoverExtra.Location = new System.Drawing.Point(237, 240);
-            this.lblKarmaCarryoverExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaCarryoverExtra.Name = "lblKarmaCarryoverExtra";
-            this.lblKarmaCarryoverExtra.Size = new System.Drawing.Size(51, 13);
-            this.lblKarmaCarryoverExtra.TabIndex = 52;
-            this.lblKarmaCarryoverExtra.Tag = "Label_Options_Maximum";
-            this.lblKarmaCarryoverExtra.Text = "Maximum";
-            this.lblKarmaCarryoverExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.nudKarmaNewAIProgram.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewAIProgram.AutoSize = true;
+            this.nudKarmaNewAIProgram.Location = new System.Drawing.Point(535, 185);
+            this.nudKarmaNewAIProgram.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIProgram.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNewAIProgram.Name = "nudKarmaNewAIProgram";
+            this.nudKarmaNewAIProgram.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaNewAIProgram.TabIndex = 111;
+            // 
+            // nudKarmaNewComplexForm
+            // 
+            this.nudKarmaNewComplexForm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNewComplexForm.AutoSize = true;
+            this.nudKarmaNewComplexForm.Location = new System.Drawing.Point(535, 159);
+            this.nudKarmaNewComplexForm.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaNewComplexForm.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNewComplexForm.Name = "nudKarmaNewComplexForm";
+            this.nudKarmaNewComplexForm.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaNewComplexForm.TabIndex = 26;
+            // 
+            // nudKarmaMysticAdeptPowerPoint
+            // 
+            this.nudKarmaMysticAdeptPowerPoint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaMysticAdeptPowerPoint.AutoSize = true;
+            this.nudKarmaMysticAdeptPowerPoint.Location = new System.Drawing.Point(535, 133);
+            this.nudKarmaMysticAdeptPowerPoint.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaMysticAdeptPowerPoint.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaMysticAdeptPowerPoint.Name = "nudKarmaMysticAdeptPowerPoint";
+            this.nudKarmaMysticAdeptPowerPoint.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaMysticAdeptPowerPoint.TabIndex = 123;
+            // 
+            // lblKarmaSpiritFettering
+            // 
+            this.lblKarmaSpiritFettering.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaSpiritFettering.AutoSize = true;
+            this.lblKarmaSpiritFettering.Location = new System.Drawing.Point(455, 110);
+            this.lblKarmaSpiritFettering.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSpiritFettering.Name = "lblKarmaSpiritFettering";
+            this.lblKarmaSpiritFettering.Size = new System.Drawing.Size(74, 13);
+            this.lblKarmaSpiritFettering.TabIndex = 129;
+            this.lblKarmaSpiritFettering.Tag = "Label_Options_SpiritFettering";
+            this.lblKarmaSpiritFettering.Text = "Spirit Fettering";
+            this.lblKarmaSpiritFettering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaSpiritFettering
+            // 
+            this.nudKarmaSpiritFettering.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaSpiritFettering.AutoSize = true;
+            this.nudKarmaSpiritFettering.Location = new System.Drawing.Point(535, 107);
+            this.nudKarmaSpiritFettering.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudKarmaSpiritFettering.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaSpiritFettering.Name = "nudKarmaSpiritFettering";
+            this.nudKarmaSpiritFettering.Size = new System.Drawing.Size(41, 20);
+            this.nudKarmaSpiritFettering.TabIndex = 130;
+            // 
+            // lblKarmaSpiritFetteringExtra
+            // 
+            this.lblKarmaSpiritFetteringExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaSpiritFetteringExtra.AutoSize = true;
+            this.tlpKarmaCosts.SetColumnSpan(this.lblKarmaSpiritFetteringExtra, 2);
+            this.lblKarmaSpiritFetteringExtra.Location = new System.Drawing.Point(582, 110);
+            this.lblKarmaSpiritFetteringExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaSpiritFetteringExtra.Name = "lblKarmaSpiritFetteringExtra";
+            this.lblKarmaSpiritFetteringExtra.Size = new System.Drawing.Size(42, 13);
+            this.lblKarmaSpiritFetteringExtra.TabIndex = 131;
+            this.lblKarmaSpiritFetteringExtra.Tag = "Label_Options_Force";
+            this.lblKarmaSpiritFetteringExtra.Text = "x Force";
+            this.lblKarmaSpiritFetteringExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblKarmaQuality
             // 
             this.lblKarmaQuality.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblKarmaQuality.AutoSize = true;
-            this.lblKarmaQuality.Location = new System.Drawing.Point(45, 344);
+            this.lblKarmaQuality.Location = new System.Drawing.Point(51, 318);
             this.lblKarmaQuality.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaQuality.Name = "lblKarmaQuality";
             this.lblKarmaQuality.Size = new System.Drawing.Size(133, 13);
@@ -3095,7 +3366,7 @@ namespace Chummer
             // 
             this.nudKarmaQuality.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudKarmaQuality.AutoSize = true;
-            this.nudKarmaQuality.Location = new System.Drawing.Point(184, 341);
+            this.nudKarmaQuality.Location = new System.Drawing.Point(190, 315);
             this.nudKarmaQuality.Maximum = new decimal(new int[] {
             100,
             0,
@@ -3107,14 +3378,14 @@ namespace Chummer
             0,
             0});
             this.nudKarmaQuality.Name = "nudKarmaQuality";
-            this.nudKarmaQuality.Size = new System.Drawing.Size(47, 20);
+            this.nudKarmaQuality.Size = new System.Drawing.Size(53, 20);
             this.nudKarmaQuality.TabIndex = 21;
             // 
             // lblKarmaQualityExtra
             // 
             this.lblKarmaQualityExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblKarmaQualityExtra.AutoSize = true;
-            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(237, 344);
+            this.lblKarmaQualityExtra.Location = new System.Drawing.Point(249, 318);
             this.lblKarmaQualityExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblKarmaQualityExtra.Name = "lblKarmaQualityExtra";
             this.lblKarmaQualityExtra.Size = new System.Drawing.Size(53, 13);
@@ -3123,191 +3394,11 @@ namespace Chummer
             this.lblKarmaQualityExtra.Text = "x BP Cost";
             this.lblKarmaQualityExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lblKarmaSummoningFocus
-            // 
-            this.lblKarmaSummoningFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaSummoningFocus.AutoSize = true;
-            this.lblKarmaSummoningFocus.Location = new System.Drawing.Point(738, 344);
-            this.lblKarmaSummoningFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSummoningFocus.Name = "lblKarmaSummoningFocus";
-            this.lblKarmaSummoningFocus.Size = new System.Drawing.Size(94, 13);
-            this.lblKarmaSummoningFocus.TabIndex = 96;
-            this.lblKarmaSummoningFocus.Tag = "Label_Options_SummoningFocus";
-            this.lblKarmaSummoningFocus.Text = "Summoning Focus";
-            this.lblKarmaSummoningFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudKarmaSummoningFocus
-            // 
-            this.nudKarmaSummoningFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaSummoningFocus.AutoSize = true;
-            this.nudKarmaSummoningFocus.Location = new System.Drawing.Point(838, 341);
-            this.nudKarmaSummoningFocus.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaSummoningFocus.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaSummoningFocus.Name = "nudKarmaSummoningFocus";
-            this.nudKarmaSummoningFocus.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaSummoningFocus.TabIndex = 97;
-            // 
-            // lblKarmaSpellShapingFocus
-            // 
-            this.lblKarmaSpellShapingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaSpellShapingFocus.AutoSize = true;
-            this.lblKarmaSpellShapingFocus.Location = new System.Drawing.Point(728, 318);
-            this.lblKarmaSpellShapingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSpellShapingFocus.Name = "lblKarmaSpellShapingFocus";
-            this.lblKarmaSpellShapingFocus.Size = new System.Drawing.Size(104, 13);
-            this.lblKarmaSpellShapingFocus.TabIndex = 102;
-            this.lblKarmaSpellShapingFocus.Tag = "Label_Options_SpellShapingFocus";
-            this.lblKarmaSpellShapingFocus.Text = "Spell Shaping Focus";
-            this.lblKarmaSpellShapingFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblKarmaSpellShapingFocusExtra
-            // 
-            this.lblKarmaSpellShapingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaSpellShapingFocusExtra.AutoSize = true;
-            this.lblKarmaSpellShapingFocusExtra.Location = new System.Drawing.Point(885, 318);
-            this.lblKarmaSpellShapingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSpellShapingFocusExtra.Name = "lblKarmaSpellShapingFocusExtra";
-            this.lblKarmaSpellShapingFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaSpellShapingFocusExtra.TabIndex = 104;
-            this.lblKarmaSpellShapingFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaSpellShapingFocusExtra.Text = "x Force";
-            this.lblKarmaSpellShapingFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // nudKarmaSpellShapingFocus
-            // 
-            this.nudKarmaSpellShapingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaSpellShapingFocus.AutoSize = true;
-            this.nudKarmaSpellShapingFocus.Location = new System.Drawing.Point(838, 315);
-            this.nudKarmaSpellShapingFocus.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaSpellShapingFocus.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaSpellShapingFocus.Name = "nudKarmaSpellShapingFocus";
-            this.nudKarmaSpellShapingFocus.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaSpellShapingFocus.TabIndex = 103;
-            // 
-            // lblKarmaSummoningFocusExtra
-            // 
-            this.lblKarmaSummoningFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaSummoningFocusExtra.AutoSize = true;
-            this.lblKarmaSummoningFocusExtra.Location = new System.Drawing.Point(885, 344);
-            this.lblKarmaSummoningFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSummoningFocusExtra.Name = "lblKarmaSummoningFocusExtra";
-            this.lblKarmaSummoningFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaSummoningFocusExtra.TabIndex = 98;
-            this.lblKarmaSummoningFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaSummoningFocusExtra.Text = "x Force";
-            this.lblKarmaSummoningFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblKarmaSustainingFocus
-            // 
-            this.lblKarmaSustainingFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaSustainingFocus.AutoSize = true;
-            this.lblKarmaSustainingFocus.Location = new System.Drawing.Point(744, 370);
-            this.lblKarmaSustainingFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSustainingFocus.Name = "lblKarmaSustainingFocus";
-            this.lblKarmaSustainingFocus.Size = new System.Drawing.Size(88, 13);
-            this.lblKarmaSustainingFocus.TabIndex = 99;
-            this.lblKarmaSustainingFocus.Tag = "Label_Options_SustainingFocus";
-            this.lblKarmaSustainingFocus.Text = "Sustaining Focus";
-            this.lblKarmaSustainingFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblKarmaWeaponFocus
-            // 
-            this.lblKarmaWeaponFocus.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblKarmaWeaponFocus.AutoSize = true;
-            this.lblKarmaWeaponFocus.Location = new System.Drawing.Point(752, 396);
-            this.lblKarmaWeaponFocus.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaWeaponFocus.Name = "lblKarmaWeaponFocus";
-            this.lblKarmaWeaponFocus.Size = new System.Drawing.Size(80, 13);
-            this.lblKarmaWeaponFocus.TabIndex = 105;
-            this.lblKarmaWeaponFocus.Tag = "Label_Options_WeaponFocus";
-            this.lblKarmaWeaponFocus.Text = "Weapon Focus";
-            this.lblKarmaWeaponFocus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lblKarmaSustainingFocusExtra
-            // 
-            this.lblKarmaSustainingFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaSustainingFocusExtra.AutoSize = true;
-            this.lblKarmaSustainingFocusExtra.Location = new System.Drawing.Point(885, 370);
-            this.lblKarmaSustainingFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaSustainingFocusExtra.Name = "lblKarmaSustainingFocusExtra";
-            this.lblKarmaSustainingFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaSustainingFocusExtra.TabIndex = 101;
-            this.lblKarmaSustainingFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaSustainingFocusExtra.Text = "x Force";
-            this.lblKarmaSustainingFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lblKarmaWeaponFocusExtra
-            // 
-            this.lblKarmaWeaponFocusExtra.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.lblKarmaWeaponFocusExtra.AutoSize = true;
-            this.lblKarmaWeaponFocusExtra.Location = new System.Drawing.Point(885, 396);
-            this.lblKarmaWeaponFocusExtra.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblKarmaWeaponFocusExtra.Name = "lblKarmaWeaponFocusExtra";
-            this.lblKarmaWeaponFocusExtra.Size = new System.Drawing.Size(42, 13);
-            this.lblKarmaWeaponFocusExtra.TabIndex = 107;
-            this.lblKarmaWeaponFocusExtra.Tag = "Label_Options_Force";
-            this.lblKarmaWeaponFocusExtra.Text = "x Force";
-            this.lblKarmaWeaponFocusExtra.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // nudKarmaSustainingFocus
-            // 
-            this.nudKarmaSustainingFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaSustainingFocus.AutoSize = true;
-            this.nudKarmaSustainingFocus.Location = new System.Drawing.Point(838, 367);
-            this.nudKarmaSustainingFocus.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaSustainingFocus.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaSustainingFocus.Name = "nudKarmaSustainingFocus";
-            this.nudKarmaSustainingFocus.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaSustainingFocus.TabIndex = 100;
-            // 
-            // nudKarmaWeaponFocus
-            // 
-            this.nudKarmaWeaponFocus.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudKarmaWeaponFocus.AutoSize = true;
-            this.nudKarmaWeaponFocus.Location = new System.Drawing.Point(838, 393);
-            this.nudKarmaWeaponFocus.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudKarmaWeaponFocus.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudKarmaWeaponFocus.Name = "nudKarmaWeaponFocus";
-            this.nudKarmaWeaponFocus.Size = new System.Drawing.Size(41, 20);
-            this.nudKarmaWeaponFocus.TabIndex = 106;
-            // 
             // lblMetatypeCostsKarmaMultiplierLabel
             // 
             this.lblMetatypeCostsKarmaMultiplierLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMetatypeCostsKarmaMultiplierLabel.AutoSize = true;
-            this.lblMetatypeCostsKarmaMultiplierLabel.Location = new System.Drawing.Point(26, 370);
+            this.lblMetatypeCostsKarmaMultiplierLabel.Location = new System.Drawing.Point(32, 344);
             this.lblMetatypeCostsKarmaMultiplierLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMetatypeCostsKarmaMultiplierLabel.Name = "lblMetatypeCostsKarmaMultiplierLabel";
             this.lblMetatypeCostsKarmaMultiplierLabel.Size = new System.Drawing.Size(152, 13);
@@ -3320,7 +3411,7 @@ namespace Chummer
             // 
             this.nudMetatypeCostsKarmaMultiplier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMetatypeCostsKarmaMultiplier.AutoSize = true;
-            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(184, 367);
+            this.nudMetatypeCostsKarmaMultiplier.Location = new System.Drawing.Point(190, 341);
             this.nudMetatypeCostsKarmaMultiplier.Maximum = new decimal(new int[] {
             10,
             0,
@@ -3332,13 +3423,103 @@ namespace Chummer
             0,
             0});
             this.nudMetatypeCostsKarmaMultiplier.Name = "nudMetatypeCostsKarmaMultiplier";
-            this.nudMetatypeCostsKarmaMultiplier.Size = new System.Drawing.Size(47, 20);
+            this.nudMetatypeCostsKarmaMultiplier.Size = new System.Drawing.Size(53, 20);
             this.nudMetatypeCostsKarmaMultiplier.TabIndex = 124;
             this.nudMetatypeCostsKarmaMultiplier.Value = new decimal(new int[] {
             1,
             0,
             0,
             0});
+            // 
+            // lblKarmaNuyenPerWftM
+            // 
+            this.lblKarmaNuyenPerWftM.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNuyenPerWftM.AutoSize = true;
+            this.lblKarmaNuyenPerWftM.Location = new System.Drawing.Point(9, 370);
+            this.lblKarmaNuyenPerWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerWftM.Name = "lblKarmaNuyenPerWftM";
+            this.lblKarmaNuyenPerWftM.Size = new System.Drawing.Size(175, 13);
+            this.lblKarmaNuyenPerWftM.TabIndex = 41;
+            this.lblKarmaNuyenPerWftM.Tag = "Label_Options_WftM_Nuyen";
+            this.lblKarmaNuyenPerWftM.Text = "Working for the Man Nuyen Gained";
+            this.lblKarmaNuyenPerWftM.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaNuyenPerWftM
+            // 
+            this.nudKarmaNuyenPerWftM.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNuyenPerWftM.AutoSize = true;
+            this.nudKarmaNuyenPerWftM.Location = new System.Drawing.Point(190, 367);
+            this.nudKarmaNuyenPerWftM.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftM.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftM.Name = "nudKarmaNuyenPerWftM";
+            this.nudKarmaNuyenPerWftM.Size = new System.Drawing.Size(53, 20);
+            this.nudKarmaNuyenPerWftM.TabIndex = 42;
+            // 
+            // lblKarmaNuyenPerExtraWftM
+            // 
+            this.lblKarmaNuyenPerExtraWftM.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaNuyenPerExtraWftM.AutoSize = true;
+            this.lblKarmaNuyenPerExtraWftM.Location = new System.Drawing.Point(249, 370);
+            this.lblKarmaNuyenPerExtraWftM.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerExtraWftM.Name = "lblKarmaNuyenPerExtraWftM";
+            this.lblKarmaNuyenPerExtraWftM.Size = new System.Drawing.Size(86, 13);
+            this.lblKarmaNuyenPerExtraWftM.TabIndex = 43;
+            this.lblKarmaNuyenPerExtraWftM.Tag = "Label_Options_PerKarmaSpent";
+            this.lblKarmaNuyenPerExtraWftM.Text = "per Karma Spent";
+            this.lblKarmaNuyenPerExtraWftM.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarmaNuyenPerExtraWftP
+            // 
+            this.lblKarmaNuyenPerExtraWftP.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblKarmaNuyenPerExtraWftP.AutoSize = true;
+            this.lblKarmaNuyenPerExtraWftP.Location = new System.Drawing.Point(249, 396);
+            this.lblKarmaNuyenPerExtraWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerExtraWftP.Name = "lblKarmaNuyenPerExtraWftP";
+            this.lblKarmaNuyenPerExtraWftP.Size = new System.Drawing.Size(92, 13);
+            this.lblKarmaNuyenPerExtraWftP.TabIndex = 132;
+            this.lblKarmaNuyenPerExtraWftP.Tag = "Label_Options_PerKarmaGained";
+            this.lblKarmaNuyenPerExtraWftP.Text = "per Karma Gained";
+            this.lblKarmaNuyenPerExtraWftP.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblKarmaNuyenPerWftP
+            // 
+            this.lblKarmaNuyenPerWftP.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblKarmaNuyenPerWftP.AutoSize = true;
+            this.lblKarmaNuyenPerWftP.Location = new System.Drawing.Point(3, 396);
+            this.lblKarmaNuyenPerWftP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblKarmaNuyenPerWftP.Name = "lblKarmaNuyenPerWftP";
+            this.lblKarmaNuyenPerWftP.Size = new System.Drawing.Size(181, 13);
+            this.lblKarmaNuyenPerWftP.TabIndex = 133;
+            this.lblKarmaNuyenPerWftP.Tag = "Label_Options_WftP_Nuyen";
+            this.lblKarmaNuyenPerWftP.Text = "Working for the People Nuyen Spent";
+            this.lblKarmaNuyenPerWftP.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudKarmaNuyenPerWftP
+            // 
+            this.nudKarmaNuyenPerWftP.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudKarmaNuyenPerWftP.AutoSize = true;
+            this.nudKarmaNuyenPerWftP.Location = new System.Drawing.Point(190, 393);
+            this.nudKarmaNuyenPerWftP.Maximum = new decimal(new int[] {
+            99999,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftP.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudKarmaNuyenPerWftP.Name = "nudKarmaNuyenPerWftP";
+            this.nudKarmaNuyenPerWftP.Size = new System.Drawing.Size(53, 20);
+            this.nudKarmaNuyenPerWftP.TabIndex = 134;
             // 
             // tabCustomData
             // 
@@ -3356,30 +3537,273 @@ namespace Chummer
             // 
             this.tlpOptionalRules.AutoSize = true;
             this.tlpOptionalRules.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptionalRules.ColumnCount = 4;
+            this.tlpOptionalRules.ColumnCount = 2;
             this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 60F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
-            this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
+            this.tlpOptionalRules.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tlpOptionalRules.Controls.Add(this.treCustomDataDirectories, 0, 1);
-            this.tlpOptionalRules.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder, 2, 0);
-            this.tlpOptionalRules.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 3, 0);
-            this.tlpOptionalRules.Controls.Add(this.cmdGlobalOptionsCustomData, 1, 0);
+            this.tlpOptionalRules.Controls.Add(this.gpbDirectoryInfo, 1, 0);
+            this.tlpOptionalRules.Controls.Add(this.lblCustomDataDirectoriesLabel, 0, 0);
+            this.tlpOptionalRules.Controls.Add(this.tlpOptionalRulesButtons, 0, 2);
             this.tlpOptionalRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpOptionalRules.Location = new System.Drawing.Point(9, 9);
             this.tlpOptionalRules.Name = "tlpOptionalRules";
-            this.tlpOptionalRules.RowCount = 2;
+            this.tlpOptionalRules.RowCount = 3;
             this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpOptionalRules.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpOptionalRules.Size = new System.Drawing.Size(1214, 584);
             this.tlpOptionalRules.TabIndex = 44;
+            // 
+            // treCustomDataDirectories
+            // 
+            this.treCustomDataDirectories.CheckBoxes = true;
+            this.treCustomDataDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.treCustomDataDirectories.Location = new System.Drawing.Point(3, 28);
+            this.treCustomDataDirectories.Name = "treCustomDataDirectories";
+            this.treCustomDataDirectories.ShowLines = false;
+            this.treCustomDataDirectories.ShowPlusMinus = false;
+            this.treCustomDataDirectories.ShowRootLines = false;
+            this.treCustomDataDirectories.Size = new System.Drawing.Size(722, 524);
+            this.treCustomDataDirectories.TabIndex = 40;
+            this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterCheck);
+            this.treCustomDataDirectories.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterSelect);
+            // 
+            // gpbDirectoryInfo
+            // 
+            this.gpbDirectoryInfo.AutoSize = true;
+            this.gpbDirectoryInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbDirectoryInfo.Controls.Add(this.tlpDirectoryInfo);
+            this.gpbDirectoryInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbDirectoryInfo.Location = new System.Drawing.Point(731, 3);
+            this.gpbDirectoryInfo.Name = "gpbDirectoryInfo";
+            this.tlpOptionalRules.SetRowSpan(this.gpbDirectoryInfo, 3);
+            this.gpbDirectoryInfo.Size = new System.Drawing.Size(480, 578);
+            this.gpbDirectoryInfo.TabIndex = 45;
+            this.gpbDirectoryInfo.TabStop = false;
+            this.gpbDirectoryInfo.Tag = "Title_CustomDataDirectoryInfo";
+            this.gpbDirectoryInfo.Text = "Custom Data Directory Info";
+            this.gpbDirectoryInfo.Visible = false;
+            // 
+            // tlpDirectoryInfo
+            // 
+            this.tlpDirectoryInfo.AutoSize = true;
+            this.tlpDirectoryInfo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpDirectoryInfo.ColumnCount = 2;
+            this.tlpDirectoryInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpDirectoryInfo.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoDependencies, 0, 2);
+            this.tlpDirectoryInfo.Controls.Add(this.gbpDirectoryInfoIncompatibilities, 1, 2);
+            this.tlpDirectoryInfo.Controls.Add(this.txtDirectoryDescription, 0, 1);
+            this.tlpDirectoryInfo.Controls.Add(this.tlpDirectoryInfoLeft, 0, 0);
+            this.tlpDirectoryInfo.Controls.Add(this.gpbDirectoryAuthors, 1, 0);
+            this.tlpDirectoryInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpDirectoryInfo.Location = new System.Drawing.Point(3, 16);
+            this.tlpDirectoryInfo.Name = "tlpDirectoryInfo";
+            this.tlpDirectoryInfo.RowCount = 3;
+            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpDirectoryInfo.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpDirectoryInfo.Size = new System.Drawing.Size(474, 559);
+            this.tlpDirectoryInfo.TabIndex = 0;
+            // 
+            // gbpDirectoryInfoDependencies
+            // 
+            this.gbpDirectoryInfoDependencies.AutoSize = true;
+            this.gbpDirectoryInfoDependencies.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gbpDirectoryInfoDependencies.Controls.Add(this.pnlDirectoryDependencies);
+            this.gbpDirectoryInfoDependencies.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbpDirectoryInfoDependencies.Location = new System.Drawing.Point(3, 421);
+            this.gbpDirectoryInfoDependencies.Name = "gbpDirectoryInfoDependencies";
+            this.gbpDirectoryInfoDependencies.Size = new System.Drawing.Size(231, 135);
+            this.gbpDirectoryInfoDependencies.TabIndex = 8;
+            this.gbpDirectoryInfoDependencies.TabStop = false;
+            this.gbpDirectoryInfoDependencies.Tag = "Title_DirectoryDependencies";
+            this.gbpDirectoryInfoDependencies.Text = "Dependencies";
+            // 
+            // pnlDirectoryDependencies
+            // 
+            this.pnlDirectoryDependencies.AutoScroll = true;
+            this.pnlDirectoryDependencies.Controls.Add(this.lblDependencies);
+            this.pnlDirectoryDependencies.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDirectoryDependencies.Location = new System.Drawing.Point(3, 16);
+            this.pnlDirectoryDependencies.Name = "pnlDirectoryDependencies";
+            this.pnlDirectoryDependencies.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlDirectoryDependencies.Size = new System.Drawing.Size(225, 116);
+            this.pnlDirectoryDependencies.TabIndex = 1;
+            // 
+            // lblDependencies
+            // 
+            this.lblDependencies.AutoSize = true;
+            this.lblDependencies.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblDependencies.Location = new System.Drawing.Point(3, 6);
+            this.lblDependencies.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDependencies.Name = "lblDependencies";
+            this.lblDependencies.Size = new System.Drawing.Size(82, 13);
+            this.lblDependencies.TabIndex = 0;
+            this.lblDependencies.Text = "[Dependencies]";
+            // 
+            // gbpDirectoryInfoIncompatibilities
+            // 
+            this.gbpDirectoryInfoIncompatibilities.AutoSize = true;
+            this.gbpDirectoryInfoIncompatibilities.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gbpDirectoryInfoIncompatibilities.Controls.Add(this.pnlDirectoryIncompatibilities);
+            this.gbpDirectoryInfoIncompatibilities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbpDirectoryInfoIncompatibilities.Location = new System.Drawing.Point(240, 421);
+            this.gbpDirectoryInfoIncompatibilities.Name = "gbpDirectoryInfoIncompatibilities";
+            this.gbpDirectoryInfoIncompatibilities.Size = new System.Drawing.Size(231, 135);
+            this.gbpDirectoryInfoIncompatibilities.TabIndex = 9;
+            this.gbpDirectoryInfoIncompatibilities.TabStop = false;
+            this.gbpDirectoryInfoIncompatibilities.Tag = "Title_DirectoryIncompatibilities";
+            this.gbpDirectoryInfoIncompatibilities.Text = "Incompatibilities";
+            // 
+            // pnlDirectoryIncompatibilities
+            // 
+            this.pnlDirectoryIncompatibilities.AutoScroll = true;
+            this.pnlDirectoryIncompatibilities.Controls.Add(this.lblIncompatibilities);
+            this.pnlDirectoryIncompatibilities.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDirectoryIncompatibilities.Location = new System.Drawing.Point(3, 16);
+            this.pnlDirectoryIncompatibilities.Name = "pnlDirectoryIncompatibilities";
+            this.pnlDirectoryIncompatibilities.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlDirectoryIncompatibilities.Size = new System.Drawing.Size(225, 116);
+            this.pnlDirectoryIncompatibilities.TabIndex = 2;
+            // 
+            // lblIncompatibilities
+            // 
+            this.lblIncompatibilities.AutoSize = true;
+            this.lblIncompatibilities.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblIncompatibilities.Location = new System.Drawing.Point(3, 6);
+            this.lblIncompatibilities.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblIncompatibilities.Name = "lblIncompatibilities";
+            this.lblIncompatibilities.Size = new System.Drawing.Size(87, 13);
+            this.lblIncompatibilities.TabIndex = 0;
+            this.lblIncompatibilities.Text = "[Incompatibilities]";
+            // 
+            // txtDirectoryDescription
+            // 
+            this.txtDirectoryDescription.BackColor = System.Drawing.SystemColors.Control;
+            this.tlpDirectoryInfo.SetColumnSpan(this.txtDirectoryDescription, 2);
+            this.txtDirectoryDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDirectoryDescription.Location = new System.Drawing.Point(3, 142);
+            this.txtDirectoryDescription.Multiline = true;
+            this.txtDirectoryDescription.Name = "txtDirectoryDescription";
+            this.txtDirectoryDescription.ReadOnly = true;
+            this.txtDirectoryDescription.Size = new System.Drawing.Size(468, 273);
+            this.txtDirectoryDescription.TabIndex = 13;
+            // 
+            // tlpDirectoryInfoLeft
+            // 
+            this.tlpDirectoryInfoLeft.AutoSize = true;
+            this.tlpDirectoryInfoLeft.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpDirectoryInfoLeft.ColumnCount = 2;
+            this.tlpDirectoryInfoLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpDirectoryInfoLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryNameLabel, 0, 0);
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryVersion, 1, 1);
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryName, 1, 0);
+            this.tlpDirectoryInfoLeft.Controls.Add(this.lblDirectoryVersionLabel, 0, 1);
+            this.tlpDirectoryInfoLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpDirectoryInfoLeft.Location = new System.Drawing.Point(0, 0);
+            this.tlpDirectoryInfoLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpDirectoryInfoLeft.Name = "tlpDirectoryInfoLeft";
+            this.tlpDirectoryInfoLeft.RowCount = 2;
+            this.tlpDirectoryInfoLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpDirectoryInfoLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpDirectoryInfoLeft.Size = new System.Drawing.Size(237, 139);
+            this.tlpDirectoryInfoLeft.TabIndex = 14;
+            // 
+            // lblDirectoryNameLabel
+            // 
+            this.lblDirectoryNameLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDirectoryNameLabel.AutoSize = true;
+            this.lblDirectoryNameLabel.Location = new System.Drawing.Point(10, 6);
+            this.lblDirectoryNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDirectoryNameLabel.Name = "lblDirectoryNameLabel";
+            this.lblDirectoryNameLabel.Size = new System.Drawing.Size(38, 13);
+            this.lblDirectoryNameLabel.TabIndex = 0;
+            this.lblDirectoryNameLabel.Tag = "Label_DirectoryName";
+            this.lblDirectoryNameLabel.Text = "Name:";
+            this.lblDirectoryNameLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblDirectoryVersion
+            // 
+            this.lblDirectoryVersion.AutoSize = true;
+            this.lblDirectoryVersion.Location = new System.Drawing.Point(54, 120);
+            this.lblDirectoryVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDirectoryVersion.Name = "lblDirectoryVersion";
+            this.lblDirectoryVersion.Size = new System.Drawing.Size(93, 13);
+            this.lblDirectoryVersion.TabIndex = 5;
+            this.lblDirectoryVersion.Tag = "";
+            this.lblDirectoryVersion.Text = "[Directory Version]";
+            this.lblDirectoryVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblDirectoryName
+            // 
+            this.lblDirectoryName.AutoSize = true;
+            this.lblDirectoryName.Location = new System.Drawing.Point(54, 6);
+            this.lblDirectoryName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDirectoryName.Name = "lblDirectoryName";
+            this.lblDirectoryName.Size = new System.Drawing.Size(86, 13);
+            this.lblDirectoryName.TabIndex = 4;
+            this.lblDirectoryName.Tag = "";
+            this.lblDirectoryName.Text = "[Directory Name]";
+            this.lblDirectoryName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lblDirectoryVersionLabel
+            // 
+            this.lblDirectoryVersionLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblDirectoryVersionLabel.AutoSize = true;
+            this.lblDirectoryVersionLabel.Location = new System.Drawing.Point(3, 120);
+            this.lblDirectoryVersionLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDirectoryVersionLabel.Name = "lblDirectoryVersionLabel";
+            this.lblDirectoryVersionLabel.Size = new System.Drawing.Size(45, 13);
+            this.lblDirectoryVersionLabel.TabIndex = 2;
+            this.lblDirectoryVersionLabel.Tag = "Label_DirectoryVersion";
+            this.lblDirectoryVersionLabel.Text = "Version:";
+            this.lblDirectoryVersionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // gpbDirectoryAuthors
+            // 
+            this.gpbDirectoryAuthors.AutoSize = true;
+            this.gpbDirectoryAuthors.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.gpbDirectoryAuthors.Controls.Add(this.pnlDirectoryAuthors);
+            this.gpbDirectoryAuthors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gpbDirectoryAuthors.Location = new System.Drawing.Point(240, 3);
+            this.gpbDirectoryAuthors.Name = "gpbDirectoryAuthors";
+            this.gpbDirectoryAuthors.Size = new System.Drawing.Size(231, 133);
+            this.gpbDirectoryAuthors.TabIndex = 16;
+            this.gpbDirectoryAuthors.TabStop = false;
+            this.gpbDirectoryAuthors.Tag = "Label_DirectoryAuthors";
+            this.gpbDirectoryAuthors.Text = "Authors";
+            // 
+            // pnlDirectoryAuthors
+            // 
+            this.pnlDirectoryAuthors.AutoScroll = true;
+            this.pnlDirectoryAuthors.Controls.Add(this.lblDirectoryAuthors);
+            this.pnlDirectoryAuthors.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlDirectoryAuthors.Location = new System.Drawing.Point(3, 16);
+            this.pnlDirectoryAuthors.Name = "pnlDirectoryAuthors";
+            this.pnlDirectoryAuthors.Padding = new System.Windows.Forms.Padding(3, 6, 13, 6);
+            this.pnlDirectoryAuthors.Size = new System.Drawing.Size(225, 114);
+            this.pnlDirectoryAuthors.TabIndex = 0;
+            // 
+            // lblDirectoryAuthors
+            // 
+            this.lblDirectoryAuthors.AutoSize = true;
+            this.lblDirectoryAuthors.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lblDirectoryAuthors.Location = new System.Drawing.Point(3, 6);
+            this.lblDirectoryAuthors.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDirectoryAuthors.Name = "lblDirectoryAuthors";
+            this.lblDirectoryAuthors.Size = new System.Drawing.Size(94, 13);
+            this.lblDirectoryAuthors.TabIndex = 6;
+            this.lblDirectoryAuthors.Tag = "";
+            this.lblDirectoryAuthors.Text = "[Directory Authors]";
+            this.lblDirectoryAuthors.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblCustomDataDirectoriesLabel
             // 
             this.lblCustomDataDirectoriesLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCustomDataDirectoriesLabel.AutoSize = true;
-            this.lblCustomDataDirectoriesLabel.Location = new System.Drawing.Point(3, 8);
+            this.lblCustomDataDirectoriesLabel.Location = new System.Drawing.Point(3, 6);
             this.lblCustomDataDirectoriesLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCustomDataDirectoriesLabel.Name = "lblCustomDataDirectoriesLabel";
             this.lblCustomDataDirectoriesLabel.Size = new System.Drawing.Size(155, 13);
@@ -3388,58 +3812,68 @@ namespace Chummer
             this.lblCustomDataDirectoriesLabel.Text = "Custom Data Directories to Use";
             this.lblCustomDataDirectoriesLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // treCustomDataDirectories
+            // tlpOptionalRulesButtons
             // 
-            this.treCustomDataDirectories.CheckBoxes = true;
-            this.tlpOptionalRules.SetColumnSpan(this.treCustomDataDirectories, 4);
-            this.treCustomDataDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.treCustomDataDirectories.Location = new System.Drawing.Point(3, 32);
-            this.treCustomDataDirectories.Name = "treCustomDataDirectories";
-            this.treCustomDataDirectories.ShowLines = false;
-            this.treCustomDataDirectories.ShowPlusMinus = false;
-            this.treCustomDataDirectories.ShowRootLines = false;
-            this.treCustomDataDirectories.Size = new System.Drawing.Size(1208, 549);
-            this.treCustomDataDirectories.TabIndex = 40;
-            this.treCustomDataDirectories.AfterCheck += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDataDirectories_AfterCheck);
-            // 
-            // cmdIncreaseCustomDirectoryLoadOrder
-            // 
-            this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
-            this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(973, 3);
-            this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
-            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(115, 23);
-            this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Tag = "Button_IncreaseCustomDirectoryLoadOrder";
-            this.cmdIncreaseCustomDirectoryLoadOrder.Text = "Increase Load Order";
-            this.cmdIncreaseCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
-            this.cmdIncreaseCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdIncreaseCustomDirectoryLoadOrder_Click);
+            this.tlpOptionalRulesButtons.AutoSize = true;
+            this.tlpOptionalRulesButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpOptionalRulesButtons.ColumnCount = 5;
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdToTopCustomDirectoryLoadOrder, 2, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdToBottomCustomDirectoryLoadOrder, 4, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdDecreaseCustomDirectoryLoadOrder, 3, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdIncreaseCustomDirectoryLoadOrder, 1, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdGlobalOptionsCustomData, 0, 0);
+            this.tlpOptionalRulesButtons.Location = new System.Drawing.Point(0, 555);
+            this.tlpOptionalRulesButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpOptionalRulesButtons.Name = "tlpOptionalRulesButtons";
+            this.tlpOptionalRulesButtons.RowCount = 1;
+            this.tlpOptionalRulesButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpOptionalRulesButtons.Size = new System.Drawing.Size(625, 29);
+            this.tlpOptionalRulesButtons.TabIndex = 46;
             // 
             // cmdDecreaseCustomDirectoryLoadOrder
             // 
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSize = true;
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(1094, 3);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(378, 3);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
-            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(117, 23);
+            this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
             this.cmdDecreaseCustomDirectoryLoadOrder.Tag = "Button_DecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Text = "Decrease Load Order";
             this.cmdDecreaseCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
             this.cmdDecreaseCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdDecreaseCustomDirectoryLoadOrder_Click);
             // 
+            // cmdIncreaseCustomDirectoryLoadOrder
+            // 
+            this.cmdIncreaseCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(128, 3);
+            this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
+            this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
+            this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
+            this.cmdIncreaseCustomDirectoryLoadOrder.Tag = "Button_IncreaseCustomDirectoryLoadOrder";
+            this.cmdIncreaseCustomDirectoryLoadOrder.Text = "Increase Load Order";
+            this.cmdIncreaseCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
+            this.cmdIncreaseCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdIncreaseCustomDirectoryLoadOrder_Click);
+            // 
             // cmdGlobalOptionsCustomData
             // 
             this.cmdGlobalOptionsCustomData.AutoSize = true;
             this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(731, 3);
+            this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(3, 3);
             this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
-            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(236, 23);
+            this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(119, 23);
             this.cmdGlobalOptionsCustomData.TabIndex = 44;
-            this.cmdGlobalOptionsCustomData.Text = "Change Custom Data Entries";
+            this.cmdGlobalOptionsCustomData.Tag = "Button_ChangeCustomDataEntries";
+            this.cmdGlobalOptionsCustomData.Text = "Change Entries";
             this.cmdGlobalOptionsCustomData.UseVisualStyleBackColor = true;
             this.cmdGlobalOptionsCustomData.Click += new System.EventHandler(this.cmdGlobalOptionsCustomData_Click);
             // 
@@ -3513,6 +3947,7 @@ namespace Chummer
             // 
             this.chkExceedNegativeQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedNegativeQualities.AutoSize = true;
+            this.chkExceedNegativeQualities.DefaultColorScheme = true;
             this.chkExceedNegativeQualities.Location = new System.Drawing.Point(3, 95);
             this.chkExceedNegativeQualities.Name = "chkExceedNegativeQualities";
             this.chkExceedNegativeQualities.Size = new System.Drawing.Size(278, 17);
@@ -3525,6 +3960,7 @@ namespace Chummer
             // 
             this.chkDontDoubleQualityPurchases.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontDoubleQualityPurchases.AutoSize = true;
+            this.chkDontDoubleQualityPurchases.DefaultColorScheme = true;
             this.chkDontDoubleQualityPurchases.Location = new System.Drawing.Point(3, 3);
             this.chkDontDoubleQualityPurchases.Name = "chkDontDoubleQualityPurchases";
             this.chkDontDoubleQualityPurchases.Size = new System.Drawing.Size(352, 17);
@@ -3537,6 +3973,7 @@ namespace Chummer
             // 
             this.chkExceedPositiveQualities.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedPositiveQualities.AutoSize = true;
+            this.chkExceedPositiveQualities.DefaultColorScheme = true;
             this.chkExceedPositiveQualities.Location = new System.Drawing.Point(3, 49);
             this.chkExceedPositiveQualities.Name = "chkExceedPositiveQualities";
             this.chkExceedPositiveQualities.Size = new System.Drawing.Size(272, 17);
@@ -3549,6 +3986,7 @@ namespace Chummer
             // 
             this.chkDontDoubleQualityRefunds.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontDoubleQualityRefunds.AutoSize = true;
+            this.chkDontDoubleQualityRefunds.DefaultColorScheme = true;
             this.chkDontDoubleQualityRefunds.Location = new System.Drawing.Point(3, 26);
             this.chkDontDoubleQualityRefunds.Name = "chkDontDoubleQualityRefunds";
             this.chkDontDoubleQualityRefunds.Size = new System.Drawing.Size(350, 17);
@@ -3561,6 +3999,7 @@ namespace Chummer
             // 
             this.chkExceedPositiveQualitiesCostDoubled.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedPositiveQualitiesCostDoubled.AutoSize = true;
+            this.chkExceedPositiveQualitiesCostDoubled.DefaultColorScheme = true;
             this.chkExceedPositiveQualitiesCostDoubled.Enabled = false;
             this.chkExceedPositiveQualitiesCostDoubled.Location = new System.Drawing.Point(23, 72);
             this.chkExceedPositiveQualitiesCostDoubled.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
@@ -3576,6 +4015,7 @@ namespace Chummer
             this.chkExceedNegativeQualitiesLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExceedNegativeQualitiesLimit.AutoSize = true;
             this.chkExceedNegativeQualitiesLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkExceedNegativeQualitiesLimit.DefaultColorScheme = true;
             this.chkExceedNegativeQualitiesLimit.Enabled = false;
             this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(23, 118);
             this.chkExceedNegativeQualitiesLimit.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
@@ -3591,7 +4031,7 @@ namespace Chummer
             // 
             this.gpbHouseRulesAttributes.AutoSize = true;
             this.gpbHouseRulesAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbHouseRulesAttributes.Controls.Add(this.bufferedTableLayoutPanel1);
+            this.gpbHouseRulesAttributes.Controls.Add(this.tlpHouseRulesAttributes);
             this.gpbHouseRulesAttributes.Location = new System.Drawing.Point(544, 3);
             this.gpbHouseRulesAttributes.Name = "gpbHouseRulesAttributes";
             this.gpbHouseRulesAttributes.Size = new System.Drawing.Size(423, 183);
@@ -3600,37 +4040,38 @@ namespace Chummer
             this.gpbHouseRulesAttributes.Tag = "Label_Attributes";
             this.gpbHouseRulesAttributes.Text = "Attributes";
             // 
-            // bufferedTableLayoutPanel1
+            // tlpHouseRulesAttributes
             // 
-            this.bufferedTableLayoutPanel1.AutoSize = true;
-            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel1.ColumnCount = 1;
-            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkESSLossReducesMaximumOnly, 0, 0);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkAllowCyberwareESSDiscounts, 0, 2);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkAlternateMetatypeAttributeKarma, 0, 4);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkReverseAttributePriorityOrder, 0, 3);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.flpDroneArmorMultiplier, 0, 6);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkUseCalculatedPublicAwareness, 0, 5);
-            this.bufferedTableLayoutPanel1.Controls.Add(this.chkUnclampAttributeMinimum, 0, 1);
-            this.bufferedTableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(3, 16);
-            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
-            this.bufferedTableLayoutPanel1.RowCount = 7;
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(417, 164);
-            this.bufferedTableLayoutPanel1.TabIndex = 0;
+            this.tlpHouseRulesAttributes.AutoSize = true;
+            this.tlpHouseRulesAttributes.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRulesAttributes.ColumnCount = 1;
+            this.tlpHouseRulesAttributes.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkESSLossReducesMaximumOnly, 0, 0);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkAllowCyberwareESSDiscounts, 0, 2);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkAlternateMetatypeAttributeKarma, 0, 4);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkReverseAttributePriorityOrder, 0, 3);
+            this.tlpHouseRulesAttributes.Controls.Add(this.flpDroneArmorMultiplier, 0, 6);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkUseCalculatedPublicAwareness, 0, 5);
+            this.tlpHouseRulesAttributes.Controls.Add(this.chkUnclampAttributeMinimum, 0, 1);
+            this.tlpHouseRulesAttributes.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRulesAttributes.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRulesAttributes.Name = "tlpHouseRulesAttributes";
+            this.tlpHouseRulesAttributes.RowCount = 7;
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesAttributes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesAttributes.Size = new System.Drawing.Size(417, 164);
+            this.tlpHouseRulesAttributes.TabIndex = 0;
             // 
             // chkESSLossReducesMaximumOnly
             // 
             this.chkESSLossReducesMaximumOnly.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkESSLossReducesMaximumOnly.AutoSize = true;
+            this.chkESSLossReducesMaximumOnly.DefaultColorScheme = true;
             this.chkESSLossReducesMaximumOnly.Location = new System.Drawing.Point(3, 3);
             this.chkESSLossReducesMaximumOnly.Name = "chkESSLossReducesMaximumOnly";
             this.chkESSLossReducesMaximumOnly.Size = new System.Drawing.Size(251, 17);
@@ -3643,6 +4084,7 @@ namespace Chummer
             // 
             this.chkAllowCyberwareESSDiscounts.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowCyberwareESSDiscounts.AutoSize = true;
+            this.chkAllowCyberwareESSDiscounts.DefaultColorScheme = true;
             this.chkAllowCyberwareESSDiscounts.Location = new System.Drawing.Point(3, 49);
             this.chkAllowCyberwareESSDiscounts.Name = "chkAllowCyberwareESSDiscounts";
             this.chkAllowCyberwareESSDiscounts.Size = new System.Drawing.Size(279, 17);
@@ -3655,6 +4097,7 @@ namespace Chummer
             // 
             this.chkAlternateMetatypeAttributeKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAlternateMetatypeAttributeKarma.AutoSize = true;
+            this.chkAlternateMetatypeAttributeKarma.DefaultColorScheme = true;
             this.chkAlternateMetatypeAttributeKarma.Location = new System.Drawing.Point(3, 95);
             this.chkAlternateMetatypeAttributeKarma.Name = "chkAlternateMetatypeAttributeKarma";
             this.chkAlternateMetatypeAttributeKarma.Size = new System.Drawing.Size(411, 17);
@@ -3667,6 +4110,7 @@ namespace Chummer
             // 
             this.chkReverseAttributePriorityOrder.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkReverseAttributePriorityOrder.AutoSize = true;
+            this.chkReverseAttributePriorityOrder.DefaultColorScheme = true;
             this.chkReverseAttributePriorityOrder.Location = new System.Drawing.Point(3, 72);
             this.chkReverseAttributePriorityOrder.Name = "chkReverseAttributePriorityOrder";
             this.chkReverseAttributePriorityOrder.Size = new System.Drawing.Size(251, 17);
@@ -3692,6 +4136,7 @@ namespace Chummer
             // 
             this.chkDroneArmorMultiplier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDroneArmorMultiplier.AutoSize = true;
+            this.chkDroneArmorMultiplier.DefaultColorScheme = true;
             this.chkDroneArmorMultiplier.Location = new System.Drawing.Point(3, 4);
             this.chkDroneArmorMultiplier.Name = "chkDroneArmorMultiplier";
             this.chkDroneArmorMultiplier.Size = new System.Drawing.Size(252, 17);
@@ -3741,6 +4186,7 @@ namespace Chummer
             // 
             this.chkUseCalculatedPublicAwareness.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUseCalculatedPublicAwareness.AutoSize = true;
+            this.chkUseCalculatedPublicAwareness.DefaultColorScheme = true;
             this.chkUseCalculatedPublicAwareness.Location = new System.Drawing.Point(3, 118);
             this.chkUseCalculatedPublicAwareness.Name = "chkUseCalculatedPublicAwareness";
             this.chkUseCalculatedPublicAwareness.Size = new System.Drawing.Size(289, 17);
@@ -3753,6 +4199,7 @@ namespace Chummer
             // 
             this.chkUnclampAttributeMinimum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUnclampAttributeMinimum.AutoSize = true;
+            this.chkUnclampAttributeMinimum.DefaultColorScheme = true;
             this.chkUnclampAttributeMinimum.Location = new System.Drawing.Point(3, 26);
             this.chkUnclampAttributeMinimum.Name = "chkUnclampAttributeMinimum";
             this.chkUnclampAttributeMinimum.Size = new System.Drawing.Size(328, 17);
@@ -3799,6 +4246,7 @@ namespace Chummer
             // 
             this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
+            this.chkCompensateSkillGroupKarmaDifference.DefaultColorScheme = true;
             this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 3);
             this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
             this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
@@ -3812,6 +4260,7 @@ namespace Chummer
             // 
             this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowSkillRegrouping.AutoSize = true;
+            this.chkAllowSkillRegrouping.DefaultColorScheme = true;
             this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 26);
             this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
             this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
@@ -3824,6 +4273,7 @@ namespace Chummer
             // 
             this.chkFreeMartialArtSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeMartialArtSpecialization.AutoSize = true;
+            this.chkFreeMartialArtSpecialization.DefaultColorScheme = true;
             this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 72);
             this.chkFreeMartialArtSpecialization.Name = "chkFreeMartialArtSpecialization";
             this.chkFreeMartialArtSpecialization.Size = new System.Drawing.Size(281, 17);
@@ -3836,6 +4286,7 @@ namespace Chummer
             // 
             this.chkUsePointsOnBrokenGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUsePointsOnBrokenGroups.AutoSize = true;
+            this.chkUsePointsOnBrokenGroups.DefaultColorScheme = true;
             this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 49);
             this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
             this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
@@ -3848,7 +4299,7 @@ namespace Chummer
             // 
             this.gpbHouseRulesCombat.AutoSize = true;
             this.gpbHouseRulesCombat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.gpbHouseRulesCombat.Controls.Add(this.bufferedTableLayoutPanel2);
+            this.gpbHouseRulesCombat.Controls.Add(this.tlpHouseRulesCombat);
             this.gpbHouseRulesCombat.Location = new System.Drawing.Point(461, 192);
             this.gpbHouseRulesCombat.Name = "gpbHouseRulesCombat";
             this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 88);
@@ -3857,29 +4308,30 @@ namespace Chummer
             this.gpbHouseRulesCombat.Tag = "Label_CharacterOptions_Combat";
             this.gpbHouseRulesCombat.Text = "Combat";
             // 
-            // bufferedTableLayoutPanel2
+            // tlpHouseRulesCombat
             // 
-            this.bufferedTableLayoutPanel2.AutoSize = true;
-            this.bufferedTableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.bufferedTableLayoutPanel2.ColumnCount = 1;
-            this.bufferedTableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel2.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
-            this.bufferedTableLayoutPanel2.Controls.Add(this.chkMoreLethalGameplay, 0, 2);
-            this.bufferedTableLayoutPanel2.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
-            this.bufferedTableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bufferedTableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
-            this.bufferedTableLayoutPanel2.Name = "bufferedTableLayoutPanel2";
-            this.bufferedTableLayoutPanel2.RowCount = 3;
-            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.bufferedTableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.bufferedTableLayoutPanel2.Size = new System.Drawing.Size(378, 69);
-            this.bufferedTableLayoutPanel2.TabIndex = 0;
+            this.tlpHouseRulesCombat.AutoSize = true;
+            this.tlpHouseRulesCombat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpHouseRulesCombat.ColumnCount = 1;
+            this.tlpHouseRulesCombat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesCombat.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
+            this.tlpHouseRulesCombat.Controls.Add(this.chkMoreLethalGameplay, 0, 2);
+            this.tlpHouseRulesCombat.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
+            this.tlpHouseRulesCombat.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpHouseRulesCombat.Location = new System.Drawing.Point(3, 16);
+            this.tlpHouseRulesCombat.Name = "tlpHouseRulesCombat";
+            this.tlpHouseRulesCombat.RowCount = 3;
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 69);
+            this.tlpHouseRulesCombat.TabIndex = 0;
             // 
             // chkNoArmorEncumbrance
             // 
             this.chkNoArmorEncumbrance.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkNoArmorEncumbrance.AutoSize = true;
+            this.chkNoArmorEncumbrance.DefaultColorScheme = true;
             this.chkNoArmorEncumbrance.Location = new System.Drawing.Point(3, 3);
             this.chkNoArmorEncumbrance.Name = "chkNoArmorEncumbrance";
             this.chkNoArmorEncumbrance.Size = new System.Drawing.Size(139, 17);
@@ -3892,6 +4344,7 @@ namespace Chummer
             // 
             this.chkMoreLethalGameplay.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMoreLethalGameplay.AutoSize = true;
+            this.chkMoreLethalGameplay.DefaultColorScheme = true;
             this.chkMoreLethalGameplay.Location = new System.Drawing.Point(3, 49);
             this.chkMoreLethalGameplay.Name = "chkMoreLethalGameplay";
             this.chkMoreLethalGameplay.Size = new System.Drawing.Size(297, 17);
@@ -3904,6 +4357,7 @@ namespace Chummer
             // 
             this.chkUnarmedSkillImprovements.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUnarmedSkillImprovements.AutoSize = true;
+            this.chkUnarmedSkillImprovements.DefaultColorScheme = true;
             this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 26);
             this.chkUnarmedSkillImprovements.Name = "chkUnarmedSkillImprovements";
             this.chkUnarmedSkillImprovements.Size = new System.Drawing.Size(372, 17);
@@ -3963,6 +4417,7 @@ namespace Chummer
             // 
             this.chkMysAdPp.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMysAdPp.AutoSize = true;
+            this.chkMysAdPp.DefaultColorScheme = true;
             this.chkMysAdPp.Location = new System.Drawing.Point(3, 49);
             this.chkMysAdPp.Name = "chkMysAdPp";
             this.chkMysAdPp.Size = new System.Drawing.Size(280, 17);
@@ -3975,6 +4430,7 @@ namespace Chummer
             // 
             this.chkPrioritySpellsAsAdeptPowers.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrioritySpellsAsAdeptPowers.AutoSize = true;
+            this.chkPrioritySpellsAsAdeptPowers.DefaultColorScheme = true;
             this.chkPrioritySpellsAsAdeptPowers.Location = new System.Drawing.Point(3, 72);
             this.chkPrioritySpellsAsAdeptPowers.Name = "chkPrioritySpellsAsAdeptPowers";
             this.chkPrioritySpellsAsAdeptPowers.Size = new System.Drawing.Size(325, 17);
@@ -3987,6 +4443,7 @@ namespace Chummer
             // 
             this.chkExtendAnyDetectionSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkExtendAnyDetectionSpell.AutoSize = true;
+            this.chkExtendAnyDetectionSpell.DefaultColorScheme = true;
             this.chkExtendAnyDetectionSpell.Location = new System.Drawing.Point(3, 95);
             this.chkExtendAnyDetectionSpell.Name = "chkExtendAnyDetectionSpell";
             this.chkExtendAnyDetectionSpell.Size = new System.Drawing.Size(332, 17);
@@ -3999,6 +4456,7 @@ namespace Chummer
             // 
             this.chkIncreasedImprovedAbilityModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIncreasedImprovedAbilityModifier.AutoSize = true;
+            this.chkIncreasedImprovedAbilityModifier.DefaultColorScheme = true;
             this.chkIncreasedImprovedAbilityModifier.Location = new System.Drawing.Point(3, 118);
             this.chkIncreasedImprovedAbilityModifier.Name = "chkIncreasedImprovedAbilityModifier";
             this.chkIncreasedImprovedAbilityModifier.Size = new System.Drawing.Size(332, 17);
@@ -4011,6 +4469,7 @@ namespace Chummer
             // 
             this.chkIgnoreComplexFormLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreComplexFormLimit.AutoSize = true;
+            this.chkIgnoreComplexFormLimit.DefaultColorScheme = true;
             this.chkIgnoreComplexFormLimit.Location = new System.Drawing.Point(3, 210);
             this.chkIgnoreComplexFormLimit.Name = "chkIgnoreComplexFormLimit";
             this.chkIgnoreComplexFormLimit.Size = new System.Drawing.Size(215, 17);
@@ -4023,6 +4482,7 @@ namespace Chummer
             // 
             this.chkSpecialKarmaCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkSpecialKarmaCost.AutoSize = true;
+            this.chkSpecialKarmaCost.DefaultColorScheme = true;
             this.chkSpecialKarmaCost.Location = new System.Drawing.Point(3, 141);
             this.chkSpecialKarmaCost.Name = "chkSpecialKarmaCost";
             this.chkSpecialKarmaCost.Size = new System.Drawing.Size(373, 17);
@@ -4035,6 +4495,7 @@ namespace Chummer
             // 
             this.chkAllowTechnomancerSchooling.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowTechnomancerSchooling.AutoSize = true;
+            this.chkAllowTechnomancerSchooling.DefaultColorScheme = true;
             this.chkAllowTechnomancerSchooling.Location = new System.Drawing.Point(3, 187);
             this.chkAllowTechnomancerSchooling.Name = "chkAllowTechnomancerSchooling";
             this.chkAllowTechnomancerSchooling.Size = new System.Drawing.Size(273, 17);
@@ -4047,6 +4508,7 @@ namespace Chummer
             // 
             this.chkAllowInitiation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAllowInitiation.AutoSize = true;
+            this.chkAllowInitiation.DefaultColorScheme = true;
             this.chkAllowInitiation.Location = new System.Drawing.Point(3, 164);
             this.chkAllowInitiation.Name = "chkAllowInitiation";
             this.chkAllowInitiation.Size = new System.Drawing.Size(227, 17);
@@ -4059,6 +4521,7 @@ namespace Chummer
             // 
             this.chkMysAdeptSecondMAGAttribute.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkMysAdeptSecondMAGAttribute.AutoSize = true;
+            this.chkMysAdeptSecondMAGAttribute.DefaultColorScheme = true;
             this.chkMysAdeptSecondMAGAttribute.Location = new System.Drawing.Point(3, 26);
             this.chkMysAdeptSecondMAGAttribute.Name = "chkMysAdeptSecondMAGAttribute";
             this.chkMysAdeptSecondMAGAttribute.Size = new System.Drawing.Size(428, 17);
@@ -4072,6 +4535,7 @@ namespace Chummer
             // 
             this.chkIgnoreArt.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkIgnoreArt.AutoSize = true;
+            this.chkIgnoreArt.DefaultColorScheme = true;
             this.chkIgnoreArt.Location = new System.Drawing.Point(3, 3);
             this.chkIgnoreArt.Name = "chkIgnoreArt";
             this.chkIgnoreArt.Size = new System.Drawing.Size(235, 17);
@@ -4208,6 +4672,34 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
+            // cmdToBottomCustomDirectoryLoadOrder
+            // 
+            this.cmdToBottomCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdToBottomCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdToBottomCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdToBottomCustomDirectoryLoadOrder.Location = new System.Drawing.Point(503, 3);
+            this.cmdToBottomCustomDirectoryLoadOrder.Name = "cmdToBottomCustomDirectoryLoadOrder";
+            this.cmdToBottomCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
+            this.cmdToBottomCustomDirectoryLoadOrder.TabIndex = 45;
+            this.cmdToBottomCustomDirectoryLoadOrder.Tag = "String_ToBottom";
+            this.cmdToBottomCustomDirectoryLoadOrder.Text = "To Bottom";
+            this.cmdToBottomCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
+            this.cmdToBottomCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdToBottomCustomDirectoryLoadOrder_Click);
+            // 
+            // cmdToTopCustomDirectoryLoadOrder
+            // 
+            this.cmdToTopCustomDirectoryLoadOrder.AutoSize = true;
+            this.cmdToTopCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdToTopCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdToTopCustomDirectoryLoadOrder.Location = new System.Drawing.Point(253, 3);
+            this.cmdToTopCustomDirectoryLoadOrder.Name = "cmdToTopCustomDirectoryLoadOrder";
+            this.cmdToTopCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
+            this.cmdToTopCustomDirectoryLoadOrder.TabIndex = 46;
+            this.cmdToTopCustomDirectoryLoadOrder.Tag = "String_ToTop";
+            this.cmdToTopCustomDirectoryLoadOrder.Text = "To Top";
+            this.cmdToTopCustomDirectoryLoadOrder.UseVisualStyleBackColor = true;
+            this.cmdToTopCustomDirectoryLoadOrder.Click += new System.EventHandler(this.cmdToTopCustomDirectoryLoadOrder_Click);
+            // 
             // frmCharacterOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -4232,6 +4724,7 @@ namespace Chummer
             this.tabBasicOptions.ResumeLayout(false);
             this.tabBasicOptions.PerformLayout();
             this.tlpBasicOptions.ResumeLayout(false);
+            this.tlpBasicOptions.PerformLayout();
             this.gpbSourcebook.ResumeLayout(false);
             this.flpBasicOptions.ResumeLayout(false);
             this.flpBasicOptions.PerformLayout();
@@ -4240,10 +4733,10 @@ namespace Chummer
             this.tlpBasicOptionsCreateSettings.ResumeLayout(false);
             this.tlpBasicOptionsCreateSettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxAvail)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudStartingKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
             this.gpbBasicOptionsOfficialRules.ResumeLayout(false);
             this.gpbBasicOptionsOfficialRules.PerformLayout();
             this.tlpBasicOptionsOfficialRules.ResumeLayout(false);
@@ -4296,29 +4789,48 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaContact)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaEnemy)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpirit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPer)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaJoinGroup)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).EndInit();
-            this.flpKarmaInitiation.ResumeLayout(false);
-            this.flpKarmaInitiation.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaCarryover)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSummoningFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpellShapingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSustainingFocus)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaWeaponFocus)).EndInit();
+            this.flpKarmaInitiation.ResumeLayout(false);
+            this.flpKarmaInitiation.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaTechnique)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMetamagic)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiation)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaInitiationFlat)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIAdvancedProgram)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewAIProgram)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNewComplexForm)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaMysticAdeptPowerPoint)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaSpiritFettering)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaQuality)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMetatypeCostsKarmaMultiplier)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftM)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudKarmaNuyenPerWftP)).EndInit();
             this.tabCustomData.ResumeLayout(false);
             this.tabCustomData.PerformLayout();
             this.tlpOptionalRules.ResumeLayout(false);
             this.tlpOptionalRules.PerformLayout();
+            this.gpbDirectoryInfo.ResumeLayout(false);
+            this.gpbDirectoryInfo.PerformLayout();
+            this.tlpDirectoryInfo.ResumeLayout(false);
+            this.tlpDirectoryInfo.PerformLayout();
+            this.gbpDirectoryInfoDependencies.ResumeLayout(false);
+            this.pnlDirectoryDependencies.ResumeLayout(false);
+            this.pnlDirectoryDependencies.PerformLayout();
+            this.gbpDirectoryInfoIncompatibilities.ResumeLayout(false);
+            this.pnlDirectoryIncompatibilities.ResumeLayout(false);
+            this.pnlDirectoryIncompatibilities.PerformLayout();
+            this.tlpDirectoryInfoLeft.ResumeLayout(false);
+            this.tlpDirectoryInfoLeft.PerformLayout();
+            this.gpbDirectoryAuthors.ResumeLayout(false);
+            this.pnlDirectoryAuthors.ResumeLayout(false);
+            this.pnlDirectoryAuthors.PerformLayout();
+            this.tlpOptionalRulesButtons.ResumeLayout(false);
+            this.tlpOptionalRulesButtons.PerformLayout();
             this.tabHouseRules.ResumeLayout(false);
             this.flpHouseRules.ResumeLayout(false);
             this.flpHouseRules.PerformLayout();
@@ -4328,8 +4840,8 @@ namespace Chummer
             this.tlpHouseRulesQualities.PerformLayout();
             this.gpbHouseRulesAttributes.ResumeLayout(false);
             this.gpbHouseRulesAttributes.PerformLayout();
-            this.bufferedTableLayoutPanel1.ResumeLayout(false);
-            this.bufferedTableLayoutPanel1.PerformLayout();
+            this.tlpHouseRulesAttributes.ResumeLayout(false);
+            this.tlpHouseRulesAttributes.PerformLayout();
             this.flpDroneArmorMultiplier.ResumeLayout(false);
             this.flpDroneArmorMultiplier.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).EndInit();
@@ -4339,8 +4851,8 @@ namespace Chummer
             this.tlpHouseRulesSkills.PerformLayout();
             this.gpbHouseRulesCombat.ResumeLayout(false);
             this.gpbHouseRulesCombat.PerformLayout();
-            this.bufferedTableLayoutPanel2.ResumeLayout(false);
-            this.bufferedTableLayoutPanel2.PerformLayout();
+            this.tlpHouseRulesCombat.ResumeLayout(false);
+            this.tlpHouseRulesCombat.PerformLayout();
             this.gpbHouseRulesMagicResonance.ResumeLayout(false);
             this.gpbHouseRulesMagicResonance.PerformLayout();
             this.tlpHouseRulesMagicResonance.ResumeLayout(false);
@@ -4361,19 +4873,19 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabBasicOptions;
         private BufferedTableLayoutPanel tlpBasicOptions;
         private System.Windows.Forms.TreeView treSourcebook;
-        private System.Windows.Forms.CheckBox chkDontUseCyberlimbCalculation;
-        private System.Windows.Forms.CheckBox chkEnforceCapacity;
-        private System.Windows.Forms.CheckBox chkLicenseEachRestrictedItem;
+        private ColorableCheckBox chkDontUseCyberlimbCalculation;
+        private ColorableCheckBox chkEnforceCapacity;
+        private ColorableCheckBox chkLicenseEachRestrictedItem;
         private System.Windows.Forms.Label lblEssenceDecimals;
         private System.Windows.Forms.Label lblNuyenDecimalsMaximumLabel;
         private System.Windows.Forms.Label lblNuyenDecimalsMinimumLabel;
-        private System.Windows.Forms.CheckBox chkDontRoundEssenceInternally;
-        private System.Windows.Forms.CheckBox chkDronemods;
-        private System.Windows.Forms.CheckBox chkRestrictRecoil;
+        private ColorableCheckBox chkDontRoundEssenceInternally;
+        private ColorableCheckBox chkDronemods;
+        private ColorableCheckBox chkRestrictRecoil;
         private NumericUpDownEx nudNuyenDecimalsMinimum;
         private NumericUpDownEx nudNuyenDecimalsMaximum;
         private NumericUpDownEx nudEssenceDecimals;
-        private System.Windows.Forms.CheckBox chkDronemodsMaximumPilot;
+        private ColorableCheckBox chkDronemodsMaximumPilot;
         private System.Windows.Forms.Label lblLimbCount;
         private ElasticComboBox cboLimbCount;
         private System.Windows.Forms.Button cmdEnableSourcebooks;
@@ -4435,11 +4947,11 @@ namespace Chummer
         private NumericUpDownEx nudKarmaNewActiveSkill;
         private System.Windows.Forms.Label lblKarmaSpellcastingFocusExtra;
         private System.Windows.Forms.Label lblKarmaAlchemicalFocus;
-        private System.Windows.Forms.Label lblKarmaNuyenPerExtra;
+        private System.Windows.Forms.Label lblKarmaNuyenPerExtraWftM;
         private NumericUpDownEx nudKarmaSpellcastingFocus;
-        private NumericUpDownEx nudKarmaNuyenPer;
+        private NumericUpDownEx nudKarmaNuyenPerWftM;
         private System.Windows.Forms.Label lblKarmaSpiritExtra;
-        private System.Windows.Forms.Label lblKarmaNuyenPer;
+        private System.Windows.Forms.Label lblKarmaNuyenPerWftM;
         private NumericUpDownEx nudKarmaSpirit;
         private NumericUpDownEx nudKarmaAlchemicalFocus;
         private System.Windows.Forms.Label lblKarmaSpirit;
@@ -4499,38 +5011,38 @@ namespace Chummer
         private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
         private System.Windows.Forms.TreeView treCustomDataDirectories;
         private System.Windows.Forms.TabPage tabHouseRules;
-        private System.Windows.Forms.CheckBox chkIgnoreArt;
-        private System.Windows.Forms.CheckBox chkExceedNegativeQualitiesLimit;
-        private System.Windows.Forms.CheckBox chkExceedNegativeQualities;
-        private System.Windows.Forms.CheckBox chkExceedPositiveQualitiesCostDoubled;
-        private System.Windows.Forms.CheckBox chkExceedPositiveQualities;
-        private System.Windows.Forms.CheckBox chkUnarmedSkillImprovements;
-        private System.Windows.Forms.CheckBox chkCompensateSkillGroupKarmaDifference;
-        private System.Windows.Forms.CheckBox chkMysAdeptSecondMAGAttribute;
-        private System.Windows.Forms.CheckBox chkDontDoubleQualityPurchases;
-        private System.Windows.Forms.CheckBox chkDontDoubleQualityRefunds;
-        private System.Windows.Forms.CheckBox chkReverseAttributePriorityOrder;
-        private System.Windows.Forms.CheckBox chkPrioritySpellsAsAdeptPowers;
-        private System.Windows.Forms.CheckBox chkAllowInitiation;
-        private System.Windows.Forms.CheckBox chkFreeMartialArtSpecialization;
-        private System.Windows.Forms.CheckBox chkAllowCyberwareESSDiscounts;
-        private System.Windows.Forms.CheckBox chkMysAdPp;
-        private System.Windows.Forms.CheckBox chkESSLossReducesMaximumOnly;
-        private System.Windows.Forms.CheckBox chkAlternateMetatypeAttributeKarma;
-        private System.Windows.Forms.CheckBox chkUseCalculatedPublicAwareness;
+        private ColorableCheckBox chkIgnoreArt;
+        private ColorableCheckBox chkExceedNegativeQualitiesLimit;
+        private ColorableCheckBox chkExceedNegativeQualities;
+        private ColorableCheckBox chkExceedPositiveQualitiesCostDoubled;
+        private ColorableCheckBox chkExceedPositiveQualities;
+        private ColorableCheckBox chkUnarmedSkillImprovements;
+        private ColorableCheckBox chkCompensateSkillGroupKarmaDifference;
+        private ColorableCheckBox chkMysAdeptSecondMAGAttribute;
+        private ColorableCheckBox chkDontDoubleQualityPurchases;
+        private ColorableCheckBox chkDontDoubleQualityRefunds;
+        private ColorableCheckBox chkReverseAttributePriorityOrder;
+        private ColorableCheckBox chkPrioritySpellsAsAdeptPowers;
+        private ColorableCheckBox chkAllowInitiation;
+        private ColorableCheckBox chkFreeMartialArtSpecialization;
+        private ColorableCheckBox chkAllowCyberwareESSDiscounts;
+        private ColorableCheckBox chkMysAdPp;
+        private ColorableCheckBox chkESSLossReducesMaximumOnly;
+        private ColorableCheckBox chkAlternateMetatypeAttributeKarma;
+        private ColorableCheckBox chkUseCalculatedPublicAwareness;
         private NumericUpDownEx nudDroneArmorMultiplier;
         private System.Windows.Forms.Label lblDroneArmorMultiplierTimes;
-        private System.Windows.Forms.CheckBox chkDroneArmorMultiplier;
-        private System.Windows.Forms.CheckBox chkIgnoreComplexFormLimit;
-        private System.Windows.Forms.CheckBox chkSpecialKarmaCost;
-        private System.Windows.Forms.CheckBox chkMoreLethalGameplay;
-        private System.Windows.Forms.CheckBox chkExtendAnyDetectionSpell;
-        private System.Windows.Forms.CheckBox chkAllowSkillRegrouping;
-        private System.Windows.Forms.CheckBox chkNoArmorEncumbrance;
-        private System.Windows.Forms.CheckBox chkIncreasedImprovedAbilityModifier;
-        private System.Windows.Forms.CheckBox chkAllowTechnomancerSchooling;
-        private System.Windows.Forms.CheckBox chkUsePointsOnBrokenGroups;
-        private System.Windows.Forms.CheckBox chkUnclampAttributeMinimum;
+        private ColorableCheckBox chkDroneArmorMultiplier;
+        private ColorableCheckBox chkIgnoreComplexFormLimit;
+        private ColorableCheckBox chkSpecialKarmaCost;
+        private ColorableCheckBox chkMoreLethalGameplay;
+        private ColorableCheckBox chkExtendAnyDetectionSpell;
+        private ColorableCheckBox chkAllowSkillRegrouping;
+        private ColorableCheckBox chkNoArmorEncumbrance;
+        private ColorableCheckBox chkIncreasedImprovedAbilityModifier;
+        private ColorableCheckBox chkAllowTechnomancerSchooling;
+        private ColorableCheckBox chkUsePointsOnBrokenGroups;
+        private ColorableCheckBox chkUnclampAttributeMinimum;
         private System.Windows.Forms.Button cmdSave;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.FlowLayoutPanel flpKarmaInitiation;
@@ -4540,18 +5052,18 @@ namespace Chummer
         private System.Windows.Forms.GroupBox gpbBasicOptionsRounding;
         private BufferedTableLayoutPanel tlpBasicOptionsRounding;
         private BufferedTableLayoutPanel tlpBasicOptionsCyberlimbs;
-        private System.Windows.Forms.CheckBox chkCyberlegMovement;
+        private ColorableCheckBox chkCyberlegMovement;
         private System.Windows.Forms.GroupBox gpbBasicOptionsOfficialRules;
         private BufferedTableLayoutPanel tlpBasicOptionsOfficialRules;
-        private System.Windows.Forms.CheckBox chkStrictSkillGroups;
-        private System.Windows.Forms.CheckBox chkAllowFreeGrids;
-        private System.Windows.Forms.CheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
+        private ColorableCheckBox chkStrictSkillGroups;
+        private ColorableCheckBox chkAllowFreeGrids;
+        private ColorableCheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
         private BufferedTableLayoutPanel tlpCyberlimbAttributeBonusCap;
         private NumericUpDownEx nudCyberlimbAttributeBonusCap;
         private System.Windows.Forms.FlowLayoutPanel flpCyberlimbAttributeBonusCap;
-        private System.Windows.Forms.CheckBox chkCyberlimbAttributeBonusCap;
+        private ColorableCheckBox chkCyberlimbAttributeBonusCap;
         private System.Windows.Forms.Label lblCyberlimbAttributeBonusCapPlus;
-        private System.Windows.Forms.CheckBox chkEnemyKarmaQualityLimit;
+        private ColorableCheckBox chkEnemyKarmaQualityLimit;
         private LabelWithToolTip lblContactPoints;
         private LabelWithToolTip lblKnowledgePoints;
         private System.Windows.Forms.TextBox txtContactPoints;
@@ -4572,10 +5084,10 @@ namespace Chummer
         private System.Windows.Forms.Label lblMaxAvail;
         private System.Windows.Forms.Label lblRedlinerLimbs;
         private System.Windows.Forms.FlowLayoutPanel flpRedlinerLimbs;
-        private System.Windows.Forms.CheckBox chkRedlinerLimbsSkull;
-        private System.Windows.Forms.CheckBox chkRedlinerLimbsTorso;
-        private System.Windows.Forms.CheckBox chkRedlinerLimbsArms;
-        private System.Windows.Forms.CheckBox chkRedlinerLimbsLegs;
+        private ColorableCheckBox chkRedlinerLimbsSkull;
+        private ColorableCheckBox chkRedlinerLimbsTorso;
+        private ColorableCheckBox chkRedlinerLimbsArms;
+        private ColorableCheckBox chkRedlinerLimbsLegs;
         private NumericUpDownEx nudStartingKarma;
         private NumericUpDownEx nudMaxAvail;
         private NumericUpDownEx nudMaxNuyenKarma;
@@ -4591,14 +5103,42 @@ namespace Chummer
         private System.Windows.Forms.GroupBox gpbHouseRulesQualities;
         private BufferedTableLayoutPanel tlpHouseRulesQualities;
         private System.Windows.Forms.GroupBox gpbHouseRulesAttributes;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private BufferedTableLayoutPanel tlpHouseRulesAttributes;
         private System.Windows.Forms.GroupBox gpbHouseRulesSkills;
         private BufferedTableLayoutPanel tlpHouseRulesSkills;
         private System.Windows.Forms.GroupBox gpbHouseRulesCombat;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel2;
+        private BufferedTableLayoutPanel tlpHouseRulesCombat;
         private System.Windows.Forms.GroupBox gpbHouseRulesMagicResonance;
         private BufferedTableLayoutPanel tlpHouseRulesMagicResonance;
         private System.Windows.Forms.Button cmdGlobalOptionsCustomData;
         private System.Windows.Forms.Button cmdRename;
+        private System.Windows.Forms.Label lblKarmaSpiritFettering;
+        private NumericUpDownEx nudKarmaSpiritFettering;
+        private System.Windows.Forms.Label lblKarmaSpiritFetteringExtra;
+        private System.Windows.Forms.GroupBox gpbDirectoryInfo;
+        private BufferedTableLayoutPanel tlpDirectoryInfo;
+        private System.Windows.Forms.Label lblDirectoryNameLabel;
+        private System.Windows.Forms.Label lblDirectoryVersion;
+        private System.Windows.Forms.Label lblDirectoryName;
+        private System.Windows.Forms.Label lblDirectoryVersionLabel;
+        private System.Windows.Forms.GroupBox gbpDirectoryInfoIncompatibilities;
+        private System.Windows.Forms.Label lblDirectoryAuthors;
+        private System.Windows.Forms.GroupBox gbpDirectoryInfoDependencies;
+        private System.Windows.Forms.TextBox txtDirectoryDescription;
+        private System.Windows.Forms.Label lblDependencies;
+        private System.Windows.Forms.Label lblIncompatibilities;
+        private System.Windows.Forms.Panel pnlDirectoryDependencies;
+        private System.Windows.Forms.Panel pnlDirectoryIncompatibilities;
+        private BufferedTableLayoutPanel tlpOptionalRulesButtons;
+        private BufferedTableLayoutPanel tlpDirectoryInfoLeft;
+        private System.Windows.Forms.GroupBox gpbDirectoryAuthors;
+        private System.Windows.Forms.Panel pnlDirectoryAuthors;
+        private LabelWithToolTip lblNuyenExpression;
+        private System.Windows.Forms.TextBox txtNuyenExpression;
+        private System.Windows.Forms.Label lblKarmaNuyenPerExtraWftP;
+        private System.Windows.Forms.Label lblKarmaNuyenPerWftP;
+        private NumericUpDownEx nudKarmaNuyenPerWftP;
+        private System.Windows.Forms.Button cmdToBottomCustomDirectoryLoadOrder;
+        private System.Windows.Forms.Button cmdToTopCustomDirectoryLoadOrder;
     }
 }

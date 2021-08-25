@@ -34,7 +34,7 @@
             <levels>True</levels>
             <action amendoperation="remove" />
             <maxlevels amendoperation="addnode">3</maxlevels>
-            <adeptway>0.25</adeptway>      
+            <adeptway>0.25</adeptway>
         </power>
         <!-- End Stolen Souls: Commanding Voice -->
         <power>

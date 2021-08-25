@@ -16,12 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
- using System.IO;
+
+using System;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -32,6 +33,7 @@ namespace Chummer
         private readonly string _strType;
 
         #region Control Events
+
         public frmCreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
@@ -233,6 +235,7 @@ namespace Chummer
             txtFileName.Left = txtName.Left;
             txtFileName.Width = txtName.Width;
         }
-        #endregion
+
+        #endregion Control Events
     }
 }

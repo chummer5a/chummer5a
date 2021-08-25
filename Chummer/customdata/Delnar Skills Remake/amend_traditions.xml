@@ -19,6 +19,27 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
+  <traditions>
+    <tradition>
+      <bonus xpathfilter="skillgroupdisable = 'Enchanting' and not(skilldisable = 'Alchemy')">
+        <skilldisable amendoperation="addnode">Alchemy</skilldisable>
+      </bonus>
+      <bonus xpathfilter="skilldisable = 'Ritual Spellcasting' and skilldisable = 'Counterspelling'">
+        <skilldisable amendoperation="addnode">Ceremony</skilldisable>
+      </bonus>
+      <bonus>
+        <skilldisable xpathfilter=". = 'Ritual Spellcasting'" amendoperation="remove" />
+        <specificskill>
+          <name xpathfilter=". = 'Ritual Spellcasting'">Ceremony</name>
+        </specificskill>
+        <skilldisable xpathfilter=". = 'Artificing'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Artificing'" amendoperation="remove" />
+        <skilldisable xpathfilter=". = 'Disenchanting'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Disenchanting'" amendoperation="remove" />
+        <skillgroupdisable xpathfilter=". 'Enchanting'" amendoperation="remove" />
+      </bonus>
+    </tradition>
+  </traditions>
   <spirits>
     <spirit>
       <skills>

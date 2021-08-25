@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -51,7 +52,7 @@ namespace Chummer
         }
     }
 
-    public class CharacterOptions : INotifyPropertyChanged, IEquatable<CharacterOptions>
+    public sealed class CharacterOptions : INotifyPropertyChanged, IEquatable<CharacterOptions>
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -60,6 +61,7 @@ namespace Chummer
         // Settings.
         // ReSharper disable once InconsistentNaming
         private bool _blnAllow2ndMaxAttribute;
+
         private bool _blnAllowBiowareSuites;
         private bool _blnAllowCyberwareESSDiscounts;
         private bool _blnAllowEditPartOfBaseWeapon;
@@ -103,6 +105,7 @@ namespace Chummer
         private bool _blnUsePointsOnBrokenGroups;
         private string _strContactPointsExpression = "{CHAUnaug} * 3";
         private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
+        private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnemyKarmaQualityLimit = true;
         private string _strEssenceFormat = "#,0.00";
@@ -110,12 +113,13 @@ namespace Chummer
         private int _intDroneArmorMultiplier = 2;
         private int _intLimbCount = 6;
         private int _intMetatypeCostMultiplier = 1;
-        private decimal _decNuyenPerBP = 2000.0m;
+        private decimal _decNuyenPerBPWftM = 2000.0m;
+        private decimal _decNuyenPerBPWftP = 2000.0m;
         private int _intRestrictedCostMultiplier = 1;
         private bool _blnAutomaticBackstory = true;
         private bool _blnFreeMartialArtSpecialization;
         private bool _blnPrioritySpellsAsAdeptPowers;
-        private bool _blnMysAdeptAllowPPCareer;
+        private bool _blnMysAdeptAllowPpCareer;
         private bool _blnMysAdeptSecondMAGAttribute;
         private bool _blnReverseAttributePriorityOrder;
         private string _strNuyenFormat = "#,0.##";
@@ -133,6 +137,7 @@ namespace Chummer
 
         // Karma variables.
         private int _intKarmaAttribute = 5;
+
         private int _intKarmaCarryover = 7;
         private int _intKarmaContact = 1;
         private int _intKarmaEnemy = 1;
@@ -158,34 +163,49 @@ namespace Chummer
         private int _intKarmaNewAIProgram = 5;
         private int _intKarmaNewAIAdvancedProgram = 8;
         private int _intKarmaMysticAdeptPowerPoint = 5;
+        private int _intKarmaSpiritFettering = 3;
 
         // Karma Foci variables.
         // Enchanting
         private int _intKarmaAlchemicalFocus = 3;
+
         private int _intKarmaDisenchantingFocus = 3;
+
         // Metamagic
         private int _intKarmaCenteringFocus = 3;
+
         private int _intKarmaFlexibleSignatureFocus = 3;
         private int _intKarmaMaskingFocus = 3;
         private int _intKarmaSpellShapingFocus = 3;
+
         // Power
         private int _intKarmaPowerFocus = 6;
+
         // Qi
         private int _intKarmaQiFocus = 2;
+
         // Spell
         private int _intKarmaCounterspellingFocus = 2;
+
         private int _intKarmaRitualSpellcastingFocus = 2;
         private int _intKarmaSpellcastingFocus = 2;
         private int _intKarmaSustainingFocus = 2;
+
         // Spirit
         private int _intKarmaBanishingFocus = 2;
+
         private int _intKarmaBindingFocus = 2;
         private int _intKarmaSummoningFocus = 2;
+
         // Weapon
         private int _intKarmaWeaponFocus = 3;
 
+        //Sustaining
+        private int _intDicePenaltySustaining = 2;
+
         // Build settings.
         private CharacterBuildMethod _eBuildMethod = CharacterBuildMethod.Priority;
+
         private int _intBuildPoints = 25;
         private int _intQualityKarmaLimit = 25;
         private string _strPriorityArray = "ABCDE";
@@ -194,10 +214,14 @@ namespace Chummer
         private decimal _decNuyenMaximumBP = 10;
         private int _intAvailability = 12;
 
-        // Dictionary of names of custom data directories, with first value element being load order and second value element being whether or not it's enabled
-        private readonly Dictionary<string, Tuple<int, bool>> _dicCustomDataDirectoryNames = new Dictionary<string, Tuple<int, bool>>();
-        // Cached lists that should be updated every time _dicCustomDataDirectoryNames is updated
-        private readonly List<CustomDataDirectoryInfo> _lstEnabledCustomDataDirectories = new List<CustomDataDirectoryInfo>();
+        // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether or not it's enabled
+        private readonly TypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new TypedOrderedDictionary<string, bool>();
+
+        // Cached lists that should be updated every time _dicCustomDataDirectoryKeys is updated
+        private readonly OrderedSet<CustomDataDirectoryInfo> _setEnabledCustomDataDirectories = new OrderedSet<CustomDataDirectoryInfo>();
+
+        private readonly HashSet<Guid> _setEnabledCustomDataDirectoryGuids = new HashSet<Guid>();
+
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
@@ -225,7 +249,7 @@ namespace Chummer
                 }
             }
 
-            if ((lstNamesOfChangedProperties?.Count > 0) != true)
+            if (lstNamesOfChangedProperties == null || lstNamesOfChangedProperties.Count == 0)
                 return;
 
             if (lstNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
@@ -246,13 +270,13 @@ namespace Chummer
         private static readonly DependencyGraph<string, CharacterOptions> s_CharacterOptionsDependencyGraph =
             new DependencyGraph<string, CharacterOptions>(
                 new DependencyGraphNode<string, CharacterOptions>(nameof(EnabledCustomDataDirectoryPaths),
-                    new DependencyGraphNode<string, CharacterOptions>(nameof(CustomDataDirectoryNames))
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(CustomDataDirectoryKeys))
                 ),
                 new DependencyGraphNode<string, CharacterOptions>(nameof(EnabledCustomDataDirectoryInfos),
-                    new DependencyGraphNode<string, CharacterOptions>(nameof(CustomDataDirectoryNames))
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(CustomDataDirectoryKeys))
                 ),
                 new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptSecondMAGAttributeEnabled),
-                    new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptAllowPPCareer)),
+                    new DependencyGraphNode<string, CharacterOptions>(nameof(MysAdeptAllowPpCareer)),
                     new DependencyGraphNode<string, CharacterOptions>(nameof(PrioritySpellsAsAdeptPowers))
                 ),
                 new DependencyGraphNode<string, CharacterOptions>(nameof(MaxNuyenDecimals),
@@ -300,10 +324,18 @@ namespace Chummer
             );
 
         #region Initialization, Save, and Load Methods
+
         public CharacterOptions(CharacterOptions objOther = null)
         {
             if (objOther != null)
                 CopyValues(objOther);
+            PropertyChanged += OnPropertyChanged;
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CustomDataDirectoryKeys))
+                RecalculateEnabledCustomDataDirectories();
         }
 
         public void CopyValues(CharacterOptions objOther)
@@ -327,10 +359,10 @@ namespace Chummer
 
             OnPropertyChanged(nameof(SourceId));
 
-            _dicCustomDataDirectoryNames.Clear();
-            foreach (var kvpOther in objOther.CustomDataDirectoryNames)
+            _dicCustomDataDirectoryKeys.Clear();
+            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
             {
-                _dicCustomDataDirectoryNames.Add(kvpOther.Key, new Tuple<int, bool>(kvpOther.Value.Item1, kvpOther.Value.Item2));
+                _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
             }
             RecalculateEnabledCustomDataDirectories();
 
@@ -350,21 +382,21 @@ namespace Chummer
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
         }
 
-        public bool Equals(CharacterOptions objOther)
+        public bool Equals(CharacterOptions other)
         {
-            if (objOther == null)
+            if (other == null)
                 return false;
-            if (_guiSourceId != objOther._guiSourceId)
+            if (_guiSourceId != other._guiSourceId)
                 return false;
-            if (_strFileName != objOther._strFileName)
+            if (_strFileName != other._strFileName)
                 return false;
 
             PropertyInfo[] aobjProperties = GetType().GetProperties();
-            PropertyInfo[] aobjOtherProperties = objOther.GetType().GetProperties();
+            PropertyInfo[] aobjOtherProperties = other.GetType().GetProperties();
             foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType))
             {
                 PropertyInfo objOtherProperty = aobjOtherProperties.FirstOrDefault(x => x.Name == objProperty.Name);
-                if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(objOther))
+                if (objOtherProperty == null || objProperty.GetValue(this) != objOtherProperty.GetValue(other))
                 {
                     return false;
                 }
@@ -372,31 +404,12 @@ namespace Chummer
             if (aobjOtherProperties.Any(x => x.PropertyType.IsValueType && aobjProperties.All(y => y.Name != x.Name)))
                 return false;
 
-            foreach (var kvpOther in objOther.CustomDataDirectoryNames)
-            {
-                if (_dicCustomDataDirectoryNames.TryGetValue(kvpOther.Key, out Tuple<int, bool> objMyValue))
-                {
-                    if (objMyValue.Item1 != kvpOther.Value.Item1 || objMyValue.Item2 != kvpOther.Value.Item2)
-                        return false;
-                }
-                else if (kvpOther.Value.Item2)
-                {
-                    return false;
-                }
-            }
-
-            if (_dicCustomDataDirectoryNames.Any(x => x.Value.Item2 && !objOther.CustomDataDirectoryNames.ContainsKey(x.Key)))
-                return false;
-
-            if (!_lstBooks.SequenceEqual(objOther._lstBooks))
-                return false;
-
-            if (!BannedWareGrades.SequenceEqual(objOther.BannedWareGrades))
+            if (!_dicCustomDataDirectoryKeys.SequenceEqual(other._dicCustomDataDirectoryKeys))
                 return false;
 
             // RedlinerExcludes handled through the four RedlinerExcludes[Limb] properties
 
-            return true;
+            return _lstBooks.SequenceEqual(other._lstBooks) && BannedWareGrades.SequenceEqual(other.BannedWareGrades);
         }
 
         /// <summary>
@@ -448,8 +461,10 @@ namespace Chummer
                     objWriter.WriteElementString("morelethalgameplay", _blnMoreLethalGameplay.ToString(GlobalOptions.InvariantCultureInfo));
                     // <spiritforcebasedontotalmag />
                     objWriter.WriteElementString("spiritforcebasedontotalmag", _blnSpiritForceBasedOnTotalMAG.ToString(GlobalOptions.InvariantCultureInfo));
-                    // <nuyenperbp />
-                    objWriter.WriteElementString("nuyenperbp", _decNuyenPerBP.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenperbpwftm />
+                    objWriter.WriteElementString("nuyenperbpwftm", _decNuyenPerBPWftM.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <nuyenperbpwftp />
+                    objWriter.WriteElementString("nuyenperbpwftp", _decNuyenPerBPWftP.ToString(GlobalOptions.InvariantCultureInfo));
                     // <UnarmedImprovementsApplyToWeapons />
                     objWriter.WriteElementString("unarmedimprovementsapplytoweapons", _blnUnarmedImprovementsApplyToWeapons.ToString(GlobalOptions.InvariantCultureInfo));
                     // <allowinitiationincreatemode />
@@ -470,6 +485,8 @@ namespace Chummer
                     objWriter.WriteElementString("contactpointsexpression", _strContactPointsExpression);
                     // <knowledgepointsexpression />
                     objWriter.WriteElementString("knowledgepointsexpression", _strKnowledgePointsExpression);
+                    // <chargenkarmatonuyenexpression />
+                    objWriter.WriteElementString("chargenkarmatonuyenexpression", _strChargenKarmaToNuyenExpression);
                     // <dronearmormultiplierenabled />
                     objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronearmorflatnumber />
@@ -505,7 +522,7 @@ namespace Chummer
                     // <exceedpositivequalitiescostdoubled />
                     objWriter.WriteElementString("exceedpositivequalitiescostdoubled", _blnExceedPositiveQualitiesCostDoubled.ToString(GlobalOptions.InvariantCultureInfo));
 
-                    objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPPCareer.ToString(GlobalOptions.InvariantCultureInfo));
+                    objWriter.WriteElementString("mysaddppcareer", MysAdeptAllowPpCareer.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <mysadeptsecondmagattribute />
                     objWriter.WriteElementString("mysadeptsecondmagattribute", MysAdeptSecondMAGAttribute.ToString(GlobalOptions.InvariantCultureInfo));
@@ -584,6 +601,9 @@ namespace Chummer
                     objWriter.WriteElementString("dronemods", _blnDroneMods.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronemodsmaximumpilot />
                     objWriter.WriteElementString("dronemodsmaximumpilot", _blnDroneModsMaximumPilot.ToString(GlobalOptions.InvariantCultureInfo));
+
+                    // <DicePenaltySustaining />
+                    objWriter.WriteElementString("dicepenaltysustaining", _intDicePenaltySustaining.ToString(GlobalOptions.InvariantCultureInfo));
 
                     // <karmacost>
                     objWriter.WriteStartElement("karmacost");
@@ -671,28 +691,39 @@ namespace Chummer
                     objWriter.WriteElementString("karmaweaponfocus", _intKarmaWeaponFocus.ToString(GlobalOptions.InvariantCultureInfo));
                     // <karmaweaponfocus />
                     objWriter.WriteElementString("karmamysadpp", _intKarmaMysticAdeptPowerPoint.ToString(GlobalOptions.InvariantCultureInfo));
+                    // <karmaspiritfettering />
+                    objWriter.WriteElementString("karmaspiritfettering", _intKarmaSpiritFettering.ToString(GlobalOptions.InvariantCultureInfo));
                     // </karmacost>
                     objWriter.WriteEndElement();
+
+                    XPathNodeIterator lstAllowedBooksCodes = XmlManager
+                        .LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
+                        .Select("/chummer/books/book[not(hide)]/code");
+                    HashSet<string> setAllowedBooks = new HashSet<string>(lstAllowedBooksCodes.Count);
+                    foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
+                        setAllowedBooks.Add(objAllowedBook.Value);
 
                     // <books>
                     objWriter.WriteStartElement("books");
                     foreach (string strBook in _lstBooks)
-                        objWriter.WriteElementString("book", strBook);
+                        if (setAllowedBooks.Contains(strBook))
+                            objWriter.WriteElementString("book", strBook);
                     // </books>
                     objWriter.WriteEndElement();
 
                     // <customdatadirectorynames>
-	            	objWriter.WriteStartElement("customdatadirectorynames");
-		            foreach (KeyValuePair<string, Tuple<int, bool>> dicDirectoryName in _dicCustomDataDirectoryNames)
-		            {
-		                objWriter.WriteStartElement("customdatadirectoryname");
-		                objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
-                        objWriter.WriteElementString("order", dicDirectoryName.Value.Item1.ToString(GlobalOptions.InvariantCultureInfo));
-                        objWriter.WriteElementString("enabled", dicDirectoryName.Value.Item2.ToString(GlobalOptions.InvariantCultureInfo));
-		                objWriter.WriteEndElement();
-		            }
-		            // </customdatadirectorynames>
-		            objWriter.WriteEndElement();
+                    objWriter.WriteStartElement("customdatadirectorynames");
+                    for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                    {
+                        KeyValuePair<string, bool> dicDirectoryName = _dicCustomDataDirectoryKeys[i];
+                        objWriter.WriteStartElement("customdatadirectoryname");
+                        objWriter.WriteElementString("directoryname", dicDirectoryName.Key);
+                        objWriter.WriteElementString("order", i.ToString(GlobalOptions.InvariantCultureInfo));
+                        objWriter.WriteElementString("enabled", dicDirectoryName.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                        objWriter.WriteEndElement();
+                    }
+                    // </customdatadirectorynames>
+                    objWriter.WriteEndElement();
 
                     // <buildmethod />
                     objWriter.WriteElementString("buildmethod", _eBuildMethod.ToString());
@@ -757,8 +788,8 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objXmlDocument = new XPathDocument(objXmlReader);
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        objXmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -808,7 +839,13 @@ namespace Chummer
             // Spirit Force Based on Total MAG.
             objXmlNode.TryGetBoolFieldQuickly("spiritforcebasedontotalmag", ref _blnSpiritForceBasedOnTotalMAG);
             // Nuyen per Build Point
-            objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBP);
+            if (!objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftm", ref _decNuyenPerBPWftM))
+            {
+                objXmlNode.TryGetDecFieldQuickly("nuyenperbp", ref _decNuyenPerBPWftM);
+                _decNuyenPerBPWftP = _decNuyenPerBPWftM;
+            }
+            else
+                objXmlNode.TryGetDecFieldQuickly("nuyenperbpwftp", ref _decNuyenPerBPWftP);
             // Knucks use Unarmed
             objXmlNode.TryGetBoolFieldQuickly("unarmedimprovementsapplytoweapons", ref _blnUnarmedImprovementsApplyToWeapons);
             // Allow Initiation in Create Mode
@@ -851,6 +888,17 @@ namespace Chummer
                     objXmlNode.TryGetInt32FieldQuickly("freekarmaknowledgemultiplier", ref intTemp);
                 _strKnowledgePointsExpression = strTemp + " * " + intTemp.ToString(GlobalOptions.InvariantCultureInfo);
             }
+            // XPath expression for nuyen at chargen
+            if (!objXmlNode.TryGetStringFieldQuickly("chargenkarmatonuyenexpression", ref _strChargenKarmaToNuyenExpression))
+            {
+                // Legacy shim
+                _strChargenKarmaToNuyenExpression = "{Karma} * " + _decNuyenPerBPWftM.ToString(GlobalOptions.InvariantCultureInfo) + " + {PriorityNuyen}";
+            }
+            // A very hacky legacy shim, but also works as a bit of a sanity check
+            else if (!_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+            {
+                _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+            }
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
             // Drone Armor Multiplier Value
@@ -888,7 +936,7 @@ namespace Chummer
             // Double all positive qualities in excess of the limit
             objXmlNode.TryGetBoolFieldQuickly("exceedpositivequalitiescostdoubled", ref _blnExceedPositiveQualitiesCostDoubled);
 
-            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPPCareer);
+            objXmlNode.TryGetBoolFieldQuickly("mysaddppcareer", ref _blnMysAdeptAllowPpCareer);
 
             // Split MAG for Mystic Adepts so that they have a separate MAG rating for Adept Powers instead of using the special PP rules for mystic adepts
             objXmlNode.TryGetBoolFieldQuickly("mysadeptsecondmagattribute", ref _blnMysAdeptSecondMAGAttribute);
@@ -932,8 +980,10 @@ namespace Chummer
                         _strEssenceFormat += ".00";
                     else
                     {
+                        StringBuilder sbdZeros = new StringBuilder();
                         for (int i = _strEssenceFormat.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
-                            _strEssenceFormat += '0';
+                            sbdZeros.Append('0');
+                        _strEssenceFormat += sbdZeros.ToString();
                     }
                 }
             }
@@ -989,6 +1039,9 @@ namespace Chummer
             if (!objXmlNode.TryGetBoolFieldQuickly("dronemodsmaximumpilot", ref _blnDroneModsMaximumPilot))
                 GlobalOptions.LoadBoolFromRegistry(ref _blnDroneModsMaximumPilot, "dronemodsPilot", string.Empty, true);
 
+            //House Rule: The DicePenalty per sustained spell or form
+            objXmlNode.TryGetInt32FieldQuickly("dicepenaltysustaining", ref _intDicePenaltySustaining);
+
             XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNode("karmacost");
             // Attempt to populate the Karma values.
             if (xmlKarmaCostNode != null)
@@ -1020,6 +1073,7 @@ namespace Chummer
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaleavegroup", ref _intKarmaLeaveGroup);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaenhancement", ref _intKarmaEnhancement);
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmamysadpp", ref _intKarmaMysticAdeptPowerPoint);
+                xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaspiritfettering", ref _intKarmaSpiritFettering);
 
                 // Attempt to load the Karma costs for Foci.
                 xmlKarmaCostNode.TryGetInt32FieldQuickly("karmaalchemicalfocus", ref _intKarmaAlchemicalFocus);
@@ -1044,16 +1098,16 @@ namespace Chummer
             // Legacy sweep by looking at MRU
             if (!BuiltInOption && objXmlNode.SelectSingleNode("books/book") == null && objXmlNode.SelectSingleNode("customdatadirectorynames/directoryname") == null)
             {
-                foreach (string strMRUCharacterFile in GlobalOptions.MostRecentlyUsedCharacters)
+                foreach (string strMruCharacterFile in GlobalOptions.MostRecentlyUsedCharacters)
                 {
                     XPathDocument objXmlDocument;
-                    if (!File.Exists(strMRUCharacterFile))
+                    if (!File.Exists(strMruCharacterFile))
                         continue;
                     try
                     {
-                        using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
-                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                objXmlDocument = new XPathDocument(objXmlReader);
+                        using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
+                        using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                            objXmlDocument = new XPathDocument(objXmlReader);
                     }
                     catch (XmlException)
                     {
@@ -1072,16 +1126,16 @@ namespace Chummer
 
                 if (xmlLegacyCharacterNavigator == null)
                 {
-                    foreach (string strMRUCharacterFile in GlobalOptions.FavoritedCharacters)
+                    foreach (string strMruCharacterFile in GlobalOptions.FavoritedCharacters)
                     {
                         XPathDocument objXmlDocument;
-                        if (!File.Exists(strMRUCharacterFile))
+                        if (!File.Exists(strMruCharacterFile))
                             continue;
                         try
                         {
-                            using (StreamReader sr = new StreamReader(strMRUCharacterFile, Encoding.UTF8, true))
-                                using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
-                                    objXmlDocument = new XPathDocument(objXmlReader);
+                            using (StreamReader sr = new StreamReader(strMruCharacterFile, Encoding.UTF8, true))
+                            using (XmlReader objXmlReader = XmlReader.Create(sr, GlobalOptions.SafeXmlReaderSettings))
+                                objXmlDocument = new XPathDocument(objXmlReader);
                         }
                         catch (XmlException)
                         {
@@ -1114,40 +1168,87 @@ namespace Chummer
             RecalculateBookXPath();
 
             // Load Custom Data Directory names.
-            int intTopMostLoadOrder = 0;
-            _dicCustomDataDirectoryNames.Clear();
+            int intTopMostOrder = 0;
+            int intBottomMostOrder = 0;
+            Dictionary<int, Tuple<string, bool>> dicLoadingCustomDataDirectories =
+                new Dictionary<int, Tuple<string, bool>>();
             bool blnNeedToProcessInfosWithoutLoadOrder = false;
             foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
             {
-                string strDirectoryName = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
-                if (string.IsNullOrEmpty(strDirectoryName))
+                string strDirectoryKey = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
+                if (string.IsNullOrEmpty(strDirectoryKey))
                     continue;
+                string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterOptionsSaveKey(strDirectoryKey);
                 // Only load in directories that are either present in our GlobalOptions or are enabled
                 bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
-                if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
+                if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                    ? GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                    : GlobalOptions.CustomDataDirectoryInfos.Any(x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                 {
                     string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
                     if (!string.IsNullOrEmpty(strOrder)
                         && int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intOrder))
                     {
-                        intTopMostLoadOrder = Math.Max(intTopMostLoadOrder, intTopMostLoadOrder);
-                        _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                            new Tuple<int, bool>(intOrder, blnLoopEnabled));
+                        while (dicLoadingCustomDataDirectories.ContainsKey(intOrder))
+                            intOrder += 1;
+                        intTopMostOrder = Math.Max(intOrder, intTopMostOrder);
+                        intBottomMostOrder = Math.Min(intOrder, intBottomMostOrder);
+                        dicLoadingCustomDataDirectories.Add(intOrder,
+                            new Tuple<string, bool>(strDirectoryKey, blnLoopEnabled));
                     }
                     else
                         blnNeedToProcessInfosWithoutLoadOrder = true;
                 }
             }
+
+            _dicCustomDataDirectoryKeys.Clear();
+            for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
+            {
+                if (!dicLoadingCustomDataDirectories.ContainsKey(i))
+                    continue;
+                string strDirectoryKey = dicLoadingCustomDataDirectories[i].Item1;
+                string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterOptionsSaveKey(strDirectoryKey);
+                if (string.IsNullOrEmpty(strLoopId))
+                {
+                    CustomDataDirectoryInfo objExistingInfo = null;
+                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalOptions.CustomDataDirectoryInfos)
+                    {
+                        if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                            continue;
+                        if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                            objExistingInfo = objLoopInfo;
+                    }
+                    if (objExistingInfo != null)
+                        strDirectoryKey = objExistingInfo.CharacterOptionsSaveKey;
+                }
+                if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
+                    _dicCustomDataDirectoryKeys.Add(strDirectoryKey, dicLoadingCustomDataDirectories[i].Item2);
+            }
+
             // Legacy sweep for custom data directories
             if (xmlLegacyCharacterNavigator != null)
             {
                 foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator.Select("customdatadirectorynames/directoryname"))
                 {
-                    string strDirectoryName = xmlCustomDataDirectoryName.Value;
-                    if (string.IsNullOrEmpty(strDirectoryName))
+                    string strDirectoryKey = xmlCustomDataDirectoryName.Value;
+                    if (string.IsNullOrEmpty(strDirectoryKey))
                         continue;
-                    _dicCustomDataDirectoryNames.Add(strDirectoryName, new Tuple<int, bool>(intTopMostLoadOrder, true));
-                    ++intTopMostLoadOrder;
+                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterOptionsSaveKey(strDirectoryKey);
+                    if (string.IsNullOrEmpty(strLoopId))
+                    {
+                        CustomDataDirectoryInfo objExistingInfo = null;
+                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalOptions.CustomDataDirectoryInfos)
+                        {
+                            if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                objExistingInfo = objLoopInfo;
+                        }
+                        if (objExistingInfo != null)
+                            strDirectoryKey = objExistingInfo.CharacterOptionsSaveKey;
+                    }
+                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
+                        _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
                 }
             }
 
@@ -1156,40 +1257,72 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/customdatadirectoryname"))
                 {
-                    string strDirectoryName = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
-                    if (string.IsNullOrEmpty(strDirectoryName))
+                    string strDirectoryKey = objXmlDirectoryName.SelectSingleNode("directoryname")?.Value;
+                    if (string.IsNullOrEmpty(strDirectoryKey))
                         continue;
+                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterOptionsSaveKey(strDirectoryKey);
                     string strOrder = objXmlDirectoryName.SelectSingleNode("order")?.Value;
-                    if (string.IsNullOrEmpty(strOrder) || !int.TryParse(strOrder, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int _))
+                    if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
+                        GlobalOptions.InvariantCultureInfo, out int _))
+                        continue;
+                    // Only load in directories that are either present in our GlobalOptions or are enabled
+                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
+                    if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                        ? GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                        : GlobalOptions.CustomDataDirectoryInfos.Any(x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                     {
-                        // Only load in directories that are either present in our GlobalOptions or are enabled
-                        bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNode("enabled")?.Value == bool.TrueString;
-                        if (blnLoopEnabled || GlobalOptions.CustomDataDirectoryInfos.Any(x => x.Name == strDirectoryName))
+                        if (string.IsNullOrEmpty(strLoopId))
                         {
-                            _dicCustomDataDirectoryNames.Add(strDirectoryName,
-                                new Tuple<int, bool>(intTopMostLoadOrder, blnLoopEnabled));
-                            ++intTopMostLoadOrder;
+                            CustomDataDirectoryInfo objExistingInfo = null;
+                            foreach (CustomDataDirectoryInfo objLoopInfo in GlobalOptions.CustomDataDirectoryInfos)
+                            {
+                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    continue;
+                                if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                    objExistingInfo = objLoopInfo;
+                            }
+                            if (objExistingInfo != null)
+                                strDirectoryKey = objExistingInfo.InternalId;
                         }
+                        if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
+                            _dicCustomDataDirectoryKeys.Add(strDirectoryKey, blnLoopEnabled);
                     }
                 }
             }
 
-            if (_dicCustomDataDirectoryNames.Count == 0)
+            if (_dicCustomDataDirectoryKeys.Count == 0)
             {
                 foreach (XPathNavigator objXmlDirectoryName in objXmlNode.Select("customdatadirectorynames/directoryname"))
                 {
-                    _dicCustomDataDirectoryNames.Add(objXmlDirectoryName.Value, new Tuple<int, bool>(intTopMostLoadOrder, true));
-                    ++intTopMostLoadOrder;
+                    string strDirectoryKey = objXmlDirectoryName.Value;
+                    if (string.IsNullOrEmpty(strDirectoryKey))
+                        continue;
+                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterOptionsSaveKey(strDirectoryKey);
+                    if (string.IsNullOrEmpty(strLoopId))
+                    {
+                        CustomDataDirectoryInfo objExistingInfo = null;
+                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalOptions.CustomDataDirectoryInfos)
+                        {
+                            if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                            if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                objExistingInfo = objLoopInfo;
+                        }
+
+                        if (objExistingInfo != null)
+                            strDirectoryKey = objExistingInfo.InternalId;
+                    }
+                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
+                        _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
                 }
             }
 
             // Add in any directories that are in GlobalOptions but are not present in the settings so that we may enable them if we want to
             foreach (CustomDataDirectoryInfo objMissingDirectory in GlobalOptions.CustomDataDirectoryInfos)
             {
-                if (!_dicCustomDataDirectoryNames.Keys.Contains(objMissingDirectory.Name))
+                if (!_dicCustomDataDirectoryKeys.ContainsKey(objMissingDirectory.CharacterOptionsSaveKey))
                 {
-                    _dicCustomDataDirectoryNames.Add(objMissingDirectory.Name, new Tuple<int, bool>(intTopMostLoadOrder, false));
-                    ++intTopMostLoadOrder;
+                    _dicCustomDataDirectoryKeys.Add(objMissingDirectory.CharacterOptionsSaveKey, false);
                 }
             }
 
@@ -1227,9 +1360,11 @@ namespace Chummer
 
             return true;
         }
-        #endregion
+
+        #endregion Initialization, Save, and Load Methods
 
         #region Build Properties
+
         /// <summary>
         /// Method being used to build the character.
         /// </summary>
@@ -1471,9 +1606,13 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        public string DictionaryKey => BuiltInOption ? SourceId : FileName;
+
+        #endregion Build Properties
 
         #region Properties and Methods
+
         /// <summary>
         /// Load the Options from the Registry (which will subsequently be converted to the XML Settings File format). Registry keys are deleted once they are read since they will no longer be used.
         /// </summary>
@@ -1493,7 +1632,8 @@ namespace Chummer
             GlobalOptions.LoadBoolFromRegistry(ref blnTemp, "skilldefaultingincludesmodifiers", string.Empty, true);
 
             // Nuyen per Build Point
-            GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBP, "nuyenperbp", string.Empty, true);
+            GlobalOptions.LoadDecFromRegistry(ref _decNuyenPerBPWftM, "nuyenperbp", string.Empty, true);
+            _decNuyenPerBPWftP = _decNuyenPerBPWftM;
 
             // No Single Armor Encumbrance
             GlobalOptions.LoadBoolFromRegistry(ref _blnNoSingleArmorEncumbrance, "nosinglearmorencumbrance", string.Empty, true);
@@ -1639,23 +1779,65 @@ namespace Chummer
                 _strBookXPath = string.Empty;
         }
 
-        public Dictionary<string, Tuple<int, bool>> CustomDataDirectoryNames => _dicCustomDataDirectoryNames;
+        public TypedOrderedDictionary<string, bool> CustomDataDirectoryKeys => _dicCustomDataDirectoryKeys;
 
         public IReadOnlyList<string> EnabledCustomDataDirectoryPaths => _lstEnabledCustomDataDirectoryPaths;
 
-        public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _lstEnabledCustomDataDirectories;
+        public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos => _setEnabledCustomDataDirectories;
+
+        /// <summary>
+        /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
+        /// </summary>
+        public IReadOnlyCollection<Guid> EnabledCustomDataDirectoryInfoGuids => _setEnabledCustomDataDirectoryGuids;
 
         public void RecalculateEnabledCustomDataDirectories()
         {
-            _lstEnabledCustomDataDirectories.Clear();
+            _setEnabledCustomDataDirectoryGuids.Clear();
+            _setEnabledCustomDataDirectories.Clear();
             _lstEnabledCustomDataDirectoryPaths.Clear();
-            foreach (string strEnabledCustomDataDirectoryName in _dicCustomDataDirectoryNames.Where(x => x.Value.Item2).OrderBy(x => x.Value.Item1).Select(x => x.Key))
+            foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryKeys)
             {
-                CustomDataDirectoryInfo objInfoToAdd = GlobalOptions.CustomDataDirectoryInfos.FirstOrDefault(x => x.Name == strEnabledCustomDataDirectoryName);
+                if (!kvpCustomDataDirectoryName.Value)
+                    continue;
+                string strKey = kvpCustomDataDirectoryName.Key;
+                string strId = CustomDataDirectoryInfo.GetIdFromCharacterOptionsSaveKey(strKey, out Version objPreferredVersion);
+                CustomDataDirectoryInfo objInfoToAdd = null;
+                if (string.IsNullOrEmpty(strId))
+                {
+                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalOptions.CustomDataDirectoryInfos)
+                    {
+                        if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
+                            continue;
+                        if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
+                            objInfoToAdd = objLoopInfo;
+                    }
+                }
+                else
+                {
+                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalOptions.CustomDataDirectoryInfos)
+                    {
+                        if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
+                            continue;
+                        if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion) > VersionMatchScore(objInfoToAdd.MyVersion))
+                            objInfoToAdd = objLoopInfo;
+                    }
+
+                    int VersionMatchScore(Version objVersion)
+                    {
+                        int intReturn = int.MaxValue;
+                        intReturn -= (objPreferredVersion.Build - objVersion.Build).RaiseToPower(2) * 2.RaiseToPower(24);
+                        intReturn -= (objPreferredVersion.Major - objVersion.Major).RaiseToPower(2) * 2.RaiseToPower(16);
+                        intReturn -= (objPreferredVersion.Minor - objVersion.Minor).RaiseToPower(2) * 2.RaiseToPower(8);
+                        intReturn -= (objPreferredVersion.Revision - objVersion.Revision).RaiseToPower(2);
+                        return intReturn;
+                    }
+                }
                 if (objInfoToAdd != null)
                 {
-                    _lstEnabledCustomDataDirectories.Add(objInfoToAdd);
-                    _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.Path);
+                    if (!_setEnabledCustomDataDirectoryGuids.Contains(objInfoToAdd.Guid))
+                        _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
+                    _setEnabledCustomDataDirectories.Add(objInfoToAdd);
+                    _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
                 }
                 else
                     Utils.BreakIfDebug();
@@ -1715,16 +1897,32 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Amount of Nuyen gained per BP spent.
+        /// Amount of Nuyen gained per BP spent when Working for the Man.
         /// </summary>
-        public decimal NuyenPerBP
+        public decimal NuyenPerBPWftM
         {
-            get => _decNuyenPerBP;
+            get => _decNuyenPerBPWftM;
             set
             {
-                if (_decNuyenPerBP != value)
+                if (_decNuyenPerBPWftM != value)
                 {
-                    _decNuyenPerBP = value;
+                    _decNuyenPerBPWftM = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Amount of Nuyen spent per BP gained when Working for the People.
+        /// </summary>
+        public decimal NuyenPerBPWftP
+        {
+            get => _decNuyenPerBPWftP;
+            set
+            {
+                if (_decNuyenPerBPWftP != value)
+                {
+                    _decNuyenPerBPWftP = value;
                     OnPropertyChanged();
                 }
             }
@@ -1861,14 +2059,14 @@ namespace Chummer
         /// <summary>
         /// Allow Mystic Adepts to increase their power points during career mode
         /// </summary>
-        public bool MysAdeptAllowPPCareer
+        public bool MysAdeptAllowPpCareer
         {
-            get => _blnMysAdeptAllowPPCareer;
+            get => _blnMysAdeptAllowPpCareer;
             set
             {
-                if (_blnMysAdeptAllowPPCareer != value)
+                if (_blnMysAdeptAllowPpCareer != value)
                 {
-                    _blnMysAdeptAllowPPCareer = value;
+                    _blnMysAdeptAllowPpCareer = value;
                     OnPropertyChanged();
                     if (value)
                         MysAdeptSecondMAGAttribute = false;
@@ -1891,13 +2089,13 @@ namespace Chummer
                     if (value)
                     {
                         PrioritySpellsAsAdeptPowers = false;
-                        MysAdeptAllowPPCareer = false;
+                        MysAdeptAllowPpCareer = false;
                     }
                 }
             }
         }
 
-        public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPPCareer;
+        public bool MysAdeptSecondMAGAttributeEnabled => !PrioritySpellsAsAdeptPowers && !MysAdeptAllowPpCareer;
 
         /// <summary>
         /// Whether or not to allow a 2nd max attribute with Exceptional Attribute
@@ -1945,6 +2143,28 @@ namespace Chummer
                 if (_strKnowledgePointsExpression != strNewValue)
                 {
                     _strKnowledgePointsExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how much nuyen the character gets at character creation
+        /// </summary>
+        public string ChargenKarmaToNuyenExpression
+        {
+            get => _strChargenKarmaToNuyenExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strChargenKarmaToNuyenExpression != strNewValue)
+                {
+                    _strChargenKarmaToNuyenExpression = strNewValue;
+                    // A safety check to make sure that we always still account for Priority-given Nuyen
+                    if (OptionsManager.LoadedCharacterOptions.ContainsKey(DictionaryKey) && !_strChargenKarmaToNuyenExpression.Contains("{PriorityNuyen}"))
+                    {
+                        _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -2323,6 +2543,7 @@ namespace Chummer
         }
 
         private int _intCachedMaxNuyenDecimals = -1;
+
         /// <summary>
         /// Maximum number of decimal places to round to when displaying nuyen values.
         /// </summary>
@@ -2370,6 +2591,7 @@ namespace Chummer
         }
 
         private int _intCachedMinNuyenDecimals = -1;
+
         /// <summary>
         /// Minimum number of decimal places to round to when displaying nuyen values.
         /// </summary>
@@ -2405,16 +2627,17 @@ namespace Chummer
                         NuyenFormat = NuyenFormat.Substring(0, intDecimalPlaces);
                     return;
                 }
-                char[] achrNuyenFormat = NuyenFormat.ToCharArray();
                 int intCurrentNuyenDecimals = MinNuyenDecimals;
                 if (intNewNuyenDecimals < intCurrentNuyenDecimals)
                 {
+                    char[] achrNuyenFormat = NuyenFormat.ToCharArray();
                     for (int i = intDecimalPlaces + 1 + intNewNuyenDecimals; i < achrNuyenFormat.Length; ++i)
                         achrNuyenFormat[i] = '0';
                     NuyenFormat = new string(achrNuyenFormat);
                 }
                 else if (intNewNuyenDecimals > intCurrentNuyenDecimals)
                 {
+                    char[] achrNuyenFormat = NuyenFormat.ToCharArray();
                     for (int i = 1; i < intNewNuyenDecimals; ++i)
                         achrNuyenFormat[intDecimalPlaces + i] = '0';
                     NuyenFormat = new string(achrNuyenFormat);
@@ -2495,8 +2718,10 @@ namespace Chummer
                         strNewValue += ".00";
                     else
                     {
+                        StringBuilder sbdZeros = new StringBuilder(strNewValue);
                         for (int i = strNewValue.Length - 1 - intDecimalPlaces; i < intDecimalPlaces; ++i)
-                            strNewValue += '0';
+                            sbdZeros.Append('0');
+                        strNewValue = sbdZeros.ToString();
                     }
                 }
                 if (_strEssenceFormat != strNewValue)
@@ -2908,6 +3133,7 @@ namespace Chummer
                 }
             }
         }
+
         /// <summary>
         /// Whether lifestyles will automatically give free grid subscriptions found in (HT)
         /// </summary>
@@ -2973,9 +3199,27 @@ namespace Chummer
                 }
             }
         }
-        #endregion
+
+        /// <summary>
+        /// The Dice Penalty per Spell
+        /// </summary>
+        public int DicePenaltySustaining
+        {
+            get => _intDicePenaltySustaining;
+            set
+            {
+                if (_intDicePenaltySustaining != value)
+                {
+                    _intDicePenaltySustaining = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion Properties and Methods
 
         #region Karma
+
         /// <summary>
         /// Karma cost to improve an Attribute = New Rating X this value.
         /// </summary>
@@ -3648,9 +3892,26 @@ namespace Chummer
             }
         }
 
-        #endregion
+        /// <summary>
+        /// Karma cost for fetting a spirit (gets multiplied by Force).
+        /// </summary>
+        public int KarmaSpiritFettering
+        {
+            get => _intKarmaSpiritFettering;
+            set
+            {
+                if (_intKarmaSpiritFettering != value)
+                {
+                    _intKarmaSpiritFettering = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        #endregion Karma
 
         #region Default Build
+
         /// <summary>
         /// Percentage by which adding an Initiate Grade to an Awakened is discounted if a member of a Group.
         /// </summary>
@@ -3681,14 +3942,15 @@ namespace Chummer
         /// </summary>
         public decimal KarmaRESInitiationSchoolingPercent { get; set; } = 0.1m;
 
-        #endregion
+        #endregion Default Build
 
         #region Constant Values
+
         /// <summary>
         /// The value by which Specializations add to dicepool.
         /// </summary>
         public int SpecializationBonus { get; } = 2;
 
-        #endregion
+        #endregion Constant Values
     }
 }

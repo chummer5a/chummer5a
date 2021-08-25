@@ -16,10 +16,13 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using System.Windows.Forms;
- using Chummer.Backend.Equipment;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -29,6 +32,7 @@ namespace Chummer
         private readonly List<string> _lstCount = new List<string>(30);
 
         #region Control Events
+
         public frmReload()
         {
             InitializeComponent();
@@ -63,25 +67,22 @@ namespace Chummer
                 // Retrieve the plugin information if it has any.
                 if (objGear.Children.Count > 0)
                 {
-                    string strPlugins = string.Empty;
+                    StringBuilder sbdPlugins = new StringBuilder();
                     foreach (Gear objChild in objGear.Children)
                     {
-                        strPlugins += objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace;
+                        sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace);
                     }
                     // Remove the trailing comma.
-                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
+                    sbdPlugins.Length -= 1 + strSpace.Length;
                     // Append the plugin information to the name.
-                    strName += strSpace + '[' + strPlugins + ']';
+                    strName += strSpace + '[' + sbdPlugins + ']';
                 }
                 lstAmmo.Add(new ListItem(objGear.InternalId, strName));
             }
 
             // Populate the lists.
             cboAmmo.BeginUpdate();
-            cboAmmo.DataSource = null;
-            cboAmmo.DataSource = lstAmmo;
-            cboAmmo.ValueMember = nameof(ListItem.Value);
-            cboAmmo.DisplayMember = nameof(ListItem.Name);
+            cboAmmo.PopulateWithListItems(lstAmmo);
             cboAmmo.EndUpdate();
 
             cboType.BeginUpdate();
@@ -103,9 +104,11 @@ namespace Chummer
         {
             AcceptForm();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// List of Ammo Gear that the user can selected.
         /// </summary>
@@ -138,11 +141,16 @@ namespace Chummer
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
-        public int SelectedCount => Convert.ToInt32(cboType.Text, GlobalOptions.InvariantCultureInfo);
+        public int SelectedCount =>
+            int.TryParse(cboType.Text, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo,
+                out int intReturn)
+                ? intReturn
+                : int.MaxValue;
 
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -150,6 +158,7 @@ namespace Chummer
         {
             DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Methods
     }
 }

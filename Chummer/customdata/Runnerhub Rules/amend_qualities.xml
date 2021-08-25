@@ -12,7 +12,7 @@
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
-    along with Chummer5a.  If not, see <http://www.gnu.org/licenses />.
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
 
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
@@ -59,7 +59,7 @@
     <quality>
       <name>I C U</name>
       <notes>
-        - Note that you need to have visual sight on the target in the physical world to get the bonus. 
+        - Note that you need to have visual sight on the target in the physical world to get the bonus.
       </notes>
     </quality>
     <quality>
@@ -71,7 +71,7 @@
     <quality>
       <name>Nasty Trog</name>
       <notes>
-        - Keep in mind you're going to look pretty persona non grata in "polite" society as a result of making yourself look extra trog. 
+        - Keep in mind you're going to look pretty persona non grata in "polite" society as a result of making yourself look extra trog.
       </notes>
     </quality>
     <quality>
@@ -93,23 +93,23 @@
       <name>Practice, Practice, Practice</name>
       <notes>
         - Any Hub contacts with the Aptitude quality can provide this quality for any of their skills
-        - This quality only applies to Mental, Physical, and Social limits. 
+        - This quality only applies to Mental, Physical, and Social limits.
       </notes>
     </quality>
     <quality>
       <name>Privileged Family Name</name>
       <notes>
-        - Remember: Mind magic is stringently discouraged on the 'Hub for thematic reasons, so note that the reactions of runners may be severe if discovered and attempting to use your name to get the cops to ignore mind magic usage is a no-go. Other types of magic usage without a license are fine under the text of the quality. 
-      </notes> 
+        - Remember: Mind magic is stringently discouraged on the 'Hub for thematic reasons, so note that the reactions of runners may be severe if discovered and attempting to use your name to get the cops to ignore mind magic usage is a no-go. Other types of magic usage without a license are fine under the text of the quality.
+      </notes>
     </quality>
     <quality>
-      <name>Prototype Transhuman</name>      
+      <name>Prototype Transhuman</name>
       <chargenonly />
     </quality>
     <quality>
       <name>Redliner</name>
       <notes>
-        - The strength and agility bonus applies to all of the character's cyberlimbs. 
+        - The strength and agility bonus applies to all of the character's cyberlimbs.
       </notes>
     </quality>
     <quality>
@@ -117,7 +117,7 @@
       <notes>
         - This quality requires explicit CCD approval and may be denied without further comment.
         - In general it is more likely to be approved when used for flavorful gear that ties well into a character's background, whereas attempts to simply use it to maximize a character's power are very likely to be denied.
-        - Either way, CCD always has final say whether the quality may be used or not. 
+        - Either way, CCD always has final say whether the quality may be used or not.
       </notes>
     </quality>
     <quality>
@@ -125,10 +125,10 @@
       <notes>
         - This quality applies to any weapon, including unarmed attacks.
         - The advantage halves the penalty for any called shot. When combined with other ways to reduce the penalty, the penalty is halved after the other reductions have been applied.
-        - Keep in mind the drawback: You must make called shots unless you are using some other form of special attack (such as suppressing fire, multiple attacks, or nerve strike). This is not optional. 
+        - Keep in mind the drawback: You must make called shots unless you are using some other form of special attack (such as suppressing fire, multiple attacks, or nerve strike). This is not optional.
       </notes>
     </quality>
-    
+
     <quality>
       <name>Corporate Loyalist</name>
       <required amendoperation="replace" addifnotfound="True">
@@ -196,7 +196,7 @@
     </quality>
     <quality xpathfilter="starts-with(name,'Corporate Pariah')">
       <required amendoperation="replace" addifnotfound="True">
-        <oneof>          
+        <oneof>
           <quality>SINner (Corporate)</quality>
           <quality>SINner (Corporate Limited)</quality>
         </oneof>
@@ -216,8 +216,8 @@
       <name>Addiction (Mild)</name>
       <notes>
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
-        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
-        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
+        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying.
+        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality.
       </notes>
     </quality>
 
@@ -225,8 +225,8 @@
       <name>Addiction (Moderate)</name>
       <notes>
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
-        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
-        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
+        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying.
+        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality.
       </notes>
     </quality>
 
@@ -234,8 +234,8 @@
       <name>Addiction (Severe)</name>
       <notes>
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
-        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
-        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
+        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying.
+        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality.
       </notes>
     </quality>
 
@@ -243,14 +243,14 @@
       <name>Addiction (Burnout)</name>
       <notes>
         - Addictions must be to a statted, 'Hub-legal drug. Addiction to activities and unrestricted items - gambling, alcohol, smoking, etc. - provides no mechanical benefit in the form of additional Karma.
-        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying. 
-        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality. 
+        - Characters may, if desired by the player, have 0 Karma Addiction qualities to activities or unrestricted items for the sake of roleplaying.
+        - Addictions to simsense (cold- and hot-sim) as well as skillwires are not enforced on Runnerhub, and therefore aren't allowed as subjects for the addiction quality.
       </notes>
     </quality>
     <quality>
       <name>Aged</name>
       <notes>
-        - Elves and Dwarves live for hundreds of years, while Orks and Trolls live a fraction of the human lifespan. A character's age must be adjusted accordingly, and Elves and Dwarves may not be pre-Spike Baby ages. This means you cannot play an aged Dwarf or Elf. 
+        - Elves and Dwarves live for hundreds of years, while Orks and Trolls live a fraction of the human lifespan. A character's age must be adjusted accordingly, and Elves and Dwarves may not be pre-Spike Baby ages. This means you cannot play an aged Dwarf or Elf.
       </notes>
       <forbidden amendoperation="replace" addifnotfound="True">
         <oneof>
@@ -263,39 +263,39 @@
     <quality>
       <name>Albinism I</name>
       <notes>
-        - Albinism is not compatible with Distinctive Style. You may take a distinctive style for something other than being an Albino though. 
+        - Albinism is not compatible with Distinctive Style. You may take a distinctive style for something other than being an Albino though.
       </notes>
     </quality>
 
     <quality>
       <name>Albinism II</name>
       <notes>
-        - Albinism is not compatible with Distinctive Style. You may take a distinctive style for something other than being an Albino though. 
+        - Albinism is not compatible with Distinctive Style. You may take a distinctive style for something other than being an Albino though.
       </notes>
     </quality>
 
     <quality>
       <name>Asthma</name>
       <notes>
-        - Asthma is not compatible with Allergy: Pollutants, or similar cases. This is subject to sheet team approval. 
+        - Asthma is not compatible with Allergy: Pollutants, or similar cases. This is subject to sheet team approval.
       </notes>
     </quality>
-    
+
     <quality>
       <name>Big Baby</name>
       <notes>
         - Subject to CCD approval per sheet.
       </notes>
     </quality>
-    
+
     <quality>
       <name>Code of Honor</name>
       <notes>
-      - Custom codes of honor are not allowed at chargen. If you would like to take this quality in character creation, you must select from one of the already defined codes of honor in the books (Like a Boss, etc.) 
+      - Custom codes of honor are not allowed at chargen. If you would like to take this quality in character creation, you must select from one of the already defined codes of honor in the books (Like a Boss, etc.)
       Nationalist:
       - This quality is allowed for UCAS only.
       - CCD may deny characters with this quality submitted to r/hubchargen without comment.
-      - It is strongly advised that characters with this quality also have the National SINner: UCAS quality. 
+      - It is strongly advised that characters with this quality also have the National SINner: UCAS quality.
       Thug Life:
       - The expenses (half your income) are treated the same way as a SIN tax: they apply to your direct run rewards, and do not affect Working for the Man/People.
       </notes>
@@ -320,7 +320,7 @@
       <name>Driven</name>
       <notes>
         - Whatever a character's driving force is, it has to have a specific end goal that must be realistically possible to work towards and achieve in play on the 'hub. Once this goal has been achieved, the quality has to be bought off immediately.
-        - Whether any given goal fulfills these criteria is subject to the sheet team's discretion. 
+        - Whether any given goal fulfills these criteria is subject to the sheet team's discretion.
       </notes>
     </quality>
 
@@ -329,31 +329,31 @@
       <notes>
         - The character has 2 Public Awareness that can only be removed when buying off the quality.
         - If the character covers, removes, or otherwise hides what makes their style distinctive, they take a -1 penalty to all actions until they uncover/wear/show their style.
-        - Characters who have this quality as a consequence of a metagenetic quality or from being a metavariant do not suffer the penalty when hiding their style and do not have the additional Public Awareness, and suffer only the RAW ramifications of this quality. 
+        - Characters who have this quality as a consequence of a metagenetic quality or from being a metavariant do not suffer the penalty when hiding their style and do not have the additional Public Awareness, and suffer only the RAW ramifications of this quality.
       </notes>
     </quality>
-    
+
     <quality>
       <name>Frostbite</name>
       <bonus amendoperation="replace">
         <selectskill limittoskill="Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Software"></selectskill>
       </bonus>
     </quality>
-      
+
     <quality>
       <name>Incomplete Deprogramming</name>
       <notes>
-        - On character submission the player needs to provide a description of the alternate identity. This is subject to sheet team approval. 
+        - On character submission the player needs to provide a description of the alternate identity. This is subject to sheet team approval.
       </notes>
     </quality>
 
     <quality>
       <name>Infirm</name>
       <notes>
-        - Buying off Infirm does not restore attributes that it lowered when the quality was acquired. 
+        - Buying off Infirm does not restore attributes that it lowered when the quality was acquired.
       </notes>
     </quality>
-    
+
     <quality>
       <name>Lazy Fingers</name>
       <karma>-6</karma>
@@ -369,7 +369,7 @@
     <quality>
       <name>Poor Self Control (Sadistic)</name>
       <notes>
-        - This quality requires explicit sheet team approval and may be denied without further comment. 
+        - This quality requires explicit sheet team approval and may be denied without further comment.
       </notes>
     </quality>
 
@@ -377,8 +377,8 @@
       <name>Records on File</name>
       <notes>
         - On character submission the player needs to provide a list of the corporations that have the files, along with what specific information the corporation holds on the character and why they have those records.
-        - This list should be adequately explained in the character's background section on their character sheet, and must be thematically appropriate to the background of the character. 
-        - This quality is limited to 3 ranks (or 3 corporations) at character creation. 
+        - This list should be adequately explained in the character's background section on their character sheet, and must be thematically appropriate to the background of the character.
+        - This quality is limited to 3 ranks (or 3 corporations) at character creation.
       </notes>
       <limit>3</limit>
     </quality>
@@ -386,38 +386,38 @@
     <quality>
       <name>Reduced Sense (Hearing)</name>
       <notes>
-        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
+        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion.
       </notes>
     </quality>
 
     <quality>
       <name>Reduced Sense (Sight)</name>
       <notes>
-        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
+        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion.
       </notes>
     </quality>
 
     <quality>
       <name>Reduced Sense (Smell)</name>
       <notes>
-        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
+        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion.
       </notes>
     </quality>
 
     <quality>
       <name>Reduced Sense (Taste)</name>
       <notes>
-        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
+        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion.
       </notes>
     </quality>
 
     <quality>
       <name>Reduced Sense (Touch)</name>
       <notes>
-        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion. 
+        - This quality requires explicit sheet team approval and may be denied if deemed not appropriate, as per sheet team discretion.
       </notes>
     </quality>
-    
+
     <quality>
       <name>Sloppy Code</name>
       <notes>
@@ -436,10 +436,10 @@
     <quality>
       <name>Signature</name>
       <notes>
-        - On character submission the player needs to provide a description of the signature. The signature must be uniquely used as a signature and cannot be an item or action that would be regularly used for another purpose (in combat, as a tool, etc). This quality is subject to sheet team approval. 
+        - On character submission the player needs to provide a description of the signature. The signature must be uniquely used as a signature and cannot be an item or action that would be regularly used for another purpose (in combat, as a tool, etc). This quality is subject to sheet team approval.
       </notes>
     </quality>
-    
+
     <quality>
       <name>Wanted</name>
       <notes>
@@ -450,7 +450,7 @@
     <quality>
       <name>Spirit Bane</name>
       <notes>
-        - This quality must be taken for a spirit within the character's magical tradition. 
+        - This quality must be taken for a spirit within the character's magical tradition.
       </notes>
     </quality>
 
@@ -465,14 +465,14 @@
     <quality>
       <name>Unsteady Hands</name>
       <notes>
-        - It is up to GM discretion whether it triggers at the beginning or end of combat. 
+        - It is up to GM discretion whether it triggers at the beginning or end of combat.
       </notes>
     </quality>
 
     <quality>
       <name>Weak Immune System</name>
       <notes>
-        - This quality applies its effect to Toxins as well as Diseases, increasing their effect by +2. 
+        - This quality applies its effect to Toxins as well as Diseases, increasing their effect by +2.
       </notes>
     </quality>
 
@@ -480,7 +480,6 @@
       Banned Negatives
     -->
 
-    
     <quality>
       <name>Alpha Junkie</name>
       <hide />
@@ -510,7 +509,7 @@
       <name>Code of Honor: Avenging Angel</name>
       <hide />
     </quality>
-    
+
     <quality>
       <name>Code of Honor: Black Hat</name>
       <hide />
@@ -550,7 +549,7 @@
       <name>Earther</name>
       <hide />
     </quality>
-    
+
     <quality>
       <name>Echo Chamber</name>
       <hide />
@@ -568,9 +567,9 @@
 
     <quality>
       <name>Every Man For Himself</name>
-      <hide/>
+      <hide />
     </quality>
-    
+
     <quality>
       <name>Faceless</name>
       <hide />
@@ -600,7 +599,7 @@
       <name>In Debt</name>
       <hide />
     </quality>
-    
+
     <quality>
       <name>Information Auctioneer</name>
       <hide />
@@ -633,14 +632,14 @@
 
     <quality>
       <name>This Is Your Last Chance</name>
-      <hide/>
+      <hide />
     </quality>
 
     <quality>
       <name>Tough and Targeted</name>
       <hide />
     </quality>
-    
+
     <quality>
       <name>'Ware Intolerance</name>
       <hide />
@@ -755,7 +754,7 @@
     <quality>
       <name>Wildcard Chimera</name>
       <hide />
-    </quality>  
+    </quality>
 
     <quality xpathfilter="starts-with(name, 'Carrier')">
       <hide />
@@ -799,17 +798,17 @@
         <name>Dissonant Stream: Apophenian</name>
         <hide />
       </quality>
-      
+
       <quality>
         <name>Dissonant Stream: Erisian</name>
         <hide />
       </quality>
-      
+
       <quality>
         <name>Dissonant Stream: Morphinae</name>
         <hide />
       </quality>
-      
+
     <!--
       Overrides
     -->
@@ -900,6 +899,5 @@
         </notes>
       </quality>
     -->
-
   </qualities>
 </chummer>

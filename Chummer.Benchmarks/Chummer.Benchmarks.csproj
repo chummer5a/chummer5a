@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\build\Microsoft.Diagnostics.Tracing.TraceEvent.props" Condition="Exists('..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\build\Microsoft.Diagnostics.Tracing.TraceEvent.props')" />
+  <Import Project="..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\build\Microsoft.Diagnostics.Tracing.TraceEvent.props" Condition="Exists('..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\build\Microsoft.Diagnostics.Tracing.TraceEvent.props')" />
   <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -37,51 +37,78 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BenchmarkDotNet, Version=0.12.1.0, Culture=neutral, PublicKeyToken=aa0ca2f9092cefc4, processorArchitecture=MSIL">
-      <HintPath>..\packages\BenchmarkDotNet.0.12.1\lib\netstandard2.0\BenchmarkDotNet.dll</HintPath>
+    <Reference Include="BenchmarkDotNet, Version=0.13.0.0, Culture=neutral, PublicKeyToken=aa0ca2f9092cefc4, processorArchitecture=MSIL">
+      <HintPath>..\packages\BenchmarkDotNet.0.13.0\lib\netstandard2.0\BenchmarkDotNet.dll</HintPath>
     </Reference>
-    <Reference Include="BenchmarkDotNet.Annotations, Version=0.12.1.0, Culture=neutral, PublicKeyToken=aa0ca2f9092cefc4, processorArchitecture=MSIL">
-      <HintPath>..\packages\BenchmarkDotNet.Annotations.0.12.1\lib\netstandard2.0\BenchmarkDotNet.Annotations.dll</HintPath>
+    <Reference Include="BenchmarkDotNet.Annotations, Version=0.13.0.0, Culture=neutral, PublicKeyToken=aa0ca2f9092cefc4, processorArchitecture=MSIL">
+      <HintPath>..\packages\BenchmarkDotNet.Annotations.0.13.0\lib\netstandard2.0\BenchmarkDotNet.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="CommandLine, Version=2.8.0.0, Culture=neutral, PublicKeyToken=5a870481e358d379, processorArchitecture=MSIL">
       <HintPath>..\packages\CommandLineParser.2.8.0\lib\net461\CommandLine.dll</HintPath>
     </Reference>
     <Reference Include="Dia2Lib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\lib\net45\Dia2Lib.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\lib\net45\Dia2Lib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Iced, Version=1.11.2.0, Culture=neutral, PublicKeyToken=5baba79f4264913b, processorArchitecture=MSIL">
-      <HintPath>..\packages\Iced.1.11.2\lib\net45\Iced.dll</HintPath>
+    <Reference Include="Iced, Version=1.13.0.0, Culture=neutral, PublicKeyToken=5baba79f4264913b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Iced.1.13.0\lib\net45\Iced.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=5.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.5.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis, Version=3.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.3.10.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.9.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=3.10.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.3.10.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Diagnostics.FastSerialization, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\lib\net45\Microsoft.Diagnostics.FastSerialization.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\lib\net45\Microsoft.Diagnostics.FastSerialization.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Diagnostics.NETCore.Client, Version=0.2.4.21401, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Diagnostics.NETCore.Client.0.2.221401\lib\netstandard2.0\Microsoft.Diagnostics.NETCore.Client.dll</HintPath>
+    <Reference Include="Microsoft.Diagnostics.NETCore.Client, Version=0.2.4.36902, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.NETCore.Client.0.2.236902\lib\netstandard2.0\Microsoft.Diagnostics.NETCore.Client.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Diagnostics.Runtime, Version=2.0.4.22201, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Diagnostics.Runtime.2.0.222201\lib\net461\Microsoft.Diagnostics.Runtime.dll</HintPath>
+    <Reference Include="Microsoft.Diagnostics.Runtime, Version=2.0.4.26801, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Runtime.2.0.226801\lib\net461\Microsoft.Diagnostics.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Diagnostics.Tracing.TraceEvent, Version=2.0.68.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\lib\net45\Microsoft.Diagnostics.Tracing.TraceEvent.dll</HintPath>
+    <Reference Include="Microsoft.Diagnostics.Tracing.TraceEvent, Version=2.0.71.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\lib\net45\Microsoft.Diagnostics.Tracing.TraceEvent.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.DotNet.PlatformAbstractions, Version=3.1.6.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.DotNet.PlatformAbstractions.3.1.6\lib\net45\Microsoft.DotNet.PlatformAbstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.5.0.0\lib\net461\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Binder.5.0.0\lib\net461\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=5.0.0.2, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.5.0.2\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.5.0.0\lib\net461\Microsoft.Extensions.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.5.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=5.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.5.0.0\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=5.0.0.1, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.5.0.1\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
     <Reference Include="OSExtensions, Version=1.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\lib\net45\OSExtensions.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\lib\net45\OSExtensions.dll</HintPath>
     </Reference>
     <Reference Include="Perfolizer, Version=0.2.1.0, Culture=neutral, PublicKeyToken=e864f2ec9c0b6d4c, processorArchitecture=MSIL">
       <HintPath>..\packages\Perfolizer.0.2.1\lib\netstandard2.0\Perfolizer.dll</HintPath>
@@ -105,6 +132,9 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Core" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=5.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.5.0.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Diagnostics.FileVersionInfo, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.FileVersionInfo.4.3.0\lib\net46\System.Diagnostics.FileVersionInfo.dll</HintPath>
       <Private>True</Private>
@@ -251,7 +281,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="TraceReloggerLib, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\lib\net45\TraceReloggerLib.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\lib\net45\TraceReloggerLib.dll</HintPath>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
   </ItemGroup>
@@ -280,7 +310,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\build\Microsoft.Diagnostics.Tracing.TraceEvent.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.68\build\Microsoft.Diagnostics.Tracing.TraceEvent.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\build\Microsoft.Diagnostics.Tracing.TraceEvent.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Diagnostics.Tracing.TraceEvent.2.0.71\build\Microsoft.Diagnostics.Tracing.TraceEvent.props'))" />
   </Target>
   <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.2\build\Microsoft.CodeAnalysis.Analyzers.targets')" />
 </Project>

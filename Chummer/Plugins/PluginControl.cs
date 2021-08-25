@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
@@ -34,41 +35,47 @@ using NLog;
 namespace Chummer.Plugins
 {
     [InheritedExport(typeof(IPlugin))]
-    public interface IPlugin
+    public interface IPlugin : IDisposable
     {
         //only very rudimentary initialization should take place here. Make it QUICK.
         void CustomInitialize(frmChummerMain mainControl);
 
         IEnumerable<TabPage> GetTabPages(frmCareer input);
+
         IEnumerable<TabPage> GetTabPages(frmCreate input);
+
         IEnumerable<ToolStripMenuItem> GetMenuItems(ToolStripMenuItem menu);
+
         ITelemetry SetTelemetryInitialize(ITelemetry telemetry);
+
         bool ProcessCommandLine(string parameter);
 
         Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(frmCharacterRoster frmCharRoster, bool forceUpdate);
+
         UserControl GetOptionsControl();
 
         string GetSaveToFileElement(Character input);
+
         void LoadFileElement(Character input, string fileElement);
 
         void SetIsUnitTest(bool isUnitTest);
 
         Assembly GetPluginAssembly();
-        void Dispose();
+
         bool SetCharacterRosterNode(TreeNode objNode);
+
         Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList);
     }
 
-
     public class PluginControl : IDisposable
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        private static CompositionContainer container;
-        public static CompositionContainer Container => container;
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static CompositionContainer _container;
+        public static CompositionContainer Container => _container;
         public string PathToPlugins { get; set; }
-        private static AggregateCatalog catalog;
-        private static DirectoryCatalog myDirectoryCatalog;
-        private static FileSystemWatcher watcher;
+        private static AggregateCatalog _objCatalog;
+        private static DirectoryCatalog _objMyDirectoryCatalog;
+        private static FileSystemWatcher _objWatcher;
 
         //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
         public static bool RegisterChummerProtocol()
@@ -118,20 +125,19 @@ namespace Chummer.Plugins
             return true;
         }
 
-
         public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
         {
-            RegistryKey Software = null;
-            RegistryKey Classes = null;
+            RegistryKey objSoftware = null;
+            RegistryKey objClasses = null;
             try
             {
-                Software = Registry.CurrentUser.OpenSubKey("Software"); //open myApp protocol's subkey
+                objSoftware = Registry.CurrentUser.OpenSubKey("Software"); //open myApp protocol's subkey
                 // Just in case there's something super-weird going on
-                if (Software == null)
+                if (objSoftware == null)
                 {
                     try
                     {
-                        Software = Registry.CurrentUser.CreateSubKey("Software", RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        objSoftware = Registry.CurrentUser.CreateSubKey("Software", RegistryKeyPermissionCheck.ReadWriteSubTree);
                     }
                     catch (UnauthorizedAccessException e)
                     {
@@ -139,19 +145,19 @@ namespace Chummer.Plugins
                         return false;
                     }
 
-                    if (Software == null)
+                    if (objSoftware == null)
                     {
                         Log.Error("Software key was successfully accessed, but somehow the key is null.");
                         return false;
                     }
                 }
 
-                Classes = Software.OpenSubKey("Classes", true);
-                if (Classes == null)
+                objClasses = objSoftware.OpenSubKey("Classes", true);
+                if (objClasses == null)
                 {
                     try
                     {
-                        Classes = Software.CreateSubKey("Classes", RegistryKeyPermissionCheck.ReadWriteSubTree);
+                        objClasses = objSoftware.CreateSubKey("Classes", RegistryKeyPermissionCheck.ReadWriteSubTree);
                     }
                     catch (UnauthorizedAccessException e)
                     {
@@ -159,16 +165,16 @@ namespace Chummer.Plugins
                         return false;
                     }
 
-                    if (Classes == null)
+                    if (objClasses == null)
                     {
                         Log.Error("Classes key was successfully accessed, but somehow the key is null.");
                         return false;
                     }
                 }
 
-                using (RegistryKey keyChummerKey = Classes.OpenSubKey("Chummer", true) //open myApp protocol's subkey
-                                                   //if the protocol is not registered yet...we register it
-                                                   ?? Classes.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree))
+                using (RegistryKey keyChummerKey = objClasses.OpenSubKey("Chummer", true) //open myApp protocol's subkey
+                                                                                       //if the protocol is not registered yet...we register it
+                                                   ?? objClasses.CreateSubKey("Chummer", RegistryKeyPermissionCheck.ReadWriteSubTree))
                 {
                     if (keyChummerKey == null)
                     {
@@ -195,8 +201,8 @@ namespace Chummer.Plugins
             }
             finally
             {
-                Classes?.Close();
-                Software?.Close();
+                objClasses?.Close();
+                objSoftware?.Close();
             }
             Log.Info("Url Protocol Handler for Chummer registered!");
             return true;
@@ -221,7 +227,7 @@ namespace Chummer.Plugins
                     string msg = "Directory " + path + " not found. No Plugins will be available.";
                     throw new ArgumentException(msg);
                 }
-                catalog = new AggregateCatalog();
+                _objCatalog = new AggregateCatalog();
                 //delete old NeonJungleLC-Plugin
                 string neon = Path.Combine(path, "NeonJungleLC");
                 if (Directory.Exists(neon))
@@ -239,7 +245,7 @@ namespace Chummer.Plugins
                     string infofile = Path.Combine(plugindir, "plugin.txt");
                     if (File.Exists(infofile))
                     {
-                        Log.Trace(infofile +  " found: parsing it!");
+                        Log.Trace(infofile + " found: parsing it!");
 
                         using (StreamReader file = new StreamReader(infofile))
                         {
@@ -251,33 +257,33 @@ namespace Chummer.Plugins
                                 if (File.Exists(plugindll))
                                 {
                                     FileInfo fi = new FileInfo(plugindll);
-                                    myDirectoryCatalog = new DirectoryCatalog(plugindir, fi.Name);
+                                    _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, fi.Name);
                                     Log.Info("Searching for plugin-interface in dll: " + plugindll);
-                                    catalog.Catalogs.Add(myDirectoryCatalog);
+                                    _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
                                 }
                                 else
                                 {
                                     Log.Warn("Could not find dll from " + infofile + ": " + plugindll);
-                                    myDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
-                                    Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
-                                    catalog.Catalogs.Add(myDirectoryCatalog);
+                                    _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
+                                    Log.Info("Searching for dlls in path " + _objMyDirectoryCatalog?.FullPath);
+                                    _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
                                 }
                             }
                         }
                     }
                     else
                     {
-                        myDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
-                        Log.Info("Searching for dlls in path " + myDirectoryCatalog?.FullPath);
-                        catalog.Catalogs.Add(myDirectoryCatalog);
+                        _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
+                        Log.Info("Searching for dlls in path " + _objMyDirectoryCatalog?.FullPath);
+                        _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
                     }
                 }
 
-                container = new CompositionContainer(catalog);
+                _container = new CompositionContainer(_objCatalog);
 
                 //Fill the imports of this object
                 StartWatch();
-                container.ComposeParts(this);
+                _container.ComposeParts(this);
 
                 Log.Info("Plugins found: " + MyPlugins.Count);
                 if (MyPlugins.Count == 0)
@@ -307,7 +313,7 @@ namespace Chummer.Plugins
                 }
                 Log.Info("Initializing Plugins finished.");
             }
-            catch(System.Security.SecurityException e)
+            catch (System.Security.SecurityException e)
             {
                 string msg = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: " + Environment.NewLine + Environment.NewLine;
                 msg += e.ToString();
@@ -332,7 +338,7 @@ namespace Chummer.Plugins
                 List<IPlugin> result = new List<IPlugin>();
                 if (!GlobalOptions.PluginsEnabled)
                     return result;
-                foreach(IPlugin plugin in MyPlugins)
+                foreach (IPlugin plugin in MyPlugins)
                 {
                     if (!GlobalOptions.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled) || enabled)
                         result.Add(plugin);
@@ -341,37 +347,36 @@ namespace Chummer.Plugins
             }
         }
 
-
         private static void StartWatch()
         {
-            if (watcher == null)
+            if (_objWatcher == null)
             {
-                watcher = new FileSystemWatcher
+                _objWatcher = new FileSystemWatcher
                 {
                     Path = ".",
                     NotifyFilter = NotifyFilters.LastWrite
                 };
-                watcher.Changed += (s, e) =>
+                _objWatcher.Changed += (s, e) =>
                 {
                     if (e.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) || e.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase))
                         Refresh();
                 };
-                watcher.EnableRaisingEvents = true;
+                _objWatcher.EnableRaisingEvents = true;
             }
         }
 
         public static void Refresh()
         {
-            foreach (DirectoryCatalog dCatalog in catalog.Catalogs.Cast<DirectoryCatalog>())
+            foreach (DirectoryCatalog dCatalog in _objCatalog.Catalogs.Cast<DirectoryCatalog>())
                 dCatalog.Refresh();
         }
 
-        internal void LoadPlugins(CustomActivity parentActivity)
+        internal void LoadPlugins(CustomActivity parentActivity = null)
         {
             try
             {
                 using (_ = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
-                    CustomActivity.OperationType.DependencyOperation, myDirectoryCatalog?.FullPath))
+                    CustomActivity.OperationType.DependencyOperation, _objMyDirectoryCatalog?.FullPath))
                     Initialize();
             }
             catch (System.Security.SecurityException e)
@@ -419,7 +424,7 @@ namespace Chummer.Plugins
 
         internal void CallPlugins(frmCareer frmCareer, CustomActivity parentActivity)
         {
-            foreach(IPlugin plugin in MyActivePlugins)
+            foreach (IPlugin plugin in MyActivePlugins)
             {
                 using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
                     parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString()))
@@ -429,10 +434,9 @@ namespace Chummer.Plugins
                         continue;
                     foreach (TabPage page in pages)
                     {
-                        if (page != null)
+                        if (page != null && !frmCareer.TabCharacterTabs.TabPages.Contains(page))
                         {
-                            if (!frmCareer.TabCharacterTabs.TabPages.Contains(page))
-                                frmCareer.TabCharacterTabs.TabPages.Add(page);
+                            frmCareer.TabCharacterTabs.TabPages.Add(page);
                         }
                     }
                 }
@@ -450,10 +454,9 @@ namespace Chummer.Plugins
                         continue;
                     foreach (TabPage page in pages)
                     {
-                        if (page != null)
+                        if (page != null && !frmCreate.TabCharacterTabs.TabPages.Contains(page))
                         {
-                            if (!frmCreate.TabCharacterTabs.TabPages.Contains(page))
-                                frmCreate.TabCharacterTabs.TabPages.Add(page);
+                            frmCreate.TabCharacterTabs.TabPages.Add(page);
                         }
                     }
                 }
@@ -472,10 +475,9 @@ namespace Chummer.Plugins
                         continue;
                     foreach (ToolStripMenuItem plugInMenu in menuitems)
                     {
-                        if (plugInMenu != null)
+                        if (plugInMenu != null && !menu.DropDownItems.Contains(plugInMenu))
                         {
-                            if (!menu.DropDownItems.Contains(plugInMenu))
-                                menu.DropDownItems.Add(plugInMenu);
+                            menu.DropDownItems.Add(plugInMenu);
                         }
                     }
                 }

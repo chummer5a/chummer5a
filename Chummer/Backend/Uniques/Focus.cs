@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -34,6 +35,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, and Load Methods
+
         public Focus(Character objCharacter)
         {
             // Create the GUID for the new Focus.
@@ -73,9 +75,11 @@ namespace Chummer
                                                                                 _objCharacter.Vehicles.FindVehicleGear(strGearId))));
             }
         }
-        #endregion
+
+        #endregion Constructor, Create, Save, and Load Methods
 
         #region Properties
+
         /// <summary>
         /// Internal identifier which will be used to identify this Focus in the Improvement system.
         /// </summary>
@@ -122,48 +126,63 @@ namespace Chummer
                 case "Qi Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaQiFocus;
                     break;
+
                 case "Sustaining Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaSustainingFocus;
                     break;
+
                 case "Counterspelling Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaCounterspellingFocus;
                     break;
+
                 case "Banishing Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaBanishingFocus;
                     break;
+
                 case "Binding Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaBindingFocus;
                     break;
+
                 case "Weapon Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaWeaponFocus;
                     break;
+
                 case "Spellcasting Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaSpellcastingFocus;
                     break;
+
                 case "Ritual Spellcasting Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaRitualSpellcastingFocus;
                     break;
+
                 case "Spell Shaping Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaSpellShapingFocus;
                     break;
+
                 case "Summoning Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaSummoningFocus;
                     break;
+
                 case "Alchemical Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaAlchemicalFocus;
                     break;
+
                 case "Centering Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaCenteringFocus;
                     break;
+
                 case "Masking Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaMaskingFocus;
                     break;
+
                 case "Disenchanting Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaDisenchantingFocus;
                     break;
+
                 case "Power Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaPowerFocus;
                     break;
+
                 case "Flexible Signature Focus":
                     decKarmaMultiplier = characterObjectOptions.KarmaFlexibleSignatureFocus;
                     break;
@@ -178,6 +197,7 @@ namespace Chummer
                     case Improvement.ImprovementType.FocusBindingKarmaCost:
                         decExtraKarmaCost += objLoopImprovement.Value;
                         break;
+
                     case Improvement.ImprovementType.FocusBindingKarmaMultiplier:
                         decKarmaMultiplier += objLoopImprovement.Value;
                         break;
@@ -187,6 +207,6 @@ namespace Chummer
             return (Rating * decKarmaMultiplier + decExtraKarmaCost).StandardRound();
         }
 
-        #endregion
+        #endregion Properties
     }
 }

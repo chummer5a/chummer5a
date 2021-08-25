@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 
 namespace Chummer.UI.Table
@@ -27,7 +28,7 @@ namespace Chummer.UI.Table
         public CheckBoxTableCell(string text = "", string tag = null)
         {
             InitializeComponent();
-            contentField = _checkBox;
+            ContentField = _checkBox;
             _checkBox.Text = text;
             _checkBox.Tag = tag;
             this.UpdateLightDarkMode();
@@ -39,7 +40,8 @@ namespace Chummer.UI.Table
         {
             base.UpdateValue(newValue);
             T tValue = newValue as T;
-            if (VisibleExtractor != null) {
+            if (VisibleExtractor != null)
+            {
                 _checkBox.Visible = VisibleExtractor(tValue);
             }
 
@@ -86,6 +88,5 @@ namespace Chummer.UI.Table
                 _blnUpdating = false;
             }
         }
-
     }
 }

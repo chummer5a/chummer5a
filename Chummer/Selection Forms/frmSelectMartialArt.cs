@@ -38,6 +38,7 @@ namespace Chummer
         private readonly Character _objCharacter;
 
         #region Control Events
+
         public frmSelectMartialArt(Character objCharacter)
         {
             InitializeComponent();
@@ -114,39 +115,30 @@ namespace Chummer
                                 if (objTechniqueStringBuilder.Length > 0)
                                     objTechniqueStringBuilder.AppendLine(",");
 
-                                objTechniqueStringBuilder.Append(GlobalOptions.Language != GlobalOptions.DefaultLanguage ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName: strLoopTechniqueName);
+                                objTechniqueStringBuilder.Append(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase) ? xmlTechniqueNode.SelectSingleNode("translate")?.Value ?? strLoopTechniqueName : strLoopTechniqueName);
                             }
                         }
                     }
                     lblIncludedTechniques.Text = objTechniqueStringBuilder.ToString();
-                    lblIncludedTechniquesLabel.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
+                    gpbIncludedTechniques.Visible = !string.IsNullOrEmpty(lblIncludedTechniques.Text);
 
                     string strSource = objXmlArt.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = objXmlArt.SelectSingleNode("altpage")?.Value ?? objXmlArt.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
                     SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    tlpRight.Visible = true;
                 }
                 else
                 {
-                    lblKarmaCostLabel.Visible = false;
-                    lblKarmaCost.Text = string.Empty;
-                    lblIncludedTechniquesLabel.Visible = false;
-                    lblIncludedTechniques.Text = string.Empty;
-                    lblSourceLabel.Visible = false;
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
+                    tlpRight.Visible = false;
+                    gpbIncludedTechniques.Visible = false;
                 }
             }
             else
             {
-                lblKarmaCostLabel.Visible = false;
-                lblKarmaCost.Text = string.Empty;
-                lblIncludedTechniquesLabel.Visible = false;
-                lblIncludedTechniques.Text = string.Empty;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                tlpRight.Visible = false;
+                gpbIncludedTechniques.Visible = false;
             }
         }
 
@@ -160,9 +152,11 @@ namespace Chummer
         {
             RefreshArtList();
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Whether or not the user wants to add another item after this one.
         /// </summary>
@@ -185,9 +179,11 @@ namespace Chummer
         {
             set => _strForcedValue = value;
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
@@ -234,9 +230,7 @@ namespace Chummer
             string strOldSelected = lstMartialArts.SelectedValue?.ToString();
             _blnLoading = true;
             lstMartialArts.BeginUpdate();
-            lstMartialArts.ValueMember = nameof(ListItem.Value);
-            lstMartialArts.DisplayMember = nameof(ListItem.Name);
-            lstMartialArts.DataSource = lstMartialArt;
+            lstMartialArts.PopulateWithListItems(lstMartialArt);
             _blnLoading = false;
             if (!string.IsNullOrEmpty(strOldSelected))
                 lstMartialArts.SelectedValue = strOldSelected;
@@ -244,6 +238,7 @@ namespace Chummer
                 lstMartialArts.SelectedIndex = -1;
             lstMartialArts.EndUpdate();
         }
-        #endregion
+
+        #endregion Methods
     }
 }

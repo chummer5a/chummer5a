@@ -10,24 +10,19 @@ using NLog;
 
 namespace ChummerHub.Client.Backend
 {
-    public class MyMessageHandler : DelegatingHandler
+    public class MyMessageHandler : HttpClientHandler
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         public MyMessageHandler()
         {
-            var httpClientHandler = new HttpClientHandler
-            {
-                Proxy = WebRequest.DefaultWebProxy,
-                // new WebProxy("http://localhost:8888"),
-                UseProxy = true,
-                Credentials = CredentialCache.DefaultCredentials,
-                PreAuthenticate = true,
-                CookieContainer = new CookieContainer(),
-                UseDefaultCredentials = true
-            };
-            httpClientHandler.Proxy.Credentials = CredentialCache.DefaultCredentials;
-
-            InnerHandler = httpClientHandler;
+            Proxy = WebRequest.DefaultWebProxy;
+            // new WebProxy("http://localhost:8888"),
+            UseProxy = true;
+            Credentials = CredentialCache.DefaultCredentials;
+            PreAuthenticate = true;
+            CookieContainer = new CookieContainer();
+            UseDefaultCredentials = true;
+            Proxy.Credentials = CredentialCache.DefaultCredentials;
         }
 
         private static int requestCounter;
@@ -58,5 +53,7 @@ namespace ChummerHub.Client.Backend
                 throw;
             }
         }
+
+       
     }
 }

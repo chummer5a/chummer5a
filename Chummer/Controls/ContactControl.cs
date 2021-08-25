@@ -39,9 +39,11 @@ namespace Chummer
 
         // Events.
         public event TextEventHandler ContactDetailChanged;
+
         public event EventHandler DeleteContact;
 
         #region Control Events
+
         public ContactControl(Contact objContact)
         {
             _objContact = objContact ?? throw new ArgumentNullException(nameof(objContact));
@@ -67,25 +69,27 @@ namespace Chummer
 
             if (_objContact.EntityType == ContactType.Enemy)
             {
-                imgLink?.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                if (cmdLink != null)
+                    cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
                         ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
 
                 string strTooltip = LanguageManager.GetString("Tip_Enemy_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap());
+                cmdNotes.ToolTipText = strTooltip.WordWrap();
             }
             else
             {
-                imgLink?.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
-                        ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                        : LanguageManager.GetString("Tip_Contact_LinkContact"));
+                if (cmdLink != null)
+                    cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
+                        ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
+                        : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
 
                 string strTooltip = LanguageManager.GetString("Tip_Contact_EditNotes");
                 if (!string.IsNullOrEmpty(_objContact.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-                imgNotes.SetToolTip(strTooltip.WordWrap());
+                cmdNotes.ToolTipText = strTooltip.WordWrap();
             }
 
             _blnLoading = false;
@@ -127,7 +131,6 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Group"));
         }
 
-
         private void cmdExpand_Click(object sender, EventArgs e)
         {
             Expanded = !Expanded;
@@ -135,65 +138,138 @@ namespace Chummer
 
         private void cboContactRole_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
+            if (_blnLoading)
+                return;
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
         }
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
+            if (_blnLoading)
+                return;
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
         private void txtContactLocation_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
+            if (_blnLoading)
+                return;
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Location"));
         }
 
-        private void cboMetatype_TextChanged(object sender, EventArgs e)
+        private void UpdateMetatype(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayMetatype == cboMetatype.Text)
+                return;
+            _objContact.DisplayMetatype = cboMetatype.Text;
+            if (_objContact.DisplayMetatype != cboMetatype.Text)
+            {
+                _blnLoading = true;
+                cboMetatype.Text = _objContact.DisplayMetatype;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
-        private void cboGender_TextChanged(object sender, EventArgs e)
+        private void UpdateGender(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayGender == cboGender.Text)
+                return;
+            _objContact.DisplayGender = cboGender.Text;
+            if (_objContact.DisplayGender != cboGender.Text)
+            {
+                _blnLoading = true;
+                cboGender.Text = _objContact.DisplayGender;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Gender"));
         }
 
-        private void cboAge_TextChanged(object sender, EventArgs e)
+        private void UpdateAge(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayAge == cboAge.Text)
+                return;
+            _objContact.DisplayAge = cboAge.Text;
+            if (_objContact.DisplayAge != cboAge.Text)
+            {
+                _blnLoading = true;
+                cboAge.Text = _objContact.DisplayAge;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Age"));
         }
 
-        private void cboPersonalLife_TextChanged(object sender, EventArgs e)
+        private void UpdatePersonalLife(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayPersonalLife == cboPersonalLife.Text)
+                return;
+            _objContact.DisplayPersonalLife = cboPersonalLife.Text;
+            if (_objContact.DisplayPersonalLife != cboPersonalLife.Text)
+            {
+                _blnLoading = true;
+                cboPersonalLife.Text = _objContact.DisplayPersonalLife;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("PersonalLife"));
         }
 
-        private void cboType_TextChanged(object sender, EventArgs e)
+        private void UpdateType(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayType == cboType.Text)
+                return;
+            _objContact.DisplayType = cboType.Text;
+            if (_objContact.DisplayType != cboType.Text)
+            {
+                _blnLoading = true;
+                cboType.Text = _objContact.DisplayType;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Type"));
         }
 
-        private void cboPreferredPayment_TextChanged(object sender, EventArgs e)
+        private void UpdatePreferredPayment(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayPreferredPayment == cboPreferredPayment.Text)
+                return;
+            _objContact.DisplayPreferredPayment = cboPreferredPayment.Text;
+            if (_objContact.DisplayPreferredPayment != cboPreferredPayment.Text)
+            {
+                _blnLoading = true;
+                cboPreferredPayment.Text = _objContact.DisplayPreferredPayment;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("PreferredPayment"));
         }
 
-        private void cboHobbiesVice_TextChanged(object sender, EventArgs e)
+        private void UpdateHobbiesVice(object sender, EventArgs e)
         {
-            if (!_blnLoading && _blnStatBlockIsLoaded)
-                ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
+            if (_blnLoading || !_blnStatBlockIsLoaded || _objContact.DisplayHobbiesVice == cboHobbiesVice.Text)
+                return;
+            _objContact.DisplayHobbiesVice = cboHobbiesVice.Text;
+            if (_objContact.DisplayHobbiesVice != cboHobbiesVice.Text)
+            {
+                _blnLoading = true;
+                cboHobbiesVice.Text = _objContact.DisplayHobbiesVice;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("HobbiesVice"));
         }
 
-        private void imgLink_Click(object sender, EventArgs e)
+        private void UpdateContactRole(object sender, EventArgs e)
+        {
+            if (_blnLoading || _objContact.DisplayRole == cboContactRole.Text)
+                return;
+            _objContact.DisplayRole = cboContactRole.Text;
+            if (_objContact.DisplayRole != cboContactRole.Text)
+            {
+                _blnLoading = true;
+                cboContactRole.Text = _objContact.DisplayRole;
+                _blnLoading = false;
+            }
+            ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
+        }
+
+        private void cmdLink_Click(object sender, EventArgs e)
         {
             // Determine which options should be shown based on the FileName value.
             if (!string.IsNullOrEmpty(_objContact.FileName))
@@ -208,7 +284,7 @@ namespace Chummer
                 tsContactOpen.Visible = false;
                 tsRemoveCharacter.Visible = false;
             }
-            cmsContact.Show(imgLink, imgLink.Left - cmsContact.PreferredSize.Width, imgLink.Top);
+            cmsContact.Show(cmdLink, cmdLink.Left - cmsContact.PreferredSize.Width, cmdLink.Top);
         }
 
         private void tsContactOpen_Click(object sender, EventArgs e)
@@ -269,9 +345,10 @@ namespace Chummer
                 if (openFileDialog.ShowDialog(this) != DialogResult.OK)
                     return;
                 _objContact.FileName = openFileDialog.FileName;
-                imgLink?.SetToolTip(_objContact.EntityType == ContactType.Enemy
-                    ? LanguageManager.GetString("Tip_Enemy_OpenFile")
-                    : LanguageManager.GetString("Tip_Contact_OpenFile"));
+                if (cmdLink != null)
+                    cmdLink.ToolTipText = _objContact.EntityType == ContactType.Enemy
+                        ? LanguageManager.GetString("Tip_Enemy_OpenFile")
+                        : LanguageManager.GetString("Tip_Contact_OpenFile");
             }
 
             // Set the relative path.
@@ -290,16 +367,16 @@ namespace Chummer
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                imgLink?.SetToolTip(_objContact.EntityType == ContactType.Enemy
-                        ? LanguageManager.GetString("Tip_Enemy_LinkFile")
-                        : LanguageManager.GetString("Tip_Contact_LinkFile"));
+                cmdLink.ToolTipText = _objContact.EntityType == ContactType.Enemy
+                    ? LanguageManager.GetString("Tip_Enemy_LinkFile")
+                    : LanguageManager.GetString("Tip_Contact_LinkFile");
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
-        private void imgNotes_Click(object sender, EventArgs e)
+        private void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (frmNotes frmContactNotes = new frmNotes(_objContact.Notes))
+            using (frmNotes frmContactNotes = new frmNotes(_objContact.Notes, _objContact.NotesColor))
             {
                 frmContactNotes.ShowDialog(this);
                 if (frmContactNotes.DialogResult != DialogResult.OK)
@@ -310,7 +387,7 @@ namespace Chummer
             string strTooltip = LanguageManager.GetString(_objContact.EntityType == ContactType.Enemy ? "Tip_Enemy_EditNotes" : "Tip_Contact_EditNotes");
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-            imgNotes.SetToolTip(strTooltip.WordWrap());
+            cmdNotes.ToolTipText = strTooltip.WordWrap();
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 
@@ -331,9 +408,11 @@ namespace Chummer
             if (!_blnLoading && _blnStatBlockIsLoaded)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Family"));
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Contact object this is linked to.
         /// </summary>
@@ -344,7 +423,8 @@ namespace Chummer
             get => tlpStatBlock?.Visible == true;
             set
             {
-                cmdExpand.Image = value ? Resources.Collapse : Resources.Expand;
+                cmdExpand.ImageDpi96 = value ? Resources.toggle : Resources.toggle_expand;
+                cmdExpand.ImageDpi192 = value ? Resources.toggle1 : Resources.toggle_expand1;
                 if (value && (tlpStatBlock == null || !_blnStatBlockIsLoaded))
                 {
                     // Create second row and statblock only on the first expansion to save on handles and load times
@@ -365,15 +445,17 @@ namespace Chummer
                     chkFree.Visible = _objContact?.CharacterObject.Created == false && value;
                     chkBlackmail.Visible = value;
                     chkFamily.Visible = value;
-                    imgLink.Visible = value;
+                    cmdLink.Visible = value;
                     tlpStatBlock.Visible = value;
                     ResumeLayout();
                 }
             }
         }
-        #endregion
+
+        #endregion Properties
 
         #region Methods
+
         private void LoadContactList()
         {
             if (_objContact.EntityType == ContactType.Enemy)
@@ -395,19 +477,19 @@ namespace Chummer
             //        }
 
             cboContactRole.BeginUpdate();
-            cboContactRole.ValueMember = nameof(ListItem.Value);
-            cboContactRole.DisplayMember = nameof(ListItem.Name);
-            cboContactRole.DataSource = new BindingSource { DataSource = Contact.ContactArchetypes(_objContact.CharacterObject) };
+            cboContactRole.PopulateWithListItems(Contact.ContactArchetypes(_objContact.CharacterObject));
+            cboContactRole.SelectedValue = _objContact.Role;
+            if (cboContactRole.SelectedIndex < 0)
+                cboContactRole.Text = _objContact.DisplayRole;
             cboContactRole.EndUpdate();
         }
 
         private void DoDataBindings()
         {
             lblQuickStats.DoOneWayDataBinding("Text", _objContact, nameof(_objContact.QuickText));
-            txtContactName.DoDatabinding("Text", _objContact, nameof(_objContact.Name));
-            txtContactLocation.DoDatabinding("Text", _objContact, nameof(_objContact.Location));
-            cboContactRole.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayRole));
-            cmdDelete.DoDatabinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
+            txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
+            txtContactLocation.DoDataBinding("Text", _objContact, nameof(_objContact.Location));
+            cmdDelete.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.NotReadOnly));
             this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
 
             // Properties controllable by the character themselves
@@ -422,7 +504,7 @@ namespace Chummer
         private ColorableCheckBox chkFree;
         private ColorableCheckBox chkBlackmail;
         private ColorableCheckBox chkFamily;
-        private PictureBox imgLink;
+        private ButtonWithToolTip cmdLink;
 
         private void CreateSecondRow()
         {
@@ -504,15 +586,16 @@ namespace Chummer
                     Text = "Family",
                     UseVisualStyleBackColor = true
                 };
-                imgLink = new PictureBox
+                cmdLink = new ButtonWithToolTip
                 {
-                    Cursor = Cursors.Hand,
-                    Dock = DockStyle.Fill,
-                    Image = Resources.link,
-                    Margin = new Padding(3, 0, 3, 0),
-                    Size = new Size(16, 26),
-                    Name = "imgLink",
-                    SizeMode = PictureBoxSizeMode.Zoom,
+                    Anchor = AnchorStyles.Left,
+                    AutoSize = true,
+                    FlatAppearance = { BorderSize = 0 },
+                    FlatStyle = FlatStyle.Flat,
+                    ImageDpi96 = Resources.link,
+                    ImageDpi192 = Resources.link1,
+                    Name = "cmdLink",
+                    UseVisualStyleBackColor = true,
                     TabStop = false
                 };
                 nudConnection.ValueChanged += nudConnection_ValueChanged;
@@ -521,36 +604,36 @@ namespace Chummer
                 chkGroup.CheckedChanged += chkGroup_CheckedChanged;
                 chkBlackmail.CheckedChanged += chkBlackmail_CheckedChanged;
                 chkFamily.CheckedChanged += chkFamily_CheckedChanged;
-                imgLink.Click += imgLink_Click;
+                cmdLink.Click += cmdLink_Click;
                 if (_objContact != null)
                 {
-                    chkGroup.DoDatabinding("Checked", _objContact, nameof(_objContact.IsGroup));
+                    chkGroup.DoDataBinding("Checked", _objContact, nameof(_objContact.IsGroup));
                     chkGroup.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.GroupEnabled));
-                    chkFree.DoDatabinding("Checked", _objContact, nameof(_objContact.Free));
+                    chkFree.DoDataBinding("Checked", _objContact, nameof(_objContact.Free));
                     chkFree.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.FreeEnabled));
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
-                    chkFree.DoDatabinding("Visible", _objContact.CharacterObject, nameof(_objContact.CharacterObject.Created));
-                    chkFamily.DoDatabinding("Checked", _objContact, nameof(_objContact.Family));
-                    chkFamily.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-                    chkBlackmail.DoDatabinding("Checked", _objContact, nameof(_objContact.Blackmail));
-                    chkBlackmail.DoDatabinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
-                    nudLoyalty.DoDatabinding("Value", _objContact, nameof(_objContact.Loyalty));
+                    chkFree.Visible = _objContact?.CharacterObject.Created == false;
+                    chkFamily.DoDataBinding("Checked", _objContact, nameof(_objContact.Family));
+                    chkFamily.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    chkBlackmail.DoDataBinding("Checked", _objContact, nameof(_objContact.Blackmail));
+                    chkBlackmail.DoOneWayDataBinding("Visible", _objContact, nameof(_objContact.IsNotEnemy));
+                    nudLoyalty.DoDataBinding("Value", _objContact, nameof(_objContact.Loyalty));
                     nudLoyalty.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.LoyaltyEnabled));
-                    nudConnection.DoDatabinding("Value", _objContact, nameof(_objContact.Connection));
+                    nudConnection.DoDataBinding("Value", _objContact, nameof(_objContact.Connection));
                     nudConnection.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NotReadOnly));
                     nudConnection.DoOneWayDataBinding("Maximum", _objContact, nameof(_objContact.ConnectionMaximum));
                     if (_objContact.EntityType == ContactType.Enemy)
                     {
-                        imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                        cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
                             ? LanguageManager.GetString("Tip_Enemy_OpenLinkedEnemy")
-                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy"));
+                            : LanguageManager.GetString("Tip_Enemy_LinkEnemy");
                     }
                     else
                     {
-                        imgLink.SetToolTip(!string.IsNullOrEmpty(_objContact.FileName)
+                        cmdLink.ToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
                             ? LanguageManager.GetString("Tip_Contact_OpenLinkedContact")
-                            : LanguageManager.GetString("Tip_Contact_LinkContact"));
+                            : LanguageManager.GetString("Tip_Contact_LinkContact");
                     }
                 }
                 tlpMain.SetColumnSpan(lblConnection, 2);
@@ -566,7 +649,7 @@ namespace Chummer
                 tlpMain.Controls.Add(chkGroup, 7, 2);
                 tlpMain.Controls.Add(chkBlackmail, 8, 2);
                 tlpMain.Controls.Add(chkFamily, 9, 2);
-                tlpMain.Controls.Add(imgLink, 12, 2);
+                tlpMain.Controls.Add(cmdLink, 12, 2);
                 tlpMain.ResumeLayout();
                 ResumeLayout();
             }
@@ -595,38 +678,23 @@ namespace Chummer
         {
             using (new CursorWait(this))
             {
-                cboMetatype = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype"};
-                cboGender = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender"};
-                cboAge = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge"};
-                cboType = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType"};
-                cboPersonalLife = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPersonalLife"};
-                cboPreferredPayment = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPreferredPayment"};
-                cboHobbiesVice = new ElasticComboBox {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboHobbiesVice"};
+                cboMetatype = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboMetatype" };
+                cboGender = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
+                cboAge = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
+                cboType = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
+                cboPersonalLife = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPersonalLife" };
+                cboPreferredPayment = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboPreferredPayment" };
+                cboHobbiesVice = new ElasticComboBox { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboHobbiesVice" };
 
                 LoadStatBlockLists();
 
                 if (_objContact != null)
                 {
-                    cboMetatype.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayMetatype));
-                    cboGender.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayGender));
-                    cboAge.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayAge));
-                    cboPersonalLife.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPersonalLife));
-                    cboType.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayType));
-                    cboPreferredPayment.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayPreferredPayment));
-                    cboHobbiesVice.DoDatabinding("Text", _objContact, nameof(_objContact.DisplayHobbiesVice));
                     // Properties controllable by the character themselves
                     cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                     cboGender.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                     cboAge.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
                 }
-
-                cboMetatype.TextChanged += cboMetatype_TextChanged;
-                cboGender.TextChanged += cboGender_TextChanged;
-                cboAge.TextChanged += cboAge_TextChanged;
-                cboType.TextChanged += cboType_TextChanged;
-                cboPersonalLife.TextChanged += cboPersonalLife_TextChanged;
-                cboPreferredPayment.TextChanged += cboPreferredPayment_TextChanged;
-                cboHobbiesVice.TextChanged += cboHobbiesVice_TextChanged;
 
                 lblType = new Label
                 {
@@ -736,10 +804,52 @@ namespace Chummer
 
                 SuspendLayout();
                 tlpMain.SuspendLayout();
-                tlpMain.SetColumnSpan(tlpStatBlock, 13);
+                tlpMain.SetColumnSpan(tlpStatBlock, 12);
                 tlpMain.Controls.Add(tlpStatBlock, 0, 3);
                 tlpMain.ResumeLayout();
                 ResumeLayout();
+
+                // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
+
+                if (_objContact != null)
+                {
+                    cboMetatype.SelectedValue = _objContact.Metatype;
+                    cboGender.SelectedValue = _objContact.Gender;
+                    cboAge.SelectedValue = _objContact.Age;
+                    cboPersonalLife.SelectedValue = _objContact.PersonalLife;
+                    cboType.SelectedValue = _objContact.Type;
+                    cboPreferredPayment.SelectedValue = _objContact.PreferredPayment;
+                    cboHobbiesVice.SelectedValue = _objContact.HobbiesVice;
+                    if (cboMetatype.SelectedIndex < 0)
+                        cboMetatype.Text = _objContact.DisplayMetatype;
+                    if (cboGender.SelectedIndex < 0)
+                        cboGender.Text = _objContact.DisplayGender;
+                    if (cboAge.SelectedIndex < 0)
+                        cboAge.Text = _objContact.DisplayAge;
+                    if (cboPersonalLife.SelectedIndex < 0)
+                        cboPersonalLife.Text = _objContact.DisplayPersonalLife;
+                    if (cboType.SelectedIndex < 0)
+                        cboType.Text = _objContact.DisplayType;
+                    if (cboPreferredPayment.SelectedIndex < 0)
+                        cboPreferredPayment.Text = _objContact.DisplayPreferredPayment;
+                    if (cboHobbiesVice.SelectedIndex < 0)
+                        cboHobbiesVice.Text = _objContact.DisplayHobbiesVice;
+                }
+
+                cboMetatype.SelectedIndexChanged += UpdateMetatype;
+                cboGender.SelectedIndexChanged += UpdateGender;
+                cboAge.SelectedIndexChanged += UpdateAge;
+                cboType.SelectedIndexChanged += UpdateType;
+                cboPersonalLife.SelectedIndexChanged += UpdatePersonalLife;
+                cboPreferredPayment.SelectedIndexChanged += UpdatePreferredPayment;
+                cboHobbiesVice.SelectedIndexChanged += UpdateHobbiesVice;
+                cboMetatype.Leave += UpdateMetatype;
+                cboGender.Leave += UpdateGender;
+                cboAge.Leave += UpdateAge;
+                cboType.Leave += UpdateType;
+                cboPersonalLife.Leave += UpdatePersonalLife;
+                cboPreferredPayment.Leave += UpdatePreferredPayment;
+                cboHobbiesVice.Leave += UpdateHobbiesVice;
             }
         }
 
@@ -843,48 +953,34 @@ namespace Chummer
             lstPreferredPayments.Sort(CompareListItems.CompareNames);
 
             cboMetatype.BeginUpdate();
-            cboMetatype.ValueMember = nameof(ListItem.Value);
-            cboMetatype.DisplayMember = nameof(ListItem.Name);
-            cboMetatype.DataSource = lstMetatypes;
+            cboMetatype.PopulateWithListItems(lstMetatypes);
             cboMetatype.EndUpdate();
 
             cboGender.BeginUpdate();
-            cboGender.ValueMember = nameof(ListItem.Value);
-            cboGender.DisplayMember = nameof(ListItem.Name);
-            cboGender.DataSource = lstGenders;
+            cboGender.PopulateWithListItems(lstGenders);
             cboGender.EndUpdate();
 
             cboAge.BeginUpdate();
-            cboAge.ValueMember = nameof(ListItem.Value);
-            cboAge.DisplayMember = nameof(ListItem.Name);
-            cboAge.DataSource = lstAges;
+            cboAge.PopulateWithListItems(lstAges);
             cboAge.EndUpdate();
 
             cboPersonalLife.BeginUpdate();
-            cboPersonalLife.ValueMember = nameof(ListItem.Value);
-            cboPersonalLife.DisplayMember = nameof(ListItem.Name);
-            cboPersonalLife.DataSource = lstPersonalLives;
+            cboPersonalLife.PopulateWithListItems(lstPersonalLives);
             cboPersonalLife.EndUpdate();
 
             cboType.BeginUpdate();
-            cboType.ValueMember = nameof(ListItem.Value);
-            cboType.DisplayMember = nameof(ListItem.Name);
-            cboType.DataSource = lstTypes;
+            cboType.PopulateWithListItems(lstTypes);
             cboType.EndUpdate();
 
             cboPreferredPayment.BeginUpdate();
-            cboPreferredPayment.ValueMember = nameof(ListItem.Value);
-            cboPreferredPayment.DisplayMember = nameof(ListItem.Name);
-            cboPreferredPayment.DataSource = lstPreferredPayments;
+            cboPreferredPayment.PopulateWithListItems(lstPreferredPayments);
             cboPreferredPayment.EndUpdate();
 
             cboHobbiesVice.BeginUpdate();
-            cboHobbiesVice.ValueMember = nameof(ListItem.Value);
-            cboHobbiesVice.DisplayMember = nameof(ListItem.Name);
-            cboHobbiesVice.DataSource = lstHobbiesVices;
+            cboHobbiesVice.PopulateWithListItems(lstHobbiesVices);
             cboHobbiesVice.EndUpdate();
         }
-        #endregion
 
+        #endregion Methods
     }
 }

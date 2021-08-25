@@ -11,7 +11,7 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersUserControl : UserControl
     {
-        private static readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private CharacterShared _mySINner;
         private ucSINnersBasic TabSINnersBasic;
 
@@ -23,12 +23,12 @@ namespace ChummerHub.Client.UI
 
         public Character CharacterObject => MySINner.CharacterObject;
 
-        public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
+        public CharacterExtended SetCharacterFrom(CharacterShared mySINner)
         {
             InitializeComponent();
             _mySINner = mySINner ?? throw new ArgumentNullException(nameof(mySINner));
-            MyCE = new CharacterExtended(mySINner.CharacterObject, null, PluginHandler.MySINnerLoading);
-            MyCE.ZipFilePath = await MyCE.PrepareModel();
+            MyCE = new CharacterExtended(mySINner.CharacterObject, PluginHandler.MySINnerLoading);
+            MyCE.ZipFilePath = MyCE.PrepareModel();
 
             TabSINnersBasic = new ucSINnersBasic(this)
             {
@@ -40,16 +40,16 @@ namespace ChummerHub.Client.UI
             };
 
 
-            this.tabPageBasic.Controls.Add(TabSINnersBasic);
-            this.tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
-            this.AutoSize = true;
+            tabPageBasic.Controls.Add(TabSINnersBasic);
+            tabPageAdvanced.Controls.Add(TabSINnersAdvanced);
+            AutoSize = true;
 
             if (ucSINnersOptions.UploadOnSave)
             {
                 try
                 {
-                    mySINner.CharacterObject.OnSaveCompleted = null;
-                    mySINner.CharacterObject.OnSaveCompleted += PluginHandler.MyOnSaveUpload;
+                    mySINner.CharacterObject.DoOnSaveCompleted.Remove(PluginHandler.MyOnSaveUpload);
+                    mySINner.CharacterObject.DoOnSaveCompleted.TryAdd(PluginHandler.MyOnSaveUpload);
                 }
                 catch (Exception e)
                 {

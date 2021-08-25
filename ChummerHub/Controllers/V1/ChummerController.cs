@@ -31,9 +31,9 @@ namespace ChummerHub.Controllers.V1
         private readonly ILogger _logger;
         private readonly TelemetryClient tc;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
-        public ApplicationDbContext _context = null;
+        public ApplicationDbContext _context;
 #pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
 
 #pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.ChummerController(ApplicationDbContext, ILogger<ChummerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'

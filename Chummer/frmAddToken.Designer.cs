@@ -30,6 +30,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAddToken));
             this.lblName = new System.Windows.Forms.Label();
             this.btnBrowse = new System.Windows.Forms.Button();
@@ -39,7 +40,7 @@ namespace Chummer
             this.lbld6 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.chkAutoRollInit = new Chummer.ColorableCheckBox();
+            this.chkAutoRollInit = new Chummer.ColorableCheckBox(this.components);
             this.nudInitStart = new Chummer.NumericUpDownEx();
             this.lblStartingInit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudInit)).BeginInit();
@@ -91,6 +92,16 @@ namespace Chummer
             // nudInit
             // 
             this.nudInit.Location = new System.Drawing.Point(110, 42);
+            this.nudInit.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudInit.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudInit.Name = "nudInit";
             this.nudInit.Size = new System.Drawing.Size(43, 20);
             this.nudInit.TabIndex = 2;
@@ -130,6 +141,7 @@ namespace Chummer
             // chkAutoRollInit
             // 
             this.chkAutoRollInit.AutoSize = true;
+            this.chkAutoRollInit.DefaultColorScheme = true;
             this.chkAutoRollInit.Location = new System.Drawing.Point(184, 42);
             this.chkAutoRollInit.Name = "chkAutoRollInit";
             this.chkAutoRollInit.Size = new System.Drawing.Size(88, 17);
@@ -141,6 +153,16 @@ namespace Chummer
             // nudInitStart
             // 
             this.nudInitStart.Location = new System.Drawing.Point(72, 71);
+            this.nudInitStart.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudInitStart.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudInitStart.Name = "nudInitStart";
             this.nudInitStart.Size = new System.Drawing.Size(43, 20);
             this.nudInitStart.TabIndex = 4;

@@ -5,8 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
-using Microsoft.Rest;
-using System.Net;
 using ChummerHub.Client.Backend;
 using Chummer.Plugins;
 using NLog;
@@ -49,14 +47,14 @@ namespace ChummerHub.Client.UI
                 "Assigning this SINner a new Id enables you to save multiple versions of this chummer on SINnersHub." +
                 Environment.NewLine;
             bGenerateNewId.SetToolTip(tip);
-            CheckSINnerStatus().ContinueWith(a =>
+            Task.Run(() => CheckSINnerStatus().ContinueWith(a =>
             {
                 if (!a.Result)
                 {
                     Log.Error("somehow I couldn't check the onlinestatus of " +
                                                         myUC.MyCE.MySINnerFile.Id);
                 }
-            });
+            }));
             foreach (var cb in gpTags.Controls)
             {
                 if (cb is Control cont)
@@ -78,15 +76,11 @@ namespace ChummerHub.Client.UI
 
         public async Task<bool> CheckSINnerStatus()
         {
-
             try
             {
                 if (myUC?.MyCE?.MySINnerFile?.Id == null || myUC.MyCE.MySINnerFile.Id == Guid.Empty)
                 {
-                    this.DoThreadSafe(() =>
-                    {
-                        bUpload.Text = "SINless Character/Error";
-                    });
+                    await bUpload.DoThreadSafeAsync(() => bUpload.Text = "SINless Character/Error" );
                     return false;
                 }
 
@@ -97,7 +91,7 @@ namespace ChummerHub.Client.UI
                     
                     SINnerGroup objMySiNnerGroup = response.MySINnerGroup;
                     
-                    PluginHandler.MainForm.DoThreadSafe(() =>
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         if (objMySiNnerGroup != null)
                         {
@@ -131,16 +125,13 @@ namespace ChummerHub.Client.UI
                         cbTagCustom.Enabled = false;
                         TagValueCustomName.Enabled = false;
                     });
-                    this.DoThreadSafe(UpdateTags);
+                    await this.DoThreadSafeAsync(UpdateTags);
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                this.DoThreadSafe(() =>
-                {
-                    bUpload.Text = "Unknown Status";
-                });
+                await bUpload.DoThreadSafeAsync(() => bUpload.Text = "Unknown Status");
                 return false;
             }
             return true;
@@ -313,13 +304,12 @@ namespace ChummerHub.Client.UI
         {
             using (frmSINnerGroupSearch gs = new frmSINnerGroupSearch(myUC.MyCE, this))
             {
-                gs.MySINnerGroupSearch.OnGroupJoinCallback += (o, group) =>
+                async void OnGroupJoinCallback(object o, SINnerGroup group)
                 {
-                    PluginHandler.MainForm.CharacterRoster.DoThreadSafe(() =>
-                    {
-                        PluginHandler.MainForm.CharacterRoster.LoadCharacters(false, false, false);
-                    });
-                };
+                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                }
+
+                gs.MySINnerGroupSearch.OnGroupJoinCallback += OnGroupJoinCallback;
                 gs.ShowDialog(Program.MainForm);
             }
         }
@@ -338,8 +328,8 @@ namespace ChummerHub.Client.UI
                             ResultSinnerGetSINnerVisibilityById res =
                                 await client.GetSINnerVisibilityByIdAsync(
                                     myUC.MyCE.MySINnerFile.Id.Value);
-                            await Backend.Utils.HandleError(res);
-                            if (res.CallSuccess == true)
+                            await Backend.Utils.ShowErrorResponseFormAsync(res);
+                            if (res.CallSuccess)
                             {
                                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.UserRights;
                             }

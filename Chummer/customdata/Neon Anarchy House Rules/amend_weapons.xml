@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<!--This file is part a series of data files created for r/NeonAnarchy.
+
+	You can learn more at
+	https://www.reddit.com/r/NeonAnarchy
+-->
+<chummer>
+	<weapons>
+		<weapon>
+			<name>Morrissey Alta</name>
+			<avail>7R</avail>
+		</weapon>
+		<weapon>
+			<name>Renraku Red Samurai Katana</name>
+			<avail>24F</avail>
+			<cost>30000</cost>
+		</weapon>
+		<weapon>
+			<name>Repeating Laser</name>
+			<cost>30000</cost>
+		</weapon>
+		<weapon>
+			<name>Krime Escalation</name>
+			<damage>Missile</damage>
+		</weapon>
+		<weapon>
+			<name>Krime Calliope</name>
+			<damage>Missile</damage>
+		</weapon>
+		<weapon>
+			<name>Stoner-Ares M-22A1</name>
+			<range>Medium/Heavy Machinegun</range>
+		</weapon>
+		<weapon>
+			<name>Krime Monster</name>
+			<range>Medium/Heavy Machinegun</range>
+			<spec>Machine Guns</spec>
+		</weapon>
+		<!--
+			<weapon>
+				<name>Underbarrel Bola Launcher</name>
+				<category>Underbarrel Weapons</category>
+				<useskill>Exotic Ballistic</useskill>
+				<useskillspec amendoperation="remove">Bola</useskillspec>
+			</weapon>
+		-->
+	<weapon>
+      <name>Heavy Crossbow</name>
+      <accessorymounts>
+        <mount>Top</mount>
+        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+      </accessorymounts>
+    </weapon>
+    <weapon>
+      <name>Light Crossbow</name>
+		<accessorymounts>
+        <mount>Top</mount>
+        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+      </accessorymounts>
+    </weapon>
+    <weapon>
+      <name>Medium Crossbow</name>
+      <accessorymounts>
+        <mount>Top</mount>
+        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+      </accessorymounts>
+    </weapon>
+    <weapon>
+      <name>Ranger Sliver Pistol Crossbow</name>
+      <accessorymounts>
+        <mount>Top</mount>
+        <!--<mount>Under</mount> I hope your dream comes true one day, Moebius-->
+      </accessorymounts>
+    </weapon>
+	<weapon>
+      <name>Mitsubishi Yakusoku MRL</name>
+      <accuracy>5</accuracy>
+    </weapon>
+	<weapon>
+      <name>Onotari Arms Ballista MML</name>
+      <accuracy>5</accuracy>
+    </weapon>
+	</weapons>
+</chummer>

@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -28,7 +29,7 @@ namespace Chummer.Backend
 {
     public sealed class ExceptionHeatMap
     {
-        readonly ConcurrentDictionary<string, int> _map = new ConcurrentDictionary<string, int>();
+        private readonly ConcurrentDictionary<string, int> _map = new ConcurrentDictionary<string, int>();
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {

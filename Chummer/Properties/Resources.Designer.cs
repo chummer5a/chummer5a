@@ -73,6 +73,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap accept1 {
+            get {
+                object obj = ResourceManager.GetObject("accept1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap add {
             get {
                 object obj = ResourceManager.GetObject("add", resourceCulture);
@@ -93,9 +103,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap add_package1 {
+            get {
+                object obj = ResourceManager.GetObject("add_package1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap add1 {
+            get {
+                object obj = ResourceManager.GetObject("add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap application_add {
             get {
                 object obj = ResourceManager.GetObject("application_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap application_add1 {
+            get {
+                object obj = ResourceManager.GetObject("application_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -113,9 +153,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap application_delete1 {
+            get {
+                object obj = ResourceManager.GetObject("application_delete1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap arrow_divide {
             get {
                 object obj = ResourceManager.GetObject("arrow_divide", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_divide1 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_divide1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -133,9 +193,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap arrow_down1 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_down1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap arrow_join {
             get {
                 object obj = ResourceManager.GetObject("arrow_join", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_join1 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_join1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -153,9 +233,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap arrow_redo1 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_redo1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap arrow_undo {
             get {
                 object obj = ResourceManager.GetObject("arrow_undo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap arrow_undo1 {
+            get {
+                object obj = ResourceManager.GetObject("arrow_undo1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -173,9 +273,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap asterisk_orange1 {
+            get {
+                object obj = ResourceManager.GetObject("asterisk_orange1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap award_star_add {
             get {
                 object obj = ResourceManager.GetObject("award_star_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap award_star_add1 {
+            get {
+                object obj = ResourceManager.GetObject("award_star_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -193,9 +313,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap award_star2_add1 {
+            get {
+                object obj = ResourceManager.GetObject("award_star2_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap basket_add {
             get {
                 object obj = ResourceManager.GetObject("basket_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap basket_add1 {
+            get {
+                object obj = ResourceManager.GetObject("basket_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -213,9 +353,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap basket_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("basket_edit1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap bomb {
             get {
                 object obj = ResourceManager.GetObject("bomb", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap bomb1 {
+            get {
+                object obj = ResourceManager.GetObject("bomb1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -233,9 +393,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap brain_add1 {
+            get {
+                object obj = ResourceManager.GetObject("brain_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap brain_edit {
             get {
                 object obj = ResourceManager.GetObject("brain_edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap brain_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("brain_edit1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -253,6 +433,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap brick_add1 {
+            get {
+                object obj = ResourceManager.GetObject("brick_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap brick_delete {
             get {
                 object obj = ResourceManager.GetObject("brick_delete", resourceCulture);
@@ -263,9 +453,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap brick_delete1 {
+            get {
+                object obj = ResourceManager.GetObject("brick_delete1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap brick_go {
             get {
                 object obj = ResourceManager.GetObject("brick_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap brick_go1 {
+            get {
+                object obj = ResourceManager.GetObject("brick_go1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -293,6 +503,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap bug_add1 {
+            get {
+                object obj = ResourceManager.GetObject("bug_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap bug1 {
+            get {
+                object obj = ResourceManager.GetObject("bug1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap building_edit {
             get {
                 object obj = ResourceManager.GetObject("building_edit", resourceCulture);
@@ -303,9 +533,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap building_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("building_edit1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap calculator {
             get {
                 object obj = ResourceManager.GetObject("calculator", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap calculator1 {
+            get {
+                object obj = ResourceManager.GetObject("calculator1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -333,9 +583,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap camera_add1 {
+            get {
+                object obj = ResourceManager.GetObject("camera_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap camera1 {
+            get {
+                object obj = ResourceManager.GetObject("camera1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap cancel {
             get {
                 object obj = ResourceManager.GetObject("cancel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap cancel1 {
+            get {
+                object obj = ResourceManager.GetObject("cancel1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -353,9 +633,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap car_add1 {
+            get {
+                object obj = ResourceManager.GetObject("car_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap car_gear {
             get {
                 object obj = ResourceManager.GetObject("car_gear", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap car_gear1 {
+            get {
+                object obj = ResourceManager.GetObject("car_gear1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -373,9 +673,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap car_go1 {
+            get {
+                object obj = ResourceManager.GetObject("car_go1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap cog_edit {
             get {
                 object obj = ResourceManager.GetObject("cog_edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap cog_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("cog_edit1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -403,9 +723,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap color_wheel1 {
+            get {
+                object obj = ResourceManager.GetObject("color_wheel1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap computer_add {
             get {
                 object obj = ResourceManager.GetObject("computer_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap computer_add1 {
+            get {
+                object obj = ResourceManager.GetObject("computer_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -423,9 +763,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap database_refresh1 {
+            get {
+                object obj = ResourceManager.GetObject("database_refresh1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap defaulted {
             get {
                 object obj = ResourceManager.GetObject("defaulted", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap defaulted_32 {
+            get {
+                object obj = ResourceManager.GetObject("defaulted_32", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -443,9 +803,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap delete1 {
+            get {
+                object obj = ResourceManager.GetObject("delete1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap die {
             get {
                 object obj = ResourceManager.GetObject("die", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap die1 {
+            get {
+                object obj = ResourceManager.GetObject("die1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -458,6 +838,26 @@ namespace Chummer.Properties {
         public static string Disclaimer {
             get {
                 return ResourceManager.GetString("Disclaimer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap discord_16px {
+            get {
+                object obj = ResourceManager.GetObject("discord_16px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap discord_32px {
+            get {
+                object obj = ResourceManager.GetObject("discord_32px", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -484,9 +884,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap disk_multiple1 {
+            get {
+                object obj = ResourceManager.GetObject("disk_multiple1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap disk1 {
+            get {
+                object obj = ResourceManager.GetObject("disk1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap door_out {
             get {
                 object obj = ResourceManager.GetObject("door_out", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap door_out1 {
+            get {
+                object obj = ResourceManager.GetObject("door_out1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -504,9 +934,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap edit_package1 {
+            get {
+                object obj = ResourceManager.GetObject("edit_package1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap emoticon_brains {
             get {
                 object obj = ResourceManager.GetObject("emoticon_brains", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap emoticon_brains1 {
+            get {
+                object obj = ResourceManager.GetObject("emoticon_brains1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -524,9 +974,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap emoticon_evilgrin1 {
+            get {
+                object obj = ResourceManager.GetObject("emoticon_evilgrin1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap emoticon_surprised {
             get {
                 object obj = ResourceManager.GetObject("emoticon_surprised", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap emoticon_surprised1 {
+            get {
+                object obj = ResourceManager.GetObject("emoticon_surprised1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -544,9 +1014,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap emoticon_terminator1 {
+            get {
+                object obj = ResourceManager.GetObject("emoticon_terminator1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap emoticon_tongue {
             get {
                 object obj = ResourceManager.GetObject("emoticon_tongue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap emoticon_tongue1 {
+            get {
+                object obj = ResourceManager.GetObject("emoticon_tongue1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -564,9 +1054,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap emoticon_unhappy1 {
+            get {
+                object obj = ResourceManager.GetObject("emoticon_unhappy1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap emoticon_waii {
             get {
                 object obj = ResourceManager.GetObject("emoticon_waii", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap emoticon_waii1 {
+            get {
+                object obj = ResourceManager.GetObject("emoticon_waii1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -594,9 +1104,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap fire1 {
+            get {
+                object obj = ResourceManager.GetObject("fire1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_afghanistan {
             get {
                 object obj = ResourceManager.GetObject("flag_afghanistan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_afghanistan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_afghanistan1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -614,9 +1144,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_albania1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_albania1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_algeria {
             get {
                 object obj = ResourceManager.GetObject("flag_algeria", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_algeria1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_algeria1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -634,9 +1184,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_american_samoa1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_american_samoa1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_andorra {
             get {
                 object obj = ResourceManager.GetObject("flag_andorra", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_andorra1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_andorra1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -654,9 +1224,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_angola1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_angola1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_anguilla {
             get {
                 object obj = ResourceManager.GetObject("flag_anguilla", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_anguilla1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_anguilla1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -674,9 +1264,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_antigua_and_barbuda1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_antigua_and_barbuda1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_argentina {
             get {
                 object obj = ResourceManager.GetObject("flag_argentina", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_argentina1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_argentina1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -694,9 +1304,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_armenia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_armenia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_aruba {
             get {
                 object obj = ResourceManager.GetObject("flag_aruba", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_aruba1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_aruba1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -714,9 +1344,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_australia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_australia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_austria {
             get {
                 object obj = ResourceManager.GetObject("flag_austria", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_austria1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_austria1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -734,9 +1384,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_azerbaijan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_azerbaijan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_bahamas {
             get {
                 object obj = ResourceManager.GetObject("flag_bahamas", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_bahamas1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bahamas1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -754,9 +1424,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_bahrain1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bahrain1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_bangladesh {
             get {
                 object obj = ResourceManager.GetObject("flag_bangladesh", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_bangladesh1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bangladesh1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -774,9 +1464,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_barbados1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_barbados1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_belarus {
             get {
                 object obj = ResourceManager.GetObject("flag_belarus", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_belarus1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_belarus1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -794,9 +1504,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_belgium1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_belgium1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_belize {
             get {
                 object obj = ResourceManager.GetObject("flag_belize", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_belize1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_belize1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -814,9 +1544,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_benin1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_benin1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_bermuda {
             get {
                 object obj = ResourceManager.GetObject("flag_bermuda", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_bermuda1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bermuda1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -834,9 +1584,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_bhutan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bhutan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_bolivia {
             get {
                 object obj = ResourceManager.GetObject("flag_bolivia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_bolivia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bolivia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -854,9 +1624,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_bosnia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bosnia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_botswana {
             get {
                 object obj = ResourceManager.GetObject("flag_botswana", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_botswana1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_botswana1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -874,9 +1664,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_brazil1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_brazil1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_british_indian_ocean {
             get {
                 object obj = ResourceManager.GetObject("flag_british_indian_ocean", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_british_indian_ocean1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_british_indian_ocean1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -894,9 +1704,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_british_virgin_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_british_virgin_islands1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_brunei {
             get {
                 object obj = ResourceManager.GetObject("flag_brunei", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_brunei1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_brunei1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -914,9 +1744,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_bulgaria1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_bulgaria1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_burkina_faso {
             get {
                 object obj = ResourceManager.GetObject("flag_burkina_faso", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_burkina_faso1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_burkina_faso1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -934,9 +1784,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_burma1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_burma1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_burundi {
             get {
                 object obj = ResourceManager.GetObject("flag_burundi", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_burundi1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_burundi1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -954,9 +1824,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_cambodia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cambodia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_cameroon {
             get {
                 object obj = ResourceManager.GetObject("flag_cameroon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_cameroon1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cameroon1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -974,9 +1864,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_canada1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_canada1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_cape_verde {
             get {
                 object obj = ResourceManager.GetObject("flag_cape_verde", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_cape_verde1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cape_verde1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -994,9 +1904,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_cayman_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cayman_islands1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_central_african_republic {
             get {
                 object obj = ResourceManager.GetObject("flag_central_african_republic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_central_african_republic1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_central_african_republic1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1014,9 +1944,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_chad1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_chad1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_chile {
             get {
                 object obj = ResourceManager.GetObject("flag_chile", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_chile1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_chile1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1034,9 +1984,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_china1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_china1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_colombia {
             get {
                 object obj = ResourceManager.GetObject("flag_colombia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_colombia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_colombia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1054,9 +2024,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_comoros1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_comoros1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_congo_democratic_republic {
             get {
                 object obj = ResourceManager.GetObject("flag_congo_democratic_republic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_congo_democratic_republic1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_congo_democratic_republic1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1074,9 +2064,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_congo_republic1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_congo_republic1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_cook_islands {
             get {
                 object obj = ResourceManager.GetObject("flag_cook_islands", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_cook_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cook_islands1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1094,9 +2104,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_costa_rica1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_costa_rica1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_cote_divoire {
             get {
                 object obj = ResourceManager.GetObject("flag_cote_divoire", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_cote_divoire1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cote_divoire1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1114,9 +2144,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_croatia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_croatia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_cuba {
             get {
                 object obj = ResourceManager.GetObject("flag_cuba", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_cuba1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cuba1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1134,9 +2184,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_cyprus1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_cyprus1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_czech_republic {
             get {
                 object obj = ResourceManager.GetObject("flag_czech_republic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_czech_republic1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_czech_republic1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1154,9 +2224,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_denmark1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_denmark1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_djibouti {
             get {
                 object obj = ResourceManager.GetObject("flag_djibouti", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_djibouti1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_djibouti1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1174,9 +2264,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_dominica1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_dominica1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_dominican_republic {
             get {
                 object obj = ResourceManager.GetObject("flag_dominican_republic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_dominican_republic1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_dominican_republic1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1194,9 +2304,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_east_timor1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_east_timor1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_egypt {
             get {
                 object obj = ResourceManager.GetObject("flag_egypt", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_egypt1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_egypt1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1214,9 +2344,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_el_salvador1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_el_salvador1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_england {
             get {
                 object obj = ResourceManager.GetObject("flag_england", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_england1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_england1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1234,9 +2384,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_equador1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_equador1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_equatorial_guinea {
             get {
                 object obj = ResourceManager.GetObject("flag_equatorial_guinea", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_equatorial_guinea1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_equatorial_guinea1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1254,9 +2424,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_eritrea1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_eritrea1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_estonia {
             get {
                 object obj = ResourceManager.GetObject("flag_estonia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_estonia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_estonia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1274,9 +2464,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_ethiopia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_ethiopia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_european_union {
             get {
                 object obj = ResourceManager.GetObject("flag_european_union", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_european_union1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_european_union1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1294,9 +2504,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_falkland_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_falkland_islands1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_faroe_islands {
             get {
                 object obj = ResourceManager.GetObject("flag_faroe_islands", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_faroe_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_faroe_islands1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1314,9 +2544,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_fiji1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_fiji1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_finland {
             get {
                 object obj = ResourceManager.GetObject("flag_finland", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_finland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_finland1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1334,9 +2584,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_france1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_france1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_french_polynesia {
             get {
                 object obj = ResourceManager.GetObject("flag_french_polynesia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_french_polynesia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_french_polynesia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1354,9 +2624,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_gabon1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_gabon1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_gambia {
             get {
                 object obj = ResourceManager.GetObject("flag_gambia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_gambia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_gambia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1374,9 +2664,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_georgia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_georgia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_germany {
             get {
                 object obj = ResourceManager.GetObject("flag_germany", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_germany1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_germany1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1394,9 +2704,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_ghana1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_ghana1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_gibraltar {
             get {
                 object obj = ResourceManager.GetObject("flag_gibraltar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_gibraltar1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_gibraltar1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1414,9 +2744,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_great_britain1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_great_britain1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_greece {
             get {
                 object obj = ResourceManager.GetObject("flag_greece", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_greece1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_greece1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1434,9 +2784,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_greenland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_greenland1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_grenada {
             get {
                 object obj = ResourceManager.GetObject("flag_grenada", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_grenada1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_grenada1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1454,6 +2824,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_guam1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_guam1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_guatemala {
             get {
                 object obj = ResourceManager.GetObject("flag_guatemala", resourceCulture);
@@ -1464,9 +2844,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_guatemala1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_guatemala1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_guernsey {
             get {
                 object obj = ResourceManager.GetObject("flag_guernsey", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_guernsey1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_guernsey1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1494,9 +2894,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_guinea_bissau1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_guinea_bissau1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_guinea1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_guinea1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_guyana {
             get {
                 object obj = ResourceManager.GetObject("flag_guyana", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_guyana1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_guyana1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1514,9 +2944,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_haiti1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_haiti1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_honduras {
             get {
                 object obj = ResourceManager.GetObject("flag_honduras", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_honduras1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_honduras1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1534,9 +2984,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_hong_kong1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_hong_kong1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_hot {
+            get {
+                object obj = ResourceManager.GetObject("flag_hot", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_hungary {
             get {
                 object obj = ResourceManager.GetObject("flag_hungary", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_hungary1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_hungary1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1554,9 +3034,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_iceland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_iceland1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_india {
             get {
                 object obj = ResourceManager.GetObject("flag_india", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_india1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_india1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1574,9 +3074,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_indonesia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_indonesia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_iran {
             get {
                 object obj = ResourceManager.GetObject("flag_iran", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_iran1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_iran1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1594,9 +3114,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_iraq1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_iraq1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_ireland {
             get {
                 object obj = ResourceManager.GetObject("flag_ireland", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_ireland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_ireland1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1614,9 +3154,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_isle_of_man1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_isle_of_man1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_israel {
             get {
                 object obj = ResourceManager.GetObject("flag_israel", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_israel1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_israel1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1634,9 +3194,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_italy1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_italy1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_jamaica {
             get {
                 object obj = ResourceManager.GetObject("flag_jamaica", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_jamaica1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_jamaica1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1654,9 +3234,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_japan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_japan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_jersey {
             get {
                 object obj = ResourceManager.GetObject("flag_jersey", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_jersey1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_jersey1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1674,9 +3274,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_jordan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_jordan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_kazakhstan {
             get {
                 object obj = ResourceManager.GetObject("flag_kazakhstan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_kazakhstan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_kazakhstan1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1694,9 +3314,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_kenya1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_kenya1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_kiribati {
             get {
                 object obj = ResourceManager.GetObject("flag_kiribati", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_kiribati1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_kiribati1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1714,9 +3354,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_kuwait1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_kuwait1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_kyrgyzstan {
             get {
                 object obj = ResourceManager.GetObject("flag_kyrgyzstan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_kyrgyzstan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_kyrgyzstan1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1734,9 +3394,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_laos1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_laos1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_latvia {
             get {
                 object obj = ResourceManager.GetObject("flag_latvia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_latvia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_latvia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1754,9 +3434,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_lebanon1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_lebanon1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_lesotho {
             get {
                 object obj = ResourceManager.GetObject("flag_lesotho", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_lesotho1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_lesotho1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1774,9 +3474,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_liberia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_liberia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_libya {
             get {
                 object obj = ResourceManager.GetObject("flag_libya", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_libya1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_libya1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1794,9 +3514,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_liechtenstein1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_liechtenstein1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_lithuania {
             get {
                 object obj = ResourceManager.GetObject("flag_lithuania", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_lithuania1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_lithuania1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1814,9 +3554,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_luxembourg1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_luxembourg1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_macau {
             get {
                 object obj = ResourceManager.GetObject("flag_macau", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_macau1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_macau1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1834,9 +3594,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_macedonia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_macedonia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_madagascar {
             get {
                 object obj = ResourceManager.GetObject("flag_madagascar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_madagascar1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_madagascar1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1854,9 +3634,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_malawi1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_malawi1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_malaysia {
             get {
                 object obj = ResourceManager.GetObject("flag_malaysia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_malaysia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_malaysia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1874,9 +3674,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_maledives1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_maledives1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_mali {
             get {
                 object obj = ResourceManager.GetObject("flag_mali", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_mali1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_mali1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1894,9 +3714,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_malta1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_malta1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_marshall_islands {
             get {
                 object obj = ResourceManager.GetObject("flag_marshall_islands", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_marshall_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_marshall_islands1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1914,9 +3754,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_martinique1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_martinique1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_mauretania {
             get {
                 object obj = ResourceManager.GetObject("flag_mauretania", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_mauretania1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_mauretania1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1934,9 +3794,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_mauritius1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_mauritius1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_mexico {
             get {
                 object obj = ResourceManager.GetObject("flag_mexico", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_mexico1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_mexico1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1954,9 +3834,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_micronesia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_micronesia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_moldova {
             get {
                 object obj = ResourceManager.GetObject("flag_moldova", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_moldova1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_moldova1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1974,9 +3874,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_monaco1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_monaco1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_mongolia {
             get {
                 object obj = ResourceManager.GetObject("flag_mongolia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_mongolia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_mongolia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -1994,9 +3914,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_montserrat1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_montserrat1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_morocco {
             get {
                 object obj = ResourceManager.GetObject("flag_morocco", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_morocco1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_morocco1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2014,9 +3954,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_mozambique1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_mozambique1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_namibia {
             get {
                 object obj = ResourceManager.GetObject("flag_namibia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_namibia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_namibia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2034,9 +3994,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_nauru1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_nauru1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_nepal {
             get {
                 object obj = ResourceManager.GetObject("flag_nepal", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_nepal1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_nepal1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2064,9 +4044,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_netherlands_antilles1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_netherlands_antilles1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_netherlands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_netherlands1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_new_zealand {
             get {
                 object obj = ResourceManager.GetObject("flag_new_zealand", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_new_zealand1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_new_zealand1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2084,9 +4094,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_nicaragua1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_nicaragua1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_niger {
             get {
                 object obj = ResourceManager.GetObject("flag_niger", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_niger1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_niger1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2104,9 +4134,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_nigeria1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_nigeria1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_niue {
             get {
                 object obj = ResourceManager.GetObject("flag_niue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_niue1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_niue1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2124,9 +4174,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_norfolk_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_norfolk_islands1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_north_korea {
             get {
                 object obj = ResourceManager.GetObject("flag_north_korea", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_north_korea1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_north_korea1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2144,9 +4214,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_northern_mariana_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_northern_mariana_islands1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_norway {
             get {
                 object obj = ResourceManager.GetObject("flag_norway", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_norway1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_norway1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2164,9 +4254,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_oman1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_oman1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_pakistan {
             get {
                 object obj = ResourceManager.GetObject("flag_pakistan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_pakistan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_pakistan1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2184,9 +4294,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_palau1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_palau1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_panama {
             get {
                 object obj = ResourceManager.GetObject("flag_panama", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_panama1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_panama1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2204,9 +4334,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_papua_new_guinea1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_papua_new_guinea1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_paraquay {
             get {
                 object obj = ResourceManager.GetObject("flag_paraquay", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_paraquay1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_paraquay1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2224,9 +4374,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_peru1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_peru1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_philippines {
             get {
                 object obj = ResourceManager.GetObject("flag_philippines", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_philippines1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_philippines1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2244,9 +4414,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_pitcairn_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_pitcairn_islands1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_poland {
             get {
                 object obj = ResourceManager.GetObject("flag_poland", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_poland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_poland1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2264,9 +4454,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_portugal1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_portugal1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_puerto_rico {
             get {
                 object obj = ResourceManager.GetObject("flag_puerto_rico", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_puerto_rico1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_puerto_rico1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2284,9 +4494,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_qatar1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_qatar1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_romania {
             get {
                 object obj = ResourceManager.GetObject("flag_romania", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_romania1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_romania1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2304,9 +4534,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_russia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_russia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_rwanda {
             get {
                 object obj = ResourceManager.GetObject("flag_rwanda", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_rwanda1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_rwanda1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2324,9 +4574,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_saint_helena1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_saint_helena1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_saint_kitts_and_nevis {
             get {
                 object obj = ResourceManager.GetObject("flag_saint_kitts_and_nevis", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_saint_kitts_and_nevis1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_saint_kitts_and_nevis1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2344,9 +4614,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_saint_lucia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_saint_lucia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_saint_pierre_and_miquelon {
             get {
                 object obj = ResourceManager.GetObject("flag_saint_pierre_and_miquelon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_saint_pierre_and_miquelon1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_saint_pierre_and_miquelon1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2364,9 +4654,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_saint_vincent_and_grenadines1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_saint_vincent_and_grenadines1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_samoa {
             get {
                 object obj = ResourceManager.GetObject("flag_samoa", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_samoa1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_samoa1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2384,9 +4694,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_san_marino1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_san_marino1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_sao_tome_and_principe {
             get {
                 object obj = ResourceManager.GetObject("flag_sao_tome_and_principe", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_sao_tome_and_principe1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_sao_tome_and_principe1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2404,9 +4734,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_saudi_arabia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_saudi_arabia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_scotland {
             get {
                 object obj = ResourceManager.GetObject("flag_scotland", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_scotland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_scotland1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2424,9 +4774,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_senegal1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_senegal1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_serbia_montenegro {
             get {
                 object obj = ResourceManager.GetObject("flag_serbia_montenegro", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_serbia_montenegro1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_serbia_montenegro1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2444,9 +4814,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_seychelles1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_seychelles1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_sierra_leone {
             get {
                 object obj = ResourceManager.GetObject("flag_sierra_leone", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_sierra_leone1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_sierra_leone1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2464,9 +4854,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_singapore1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_singapore1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_slovakia {
             get {
                 object obj = ResourceManager.GetObject("flag_slovakia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_slovakia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_slovakia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2484,9 +4894,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_slovenia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_slovenia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_solomon_islands {
             get {
                 object obj = ResourceManager.GetObject("flag_solomon_islands", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_solomon_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_solomon_islands1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2504,9 +4934,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_somalia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_somalia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_south_africa {
             get {
                 object obj = ResourceManager.GetObject("flag_south_africa", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_south_africa1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_south_africa1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2524,9 +4974,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_south_georgia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_south_georgia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_south_korea {
             get {
                 object obj = ResourceManager.GetObject("flag_south_korea", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_south_korea1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_south_korea1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2544,9 +5014,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_spain1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_spain1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_sri_lanka {
             get {
                 object obj = ResourceManager.GetObject("flag_sri_lanka", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_sri_lanka1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_sri_lanka1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2564,9 +5054,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_sudan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_sudan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_suriname {
             get {
                 object obj = ResourceManager.GetObject("flag_suriname", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_suriname1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_suriname1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2584,9 +5094,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_swaziland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_swaziland1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_sweden {
             get {
                 object obj = ResourceManager.GetObject("flag_sweden", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_sweden1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_sweden1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2604,9 +5134,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_switzerland1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_switzerland1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_syria {
             get {
                 object obj = ResourceManager.GetObject("flag_syria", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_syria1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_syria1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2624,9 +5174,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_taiwan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_taiwan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_tajikistan {
             get {
                 object obj = ResourceManager.GetObject("flag_tajikistan", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_tajikistan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_tajikistan1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2644,9 +5214,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_tanzania1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_tanzania1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_thailand {
             get {
                 object obj = ResourceManager.GetObject("flag_thailand", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_thailand1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_thailand1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2664,9 +5254,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_tibet1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_tibet1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_togo {
             get {
                 object obj = ResourceManager.GetObject("flag_togo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_togo1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_togo1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2684,9 +5294,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_tonga1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_tonga1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_trinidad_and_tobago {
             get {
                 object obj = ResourceManager.GetObject("flag_trinidad_and_tobago", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_trinidad_and_tobago1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_trinidad_and_tobago1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2704,9 +5334,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_tunisia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_tunisia1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_turkey {
             get {
                 object obj = ResourceManager.GetObject("flag_turkey", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_turkey1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_turkey1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2724,9 +5374,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_turkmenistan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_turkmenistan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_turks_and_caicos_islands {
             get {
                 object obj = ResourceManager.GetObject("flag_turks_and_caicos_islands", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_turks_and_caicos_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_turks_and_caicos_islands1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2744,9 +5414,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_tuvalu1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_tuvalu1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_uganda {
             get {
                 object obj = ResourceManager.GetObject("flag_uganda", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_uganda1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_uganda1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2764,9 +5454,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_ukraine1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_ukraine1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_united_arab_emirates {
             get {
                 object obj = ResourceManager.GetObject("flag_united_arab_emirates", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_united_arab_emirates1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_united_arab_emirates1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2784,9 +5494,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_uruquay1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_uruquay1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_usa {
             get {
                 object obj = ResourceManager.GetObject("flag_usa", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_usa1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_usa1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2804,9 +5534,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_uzbekistan1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_uzbekistan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_vanuatu {
             get {
                 object obj = ResourceManager.GetObject("flag_vanuatu", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_vanuatu1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_vanuatu1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2824,9 +5574,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_vatican_city1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_vatican_city1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_venezuela {
             get {
                 object obj = ResourceManager.GetObject("flag_venezuela", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_venezuela1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_venezuela1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2844,9 +5614,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_vietnam1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_vietnam1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_virgin_islands {
             get {
                 object obj = ResourceManager.GetObject("flag_virgin_islands", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_virgin_islands1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_virgin_islands1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2864,9 +5654,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_wales1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_wales1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_wallis_and_futuna {
             get {
                 object obj = ResourceManager.GetObject("flag_wallis_and_futuna", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_wallis_and_futuna1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_wallis_and_futuna1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2884,9 +5694,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_yemen1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_yemen1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flag_zambia {
             get {
                 object obj = ResourceManager.GetObject("flag_zambia", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flag_zambia1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_zambia1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2904,9 +5734,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap flag_zimbabwe1 {
+            get {
+                object obj = ResourceManager.GetObject("flag_zimbabwe1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap flashlight_add {
             get {
                 object obj = ResourceManager.GetObject("flashlight_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap flashlight_add1 {
+            get {
+                object obj = ResourceManager.GetObject("flashlight_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2924,9 +5774,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap folder_page1 {
+            get {
+                object obj = ResourceManager.GetObject("folder_page1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap font {
             get {
                 object obj = ResourceManager.GetObject("font", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap font1 {
+            get {
+                object obj = ResourceManager.GetObject("font1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2954,6 +5824,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap group_gear1 {
+            get {
+                object obj = ResourceManager.GetObject("group_gear1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap group1 {
+            get {
+                object obj = ResourceManager.GetObject("group1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap gun {
             get {
                 object obj = ResourceManager.GetObject("gun", resourceCulture);
@@ -2974,9 +5864,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap gun_add1 {
+            get {
+                object obj = ResourceManager.GetObject("gun_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap gun1 {
+            get {
+                object obj = ResourceManager.GetObject("gun1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap hard_hat_military_add {
             get {
                 object obj = ResourceManager.GetObject("hard_hat_military_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap hard_hat_military_add1 {
+            get {
+                object obj = ResourceManager.GetObject("hard_hat_military_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -2994,9 +5914,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap hard_hat_military_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("hard_hat_military_edit1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap HeroLab_16 {
             get {
                 object obj = ResourceManager.GetObject("HeroLab_16", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap HeroLab_32 {
+            get {
+                object obj = ResourceManager.GetObject("HeroLab_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap HeroLab_48 {
+            get {
+                object obj = ResourceManager.GetObject("HeroLab_48", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3024,9 +5974,19 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap icons8_discord_16 {
+        public static System.Drawing.Bitmap house_edit1 {
             get {
-                object obj = ResourceManager.GetObject("icons8-discord-16", resourceCulture);
+                object obj = ResourceManager.GetObject("house_edit1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap house1 {
+            get {
+                object obj = ResourceManager.GetObject("house1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3044,9 +6004,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap information1 {
+            get {
+                object obj = ResourceManager.GetObject("information1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap ladybird_add {
             get {
                 object obj = ResourceManager.GetObject("ladybird_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap ladybird_add1 {
+            get {
+                object obj = ResourceManager.GetObject("ladybird_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3074,9 +6054,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap link_add1 {
+            get {
+                object obj = ResourceManager.GetObject("link_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap link_delete {
             get {
                 object obj = ResourceManager.GetObject("link_delete", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap link_delete1 {
+            get {
+                object obj = ResourceManager.GetObject("link_delete1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3094,9 +6094,49 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap link_go1 {
+            get {
+                object obj = ResourceManager.GetObject("link_go1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap link1 {
+            get {
+                object obj = ResourceManager.GetObject("link1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap locate {
             get {
                 object obj = ResourceManager.GetObject("locate", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap Locate_48 {
+            get {
+                object obj = ResourceManager.GetObject("Locate_48", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap locate1 {
+            get {
+                object obj = ResourceManager.GetObject("locate1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3114,9 +6154,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap medal_gold_add1 {
+            get {
+                object obj = ResourceManager.GetObject("medal_gold_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap money_yen {
             get {
                 object obj = ResourceManager.GetObject("money_yen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap money_yen1 {
+            get {
+                object obj = ResourceManager.GetObject("money_yen1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3134,9 +6194,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap noimagedots_32 {
+            get {
+                object obj = ResourceManager.GetObject("noimagedots_32", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap note_edit {
             get {
                 object obj = ResourceManager.GetObject("note_edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap note_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("note_edit1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3164,9 +6244,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap page_copy1 {
+            get {
+                object obj = ResourceManager.GetObject("page_copy1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap page_paste {
             get {
                 object obj = ResourceManager.GetObject("page_paste", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap page_paste1 {
+            get {
+                object obj = ResourceManager.GetObject("page_paste1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3184,9 +6284,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap page_refresh1 {
+            get {
+                object obj = ResourceManager.GetObject("page_refresh1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap page_white_world {
             get {
                 object obj = ResourceManager.GetObject("page_white_world", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap page_white_world1 {
+            get {
+                object obj = ResourceManager.GetObject("page_white_world1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap page1 {
+            get {
+                object obj = ResourceManager.GetObject("page1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3204,9 +6334,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap paintcan1 {
+            get {
+                object obj = ResourceManager.GetObject("paintcan1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap pencil {
             get {
                 object obj = ResourceManager.GetObject("pencil", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pencil1 {
+            get {
+                object obj = ResourceManager.GetObject("pencil1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3224,6 +6374,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap picture1 {
+            get {
+                object obj = ResourceManager.GetObject("picture1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap plugin_add {
             get {
                 object obj = ResourceManager.GetObject("plugin_add", resourceCulture);
@@ -3234,19 +6394,9 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap possessinanimate {
+        public static System.Drawing.Bitmap plugin_add1 {
             get {
-                object obj = ResourceManager.GetObject("possessinanimate", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap possession {
-            get {
-                object obj = ResourceManager.GetObject("possession", resourceCulture);
+                object obj = ResourceManager.GetObject("plugin_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3274,9 +6424,39 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap printer_add1 {
+            get {
+                object obj = ResourceManager.GetObject("printer_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap printer_empty {
             get {
                 object obj = ResourceManager.GetObject("printer_empty", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap printer_empty1 {
+            get {
+                object obj = ResourceManager.GetObject("printer_empty1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap printer1 {
+            get {
+                object obj = ResourceManager.GetObject("printer1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3294,9 +6474,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap processor_add1 {
+            get {
+                object obj = ResourceManager.GetObject("processor_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap processor_edit {
             get {
                 object obj = ResourceManager.GetObject("processor_edit", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap processor_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("processor_edit1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3314,9 +6514,49 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap report1 {
+            get {
+                object obj = ResourceManager.GetObject("report1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap reseller_account {
             get {
                 object obj = ResourceManager.GetObject("reseller_account", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap reseller_account1 {
+            get {
+                object obj = ResourceManager.GetObject("reseller_account1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap rip {
+            get {
+                object obj = ResourceManager.GetObject("rip", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap rip1 {
+            get {
+                object obj = ResourceManager.GetObject("rip1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3334,9 +6574,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap script_go1 {
+            get {
+                object obj = ResourceManager.GetObject("script_go1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap server_lightning {
             get {
                 object obj = ResourceManager.GetObject("server_lightning", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap server_lightning1 {
+            get {
+                object obj = ResourceManager.GetObject("server_lightning1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3354,9 +6614,89 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap shield_add1 {
+            get {
+                object obj = ResourceManager.GetObject("shield_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap skull {
+            get {
+                object obj = ResourceManager.GetObject("skull", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap skull_old {
             get {
                 object obj = ResourceManager.GetObject("skull_old", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap skull_old1 {
+            get {
+                object obj = ResourceManager.GetObject("skull_old1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap skull1 {
+            get {
+                object obj = ResourceManager.GetObject("skull1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap status_offline {
+            get {
+                object obj = ResourceManager.GetObject("status_offline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap status_offline1 {
+            get {
+                object obj = ResourceManager.GetObject("status_offline1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap status_online {
+            get {
+                object obj = ResourceManager.GetObject("status_online", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap status_online1 {
+            get {
+                object obj = ResourceManager.GetObject("status_online1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3374,9 +6714,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap steering_wheel_racing_add1 {
+            get {
+                object obj = ResourceManager.GetObject("steering_wheel_racing_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap sword_add {
             get {
                 object obj = ResourceManager.GetObject("sword_add", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap sword_add1 {
+            get {
+                object obj = ResourceManager.GetObject("sword_add1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3404,6 +6764,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap table_edit1 {
+            get {
+                object obj = ResourceManager.GetObject("table_edit1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap table1 {
+            get {
+                object obj = ResourceManager.GetObject("table1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap tag_red {
             get {
                 object obj = ResourceManager.GetObject("tag_red", resourceCulture);
@@ -3414,9 +6794,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap tag_red1 {
+            get {
+                object obj = ResourceManager.GetObject("tag_red1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_align_center {
             get {
                 object obj = ResourceManager.GetObject("text_align_center", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_align_center1 {
+            get {
+                object obj = ResourceManager.GetObject("text_align_center1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3444,6 +6844,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_align_left1 {
+            get {
+                object obj = ResourceManager.GetObject("text_align_left1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_align_right {
             get {
                 object obj = ResourceManager.GetObject("text_align_right", resourceCulture);
@@ -3454,9 +6864,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_align_right1 {
+            get {
+                object obj = ResourceManager.GetObject("text_align_right1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_bold {
             get {
                 object obj = ResourceManager.GetObject("text_bold", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_bold1 {
+            get {
+                object obj = ResourceManager.GetObject("text_bold1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3484,6 +6914,26 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_indent_remove1 {
+            get {
+                object obj = ResourceManager.GetObject("text_indent_remove1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_indent1 {
+            get {
+                object obj = ResourceManager.GetObject("text_indent1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_italic {
             get {
                 object obj = ResourceManager.GetObject("text_italic", resourceCulture);
@@ -3494,9 +6944,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_italic1 {
+            get {
+                object obj = ResourceManager.GetObject("text_italic1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_list_bullets {
             get {
                 object obj = ResourceManager.GetObject("text_list_bullets", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_list_bullets1 {
+            get {
+                object obj = ResourceManager.GetObject("text_list_bullets1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3524,9 +6994,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_strikethrough1 {
+            get {
+                object obj = ResourceManager.GetObject("text_strikethrough1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_subscript {
             get {
                 object obj = ResourceManager.GetObject("text_subscript", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap text_subscript1 {
+            get {
+                object obj = ResourceManager.GetObject("text_subscript1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3544,6 +7034,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_superscript1 {
+            get {
+                object obj = ResourceManager.GetObject("text_superscript1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap text_underline {
             get {
                 object obj = ResourceManager.GetObject("text_underline", resourceCulture);
@@ -3554,9 +7054,69 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap text_underline1 {
+            get {
+                object obj = ResourceManager.GetObject("text_underline1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap toggle {
+            get {
+                object obj = ResourceManager.GetObject("toggle", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap toggle_expand {
+            get {
+                object obj = ResourceManager.GetObject("toggle_expand", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap toggle_expand1 {
+            get {
+                object obj = ResourceManager.GetObject("toggle_expand1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap toggle1 {
+            get {
+                object obj = ResourceManager.GetObject("toggle1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap transmit_go {
             get {
                 object obj = ResourceManager.GetObject("transmit_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap transmit_go1 {
+            get {
+                object obj = ResourceManager.GetObject("transmit_go1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3584,6 +7144,16 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap user_add1 {
+            get {
+                object obj = ResourceManager.GetObject("user_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap user_delete {
             get {
                 object obj = ResourceManager.GetObject("user_delete", resourceCulture);
@@ -3604,9 +7174,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap user_go1 {
+            get {
+                object obj = ResourceManager.GetObject("user_go1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap user_halk_go {
             get {
                 object obj = ResourceManager.GetObject("user_halk_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap user_halk_go1 {
+            get {
+                object obj = ResourceManager.GetObject("user_halk_go1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -3624,9 +7214,29 @@ namespace Chummer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap user_knight_add1 {
+            get {
+                object obj = ResourceManager.GetObject("user_knight_add1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap world_go {
             get {
                 object obj = ResourceManager.GetObject("world_go", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap world_go1 {
+            get {
+                object obj = ResourceManager.GetObject("world_go1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

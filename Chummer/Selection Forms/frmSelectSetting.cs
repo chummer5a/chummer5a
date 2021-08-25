@@ -16,13 +16,14 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
- using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
- using System.Text;
- using System.Windows.Forms;
+using System.Text;
+using System.Windows.Forms;
 using System.Xml;
- using System.Xml.XPath;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -31,6 +32,7 @@ namespace Chummer
         private string _strSettingsFile = "default.xml";
 
         #region Control Events
+
         public frmSelectSetting()
         {
             InitializeComponent();
@@ -50,8 +52,8 @@ namespace Chummer
                 try
                 {
                     using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
-                            objXmlDocument = new XPathDocument(objXmlReader);
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                        objXmlDocument = new XPathDocument(objXmlReader);
                 }
                 catch (IOException)
                 {
@@ -66,15 +68,12 @@ namespace Chummer
             }
             lstSettings.Sort(CompareListItems.CompareNames);
             cboSetting.BeginUpdate();
-            cboSetting.ValueMember = nameof(ListItem.Value);
-            cboSetting.DisplayMember = nameof(ListItem.Name);
-            cboSetting.DataSource = lstSettings;
-            cboSetting.EndUpdate();
-
+            cboSetting.PopulateWithListItems(lstSettings);
             // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
             cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
             if (cboSetting.SelectedIndex == -1)
                 cboSetting.SelectedIndex = 0;
+            cboSetting.EndUpdate();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -87,14 +86,16 @@ namespace Chummer
             _strSettingsFile = cboSetting.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
         }
-        #endregion
+
+        #endregion Control Events
 
         #region Properties
+
         /// <summary>
         /// Settings file that was selected in the dialogue.
         /// </summary>
         public string SettingsFile => _strSettingsFile;
 
-        #endregion
+        #endregion Properties
     }
 }

@@ -50,8 +50,9 @@ namespace Chummer
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(434, 63);
+            this.tlpMain.Size = new System.Drawing.Size(422, 63);
             this.tlpMain.TabIndex = 0;
+            this.tlpMain.UseWaitCursor = true;
             // 
             // lblLoadingInfo
             // 
@@ -64,15 +65,17 @@ namespace Chummer
             this.lblLoadingInfo.TabIndex = 0;
             this.lblLoadingInfo.Tag = "String_Initializing";
             this.lblLoadingInfo.Text = "Loading [Item]...";
+            this.lblLoadingInfo.UseWaitCursor = true;
             // 
             // pgbLoadingProgress
             // 
             this.pgbLoadingProgress.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 34);
             this.pgbLoadingProgress.Name = "pgbLoadingProgress";
-            this.pgbLoadingProgress.Size = new System.Drawing.Size(428, 26);
+            this.pgbLoadingProgress.Size = new System.Drawing.Size(416, 26);
             this.pgbLoadingProgress.Step = 1;
             this.pgbLoadingProgress.TabIndex = 1;
+            this.pgbLoadingProgress.UseWaitCursor = true;
             // 
             // frmLoading
             // 
@@ -80,7 +83,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(452, 81);
+            this.ClientSize = new System.Drawing.Size(440, 81);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
@@ -94,6 +97,7 @@ namespace Chummer
             this.ShowInTaskbar = false;
             this.Tag = "String_Loading";
             this.Text = "Loading [Character]...";
+            this.UseWaitCursor = true;
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.ResumeLayout(false);

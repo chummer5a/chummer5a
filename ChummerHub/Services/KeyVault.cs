@@ -11,8 +11,8 @@ namespace ChummerHub.Services
     public class KeyVault
     {
         private readonly ILogger _logger;
-        private static string keyVaultUrl = "https://sinnersvault.vault.azure.net/";
-        private static SecretClient client = null;
+        private const string keyVaultUrl = "https://sinnersvault.vault.azure.net/";
+        private static SecretClient client;
 
         public KeyVault(ILogger logger)
         {
@@ -39,6 +39,11 @@ namespace ChummerHub.Services
                 return null;
             }
 #endif
+            catch(Azure.RequestFailedException e)
+            {
+                _logger?.LogWarning(e, e.Message);
+                return null;
+            }
             catch (Exception e)
             {
                 _logger?.LogError(e, e.Message);

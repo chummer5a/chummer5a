@@ -16,8 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
-using Chummer.Annotations;
-using Chummer.Backend.Equipment;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -27,6 +26,8 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
+using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 
 namespace Chummer.Backend.Attributes
 {
@@ -172,10 +173,12 @@ namespace Chummer.Backend.Attributes
                     if (!_objCharacter.MAGEnabled)
                         return;
                     break;
+
                 case "RES":
                     if (!_objCharacter.RESEnabled)
                         return;
                     break;
+
                 case "DEP":
                     if (!_objCharacter.DEPEnabled)
                         return;
@@ -193,7 +196,9 @@ namespace Chummer.Backend.Attributes
             objWriter.WriteElementString("metatypecategory", MetatypeCategory.ToString());
             objWriter.WriteEndElement();
         }
-        #endregion
+
+        #endregion Constructor, Save, Load, and Print Methods
+
         /// <summary>
         /// Type of Attribute.
         /// </summary>
@@ -334,6 +339,7 @@ namespace Chummer.Backend.Attributes
         }
 
         private int _intCachedValue = int.MinValue;
+
         /// <summary>
         /// Current value of the CharacterAttribute before modifiers are applied.
         /// </summary>
@@ -366,7 +372,9 @@ namespace Chummer.Backend.Attributes
             {
                 if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute && (objImprovement.ImprovedName == Abbrev || objImprovement.ImprovedName == Abbrev + "Base") && objImprovement.Enabled)
                 {
-                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen)
+                    if (objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLoss
+                        && objImprovement.ImproveSource != Improvement.ImprovementSource.EssenceLossChargen
+                        && objImprovement.ImproveSource != Improvement.ImprovementSource.CyberadeptDaemon)
                     {
                         intRawMinimum += objImprovement.Minimum * objImprovement.Rating;
                         intRawMaximum += objImprovement.Maximum * objImprovement.Rating;
@@ -426,10 +434,12 @@ namespace Chummer.Backend.Attributes
                     {
                         if (objImprovement.Augmented != 0)
                             return true;
-                        if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss || objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen) &&
+                        if ((objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss ||
+                             objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLossChargen ||
+                             objImprovement.ImproveSource == Improvement.ImprovementSource.CyberadeptDaemon) &&
                             (_objCharacter.MAGEnabled && (Abbrev == "MAG" || Abbrev == "MAGAdept") ||
-                            _objCharacter.RESEnabled && Abbrev == "RES" ||
-                            _objCharacter.DEPEnabled && Abbrev == "DEP"))
+                             _objCharacter.RESEnabled && Abbrev == "RES" ||
+                             _objCharacter.DEPEnabled && Abbrev == "DEP"))
                             return true;
                     }
                 }
@@ -506,6 +516,7 @@ namespace Chummer.Backend.Attributes
                 return intModifier;
             }
         }
+
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
@@ -542,6 +553,7 @@ namespace Chummer.Backend.Attributes
                         case "STR":
                             intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
                             break;
+
                         case "AGI":
                             intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
                             break;
@@ -559,6 +571,7 @@ namespace Chummer.Backend.Attributes
                             case "STR":
                                 intLimbTotal += objCyberware.TotalStrength * objCyberware.LimbSlotCount;
                                 break;
+
                             case "AGI":
                                 intLimbTotal += objCyberware.TotalAgility * objCyberware.LimbSlotCount;
                                 break;
@@ -590,6 +603,7 @@ namespace Chummer.Backend.Attributes
         }
 
         private int _intCachedTotalValue = int.MinValue;
+
         /// <summary>
         /// The CharacterAttribute's total value (Value + Modifiers).
         /// </summary>
@@ -626,7 +640,7 @@ namespace Chummer.Backend.Attributes
                 int intReturn = RawMinimum;
                 if (intReturn < 1)
                 {
-                    if (_objCharacter.IsCritter || _intMetatypeMax == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
+                    if (_objCharacter.IsCritter || TotalMaximum == 0 || Abbrev == "EDG" || Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP")
                         intReturn = 0;
                     else
                         intReturn = 1;
@@ -661,12 +675,10 @@ namespace Chummer.Backend.Attributes
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                     return 1;
 
-                if (_objCharacter.Improvements.Any(imp =>
-                    imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev))
-                {
-                    return TotalMaximum;
-                }
-                return Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
+                return _objCharacter.Improvements.Any(imp =>
+                    imp.ImproveType == Improvement.ImprovementType.AttributeMaxClamp && imp.ImprovedName == Abbrev)
+                    ? TotalMaximum
+                    : Math.Max(0, MetatypeAugmentedMaximum + MaximumModifiers + AugmentedMaximumModifiers);
             }
         }
 
@@ -677,18 +689,14 @@ namespace Chummer.Backend.Attributes
 
         public string DisplayNameShort(string strLanguage)
         {
-            if (Abbrev == "MAGAdept")
-                return LanguageManager.MAGAdeptString(strLanguage);
-
-            return LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
+            return GetDisplayAbbrev(strLanguage);
         }
 
         public string DisplayNameLong(string strLanguage)
         {
-            if (Abbrev == "MAGAdept")
-                return LanguageManager.MAGAdeptString(strLanguage, true);
-
-            return LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
+            return Abbrev == "MAGAdept"
+                ? LanguageManager.MAGAdeptString(strLanguage, true)
+                : LanguageManager.GetString("String_Attribute" + Abbrev + "Long", strLanguage);
         }
 
         public string DisplayNameFormatted => GetDisplayNameFormatted(GlobalOptions.Language);
@@ -714,11 +722,10 @@ namespace Chummer.Backend.Attributes
         public string AugmentedMetatypeLimits => string.Format(GlobalOptions.CultureInfo, "{1}{0}/{0}{2}{0}({3})",
             LanguageManager.GetString("String_Space"), TotalMinimum, TotalMaximum, TotalAugmentedMaximum);
 
-        public string CareerRemainingString => TotalValue.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Of")
-            + Value.ToString(GlobalOptions.CultureInfo) + LanguageManager.GetString("String_Space") + LanguageManager.GetString("String_Remaining");
-        #endregion
+        #endregion Properties
 
         #region Methods
+
         /// <summary>
         /// Set the minimum, maximum, and augmented values for the CharacterAttribute based on string values from the Metatype XML file.
         /// </summary>
@@ -741,6 +748,7 @@ namespace Chummer.Backend.Attributes
                 UpgradeKarmaCost);
 
         private string _strCachedToolTip = string.Empty;
+
         /// <summary>
         /// ToolTip that shows how the CharacterAttribute is calculating its Modified Rating.
         /// </summary>
@@ -787,25 +795,22 @@ namespace Chummer.Backend.Attributes
                     decimal decHighest = decimal.MinValue;
 
                     StringBuilder sbdNewModifier = new StringBuilder();
-                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                    foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                     {
-                        if (strValues.Item1 == "precedence0")
+                        if (strGroupName == "precedence0" && decValue > decHighest)
                         {
-                            if (strValues.Item2 > decHighest)
-                            {
-                                decHighest = strValues.Item2;
-                                sbdNewModifier = new StringBuilder(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
-                            }
+                            decHighest = decValue;
+                            sbdNewModifier = new StringBuilder(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                         }
                     }
                     if (lstUniqueName.Contains("precedence-1"))
                     {
-                        foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                        foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                         {
-                            if (strValues.Item1 == "precedence-1")
+                            if (strGroupName == "precedence-1")
                             {
-                                decHighest += strValues.Item2;
-                                sbdNewModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
+                                decHighest += decValue;
+                                sbdNewModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -817,9 +822,9 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
                     StringBuilder strNewModifier = new StringBuilder();
-                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
+                    foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                     {
-                        strNewModifier.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace, strValues.Item3, strValues.Item2);
+                        strNewModifier.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace, strSourceName, decValue);
                     }
                     sbdModifier = strNewModifier;
                 }
@@ -829,15 +834,12 @@ namespace Chummer.Backend.Attributes
                     foreach (string strName in lstUniqueName)
                     {
                         decimal decHighest = decimal.MinValue;
-                        foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                        foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                         {
-                            if (strValues.Item1 == strName)
+                            if (strGroupName == strName && decValue > decHighest)
                             {
-                                if (strValues.Item2 > decHighest)
-                                {
-                                    decHighest = strValues.Item2;
-                                    sbdModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
-                                }
+                                decHighest = decValue;
+                                sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                             }
                         }
                     }
@@ -871,15 +873,12 @@ namespace Chummer.Backend.Attributes
                 foreach (string strName in lstUniqueName)
                 {
                     decimal decHighest = decimal.MinValue;
-                    foreach (Tuple<string, decimal, string> strValues in lstUniquePair)
+                    foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair)
                     {
-                        if (strValues.Item1 == strName)
+                        if (strGroupName == strName && decValue > decHighest)
                         {
-                            if (strValues.Item2 > decHighest)
-                            {
-                                decHighest = strValues.Item2;
-                                sbdModifier.Append(strSpace + '+' + strSpace + strValues.Item3 + strSpace + '(' + strValues.Item2.ToString(GlobalOptions.CultureInfo) + ')');
-                            }
+                            decHighest = decValue;
+                            sbdModifier.Append(strSpace + '+' + strSpace + strSourceName + strSpace + '(' + decValue.ToString(GlobalOptions.CultureInfo) + ')');
                         }
                     }
                 }
@@ -919,10 +918,16 @@ namespace Chummer.Backend.Attributes
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                         objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCost)
-                            decExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributePointCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.AttributePointCost:
+                                decExtra += objLoopImprovement.Value * (Math.Min(intBase, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
+                                break;
+
+                            case Improvement.ImprovementType.AttributePointCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)
@@ -940,6 +945,7 @@ namespace Chummer.Backend.Attributes
         public int PriorityMaximum => Math.Max(TotalMaximum - Karma - FreeBase - RawMinimum, 0);
 
         private int _intCachedUpgradeKarmaCost = int.MinValue;
+
         /// <summary>
         /// Karma price to upgrade. Returns negative if impossible
         /// </summary>
@@ -977,10 +983,16 @@ namespace Chummer.Backend.Attributes
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                             (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
-                            decExtra += objLoopImprovement.Value;
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.AttributeKarmaCost:
+                                decExtra += objLoopImprovement.Value;
+                                break;
+
+                            case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)
@@ -1027,10 +1039,16 @@ namespace Chummer.Backend.Attributes
                         (string.IsNullOrEmpty(objLoopImprovement.Condition) || (objLoopImprovement.Condition == "career") == _objCharacter.Created || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
                             objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
                     {
-                        if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCost)
-                            decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
-                        else if (objLoopImprovement.ImproveType == Improvement.ImprovementType.AttributeKarmaCostMultiplier)
-                            decMultiplier *= objLoopImprovement.Value / 100.0m;
+                        switch (objLoopImprovement.ImproveType)
+                        {
+                            case Improvement.ImprovementType.AttributeKarmaCost:
+                                decExtra += objLoopImprovement.Value * (Math.Min(intValue, objLoopImprovement.Maximum == 0 ? int.MaxValue : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase, objLoopImprovement.Minimum - 1));
+                                break;
+
+                            case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                                decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                break;
+                        }
                     }
                 }
                 if (decMultiplier != 1.0m)
@@ -1044,6 +1062,7 @@ namespace Chummer.Backend.Attributes
 
         // Caching the value prevents calling the event multiple times.
         private int _intCachedCanUpgradeCareer = -1;
+
         public bool CanUpgradeCareer
         {
             get
@@ -1062,22 +1081,24 @@ namespace Chummer.Backend.Attributes
                 case nameof(Character.Karma):
                     OnPropertyChanged(nameof(CanUpgradeCareer));
                     break;
+
                 case nameof(Character.EffectiveBuildMethodUsesPriorityTables):
                     OnPropertyChanged(nameof(BaseUnlocked));
                     break;
-                case nameof(Character.LimbCount):
-                {
-                    if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
-                        (Abbrev == "AGI" || Abbrev == "STR") &&
-                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
-                    {
-                        OnPropertyChanged(nameof(TotalValue));
-                    }
 
-                    break;
-                }
+                case nameof(Character.LimbCount):
+                    {
+                        if (!CharacterObject.Options.DontUseCyberlimbCalculation &&
+                            (Abbrev == "AGI" || Abbrev == "STR") &&
+                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                          && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        {
+                            OnPropertyChanged(nameof(TotalValue));
+                        }
+
+                        break;
+                    }
             }
         }
 
@@ -1086,44 +1107,44 @@ namespace Chummer.Backend.Attributes
             switch (e.PropertyName)
             {
                 case nameof(CharacterOptions.DontUseCyberlimbCalculation):
-                {
-                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
-                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                     {
-                        OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                        if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                          && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        {
+                            OnMultiplePropertyChanged(nameof(TotalValue), nameof(HasModifiers));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.CyberlimbAttributeBonusCap):
                 case nameof(CharacterOptions.ExcludeLimbSlot):
-                {
-                    if ((Abbrev == "AGI" || Abbrev == "STR") &&
-                        CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
-                                                                      && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
-                                                                      && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
                     {
-                        OnMultiplePropertyChanged(nameof(TotalValue));
+                        if ((Abbrev == "AGI" || Abbrev == "STR") &&
+                            CharacterObject.Cyberware.Any(objCyberware => objCyberware.Category == "Cyberlimb"
+                                                                          && !string.IsNullOrWhiteSpace(objCyberware.LimbSlot)
+                                                                          && !CharacterObject.Options.ExcludeLimbSlot.Contains(objCyberware.LimbSlot)))
+                        {
+                            OnMultiplePropertyChanged(nameof(TotalValue));
+                        }
+                        break;
                     }
-                    break;
-                }
                 case nameof(CharacterOptions.UnclampAttributeMinimum):
-                {
-                    OnPropertyChanged(nameof(RawMinimum));
-                    break;
-                }
+                    {
+                        OnPropertyChanged(nameof(RawMinimum));
+                        break;
+                    }
                 case nameof(CharacterOptions.KarmaAttribute):
                 case nameof(CharacterOptions.AlternateMetatypeAttributeKarma):
-                {
-                    OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
-                    break;
-                }
+                    {
+                        OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(TotalKarmaCost));
+                        break;
+                    }
                 case nameof(CharacterOptions.ReverseAttributePriorityOrder):
-                {
-                    OnPropertyChanged(nameof(TotalKarmaCost));
-                    break;
-                }
+                    {
+                        OnPropertyChanged(nameof(TotalKarmaCost));
+                        break;
+                    }
             }
         }
 
@@ -1181,6 +1202,7 @@ namespace Chummer.Backend.Attributes
                 case "MAGAdept":
                 case "RES":
                     return AttributeCategory.Special;
+
                 default:
                     return AttributeCategory.Standard;
             }
@@ -1197,13 +1219,16 @@ namespace Chummer.Backend.Attributes
             {
                 case "Shapeshifter":
                     return AttributeCategory.Shapeshifter;
+
                 default:
                     return AttributeCategory.Standard;
             }
         }
-        #endregion
+
+        #endregion Methods
 
         #region static
+
         //A tree of dependencies. Once some of the properties are changed,
         //anything they depend on, also needs to raise OnChanged
         //This tree keeps track of dependencies
@@ -1230,7 +1255,8 @@ namespace Chummer.Backend.Attributes
                                     new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum),
                                         new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMinimum)),
                                         new DependencyGraphNode<string, CharacterAttrib>(nameof(MinimumModifiers))
-                                    )
+                                    ),
+                                    new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum))
                                 ),
                                 new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalMaximum),
                                     new DependencyGraphNode<string, CharacterAttrib>(nameof(MetatypeMaximum)),
@@ -1264,10 +1290,6 @@ namespace Chummer.Backend.Attributes
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(Karma)),
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(FreeBase)),
                     new DependencyGraphNode<string, CharacterAttrib>(nameof(RawMinimum))
-                ),
-                new DependencyGraphNode<string, CharacterAttrib>(nameof(CareerRemainingString),
-                    new DependencyGraphNode<string, CharacterAttrib>(nameof(TotalValue)),
-                    new DependencyGraphNode<string, CharacterAttrib>(nameof(Value))
                 )
             );
 
@@ -1278,10 +1300,9 @@ namespace Chummer.Backend.Attributes
 
         public string GetDisplayAbbrev(string strLanguage)
         {
-            if (Abbrev == "MAGAdept")
-                return LanguageManager.MAGAdeptString(strLanguage);
-
-            return LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
+            return Abbrev == "MAGAdept"
+                ? LanguageManager.MAGAdeptString(strLanguage)
+                : LanguageManager.GetString("String_Attribute" + Abbrev + "Short", strLanguage);
         }
 
         public void Upgrade(int intAmount = 1)
@@ -1333,6 +1354,7 @@ namespace Chummer.Backend.Attributes
                     return;
             }
         }
-        #endregion
+
+        #endregion static
     }
 }

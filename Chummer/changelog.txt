@@ -1,5 +1,10 @@
 Future Build 215
 Application Changes:
+- Fixed a lot of buggy behavior related to opening characters with Chummer from outside the program (e.g. with Windows' "Open with..." function).
+- Clicking on "Open PDF" on a Master Index entry with no associated pdf now opens the "Choose PDF" Dialog instead of doing nothing.
+- Fixed a crash when Custom Date and/or Time Formats were set to an empty value.
+- Added the ability for devs to set an action when a user double clicks on an entry in the character roster.
+- Added the upload of a crash to ApplicationInsights in parallel to the old Crashhandler (Loglevelfilters still apply)
 - Properly split apart settings that can be different for individual characters (e.g. karma costs, enabled sourcebooks, enabled custom data) and those that cannot (e.g. PDF paths, UI language, dark mode). The old Options screen now controls the latter, while the former can be managed through a separate, dedicated screen.
 - Settings files that were created for previous versions of Chummer will automatically be converted to character-based settings that use a new format. Characters created for previous versions of Chummer will have their specific entries for certain settings (e.g. character creation karma costs, enabled sourcebooks) converted as well. However, these two changes mean that once settings and/or characters are saved in this version of Chummer, they cannot be opened (properly) with older versions. The Nightlies will therefore show a one-time warning about using the Nightly when one might plan to go back and open up characters with the latest stable (or an earlier build).
 - Properly unhardcoded Sum-to-Ten costs for each priority category. They can now be modified with custom data files.
@@ -20,8 +25,86 @@ Application Changes:
 - Deleting a quality with multiple levels after character creation now properly deletes all levels of the quality instead of only one. Fixes #4367.
 - The translator tool now only inserts a "translated" attribute into a language file if the user manual marks an entry that is identical to its English text as translated. Any entries that are different from their English counterparts no longer get the "translated" attribute.
 - Added buttons to the (global) options screen that let the user clear the entries for the character roster path, the PDF program path, and any PDF file paths.
+- Added the ability to track sustained spells and complex forms in the Career mode. They are found in their respective tabs. Psyche is also supported, as are bonus nodes that allow a certain number of spells or complex forms up to a certain force or level to be sustained without penalties.
 - Added the ability to specify a city, district, and borough for a lifestyle.
 - If a character sheet is printed/exported in a language other than the one with which Chummer is being used, Chummer now attemtps to translate the names of gear, vehicle, and weapon locations.
+- Generating character sheets in languages where commas are used as decimal separators and/or periods are used as number group separators no longer sometimes causes the generator to stall out and silently crash. Fixes #4415.
+- When saving a character as created, the starting nuyen screen now allows the user to select which lifestyle to use for generating their starting nuyen. It now also includes a Cancel button and a button for automatically rolling dice for the chosen lifestyle.
+- Closing out the starting nuyen screen no longer causes weird issues with the character's saved Nuyen or saved Karma and also no longer prompts the user to save a created character.
+- Fixed life modules button not being visible in create mode.
+- Critter power karma costs are now properly retained when loading a saved character.
+- Enhanced use of weapondetails to allow using it in allof, oneof or group nodes.
+- Characters who are forced to have some non-special attributes at zero (e.g. those with Quadriplegic) can now properly have a non-zero attribute at its maximum rating at character creation. They can also now properly learn skills linked to the forced-zero attribute(s), but their pools will always be zero when using that attribute.
+- Saving a character in Create mode as Created when they were never saved beforehand no longer causes the character to be saved with them still in Create mode.
+- Checkboxes in the options menus now properly respond to being set to Dark Mode. Fixes #4438.
+- When calculating the karma value of a character in Priority or Sum-to-Ten, the karma amount displayed for comparison to Point Buy now uses the Point Buy costs for the character's metatype instead of the value of their combined attribute adjustments and qualities.
+- Added the ability to manually set Chummer's display scaling method in the Global Options screen, though a restart is required to see any changes. The default display scaling method is now also Zoom (i.e. System) instead of Rescale (i.e. PerMonitorV2).
+- For mentor spirits that do not allow the user to select from multiple bonuses, the entire bonus is now shown as regular text instead of it being cut off in a grayed-out dropdown box.
+- Custom data directories can now implement a manifest.xml files to serve as an explanation for the custom data. This explanation is also displayed in the Custom Data Directory selection. This .xml can also hold additional information about the author, version or dependencies/exclusivities. For details see chummer/customdata/manifest.xsd
+- Trust Fund can now be selected for non-advanced lifestyles.
+- Skill pool tooltips no longer sometimes show the skill's category as its specialization.
+- Spell and Complex Form pool tooltips are no longer combine the contribution of their linked attribute and their linked skill.
+- Spells and Complex Forms with special damage amounts, targets, and/or ranges now have those translated properly when printing/exporting in a non-English language.
+- In order to prevent users from thinking Chummer has locked up when it is still working, Chummer now shows a visible loading progress bar when it is loading in a character's UI elements or when it is saving a character.
+- The dice roller no longer crashes when a user re-rolls failures while having more hits than initial dice (due to enabling Rule of 6).
+- When using Chummer in a non-English language, contact controls will no longer attempt to immediately translate and then re-translate the contents of text fields after every single possible change. Fixes #4450.
+- Gear that can act as ammunition without being in the ammunition category is now properly treated as such when exporting character information, printing sheets, or buying more ammo. Fixes #4457.
+- Attempting to add a weapon to a weapon mount that cannot mount any weapons no longer crashes Chummer. Fixes #4448.
+- Skill groups now show when they have been disabled by an improvement such as Uncouth.
+- A crash that would sometimes occur when Chummer is restarted programmatically has been resolved.
+- Upgrading cyberware or bioware to have both a different rating and a different grade at the same time can no longer cause a character's special attributes to get decreased from Essence loss mid-upgrade unless the final essence cost of the 'ware is actually greater enough than the old cost.
+- Print method now ignores control characters when printing to the Sheet Export window.
+- The Control Device pool for a weapon is now properly AGI-based instead of LOG-based, as the core rulebook dictates.
+- Changing a vehicle-mounted weapon's firing mode now properly updates the selectable box for firing modes instead of keeping it blank.
+- Metatype selection screens now contain a label referencing the sourcebook location of the currently selected metatype. Implements #4357.
+- The priority selection screen can now properly deal with potential custom priority entries with spirits and/or sprites.
+- Vehicle and Cyberware Condition Monitor controls now work properly. Fixes #4449.
+- Cyberware and vehicles now export the amount that their Matrix Condition Monitors are filled. Weapons now properly export all of their Matrix-related properties, including their Matrix attributes and their Matrix Condition Monitor status.
+- Deleting a skill by undoing the Karma expense for adding it now properly deletes the skill instead of lowering its rating by 1. Fixes #4323.
+- Fixed an issue that prevented 'ware with a capacity of 0 from having any gear added to it, even ones that are explicitly allowed. Fixes #4228.
+- Fixed an issue that some specific skills were not shown for critters based on a Force selection
+- Added an option to assign a color to each note to allow a way to categorize notes.
+- Data entries that directly use attribute values (e.g. for damage codes) now all require the abbreviations of those attributes to be enclosed in curly brackets, e.g. {STR}. They now also all support using unaugmented attribute values by adding "Unaug" after the attribute name but before the end of the curly brackets, as well as "base" attribute values (i.e. those given by priority entries only) by adding "Base" after the attribute abbreviation the same way.
+- When determining dice pools for weapons, having a specialization in the specific weapon name is now always enough to give the appropriate dice pool bonus. In the case of exotic skills, this means an exotic skill in the specific weapon is enough. Fixes #4467.
+- Fixed some weird behavior that might happen when trying to open a Chummer save file before opening Chummer first.
+- The karma cost of fettering a spirit is no longer hardcoded.
+- Attempting to buy a cyberlimb accessory for a non-Adapsin, non-Standard grade cyberlimb after having bought Adapsin no longer causes the accessory's grade to be set to Standard (Adapsin).
+- Added the ability to re-attempt connecting to GitHub inside the Updater tool.
+- Using custom date formats no longer causes the Nuyen and Karma expenses lists to be sorted incorrectly. Fixes #4472.
+- Using and regaining Edge no longer affects modifiers to the value of the Edge attribute. Instead, spent Edge is tracked purely on its own and is printed/exported separately as `edgeused` and `edgeremaining` for spent Edge and remaining Edge respectively. Character sheets now properly display the amount of Edge remaining for a character in the attributes section.
+- Weapons added to a vehicle mount no longer disappear after editing said vehicle mount.
+- First-time Chummer users who download a Nightly version now have their "Prefer Nightly Version" option set to True by default instead of False. Only completely new users (i.e. people who do not have a Chummer registry key) are affected.
+- Cyberprograms, Software, Autosofts, et al. are now properly recognized as programs and printed as such.
+- A vehicle weapon mount that comes pre-installed with a vehicle but whose size is from a splatbook that the character does not have enabled now still show up as weapon mounts. However, their sizes are shown as one of the core rulebook weapon mount sizes: Heavy if it can fit heavy weapons, Standard otherwise. Fixes #4477.
+- Chummer no longer allows more than one unbound spirit or sprite on a character at a time, but now also only cares about unbound and unfettered spirits and sprites that have at least one service in their entry.
+- In Create mode, gear can now be pasted into armor mods and armor, and armor mods can now be pasted into armor.
+- Weapons that use External Source ammo now have External Source properly recognized as one of the options with which the weapon can be loaded.
+- In the character roster tool, saves that are present both in the Watch folder and in either the Favorites or Recents lists now also still show up in the Watch folder section.
+- Extended versions of Detection spells that are explicitly allowed by RAW no longer erroneously have drain codes of 2 higher than normal.
+- Picking an exotic skill as a skill in which to get free levels from a Priority selection now works properly and adds the selected exotic skill to the character's skill list at the specified level.
+- Improvements that alter the number of power points available to a character now properly cause power point totals in the Adept Powers tab to be updated with new values. This includes metamagics that add power points.
+- When Chummer is opened, it now tries to automatically detect if there is an autosave for a character that could have been an unsaved character otherwise lost by Chummer crashing or exiting unsafely. If it finds such an autosave, it prompts the user if they want to load said autosave.
+- Chummer now attempts to delete all autosaves older than 90 days that are not linked to any Favorite or Most Recently Used character.
+- Improvements and qualities that affect the linked attribute of a skill now have their effects properly reflected in the UI all the time.
+- Closing an opened character that is also not the currently viewed character in the program no longer causes the tool strip of icons at the top to misbehave.
+- Qualities with levels taken at only level 1 now display their level as "1" instead of not displaying any level.
+- When removing content that has added potentially duplicate specializations to a character, the specialization that was added by said content is now properly always gets removed.
+- A warning is now shown when attempting to open enough characters that it might cause Chummer to silently crash.
+- Added a plural/singular detector to the code that checks if a character has a specialization for a weapon.
+- Added the ability to add spells and complex forms to a character through the Improvements system in career mode.
+- Armor items classified as Clothing but without a + or - in their armor codes are now treated as regular armor instead of armor extras.
+- Qualities with a rating can now be added at higher ratings from the quality selector, and the quality selector's karma filters now also take qualities with multiple ratings into account.
+- In Create mode, the sidebar section that tracks the number of spells, rituals, and preparations learned with priority points now properly reflects the maximum number of each as points are spent in either of the other categories.
+- Added support for Cyberware using the 'sameparent' requirement, in the same manner as armor mods. This allows for checking if the parent of a piece of cyberware (ie cyberlimb) already has another piece of cyberware installed.
+- Armor and clothing are now marked as devices with Matrix attributes.
+- Split up the option for how much Nuyen is gained per Karma spent after character creation into separate Working for the Man and Working for the People values.
+- Weapon mounts for vehicles now have their capacities for weapons explicitly defined. The default size is one weapon, but a different size can be set with the weaponsize parameter. Users can no longer attempt to add more weapons to a mount than it has capacity for weapons.
+- Bonus nodes and improvements that force characters to pick up certain metamagics/echoes at specific initiation/submersion grades now properly allow the character to pick up other metamagics/echoes at other grades. Fixes #4530.
+- AP and weapon damage codes that contain a slash mark that is not meant to represent a division operation can now be shown properly. In order to prevent ambiguity with slash marks that do represent a division operation, two successive slash marks need to be used to identify a forward slash mark that is not meant to be a division operation. Fixes #4532.
+- Using "Touch" instead of "T" for range now still properly translates a spell's or critter power's range to the equivalent in non-English languages. Fixes #4544.
+- Modifications that come with a vehicle weapon mount are now marked as such.
+- Black Market Pipeline's discount can now be applied to weapon mounts and can now be toggled freely during character creation. Fixes #4553.
+- Gear added to unequipped cyberware, armor, or weapons in some rare cases now no longer results in a bunch of cloned, phantom improvements.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -33,6 +116,44 @@ Data Changes:
 - All spirits now properly have a starting and maximum Essence equal to their Force instead of to 6. Fixes #4358.
 - Extraplanar Travelers is now a full category of selectable critters. Fixes #4394.
 - Changed Imbue Item spell from SG to properly require being an adept, mystic adept or having the Advanced Ritual Casting art.
+- Off-Road Tires properly cost 400 Nuyen per tire and have an availability of 6.
+- Added the Grimmes Erwachen German splatbook and the Storyteller tradition statted in it.
+- Fixed page reference for the Extra Fragile critter power. Closes #4420
+- Fixed incorrect quality names for the Corp Teen, Rising Star, Company Troubleshooter, Tour of Duty (Desert Wars), In the Thick and Gone Native life modules that prevented them from being taken correctly. Closes #4386
+- The Hemorrhage critter power no longer also has an entry as a learnable ritual.
+- Allowed the Enfield AS-7 to take an Ammo Skip when equipped with 24- or 32- round drum magazine. Closes #4349
+- Unarmed Attack can no longer be bought as a weapon.
+- Fixed the German translations for some mentor spirits that were broken in an update a few years ago.
+- Fixed a typo in Baseline Reagents' availability. Fixes #4458.
+- All French translations that contain a shortened article (i.e. "d'" or "l'") now have zero-width spaces between the consonant and the apostrophe in order to prevent weirdness with the way they are sorted alphabetically. Searching without a zero-width space should still work, however.
+- Chemical Glands can now hold Chemicals and Custom Drugs.
+- Special Work Area can now be selected multiple times for Advanced Lifestyles and have some text specified for it each time.
+- The spells Pollutant Stream, Knockout, Punch, and Frigid now have proper descriptors. Fixes #4479.
+- Added a Bodyware entry for Additional Eye Mount that can only be placed inside of cyberlimbs. This is a crude but effective way of allowing Additional Eye Mount to be put anywhere on a character's body, including in cyberlimbs. Fixes #4482.
+- Croki now properly have access to Ritual Spellcasting.
+- The Morgan Cutlass' weapon mounts now properly use the newer system of dedicated weapon mount types instead of vehicle mods.
+- Vestigial remains of the old, vehicle mod-based weapon mount system have been purged.
+- Vehicles and drones in the core rulebook that come with weapon mounts now use the weapon mount settings written for them in Rigger 5.0 instead of the default core rulebook settings. Players playing without Rigger 5.0 will still see them as their core rulebook weapon sizes however.
+- The Krime Euskaldunak Tankette now uses Rigger 5.0 weapon mounts if Rigger 5.0 is enabled.
+- There are now dedicated options for weapon mount options that are for the weapon mounts that are statted out in the core rulebook. Fixes #4493.
+- The Technomancer quality can no longer be taken after taking an Infected quality.
+- Missiles now properly have 4 higher Availability than their rocket equivalents.
+- Light and Medium Crossbows now properly have a Concealability of +6.
+- Fixed various typos in the recommended specializations for certain knowledge skills.
+- Predictive Analytics now properly increases AR initiative dice.
+- Core rulebook weapon mounts now use Flexible for their flexibility entry to represent the core rulebook saying that its weapon mounts can rotate in an arc.
+- Out for Myself properly gives +3 Surprise dice.
+- Various music genres and trideo shows from No Future have been added as suggested specializations for relevant knowledge skills
+- Fixed specialization entries for crossbows and slingshots.
+- The Replace Attribute improvement now works properly. Fixes #4512.
+- Rockblood Old School Line and Rockblood Signature Armored Shirt are categorized as Armor instead of Clothing.
+- Added the Gabriel Hound from Sprawl Wilds to the critters list.
+- KEV from Shadowrun Missions Season 8 now has proper sourcebook references, and the specific Shadowrun Missions Season 8 books that contain it with a price and availability have been added to the program.
+- Fixed Savior Medkit page reference. Fixes #4529.
+- Added Stock, Side, Underbarrel, and Top weapon accessory slots to assault cannons, grenade launchers, and missile launchers that were missing it.
+- Removed Barrel weapon accessory slots from assault cannons, grenade launchers, and missile launchers that had it. As per the core rulebook, these weapons cannot mount barrel-mounted accessories or modifications.
+- Fixed various incorrect page references for weapons added by Krime Katalog.
+- The custom ruleset to exclude German sourcebooks now also excludes Shadowrun 2050.
 
 Changed/New Strings:
 - String_ContactPoints
@@ -111,9 +232,75 @@ Changed/New Strings:
 - Message_MergeIdentical
 - MessageTitle_MergeIdentical
 - Message_Load_Error_Warning
+- String_DeleteShort
+- Message_DeleteSustainedSpell
+- Button_Sustain
+- Label_PsycheActive
+- Label_SustainedSelf
+- Label_SustainedForce
+- Label_NetHits
+- Label_Options_DicePenaltySustaining
+- Tip_Skill_Sustain
 - Label_SelectLifestyle_Borough
 - Label_SelectLifestyle_District
 - Label_SelectLifestyle_City
+- Label_LifestyleNuyen_SelectLifestyle
+- Tip_Skill_Zero_Attribute
+- String_TotalComparisonWithPointBuy
+- Label_Options_DpiScalingMode
+- Label_SelectMentor_ChooseOne
+- Label_SelectMentor_Bonus
+- String_Saving
+- String_Saving_Pattern
+- Button_ChooseCustomColor
+- String_NaturalAttribute
+- String_BaseAttribute
+- Label_Options_SpiritFettering
+- Button_Reconnect
+- Message_UnboundSpiritLimit
+- MessageTitle_UnboundSpiritLimit
+- Message_PossibleCrashAutosaveFound
+- Message_NoLinkedPDF
+- MessageTitle_NoLinkedPDF
+- Message_NoPDFProgramSet
+- MessageTitle_NoPDFProgramSet
+- Message_TooManyHandlesWarning
+- MessageTitle_TooManyHandlesWarning
+- Label_SkillGroup_Disabled
+- Label_SkillGroup_DisabledBy
+- Enum_GunneryCommandDevice
+- Tooltip_CharacterOptions_ManifestMissing
+- Tooltip_CharacterOptions_LanguageSpecificManifestMissing
+- Tooltip_CharacterOptions_ManifestDescriptionMissing
+- Title_CustomDataDirectoryInfo
+- Label_DirectoryName
+- Label_DirectoryAuthors
+- Label_DirectoryVersion
+- Title_DirectoryDependencies
+- Title_DirectoryIncompatibilities
+- Tooltip_Dependency_Missing
+- Tooltip_Incompatibility_Present
+- String_IsMainAuthor
+- Tooltip_Incompatibility_VersionMismatch
+- Tooltip_Dependency_VersionMismatch
+- Message_Duplicate_CustomDataDirectory
+- MessageTitle_Duplicate_CustomDataDirectory
+- Message_Duplicate_CustomDataDirectoryName
+- MessageTitle_Duplicate_CustomDataDirectoryName
+- Message_Duplicate_CustomDataDirectoryPath
+- MessageTitle_Duplicate_CustomDataDirectoryPath
+- Label_CharacterOptions_NuyenExpression
+- String_Chummer5a
+- Label_DirectoryPath
+- Label_Options_WftM_Nuyen
+- Label_Options_WftP_Nuyen
+- Tooltip_Dependency_BadLoadOrder
+- String_ToTop
+- String_ToBottom
+- Message_WeaponMountFull
+
+Deleted Strings:
+- Label_Options_NuyenPerBP
 
 Build 214
 Application Fixes:
@@ -992,7 +1179,7 @@ New Features:
 - Exposed ParentDetails requirement checks to Armor Mods. This allows for filtering mods based on the XML properties of their parent, such as filtering based on name or armour value.
 - Gameplay Options can now be used as a forbidden/required choice for items; currently this is used for the Free Insect Spirit qualities, which require the Prime Runner gameplay choice. 
 - Cyberware now supports the use of math operators in the ess and cost values. This allows for customdata files to easily make bulk changes to cyberware Essence and Cost entries.
-- Reimplemented the addsprite and addspirit improvement types to support adding Watchers, Homonculi and other spirit types that are added separately to a tradition.
+- Reimplemented the addsprite and addspirit improvement types to support adding Watchers, Homunculi and other spirit types that are added separately to a tradition.
 - Created new Improvement Types to support the Networker and Massive Network qualities from No Future.
   - The ContactKarma improvement type changes the cost for all contacts by the listed amount.
   - The ContactKarmaMinimum improvement type changes the minimum cost for contacts. The minimum is assumed to be 2.

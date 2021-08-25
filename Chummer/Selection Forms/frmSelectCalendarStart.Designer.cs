@@ -49,7 +49,7 @@ namespace Chummer
             // 
             // lblYear
             // 
-            this.lblYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblYear.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblYear.AutoSize = true;
             this.lblYear.Location = new System.Drawing.Point(3, 34);
             this.lblYear.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -61,8 +61,7 @@ namespace Chummer
             // 
             // nudYear
             // 
-            this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudYear.AutoSize = true;
             this.nudYear.Location = new System.Drawing.Point(41, 31);
             this.nudYear.Maximum = new decimal(new int[] {
@@ -86,7 +85,7 @@ namespace Chummer
             // 
             // lblMonth
             // 
-            this.lblMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblMonth.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMonth.AutoSize = true;
             this.lblMonth.Location = new System.Drawing.Point(106, 34);
             this.lblMonth.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -98,8 +97,7 @@ namespace Chummer
             // 
             // nudMonth
             // 
-            this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudMonth.AutoSize = true;
             this.nudMonth.Location = new System.Drawing.Point(152, 31);
             this.nudMonth.Maximum = new decimal(new int[] {
@@ -124,7 +122,7 @@ namespace Chummer
             // 
             // lblWeek
             // 
-            this.lblWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblWeek.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblWeek.AutoSize = true;
             this.lblWeek.Location = new System.Drawing.Point(217, 34);
             this.lblWeek.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -136,8 +134,7 @@ namespace Chummer
             // 
             // nudWeek
             // 
-            this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudWeek.AutoSize = true;
             this.nudWeek.Location = new System.Drawing.Point(262, 31);
             this.nudWeek.Maximum = new decimal(new int[] {
@@ -163,10 +160,11 @@ namespace Chummer
             // 
             this.lblCalendarStart.AutoSize = true;
             this.tlpMain.SetColumnSpan(this.lblCalendarStart, 6);
+            this.lblCalendarStart.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblCalendarStart.Location = new System.Drawing.Point(3, 6);
             this.lblCalendarStart.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCalendarStart.Name = "lblCalendarStart";
-            this.lblCalendarStart.Size = new System.Drawing.Size(311, 13);
+            this.lblCalendarStart.Size = new System.Drawing.Size(320, 16);
             this.lblCalendarStart.TabIndex = 0;
             this.lblCalendarStart.Tag = "Label_CalendarStart";
             this.lblCalendarStart.Text = "Enter the year, month, and week number to start the calendar at.";
@@ -253,6 +251,7 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(344, 101);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
