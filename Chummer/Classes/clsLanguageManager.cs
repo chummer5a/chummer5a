@@ -145,8 +145,8 @@ namespace Chummer
                 if (!objNewLanguage.ErrorAlreadyShown)
                 {
                     Program.MainForm.ShowMessageBox(
-                        "language with code " + strlanguage + " could not be loaded for the following reasons:" +
-                        environment.newline + environment.newline + objnewlanguage.errormessage, "cannot load language",
+                        "language with code " + strLanguage + " could not be loaded for the following reasons:" +
+                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "cannot load language",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                     objNewLanguage.ErrorAlreadyShown = true;
                 }
