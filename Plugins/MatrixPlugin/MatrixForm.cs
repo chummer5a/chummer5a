@@ -59,6 +59,7 @@ namespace MatrixPlugin
             lFirewallRes.DataBindings.Add(new Binding("Text", logic, "TotalFirewall"));
             //Action section
             lSkillDescription.DataBindings.Add(new Binding("Text", logic, "currentAction.Description"));
+            lActionType.DataBindings.Add(new Binding("Text", logic, "currentAction.Type"));
             lActionAttributeName.DataBindings.Add(new Binding("Text", logic, "currentAction.ActionAttribute"));
             lActionSkillName.DataBindings.Add(new Binding("Text", logic, "currentAction.ActionSkill"));
             lSkillLimitName.DataBindings.Add(new Binding("Text", logic, "currentAction.Limit"));

@@ -17,8 +17,7 @@ namespace MatrixPlugin
         
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
         List<MatrixAction> Actions;
-        MatrixAction currentAction;
-
+        
         public override string ToString()
         {
             return "Matrix Actions Plugin";
