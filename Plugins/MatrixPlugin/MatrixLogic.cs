@@ -1,4 +1,5 @@
 using Chummer;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -271,6 +272,12 @@ namespace MatrixPlugin
         {
             int result = 0;
             int.TryParse(value, out result);
+            if (result == 0)
+            {
+                CharacterAttrib attribute = _character.GetAttribute(value.Replace("{", "").Replace("}", ""));
+                if (attribute != null)
+                    result = attribute.Base;
+            }
             return result;
         }
 
@@ -281,7 +288,7 @@ namespace MatrixPlugin
             Software = new List<Gear>();
             Actions = matrixActions;
             foreach (Gear gear in character.Gear)
-                if (gear.Category == "Cyberdecks")
+                if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
                     Persons.Add(gear);
                 else if (gear.Category.Contains("Program"))
                     Software.Add(gear);
