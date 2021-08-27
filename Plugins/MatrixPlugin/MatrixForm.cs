@@ -252,7 +252,10 @@ namespace MatrixPlugin
 
         private void ValueChanged(object sender, EventArgs e)
         {
-            
+            int resultValue = (int)-nNoize.Value;
+            if (cHotVR.Checked) resultValue += 2;
+            if (cSilent.Checked) resultValue -= 2;
+            logic.ActionModifier = resultValue;            
         }
 
     }

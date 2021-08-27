@@ -18,6 +18,8 @@ namespace MatrixPlugin
         public List<Gear> Software;
         public List<MatrixAction> Actions;
 
+        private int actionModifier;
+
         private int currentActionIndex = 0;
         public int CurrentActionIndex
         {
@@ -221,7 +223,8 @@ namespace MatrixPlugin
             get =>
                 GetTotalAttribute(CurrentAction.ActionAttribute) +
                 GetTotalSkill(CurrentAction.ActionSkill) +
-                CurrentAction.ActionModifier;
+                CurrentAction.ActionModifier +
+                ActionModifier;
         }
 
         public int DefenceDicePool
@@ -229,7 +232,19 @@ namespace MatrixPlugin
             get =>
                 GetTotalSkill(CurrentAction.DefenceSkill) +
                 GetTotalAttribute(CurrentAction.DefenceAttribute) +
-                CurrentAction.DefenceModifier;
+                CurrentAction.DefenceModifier +
+                ActionModifier;
+        }
+        public int ActionModifier
+        {
+            get => actionModifier;
+            set
+            {
+                actionModifier = value;
+                OnPropertyChanged();
+                OnPropertyChanged("ActionDicePool");
+                OnPropertyChanged("DefenceDicePool");
+            }
         }
 
         public int GetTotalMatrixAttribute(string attribute)
