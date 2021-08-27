@@ -68,14 +68,6 @@ namespace MatrixPlugin
 
         public System.Windows.Forms.UserControl GetOptionsControl()
         {
-            try
-            {
-                return new ucOptions();
-            }
-            catch (Exception e)
-            {
-                Log.Error(e);
-            }
             return null;
         }
 
