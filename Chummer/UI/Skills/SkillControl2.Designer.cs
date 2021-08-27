@@ -37,13 +37,13 @@ namespace Chummer.UI.Skills
         {
             this.components = new System.ComponentModel.Container();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsSkillLabelNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblName = new Chummer.LabelWithToolTip();
             this.pnlAttributes = new System.Windows.Forms.Panel();
             this.btnAttribute = new System.Windows.Forms.Button();
             this.lblModifiedRating = new Chummer.LabelWithToolTip();
             this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tsSkillLabelNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
             this.cmsSkillLabel.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.pnlAttributes.SuspendLayout();
@@ -56,6 +56,21 @@ namespace Chummer.UI.Skills
             this.tsSkillLabelNotes});
             this.cmsSkillLabel.Name = "cmsWeapon";
             this.cmsSkillLabel.Size = new System.Drawing.Size(110, 30);
+            // 
+            // tsSkillLabelNotes
+            // 
+            this.tsSkillLabelNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsSkillLabelNotes.ImageDpi120 = null;
+            this.tsSkillLabelNotes.ImageDpi144 = null;
+            this.tsSkillLabelNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tsSkillLabelNotes.ImageDpi288 = null;
+            this.tsSkillLabelNotes.ImageDpi384 = null;
+            this.tsSkillLabelNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsSkillLabelNotes.Name = "tsSkillLabelNotes";
+            this.tsSkillLabelNotes.Size = new System.Drawing.Size(109, 26);
+            this.tsSkillLabelNotes.Tag = "Menu_Notes";
+            this.tsSkillLabelNotes.Text = "&Notes";
+            this.tsSkillLabelNotes.Click += new System.EventHandler(this.tsSkillLabelNotes_Click);
             // 
             // tlpMain
             // 
@@ -77,7 +92,7 @@ namespace Chummer.UI.Skills
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(143, 24);
+            this.tlpMain.Size = new System.Drawing.Size(143, 23);
             this.tlpMain.TabIndex = 28;
             // 
             // lblName
@@ -104,7 +119,7 @@ namespace Chummer.UI.Skills
             this.pnlAttributes.Margin = new System.Windows.Forms.Padding(0);
             this.pnlAttributes.MinimumSize = new System.Drawing.Size(40, 0);
             this.pnlAttributes.Name = "pnlAttributes";
-            this.pnlAttributes.Size = new System.Drawing.Size(40, 24);
+            this.pnlAttributes.Size = new System.Drawing.Size(40, 23);
             this.pnlAttributes.TabIndex = 33;
             // 
             // btnAttribute
@@ -117,7 +132,7 @@ namespace Chummer.UI.Skills
             this.btnAttribute.Location = new System.Drawing.Point(0, 0);
             this.btnAttribute.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.btnAttribute.Name = "btnAttribute";
-            this.btnAttribute.Size = new System.Drawing.Size(40, 24);
+            this.btnAttribute.Size = new System.Drawing.Size(40, 23);
             this.btnAttribute.TabIndex = 24;
             this.btnAttribute.Text = "ATR";
             this.btnAttribute.UseVisualStyleBackColor = true;
@@ -150,23 +165,8 @@ namespace Chummer.UI.Skills
             this.tlpRight.Name = "tlpRight";
             this.tlpRight.RowCount = 1;
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Size = new System.Drawing.Size(1, 24);
+            this.tlpRight.Size = new System.Drawing.Size(1, 23);
             this.tlpRight.TabIndex = 34;
-            // 
-            // tsSkillLabelNotes
-            // 
-            this.tsSkillLabelNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsSkillLabelNotes.ImageDpi120 = null;
-            this.tsSkillLabelNotes.ImageDpi144 = null;
-            this.tsSkillLabelNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsSkillLabelNotes.ImageDpi288 = null;
-            this.tsSkillLabelNotes.ImageDpi384 = null;
-            this.tsSkillLabelNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
-            this.tsSkillLabelNotes.Name = "tsSkillLabelNotes";
-            this.tsSkillLabelNotes.Size = new System.Drawing.Size(184, 26);
-            this.tsSkillLabelNotes.Tag = "Menu_Notes";
-            this.tsSkillLabelNotes.Text = "&Notes";
-            this.tsSkillLabelNotes.Click += new System.EventHandler(this.tsSkillLabelNotes_Click);
             // 
             // SkillControl2
             // 
@@ -177,7 +177,7 @@ namespace Chummer.UI.Skills
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillControl2";
-            this.Size = new System.Drawing.Size(143, 24);
+            this.Size = new System.Drawing.Size(143, 23);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.SkillControl2_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
