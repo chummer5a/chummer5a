@@ -29,14 +29,14 @@ namespace MatrixPlugin
     }
     public class MatrixAction : INotifyPropertyChanged
     {
-        private static string[] Attributes = { "LOG", "WIL", "INT", "CHA" };
-        private static string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare", "Firewall", "Data Processing", "Attack", "Sleaze" };
+        private static readonly string[] Attributes = { "LOG", "WIL", "INT", "CHA" };
+        private static readonly string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare", "Firewall", "Data Processing", "Attack", "Sleaze" };
 
         private string name;
         private string description;
         private string type;
-        private Action action;
-        private Action defenceAction;
+        private readonly Action action;
+        private readonly Action defenceAction;
 
 
         public string Name { get => name; set => name = value; }

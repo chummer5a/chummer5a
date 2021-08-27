@@ -4,6 +4,7 @@ using Chummer.Backend.Equipment;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace MatrixPlugin
 {
@@ -11,46 +12,38 @@ namespace MatrixPlugin
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private Character _character;
+        private readonly Character character;
 
         public List<IHasMatrixAttributes> Persons;
         public List<Gear> Software;
         public List<MatrixAction> Actions;
 
-        private int _currentActionIndex = 0;
-        public int currentActionIndex
+        private int currentActionIndex = 0;
+        public int CurrentActionIndex
         {
-            get => _currentActionIndex;
+            get => currentActionIndex;
             set
             {
-                _currentActionIndex = value;
+                currentActionIndex = value;
                 OnPropertyChanged();
                 OnPropertyChanged("currentAction");
                 OnPropertyChanged("ActionDicePool");
                 OnPropertyChanged("DefenceDicePool");
             }
         }
-        public MatrixAction currentAction
+        public MatrixAction CurrentAction
         {
-            get => Actions[_currentActionIndex];
-            set
-            {
-                if (Actions.Contains(value))
-                {
-                    _currentActionIndex = Actions.IndexOf(value);
-                    OnPropertyChanged();
-                }
-            }
+            get => Actions[currentActionIndex];
         }
 
-        public IHasMatrixAttributes currentPerson
+        public IHasMatrixAttributes CurrentPerson
         {
-            get => _character.ActiveCommlink;
+            get => character.ActiveCommlink;
             set
             {
-                if (_character.ActiveCommlink != value)
+                if (character.ActiveCommlink != value)
                 {
-                    _character.ActiveCommlink = value;
+                    character.ActiveCommlink = value;
                     OnPropertyChanged();
                     OnPropertyChanged("Attack");
                     OnPropertyChanged("Sleaze");
@@ -70,15 +63,15 @@ namespace MatrixPlugin
 
         public bool OverClocker
         {
-            get => _character.Overclocker;
+            get => character.Overclocker;
         }
 
         public string OverClocked
         {
-            get => currentPerson.Overclocked;
+            get => CurrentPerson.Overclocked;
             set
             {
-                currentPerson.Overclocked = value;
+                CurrentPerson.Overclocked = value;
                 OnPropertyChanged();
                 OnPropertyChanged("AttackMod");
                 OnPropertyChanged("SleazeMod");
@@ -93,12 +86,12 @@ namespace MatrixPlugin
 
         public int Attack
         {
-            get => Parse(currentPerson.Attack);
+            get => Parse(CurrentPerson.Attack);
             set
             {
-                if (currentPerson.Attack != value.ToString())
+                if (CurrentPerson.Attack != value.ToString())
                 {
-                    currentPerson.Attack = value.ToString();
+                    CurrentPerson.Attack = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalAttack");
                 }
@@ -107,12 +100,12 @@ namespace MatrixPlugin
 
         public int AttackMod
         {
-            get => Parse(currentPerson.ModAttack) + (currentPerson.Overclocked == "Attack"?1:0);
+            get => Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack"?1:0);
             set
             {
-                if (currentPerson.ModAttack != value.ToString())
+                if (CurrentPerson.ModAttack != value.ToString())
                 {
-                    currentPerson.ModAttack = value.ToString();
+                    CurrentPerson.ModAttack = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalAttack");
                 }
@@ -121,17 +114,17 @@ namespace MatrixPlugin
 
         public int TotalAttack
         {
-            get => Parse(currentPerson.Attack) + Parse(currentPerson.ModAttack) + (currentPerson.Overclocked == "Attack" ? 1 : 0);
+            get => Parse(CurrentPerson.Attack) + Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack" ? 1 : 0);
         }
 
         public int Sleaze
         {
-            get => Parse(currentPerson.Sleaze);
+            get => Parse(CurrentPerson.Sleaze);
             set
             {
-                if (currentPerson.Sleaze != value.ToString())
+                if (CurrentPerson.Sleaze != value.ToString())
                 {
-                    currentPerson.Sleaze = value.ToString();
+                    CurrentPerson.Sleaze = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalSleaze");
                 }
@@ -140,12 +133,12 @@ namespace MatrixPlugin
 
         public int SleazeMod
         {
-            get => Parse(currentPerson.ModSleaze) + (currentPerson.Overclocked == "Sleaze" ? 1 : 0);
+            get => Parse(CurrentPerson.ModSleaze) + (CurrentPerson.Overclocked == "Sleaze" ? 1 : 0);
             set
             {
-                if (currentPerson.ModSleaze != value.ToString())
+                if (CurrentPerson.ModSleaze != value.ToString())
                 {
-                    currentPerson.ModSleaze = value.ToString();
+                    CurrentPerson.ModSleaze = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalSleaze");
                 }
@@ -154,17 +147,17 @@ namespace MatrixPlugin
 
         public int TotalSleaze
         {
-            get => Parse(currentPerson.Sleaze) + Parse(currentPerson.ModSleaze) + (currentPerson.Overclocked == "Sleaze" ? 1 : 0);
+            get => Parse(CurrentPerson.Sleaze) + Parse(CurrentPerson.ModSleaze) + (CurrentPerson.Overclocked == "Sleaze" ? 1 : 0);
         }
 
         public int DataProcessing
         {
-            get => Parse(currentPerson.DataProcessing);
+            get => Parse(CurrentPerson.DataProcessing);
             set
             {
-                if (currentPerson.DataProcessing != value.ToString())
+                if (CurrentPerson.DataProcessing != value.ToString())
                 {
-                    currentPerson.DataProcessing = value.ToString();
+                    CurrentPerson.DataProcessing = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalDataProcessing");
                 }
@@ -173,12 +166,12 @@ namespace MatrixPlugin
 
         public int DataProcessingMod
         {
-            get => Parse(currentPerson.ModDataProcessing) + (currentPerson.Overclocked == "Data Processing" ? 1 : 0);
+            get => Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "Data Processing" ? 1 : 0);
             set
             {
-                if (currentPerson.ModDataProcessing != value.ToString())
+                if (CurrentPerson.ModDataProcessing != value.ToString())
                 {
-                    currentPerson.ModDataProcessing = value.ToString();
+                    CurrentPerson.ModDataProcessing = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalDataProcessing");
                 }
@@ -187,17 +180,17 @@ namespace MatrixPlugin
 
         public int TotalDataProcessing
         {
-            get => Parse(currentPerson.DataProcessing) + Parse(currentPerson.ModDataProcessing) + (currentPerson.Overclocked == "DataProcessing" ? 1 : 0);
+            get => Parse(CurrentPerson.DataProcessing) + Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
         }
 
         public int Firewall
         {
-            get => Parse(currentPerson.Firewall);
+            get => Parse(CurrentPerson.Firewall);
             set
             {
-                if (currentPerson.Firewall != value.ToString())
+                if (CurrentPerson.Firewall != value.ToString())
                 {
-                    currentPerson.Firewall = value.ToString();
+                    CurrentPerson.Firewall = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalFirewall");
                 }
@@ -206,12 +199,12 @@ namespace MatrixPlugin
 
         public int FirewallMod
         {
-            get => Parse(currentPerson.ModFirewall) + (currentPerson.Overclocked == "Firewall" ? 1 : 0);
+            get => Parse(CurrentPerson.ModFirewall) + (CurrentPerson.Overclocked == "Firewall" ? 1 : 0);
             set
             {
-                if (currentPerson.ModFirewall != value.ToString())
+                if (CurrentPerson.ModFirewall != value.ToString())
                 {
-                    currentPerson.ModFirewall = value.ToString();
+                    CurrentPerson.ModFirewall = value.ToString();
                     OnPropertyChanged();
                     OnPropertyChanged("TotalFirewall");
                 }
@@ -220,26 +213,26 @@ namespace MatrixPlugin
 
         public int TotalFirewall
         {
-            get => Parse(currentPerson.Firewall) + Parse(currentPerson.ModFirewall) + (currentPerson.Overclocked == "Firewall" ? 1 : 0);
+            get => Parse(CurrentPerson.Firewall) + Parse(CurrentPerson.ModFirewall) + (CurrentPerson.Overclocked == "Firewall" ? 1 : 0);
         }
 
         public int ActionDicePool
         {
             get =>
-                getTotalAttribute(currentAction.ActionAttribute) +
-                getTotalSkill(currentAction.ActionSkill) +
-                currentAction.ActionModifier;
+                GetTotalAttribute(CurrentAction.ActionAttribute) +
+                GetTotalSkill(CurrentAction.ActionSkill) +
+                CurrentAction.ActionModifier;
         }
 
         public int DefenceDicePool
         {
             get =>
-                getTotalSkill(currentAction.DefenceSkill) +
-                getTotalAttribute(currentAction.DefenceAttribute) +
-                currentAction.DefenceModifier;
+                GetTotalSkill(CurrentAction.DefenceSkill) +
+                GetTotalAttribute(CurrentAction.DefenceAttribute) +
+                CurrentAction.DefenceModifier;
         }
 
-        public int getTotalMatrixAttribute(string attribute)
+        public int GetTotalMatrixAttribute(string attribute)
         {
             switch (attribute)
             {
@@ -255,26 +248,25 @@ namespace MatrixPlugin
             return 0;
         }
 
-        public int getTotalSkill(string skill)
+        public int GetTotalSkill(string skill)
         {
-            if (_character.SkillsSection.GetActiveSkill(skill) != null)
-                return _character.SkillsSection.GetActiveSkill(skill).TotalBaseRating;
+            if (character.SkillsSection.GetActiveSkill(skill) != null)
+                return character.SkillsSection.GetActiveSkill(skill).TotalBaseRating;
             return 0;
         }
-        public int getTotalAttribute(string attribute)
+        public int GetTotalAttribute(string attribute)
         {
-            if (_character.GetAttribute(attribute) != null)
-                return _character.GetAttribute(attribute).TotalValue;
+            if (character.GetAttribute(attribute) != null)
+                return character.GetAttribute(attribute).TotalValue;
             return 0;
         }
 
         private int Parse(string value)
         {
-            int result = 0;
-            int.TryParse(value, out result);
+            int.TryParse(value, out int result);
             if (result == 0)
             {
-                CharacterAttrib attribute = _character.GetAttribute(value.Replace("{", "").Replace("}", ""));
+                CharacterAttrib attribute = character.GetAttribute(value.Replace("{", "").Replace("}", ""));
                 if (attribute != null)
                     result = attribute.Base;
             }
@@ -283,51 +275,22 @@ namespace MatrixPlugin
 
         public MatrixLogic(Character character, List<MatrixAction> matrixActions)
         {
-            _character = character;
+            this.character = character;
+            Actions = matrixActions;
             Persons = new List<IHasMatrixAttributes>();
             Software = new List<Gear>();
-            Actions = matrixActions;
+            //Load all CyberDecks,Commlinks and Programs to the Lists
             foreach (Gear gear in character.Gear)
                 if (gear.Category == "Cyberdecks" || gear.Category == "Commlinks")
                     Persons.Add(gear);
                 else if (gear.Category.Contains("Program"))
                     Software.Add(gear);
                 else if (gear.Children.Count > 0)
-                    foreach(Gear child in gear.Children)
-                        if (gear.Category.Contains("Program"))
-                            Software.Add(gear);
+                    Software.AddRange(from Gear child in gear.Children
+                                      where gear.Category.Contains("Program")
+                                      select gear);
         }
-
-        private void AddModifier(string attribute,int value)
-        {
-            int prevValue = 0;
-            switch (attribute)
-            {
-                case "Attack":
-                    if (!int.TryParse(currentPerson.ModAttack, out prevValue))
-                        prevValue = 0;
-                    currentPerson.ModAttack = (prevValue + value).ToString();
-                    break;
-                case "Sleaze":
-                    if (!int.TryParse(currentPerson.ModSleaze, out prevValue))
-                        prevValue = 0;
-                    currentPerson.ModSleaze = (prevValue + value).ToString();
-                    break;
-                case "Data Processing":
-                    if (!int.TryParse(currentPerson.ModDataProcessing, out prevValue))
-                        prevValue = 0;
-                    currentPerson.ModDataProcessing = (prevValue + value).ToString();
-                    break;
-                case "Firewall":
-                    if (!int.TryParse(currentPerson.ModFirewall,out prevValue))
-                        prevValue = 0;
-                    currentPerson.ModFirewall = (prevValue + value).ToString();
-                    break;
-                default:
-                    break;
-            }
-        }
-
+        
         public void ActivateSoftware(string software,bool enable)
         {
             switch (software)

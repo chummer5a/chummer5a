@@ -102,7 +102,7 @@ namespace MatrixPlugin
         public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCareer input)
         {
             MatrixLogic logic = new MatrixLogic(input.CharacterObject,Actions);
-            MatrixForm FormFrom = new MatrixForm(Actions, logic);
+            MatrixForm FormFrom = new MatrixForm(logic);
             return new System.Windows.Forms.TabPage[] { FormFrom.MatrixTabPage };
         }
 

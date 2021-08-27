@@ -2,16 +2,15 @@ using Chummer;
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace MatrixPlugin
 {
     public partial class MatrixForm : Form
     {
-        MatrixLogic logic;
+        private readonly MatrixLogic logic;
 
-        public MatrixForm(List<MatrixAction> actions, MatrixLogic logic)
+        public MatrixForm(MatrixLogic logic)
         {
             this.logic = logic;
             
@@ -23,15 +22,15 @@ namespace MatrixPlugin
         private void InitializeContent()
         {
             foreach(var person in logic.Persons)
-                if (person is Gear)
-                    listCyberDecks.Items.Add(((Gear)person).Name);
+                if (person is Gear gear)
+                    listCyberDecks.Items.Add(gear.Name);
             foreach (var software in logic.Software)
                 listSoftware.Items.Add(software.Name);
             foreach (var action in logic.Actions)
                 cbActions.Items.Add(action.Name);
 
             cbActions.SelectedIndex = 0;
-            listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(((Gear)logic.currentPerson).Name);
+            listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(((Gear)logic.CurrentPerson).Name);
         }
 
         private void InitializeBinding()
@@ -66,18 +65,18 @@ namespace MatrixPlugin
             lDefendAttributeName.DataBindings.Add(new Binding("Text", logic, "currentAction.DefenceAttribute"));
             lDefendSkillName.DataBindings.Add(new Binding("Text", logic, "currentAction.DefenceSkill"));
 
-            bindValue(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
-            bindValue(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
-            bindValue(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
-            bindValue(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
-            bindValue(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
+            BindValue(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
+            BindValue(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
+            BindValue(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
+            BindValue(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
+            BindValue(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
             lActionModifier.DataBindings.Add(new Binding("Text", logic, "currentAction.ActionModifier"));
             lDefendModifier.DataBindings.Add(new Binding("Text", logic, "currentAction.DefenceModifier"));
             dpcActionDicePool.DataBindings.Add(new Binding("DicePool", logic, "ActionDicePool"));
             dpcDefendDicePool.DataBindings.Add(new Binding("DicePool", logic, "DefenceDicePool"));
         }
 
-        private void bindValue(Label label, string bind, ConvertEventHandler convertEventHandler)
+        private void BindValue(Label label, string bind, ConvertEventHandler convertEventHandler)
         {
             Binding b = new Binding("Text", logic, bind);
             b.Format += convertEventHandler;
@@ -87,18 +86,18 @@ namespace MatrixPlugin
         private void AttributeToValue(object sender, ConvertEventArgs cevent)
         {
             if (cevent.DesiredType != typeof(string)) return;
-            cevent.Value = logic.getTotalAttribute((string)cevent.Value).ToString();
+            cevent.Value = logic.GetTotalAttribute((string)cevent.Value).ToString();
         }
 
         private void MatrixAttributeToValue(object sender, ConvertEventArgs cevent)
         {
             if (cevent.DesiredType != typeof(string)) return;
-            cevent.Value = logic.getTotalMatrixAttribute((string)cevent.Value).ToString();
+            cevent.Value = logic.GetTotalMatrixAttribute((string)cevent.Value).ToString();
         }
         private void SkillToValue(object sender, ConvertEventArgs cevent)
         {
             if (cevent.DesiredType != typeof(string)) return;
-            cevent.Value = logic.getTotalSkill((string)cevent.Value).ToString();
+            cevent.Value = logic.GetTotalSkill((string)cevent.Value).ToString();
         }
 
         private void AddRadioCheckedBinding(RadioButton radio, object dataSource, string dataMember, string trueValue)
@@ -137,7 +136,7 @@ namespace MatrixPlugin
             cboDP.BeginUpdate();
             cboFirewall.BeginUpdate();
 
-            cboAttack.SelectedIndexChanged -= cbAttribute_SelectedIndexChanged;
+            cboAttack.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboAttack.Enabled = false;
             cboAttack.BindingContext = new BindingContext();
             cboAttack.ValueMember = nameof(ListItem.Value);
@@ -145,10 +144,10 @@ namespace MatrixPlugin
             cboAttack.DataSource = DataSource;
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
-            cboAttack.Enabled = objThis.currentPerson.CanSwapAttributes;
-            cboAttack.SelectedIndexChanged += cbAttribute_SelectedIndexChanged;
+            cboAttack.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboAttack.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
-            cboSleaze.SelectedIndexChanged -= cbAttribute_SelectedIndexChanged;
+            cboSleaze.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboSleaze.Enabled = false;
             cboSleaze.BindingContext = new BindingContext();
             cboSleaze.ValueMember = nameof(ListItem.Value);
@@ -156,10 +155,10 @@ namespace MatrixPlugin
             cboSleaze.DataSource = DataSource;
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
-            cboSleaze.Enabled = objThis.currentPerson.CanSwapAttributes;
-            cboSleaze.SelectedIndexChanged += cbAttribute_SelectedIndexChanged;
+            cboSleaze.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboSleaze.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
-            cboDP.SelectedIndexChanged -= cbAttribute_SelectedIndexChanged;
+            cboDP.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboDP.Enabled = false;
             cboDP.BindingContext = new BindingContext();
             cboDP.ValueMember = nameof(ListItem.Value);
@@ -167,10 +166,10 @@ namespace MatrixPlugin
             cboDP.DataSource = DataSource;
             cboDP.SelectedIndex = 2;
             cboDP.Visible = true;
-            cboDP.Enabled = objThis.currentPerson.CanSwapAttributes;
-            cboDP.SelectedIndexChanged += cbAttribute_SelectedIndexChanged;
+            cboDP.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboDP.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
-            cboFirewall.SelectedIndexChanged -= cbAttribute_SelectedIndexChanged;
+            cboFirewall.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboFirewall.Enabled = false;
             cboFirewall.BindingContext = new BindingContext();
             cboFirewall.ValueMember = nameof(ListItem.Value);
@@ -178,8 +177,8 @@ namespace MatrixPlugin
             cboFirewall.DataSource = DataSource;
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
-            cboFirewall.Enabled = objThis.currentPerson.CanSwapAttributes;
-            cboFirewall.SelectedIndexChanged += cbAttribute_SelectedIndexChanged;
+            cboFirewall.Enabled = objThis.CurrentPerson.CanSwapAttributes;
+            cboFirewall.SelectedIndexChanged += CbAttribute_SelectedIndexChanged;
 
             cboAttack.EndUpdate();
             cboSleaze.EndUpdate();
@@ -191,16 +190,16 @@ namespace MatrixPlugin
             cboFirewall.ResumeLayout();
         }
 
-        private void listSoftware_ItemCheck(object sender, ItemCheckEventArgs e)
+        private void ListSoftware_ItemCheck(object sender, ItemCheckEventArgs e)
         {
             logic.ActivateSoftware(listSoftware.Items[e.Index].ToString(), e.NewValue == CheckState.Checked);
         }
 
-        private void cbAttribute_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbAttribute_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox from = (ComboBox)sender;
             Action<int> funcAttributePropertySetter;
-            int oldValue = 0;
+            int oldValue;
             if (from == cbAttack) {
                 oldValue = logic.Attack;
                 funcAttributePropertySetter = (x => logic.Attack = x);
@@ -239,15 +238,15 @@ namespace MatrixPlugin
             RefreshMatrixAttributeCBOs(logic, cbAttack, cbSleaze, cbDataProc, cbFirewall);
         }
 
-        private void cbActions_SelectedIndexChanged(object sender, EventArgs e)
+        private void CbActions_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbActions.SelectedIndex >= 0 && cbActions.SelectedIndex < logic.Actions.Count)
-                logic.currentActionIndex = cbActions.SelectedIndex;
+                logic.CurrentActionIndex = cbActions.SelectedIndex;
         }
 
-        private void listCyberDecks_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListCyberDecks_SelectedIndexChanged(object sender, EventArgs e)
         {
-            logic.currentPerson = logic.Persons[listCyberDecks.SelectedIndex];
+            logic.CurrentPerson = logic.Persons[listCyberDecks.SelectedIndex];
             RefreshMatrixAttributeCBOs(logic, cbAttack, cbSleaze, cbDataProc, cbFirewall);
         }
 

@@ -124,7 +124,7 @@ namespace MatrixPlugin
             this.listCyberDecks.Name = "listCyberDecks";
             this.listCyberDecks.Size = new System.Drawing.Size(208, 186);
             this.listCyberDecks.TabIndex = 1;
-            this.listCyberDecks.SelectedIndexChanged += new System.EventHandler(this.listCyberDecks_SelectedIndexChanged);
+            this.listCyberDecks.SelectedIndexChanged += new System.EventHandler(this.ListCyberDecks_SelectedIndexChanged);
             // 
             // gbAttributes
             // 
@@ -294,7 +294,7 @@ namespace MatrixPlugin
             this.cbFirewall.Name = "cbFirewall";
             this.cbFirewall.Size = new System.Drawing.Size(44, 21);
             this.cbFirewall.TabIndex = 6;
-            this.cbFirewall.SelectedIndexChanged += new System.EventHandler(this.cbAttribute_SelectedIndexChanged);
+            this.cbFirewall.SelectedIndexChanged += new System.EventHandler(this.CbAttribute_SelectedIndexChanged);
             // 
             // lDataProc
             // 
@@ -313,7 +313,7 @@ namespace MatrixPlugin
             this.cbDataProc.Name = "cbDataProc";
             this.cbDataProc.Size = new System.Drawing.Size(44, 21);
             this.cbDataProc.TabIndex = 4;
-            this.cbDataProc.SelectedIndexChanged += new System.EventHandler(this.cbAttribute_SelectedIndexChanged);
+            this.cbDataProc.SelectedIndexChanged += new System.EventHandler(this.CbAttribute_SelectedIndexChanged);
             // 
             // lSleaze
             // 
@@ -332,7 +332,7 @@ namespace MatrixPlugin
             this.cbSleaze.Name = "cbSleaze";
             this.cbSleaze.Size = new System.Drawing.Size(44, 21);
             this.cbSleaze.TabIndex = 2;
-            this.cbSleaze.SelectedIndexChanged += new System.EventHandler(this.cbAttribute_SelectedIndexChanged);
+            this.cbSleaze.SelectedIndexChanged += new System.EventHandler(this.CbAttribute_SelectedIndexChanged);
             // 
             // lAttack
             // 
@@ -351,7 +351,7 @@ namespace MatrixPlugin
             this.cbAttack.Name = "cbAttack";
             this.cbAttack.Size = new System.Drawing.Size(44, 21);
             this.cbAttack.TabIndex = 0;
-            this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.cbAttribute_SelectedIndexChanged);
+            this.cbAttack.SelectedIndexChanged += new System.EventHandler(this.CbAttribute_SelectedIndexChanged);
             // 
             // gbSoftware
             // 
@@ -370,7 +370,7 @@ namespace MatrixPlugin
             this.listSoftware.Name = "listSoftware";
             this.listSoftware.Size = new System.Drawing.Size(196, 154);
             this.listSoftware.TabIndex = 2;
-            this.listSoftware.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listSoftware_ItemCheck);
+            this.listSoftware.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.ListSoftware_ItemCheck);
             // 
             // gbActions
             // 
@@ -605,7 +605,7 @@ namespace MatrixPlugin
             this.cbActions.Name = "cbActions";
             this.cbActions.Size = new System.Drawing.Size(342, 21);
             this.cbActions.TabIndex = 21;
-            this.cbActions.SelectedIndexChanged += new System.EventHandler(this.cbActions_SelectedIndexChanged);
+            this.cbActions.SelectedIndexChanged += new System.EventHandler(this.CbActions_SelectedIndexChanged);
             // 
             // gbModifier
             // 
