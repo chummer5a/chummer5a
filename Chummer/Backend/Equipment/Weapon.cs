@@ -156,6 +156,65 @@ namespace Chummer.Backend.Equipment
             _objCharacter = objCharacter;
 
             _lstUnderbarrel.CollectionChanged += ChildrenOnCollectionChanged;
+            _lstAccessories.CollectionChanged += AccessoriesOnCollectionChanged;
+        }
+
+        private void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (WeaponAccessory objNewItem in e.NewItems)
+                    {
+                        if (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) || !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus))
+                        {
+                            RecreateInternalClip();
+                            break;
+                        }
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (WeaponAccessory objOldItem in e.OldItems)
+                    {
+                        if (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) || !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus))
+                        {
+                            RecreateInternalClip();
+                            break;
+                        }
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    bool blnCheckNewItems = true;
+                    foreach (WeaponAccessory objOldItem in e.OldItems)
+                    {
+                        if (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) || !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus))
+                        {
+                            RecreateInternalClip();
+                            blnCheckNewItems = false;
+                            break;
+                        }
+                    }
+
+                    if (blnCheckNewItems)
+                    {
+                        foreach (WeaponAccessory objNewItem in e.NewItems)
+                        {
+                            if (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) ||
+                                !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus))
+                            {
+                                RecreateInternalClip();
+                                break;
+                            }
+                        }
+                    }
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    RecreateInternalClip();
+                    break;
+            }
         }
 
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -615,9 +674,16 @@ namespace Chummer.Backend.Equipment
             {
                 if (string.IsNullOrWhiteSpace(clip.AmmoName))
                 {
-                    clip.AmmoName = GetAmmoName(clip.Guid, GlobalOptions.DefaultLanguage);
-                    var ammo = GetAmmo(clip.Guid);
-                    clip.AmmoType = ammo;
+                    if (RequireAmmo)
+                    {
+                        clip.AmmoName = GetAmmoName(clip.Guid, GlobalOptions.DefaultLanguage);
+                        clip.AmmoType = GetAmmo(clip.Guid);
+                    }
+                    else
+                    {
+                        clip.AmmoName = LanguageManager.GetString("String_MountInternal", GlobalOptions.DefaultLanguage);
+                        clip.AmmoType = null;
+                    }
                 }
                 clip.Save(objWriter);
             }
@@ -710,6 +776,86 @@ namespace Chummer.Backend.Equipment
             {string.Empty, "2", "3", "4"});
 
         /// <summary>
+        /// Recreates the single internal clip used by weapons that have an ammo capacity but do not require ammo (i.e. they use charges)
+        /// </summary>
+        private void RecreateInternalClip()
+        {
+            if (RequireAmmo || string.IsNullOrWhiteSpace(Ammo))
+                return;
+
+            int intAmmoCount = -1;
+            Clip objCurrentClip = GetClip(_intActiveAmmoSlot);
+            if (objCurrentClip != null)
+                intAmmoCount = objCurrentClip.Ammo;
+
+            _lstAmmo = new List<Clip>(1);
+            _intActiveAmmoSlot = 1;
+
+            // First try to get the max ammo capacity for this weapon because that will be the capacity of the internal clip
+            List<string> lstCount = new List<string>(1);
+            string ammoString = CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
+            // Determine which loading methods are available to the Weapon.
+            if (ammoString.IndexOfAny('x', '+') != -1 ||
+                ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
+                ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
+                ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
+            {
+                string strWeaponAmmo = ammoString.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
+                strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
+                // Get rid of or belt, and + energy.
+                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                    .Replace(" or belt", " or 250(belt)");
+
+                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                {
+                    lstCount.Add(AmmoCapacity(strAmmo));
+                }
+            }
+            else
+            {
+                // Nothing weird in the ammo string, so just use the number given.
+                string strAmmo = ammoString;
+                int intPos = strAmmo.IndexOf('(');
+                if (intPos != -1)
+                    strAmmo = strAmmo.Substring(0, intPos);
+                lstCount.Add(strAmmo);
+            }
+
+            if (intAmmoCount >= 0)
+            {
+                // We had some existing ammo, so re-use them, but make sure it is not greater than the new ammo capacity we have
+                foreach (string strAmmo in lstCount)
+                {
+                    if (int.TryParse(strAmmo, NumberStyles.Any, GlobalOptions.InvariantCultureInfo
+                        , out int intNewAmmoCount))
+                    {
+                        if (intAmmoCount > intNewAmmoCount)
+                            intAmmoCount = intNewAmmoCount;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                foreach (string strAmmo in lstCount)
+                {
+                    if (int.TryParse(strAmmo, NumberStyles.Any, GlobalOptions.InvariantCultureInfo
+                        , out intAmmoCount))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            // Internal clips always have the same GUID as the weapon itself
+            Clip objInternalClip = new Clip(_guiID, intAmmoCount)
+            {
+                AmmoName = LanguageManager.GetString("String_MountInternal", GlobalOptions.DefaultLanguage)
+            };
+            _lstAmmo.Add(objInternalClip);
+        }
+
+        /// <summary>
         /// Load the CharacterAttribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
@@ -725,43 +871,6 @@ namespace Chummer.Backend.Equipment
             {
                 XmlNode node = GetNode(GlobalOptions.Language);
                 node?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-            }
-
-            if (blnCopy)
-            {
-                _lstAmmo = new List<Clip>(1);
-                _intActiveAmmoSlot = 1;
-            }
-            else
-            {
-                _lstAmmo.Clear();
-                if (objNode["clips"] != null)
-                {
-                    XmlNode clipNode = objNode["clips"];
-
-                    foreach (XmlNode node in clipNode.ChildNodes)
-                    {
-                        Clip objLoopClip = Clip.Load(node);
-                        if (string.IsNullOrWhiteSpace(objLoopClip.AmmoName))
-                        {
-                            objLoopClip.AmmoName = GetAmmoName(objLoopClip.Guid, GlobalOptions.DefaultLanguage);
-                        }
-                        _lstAmmo.Add(objLoopClip);
-                    }
-                }
-                else //Load old clips
-                {
-                    foreach (string s in s_OldClipValues)
-                    {
-                        int ammo = 0;
-                        if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
-                            objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out Guid guid) &&
-                            ammo > 0 && guid != Guid.Empty)
-                        {
-                            _lstAmmo.Add(new Clip(guid, ammo));
-                        }
-                    }
-                }
             }
 
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
@@ -862,6 +971,67 @@ namespace Chummer.Backend.Equipment
                 _strWeaponType = GetNode()?["weapontype"]?.InnerText
                                  ?? XmlManager.LoadXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@type")?.Value
                                  ?? Category.ToLowerInvariant();
+
+            if (blnCopy)
+            {
+                _lstAmmo = new List<Clip>(1);
+                _intActiveAmmoSlot = 1;
+            }
+            else if (!RequireAmmo)
+            {
+                if (objNode["clips"] != null)
+                {
+                    _lstAmmo = new List<Clip>(1);
+                    _intActiveAmmoSlot = 1;
+                    XmlNode clipNode = objNode["clips"];
+
+                    foreach (XmlNode node in clipNode.ChildNodes)
+                    {
+                        Clip objLoopClip = Clip.Load(node);
+                        if (string.IsNullOrWhiteSpace(objLoopClip.AmmoName))
+                        {
+                            objLoopClip.AmmoName = LanguageManager.GetString("String_MountInternal", GlobalOptions.DefaultLanguage);
+                        }
+                        _lstAmmo.Add(objLoopClip);
+                    }
+                }
+                // Legacy for items that were saved before internal clip tracking for weapons that don't need ammo was implemented
+                else
+                {
+                    RecreateInternalClip();
+                }
+            }
+            else
+            {
+                _lstAmmo.Clear();
+                if (objNode["clips"] != null)
+                {
+                    XmlNode clipNode = objNode["clips"];
+
+                    foreach (XmlNode node in clipNode.ChildNodes)
+                    {
+                        Clip objLoopClip = Clip.Load(node);
+                        if (string.IsNullOrWhiteSpace(objLoopClip.AmmoName))
+                        {
+                            objLoopClip.AmmoName = GetAmmoName(objLoopClip.Guid, GlobalOptions.DefaultLanguage);
+                        }
+                        _lstAmmo.Add(objLoopClip);
+                    }
+                }
+                else //Load old clips
+                {
+                    foreach (string s in s_OldClipValues)
+                    {
+                        int ammo = 0;
+                        if (objNode.TryGetInt32FieldQuickly("ammoremaining" + s, ref ammo) &&
+                            objNode.TryGetField("ammoloaded" + s, Guid.TryParse, out Guid guid) &&
+                            ammo > 0 && guid != Guid.Empty)
+                        {
+                            _lstAmmo.Add(new Clip(guid, ammo));
+                        }
+                    }
+                }
+            }
 
             _nodWirelessBonus = objNode["wirelessbonus"];
             objNode.TryGetBoolFieldQuickly("wirelesson", ref _blnWirelessOn);
@@ -1169,18 +1339,28 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("availableammo", GetAvailableAmmo.ToString(objCulture));
             objWriter.WriteElementString("currentammo", GetAmmoName(guiAmmo, strLanguageToPrint));
             objWriter.WriteStartElement("clips");
-            foreach (Clip objClip in _lstAmmo)
+            if (RequireAmmo)
             {
-                objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
-                objClip.Save(objWriter);
+                foreach (Clip objClip in _lstAmmo)
+                {
+                    objClip.AmmoName = GetAmmoName(objClip.Guid, strLanguageToPrint);
+                    objClip.Save(objWriter);
+                }
+
+                foreach (Gear reloadClipGear in GetAmmoReloadable(lstGearToSearch, false))
+                {
+                    Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
+                    reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
+                    reload.AmmoLocation = reloadClipGear.Location != null
+                        ? reloadClipGear.Location.Name
+                        : "available or loaded";
+                    reload.Save(objWriter);
+                    //reloadClipGear.Save(objWriter);
+                }
             }
-            foreach (Gear reloadClipGear in GetAmmoReloadable(lstGearToSearch, false))
+            else
             {
-                Clip reload = new Clip(Guid.Parse(reloadClipGear.InternalId), reloadClipGear.Quantity.ToInt32());
-                reload.AmmoName = GetAmmoName(reload.Guid, strLanguageToPrint);
-                reload.AmmoLocation = reloadClipGear.Location != null ? reloadClipGear.Location.Name : "available or loaded";
-                reload.Save(objWriter);
-                //reloadClipGear.Save(objWriter);
+                GetClip(_intActiveAmmoSlot).Save(objWriter);
             }
             objWriter.WriteEndElement();
 
@@ -1581,7 +1761,13 @@ namespace Chummer.Backend.Equipment
         public string Ammo
         {
             get => _strAmmo;
-            set => _strAmmo = value;
+            set
+            {
+                if (_strAmmo == value)
+                    return;
+                _strAmmo = value;
+                RecreateInternalClip();
+            }
         }
 
         /// <summary>
@@ -5135,11 +5321,83 @@ namespace Chummer.Backend.Equipment
 
         public void Reload(ICollection<Gear> lstGears, TreeView treGearView)
         {
-            List<Gear> lstAmmo = new List<Gear>(1);
             List<string> lstCount = new List<string>(1);
-            bool blnExternalSource = false;
-
             string ammoString = CalculatedAmmo(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
+            if (!RequireAmmo)
+            {
+                // For weapons that have ammo capacities but no requirement for ammo, these are charges
+                // We treat this function differently for them, letting the character reload as many charges as they see fit
+
+                Clip objInternalClip = GetClip(ActiveAmmoSlot);
+                if (objInternalClip == null)
+                {
+                    RecreateInternalClip();
+                    objInternalClip = GetClip(ActiveAmmoSlot);
+                    if (objInternalClip == null)
+                        throw new ArgumentNullException(nameof(objInternalClip));
+                }
+
+                int intCurrentAmmoCount = objInternalClip.Ammo;
+                
+                // Determine which loading methods are available to the Weapon.
+                if (ammoString.IndexOfAny('x', '+') != -1 ||
+                    ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
+                    ammoString.Contains("Special", StringComparison.OrdinalIgnoreCase) ||
+                    ammoString.Contains("External Source", StringComparison.OrdinalIgnoreCase))
+                {
+                    string strWeaponAmmo = ammoString.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
+                    strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
+                    // Get rid of or belt, and + energy.
+                    strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                        .Replace(" or belt", " or 250(belt)");
+
+                    foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        lstCount.Add(AmmoCapacity(strAmmo));
+                    }
+                }
+                else
+                {
+                    // Nothing weird in the ammo string, so just use the number given.
+                    string strAmmo = ammoString;
+                    int intPos = strAmmo.IndexOf('(');
+                    if (intPos != -1)
+                        strAmmo = strAmmo.Substring(0, intPos);
+                    lstCount.Add(strAmmo);
+                }
+
+                int intMaxAmmoCount = 0;
+
+                foreach (string strAmmo in lstCount)
+                {
+                    if (int.TryParse(strAmmo, NumberStyles.Any, GlobalOptions.InvariantCultureInfo
+                        , out intMaxAmmoCount))
+                    {
+                        break;
+                    }
+                }
+
+                if (intMaxAmmoCount <= intCurrentAmmoCount)
+                    return;
+
+                using (frmSelectNumber frmNewAmmoCount = new frmSelectNumber(0)
+                {
+                    AllowCancel = true,
+                    Maximum = intMaxAmmoCount,
+                    Minimum = intCurrentAmmoCount,
+                    Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
+                })
+                {
+                    if (frmNewAmmoCount.ShowDialog(Program.MainForm) != DialogResult.OK)
+                        return;
+
+                    objInternalClip.Ammo = frmNewAmmoCount.SelectedValue.ToInt32();
+                }
+                return;
+            }
+
+            bool blnExternalSource = false;
+            List<Gear> lstAmmo = new List<Gear>(1);
             // Determine which loading methods are available to the Weapon.
             if (ammoString.IndexOfAny('x', '+') != -1 ||
                 ammoString.Contains(" or ", StringComparison.OrdinalIgnoreCase) ||
@@ -5152,11 +5410,14 @@ namespace Chummer.Backend.Equipment
                     blnExternalSource = true;
                     strWeaponAmmo = strWeaponAmmo.FastEscape("External Source", StringComparison.OrdinalIgnoreCase);
                 }
+
                 strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
                 // Get rid of or belt, and + energy.
-                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy").Replace(" or belt", " or 250(belt)");
+                strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
+                    .Replace(" or belt", " or 250(belt)");
 
-                foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                foreach (string strAmmo in
+                    strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
                 {
                     lstCount.Add(AmmoCapacity(strAmmo));
                 }
@@ -5170,6 +5431,7 @@ namespace Chummer.Backend.Equipment
                     strAmmo = strAmmo.Substring(0, intPos);
                 lstCount.Add(strAmmo);
             }
+
             Gear objExternalSource = null;
             if (blnExternalSource)
             {
@@ -5183,8 +5445,7 @@ namespace Chummer.Backend.Equipment
 
             try
             {
-                var ammoToReload = GetAmmoReloadable(lstGears);
-                lstAmmo.AddRange(ammoToReload);
+                lstAmmo.AddRange(GetAmmoReloadable(lstGears));
                 if (objExternalSource != null)
                     lstAmmo.Add(objExternalSource);
             }
@@ -5195,7 +5456,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Show the Ammunition Selection window.
-            using (frmReload frmReloadWeapon = new frmReload
+            using (frmReload frmReloadWeapon = new frmReload(this)
             {
                 Ammo = lstAmmo,
                 Count = lstCount
@@ -5280,50 +5541,57 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public List<Gear> GetAmmoReloadable(ICollection<Gear> lstGears, bool throwExceptions = true)
+        public IEnumerable<Gear> GetAmmoReloadable(ICollection<Gear> lstGears, bool throwExceptions = true)
         {
-            Gear objExternalSource = new Gear(_objCharacter)
-            {
-                Name = LanguageManager.GetString("String_ExternalSource"),
-                SourceID = Guid.Empty
-            };
-            List<Gear> ammoToReload = new List<Gear>();
             if (!RequireAmmo)
+                yield break;
+            bool blnAnyAmmo = false;
+            // Find all of the Ammo for the current Weapon that the character is carrying.
+            if (AmmoCategory == "Gear")
             {
-                // If the Weapon does not require Ammo, just use External Source.
-                ammoToReload.Add(objExternalSource);
+                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0
+                    && Name == x.Name
+                    && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)))
+                {
+                    blnAnyAmmo = true;
+                    yield return objGear;
+                }
+            }
+            else if (Damage.Contains("(f)"))
+            {
+                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0
+                    && x.IsFlechetteAmmo
+                    && x.AmmoForWeaponType == WeaponType
+                    && (string.IsNullOrEmpty(x.Extra)
+                        || x.Extra == AmmoCategory
+                        || (UseSkill == "Throwing Weapons" && Name == x.Name))))
+                {
+                    blnAnyAmmo = true;
+                    yield return objGear;
+                }
             }
             else
             {
-                // Find all of the Ammo for the current Weapon that the character is carrying.
-                if (AmmoCategory == "Gear")
-                    ammoToReload.AddRange(lstGears.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && Name == x.Name
-                        && (string.IsNullOrEmpty(x.Extra) || x.Extra == AmmoCategory)));
-                else if (Damage.Contains("(f)"))
-                    ammoToReload.AddRange(lstGears.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && x.IsFlechetteAmmo
-                        && x.AmmoForWeaponType == WeaponType
-                        && (string.IsNullOrEmpty(x.Extra)
-                            || x.Extra == AmmoCategory
-                            || (UseSkill == "Throwing Weapons" && Name == x.Name))));
-                else
-                    ammoToReload.AddRange(lstGears.DeepWhere(x => x.Children, x =>
-                        x.Quantity > 0
-                        && x.AmmoForWeaponType == WeaponType
-                        && (string.IsNullOrEmpty(x.Extra)
-                            || x.Extra == AmmoCategory
-                            || (UseSkill == "Throwing Weapons" && Name == x.Name))));
-
-                // Make sure the character has some form of Ammunition for this Weapon.
-                if (ammoToReload.Count == 0 && throwExceptions)
+                foreach (Gear objGear in lstGears.DeepWhere(x => x.Children, x =>
+                    x.Quantity > 0
+                    && x.AmmoForWeaponType == WeaponType
+                    && (string.IsNullOrEmpty(x.Extra)
+                        || x.Extra == AmmoCategory
+                        || (UseSkill == "Throwing Weapons" && Name == x.Name))))
                 {
-                    throw new ArgumentException(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_OutOfAmmoType"), CurrentDisplayName));
+                    blnAnyAmmo = true;
+                    yield return objGear;
                 }
             }
-            return ammoToReload;
+
+            // Make sure the character has some form of Ammunition for this Weapon.
+            if (!blnAnyAmmo && throwExceptions)
+            {
+                throw new ArgumentException(string.Format(GlobalOptions.CultureInfo
+                    , LanguageManager.GetString("Message_OutOfAmmoType"), CurrentDisplayName));
+            }
         }
 
         #region UI Methods
@@ -5834,10 +6102,10 @@ namespace Chummer.Backend.Equipment
                     writer.WriteElementString("id", Guid.ToString("D", GlobalOptions.InvariantCultureInfo));
                     writer.WriteElementString("count", Ammo.ToString(GlobalOptions.InvariantCultureInfo));
                     writer.WriteElementString("location", AmmoLocation);
-                    if (this.AmmoType != null)
+                    if (AmmoType != null)
                     {
                         writer.WriteStartElement("ammotype");
-                        writer.WriteElementString("DV", AmmoType.WeaponBonusDamage("en-US"));
+                        writer.WriteElementString("DV", AmmoType.WeaponBonusDamage(GlobalOptions.DefaultLanguage));
                         writer.WriteElementString("BonusRange", AmmoType.WeaponBonusRange.ToString(GlobalOptions.InvariantCultureInfo));
                         writer.WriteEndElement();
                     }

@@ -107,6 +107,7 @@ Application Changes:
 - Gear added to unequipped cyberware, armor, or weapons in some rare cases now no longer results in a bunch of cloned, phantom improvements.
 - Reapplying improvements no longer resets all of a character's Prototype Transhuman bioware.
 - Spells added by bonuses can now have their Extended, Limited, Alchemical and UsesUnarmed properties set using XML attributes in the bonus node.
+- Fixed the handling of weapons with depletable charges not working properly with Chummer's reload button and ammo handling.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -302,6 +303,7 @@ Changed/New Strings:
 - String_ToTop
 - String_ToBottom
 - Message_WeaponMountFull
+- Message_SelectNumberOfCharges
 
 Deleted Strings:
 - Label_Options_NuyenPerBP

@@ -13889,27 +13889,43 @@ namespace Chummer
                             for (int i = 1; i <= objWeapon.AmmoSlots; i++)
                             {
                                 objWeapon.ActiveAmmoSlot = i;
-                                Gear objGear = CharacterObject.Gear.DeepFindById(objWeapon.AmmoLoaded);
-                                string strAmmoName = objGear?.DisplayNameShort(GlobalOptions.Language) ?? LanguageManager.GetString(objWeapon.AmmoRemaining == 0 ? "String_Empty" : "String_ExternalSource");
-                                if (objWeapon.AmmoSlots > 1)
-                                    strAmmoName += strSpace + '(' + string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_SlotNumber"), i.ToString(GlobalOptions.CultureInfo)) + ')';
-
-                                string strPlugins = string.Empty;
-                                if (objGear != null && objGear.Children.Count > 0)
+                                string strAmmoName;
+                                if (objWeapon.RequireAmmo)
                                 {
-                                    StringBuilder sbdPlugins = new StringBuilder();
-                                    foreach (Gear objChild in objGear.Children)
-                                    {
-                                        sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language) + ',' + strSpace);
-                                    }
-                                    strPlugins = sbdPlugins.ToString();
-                                }
-                                // Remove the trailing comma.
-                                if (!string.IsNullOrEmpty(strPlugins))
-                                    strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
+                                    Gear objGear = CharacterObject.Gear.DeepFindById(objWeapon.AmmoLoaded);
+                                    strAmmoName = objGear?.DisplayNameShort(GlobalOptions.Language) ??
+                                                  LanguageManager.GetString(objWeapon.AmmoRemaining > 0
+                                                      ? "String_ExternalSource"
+                                                      : "String_Empty");
+                                    if (objWeapon.AmmoSlots > 1)
+                                        strAmmoName += strSpace + '(' + string.Format(GlobalOptions.CultureInfo
+                                            , LanguageManager.GetString("String_SlotNumber")
+                                            , i.ToString(GlobalOptions.CultureInfo)) + ')';
 
-                                if (!string.IsNullOrEmpty(strPlugins))
-                                    strAmmoName += strSpace + '[' + strPlugins + ']';
+                                    string strPlugins = string.Empty;
+                                    if (objGear != null && objGear.Children.Count > 0)
+                                    {
+                                        StringBuilder sbdPlugins = new StringBuilder();
+                                        foreach (Gear objChild in objGear.Children)
+                                        {
+                                            sbdPlugins.Append(objChild.DisplayNameShort(GlobalOptions.Language) + ',' +
+                                                              strSpace);
+                                        }
+
+                                        strPlugins = sbdPlugins.ToString();
+                                    }
+
+                                    // Remove the trailing comma.
+                                    if (!string.IsNullOrEmpty(strPlugins))
+                                        strPlugins = strPlugins.Substring(0, strPlugins.Length - 1 - strSpace.Length);
+
+                                    if (!string.IsNullOrEmpty(strPlugins))
+                                        strAmmoName += strSpace + '[' + strPlugins + ']';
+                                }
+                                else
+                                    strAmmoName = LanguageManager.GetString(objWeapon.AmmoRemaining > 0
+                                        ? "String_MountInternal"
+                                        : "String_Empty");
                                 lstAmmo.Add(new ListItem(i.ToString(GlobalOptions.InvariantCultureInfo), strAmmoName));
                             }
                             objWeapon.ActiveAmmoSlot = intCurrentSlot;

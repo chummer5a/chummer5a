@@ -8613,6 +8613,10 @@
       <key>Title_SelectNumber</key>
       <text>Select a Number</text>
     </string>
+    <string>
+      <key>Message_SelectNumberOfCharges</key>
+      <text>Select the new number of charges/ammo that {0} should have.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select PACKS Kit Window -->
     <string>

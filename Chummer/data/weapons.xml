@@ -1647,7 +1647,6 @@
       <page>422</page>
       <requireammo>False</requireammo>
       <spec>Batons</spec>
-      <weapontype>energy</weapontype>
     </weapon>
     <weapon>
       <id>b4b3a872-1532-4477-9bf3-76db34dc7bbf</id>
@@ -1979,13 +1978,14 @@
       <ap>-5</ap>
       <mode>0</mode>
       <rc>0</rc>
-      <ammo>0</ammo>
+      <ammo>10</ammo>
       <avail>10R</avail>
       <cost>0</cost>
       <source>SR5</source>
       <page>438</page>
       <hide />
       <spec>Shields</spec>
+      <requireammo>False</requireammo>
     </weapon>
     <weapon>
       <id>c0f77a8a-6bda-489e-aea6-bd4d6b3efe33</id>
@@ -6949,12 +6949,13 @@
       <ap>-5</ap>
       <mode>0</mode>
       <rc>0</rc>
-      <ammo>0</ammo>
+      <ammo>10</ammo>
       <avail>6R</avail>
       <cost>550</cost>
       <source>SR5</source>
       <page>423</page>
       <useskill>Unarmed Combat</useskill>
+      <requireammo>False</requireammo>
     </weapon>
     <weapon>
       <id>fec4a4f8-4432-4bdc-b3b9-83c032d71d63</id>
@@ -6968,7 +6969,7 @@
       <ap>-5</ap>
       <mode>0</mode>
       <rc>0</rc>
-      <ammo>0</ammo>
+      <ammo>10</ammo>
       <avail>0</avail>
       <cost>0</cost>
       <source>SR5</source>
@@ -6977,6 +6978,7 @@
       <hide />
       <spec>Cyber Implants</spec>
       <useskill>Unarmed Combat</useskill>
+      <requireammo>False</requireammo>
     </weapon>
     <weapon>
       <id>63dcfdb6-bbd9-4a58-bbf4-cd35f7614fdc</id>
@@ -14010,6 +14012,7 @@
       <cost>800</cost>
       <source>SL</source>
       <page>46</page>
+      <requireammo>False</requireammo>
     </weapon>
     <weapon>
       <id>fb545997-dcd5-48d4-963e-4f0c797e5982</id>
