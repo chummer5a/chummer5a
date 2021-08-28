@@ -32,7 +32,7 @@ namespace Chummer.UI.Skills
     {
         private bool _blnUpdatingName = true;
         private bool _blnUpdatingSpec = true;
-        private readonly KnowledgeSkill _skill;
+        private readonly KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
         private readonly NumericUpDownEx nudKarma;
@@ -45,48 +45,47 @@ namespace Chummer.UI.Skills
         private readonly Label lblSpec;
         private readonly ButtonWithToolTip btnAddSpec;
 
-        public KnowledgeSkillControl(KnowledgeSkill skill)
+        public KnowledgeSkillControl(KnowledgeSkill objSkill)
         {
-            if (skill == null)
+            if (objSkill == null)
                 return;
-            _skill = skill;
+            _objSkill = objSkill;
             InitializeComponent();
             SuspendLayout();
             tlpMain.SuspendLayout();
             tlpMiddle.SuspendLayout();
             try
             {
-                lblModifiedRating.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.DisplayPool));
-                lblModifiedRating.DoOneWayDataBinding("ToolTipText", _skill, nameof(KnowledgeSkill.PoolToolTip));
+                lblModifiedRating.DoOneWayDataBinding("Text", objSkill, nameof(KnowledgeSkill.DisplayPool));
+                lblModifiedRating.DoOneWayDataBinding("ToolTipText", objSkill, nameof(KnowledgeSkill.PoolToolTip));
 
-                cmdDelete.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowDelete));
+                cmdDelete.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.AllowDelete));
 
                 cboType.BeginUpdate();
-                cboType.PopulateWithListItems(_skill.CharacterObject.SkillsSection.MyKnowledgeTypes);
-                cboType.DoDataBinding("SelectedValue", _skill, nameof(KnowledgeSkill.Type));
-                cboType.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.AllowTypeChange));
+                cboType.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes);
+                cboType.DoDataBinding("SelectedValue", objSkill, nameof(KnowledgeSkill.Type));
+                cboType.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.AllowTypeChange));
                 cboType.EndUpdate();
 
-                lblName.DoOneWayNegatableDataBinding("Visible", _skill, nameof(Skill.AllowNameChange));
-                lblName.DoOneWayDataBinding("Text", _skill, nameof(KnowledgeSkill.WritableName));
-                lblName.DoOneWayDataBinding("ForeColor", _skill, nameof(Skill.PreferredColor));
+                lblName.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(Skill.AllowNameChange));
+                lblName.DoOneWayDataBinding("Text", objSkill, nameof(KnowledgeSkill.WritableName));
+                lblName.DoOneWayDataBinding("ForeColor", objSkill, nameof(Skill.PreferredColor));
 
                 cboName.BeginUpdate();
-                cboName.PopulateWithListItems(_skill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills);
+                cboName.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills);
                 cboName.SelectedIndex = -1;
-                cboName.Text = _skill.WritableName;
-                cboName.DoOneWayDataBinding("Visible", _skill, nameof(Skill.AllowNameChange));
+                cboName.Text = objSkill.WritableName;
+                cboName.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.AllowNameChange));
                 cboName.EndUpdate();
                 _blnUpdatingName = false;
                 _tmrNameChangeTimer = new Timer { Interval = 1000 };
                 _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
 
-                int intMinimumSize;
-                using (Graphics g = CreateGraphics())
-                    intMinimumSize = (int)(25 * g.DpiX / 96.0f);
-
-                if (_skill.CharacterObject.Created)
+                if (objSkill.CharacterObject.Created)
                 {
+                    int intMinimumSize;
+                    using (Graphics g = CreateGraphics())
+                        intMinimumSize = (int)(25 * g.DpiX / 96.0f);
                     lblRating = new Label
                     {
                         Anchor = AnchorStyles.Right,
@@ -110,17 +109,13 @@ namespace Chummer.UI.Skills
                     };
                     btnCareerIncrease.Click += btnCareerIncrease_Click;
 
-                    lblRating.DoOneWayNegatableDataBinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
-                    lblRating.DoOneWayDataBinding("Text", _skill, nameof(Skill.Rating));
+                    lblRating.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(KnowledgeSkill.IsNativeLanguage));
+                    lblRating.DoOneWayDataBinding("Text", objSkill, nameof(Skill.Rating));
 
-                    btnCareerIncrease.DoOneWayDataBinding("Visible", _skill, nameof(KnowledgeSkill.AllowUpgrade));
-                    btnCareerIncrease.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanUpgradeCareer));
-                    btnCareerIncrease.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.UpgradeToolTip));
-
-                    lblRating.UpdateLightDarkMode();
-                    lblRating.TranslateWinForm();
-                    btnCareerIncrease.UpdateLightDarkMode();
-                    btnCareerIncrease.TranslateWinForm();
+                    btnCareerIncrease.DoOneWayDataBinding("Visible", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
+                    btnCareerIncrease.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
+                    btnCareerIncrease.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.UpgradeToolTip));
+                    
                     tlpMain.Controls.Add(lblRating, 1, 0);
                     tlpMain.Controls.Add(btnCareerIncrease, 2, 0);
 
@@ -146,17 +141,13 @@ namespace Chummer.UI.Skills
                     };
                     btnAddSpec.Click += btnAddSpec_Click;
 
-                    lblSpec.DoOneWayNegatableDataBinding("Visible", _skill, nameof(KnowledgeSkill.IsNativeLanguage));
-                    lblSpec.DoOneWayDataBinding("Text", _skill, nameof(Skill.CurrentDisplaySpecialization));
+                    lblSpec.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(KnowledgeSkill.IsNativeLanguage));
+                    lblSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
 
-                    btnAddSpec.DoOneWayDataBinding("Visible", _skill, nameof(Skill.CanHaveSpecs));
-                    btnAddSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanAffordSpecialization));
-                    btnAddSpec.DoOneWayDataBinding("ToolTipText", _skill, nameof(Skill.AddSpecToolTip));
-
-                    lblSpec.UpdateLightDarkMode();
-                    lblSpec.TranslateWinForm();
-                    btnAddSpec.UpdateLightDarkMode();
-                    btnAddSpec.TranslateWinForm();
+                    btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
+                    btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
+                    btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
+                    
                     tlpMiddle.SetColumnSpan(lblSpec, 2);
                     tlpMiddle.Controls.Add(lblSpec, 1, 0);
                     tlpMiddle.Controls.Add(btnAddSpec, 3, 0);
@@ -182,19 +173,15 @@ namespace Chummer.UI.Skills
                         Name = "nudKarma"
                     };
 
-                    nudSkill.DoOneWayDataBinding("Visible", _skill.CharacterObject.SkillsSection,
+                    nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject.SkillsSection,
                         nameof(SkillsSection.HasKnowledgePoints));
-                    nudSkill.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
-                    nudSkill.DoDataBinding("Value", _skill, nameof(Skill.Base));
+                    nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
+                    nudSkill.DoDataBinding("Value", objSkill, nameof(Skill.Base));
                     nudSkill.InterceptMouseWheel = GlobalOptions.InterceptMode;
-                    nudKarma.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.AllowUpgrade));
-                    nudKarma.DoDataBinding("Value", _skill, nameof(Skill.Karma));
+                    nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
+                    nudKarma.DoDataBinding("Value", objSkill, nameof(Skill.Karma));
                     nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
-
-                    nudSkill.UpdateLightDarkMode();
-                    nudSkill.TranslateWinForm();
-                    nudKarma.UpdateLightDarkMode();
-                    nudKarma.TranslateWinForm();
+                    
                     tlpMain.Controls.Add(nudSkill, 1, 0);
                     tlpMain.Controls.Add(nudKarma, 2, 0);
 
@@ -227,38 +214,32 @@ namespace Chummer.UI.Skills
                         UseVisualStyleBackColor = true
                     };
 
-                    chkNativeLanguage.DoOneWayDataBinding("Visible", _skill, nameof(Skill.IsLanguage));
-                    chkNativeLanguage.Enabled = _skill.IsNativeLanguage ||
-                                                _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
-                    chkNativeLanguage.DoDataBinding("Checked", _skill, nameof(Skill.IsNativeLanguage));
+                    chkNativeLanguage.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.IsLanguage));
+                    chkNativeLanguage.Enabled = objSkill.IsNativeLanguage ||
+                                                objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
+                    chkNativeLanguage.DoDataBinding("Checked", objSkill, nameof(Skill.IsNativeLanguage));
 
                     cboSpec.BeginUpdate();
-                    cboSpec.PopulateWithListItems(_skill.CGLSpecializations);
-                    cboSpec.SelectedIndex = -1;
-                    cboSpec.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
-                    cboSpec.TextChanged += cboSpec_TextChanged;
+                    cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
                     cboSpec.EndUpdate();
+                    cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
+                    cboSpec.Text = objSkill.CurrentDisplaySpecialization;
+                    cboSpec.TextChanged += cboSpec_TextChanged;
                     _blnUpdatingSpec = false;
                     _tmrSpecChangeTimer = new Timer { Interval = 1000 };
                     _tmrSpecChangeTimer.Tick += SpecChangeTimer_Tick;
 
-                    chkKarma.DoOneWayDataBinding("Enabled", _skill, nameof(Skill.CanHaveSpecs));
-                    chkKarma.DoDataBinding("Checked", _skill, nameof(Skill.BuyWithKarma));
-
-                    chkNativeLanguage.UpdateLightDarkMode();
-                    chkNativeLanguage.TranslateWinForm();
-                    cboSpec.UpdateLightDarkMode();
-                    cboSpec.TranslateWinForm();
-                    chkKarma.UpdateLightDarkMode();
-                    chkKarma.TranslateWinForm();
+                    chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
+                    chkKarma.DoDataBinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
+                    
                     tlpMiddle.Controls.Add(chkNativeLanguage, 1, 0);
                     tlpMiddle.Controls.Add(cboSpec, 2, 0);
                     tlpMiddle.Controls.Add(chkKarma, 3, 0);
                 }
 
-                if (_skill.ForcedName)
+                if (objSkill.ForcedName)
                 {
-                    this.DoOneWayDataBinding("Enabled", _skill, nameof(KnowledgeSkill.Enabled));
+                    this.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.Enabled));
                 }
 
                 KnowledgeSkillControl_DpiChangedAfterParent(null, EventArgs.Empty);
@@ -270,8 +251,8 @@ namespace Chummer.UI.Skills
                 tlpMiddle.ResumeLayout();
                 tlpMain.ResumeLayout();
                 ResumeLayout(true);
-                _skill.PropertyChanged += Skill_PropertyChanged;
-                _skill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
+                objSkill.PropertyChanged += Skill_PropertyChanged;
+                objSkill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
             }
         }
 
@@ -279,7 +260,7 @@ namespace Chummer.UI.Skills
         {
             if (e.PropertyName == nameof(SkillsSection.HasAvailableNativeLanguageSlots) && chkNativeLanguage != null)
             {
-                chkNativeLanguage.Enabled = _skill.IsNativeLanguage || _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
+                chkNativeLanguage.Enabled = _objSkill.IsNativeLanguage || _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
             }
         }
 
@@ -294,8 +275,8 @@ namespace Chummer.UI.Skills
                 case nameof(Skill.CGLSpecializations):
                     if (cboSpec != null)
                     {
-                        string strOldSpec = _skill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
-                        IReadOnlyList<ListItem> lstSpecializations = _skill.CGLSpecializations;
+                        string strOldSpec = _objSkill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
+                        IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
                         cboSpec.QueueThreadSafe(() =>
                         {
                             cboSpec.BeginUpdate();
@@ -320,7 +301,7 @@ namespace Chummer.UI.Skills
                 case nameof(KnowledgeSkill.WritableName):
                     if (!_blnUpdatingName)
                     {
-                        string strWritableName = _skill.WritableName;
+                        string strWritableName = _objSkill.WritableName;
                         cboName.QueueThreadSafe(() => cboName.Text = strWritableName);
                     }
                     if (blnAll)
@@ -330,7 +311,7 @@ namespace Chummer.UI.Skills
                 case nameof(KnowledgeSkill.Specialization):
                     if (!_blnUpdatingSpec)
                     {
-                        string strWritableSpec = _skill.Specialization;
+                        string strWritableSpec = _objSkill.Specialization;
                         cboSpec.QueueThreadSafe(() => cboSpec.Text = strWritableSpec);
                     }
                     if (blnAll)
@@ -340,8 +321,8 @@ namespace Chummer.UI.Skills
                 case nameof(Skill.IsNativeLanguage):
                     if (chkNativeLanguage != null)
                     {
-                        bool blnEnabled = _skill.IsNativeLanguage ||
-                                          _skill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
+                        bool blnEnabled = _objSkill.IsNativeLanguage ||
+                                          _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
                         chkNativeLanguage.QueueThreadSafe(() => chkNativeLanguage.Enabled = blnEnabled);
                     }
                     break;
@@ -352,8 +333,8 @@ namespace Chummer.UI.Skills
         {
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
-            _skill.PropertyChanged -= Skill_PropertyChanged;
-            _skill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
+            _objSkill.PropertyChanged -= Skill_PropertyChanged;
+            _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -362,34 +343,34 @@ namespace Chummer.UI.Skills
 
         private void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            int upgradeKarmaCost = _skill.UpgradeKarmaCost;
+            int upgradeKarmaCost = _objSkill.UpgradeKarmaCost;
 
             if (upgradeKarmaCost == -1)
                 return; //TODO: more descriptive
             string confirmstring = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"),
-                _skill.CurrentDisplayName, _skill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+                _objSkill.CurrentDisplayName, _objSkill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
 
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            _skill.Upgrade();
+            _objSkill.Upgrade();
         }
 
         private void btnAddSpec_Click(object sender, EventArgs e)
         {
-            int price = _skill.CharacterObject.Options.KarmaKnowledgeSpecialization;
+            int price = _objSkill.CharacterObject.Options.KarmaKnowledgeSpecialization;
 
             decimal decExtraSpecCost = 0;
-            int intTotalBaseRating = _skill.TotalBaseRating;
+            int intTotalBaseRating = _objSkill.TotalBaseRating;
             decimal decSpecCostMultiplier = 1.0m;
-            foreach (Improvement objLoopImprovement in _skill.CharacterObject.Improvements)
+            foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
             {
                 if (objLoopImprovement.Minimum <= intTotalBaseRating
                     && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                        || (objLoopImprovement.Condition == "career") == _skill.CharacterObject.Created
-                        || (objLoopImprovement.Condition == "create") != _skill.CharacterObject.Created)
+                        || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created
+                        || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created)
                     && objLoopImprovement.Enabled
-                    && objLoopImprovement.ImprovedName == _skill.SkillCategory)
+                    && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
                 {
                     switch (objLoopImprovement.ImproveType)
                     {
@@ -413,14 +394,14 @@ namespace Chummer.UI.Skills
             if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
                 return;
 
-            using (frmSelectSpec selectForm = new frmSelectSpec(_skill) { Mode = "Knowledge" })
+            using (frmSelectSpec selectForm = new frmSelectSpec(_objSkill) { Mode = "Knowledge" })
             {
                 selectForm.ShowDialog(Program.MainForm);
 
                 if (selectForm.DialogResult != DialogResult.OK)
                     return;
 
-                _skill.AddSpecialization(selectForm.SelectedItem);
+                _objSkill.AddSpecialization(selectForm.SelectedItem);
             }
 
             if (ParentForm is CharacterShared frmParent)
@@ -431,8 +412,8 @@ namespace Chummer.UI.Skills
         {
             if (!CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteKnowledgeSkill")))
                 return;
-            _skill.UnbindSkill();
-            _skill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_skill);
+            _objSkill.UnbindSkill();
+            _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_objSkill);
         }
 
         [UsedImplicitly]
@@ -527,7 +508,7 @@ namespace Chummer.UI.Skills
         {
             _tmrNameChangeTimer.Stop();
             _blnUpdatingName = true;
-            _skill.WritableName = cboName.Text;
+            _objSkill.WritableName = cboName.Text;
             _blnUpdatingName = false;
         }
 
@@ -535,7 +516,7 @@ namespace Chummer.UI.Skills
         {
             _tmrSpecChangeTimer.Stop();
             _blnUpdatingSpec = true;
-            _skill.Specialization = cboSpec.Text;
+            _objSkill.Specialization = cboSpec.Text;
             _blnUpdatingSpec = false;
         }
     }

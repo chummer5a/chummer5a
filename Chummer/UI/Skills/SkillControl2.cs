@@ -102,12 +102,11 @@ namespace Chummer.UI.Skills
                     tlpRight.Controls.Add(cmdDelete, 4, 0);
                 }
 
-                int intMinimumSize;
-                using (Graphics g = CreateGraphics())
-                    intMinimumSize = (int)(25 * g.DpiX / 96.0f);
-
                 if (objSkill.CharacterObject.Created)
                 {
+                    int intMinimumSize;
+                    using (Graphics g = CreateGraphics())
+                        intMinimumSize = (int)(25 * g.DpiX / 96.0f);
                     lblCareerRating = new Label
                     {
                         Anchor = AnchorStyles.Right,
@@ -264,10 +263,10 @@ namespace Chummer.UI.Skills
                         };
                         cboSpec.BeginUpdate();
                         cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
-                        cboSpec.SelectedIndex = -1;
-                        cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
-                        cboSpec.TextChanged += cboSpec_TextChanged;
                         cboSpec.EndUpdate();
+                        cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
+                        cboSpec.Text = objSkill.CurrentDisplaySpecialization;
+                        cboSpec.TextChanged += cboSpec_TextChanged;
                         _blnUpdatingSpec = false;
                         _tmrSpecChangeTimer = new Timer { Interval = 1000 };
                         _tmrSpecChangeTimer.Tick += SpecChangeTimer_Tick;
@@ -286,6 +285,11 @@ namespace Chummer.UI.Skills
                         chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
                         tlpRight.Controls.Add(cboSpec, 0, 0);
                         tlpRight.Controls.Add(chkKarma, 1, 0);
+
+                        // Hacky way of fixing a weird UI issue caused by items of a combobox only being populated from the DataSource after the combobox is added
+                        _blnUpdatingSpec = true;
+                        cboSpec.Text = objSkill.CurrentDisplaySpecialization;
+                        _blnUpdatingSpec = false;
                     }
                 }
 
@@ -354,7 +358,7 @@ namespace Chummer.UI.Skills
                         goto case nameof(Skill.Specialization);
                     break;
 
-                case nameof(KnowledgeSkill.Specialization):
+                case nameof(Skill.Specialization):
                     if (!_blnUpdatingSpec)
                     {
                         string strWritableSpec = _objSkill.Specialization;
