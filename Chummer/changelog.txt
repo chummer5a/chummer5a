@@ -105,6 +105,7 @@ Application Changes:
 - Modifications that come with a vehicle weapon mount are now marked as such.
 - Black Market Pipeline's discount can now be applied to weapon mounts and can now be toggled freely during character creation. Fixes #4553.
 - Gear added to unequipped cyberware, armor, or weapons in some rare cases now no longer results in a bunch of cloned, phantom improvements.
+- Reapplying improvements no longer resets all of a character's Prototype Transhuman bioware.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

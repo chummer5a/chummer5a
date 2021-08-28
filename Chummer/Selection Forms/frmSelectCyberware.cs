@@ -130,7 +130,7 @@ namespace Chummer
                 txtSearch.Enabled = false;
             }
 
-            chkPrototypeTranshuman.Visible = _objCharacter.PrototypeTranshuman > 0 && _objMode == Mode.Bioware && !_objCharacter.Created;
+            chkPrototypeTranshuman.Visible = _objCharacter.IsPrototypeTranshuman && _objMode == Mode.Bioware && !_objCharacter.Created;
 
             PopulateCategories();
             // Select the first Category in the list.
