@@ -82,6 +82,7 @@ namespace Chummer
                 Image = lstImages[0];
                 return;
             }
+
             int intWidth = Width;
             int intHeight = Height;
             intWidth -= Padding.Left + Padding.Right;
