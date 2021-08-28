@@ -1647,6 +1647,7 @@
       <page>422</page>
       <requireammo>False</requireammo>
       <spec>Batons</spec>
+      <weapontype>energy</weapontype>
     </weapon>
     <weapon>
       <id>b4b3a872-1532-4477-9bf3-76db34dc7bbf</id>

@@ -154,6 +154,7 @@ Data Changes:
 - Removed Barrel weapon accessory slots from assault cannons, grenade launchers, and missile launchers that had it. As per the core rulebook, these weapons cannot mount barrel-mounted accessories or modifications.
 - Fixed various incorrect page references for weapons added by Krime Katalog.
 - The custom ruleset to exclude German sourcebooks now also excludes Shadowrun 2050.
+- Fixed Stun Baton not being able to be reloaded with peak-energy discharge units.
 
 Changed/New Strings:
 - String_ContactPoints
