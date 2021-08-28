@@ -282,7 +282,7 @@ namespace Chummer.UI.Table
             {
                 Control content = cell.Content;
                 string strText = funcTooltipExtractor(item);
-                tooltip.SetToolTip(content ?? cell, strText);
+                tooltip.SetToolTip(content ?? cell, strText.CleanForHtml());
             }
         }
 

@@ -37,7 +37,7 @@ namespace Chummer
                 {
                     _strToolTipText = value;
                     if (!string.IsNullOrEmpty(value))
-                        _tt.SetToolTip(this, value);
+                        _tt.SetToolTip(this, value.CleanForHtml());
                 }
             }
         }
