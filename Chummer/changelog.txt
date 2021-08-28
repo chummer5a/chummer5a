@@ -108,6 +108,7 @@ Application Changes:
 - Reapplying improvements no longer resets all of a character's Prototype Transhuman bioware.
 - Spells added by bonuses can now have their Extended, Limited, Alchemical and UsesUnarmed properties set using XML attributes in the bonus node.
 - Fixed the handling of weapons with depletable charges not working properly with Chummer's reload button and ammo handling.
+- Fixed a rare crash that would happen when Chummer tried handling certain texts that contained nothing but spaces.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
