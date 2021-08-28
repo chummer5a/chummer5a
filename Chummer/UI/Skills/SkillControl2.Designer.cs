@@ -92,7 +92,7 @@ namespace Chummer.UI.Skills
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(143, 23);
+            this.tlpMain.Size = new System.Drawing.Size(143, 25);
             this.tlpMain.TabIndex = 28;
             // 
             // lblName
@@ -100,7 +100,8 @@ namespace Chummer.UI.Skills
             this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblName.AutoSize = true;
             this.lblName.ContextMenuStrip = this.cmsSkillLabel;
-            this.lblName.Location = new System.Drawing.Point(3, 5);
+            this.lblName.Location = new System.Drawing.Point(3, 6);
+            this.lblName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(41, 13);
             this.lblName.TabIndex = 0;
@@ -119,7 +120,7 @@ namespace Chummer.UI.Skills
             this.pnlAttributes.Margin = new System.Windows.Forms.Padding(0);
             this.pnlAttributes.MinimumSize = new System.Drawing.Size(40, 0);
             this.pnlAttributes.Name = "pnlAttributes";
-            this.pnlAttributes.Size = new System.Drawing.Size(40, 23);
+            this.pnlAttributes.Size = new System.Drawing.Size(40, 25);
             this.pnlAttributes.TabIndex = 33;
             // 
             // btnAttribute
@@ -132,7 +133,7 @@ namespace Chummer.UI.Skills
             this.btnAttribute.Location = new System.Drawing.Point(0, 0);
             this.btnAttribute.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.btnAttribute.Name = "btnAttribute";
-            this.btnAttribute.Size = new System.Drawing.Size(40, 23);
+            this.btnAttribute.Size = new System.Drawing.Size(40, 25);
             this.btnAttribute.TabIndex = 24;
             this.btnAttribute.Text = "ATR";
             this.btnAttribute.UseVisualStyleBackColor = true;
@@ -143,7 +144,8 @@ namespace Chummer.UI.Skills
             this.lblModifiedRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.lblModifiedRating.AutoSize = true;
             this.lblModifiedRating.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblModifiedRating.Location = new System.Drawing.Point(90, 5);
+            this.lblModifiedRating.Location = new System.Drawing.Point(90, 6);
+            this.lblModifiedRating.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblModifiedRating.MinimumSize = new System.Drawing.Size(50, 0);
             this.lblModifiedRating.Name = "lblModifiedRating";
             this.lblModifiedRating.Size = new System.Drawing.Size(50, 13);
@@ -165,7 +167,7 @@ namespace Chummer.UI.Skills
             this.tlpRight.Name = "tlpRight";
             this.tlpRight.RowCount = 1;
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpRight.Size = new System.Drawing.Size(1, 23);
+            this.tlpRight.Size = new System.Drawing.Size(1, 25);
             this.tlpRight.TabIndex = 34;
             // 
             // SkillControl2
@@ -177,7 +179,7 @@ namespace Chummer.UI.Skills
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillControl2";
-            this.Size = new System.Drawing.Size(143, 23);
+            this.Size = new System.Drawing.Size(143, 25);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.SkillControl2_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);

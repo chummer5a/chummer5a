@@ -39,7 +39,8 @@ namespace Chummer.UI.Skills
             // 
             this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(3, 5);
+            this.lblName.Location = new System.Drawing.Point(3, 6);
+            this.lblName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblName.Name = "lblName";
             this.lblName.Size = new System.Drawing.Size(66, 13);
             this.lblName.TabIndex = 6;
@@ -63,7 +64,7 @@ namespace Chummer.UI.Skills
             this.tlpMain.Name = "tlpMain";
             this.tlpMain.RowCount = 1;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(215, 24);
+            this.tlpMain.Size = new System.Drawing.Size(72, 25);
             this.tlpMain.TabIndex = 25;
             // 
             // SkillGroupControl
@@ -75,7 +76,7 @@ namespace Chummer.UI.Skills
             this.DoubleBuffered = true;
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillGroupControl";
-            this.Size = new System.Drawing.Size(215, 24);
+            this.Size = new System.Drawing.Size(72, 25);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.SkillGroupControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);

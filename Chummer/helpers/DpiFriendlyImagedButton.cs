@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -58,11 +57,14 @@ namespace Chummer
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
             int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
             int intHeight = intWidth;
+            intWidth -= Padding.Left + Padding.Right;
+            intHeight -= Padding.Top + Padding.Bottom;
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in lstImages)
             {
-                int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) + (intWidth - objLoopImage.Width).RaiseToPower(2);
+                int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) +
+                                    (intWidth - objLoopImage.Width).RaiseToPower(2);
                 // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
                 if (objLoopImage.Height >= intHeight)
                     intLoopMetric -= 1;
@@ -225,6 +227,8 @@ namespace Chummer
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
             int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
             int intHeight = intWidth;
+            intWidth -= Padding.Left + Padding.Right;
+            intHeight -= Padding.Top + Padding.Bottom;
             int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
                                    (intWidth - Image.Width).RaiseToPower(2);
             int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
@@ -248,6 +252,12 @@ namespace Chummer
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
+            RefreshImage();
+        }
+
+        protected override void OnPaddingChanged(EventArgs e)
+        {
+            base.OnPaddingChanged(e);
             RefreshImage();
         }
     }

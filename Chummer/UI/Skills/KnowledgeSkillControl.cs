@@ -90,6 +90,7 @@ namespace Chummer.UI.Skills
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
                         MinimumSize = new Size(intMinimumSize, 0),
                         Name = "lblRating",
                         Text = "00",
@@ -102,7 +103,7 @@ namespace Chummer.UI.Skills
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
                         ImageDpi96 = Resources.add,
                         ImageDpi192 = Resources.add1,
-                        Margin = new Padding(3, 0, 3, 0),
+                        MinimumSize = new Size(24, 24),
                         Name = "btnCareerIncrease",
                         Padding = new Padding(1),
                         UseVisualStyleBackColor = true
@@ -123,6 +124,7 @@ namespace Chummer.UI.Skills
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
+                        Margin = new Padding(3, 6, 3, 6),
                         Name = "lblSpec",
                         Text = "[SPEC]",
                         TextAlign = ContentAlignment.MiddleLeft
@@ -134,7 +136,7 @@ namespace Chummer.UI.Skills
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
                         ImageDpi96 = Resources.add,
                         ImageDpi192 = Resources.add1,
-                        Margin = new Padding(3, 0, 3, 0),
+                        MinimumSize = new Size(24, 24),
                         Name = "btnAddSpec",
                         Padding = new Padding(1),
                         UseVisualStyleBackColor = true
@@ -190,7 +192,7 @@ namespace Chummer.UI.Skills
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
                         DefaultColorScheme = true,
-                        Margin = new Padding(3, 0, 3, 0),
+                        Margin = new Padding(3, 4, 3, 4),
                         Name = "chkNativeLanguage",
                         Tag = "Skill_NativeLanguageLong",
                         Text = "Native",
@@ -210,6 +212,7 @@ namespace Chummer.UI.Skills
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
                         DefaultColorScheme = true,
+                        Margin = new Padding(3, 4, 3, 4),
                         Name = "chkKarma",
                         UseVisualStyleBackColor = true
                     };
