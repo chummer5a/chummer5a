@@ -1,4 +1,5 @@
 using Chummer;
+using Chummer.WinFormsExtensions;
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
@@ -36,44 +37,45 @@ namespace MatrixPlugin
         private void InitializeBinding()
         {
             //Attribute section
-            lOverClocker.DataBindings.Add(new Binding("Enabled", logic, "OverClocker"));
+            WinFormsExtensions.DoDataBinding(lOverClocker, "Enabled", logic, "OverClocker");
+            WinFormsExtensions.DoDataBinding(lOverClocker, "Enabled", logic, "OverClocker");
 
-            rbOverAttack.DataBindings.Add(new Binding("Enabled", logic, "OverClocker"));
-            rbOverSleaze.DataBindings.Add(new Binding("Enabled", logic, "OverClocker"));
-            rbOverDataProc.DataBindings.Add(new Binding("Enabled", logic, "OverClocker"));
-            rbOverFirewall.DataBindings.Add(new Binding("Enabled", logic, "OverClocker"));
+            WinFormsExtensions.DoDataBinding(rbOverAttack, "Enabled", logic, "OverClocker");
+            WinFormsExtensions.DoDataBinding(rbOverSleaze, "Enabled", logic, "OverClocker");
+            WinFormsExtensions.DoDataBinding(rbOverDataProc, "Enabled", logic, "OverClocker");
+            WinFormsExtensions.DoDataBinding(rbOverFirewall, "Enabled", logic, "OverClocker");
             AddRadioCheckedBinding(rbOverAttack, logic, "Overclocked", "Attack");
             AddRadioCheckedBinding(rbOverSleaze, logic, "Overclocked", "Sleaze");
             AddRadioCheckedBinding(rbOverDataProc, logic, "Overclocked", "DataProcessing");
             AddRadioCheckedBinding(rbOverFirewall, logic, "Overclocked", "Firewall");
 
-            lAttackMod.DataBindings.Add(new Binding("Text", logic, "AttackMod"));
-            lSleazeMod.DataBindings.Add(new Binding("Text", logic, "SleazeMod"));
-            lDataProcMod.DataBindings.Add(new Binding("Text", logic, "DataProcessingMod"));
-            lFirewallMod.DataBindings.Add(new Binding("Text", logic, "FirewallMod"));
+            WinFormsExtensions.DoDataBinding(lAttackMod, "Text", logic, "AttackMod");
+            WinFormsExtensions.DoDataBinding(lSleazeMod, "Text", logic, "SleazeMod");
+            WinFormsExtensions.DoDataBinding(lDataProcMod, "Text", logic, "DataProcessingMod");
+            WinFormsExtensions.DoDataBinding(lFirewallMod, "Text", logic, "FirewallMod");
 
-            lAttackRes.DataBindings.Add(new Binding("Text", logic, "TotalAttack"));
-            lSleazeRes.DataBindings.Add(new Binding("Text", logic, "TotalSleaze"));
-            lDataProcRes.DataBindings.Add(new Binding("Text", logic, "TotalDataProcessing"));
-            lFirewallRes.DataBindings.Add(new Binding("Text", logic, "TotalFirewall"));
+            WinFormsExtensions.DoDataBinding(lAttackRes, "Text", logic, "TotalAttack");
+            WinFormsExtensions.DoDataBinding(lSleazeRes, "Text", logic, "TotalSleaze");
+            WinFormsExtensions.DoDataBinding(lDataProcRes, "Text", logic, "TotalDataProcessing");
+            WinFormsExtensions.DoDataBinding(lFirewallRes, "Text", logic, "TotalFirewall");
             //Action section
-            lSkillDescription.DataBindings.Add(new Binding("Text", logic, "currentAction.Description"));
-            lActionType.DataBindings.Add(new Binding("Text", logic, "currentAction.Type"));
-            lActionAttributeName.DataBindings.Add(new Binding("Text", logic, "currentAction.ActionAttribute"));
-            lActionSkillName.DataBindings.Add(new Binding("Text", logic, "currentAction.ActionSkill"));
-            lSkillLimitName.DataBindings.Add(new Binding("Text", logic, "currentAction.Limit"));
-            lDefendAttributeName.DataBindings.Add(new Binding("Text", logic, "currentAction.DefenceAttribute"));
-            lDefendSkillName.DataBindings.Add(new Binding("Text", logic, "currentAction.DefenceSkill"));
+            WinFormsExtensions.DoDataBinding(lSkillDescription, "Text", logic, "currentAction.Description");
+            WinFormsExtensions.DoDataBinding(lActionType, "Text", logic, "currentAction.Type");
+            WinFormsExtensions.DoDataBinding(lActionAttributeName, "Text", logic, "currentAction.ActionAttribute");
+            WinFormsExtensions.DoDataBinding(lActionSkillName, "Text", logic, "currentAction.ActionSkill");
+            WinFormsExtensions.DoDataBinding(lSkillLimitName, "Text", logic, "currentAction.Limit");
+            WinFormsExtensions.DoDataBinding(lDefendAttributeName, "Text", logic, "currentAction.DefenceAttribute");
+            WinFormsExtensions.DoDataBinding(lDefendSkillName, "Text", logic, "currentAction.DefenceSkill");
 
             BindValue(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
             BindValue(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
             BindValue(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
             BindValue(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
             BindValue(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
-            lActionModifier.DataBindings.Add(new Binding("Text", logic, "currentAction.ActionModifier"));
-            lDefendModifier.DataBindings.Add(new Binding("Text", logic, "currentAction.DefenceModifier"));
-            dpcActionDicePool.DataBindings.Add(new Binding("DicePool", logic, "ActionDicePool"));
-            dpcDefendDicePool.DataBindings.Add(new Binding("DicePool", logic, "DefenceDicePool"));
+            WinFormsExtensions.DoDataBinding(lActionModifier, "Text", logic, "currentAction.ActionModifier");
+            WinFormsExtensions.DoDataBinding(lDefendModifier, "Text", logic, "currentAction.DefenceModifier");
+            WinFormsExtensions.DoDataBinding(dpcActionDicePool, "DicePool", logic, "ActionDicePool");
+            WinFormsExtensions.DoDataBinding(dpcDefendDicePool, "DicePool", logic, "DefenceDicePool");
         }
 
         private void BindValue(Label label, string bind, ConvertEventHandler convertEventHandler)
