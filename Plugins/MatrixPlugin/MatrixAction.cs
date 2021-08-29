@@ -4,54 +4,13 @@ using System.Xml;
 
 namespace MatrixPlugin
 {
-    public class Action
-    {
-        private string skill;
-        private string attribute;
-        private int modifier;
-        private string limit;
-        private int limitModifier;
-
-        public string Skill { get => skill; set => skill = value; }
-        public string Attribute { get => attribute; set => attribute = value; }
-        public int Modifier { get => modifier; set => modifier = value; }
-        public string Limit { get => limit; set => limit = value; }
-        public int LimitModifier { get => limitModifier; set => limitModifier = value; }
-
-        public Action(string skill = "", string attribute = "", int modifier = 0, string limit = "", int limitModifier = 0)
-        {
-            this.skill = skill;
-            this.attribute = attribute;
-            this.modifier = modifier;
-            this.limit = limit;
-            this.limitModifier = limitModifier;
-        }
-    }
     public class MatrixAction : INotifyPropertyChanged
     {
         private static readonly string[] Attributes = { "LOG", "WIL", "INT", "CHA" };
         private static readonly string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare", "Firewall", "Data Processing", "Attack", "Sleaze" };
 
-        private string name;
-        private string description;
-        private string type;
         private readonly Action action;
         private readonly Action defenceAction;
-
-
-        public string Name { get => name; set => name = value; }
-        public string Description { get => description; set => description = value; }
-        public string Type { get => type; set => type = value; }
-        public string ActionSkill { get => action.Skill; set => action.Skill = value; }
-        public string ActionAttribute { get => action.Attribute; set => action.Attribute = value; }
-        public int ActionModifier { get => action.Modifier; set => action.Modifier = value; }
-        public string Limit { get => action.Limit; set => action.Limit = value; }
-        public int LimitModifier { get => action.LimitModifier; set => action.LimitModifier = value; }
-        public string DefenceSkill { get => defenceAction.Skill; set => defenceAction.Skill = value; }
-        public string DefenceAttribute { get => defenceAction.Attribute; set => defenceAction.Attribute = value; }
-        public int DefenceModifier { get => defenceAction.Modifier; set => defenceAction.Modifier = value; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public MatrixAction()
         {
@@ -106,5 +65,21 @@ namespace MatrixPlugin
                 DefenceModifier = int.Parse(result);
             }
         }
+
+        #region Properties
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
+        public string ActionSkill { get => action.Skill; set => action.Skill = value; }
+        public string ActionAttribute { get => action.Attribute; set => action.Attribute = value; }
+        public int ActionModifier { get => action.Modifier; set => action.Modifier = value; }
+        public string Limit { get => action.Limit; set => action.Limit = value; }
+        public int LimitModifier { get => action.LimitModifier; set => action.LimitModifier = value; }
+        public string DefenceSkill { get => defenceAction.Skill; set => defenceAction.Skill = value; }
+        public string DefenceAttribute { get => defenceAction.Attribute; set => defenceAction.Attribute = value; }
+        public int DefenceModifier { get => defenceAction.Modifier; set => defenceAction.Modifier = value; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        #endregion
+
     }
 }
