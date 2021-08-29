@@ -12,7 +12,7 @@ namespace MatrixPlugin
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private readonly Character character;
+        private readonly Character _character;
 
         public List<IHasMatrixAttributes> Persons;
         public List<Gear> Software;
@@ -33,19 +33,16 @@ namespace MatrixPlugin
                 OnPropertyChanged("DefenceDicePool");
             }
         }
-        public MatrixAction CurrentAction
-        {
-            get => Actions[currentActionIndex];
-        }
-
+        public MatrixAction CurrentAction => Actions[currentActionIndex];
+        
         public IHasMatrixAttributes CurrentPerson
         {
-            get => character.ActiveCommlink;
+            get => _character.ActiveCommlink;
             set
             {
-                if (character.ActiveCommlink != value)
+                if (_character.ActiveCommlink != value)
                 {
-                    character.ActiveCommlink = value;
+                    _character.ActiveCommlink = value;
                     OnPropertyChanged();
                     OnPropertyChanged("Attack");
                     OnPropertyChanged("Sleaze");
@@ -63,10 +60,8 @@ namespace MatrixPlugin
             }
         }
 
-        public bool OverClocker
-        {
-            get => character.Overclocker;
-        }
+        public bool OverClocker => _character.Overclocker;
+        
 
         public string OverClocked
         {
@@ -114,10 +109,8 @@ namespace MatrixPlugin
             }
         }
 
-        public int TotalAttack
-        {
-            get => Parse(CurrentPerson.Attack) + Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack" ? 1 : 0);
-        }
+        public int TotalAttack => Parse(CurrentPerson.Attack) + Parse(CurrentPerson.ModAttack) + (CurrentPerson.Overclocked == "Attack" ? 1 : 0);
+        
 
         public int Sleaze
         {
@@ -147,10 +140,7 @@ namespace MatrixPlugin
             }
         }
 
-        public int TotalSleaze
-        {
-            get => Parse(CurrentPerson.Sleaze) + Parse(CurrentPerson.ModSleaze) + (CurrentPerson.Overclocked == "Sleaze" ? 1 : 0);
-        }
+        public int TotalSleaze => Parse(CurrentPerson.Sleaze) + Parse(CurrentPerson.ModSleaze) + (CurrentPerson.Overclocked == "Sleaze" ? 1 : 0);
 
         public int DataProcessing
         {
@@ -180,10 +170,8 @@ namespace MatrixPlugin
             }
         }
 
-        public int TotalDataProcessing
-        {
-            get => Parse(CurrentPerson.DataProcessing) + Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
-        }
+        public int TotalDataProcessing => Parse(CurrentPerson.DataProcessing) + Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
+        
 
         public int Firewall
         {
@@ -213,28 +201,20 @@ namespace MatrixPlugin
             }
         }
 
-        public int TotalFirewall
-        {
-            get => Parse(CurrentPerson.Firewall) + Parse(CurrentPerson.ModFirewall) + (CurrentPerson.Overclocked == "Firewall" ? 1 : 0);
-        }
+        public int TotalFirewall => Parse(CurrentPerson.Firewall) + Parse(CurrentPerson.ModFirewall) + (CurrentPerson.Overclocked == "Firewall" ? 1 : 0);
+        
 
-        public int ActionDicePool
-        {
-            get =>
-                GetTotalAttribute(CurrentAction.ActionAttribute) +
+        public int ActionDicePool => GetTotalAttribute(CurrentAction.ActionAttribute) +
                 GetTotalSkill(CurrentAction.ActionSkill) +
                 CurrentAction.ActionModifier +
                 ActionModifier;
-        }
+        
 
-        public int DefenceDicePool
-        {
-            get =>
-                GetTotalSkill(CurrentAction.DefenceSkill) +
+        public int DefenceDicePool => GetTotalSkill(CurrentAction.DefenceSkill) +
                 GetTotalAttribute(CurrentAction.DefenceAttribute) +
                 CurrentAction.DefenceModifier +
                 ActionModifier;
-        }
+        
         public int ActionModifier
         {
             get => actionModifier;
@@ -265,14 +245,14 @@ namespace MatrixPlugin
 
         public int GetTotalSkill(string skill)
         {
-            if (character.SkillsSection.GetActiveSkill(skill) != null)
-                return character.SkillsSection.GetActiveSkill(skill).TotalBaseRating;
+            if (_character.SkillsSection.GetActiveSkill(skill) != null)
+                return _character.SkillsSection.GetActiveSkill(skill).TotalBaseRating;
             return 0;
         }
         public int GetTotalAttribute(string attribute)
         {
-            if (character.GetAttribute(attribute) != null)
-                return character.GetAttribute(attribute).TotalValue;
+            if (_character.GetAttribute(attribute) != null)
+                return _character.GetAttribute(attribute).TotalValue;
             return 0;
         }
 
@@ -281,7 +261,7 @@ namespace MatrixPlugin
             int.TryParse(value, out int result);
             if (result == 0)
             {
-                CharacterAttrib attribute = character.GetAttribute(value.Replace("{", "").Replace("}", ""));
+                CharacterAttrib attribute = _character.GetAttribute(value.Replace("{", "").Replace("}", ""));
                 if (attribute != null)
                     result = attribute.Base;
             }
@@ -290,7 +270,7 @@ namespace MatrixPlugin
 
         public MatrixLogic(Character character, List<MatrixAction> matrixActions)
         {
-            this.character = character;
+            this._character = character;
             Actions = matrixActions;
             Persons = new List<IHasMatrixAttributes>();
             Software = new List<Gear>();
