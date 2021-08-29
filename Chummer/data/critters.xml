@@ -46,6 +46,7 @@
     <category>Toxic Spirits</category>
     <category>Warforms</category>
     <category>Extraplanar Travelers</category>
+    <category>Necro Spirits</category>
   </categories>
   <metatypes>
     <!-- Region Mundane Critters -->
@@ -53037,5 +53038,479 @@
       <page>135</page>
     </metatype>
     <!-- End Region -->
+    <!--Region Necro Spirits-->
+    <metatype>
+      <id>3ba5a627-736f-4ce7-98d8-163b58d0665e</id>
+      <name>Carcass Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+3</bodmin>
+      <bodmax>F+3</bodmax>
+      <bodaug>F+3</bodaug>
+      <agimin>F</agimin>
+      <agimax>F</agimax>
+      <agiaug>F</agiaug>
+      <reamin>F</reamin>
+      <reamax>F</reamax>
+      <reaaug>F</reaaug>
+      <strmin>F+2</strmin>
+      <strmax>F+2</strmax>
+      <straug>F+2</straug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <inimin>(F*2)</inimin>
+      <inimax>(F*2)</inimax>
+      <iniaug>(F*2)</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower select="Claw/Bite: DV 0P, AP 0">Natural Weapon</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+          <optionalpower>Venom</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Animal Control</power>
+        <power>Astral Form</power>
+        <power>Deathly Aura</power>
+        <power select="Smell, Hearing. Low-Light Vision">Enhanced Senses</power>
+        <power>Fear</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Movement</power>
+        <power>Sapience</power>
+        <power>Possession</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>52</page>
+    </metatype>
+    <metatype>
+      <id>6e3dd953-b445-41a1-9e0b-6886b33e0b44</id>
+      <name>Corpse Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F-1</agimin>
+      <agimax>F-1</agimax>
+      <agiaug>F-1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Concealment</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Movement</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+          <optionalpower>Psychokinesis</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Concealment</power>
+        <power>Confusion</power>
+        <power>Deathly Aura</power>
+        <power select="Thermographic Vision, Low-Light Vision">Enhanced Senses</power>
+        <power>Guard</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Influence</power>
+        <power>Sapience</power>
+        <power>Possession</power>
+        <power>Search</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <metatype>
+      <id>64336dfd-9ef5-4ddc-8ed2-ad8f8785223b</id>
+      <name>Palefire Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+2</bodmin>
+      <bodmax>F+2</bodmax>
+      <bodaug>F+2</bodaug>
+      <agimin>F+1</agimin>
+      <agimax>F+1</agimax>
+      <agiaug>F+1</agiaug>
+      <reamin>F+3</reamin>
+      <reamax>F+3</reamax>
+      <reaaug>F+3</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+3</inimin>
+      <inimax>(F*2)+3</inimax>
+      <iniaug>(F*2)+3</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Guard</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Accident</power>
+        <power>Astral Form</power>
+        <power>Confusion</power>
+        <power select="Fire">Elemental Attack</power>
+        <power>Deathly Aura</power>
+        <power>Engulf</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <metatype>
+      <id>7223d9d8-640f-4a1b-9e08-ece2e096948d</id>
+      <name>Rot Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+3</bodmin>
+      <bodmax>F+3</bodmax>
+      <bodaug>F+3</bodaug>
+      <agimin>F-1</agimin>
+      <agimax>F-1</agimax>
+      <agiaug>F-1</agiaug>
+      <reamin>F+2</reamin>
+      <reamax>F+2</reamax>
+      <reaaug>F+2</reaaug>
+      <strmin>F-2</strmin>
+      <strmax>F-2</strmax>
+      <straug>F-2</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F</logmin>
+      <logmax>F</logmax>
+      <logaug>F</logaug>
+      <intmin>F+1</intmin>
+      <intmax>F+1</intmax>
+      <intaug>F+1</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Accident</optionalpower>
+          <optionalpower>Confusion</optionalpower>
+          <optionalpower>Movement</optionalpower>
+          <optionalpower>Noxious Breath</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Concealment</power>
+        <power>Confusion</power>
+        <power>Deathly Aura</power>
+        <power>Engulf</power>
+        <power>Fear</power>
+        <power>Guard</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Magical Guard</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Silence</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Counterspelling</skill>
+        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <metatype>
+      <id>ccaafb9d-ebbb-4c5f-bd64-124eab6cb2ff</id>
+      <name>Detritus Spirit</name>
+      <category>Necro Spirits</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F+5</bodmin>
+      <bodmax>F+5</bodmax>
+      <bodaug>F+5</bodaug>
+      <agimin>F-3</agimin>
+      <agimax>F-3</agimax>
+      <agiaug>F-3</agiaug>
+      <reamin>F-1</reamin>
+      <reamax>F-1</reamax>
+      <reaaug>F-1</reaaug>
+      <strmin>F+4</strmin>
+      <strmax>F+4</strmax>
+      <straug>F+4</straug>
+      <wilmin>F</wilmin>
+      <wilmax>F</wilmax>
+      <wilaug>F</wilaug>
+      <logmin>F-1</logmin>
+      <logmax>F-1</logmax>
+      <logaug>F-1</logaug>
+      <intmin>F</intmin>
+      <intmax>F</intmax>
+      <intaug>F</intaug>
+      <chamin>F-1</chamin>
+      <chamax>F-1</chamax>
+      <chaaug>F-1</chaaug>
+      <inimin>(F*2)+2</inimin>
+      <inimax>(F*2)+2</inimax>
+      <iniaug>(F*2)+2</iniaug>
+      <edgmin>F/2</edgmin>
+      <edgmax>F/2</edgmax>
+      <edgaug>F/2</edgaug>
+      <magmin>F</magmin>
+      <magmax>F</magmax>
+      <magaug>F</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/2/2</walk>
+      <run>4/4/4</run>
+      <sprint>5/5/5</sprint>
+      <bonus>
+        <enableattribute>
+          <name>MAG</name>
+          <min>F</min>
+          <max>F</max>
+          <aug>F</aug>
+          <val>F</val>
+        </enableattribute>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+        <initiativepass>1</initiativepass>
+        <optionalpowers count="floor({MAG} div 3)">
+          <optionalpower>Elemental Attack</optionalpower>
+          <optionalpower>Engulf</optionalpower>
+          <optionalpower>Fear</optionalpower>
+          <optionalpower>Paralyzing Touch</optionalpower>
+          <optionalpower>Search</optionalpower>
+        </optionalpowers>
+      </bonus>
+      <powers>
+        <power>Astral Form</power>
+        <power>Binding</power>
+        <power>Deathly Aura</power>
+        <power>Guard</power>
+        <power select="Normal Weapons, Poison, Pathogens">Immunity</power>
+        <power>Possession</power>
+        <power>Sapience</power>
+        <power>Search</power>
+      </powers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Exotic Ranged Weapon</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>FA</source>
+      <page>53</page>
+    </metatype>
+    <!--End Region Necro Spirits-->
   </metatypes>
 </chummer>
