@@ -6,9 +6,9 @@
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
 
-    Chummer5a is distributed in the hope that it will be useful,
+    Chummer5a is distributed in the hope that it {WIL}l be useful,
     but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    MER{CHA}NTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
     GNU General Public License for more details.
 
     You should have received a copy of the GNU General Public License
@@ -22,7 +22,7 @@
     <tradition>
       <id>e4308e13-9e29-4d44-bb6e-015bcca41559</id>
       <name>Brocken Witches</name>
-      <drain>WIL + INT</drain>
+      <drain>{WIL} + {INT}</drain>
       <source>SG</source>
       <page>42</page>
       <spirits>
@@ -36,7 +36,7 @@
     <tradition>
       <id>da78c84d-0494-483e-a15e-c17ddf28f6aa</id>
       <name>Faustian</name>
-      <drain>WIL + LOG</drain>
+      <drain>{WIL} + {LOG}</drain>
       <source>SG</source>
       <page>45</page>
       <spirits>
@@ -50,7 +50,7 @@
     <tradition>
       <id>241cbc2e-5411-43af-a3c1-7fd3a2709fa2</id>
       <name>Sorbic Theurgy</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>51</page>
       <spirits>
@@ -64,7 +64,7 @@
     <tradition>
       <id>72374b26-89da-4ca3-aab7-b25a58c7a130</id>
       <name>Street Witches</name>
-      <drain>WIL + CHA</drain>
+      <drain>{WIL} + {CHA}</drain>
       <source>SG</source>
       <page>52</page>
       <spirits>

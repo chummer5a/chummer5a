@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="NLog" targetNamespace="http://www.nlog-project.org/schemas/NLog.xsd" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.nlog-project.org/schemas/NLog.xsd">
   <xs:element name="nlog" type="NLogConfiguration" />
   <xs:complexType name="NLogConfiguration">
@@ -2763,6 +2763,7 @@
           <xs:element name="proxyAddress" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="encoding" minOccurs="0" maxOccurs="1" type="xs:string" />
           <xs:element name="url" minOccurs="0" maxOccurs="1" type="xs:anyURI" />
+          <xs:element name="userAgent" minOccurs="0" maxOccurs="1" type="Layout" />
           <xs:element name="escapeDataNLogLegacy" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="escapeDataRfc3986" minOccurs="0" maxOccurs="1" type="xs:boolean" />
           <xs:element name="preAuthenticate" minOccurs="0" maxOccurs="1" type="xs:boolean" />
@@ -2814,6 +2815,11 @@
         <xs:attribute name="url" type="xs:anyURI">
           <xs:annotation>
             <xs:documentation>Web service URL.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="userAgent" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Value of the User-agent HTTP header.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="escapeDataNLogLegacy" type="xs:boolean">

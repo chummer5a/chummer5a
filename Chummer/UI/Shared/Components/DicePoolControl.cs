@@ -24,7 +24,6 @@ namespace Chummer.UI.Shared.Components
 {
     public partial class DicePoolControl : UserControl
     {
-        private Character _objCharacter;
         private int _intDicePool;
         private bool _blnCanBeRolled = true;
         private bool _blnCanEverBeRolled = Utils.IsDesignerMode;
@@ -34,30 +33,20 @@ namespace Chummer.UI.Shared.Components
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-        }
-
-        private void DicePoolControl_Load(object sender, EventArgs e)
-        {
-            if (_objCharacter != null)
-                return;
-
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
-            else
-            {
-                Utils.BreakIfDebug();
-                _objCharacter = new Character();
-            }
 
             CanEverBeRolled = CanEverBeRolled || GlobalOptions.AllowSkillDiceRolling;
-
-            cmdRoll.ToolTipText = LanguageManager.GetString("Tip_DiceRoller");
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;
+            cmdRoll.ToolTipText = LanguageManager.GetString("Tip_DiceRoller");
         }
 
         private void cmdRoll_Click(object sender, EventArgs e)
         {
-            Program.MainForm?.OpenDiceRollerWithPool(_objCharacter, DicePool);
+            if (Program.MainForm == null)
+                return;
+            Character objCharacter = null;
+            if (ParentForm is CharacterShared frmParent)
+                objCharacter = frmParent.CharacterObject;
+            Program.MainForm.OpenDiceRollerWithPool(objCharacter, DicePool);
         }
 
         public void SetLabelToolTip(string caption)
@@ -70,11 +59,10 @@ namespace Chummer.UI.Shared.Components
             get => _blnCanBeRolled;
             set
             {
-                if (_blnCanBeRolled != value)
-                {
-                    _blnCanBeRolled = value;
-                    cmdRoll.Visible = value && CanEverBeRolled;
-                }
+                if (_blnCanBeRolled == value)
+                    return;
+                _blnCanBeRolled = value;
+                cmdRoll.Visible = value && CanEverBeRolled;
             }
         }
 
@@ -83,11 +71,10 @@ namespace Chummer.UI.Shared.Components
             get => _blnCanEverBeRolled;
             set
             {
-                if (_blnCanEverBeRolled != value)
-                {
-                    _blnCanEverBeRolled = value;
-                    cmdRoll.Visible = CanBeRolled && value;
-                }
+                if (_blnCanEverBeRolled == value)
+                    return;
+                _blnCanEverBeRolled = value;
+                cmdRoll.Visible = CanBeRolled && value;
             }
         }
 

@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -83,8 +82,11 @@ namespace Chummer
                 Image = lstImages[0];
                 return;
             }
+
             int intWidth = Width;
             int intHeight = Height;
+            intWidth -= Padding.Left + Padding.Right;
+            intHeight -= Padding.Top + Padding.Bottom;
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in lstImages)
@@ -109,7 +111,7 @@ namespace Chummer
             get => base.Image;
             set
             {
-                if (!Images.Any())
+                if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                     ImageDpi96 = value;
                 base.Image = value;
             }
@@ -251,6 +253,8 @@ namespace Chummer
             }
             int intWidth = Width;
             int intHeight = Height;
+            intWidth -= Padding.Left + Padding.Right;
+            intHeight -= Padding.Top + Padding.Bottom;
             int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
                                    (intWidth - Image.Width).RaiseToPower(2);
             int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +

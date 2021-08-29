@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -98,6 +97,8 @@ namespace Chummer
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
             int intWidth = Math.Min(Width, Height);
             int intHeight = Math.Min(Width, Height);
+            intWidth -= Padding.Left + Padding.Right;
+            intHeight -= Padding.Top + Padding.Bottom;
             Image objBestImage = null;
             int intBestImageMetric = int.MaxValue;
             foreach (Image objLoopImage in lstImages)
@@ -265,6 +266,8 @@ namespace Chummer
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
             int intWidth = Math.Min(Width, Height);
             int intHeight = Math.Min(Width, Height);
+            intWidth -= Padding.Left + Padding.Right;
+            intHeight -= Padding.Top + Padding.Bottom;
             int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
                                    (intWidth - Image.Width).RaiseToPower(2);
             int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +

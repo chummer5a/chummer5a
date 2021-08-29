@@ -62,6 +62,7 @@ namespace Chummer.UI.Skills
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         Font = new Font("Microsoft Sans Serif", 8.25F, FontStyle.Bold, GraphicsUnit.Point, 0),
+                        Margin = new Padding(3, 6, 3, 6),
                         MinimumSize = new Size(intMinimumSize, 0),
                         Name = "lblGroupRating",
                         TextAlign = ContentAlignment.MiddleRight
@@ -73,7 +74,7 @@ namespace Chummer.UI.Skills
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
                         ImageDpi96 = Resources.add,
                         ImageDpi192 = Resources.add1,
-                        Margin = new Padding(3, 0, 3, 0),
+                        MinimumSize = new Size(24, 24),
                         Name = "btnCareerIncrease",
                         Padding = new Padding(1),
                         UseVisualStyleBackColor = true

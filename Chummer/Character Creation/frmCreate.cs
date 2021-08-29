@@ -9854,9 +9854,9 @@ namespace Chummer
                             chkCyberwareBlackMarketDiscount.Checked = false;
                         }
 
-                        chkPrototypeTranshuman.Visible = CharacterObject.PrototypeTranshuman != 0;
+                        chkPrototypeTranshuman.Visible = CharacterObject.IsPrototypeTranshuman;
                         chkPrototypeTranshuman.Enabled = objCyberware.Parent == null && objCyberware.SourceType == Improvement.ImprovementSource.Bioware;
-                        chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman;
+                        chkPrototypeTranshuman.Checked = objCyberware.PrototypeTranshuman && CharacterObject.IsPrototypeTranshuman;
 
                         // gpbCyberwareMatrix
                         if (gpbCyberwareMatrix.Visible)

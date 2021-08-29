@@ -442,6 +442,13 @@ namespace Chummer
                     }
                 }
 
+                // If all we had was whitespace, return a string with just a single space character
+                if (intLoopWhitespaceCount >= intCurrent)
+                {
+                    ArrayPool<char>.Shared.Return(achrNewChars);
+                    return " ";
+                }
+
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                 // If the last char is whitespace, we don't copy that, either.
                 string strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
@@ -478,6 +485,10 @@ namespace Chummer
                         chrLastAddedCharacter = chrLoop;
                     }
                 }
+
+                // If all we had was whitespace, return a string with just a single space character
+                if (intLoopWhitespaceCount >= intCurrent)
+                    return " ";
 
                 // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                 // If the last char is whitespace, we don't copy that, either.

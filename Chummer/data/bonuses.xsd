@@ -155,7 +155,19 @@
           </xs:sequence>
         </xs:complexType>
       </xs:element>
-      <xs:element name="addspell" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+      <xs:element name="addspell" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="alchemical" type="boolean" use="optional" />
+              <xs:attribute name="extended" type="boolean" use="optional" />
+              <xs:attribute name="limited" type="boolean" use="optional" />
+              <xs:attribute name="select" type="xs:string" use="optional" />
+              <xs:attribute name="usesunarmed" type="boolean" use="optional" />
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="addspirit" minOccurs="0" maxOccurs="unbounded">
         <xs:complexType>
           <xs:sequence>
