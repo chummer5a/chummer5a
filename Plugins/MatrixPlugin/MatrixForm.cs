@@ -1,5 +1,4 @@
 using Chummer;
-using Chummer.WinFormsExtensions;
 using Chummer.Backend.Equipment;
 using System;
 using System.Collections.Generic;
@@ -37,52 +36,51 @@ namespace MatrixPlugin
         private void InitializeBinding()
         {
             //Attribute section
-            WinFormsExtensions.DoDataBinding(lOverClocker, "Enabled", logic, "OverClocker");
-            WinFormsExtensions.DoDataBinding(lOverClocker, "Enabled", logic, "OverClocker");
+            lOverClocker.DoDataBinding("Enabled", logic, "OverClocker");
 
-            WinFormsExtensions.DoDataBinding(rbOverAttack, "Enabled", logic, "OverClocker");
-            WinFormsExtensions.DoDataBinding(rbOverSleaze, "Enabled", logic, "OverClocker");
-            WinFormsExtensions.DoDataBinding(rbOverDataProc, "Enabled", logic, "OverClocker");
-            WinFormsExtensions.DoDataBinding(rbOverFirewall, "Enabled", logic, "OverClocker");
+            rbOverAttack.DoDataBinding("Enabled", logic, "OverClocker");
+            rbOverSleaze.DoDataBinding("Enabled", logic, "OverClocker");
+            rbOverDataProc.DoDataBinding("Enabled", logic, "OverClocker");
+            rbOverFirewall.DoDataBinding("Enabled", logic, "OverClocker");
             AddRadioCheckedBinding(rbOverAttack, logic, "Overclocked", "Attack");
             AddRadioCheckedBinding(rbOverSleaze, logic, "Overclocked", "Sleaze");
             AddRadioCheckedBinding(rbOverDataProc, logic, "Overclocked", "DataProcessing");
             AddRadioCheckedBinding(rbOverFirewall, logic, "Overclocked", "Firewall");
 
-            WinFormsExtensions.DoDataBinding(lAttackMod, "Text", logic, "AttackMod");
-            WinFormsExtensions.DoDataBinding(lSleazeMod, "Text", logic, "SleazeMod");
-            WinFormsExtensions.DoDataBinding(lDataProcMod, "Text", logic, "DataProcessingMod");
-            WinFormsExtensions.DoDataBinding(lFirewallMod, "Text", logic, "FirewallMod");
+            lAttackMod.DoDataBinding("Text", logic, "AttackMod");
+            lSleazeMod.DoDataBinding("Text", logic, "SleazeMod");
+            lDataProcMod.DoDataBinding("Text", logic, "DataProcessingMod");
+            lFirewallMod.DoDataBinding("Text", logic, "FirewallMod");
 
-            WinFormsExtensions.DoDataBinding(lAttackRes, "Text", logic, "TotalAttack");
-            WinFormsExtensions.DoDataBinding(lSleazeRes, "Text", logic, "TotalSleaze");
-            WinFormsExtensions.DoDataBinding(lDataProcRes, "Text", logic, "TotalDataProcessing");
-            WinFormsExtensions.DoDataBinding(lFirewallRes, "Text", logic, "TotalFirewall");
+            lAttackRes.DoDataBinding("Text", logic, "TotalAttack");
+            lSleazeRes.DoDataBinding("Text", logic, "TotalSleaze");
+            lDataProcRes.DoDataBinding("Text", logic, "TotalDataProcessing");
+            lFirewallRes.DoDataBinding("Text", logic, "TotalFirewall");
             //Action section
-            WinFormsExtensions.DoDataBinding(lSkillDescription, "Text", logic, "currentAction.Description");
-            WinFormsExtensions.DoDataBinding(lActionType, "Text", logic, "currentAction.Type");
-            WinFormsExtensions.DoDataBinding(lActionAttributeName, "Text", logic, "currentAction.ActionAttribute");
-            WinFormsExtensions.DoDataBinding(lActionSkillName, "Text", logic, "currentAction.ActionSkill");
-            WinFormsExtensions.DoDataBinding(lSkillLimitName, "Text", logic, "currentAction.Limit");
-            WinFormsExtensions.DoDataBinding(lDefendAttributeName, "Text", logic, "currentAction.DefenceAttribute");
-            WinFormsExtensions.DoDataBinding(lDefendSkillName, "Text", logic, "currentAction.DefenceSkill");
+            lSkillDescription.DoDataBinding("Text", logic, "currentAction.Description");
+            lActionType.DoDataBinding("Text", logic, "currentAction.Type");
+            lActionAttributeName.DoDataBinding("Text", logic, "currentAction.ActionAttribute");
+            lActionSkillName.DoDataBinding("Text", logic, "currentAction.ActionSkill");
+            lSkillLimitName.DoDataBinding("Text", logic, "currentAction.Limit");
+            lDefendAttributeName.DoDataBinding("Text", logic, "currentAction.DefenceAttribute");
+            lDefendSkillName.DoDataBinding("Text", logic, "currentAction.DefenceSkill");
 
-            BindValue(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
-            BindValue(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
-            BindValue(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
-            BindValue(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
-            BindValue(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
-            WinFormsExtensions.DoDataBinding(lActionModifier, "Text", logic, "currentAction.ActionModifier");
-            WinFormsExtensions.DoDataBinding(lDefendModifier, "Text", logic, "currentAction.DefenceModifier");
-            WinFormsExtensions.DoDataBinding(dpcActionDicePool, "DicePool", logic, "ActionDicePool");
-            WinFormsExtensions.DoDataBinding(dpcDefendDicePool, "DicePool", logic, "DefenceDicePool");
+            DoDataBindingWithFormatter(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
+            DoDataBindingWithFormatter(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
+            DoDataBindingWithFormatter(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
+            DoDataBindingWithFormatter(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
+            DoDataBindingWithFormatter(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
+            lActionModifier.DoDataBinding("Text", logic, "currentAction.ActionModifier");
+            lDefendModifier.DoDataBinding("Text", logic, "currentAction.DefenceModifier");
+            dpcActionDicePool.DoDataBinding("DicePool", logic, "ActionDicePool");
+            dpcDefendDicePool.DoDataBinding("DicePool", logic, "DefenceDicePool");
         }
 
-        private void BindValue(Label label, string bind, ConvertEventHandler convertEventHandler)
+        private void DoDataBindingWithFormatter(Control obj, string dataMember, ConvertEventHandler formatter)
         {
-            Binding b = new Binding("Text", logic, bind);
-            b.Format += convertEventHandler;
-            label.DataBindings.Add(b);
+            Binding binding = new Binding("Text", logic, dataMember);
+            binding.Format += formatter;
+            obj.DataBindings.Add(binding);
         }
 
         private void AttributeToValue(object sender, ConvertEventArgs cevent)
