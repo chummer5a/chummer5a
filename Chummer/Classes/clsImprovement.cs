@@ -4795,13 +4795,6 @@ namespace Chummer
                         else
                         {
                             objCharacter.PrototypeTranshuman -= Convert.ToDecimal(strImprovedName, GlobalOptions.InvariantCultureInfo);
-
-                            if (objCharacter.PrototypeTranshuman <= 0 && !blnReapplyImprovements)
-                            {
-                                foreach (Cyberware objCyberware in objCharacter.Cyberware)
-                                    if (objCyberware.PrototypeTranshuman)
-                                        objCyberware.PrototypeTranshuman = false;
-                            }
                         }
                         break;
 

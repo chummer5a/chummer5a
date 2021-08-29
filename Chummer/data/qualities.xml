@@ -14027,7 +14027,7 @@
       <canbuywithspellpoints>True</canbuywithspellpoints>
       <doublecareer>False</doublecareer>
       <bonus>
-        <addspell>Alter Ballistics</addspell>
+        <addspell alchemical="True">Alter Ballistics</addspell>
       </bonus>
       <required>
         <allof>

@@ -21,7 +21,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -55,25 +54,54 @@ namespace Chummer
                 Image = lstImages[0];
                 return;
             }
-            // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
-            int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
-            int intHeight = intWidth;
+
             Image objBestImage = null;
-            int intBestImageMetric = int.MaxValue;
-            foreach (Image objLoopImage in lstImages)
+
+            if (AutoSize && string.IsNullOrWhiteSpace(Text))
             {
-                int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) + (intWidth - objLoopImage.Width).RaiseToPower(2);
-                // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
-                if (objLoopImage.Height >= intHeight)
-                    intLoopMetric -= 1;
-                if (objLoopImage.Width >= intWidth)
-                    intLoopMetric -= 1;
-                if (objBestImage == null || intLoopMetric < intBestImageMetric)
+                // Image-only button that auto-sizes means we should scale things up only if we are large enough
+                using (Graphics g = CreateGraphics())
                 {
-                    objBestImage = objLoopImage;
-                    intBestImageMetric = intLoopMetric;
+                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / 96.0f / 96.0f));
+                    if (fltScalingRatio >= 4.0f)
+                        objBestImage = ImageDpi384;
+                    if (objBestImage == null && fltScalingRatio >= 3.0f)
+                        objBestImage = ImageDpi288;
+                    if (objBestImage == null && fltScalingRatio >= 2.0f)
+                        objBestImage = ImageDpi192;
+                    if (objBestImage == null && fltScalingRatio >= 1.5f)
+                        objBestImage = ImageDpi144;
+                    if (objBestImage == null && fltScalingRatio >= 1.25f)
+                        objBestImage = ImageDpi120;
+                    if (objBestImage == null)
+                        objBestImage = ImageDpi96;
                 }
             }
+            else
+            {
+                // Buttons contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
+                int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
+                int intHeight = intWidth;
+                intWidth -= Padding.Left + Padding.Right;
+                intHeight -= Padding.Top + Padding.Bottom;
+                int intBestImageMetric = int.MaxValue;
+                foreach (Image objLoopImage in lstImages)
+                {
+                    int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) +
+                                        (intWidth - objLoopImage.Width).RaiseToPower(2);
+                    // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
+                    if (objLoopImage.Height >= intHeight)
+                        intLoopMetric -= 1;
+                    if (objLoopImage.Width >= intWidth)
+                        intLoopMetric -= 1;
+                    if (objBestImage == null || intLoopMetric < intBestImageMetric)
+                    {
+                        objBestImage = objLoopImage;
+                        intBestImageMetric = intLoopMetric;
+                    }
+                }
+            }
+
             Image = objBestImage;
         }
 
@@ -131,7 +159,7 @@ namespace Chummer
                 if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                     base.Image = value;
                 else
-                    UpdateImageIfBetterMatch(value, objOldImage);
+                    UpdateImageIfBetterMatch(value, objOldImage, 1.0f);
             }
         }
 
@@ -144,7 +172,7 @@ namespace Chummer
                     return;
                 Image objOldImage = _objImageDpi120;
                 _objImageDpi120 = value;
-                UpdateImageIfBetterMatch(value, objOldImage);
+                UpdateImageIfBetterMatch(value, objOldImage, 1.25f);
             }
         }
 
@@ -157,7 +185,7 @@ namespace Chummer
                     return;
                 Image objOldImage = _objImageDpi144;
                 _objImageDpi144 = value;
-                UpdateImageIfBetterMatch(value, objOldImage);
+                UpdateImageIfBetterMatch(value, objOldImage, 1.5f);
             }
         }
 
@@ -170,7 +198,7 @@ namespace Chummer
                     return;
                 Image objOldImage = _objImageDpi192;
                 _objImageDpi192 = value;
-                UpdateImageIfBetterMatch(value, objOldImage);
+                UpdateImageIfBetterMatch(value, objOldImage, 2.0f);
             }
         }
 
@@ -183,7 +211,7 @@ namespace Chummer
                     return;
                 Image objOldImage = _objImageDpi288;
                 _objImageDpi288 = value;
-                UpdateImageIfBetterMatch(value, objOldImage);
+                UpdateImageIfBetterMatch(value, objOldImage, 3.0f);
             }
         }
 
@@ -196,7 +224,7 @@ namespace Chummer
                     return;
                 Image objOldImage = _objImageDpi384;
                 _objImageDpi384 = value;
-                UpdateImageIfBetterMatch(value, objOldImage);
+                UpdateImageIfBetterMatch(value, objOldImage, 4.0f);
             }
         }
 
@@ -206,7 +234,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objNewImage"></param>
         /// <param name="objImageToReplace"></param>
-        private void UpdateImageIfBetterMatch(Image objNewImage, Image objImageToReplace)
+        /// <param name="fltNewImageIntendedScaling"></param>
+        private void UpdateImageIfBetterMatch(Image objNewImage, Image objImageToReplace, float fltNewImageIntendedScaling)
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
@@ -222,9 +251,39 @@ namespace Chummer
                 Image = objNewImage;
                 return;
             }
+
+            if (AutoSize && string.IsNullOrWhiteSpace(Text))
+            {
+                // Image-only button that auto-sizes means we should scale things up only if we are large enough
+                using (Graphics g = CreateGraphics())
+                {
+                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / 96.0f / 96.0f));
+                    if (fltNewImageIntendedScaling > fltScalingRatio)
+                        return;
+                }
+                float fltCurrentIntendedScaling;
+                if (Image == ImageDpi384)
+                    fltCurrentIntendedScaling = 4.0f;
+                else if (Image == ImageDpi288)
+                    fltCurrentIntendedScaling = 3.0f;
+                else if (Image == ImageDpi192)
+                    fltCurrentIntendedScaling = 3.0f;
+                else if (Image == ImageDpi144)
+                    fltCurrentIntendedScaling = 1.5f;
+                else if (Image == ImageDpi120)
+                    fltCurrentIntendedScaling = 1.25f;
+                else
+                    fltCurrentIntendedScaling = 1.0f;
+                if (fltNewImageIntendedScaling > fltCurrentIntendedScaling)
+                    Image = objNewImage;
+                return;
+            }
+
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
             int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
             int intHeight = intWidth;
+            intWidth -= Padding.Left + Padding.Right;
+            intHeight -= Padding.Top + Padding.Bottom;
             int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
                                    (intWidth - Image.Width).RaiseToPower(2);
             int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
@@ -249,6 +308,19 @@ namespace Chummer
         {
             base.OnResize(e);
             RefreshImage();
+        }
+
+        protected override void OnPaddingChanged(EventArgs e)
+        {
+            base.OnPaddingChanged(e);
+            RefreshImage();
+        }
+
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            if (AutoSize && string.IsNullOrWhiteSpace(Text))
+                RefreshImage();
         }
     }
 }

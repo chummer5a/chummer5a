@@ -105,6 +105,10 @@ Application Changes:
 - Modifications that come with a vehicle weapon mount are now marked as such.
 - Black Market Pipeline's discount can now be applied to weapon mounts and can now be toggled freely during character creation. Fixes #4553.
 - Gear added to unequipped cyberware, armor, or weapons in some rare cases now no longer results in a bunch of cloned, phantom improvements.
+- Reapplying improvements no longer resets all of a character's Prototype Transhuman bioware.
+- Spells added by bonuses can now have their Extended, Limited, Alchemical and UsesUnarmed properties set using XML attributes in the bonus node.
+- Fixed the handling of weapons with depletable charges not working properly with Chummer's reload button and ammo handling.
+- Fixed a rare crash that would happen when Chummer tried handling certain texts that contained nothing but spaces.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.
@@ -154,6 +158,8 @@ Data Changes:
 - Removed Barrel weapon accessory slots from assault cannons, grenade launchers, and missile launchers that had it. As per the core rulebook, these weapons cannot mount barrel-mounted accessories or modifications.
 - Fixed various incorrect page references for weapons added by Krime Katalog.
 - The custom ruleset to exclude German sourcebooks now also excludes Shadowrun 2050.
+- Fixed Stun Baton not being able to be reloaded with peak-energy discharge units.
+- Alter Ballistics is now flagged as an Alchemical spell when added via the Alchemical Armorer quality. Characters that already have this quality will need to use Reapply Improvements to see this change. 
 
 Changed/New Strings:
 - String_ContactPoints
@@ -298,6 +304,7 @@ Changed/New Strings:
 - String_ToTop
 - String_ToBottom
 - Message_WeaponMountFull
+- Message_SelectNumberOfCharges
 
 Deleted Strings:
 - Label_Options_NuyenPerBP

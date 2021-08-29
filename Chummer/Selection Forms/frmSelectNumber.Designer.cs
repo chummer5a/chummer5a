@@ -82,8 +82,9 @@ namespace Chummer
             // 
             // nudNumber
             // 
-            this.nudNumber.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.nudNumber.Location = new System.Drawing.Point(3, 31);
+            this.nudNumber.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.nudNumber.AutoSize = true;
+            this.nudNumber.Location = new System.Drawing.Point(127, 31);
             this.nudNumber.Maximum = new decimal(new int[] {
             10000000,
             0,
@@ -95,7 +96,7 @@ namespace Chummer
             0,
             0});
             this.nudNumber.Name = "nudNumber";
-            this.nudNumber.Size = new System.Drawing.Size(320, 20);
+            this.nudNumber.Size = new System.Drawing.Size(71, 20);
             this.nudNumber.TabIndex = 1;
             // 
             // tlpMain

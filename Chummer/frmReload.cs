@@ -28,13 +28,15 @@ namespace Chummer
 {
     public partial class frmReload : Form
     {
+        private readonly Weapon _objWeapon;
         private readonly List<Gear> _lstAmmo = new List<Gear>(5);
         private readonly List<string> _lstCount = new List<string>(30);
 
         #region Control Events
 
-        public frmReload()
+        public frmReload(Weapon objWeapon)
         {
+            _objWeapon = objWeapon;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -145,7 +147,7 @@ namespace Chummer
             int.TryParse(cboType.Text, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo,
                 out int intReturn)
                 ? intReturn
-                : int.MaxValue;
+                : _objWeapon?.AmmoRemaining ?? 0;
 
         #endregion Properties
 

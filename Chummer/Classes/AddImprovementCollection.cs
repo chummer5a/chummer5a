@@ -1620,6 +1620,10 @@ namespace Chummer.Classes
             spell.Create(node, strExtra);
             if (spell.InternalId.IsEmptyGuid())
                 throw new AbortedException();
+            spell.Alchemical  = bonusNode.Attributes?["alchemical" ]?.InnerText == bool.TrueString;
+            spell.Extended    = bonusNode.Attributes?["extended"   ]?.InnerText == bool.TrueString;
+            spell.Limited     = bonusNode.Attributes?["limited"    ]?.InnerText == bool.TrueString;
+            spell.UsesUnarmed = bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
 

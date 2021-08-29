@@ -10101,6 +10101,8 @@ namespace Chummer
                 if(_decCachedPrototypeTranshumanEssenceUsed != decimal.MinValue)
                     return _decCachedPrototypeTranshumanEssenceUsed;
                 // Find the total Essence Cost of all Prototype Transhuman 'ware.
+                if (!IsPrototypeTranshuman)
+                    return _decCachedPrototypeTranshumanEssenceUsed = 0.0m;
                 return _decCachedPrototypeTranshumanEssenceUsed = Cyberware
                     .Where(objCyberware => objCyberware.PrototypeTranshuman).AsParallel()
                     .Sum(objCyberware => objCyberware.CalculatedESSPrototypeInvariant);
@@ -14146,21 +14148,10 @@ namespace Chummer
             get => _decPrototypeTranshuman;
             set
             {
-                if(_decPrototypeTranshuman != value)
-                {
-                    if(value <= 0)
-                    {
-                        if(_decPrototypeTranshuman > 0)
-                            foreach(Cyberware objCyberware in Cyberware)
-                                if(objCyberware.PrototypeTranshuman)
-                                    objCyberware.PrototypeTranshuman = false;
-                        _decPrototypeTranshuman = 0;
-                    }
-                    else
-                        _decPrototypeTranshuman = value;
-
-                    OnPropertyChanged();
-                }
+                if (_decPrototypeTranshuman == value)
+                    return;
+                _decPrototypeTranshuman = value;
+                OnPropertyChanged();
             }
         }
 

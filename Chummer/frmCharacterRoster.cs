@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -203,17 +202,16 @@ namespace Chummer
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            ReadOnlyObservableCollection<string> lstFavorites = blnRefreshFavorites
-                ? new ReadOnlyObservableCollection<string>(GlobalOptions.FavoritedCharacters)
-                : null;
+            List<string> lstFavorites = blnRefreshFavorites ? GlobalOptions.FavoritedCharacters.ToList() : new List<string>();
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
             if (objFavoriteNode == null && blnRefreshFavorites)
             {
-                objFavoriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavoriteCharacters")) { Tag = "Favorite" };
+                objFavoriteNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_FavoriteCharacters"))
+                    {Tag = "Favorite"};
                 blnAddFavoriteNode = true;
             }
-            TreeNode[] lstFavoritesNodes = lstFavorites != null && lstFavorites.Count > 0 ? new TreeNode[lstFavorites.Count] : null;
+            TreeNode[] lstFavoritesNodes = lstFavorites.Count > 0 ? new TreeNode[lstFavorites.Count] : null;
 
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
@@ -225,18 +223,17 @@ namespace Chummer
             {
                 string strFile = objCharacterForm.CharacterObject.FileName;
                 // Make sure we're not loading a character that was already loaded by the MRU list.
-                if (lstFavorites?.Contains(strFile) == true || lstRecents.Contains(strFile))
+                if (lstFavorites.Contains(strFile) || lstRecents.Contains(strFile))
                     continue;
                 lstRecents.Add(strFile);
             }
-            if (lstFavorites != null)
-                foreach (string strFavorite in lstFavorites)
-                    lstRecents.Remove(strFavorite);
+            foreach (string strFavorite in lstFavorites)
+                lstRecents.Remove(strFavorite);
             TreeNode objRecentNode = treCharacterList.FindNode("Recent", false);
             if (objRecentNode == null && lstRecents.Count > 0)
             {
                 objRecentNode = new TreeNode(LanguageManager.GetString("Treenode_Roster_RecentCharacters"))
-                { Tag = "Recent" };
+                    {Tag = "Recent"};
                 blnAddRecentNode = true;
             }
             TreeNode[] lstRecentsNodes = lstRecents.Count > 0 ? new TreeNode[lstRecents.Count] : null;
@@ -249,7 +246,7 @@ namespace Chummer
                 await Task.WhenAll(
                     Task.Run(() =>
                     {
-                        if (lstFavoritesNodes == null || lstFavorites == null || lstFavorites.Count <= 0 ||
+                        if (lstFavoritesNodes == null || lstFavorites.Count <= 0 ||
                             _objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                             return;
                         Parallel.For(0, lstFavorites.Count, (i, objState) =>

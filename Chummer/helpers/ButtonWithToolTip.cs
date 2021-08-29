@@ -52,7 +52,7 @@ namespace Chummer
                 if (_strToolTipText != value)
                 {
                     _strToolTipText = value;
-                    _tt.SetToolTip(this, value);
+                    _tt.SetToolTip(this, value.CleanForHtml());
                 }
             }
         }
