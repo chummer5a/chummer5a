@@ -15,66 +15,67 @@ namespace MatrixPlugin
             this.logic = logic;
             
             InitializeComponent();
-            InitializeBinding();
             InitializeContent();
+            InitializeBinding();
+
+            void InitializeContent()
+            {
+                foreach(var person in logic.Persons)
+                    if (person is Gear gear)
+                        listCyberDecks.Items.Add(gear.Name);
+                foreach (var software in logic.Software)
+                    listSoftware.Items.Add(software.Name);
+                foreach (var action in logic.Actions)
+                    cbActions.Items.Add(action.Name);
+
+                cbActions.SelectedIndex = 0;
+                listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(((Gear)logic.CurrentPerson).Name);
+            }
+
+            void InitializeBinding()
+            {
+                //Attribute section
+                lOverClocker.DoDataBinding("Enabled", logic, "OverClocker");
+
+                rbOverAttack.DoDataBinding("Enabled", logic, "OverClocker");
+                rbOverSleaze.DoDataBinding("Enabled", logic, "OverClocker");
+                rbOverDataProc.DoDataBinding("Enabled", logic, "OverClocker");
+                rbOverFirewall.DoDataBinding("Enabled", logic, "OverClocker");
+                AddRadioCheckedBinding(rbOverAttack, logic, "Overclocked", "Attack");
+                AddRadioCheckedBinding(rbOverSleaze, logic, "Overclocked", "Sleaze");
+                AddRadioCheckedBinding(rbOverDataProc, logic, "Overclocked", "DataProcessing");
+                AddRadioCheckedBinding(rbOverFirewall, logic, "Overclocked", "Firewall");
+
+                lAttackMod.DoDataBinding("Text", logic, "AttackMod");
+                lSleazeMod.DoDataBinding("Text", logic, "SleazeMod");
+                lDataProcMod.DoDataBinding("Text", logic, "DataProcessingMod");
+                lFirewallMod.DoDataBinding("Text", logic, "FirewallMod");
+
+                lAttackRes.DoDataBinding("Text", logic, "TotalAttack");
+                lSleazeRes.DoDataBinding("Text", logic, "TotalSleaze");
+                lDataProcRes.DoDataBinding("Text", logic, "TotalDataProcessing");
+                lFirewallRes.DoDataBinding("Text", logic, "TotalFirewall");
+                //Action section
+                lSkillDescription.DoDataBinding("Text", logic, "currentAction.Description");
+                lActionType.DoDataBinding("Text", logic, "currentAction.Type");
+                lActionAttributeName.DoDataBinding("Text", logic, "currentAction.ActionAttribute");
+                lActionSkillName.DoDataBinding("Text", logic, "currentAction.ActionSkill");
+                lSkillLimitName.DoDataBinding("Text", logic, "currentAction.Limit");
+                lDefendAttributeName.DoDataBinding("Text", logic, "currentAction.DefenceAttribute");
+                lDefendSkillName.DoDataBinding("Text", logic, "currentAction.DefenceSkill");
+
+                DoDataBindingWithFormatter(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
+                DoDataBindingWithFormatter(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
+                DoDataBindingWithFormatter(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
+                DoDataBindingWithFormatter(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
+                DoDataBindingWithFormatter(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
+                lActionModifier.DoDataBinding("Text", logic, "currentAction.ActionModifier");
+                lDefendModifier.DoDataBinding("Text", logic, "currentAction.DefenceModifier");
+                dpcActionDicePool.DoDataBinding("DicePool", logic, "ActionDicePool");
+                dpcDefendDicePool.DoDataBinding("DicePool", logic, "DefenceDicePool");
+            }
         }
 
-        private void InitializeContent()
-        {
-            foreach(var person in logic.Persons)
-                if (person is Gear gear)
-                    listCyberDecks.Items.Add(gear.Name);
-            foreach (var software in logic.Software)
-                listSoftware.Items.Add(software.Name);
-            foreach (var action in logic.Actions)
-                cbActions.Items.Add(action.Name);
-
-            cbActions.SelectedIndex = 0;
-            listCyberDecks.SelectedIndex = listCyberDecks.Items.IndexOf(((Gear)logic.CurrentPerson).Name);
-        }
-
-        private void InitializeBinding()
-        {
-            //Attribute section
-            lOverClocker.DoDataBinding("Enabled", logic, "OverClocker");
-
-            rbOverAttack.DoDataBinding("Enabled", logic, "OverClocker");
-            rbOverSleaze.DoDataBinding("Enabled", logic, "OverClocker");
-            rbOverDataProc.DoDataBinding("Enabled", logic, "OverClocker");
-            rbOverFirewall.DoDataBinding("Enabled", logic, "OverClocker");
-            AddRadioCheckedBinding(rbOverAttack, logic, "Overclocked", "Attack");
-            AddRadioCheckedBinding(rbOverSleaze, logic, "Overclocked", "Sleaze");
-            AddRadioCheckedBinding(rbOverDataProc, logic, "Overclocked", "DataProcessing");
-            AddRadioCheckedBinding(rbOverFirewall, logic, "Overclocked", "Firewall");
-
-            lAttackMod.DoDataBinding("Text", logic, "AttackMod");
-            lSleazeMod.DoDataBinding("Text", logic, "SleazeMod");
-            lDataProcMod.DoDataBinding("Text", logic, "DataProcessingMod");
-            lFirewallMod.DoDataBinding("Text", logic, "FirewallMod");
-
-            lAttackRes.DoDataBinding("Text", logic, "TotalAttack");
-            lSleazeRes.DoDataBinding("Text", logic, "TotalSleaze");
-            lDataProcRes.DoDataBinding("Text", logic, "TotalDataProcessing");
-            lFirewallRes.DoDataBinding("Text", logic, "TotalFirewall");
-            //Action section
-            lSkillDescription.DoDataBinding("Text", logic, "currentAction.Description");
-            lActionType.DoDataBinding("Text", logic, "currentAction.Type");
-            lActionAttributeName.DoDataBinding("Text", logic, "currentAction.ActionAttribute");
-            lActionSkillName.DoDataBinding("Text", logic, "currentAction.ActionSkill");
-            lSkillLimitName.DoDataBinding("Text", logic, "currentAction.Limit");
-            lDefendAttributeName.DoDataBinding("Text", logic, "currentAction.DefenceAttribute");
-            lDefendSkillName.DoDataBinding("Text", logic, "currentAction.DefenceSkill");
-
-            DoDataBindingWithFormatter(lActionAttributeValue, "currentAction.ActionAttribute", new ConvertEventHandler(AttributeToValue));
-            DoDataBindingWithFormatter(lActionSkillValue, "currentAction.ActionSkill", new ConvertEventHandler(SkillToValue));
-            DoDataBindingWithFormatter(lSkillLimitValue, "currentAction.Limit", new ConvertEventHandler(MatrixAttributeToValue));
-            DoDataBindingWithFormatter(lDefendAttributeValue, "currentAction.DefenceAttribute", new ConvertEventHandler(AttributeToValue));
-            DoDataBindingWithFormatter(lDefendSkillValue, "currentAction.DefenceSkill", new ConvertEventHandler(MatrixAttributeToValue));
-            lActionModifier.DoDataBinding("Text", logic, "currentAction.ActionModifier");
-            lDefendModifier.DoDataBinding("Text", logic, "currentAction.DefenceModifier");
-            dpcActionDicePool.DoDataBinding("DicePool", logic, "ActionDicePool");
-            dpcDefendDicePool.DoDataBinding("DicePool", logic, "DefenceDicePool");
-        }
 
         private void DoDataBindingWithFormatter(Control obj, string dataMember, ConvertEventHandler formatter)
         {
