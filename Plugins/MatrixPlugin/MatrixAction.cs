@@ -31,8 +31,8 @@ namespace MatrixPlugin
                 Description = xmlAction.SelectSingleNode("test/bonusstring").FirstChild.Value;
 
             string limit = xmlAction.SelectSingleNode("test/limit").FirstChild.Value;
-            if (xmlAction.SelectSingleNode("test/type") != null)
-                Type = xmlAction.SelectSingleNode("test/type").FirstChild.Value;
+            if (xmlAction.SelectSingleNode("type") != null)
+                Type = xmlAction.SelectSingleNode("type").FirstChild.Value;
 
             string[] Dice = xmlAction.SelectSingleNode("test/dice").FirstChild.Value.Split('.');
             foreach (string attr in MatrixAction.Attributes)

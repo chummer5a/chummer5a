@@ -158,7 +158,7 @@ namespace MatrixPlugin
 
         public int DataProcessingMod
         {
-            get => Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "Data Processing" ? 1 : 0);
+            get => Parse(CurrentPerson.ModDataProcessing) + (CurrentPerson.Overclocked == "DataProcessing" ? 1 : 0);
             set
             {
                 if (CurrentPerson.ModDataProcessing != value.ToString())
