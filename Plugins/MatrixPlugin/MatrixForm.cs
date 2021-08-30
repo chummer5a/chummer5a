@@ -126,7 +126,13 @@ namespace MatrixPlugin
             int intBaseSleaze = (objThis.Sleaze);
             int intBaseDP = (objThis.DataProcessing);
             int intBaseFirewall = (objThis.Firewall);
-            List<string> DataSource = new List<string>(4) { (intBaseAttack).ToString(GlobalOptions.InvariantCultureInfo), (intBaseSleaze).ToString(GlobalOptions.InvariantCultureInfo), (intBaseDP).ToString(GlobalOptions.InvariantCultureInfo), (intBaseFirewall).ToString(GlobalOptions.InvariantCultureInfo) };
+            
+            List<ListItem> DataSource = new List<ListItem>(4) {
+                    new ListItem(intBaseAttack, intBaseAttack.ToString(GlobalOptions.InvariantCultureInfo)),
+                    new ListItem(intBaseSleaze, intBaseSleaze.ToString(GlobalOptions.InvariantCultureInfo)),
+                    new ListItem(intBaseDP, intBaseDP.ToString(GlobalOptions.InvariantCultureInfo)),
+                    new ListItem(intBaseFirewall, intBaseFirewall.ToString(GlobalOptions.InvariantCultureInfo))
+            };
 
             cboAttack.SuspendLayout();
             cboSleaze.SuspendLayout();
@@ -139,10 +145,7 @@ namespace MatrixPlugin
 
             cboAttack.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboAttack.Enabled = false;
-            cboAttack.BindingContext = new BindingContext();
-            cboAttack.ValueMember = nameof(ListItem.Value);
-            cboAttack.DisplayMember = nameof(ListItem.Name);
-            cboAttack.DataSource = DataSource;
+            cboAttack.PopulateWithListItems(DataSource);
             cboAttack.SelectedIndex = 0;
             cboAttack.Visible = true;
             cboAttack.Enabled = objThis.CurrentPerson.CanSwapAttributes;
@@ -150,10 +153,7 @@ namespace MatrixPlugin
 
             cboSleaze.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboSleaze.Enabled = false;
-            cboSleaze.BindingContext = new BindingContext();
-            cboSleaze.ValueMember = nameof(ListItem.Value);
-            cboSleaze.DisplayMember = nameof(ListItem.Name);
-            cboSleaze.DataSource = DataSource;
+            cboSleaze.PopulateWithListItems(DataSource);
             cboSleaze.SelectedIndex = 1;
             cboSleaze.Visible = true;
             cboSleaze.Enabled = objThis.CurrentPerson.CanSwapAttributes;
@@ -161,10 +161,7 @@ namespace MatrixPlugin
 
             cboDP.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboDP.Enabled = false;
-            cboDP.BindingContext = new BindingContext();
-            cboDP.ValueMember = nameof(ListItem.Value);
-            cboDP.DisplayMember = nameof(ListItem.Name);
-            cboDP.DataSource = DataSource;
+            cboDP.PopulateWithListItems(DataSource);
             cboDP.SelectedIndex = 2;
             cboDP.Visible = true;
             cboDP.Enabled = objThis.CurrentPerson.CanSwapAttributes;
@@ -172,10 +169,7 @@ namespace MatrixPlugin
 
             cboFirewall.SelectedIndexChanged -= CbAttribute_SelectedIndexChanged;
             cboFirewall.Enabled = false;
-            cboFirewall.BindingContext = new BindingContext();
-            cboFirewall.ValueMember = nameof(ListItem.Value);
-            cboFirewall.DisplayMember = nameof(ListItem.Name);
-            cboFirewall.DataSource = DataSource;
+            cboFirewall.PopulateWithListItems(DataSource);
             cboFirewall.SelectedIndex = 3;
             cboFirewall.Visible = true;
             cboFirewall.Enabled = objThis.CurrentPerson.CanSwapAttributes;
