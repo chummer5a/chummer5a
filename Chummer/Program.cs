@@ -650,7 +650,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Queue of Actions to run after MainForm is assgined
+        /// Queue of Actions to run after MainForm is assigned
         /// </summary>
         public static List<Action<frmChummerMain>> MainFormOnAssignActions { get; } = new List<Action<frmChummerMain>>();
 
