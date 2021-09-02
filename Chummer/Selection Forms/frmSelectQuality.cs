@@ -123,8 +123,10 @@ namespace Chummer
                 }
                 else
                 {
-                    nudRating.Visible = false;
                     lblRatingNALabel.Visible = true;
+                    nudRating.MaximumAsInt = 1;
+                    nudRating.ValueAsInt = 1;
+                    nudRating.Visible = false;
                 }
 
                 UpdateCostLabel(xmlQuality);
@@ -287,7 +289,7 @@ namespace Chummer
         /// </summary>
         public string SelectedQuality => _strSelectedQuality;
 
-        public int SelectedRating => nudRating.Visible ? nudRating.ValueAsInt : 1;
+        public int SelectedRating => nudRating.ValueAsInt;
 
         /// <summary>
         /// Forcefully add a Category to the list.
@@ -388,8 +390,8 @@ namespace Chummer
                             }
                         }
 
-                        if (nudRating.Visible && nudRating.ValueAsInt != 1)
-                            intBP *= nudRating.ValueAsInt;
+                        intBP *= nudRating.ValueAsInt;
+
                         lblBP.Text = (intBP * _objCharacter.Options.KarmaQuality).ToString(GlobalOptions.CultureInfo);
                         if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(
                             xmlQuality.SelectSingleNode("canbuywithspellpoints")?.Value,
