@@ -2532,7 +2532,8 @@ namespace Chummer.Classes
             Log.Info("nuyenamt");
             Log.Info("nuyenamt = " + bonusNode.OuterXml);
             Log.Info("Calling CreateImprovement");
-            CreateImprovement(bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            CreateImprovement(strCondition, _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
