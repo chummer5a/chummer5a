@@ -6090,15 +6090,12 @@ namespace Chummer.Classes
                 {
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
+                        string strName = objXmlAddQuality.InnerText;
+                        XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
                         // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlAddQuality.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
+                        if (objXmlQuality != null && objXmlQuality.CreateNavigator().RequirementsMet(_objCharacter, string.Empty, string.Empty, _strFriendlyName))
                         {
-                            string strName = objXmlAddQuality.InnerText;
-                            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + strName.CleanXPath() + "]");
-                            if (objXmlQuality != null)
-                            {
-                                lstQualities.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
-                            }
+                            lstQualities.Add(new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
