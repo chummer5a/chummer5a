@@ -2138,7 +2138,7 @@
       <prioritytable>Standard</prioritytable>
       <sumtoten>10</sumtoten>
       <availability>12</availability>
-      <nuyenmaxbp>10</nuyenmaxbp>
+      <nuyenmaxbp>235</nuyenmaxbp>
       <bannedwaregrades>
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
@@ -2653,7 +2653,7 @@
       <prioritytable>Standard</prioritytable>
       <sumtoten>10</sumtoten>
       <availability>12</availability>
-      <nuyenmaxbp>10</nuyenmaxbp>
+      <nuyenmaxbp>235</nuyenmaxbp>
       <bannedwaregrades>
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
@@ -3034,7 +3034,7 @@
       <prioritytable>Standard</prioritytable>
       <sumtoten>10</sumtoten>
       <availability>12</availability>
-      <nuyenmaxbp>10</nuyenmaxbp>
+      <nuyenmaxbp>235</nuyenmaxbp>
       <bannedwaregrades>
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
@@ -3805,7 +3805,7 @@
       <prioritytable>Standard</prioritytable>
       <sumtoten>10</sumtoten>
       <availability>12</availability>
-      <nuyenmaxbp>10</nuyenmaxbp>
+      <nuyenmaxbp>235</nuyenmaxbp>
       <bannedwaregrades>
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
