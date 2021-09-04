@@ -822,7 +822,7 @@ namespace Chummer.Backend.Attributes
                 {
                     // Retrieve all of the items that are precedence1 and nothing else.
                     StringBuilder strNewModifier = new StringBuilder();
-                    foreach ((string strGroupName, decimal decValue, string strSourceName) in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
+                    foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair.Where(s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                     {
                         strNewModifier.AppendFormat(GlobalOptions.CultureInfo, "{0}+{0}{1}{0}({2})", strSpace, strSourceName, decValue);
                     }

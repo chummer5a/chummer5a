@@ -109,6 +109,7 @@ Application Changes:
 - Spells added by bonuses can now have their Extended, Limited, Alchemical and UsesUnarmed properties set using XML attributes in the bonus node.
 - Fixed the handling of weapons with depletable charges not working properly with Chummer's reload button and ammo handling.
 - Fixed a rare crash that would happen when Chummer tried handling certain texts that contained nothing but spaces.
+- For improvements that add a quality of the user's choice, requirements for qualities are now properly processed. Fixes #4567.
 
 Data Changes:
 - Consolidated all German Data Changes custom data and all German-exclusive content of sourcebooks printed in English into a single German Data Changes c.ustom data folder.

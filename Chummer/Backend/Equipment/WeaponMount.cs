@@ -400,6 +400,8 @@ namespace Chummer.Backend.Equipment
             {
                 objWeapon.Print(objWriter, objCulture, strLanguageToPrint);
             }
+            objWriter.WriteEndElement();
+            objWriter.WriteStartElement("mods");
             foreach (VehicleMod objVehicleMod in Mods)
             {
                 objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint);

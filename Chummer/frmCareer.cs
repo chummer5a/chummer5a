@@ -15339,7 +15339,7 @@ namespace Chummer
                     List<Weapon> lstWeapons = new List<Weapon>(1);
 
                     Gear objGear = new Gear(CharacterObject);
-                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped == true);
+                    objGear.Create(objXmlGear, frmPickGear.SelectedRating, lstWeapons, string.Empty, objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped);
 
                     if (objGear.InternalId.IsEmptyGuid())
                         return frmPickGear.AddAgain;

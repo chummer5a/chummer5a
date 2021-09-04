@@ -95,6 +95,7 @@ namespace Chummer
         public Spirit(Character objCharacter)
         {
             // Create the GUID for the new Spirit.
+            _guiId = Guid.NewGuid();
             CharacterObject = objCharacter;
         }
 
@@ -137,6 +138,8 @@ namespace Chummer
             if (objNode == null)
                 return;
             objNode.TryGetField("guid", Guid.TryParse, out _guiId);
+            if (_guiId == Guid.Empty)
+                _guiId = Guid.NewGuid();
             if (objNode.TryGetStringFieldQuickly("name", ref _strName))
                 _objCachedMyXmlNode = null;
             string strTemp = string.Empty;

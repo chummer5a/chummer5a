@@ -12982,7 +12982,10 @@ namespace Chummer
                 if (_decCachedTotalStartingNuyen == decimal.MinValue)
                 {
                     decimal decFromKarma = CalculateStartingNuyenFromKarma(Math.Min(NuyenBP, TotalNuyenMaximumBP));
-                    _decCachedTotalStartingNuyen = decFromKarma + ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen);
+                    _decCachedTotalStartingNuyen = decFromKarma +
+                                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen) -
+                                                   ImprovementManager.ValueOf(this, Improvement.ImprovementType.Nuyen
+                                                       , false, "Stolen");
                 }
 
                 return _decCachedTotalStartingNuyen;
