@@ -9,9 +9,9 @@ namespace Chummer.Benchmarks
     /// <summary>
     /// This is a dummy program meant for if/when a dev wants to quickly benchmark something
     /// </summary>
-    public class Program
+    public static class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             // Benchmarks should not be run in a Debug configuration
             Utils.BreakIfDebug();
@@ -30,6 +30,7 @@ namespace Chummer.Benchmarks
 
         [Params(100, 1000, 10000)]
         // ReSharper disable once MemberCanBePrivate.Global
+        // ReSharper disable once UnassignedField.Global
         public int N;
 
         public ForeachSplitComparison()
