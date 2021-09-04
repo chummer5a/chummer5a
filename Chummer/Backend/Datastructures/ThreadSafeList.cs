@@ -27,21 +27,25 @@ namespace Chummer
     public class ThreadSafeList<T> : List<T>, IList<T>, IList
     {
         private readonly object _objLock = new object();
-        private readonly List<T> _lstInternal;
 
-        public ThreadSafeList()
+        public override string ToString()
         {
-            _lstInternal = new List<T>();
+            lock (_objLock)
+                return base.ToString();
         }
 
-        public ThreadSafeList(int capacity)
+        public override int GetHashCode()
         {
-            _lstInternal = new List<T>(capacity);
+            lock (_objLock)
+                // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
+                return base.GetHashCode();
         }
 
-        public ThreadSafeList(IEnumerable<T> collection)
+        public override bool Equals(object obj)
         {
-            _lstInternal = new List<T>(collection);
+            lock (_objLock)
+                // ReSharper disable once BaseObjectEqualsIsObjectEquals
+                return base.Equals(obj);
         }
 
         public new int Capacity
@@ -49,21 +53,21 @@ namespace Chummer
             get
             {
                 lock (_objLock)
-                    return _lstInternal.Capacity;
+                    return base.Capacity;
             }
             set
             {
                 lock (_objLock)
-                    _lstInternal.Capacity = value;
+                    base.Capacity = value;
             }
         }
-
+        
         public new int Count
         {
             get
             {
                 lock (_objLock)
-                    return _lstInternal.Count;
+                    return base.Count;
             }
         }
 
@@ -78,289 +82,289 @@ namespace Chummer
             get
             {
                 lock (_objLock)
-                    return _lstInternal[index];
+                    return base[index];
             }
             set
             {
                 lock (_objLock)
-                    _lstInternal[index] = value;
+                    base[index] = value;
             }
         }
 
         public new void Add(T item)
         {
             lock (_objLock)
-                _lstInternal.Add(item);
+                base.Add(item);
         }
 
         public new void AddRange(IEnumerable<T> collection)
         {
             lock (_objLock)
-                _lstInternal.AddRange(collection);
+                base.AddRange(collection);
         }
 
         public new ReadOnlyCollection<T> AsReadOnly()
         {
             lock (_objLock)
-                return _lstInternal.AsReadOnly();
+                return base.AsReadOnly();
         }
 
         public new int BinarySearch(int index, int count, T item, IComparer<T> comparer)
         {
             lock (_objLock)
-                return _lstInternal.BinarySearch(index, count, item, comparer);
+                return base.BinarySearch(index, count, item, comparer);
         }
 
         public new int BinarySearch(T item)
         {
             lock (_objLock)
-                return _lstInternal.BinarySearch(item);
+                return base.BinarySearch(item);
         }
 
         public new int BinarySearch(T item, IComparer<T> comparer)
         {
             lock (_objLock)
-                return _lstInternal.BinarySearch(item, comparer);
+                return base.BinarySearch(item, comparer);
         }
 
         public new void Clear()
         {
             lock (_objLock)
-                _lstInternal.Clear();
+                base.Clear();
         }
 
         public new bool Contains(T item)
         {
             lock (_objLock)
-                return _lstInternal.Contains(item);
+                return base.Contains(item);
         }
 
         public new List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
             lock (_objLock)
-                return _lstInternal.ConvertAll(converter);
+                return base.ConvertAll(converter);
         }
 
         public new void CopyTo(T[] array)
         {
             lock (_objLock)
-                _lstInternal.CopyTo(array);
+                base.CopyTo(array);
         }
 
         public new void CopyTo(int index, T[] array, int arrayIndex, int count)
         {
             lock (_objLock)
-                _lstInternal.CopyTo(index, array, arrayIndex, count);
+                base.CopyTo(index, array, arrayIndex, count);
         }
 
         public new void CopyTo(T[] array, int arrayIndex)
         {
             lock (_objLock)
-                _lstInternal.CopyTo(array, arrayIndex);
+                base.CopyTo(array, arrayIndex);
         }
 
         public new bool Exists(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.Exists(match);
+                return base.Exists(match);
         }
 
         public new T Find(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.Find(match);
+                return base.Find(match);
         }
 
         public new List<T> FindAll(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindAll(match);
+                return base.FindAll(match);
         }
 
         public new int FindIndex(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindIndex(match);
+                return base.FindIndex(match);
         }
 
         public new int FindIndex(int startIndex, Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindIndex(startIndex, match);
+                return base.FindIndex(startIndex, match);
         }
 
         public new int FindIndex(int startIndex, int count, Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindIndex(startIndex, count, match);
+                return base.FindIndex(startIndex, count, match);
         }
 
         public new T FindLast(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindLast(match);
+                return base.FindLast(match);
         }
 
         public new int FindLastIndex(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindIndex(match);
+                return base.FindIndex(match);
         }
 
         public new int FindLastIndex(int startIndex, Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindIndex(startIndex, match);
+                return base.FindIndex(startIndex, match);
         }
 
         public new int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.FindLastIndex(startIndex, count, match);
+                return base.FindLastIndex(startIndex, count, match);
         }
 
         public new void ForEach(Action<T> action)
         {
             lock (_objLock)
-                _lstInternal.ForEach(action);
+                base.ForEach(action);
         }
 
         public new Enumerator GetEnumerator()
         {
             lock (_objLock)
-                return _lstInternal.GetEnumerator();
+                return base.GetEnumerator();
         }
 
         public new List<T> GetRange(int index, int count)
         {
             lock (_objLock)
-                return _lstInternal.GetRange(index, count);
+                return base.GetRange(index, count);
         }
 
         public new int IndexOf(T item)
         {
             lock (_objLock)
-                return _lstInternal.IndexOf(item);
+                return base.IndexOf(item);
         }
 
         public new int IndexOf(T item, int index)
         {
             lock (_objLock)
-                return _lstInternal.IndexOf(item, index);
+                return base.IndexOf(item, index);
         }
 
         public new int IndexOf(T item, int index, int count)
         {
             lock (_objLock)
-                return _lstInternal.IndexOf(item, index, count);
+                return base.IndexOf(item, index, count);
         }
 
         public new void Insert(int index, T item)
         {
             lock (_objLock)
-                _lstInternal.Insert(index, item);
+                base.Insert(index, item);
         }
 
         public new void InsertRange(int index, IEnumerable<T> collection)
         {
             lock (_objLock)
-                _lstInternal.InsertRange(index, collection);
+                base.InsertRange(index, collection);
         }
 
         public new int LastIndexOf(T item)
         {
             lock (_objLock)
-                return _lstInternal.LastIndexOf(item);
+                return base.LastIndexOf(item);
         }
 
         public new int LastIndexOf(T item, int index)
         {
             lock (_objLock)
-                return _lstInternal.LastIndexOf(item, index);
+                return base.LastIndexOf(item, index);
         }
 
         public new int LastIndexOf(T item, int index, int count)
         {
             lock (_objLock)
-                return _lstInternal.LastIndexOf(item, index, count);
+                return base.LastIndexOf(item, index, count);
         }
 
         public new bool Remove(T item)
         {
             lock (_objLock)
-                return _lstInternal.Remove(item);
+                return base.Remove(item);
         }
 
         public new int RemoveAll(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.RemoveAll(match);
+                return base.RemoveAll(match);
         }
 
         public new void RemoveAt(int index)
         {
             lock (_objLock)
-                _lstInternal.RemoveAt(index);
+                base.RemoveAt(index);
         }
 
         public new void RemoveRange(int index, int count)
         {
             lock (_objLock)
-                _lstInternal.RemoveRange(index, count);
+                base.RemoveRange(index, count);
         }
 
         public new void Reverse()
         {
             lock (_objLock)
-                _lstInternal.Reverse();
+                base.Reverse();
         }
 
         public new void Reverse(int index, int count)
         {
             lock (_objLock)
-                _lstInternal.Reverse(index, count);
+                base.Reverse(index, count);
         }
 
         public new void Sort()
         {
             lock (_objLock)
-                _lstInternal.Sort();
+                base.Sort();
         }
 
         public new void Sort(IComparer<T> comparer)
         {
             lock (_objLock)
-                _lstInternal.Sort(comparer);
+                base.Sort(comparer);
         }
 
         public new void Sort(int index, int count, IComparer<T> comparer)
         {
             lock (_objLock)
-                _lstInternal.Sort(index, count, comparer);
+                base.Sort(index, count, comparer);
         }
 
         public new void Sort(Comparison<T> comparison)
         {
             lock (_objLock)
-                _lstInternal.Sort(comparison);
+                base.Sort(comparison);
         }
 
         public new T[] ToArray()
         {
             lock (_objLock)
-                return _lstInternal.ToArray();
+                return base.ToArray();
         }
 
         public new void TrimExcess()
         {
             lock (_objLock)
-                _lstInternal.TrimExcess();
+                base.TrimExcess();
         }
 
         public new bool TrueForAll(Predicate<T> match)
         {
             lock (_objLock)
-                return _lstInternal.TrueForAll(match);
+                return base.TrueForAll(match);
         }
     }
 }

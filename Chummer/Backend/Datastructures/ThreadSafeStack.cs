@@ -26,6 +26,26 @@ namespace Chummer
     {
         private readonly object _objLock = new object();
 
+        public override string ToString()
+        {
+            lock (_objLock)
+                return base.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            lock (_objLock)
+                // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
+                return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            lock (_objLock)
+                // ReSharper disable once BaseObjectEqualsIsObjectEquals
+                return base.Equals(obj);
+        }
+
         public new int Count
         {
             get
