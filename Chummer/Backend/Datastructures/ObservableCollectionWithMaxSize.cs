@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 
 namespace Chummer
 {
@@ -45,27 +46,30 @@ namespace Chummer
                 RemoveAt(Count - 1);
         }
 
-        public new virtual void Add(T item)
+        private bool _blnSkipCollectionChanged;
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (Count <= _intMaxSize)
-                base.Add(item);
+            if (_blnSkipCollectionChanged)
+                return;
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                _blnSkipCollectionChanged = true;
+                // Remove all entries greater than the allowed size
+                while (Count > _intMaxSize)
+                    RemoveAt(Count - 1);
+                _blnSkipCollectionChanged = false;
+            }
+            base.OnCollectionChanged(e);
         }
 
         protected override void InsertItem(int index, T item)
         {
-            if (index < _intMaxSize)
-            {
-                base.InsertItem(index, item);
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
-            }
-        }
-
-        protected override void MoveItem(int oldIndex, int newIndex)
-        {
-            if (newIndex >= _intMaxSize)
-                newIndex = _intMaxSize;
-            base.MoveItem(oldIndex, newIndex);
+            if (index >= _intMaxSize)
+                return;
+            base.InsertItem(index, item);
+            while (Count > _intMaxSize)
+                RemoveAt(Count - 1);
         }
     }
 }

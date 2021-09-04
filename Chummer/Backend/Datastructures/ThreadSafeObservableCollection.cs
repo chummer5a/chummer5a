@@ -17,9 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace Chummer
 {
@@ -27,66 +27,58 @@ namespace Chummer
     {
         private readonly object _objLock = new object();
 
-        public new T this[int index]
+        public override string ToString()
         {
-            get
+            lock (_objLock)
+                return base.ToString();
+        }
+
+        public override int GetHashCode()
+        {
+            lock (_objLock)
+                // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
+                return base.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            lock (_objLock)
+                // ReSharper disable once BaseObjectEqualsIsObjectEquals
+                return base.Equals(obj);
+        }
+
+        public override event NotifyCollectionChangedEventHandler CollectionChanged
+        {
+            add
             {
                 lock (_objLock)
-                    return base[index];
+                    base.CollectionChanged += value;
             }
-            set
+            remove
             {
                 lock (_objLock)
-                    base[index] = value;
+                    base.CollectionChanged -= value;
             }
         }
 
-        public new int Count
+        protected override event PropertyChangedEventHandler PropertyChanged
         {
-            get
+            add
             {
                 lock (_objLock)
-                    return base.Count;
+                    base.PropertyChanged += value;
             }
-        }
-
-        protected new IList<T> Items
-        {
-            get
+            remove
             {
                 lock (_objLock)
-                    return base.Items;
+                    base.PropertyChanged -= value;
             }
         }
 
-        public new virtual void Add(T item)
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
         {
             lock (_objLock)
-                base.Add(item);
-        }
-
-        public new virtual bool Contains(T item)
-        {
-            lock (_objLock)
-                return base.Contains(item);
-        }
-
-        public new void CopyTo(T[] array, int index)
-        {
-            lock (_objLock)
-                base.CopyTo(array, index);
-        }
-
-        public new IEnumerator<T> GetEnumerator()
-        {
-            lock (_objLock)
-                return base.GetEnumerator();
-        }
-
-        public new int IndexOf(T item)
-        {
-            lock (_objLock)
-                return base.IndexOf(item);
+                base.OnPropertyChanged(e);
         }
 
         protected override void InsertItem(int index, T item)
@@ -99,24 +91,6 @@ namespace Chummer
         {
             lock (_objLock)
                 base.MoveItem(oldIndex, newIndex);
-        }
-
-        public new void Move(int oldIndex, int newIndex)
-        {
-            lock (_objLock)
-                base.Move(oldIndex, newIndex);
-        }
-
-        protected new IDisposable BlockReentrancy()
-        {
-            lock (_objLock)
-                return base.BlockReentrancy();
-        }
-
-        protected new void CheckReentrancy()
-        {
-            lock (_objLock)
-                base.CheckReentrancy();
         }
 
         protected override void ClearItems()
@@ -135,6 +109,12 @@ namespace Chummer
         {
             lock (_objLock)
                 base.SetItem(index, item);
+        }
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            lock (_objLock)
+                base.OnCollectionChanged(e);
         }
     }
 }

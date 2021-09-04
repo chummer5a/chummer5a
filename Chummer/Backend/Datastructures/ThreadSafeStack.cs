@@ -25,29 +25,13 @@ namespace Chummer
     public class ThreadSafeStack<T> : Stack<T>, ICollection
     {
         private readonly object _objLock = new object();
-        private readonly Stack<T> _stkInternal;
-
-        public ThreadSafeStack()
-        {
-            _stkInternal = new Stack<T>();
-        }
-
-        public ThreadSafeStack(int capacity)
-        {
-            _stkInternal = new Stack<T>(capacity);
-        }
-
-        public ThreadSafeStack(IEnumerable<T> collection)
-        {
-            _stkInternal = new Stack<T>(collection);
-        }
 
         public new int Count
         {
             get
             {
                 lock (_objLock)
-                    return _stkInternal.Count;
+                    return base.Count;
             }
         }
 
@@ -58,55 +42,55 @@ namespace Chummer
         public new void Clear()
         {
             lock (_objLock)
-                _stkInternal.Clear();
+                base.Clear();
         }
 
         public new bool Contains(T item)
         {
             lock (_objLock)
-                return _stkInternal.Contains(item);
+                return base.Contains(item);
         }
 
         public new void CopyTo(T[] array, int arrayIndex)
         {
             lock (_objLock)
-                _stkInternal.CopyTo(array, arrayIndex);
+                base.CopyTo(array, arrayIndex);
         }
 
         public new Enumerator GetEnumerator()
         {
             lock (_objLock)
-                return _stkInternal.GetEnumerator();
+                return base.GetEnumerator();
         }
 
         public new void TrimExcess()
         {
             lock (_objLock)
-                _stkInternal.TrimExcess();
+                base.TrimExcess();
         }
 
         public new T Peek()
         {
             lock (_objLock)
-                return _stkInternal.Count > 0 ? _stkInternal.Peek() : default;
+                return base.Count > 0 ? base.Peek() : default;
         }
 
         public new T Pop()
         {
             lock (_objLock)
-                return _stkInternal.Count > 0 ? _stkInternal.Pop() : default;
+                return base.Count > 0 ? base.Pop() : default;
         }
 
         public new void Push(T item)
         {
             lock (_objLock)
-                _stkInternal.Push(item);
+                base.Push(item);
         }
 
         public new T[] ToArray()
         {
             lock (_objLock)
-                return _stkInternal.ToArray();
+                return base.ToArray();
         }
     }
 }
