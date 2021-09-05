@@ -17,46 +17,88 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : ObservableCollection<T>
+    public class ThreadSafeObservableCollection<T> : ObservableCollection<T>, IDisposable
     {
-        private readonly object _objLock = new object();
+        private readonly ReaderWriterLockSlim
+            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+
+        public new int Count
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return base.Count;
+            }
+        }
+
+        public new T this[int index]
+        {
+            get
+            {
+                using (new EnterReadLock(_rwlThis))
+                    return base[index];
+            }
+            set
+            {
+                using (new EnterUpgradeableReadLock(_rwlThis))
+                {
+                    if (base[index].Equals(value))
+                        return;
+                    using (new EnterWriteLock(_rwlThis))
+                        base[index] = value;
+                }
+            }
+        }
+
+        public new bool Contains(T item)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return base.Contains(item);
+        }
+
+        public new void CopyTo(T[] array, int arrayIndex)
+        {
+            using (new EnterReadLock(_rwlThis))
+                base.CopyTo(array, arrayIndex);
+        }
+
+        public new IEnumerator<T> GetEnumerator()
+        {
+            using (new EnterReadLock(_rwlThis))
+                return base.GetEnumerator();
+        }
+
+        public new int IndexOf(T item)
+        {
+            using (new EnterReadLock(_rwlThis))
+                return base.IndexOf(item);
+        }
 
         public override string ToString()
         {
-            lock (_objLock)
+            using (new EnterReadLock(_rwlThis))
                 return base.ToString();
-        }
-
-        public override int GetHashCode()
-        {
-            lock (_objLock)
-                // ReSharper disable once BaseObjectGetHashCodeCallInGetHashCode
-                return base.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            lock (_objLock)
-                // ReSharper disable once BaseObjectEqualsIsObjectEquals
-                return base.Equals(obj);
         }
 
         public override event NotifyCollectionChangedEventHandler CollectionChanged
         {
             add
             {
-                lock (_objLock)
+                using (new EnterWriteLock(_rwlThis))
                     base.CollectionChanged += value;
             }
             remove
             {
-                lock (_objLock)
+                using (new EnterWriteLock(_rwlThis))
                     base.CollectionChanged -= value;
             }
         }
@@ -65,56 +107,61 @@ namespace Chummer
         {
             add
             {
-                lock (_objLock)
+                using (new EnterWriteLock(_rwlThis))
                     base.PropertyChanged += value;
             }
             remove
             {
-                lock (_objLock)
+                using (new EnterWriteLock(_rwlThis))
                     base.PropertyChanged -= value;
             }
         }
 
-        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
-        {
-            lock (_objLock)
-                base.OnPropertyChanged(e);
-        }
-
         protected override void InsertItem(int index, T item)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(_rwlThis))
                 base.InsertItem(index, item);
         }
 
         protected override void MoveItem(int oldIndex, int newIndex)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(_rwlThis))
                 base.MoveItem(oldIndex, newIndex);
         }
 
         protected override void ClearItems()
         {
-            lock (_objLock)
+            using (new EnterWriteLock(_rwlThis))
                 base.ClearItems();
         }
 
         protected override void RemoveItem(int index)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(_rwlThis))
                 base.RemoveItem(index);
         }
 
         protected override void SetItem(int index, T item)
         {
-            lock (_objLock)
+            using (new EnterWriteLock(_rwlThis))
                 base.SetItem(index, item);
+        }
+
+        protected override void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            using (new EnterUpgradeableReadLock(_rwlThis))
+                base.OnPropertyChanged(e);
         }
 
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            lock (_objLock)
+            using (new EnterUpgradeableReadLock(_rwlThis))
                 base.OnCollectionChanged(e);
+        }
+
+        public void Dispose()
+        {
+            _rwlThis.Dispose();
         }
     }
 }

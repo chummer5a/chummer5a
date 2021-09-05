@@ -21,6 +21,7 @@ namespace Chummer
                 _frmRoller?.Dispose();
                 _frmUpdate?.Dispose();
                 _mascotChummy?.Dispose();
+                _lstCharacters.Dispose();
             }
             base.Dispose(disposing);
         }

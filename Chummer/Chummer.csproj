@@ -250,7 +250,6 @@
     <Compile Include="Backend\Datastructures\ListViewItemWithValue.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
-    <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
     <Compile Include="Backend\Datastructures\ObservableCollectionWithMaxSize.cs" />
@@ -385,6 +384,9 @@
     <Compile Include="helpers\DpiFriendlyImagedButton.Designer.cs">
       <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
     </Compile>
+    <Compile Include="helpers\EnterReadLock.cs" />
+    <Compile Include="helpers\EnterUpgradeableReadLock.cs" />
+    <Compile Include="helpers\EnterWriteLock.cs" />
     <Compile Include="Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Interfaces\ITranslatable.cs" />
     <Compile Include="Classes\NativeMethods.cs" />
