@@ -76,7 +76,7 @@ namespace Chummer
                     }
                 }
             }
-            ThreadSafeList<CursorWait> lstNew = new ThreadSafeList<CursorWait>();
+            ThreadSafeList<CursorWait> lstNew = new ThreadSafeList<CursorWait>(1);
             while (_objControl != null && !s_DicWaitingControls.TryAdd(_objControl, lstNew))
             {
                 if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstExisting))

@@ -30,6 +30,10 @@ namespace Chummer
         private readonly ReaderWriterLockSlim
             _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
+        public ThreadSafeList()
+        {
+        }
+
         public ThreadSafeList(int capacity) : base(capacity)
         {
         }

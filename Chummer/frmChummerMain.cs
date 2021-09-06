@@ -192,7 +192,7 @@ namespace Chummer
                     Program.MainForm = this;
 
                     using (new CursorWait(this))
-                    using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>())
+                    using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
                     {
                         Task objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
