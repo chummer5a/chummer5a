@@ -32,8 +32,7 @@ namespace Chummer
 {
     public partial class frmHeroLabImporter : Form
     {
-        private readonly List<HeroLabCharacterCache> _lstCharacterCache = new List<HeroLabCharacterCache>(1);
-        private readonly object _lstCharacterCacheLock = new object();
+        private readonly ThreadSafeList<HeroLabCharacterCache> _lstCharacterCache = new ThreadSafeList<HeroLabCharacterCache>(1);
         private readonly Dictionary<string, Bitmap> _dicImages = new Dictionary<string, Bitmap>();
 
         public frmHeroLabImporter()
@@ -240,11 +239,8 @@ namespace Chummer
                     };
                     nodRootNode.Nodes.Add(objNode);
 
-                    lock (_lstCharacterCacheLock)
-                    {
-                        _lstCharacterCache.Add(objCache);
-                        objNode.Tag = _lstCharacterCache.IndexOf(objCache);
-                    }
+                    _lstCharacterCache.Add(objCache);
+                    objNode.Tag = _lstCharacterCache.IndexOf(objCache);
                 }
             }
             nodRootNode.Expand();

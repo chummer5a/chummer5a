@@ -85,7 +85,6 @@ namespace Chummer.UI.Skills
             this.cboName.Margin = new System.Windows.Forms.Padding(3, 1, 3, 0);
             this.cboName.Name = "cboName";
             this.cboName.Size = new System.Drawing.Size(163, 21);
-            this.cboName.Sorted = true;
             this.cboName.TabIndex = 20;
             this.cboName.TabStop = false;
             this.cboName.TooltipText = "";
@@ -100,7 +99,6 @@ namespace Chummer.UI.Skills
             this.cboType.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(156, 21);
-            this.cboType.Sorted = true;
             this.cboType.TabIndex = 21;
             this.cboType.TooltipText = "";
             // 

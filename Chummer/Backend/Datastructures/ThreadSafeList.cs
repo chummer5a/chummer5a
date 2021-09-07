@@ -21,49 +21,58 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : List<T>, IList<T>, IList
+    public class ThreadSafeList<T> : List<T>, IList<T>, IList, IDisposable
     {
-        private readonly object _objLock = new object();
-        private readonly List<T> _lstInternal;
+        private readonly ReaderWriterLockSlim
+            _rwlThis = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         public ThreadSafeList()
         {
-            _lstInternal = new List<T>();
         }
 
-        public ThreadSafeList(int capacity)
+        public ThreadSafeList(int capacity) : base(capacity)
         {
-            _lstInternal = new List<T>(capacity);
         }
 
-        public ThreadSafeList(IEnumerable<T> collection)
+        public ThreadSafeList(IEnumerable<T> collection) : base(collection)
         {
-            _lstInternal = new List<T>(collection);
+        }
+
+        public override string ToString()
+        {
+            using (new EnterReadLock(_rwlThis))
+                return base.ToString();
         }
 
         public new int Capacity
         {
             get
             {
-                lock (_objLock)
-                    return _lstInternal.Capacity;
+                using (new EnterReadLock(_rwlThis))
+                    return base.Capacity;
             }
             set
             {
-                lock (_objLock)
-                    _lstInternal.Capacity = value;
+                using (new EnterUpgradeableReadLock(_rwlThis))
+                {
+                    if (base.Capacity == value)
+                        return;
+                    using (new EnterWriteLock(_rwlThis))
+                        base.Capacity = value;
+                }
             }
         }
-
+        
         public new int Count
         {
             get
             {
-                lock (_objLock)
-                    return _lstInternal.Count;
+                using (new EnterReadLock(_rwlThis))
+                    return base.Count;
             }
         }
 
@@ -71,296 +80,306 @@ namespace Chummer
         bool ICollection<T>.IsReadOnly => false;
         bool IList.IsReadOnly => false;
         bool ICollection.IsSynchronized => true;
-        object ICollection.SyncRoot => _objLock;
+        object ICollection.SyncRoot => _rwlThis;
 
         public new T this[int index]
         {
             get
             {
-                lock (_objLock)
-                    return _lstInternal[index];
+                using (new EnterReadLock(_rwlThis))
+                    return base[index];
             }
             set
             {
-                lock (_objLock)
-                    _lstInternal[index] = value;
+                using (new EnterUpgradeableReadLock(_rwlThis))
+                {
+                    if (base[index].Equals(value))
+                        return;
+                    using (new EnterWriteLock(_rwlThis))
+                        base[index] = value;
+                }
             }
         }
 
         public new void Add(T item)
         {
-            lock (_objLock)
-                _lstInternal.Add(item);
+            using (new EnterWriteLock(_rwlThis))
+                base.Add(item);
         }
 
         public new void AddRange(IEnumerable<T> collection)
         {
-            lock (_objLock)
-                _lstInternal.AddRange(collection);
+            using (new EnterWriteLock(_rwlThis))
+                base.AddRange(collection);
         }
 
         public new ReadOnlyCollection<T> AsReadOnly()
         {
-            lock (_objLock)
-                return _lstInternal.AsReadOnly();
+            using (new EnterReadLock(_rwlThis))
+                return base.AsReadOnly();
         }
 
         public new int BinarySearch(int index, int count, T item, IComparer<T> comparer)
         {
-            lock (_objLock)
-                return _lstInternal.BinarySearch(index, count, item, comparer);
+            using (new EnterReadLock(_rwlThis))
+                return base.BinarySearch(index, count, item, comparer);
         }
 
         public new int BinarySearch(T item)
         {
-            lock (_objLock)
-                return _lstInternal.BinarySearch(item);
+            using (new EnterReadLock(_rwlThis))
+                return base.BinarySearch(item);
         }
 
         public new int BinarySearch(T item, IComparer<T> comparer)
         {
-            lock (_objLock)
-                return _lstInternal.BinarySearch(item, comparer);
+            using (new EnterReadLock(_rwlThis))
+                return base.BinarySearch(item, comparer);
         }
 
         public new void Clear()
         {
-            lock (_objLock)
-                _lstInternal.Clear();
+            using (new EnterWriteLock(_rwlThis))
+                base.Clear();
         }
 
         public new bool Contains(T item)
         {
-            lock (_objLock)
-                return _lstInternal.Contains(item);
+            using (new EnterReadLock(_rwlThis))
+                return base.Contains(item);
         }
 
         public new List<TOutput> ConvertAll<TOutput>(Converter<T, TOutput> converter)
         {
-            lock (_objLock)
-                return _lstInternal.ConvertAll(converter);
+            using (new EnterReadLock(_rwlThis))
+                return base.ConvertAll(converter);
         }
 
         public new void CopyTo(T[] array)
         {
-            lock (_objLock)
-                _lstInternal.CopyTo(array);
+            using (new EnterReadLock(_rwlThis))
+                base.CopyTo(array);
         }
 
         public new void CopyTo(int index, T[] array, int arrayIndex, int count)
         {
-            lock (_objLock)
-                _lstInternal.CopyTo(index, array, arrayIndex, count);
+            using (new EnterReadLock(_rwlThis))
+                base.CopyTo(index, array, arrayIndex, count);
         }
 
         public new void CopyTo(T[] array, int arrayIndex)
         {
-            lock (_objLock)
-                _lstInternal.CopyTo(array, arrayIndex);
+            using (new EnterReadLock(_rwlThis))
+                base.CopyTo(array, arrayIndex);
         }
 
         public new bool Exists(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.Exists(match);
+            using (new EnterReadLock(_rwlThis))
+                return base.Exists(match);
         }
 
         public new T Find(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.Find(match);
+            using (new EnterReadLock(_rwlThis))
+                return base.Find(match);
         }
 
         public new List<T> FindAll(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindAll(match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindAll(match);
         }
 
         public new int FindIndex(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindIndex(match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindIndex(match);
         }
 
         public new int FindIndex(int startIndex, Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindIndex(startIndex, match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindIndex(startIndex, match);
         }
 
         public new int FindIndex(int startIndex, int count, Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindIndex(startIndex, count, match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindIndex(startIndex, count, match);
         }
 
         public new T FindLast(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindLast(match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindLast(match);
         }
 
         public new int FindLastIndex(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindIndex(match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindIndex(match);
         }
 
         public new int FindLastIndex(int startIndex, Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindIndex(startIndex, match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindIndex(startIndex, match);
         }
 
         public new int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.FindLastIndex(startIndex, count, match);
+            using (new EnterReadLock(_rwlThis))
+                return base.FindLastIndex(startIndex, count, match);
         }
 
         public new void ForEach(Action<T> action)
         {
-            lock (_objLock)
-                _lstInternal.ForEach(action);
+            using (new EnterWriteLock(_rwlThis))
+                base.ForEach(action);
         }
 
         public new Enumerator GetEnumerator()
         {
-            lock (_objLock)
-                return _lstInternal.GetEnumerator();
+            using (new EnterReadLock(_rwlThis))
+                return base.GetEnumerator();
         }
 
         public new List<T> GetRange(int index, int count)
         {
-            lock (_objLock)
-                return _lstInternal.GetRange(index, count);
+            using (new EnterReadLock(_rwlThis))
+                return base.GetRange(index, count);
         }
 
         public new int IndexOf(T item)
         {
-            lock (_objLock)
-                return _lstInternal.IndexOf(item);
+            using (new EnterReadLock(_rwlThis))
+                return base.IndexOf(item);
         }
 
         public new int IndexOf(T item, int index)
         {
-            lock (_objLock)
-                return _lstInternal.IndexOf(item, index);
+            using (new EnterReadLock(_rwlThis))
+                return base.IndexOf(item, index);
         }
 
         public new int IndexOf(T item, int index, int count)
         {
-            lock (_objLock)
-                return _lstInternal.IndexOf(item, index, count);
+            using (new EnterReadLock(_rwlThis))
+                return base.IndexOf(item, index, count);
         }
 
         public new void Insert(int index, T item)
         {
-            lock (_objLock)
-                _lstInternal.Insert(index, item);
+            using (new EnterWriteLock(_rwlThis))
+                base.Insert(index, item);
         }
 
         public new void InsertRange(int index, IEnumerable<T> collection)
         {
-            lock (_objLock)
-                _lstInternal.InsertRange(index, collection);
+            using (new EnterWriteLock(_rwlThis))
+                base.InsertRange(index, collection);
         }
 
         public new int LastIndexOf(T item)
         {
-            lock (_objLock)
-                return _lstInternal.LastIndexOf(item);
+            using (new EnterReadLock(_rwlThis))
+                return base.LastIndexOf(item);
         }
 
         public new int LastIndexOf(T item, int index)
         {
-            lock (_objLock)
-                return _lstInternal.LastIndexOf(item, index);
+            using (new EnterReadLock(_rwlThis))
+                return base.LastIndexOf(item, index);
         }
 
         public new int LastIndexOf(T item, int index, int count)
         {
-            lock (_objLock)
-                return _lstInternal.LastIndexOf(item, index, count);
+            using (new EnterReadLock(_rwlThis))
+                return base.LastIndexOf(item, index, count);
         }
 
         public new bool Remove(T item)
         {
-            lock (_objLock)
-                return _lstInternal.Remove(item);
+            using (new EnterReadLock(_rwlThis))
+                return base.Remove(item);
         }
 
         public new int RemoveAll(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.RemoveAll(match);
+            using (new EnterWriteLock(_rwlThis))
+                return base.RemoveAll(match);
         }
 
         public new void RemoveAt(int index)
         {
-            lock (_objLock)
-                _lstInternal.RemoveAt(index);
+            using (new EnterWriteLock(_rwlThis))
+                base.RemoveAt(index);
         }
 
         public new void RemoveRange(int index, int count)
         {
-            lock (_objLock)
-                _lstInternal.RemoveRange(index, count);
+            using (new EnterWriteLock(_rwlThis))
+                base.RemoveRange(index, count);
         }
 
         public new void Reverse()
         {
-            lock (_objLock)
-                _lstInternal.Reverse();
+            using (new EnterWriteLock(_rwlThis))
+                base.Reverse();
         }
 
         public new void Reverse(int index, int count)
         {
-            lock (_objLock)
-                _lstInternal.Reverse(index, count);
+            using (new EnterWriteLock(_rwlThis))
+                base.Reverse(index, count);
         }
 
         public new void Sort()
         {
-            lock (_objLock)
-                _lstInternal.Sort();
+            using (new EnterWriteLock(_rwlThis))
+                base.Sort();
         }
 
         public new void Sort(IComparer<T> comparer)
         {
-            lock (_objLock)
-                _lstInternal.Sort(comparer);
+            using (new EnterWriteLock(_rwlThis))
+                base.Sort(comparer);
         }
 
         public new void Sort(int index, int count, IComparer<T> comparer)
         {
-            lock (_objLock)
-                _lstInternal.Sort(index, count, comparer);
+            using (new EnterWriteLock(_rwlThis))
+                base.Sort(index, count, comparer);
         }
 
         public new void Sort(Comparison<T> comparison)
         {
-            lock (_objLock)
-                _lstInternal.Sort(comparison);
+            using (new EnterWriteLock(_rwlThis))
+                base.Sort(comparison);
         }
 
         public new T[] ToArray()
         {
-            lock (_objLock)
-                return _lstInternal.ToArray();
+            using (new EnterReadLock(_rwlThis))
+                return base.ToArray();
         }
 
         public new void TrimExcess()
         {
-            lock (_objLock)
-                _lstInternal.TrimExcess();
+            using (new EnterWriteLock(_rwlThis))
+                base.TrimExcess();
         }
 
         public new bool TrueForAll(Predicate<T> match)
         {
-            lock (_objLock)
-                return _lstInternal.TrueForAll(match);
+            using (new EnterReadLock(_rwlThis))
+                return base.TrueForAll(match);
+        }
+
+        public void Dispose()
+        {
+            _rwlThis.Dispose();
         }
     }
 }

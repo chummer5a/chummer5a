@@ -24,7 +24,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Chummer
 {
-    public class CustomActivity : Activity, IDisposable
+    public class CustomActivity : Activity
     {
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
         //public IOperationHolder<RequestTelemetry> myOperationRequestHolder { get; set; }
@@ -124,13 +124,14 @@ namespace Chummer
 
         private bool _blnDisposed;
 
-        public new void Dispose()
+        protected override void Dispose(bool disposing)
         {
+            if (!disposing)
+                return;
             if (_blnDisposed)
                 return;
 
             Timekeeper.Finish(OperationName);
-            Stop();
             switch (MyOperationType)
             {
                 case OperationType.DependencyOperation:
@@ -152,7 +153,6 @@ namespace Chummer
             }
 
             _blnDisposed = true;
-            base.Dispose();
         }
     }
 }
