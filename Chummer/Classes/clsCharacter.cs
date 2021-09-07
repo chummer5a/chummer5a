@@ -1193,7 +1193,7 @@ namespace Chummer
             MetatypeGuid = new Guid(strMetatypeId);
             Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
             MetatypeCategory = strSelectedMetatypeCategory;
-            MetavariantGuid = new Guid(strMetavariantId);
+            MetavariantGuid = strMetavariantId == string.Empty ? Guid.Empty : new Guid(strMetavariantId);
             Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? "None" : "None";
             // We only reverted to the base metatype to get the attributes.
             if (strSelectedMetatypeCategory == "Shapeshifter")

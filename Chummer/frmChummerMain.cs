@@ -192,8 +192,8 @@ namespace Chummer
                     Program.MainForm = this;
 
                     using (new CursorWait(this))
+                    using (ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1))
                     {
-                        ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>();
                         Task objCharacterLoadingTask = null;
                         using (_frmProgressBar = CreateAndShowProgressBar(Text, (GlobalOptions.AllowEasterEggs ? 4 : 3) + s_PreloadFileNames.Count))
                         {
@@ -314,6 +314,7 @@ namespace Chummer
                                         Parallel.ForEach(setFilesToLoad, x =>
                                         {
                                             Character objCharacter = LoadCharacter(x);
+                                            // ReSharper disable once AccessToDisposedClosure
                                             lstCharactersToLoad.Add(objCharacter);
                                         }));
                             }
@@ -1872,6 +1873,7 @@ namespace Chummer
                         await objCharacterLoadingTask;
                     if (lstCharactersToLoad.Count > 0)
                         OpenCharacterList(lstCharactersToLoad);
+                    lstCharactersToLoad.Dispose();
                 });
             }
             base.WndProc(ref m);

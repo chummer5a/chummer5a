@@ -43,14 +43,28 @@ namespace Chummer
 
         private void OnBackColorChanged(object sender, EventArgs e)
         {
-            if (!Enabled)
-            {
-                FlatAppearance.MouseDownBackColor = BackColor;
-                FlatAppearance.MouseOverBackColor = BackColor;
-            }
+            if (Enabled)
+                return;
+            FlatAppearance.MouseDownBackColor = BackColor;
+            FlatAppearance.MouseOverBackColor = BackColor;
         }
 
+        private bool _blnEnabledBeingSetFromOutside = true;
+
         private bool _blnRealEnabled = true;
+
+        protected override void OnEnabledChanged(EventArgs e)
+        {
+            // Safety check to make sure that if base Enabled property is set on the base class instead of this one, we still end up coloring things properly
+            if (_blnEnabledBeingSetFromOutside)
+            {
+                _blnEnabledBeingSetFromOutside = false;
+                Enabled = base.Enabled;
+                _blnEnabledBeingSetFromOutside = true;
+            }
+            else
+                base.OnEnabledChanged(e);
+        }
 
         public new bool Enabled
         {
@@ -60,6 +74,8 @@ namespace Chummer
                 if (_blnRealEnabled == value)
                     return;
                 _blnRealEnabled = value;
+                bool blnOldEnabledBeingSetFromOutside = _blnEnabledBeingSetFromOutside;
+                _blnEnabledBeingSetFromOutside = false;
                 if (DefaultColorScheme)
                 {
                     base.Enabled = value;
@@ -68,7 +84,9 @@ namespace Chummer
                 {
                     AutoCheck = value;
                     ForeColor = value ? ColorManager.ControlText : ColorManager.GrayText;
+                    base.Enabled = true; // Makes sure we always enable the control so that it obeys color schemes
                 }
+                _blnEnabledBeingSetFromOutside = blnOldEnabledBeingSetFromOutside;
                 if (value)
                 {
                     FlatAppearance.MouseDownBackColor = ColorManager.ControlDarkest;
@@ -92,20 +110,23 @@ namespace Chummer
                 if (_blnDefaultColorScheme == value)
                     return;
                 _blnDefaultColorScheme = value;
+                bool blnOldEnabledBeingSetFromOutside = _blnEnabledBeingSetFromOutside;
+                _blnEnabledBeingSetFromOutside = false;
                 if (value)
                 {
+                    AutoCheck = true;
                     FlatStyle = FlatStyle.Standard;
                     ForeColor = ColorManager.ControlText;
-                    AutoCheck = true;
                     base.Enabled = _blnRealEnabled;
                 }
                 else
                 {
-                    FlatStyle = FlatStyle.Flat; // Flat checkboxes' borders obey ForeColor
-                    base.Enabled = true;
                     AutoCheck = _blnRealEnabled;
+                    FlatStyle = FlatStyle.Flat; // Flat checkboxes' borders obey ForeColor
                     ForeColor = _blnRealEnabled ? ColorManager.ControlText : ColorManager.GrayText;
+                    base.Enabled = true;
                 }
+                _blnEnabledBeingSetFromOutside = blnOldEnabledBeingSetFromOutside;
             }
         }
     }

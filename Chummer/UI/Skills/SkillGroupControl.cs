@@ -20,6 +20,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using Chummer.Backend.Skills;
 using Chummer.Properties;
@@ -192,29 +193,25 @@ namespace Chummer.UI.Skills
             get => _activeButton;
             set
             {
-                if (value == ActiveButton) return;
+                if (value == ActiveButton)
+                    return;
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
-                if (_activeButton?.Visible == true)
+                if (ActiveButton?.Visible == true)
                 {
-                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                    ActiveButton.ToolTipObject.Show(ActiveButton.ToolTipText, this);
                 }
             }
         }
 
-        protected Control FindToolTipControl(Point pt)
+        private ButtonWithToolTip FindToolTipControl(Point pt)
         {
-            foreach (Control c in Controls)
-            {
-                if (!(c is ButtonWithToolTip)) continue;
-                if (c.Bounds.Contains(pt)) return c;
-            }
-            return null;
+            return Controls.OfType<ButtonWithToolTip>().FirstOrDefault(c => c.Bounds.Contains(pt));
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+            ActiveButton = FindToolTipControl(e.Location);
         }
 
         private void OnMouseLeave(object sender, EventArgs e)

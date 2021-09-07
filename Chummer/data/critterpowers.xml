@@ -386,6 +386,9 @@
       <range>Per Spell</range>
       <duration>Per Spell</duration>
       <bonus>
+        <enabletab>
+          <name>magician</name>
+        </enabletab>
         <selectspell />
       </bonus>
       <source>SR5</source>
