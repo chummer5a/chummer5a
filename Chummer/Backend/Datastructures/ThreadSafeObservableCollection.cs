@@ -95,12 +95,6 @@ namespace Chummer
                 return base.IndexOf(item);
         }
 
-        public override string ToString()
-        {
-            using (new EnterReadLock(_rwlThis))
-                return base.ToString();
-        }
-
         public override event NotifyCollectionChangedEventHandler CollectionChanged
         {
             add

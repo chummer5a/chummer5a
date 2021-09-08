@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -42,8 +43,8 @@ namespace Chummer
         {
             if (!_dicTaggedAddedDelegates.ContainsKey(objTag))
             {
+                base.CollectionChanged += funcDelegateToAdd;
                 _dicTaggedAddedDelegates.Add(objTag, funcDelegateToAdd);
-                CollectionChanged += funcDelegateToAdd;
                 return true;
             }
             Utils.BreakIfDebug();
@@ -59,12 +60,18 @@ namespace Chummer
         {
             if (_dicTaggedAddedDelegates.TryGetValue(objTag, out NotifyCollectionChangedEventHandler funcDelegateToRemove))
             {
-                CollectionChanged -= funcDelegateToRemove;
+                base.CollectionChanged -= funcDelegateToRemove;
                 _dicTaggedAddedDelegates.Remove(objTag);
                 return true;
             }
             Utils.BreakIfDebug();
             return false;
+        }
+
+        public override event NotifyCollectionChangedEventHandler CollectionChanged
+        {
+            add => throw new NotSupportedException("TaggedObservableCollection should use AddTaggedCollectionChanged method instead of adding to CollectionChanged");
+            remove => throw new NotSupportedException("TaggedObservableCollection should use RemoveTaggedCollectionChanged method instead of removing from CollectionChanged");
         }
     }
 }
