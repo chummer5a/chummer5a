@@ -1512,15 +1512,15 @@
     <!-- Region About -->
     <string>
       <key>About_Description_Text</key>
-      <text>Character generator for Shadowrun 5th Edition\n\r\n\rThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\r\n\rBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
+      <text>Character generator for Shadowrun 5th Edition\n\nThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\nBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
     </string>
     <string>
       <key>About_Company_Text</key>
-      <text>Original Chummer for 4th edition by Keith Rudolph.\n\rChummer5 update by Adam Schmidt: srchummer5@gmail.com\n\rChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\rAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com</text>
+      <text>Original Chummer for 4th edition by Keith Rudolph.\nChummer5 update by Adam Schmidt: srchummer5@gmail.com\nChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\nAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com\nAdditional 5a updates by Delnar_Ersike: delnar.ersike@gmail.com</text>
     </string>
     <string>
       <key>About_Copyright_Text</key>
-      <text>Copyright © Keith Rudolph 2013</text>
+      <text>Copyright © Keith Rudolph 2013, Licensed GNU GPLv3</text>
     </string>
     <string>
       <key>About_Label_Contributors</key>
