@@ -360,14 +360,14 @@ namespace Chummer
                         CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
                         CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
                         CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
-                        CharacterObject.Weapons.AddTaggedCollectionChanged(this, WeaponCollectionChanged);
+                        CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
                         CharacterObject.WeaponLocations.CollectionChanged += WeaponLocationCollectionChanged;
                         CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
                         CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
-                        CharacterObject.Drugs.AddTaggedCollectionChanged(this, DrugCollectionChanged);
-                        CharacterObject.Cyberware.AddTaggedCollectionChanged(this, CyberwareCollectionChanged);
-                        CharacterObject.Vehicles.AddTaggedCollectionChanged(this, VehicleCollectionChanged);
-                        CharacterObject.VehicleLocations.AddTaggedCollectionChanged(this, VehicleLocationCollectionChanged);
+                        CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
+                        CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
+                        CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
+                        CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_tradition", op_load_frm_create))
@@ -924,14 +924,14 @@ namespace Chummer
                 CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
                 CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
-                CharacterObject.Weapons.RemoveTaggedCollectionChanged(this);
-                CharacterObject.Drugs.RemoveTaggedCollectionChanged(this);
+                CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
+                CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
                 CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
                 CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
                 CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
-                CharacterObject.Cyberware.RemoveTaggedCollectionChanged(this);
-                CharacterObject.Vehicles.RemoveTaggedCollectionChanged(this);
-                CharacterObject.VehicleLocations.RemoveTaggedCollectionChanged(this);
+                CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
+                CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
+                CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
                 CharacterObjectOptions.PropertyChanged -= OnCharacterOptionsPropertyChanged;
 
@@ -4250,7 +4250,7 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            TaggedObservableCollection<Location> destCollection;
+            ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {

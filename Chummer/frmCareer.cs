@@ -343,19 +343,19 @@ namespace Chummer
                         CharacterObject.Contacts.CollectionChanged += ContactCollectionChanged;
                         CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
                         CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
-                        CharacterObject.Weapons.AddTaggedCollectionChanged(this, WeaponCollectionChanged);
+                        CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
                         CharacterObject.WeaponLocations.CollectionChanged += WeaponLocationCollectionChanged;
                         CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
                         CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
-                        CharacterObject.Cyberware.AddTaggedCollectionChanged(this, CyberwareCollectionChanged);
-                        CharacterObject.Vehicles.AddTaggedCollectionChanged(this, VehicleCollectionChanged);
-                        CharacterObject.VehicleLocations.AddTaggedCollectionChanged(this, VehicleLocationCollectionChanged);
+                        CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
+                        CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
+                        CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
                         CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
                         CharacterObject.Improvements.CollectionChanged += ImprovementCollectionChanged;
                         CharacterObject.ImprovementGroups.CollectionChanged += ImprovementGroupCollectionChanged;
                         CharacterObject.Calendar.ListChanged += CalendarWeekListChanged;
                         CharacterObjectOptions.PropertyChanged += OptionsChanged;
-                        CharacterObject.Drugs.AddTaggedCollectionChanged(this, DrugCollectionChanged);
+                        CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
                         CharacterObject.SustainedCollection.CollectionChanged += SustainedSpellCollectionChanged;
                         CharacterObject.ExpenseEntries.CollectionChanged += ExpenseEntriesCollectionChanged;
                     }
@@ -1131,19 +1131,19 @@ namespace Chummer
                 CharacterObject.Contacts.CollectionChanged -= ContactCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
                 CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
-                CharacterObject.Weapons.RemoveTaggedCollectionChanged(this);
+                CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
                 CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
                 CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
                 CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
-                CharacterObject.Cyberware.RemoveTaggedCollectionChanged(this);
-                CharacterObject.Vehicles.RemoveTaggedCollectionChanged(this);
-                CharacterObject.VehicleLocations.RemoveTaggedCollectionChanged(this);
+                CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
+                CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
+                CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
                 CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.Improvements.CollectionChanged -= ImprovementCollectionChanged;
                 CharacterObject.ImprovementGroups.CollectionChanged -= ImprovementGroupCollectionChanged;
                 CharacterObject.Calendar.ListChanged -= CalendarWeekListChanged;
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                CharacterObject.Drugs.RemoveTaggedCollectionChanged(this);
+                CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
                 CharacterObject.SustainedCollection.CollectionChanged -= SustainedSpellCollectionChanged;
                 CharacterObject.ExpenseEntries.CollectionChanged -= ExpenseEntriesCollectionChanged;
 
@@ -6166,7 +6166,7 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            TaggedObservableCollection<Location> destCollection;
+            ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {

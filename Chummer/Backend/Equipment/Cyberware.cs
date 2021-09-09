@@ -5102,8 +5102,8 @@ namespace Chummer.Backend.Equipment
         /// <param name="strExpenseString"></param>
         /// <returns></returns>
         public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade,
-            int intRating, Vehicle objVehicle, TaggedObservableCollection<Cyberware> lstCyberwareCollection,
-            ObservableCollection<Vehicle> lstVehicleCollection, TaggedObservableCollection<Weapon> lstWeaponCollection,
+            int intRating, Vehicle objVehicle, ICollection<Cyberware> lstCyberwareCollection,
+            ICollection<Vehicle> lstVehicleCollection, ICollection<Weapon> lstWeaponCollection,
             decimal decMarkup = 0, bool blnFree = false, bool blnBlackMarket = false, bool blnForVehicle = false,
             string strExpenseString = "String_ExpensePurchaseCyberware")
         {
