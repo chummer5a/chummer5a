@@ -102,7 +102,7 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstGear.CollectionChanged += GearChildrenOnCollectionChanged;
+            _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

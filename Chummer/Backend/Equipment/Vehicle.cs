@@ -113,9 +113,9 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstGear.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
-            _lstWeapons.CollectionChanged += MatrixAttributeChildrenOnCollectionChanged;
-            _lstVehicleMods.CollectionChanged += LstVehicleModsOnCollectionChanged;
+            _lstGear.AddTaggedCollectionChanged(this, MatrixAttributeChildrenOnCollectionChanged);
+            _lstWeapons.AddTaggedCollectionChanged(this, MatrixAttributeChildrenOnCollectionChanged);
+            _lstVehicleMods.AddTaggedCollectionChanged(this, LstVehicleModsOnCollectionChanged);
         }
 
         private void LstVehicleModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

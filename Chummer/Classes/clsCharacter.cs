@@ -273,7 +273,7 @@ namespace Chummer
             SkillsSection = new SkillsSection(this);
             SkillsSection.Reset();
 
-            _lstCyberware.CollectionChanged += CyberwareOnCollectionChanged;
+            _lstCyberware.AddTaggedCollectionChanged(this, CyberwareOnCollectionChanged);
             _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
             _lstContacts.CollectionChanged += ContactsOnCollectionChanged;
             _lstExpenseLog.CollectionChanged += ExpenseLogOnCollectionChanged;

@@ -198,8 +198,8 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstChildren.CollectionChanged += CyberwareChildrenOnCollectionChanged;
-            _lstGear.CollectionChanged += GearChildrenOnCollectionChanged;
+            _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
+            _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
 
         private void CyberwareChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

@@ -50,7 +50,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _strName = strName;
             Parent = objParent;
-            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
         }
 
         /// <summary>

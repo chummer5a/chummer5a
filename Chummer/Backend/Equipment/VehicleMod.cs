@@ -86,8 +86,8 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstVehicleWeapons.CollectionChanged += ChildrenWeaponsOnCollectionChanged;
-            _lstCyberware.CollectionChanged += ChildrenCyberwareOnCollectionChanged;
+            _lstVehicleWeapons.AddTaggedCollectionChanged(this, ChildrenWeaponsOnCollectionChanged);
+            _lstCyberware.AddTaggedCollectionChanged(this, ChildrenCyberwareOnCollectionChanged);
         }
 
         private void ChildrenCyberwareOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

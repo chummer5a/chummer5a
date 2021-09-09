@@ -360,14 +360,14 @@ namespace Chummer
                         CharacterObject.Spirits.CollectionChanged += SpiritCollectionChanged;
                         CharacterObject.Armor.CollectionChanged += ArmorCollectionChanged;
                         CharacterObject.ArmorLocations.CollectionChanged += ArmorLocationCollectionChanged;
-                        CharacterObject.Weapons.CollectionChanged += WeaponCollectionChanged;
+                        CharacterObject.Weapons.AddTaggedCollectionChanged(this, WeaponCollectionChanged);
                         CharacterObject.WeaponLocations.CollectionChanged += WeaponLocationCollectionChanged;
                         CharacterObject.Gear.CollectionChanged += GearCollectionChanged;
                         CharacterObject.GearLocations.CollectionChanged += GearLocationCollectionChanged;
-                        CharacterObject.Drugs.CollectionChanged += DrugCollectionChanged;
-                        CharacterObject.Cyberware.CollectionChanged += CyberwareCollectionChanged;
-                        CharacterObject.Vehicles.CollectionChanged += VehicleCollectionChanged;
-                        CharacterObject.VehicleLocations.CollectionChanged += VehicleLocationCollectionChanged;
+                        CharacterObject.Drugs.AddTaggedCollectionChanged(this, DrugCollectionChanged);
+                        CharacterObject.Cyberware.AddTaggedCollectionChanged(this, CyberwareCollectionChanged);
+                        CharacterObject.Vehicles.AddTaggedCollectionChanged(this, VehicleCollectionChanged);
+                        CharacterObject.VehicleLocations.AddTaggedCollectionChanged(this, VehicleLocationCollectionChanged);
                     }
 
                     using (_ = Timekeeper.StartSyncron("load_frm_create_tradition", op_load_frm_create))
@@ -924,14 +924,14 @@ namespace Chummer
                 CharacterObject.Spirits.CollectionChanged -= SpiritCollectionChanged;
                 CharacterObject.Armor.CollectionChanged -= ArmorCollectionChanged;
                 CharacterObject.ArmorLocations.CollectionChanged -= ArmorLocationCollectionChanged;
-                CharacterObject.Weapons.CollectionChanged -= WeaponCollectionChanged;
-                CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
+                CharacterObject.Weapons.RemoveTaggedCollectionChanged(this);
+                CharacterObject.Drugs.RemoveTaggedCollectionChanged(this);
                 CharacterObject.WeaponLocations.CollectionChanged -= WeaponLocationCollectionChanged;
                 CharacterObject.Gear.CollectionChanged -= GearCollectionChanged;
                 CharacterObject.GearLocations.CollectionChanged -= GearLocationCollectionChanged;
-                CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
-                CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
-                CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
+                CharacterObject.Cyberware.RemoveTaggedCollectionChanged(this);
+                CharacterObject.Vehicles.RemoveTaggedCollectionChanged(this);
+                CharacterObject.VehicleLocations.RemoveTaggedCollectionChanged(this);
                 CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
                 CharacterObjectOptions.PropertyChanged -= OnCharacterOptionsPropertyChanged;
 
