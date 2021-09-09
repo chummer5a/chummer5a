@@ -8139,16 +8139,16 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>About_Description_Text</key>
-      <text>Générateur de personnages pour Shadowrun 5e édition\n\r\n\rMerci à Keith pour tout le travail incroyable qu'il a fait pour créer et maintenir Chummer pour 4e édition. Sans lui, rien de tout cela ne serait possible. Merci beaucoup à tous les membres de la communauté Dumpshock d'avoir soutenu ce projet avec tous leurs précieux commentaires, leurs bonnes idées, leurs rapports de problèmes, et avoir souligné mes erreurs stupides. Un grand merci aussi à tous ceux qui ont donné de leur temps pour traduire Chummer dans d'autres langues !
+      <text>Générateur de personnages pour Shadowrun 5e édition\n\nMerci à Keith pour tout le travail incroyable qu'il a fait pour créer et maintenir Chummer pour 4e édition. Sans lui, rien de tout cela ne serait possible. Merci beaucoup à tous les membres de la communauté Dumpshock d'avoir soutenu ce projet avec tous leurs précieux commentaires, leurs bonnes idées, leurs rapports de problèmes, et avoir souligné mes erreurs stupides. Un grand merci aussi à tous ceux qui ont donné de leur temps pour traduire Chummer dans d'autres langues !
 </text>
     </string>
     <string>
       <key>About_Company_Text</key>
-      <text>Chummer original de la 4e édition par Keith Rudolph.\n\rChummer5 actualisé par Adam Schmidt : srchummer5@gmail.com\n\rChummer5a actualisé par Anonymous fa/tg/uy : chummer5isalive@gmail.com\n\rAutres actualisations 5a par  Johannes Elgaard : joha4270@gmail.com</text>
+      <text>Chummer original de la 4e édition par Keith Rudolph.\nChummer5 actualisé par Adam Schmidt : srchummer5@gmail.com\nChummer5a actualisé par Anonymous fa/tg/uy : chummer5isalive@gmail.com\nAutres actualisations 5a par Johannes Elgaard : joha4270@gmail.com\nAutres actualisations 5a par Delnar_Ersike : delnar.ersike@gmail.com</text>
     </string>
     <string>
       <key>About_Copyright_Text</key>
-      <text>Copyright © Keith Rudolph 2013</text>
+      <text>Copyright © Keith Rudolph 2013, sous licence GNU GPLv3</text>
     </string>
     <string>
       <key>About_Label_Disclaimer</key>
@@ -8156,7 +8156,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>About_Label_Disclaimer_Text</key>
-      <text>Chummer n'est pas du tout officiel et n'est en aucun cas endossé par 'The Topps Company, Inc' ou'Catalyst Game Labs'. 'The Topps Company, Inc.' a la propriété exclusive des noms, logos, illustrations, marques, photographies, sons, sons, audio, vidéo et/ou tout matériel exclusif utilisé en rapport avec le jeu Shadowrun.\n\r\n\rSauf accord écrit, le développeur fournit l'œuvre (et chaque contributeur fournit ses contributions) " EN L'ÉTAT ", SANS GARANTIES OU CONDITIONS D'AUCUNE NATURE, expresse ou implicite, y compris, sans limitation, toute garantie ou condition de TITRE, de NON-IFFRAGENCE, de COMMERCIABILITÉ, ou d'AJUSTICULES POUR UN OBJET PARTICULIER.\n\r\n\rEn utilisant Chummer, vous acceptez d'être légalement propriétaire d'une copie du livre de règles Shadowrun et de tout livre source dont vous choisissez d'utiliser les informations. Vous êtes seul responsable de déterminer la pertinence d'utiliser ou de redistribuer le contenu que vous créez et vous assumez tous les risques associés à l'exercice de vos permissions en vertu de cette licence.\n\r\n\rChummer utilise les images de 'FatCow Icon Set' disponible sur https://www.fatcow.com/free-icons.</text>
+      <text>Chummer n'est pas du tout officiel et n'est en aucun cas endossé par 'The Topps Company, Inc' ou'Catalyst Game Labs'. 'The Topps Company, Inc.' a la propriété exclusive des noms, logos, illustrations, marques, photographies, sons, sons, audio, vidéo et/ou tout matériel exclusif utilisé en rapport avec le jeu Shadowrun.\n\nSauf accord écrit, le développeur fournit l'œuvre (et chaque contributeur fournit ses contributions) " EN L'ÉTAT ", SANS GARANTIES OU CONDITIONS D'AUCUNE NATURE, expresse ou implicite, y compris, sans limitation, toute garantie ou condition de TITRE, de NON-IFFRAGENCE, de COMMERCIABILITÉ, ou d'AJUSTICULES POUR UN OBJET PARTICULIER.\n\nEn utilisant Chummer, vous acceptez d'être légalement propriétaire d'une copie du livre de règles Shadowrun et de tout livre source dont vous choisissez d'utiliser les informations. Vous êtes seul responsable de déterminer la pertinence d'utiliser ou de redistribuer le contenu que vous créez et vous assumez tous les risques associés à l'exercice de vos permissions en vertu de cette licence.\n\nChummer utilise les images de 'FatCow Icon Set' disponible sur https://www.fatcow.com/free-icons.</text>
     </string>
     <string>
       <key>Tab_Roster_Description</key>
