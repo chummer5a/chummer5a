@@ -7090,15 +7090,15 @@
         </string>
         <string>
             <key>About_Description_Text</key>
-            <text>Character generator for Shadowrun 5th Edition\n\r\n\rThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\r\n\rBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
+            <text>Character generator for Shadowrun 5th Edition\n\nThank you to Keith for all of the amazing work he put into creating and maintaining Chummer for 4th edition. Without him, none of this would be possible.\n\nBig thanks to everyone in the Dumpshock community for supporting this project with all of their valuable feedback, great ideas, bug reports, and pointing out of my silly mistakes. Also a big thanks to everyone who has volunteered their time to translate Chummer in other languages!</text>
         </string>
         <string>
             <key>About_Company_Text</key>
-            <text>Original Chummer for 4th edition by Keith Rudolph.\n\rChummer5 update by Adam Schmidt: srchummer5@gmail.com\n\rChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\rAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com</text>
+            <text>Original Chummer for 4th edition by Keith Rudolph.\nChummer5 update by Adam Schmidt: srchummer5@gmail.com\nChummer5a update by Anonymous fa/tg/uy: chummer5isalive@gmail.com\nAdditional 5a updates by Johannes Elgaard: joha4270@gmail.com\nAdditional 5a updates by Delnar_Ersike: delnar.ersike@gmail.com</text>
         </string>
         <string>
             <key>About_Copyright_Text</key>
-            <text>Copyright © Keith Rudolph 2013</text>
+            <text>Copyright © Keith Rudolph 2013, Licensed GNU GPLv3</text>
         </string>
         <string>
             <key>About_Label_Contributors</key>
@@ -7110,7 +7110,7 @@
         </string>
       <string>
         <key>About_Label_Disclaimer_Text</key>
-        <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\r\n\rUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\r\n\rBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\r\n\rChummerは、https://www.fatcow.com/free-icons で入手可能なFatCow Icon Setのアイコンを使用しています。</text>
+        <text>Chummer is completely unofficial and is in no way endorsed by The Topps Company, Inc. or Catalyst Game Labs. The Topps Company, Inc. has sole ownership of the names, logo, artwork, marks, photographs, sounds, audio, video and/or any proprietary material used in connection with the game Shadowrun.\n\nUnless agreed to in writing, the developer provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either expressed or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE.\n\nBy using Chummer You agree that You legally own a copy of the Shadowrun rulebook and any sourcebook whose information you select to use. You are solely responsible for determining the appropriateness of using or redistributing the content You create and assume any risks associated with Your exercise of permissions under this License.\n\nChummerは、https://www.fatcow.com/free-icons で入手可能なFatCow Icon Setのアイコンを使用しています。</text>
       </string>
         <string>
             <key>Label_Roster_File_Name</key>

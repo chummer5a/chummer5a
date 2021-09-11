@@ -99,8 +99,8 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstArmorMods.CollectionChanged += ArmorModsOnCollectionChanged;
-            _lstGear.CollectionChanged += GearOnCollectionChanged;
+            _lstArmorMods.AddTaggedCollectionChanged(this, ArmorModsOnCollectionChanged);
+            _lstGear.AddTaggedCollectionChanged(this, GearOnCollectionChanged);
         }
 
         private void ArmorModsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

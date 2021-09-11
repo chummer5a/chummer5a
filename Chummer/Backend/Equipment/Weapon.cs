@@ -155,8 +155,8 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstUnderbarrel.CollectionChanged += ChildrenOnCollectionChanged;
-            _lstAccessories.CollectionChanged += AccessoriesOnCollectionChanged;
+            _lstUnderbarrel.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
+            _lstAccessories.AddTaggedCollectionChanged(this, AccessoriesOnCollectionChanged);
         }
 
         private void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
