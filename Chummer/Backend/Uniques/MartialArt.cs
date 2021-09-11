@@ -56,7 +56,7 @@ namespace Chummer
             _objCharacter = objCharacter;
             _guiID = Guid.NewGuid();
 
-            _lstTechniques.CollectionChanged += TechniquesOnCollectionChanged;
+            _lstTechniques.AddTaggedCollectionChanged(this, TechniquesOnCollectionChanged);
         }
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

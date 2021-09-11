@@ -18,7 +18,7 @@
  */
 
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Drawing;
@@ -43,14 +43,14 @@ namespace Chummer
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public Location(Character objCharacter, ObservableCollection<Location> objParent, string strName = "")
+        public Location(Character objCharacter, ICollection<Location> objParent, string strName = "")
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
             _strName = strName;
             Parent = objParent;
-            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.AddTaggedCollectionChanged(this, ChildrenOnCollectionChanged);
         }
 
         /// <summary>
@@ -187,7 +187,7 @@ namespace Chummer
 
         public TaggedObservableCollection<IHasLocation> Children { get; } = new TaggedObservableCollection<IHasLocation>();
 
-        public ObservableCollection<Location> Parent { get; }
+        public ICollection<Location> Parent { get; }
 
         #endregion Properties
 

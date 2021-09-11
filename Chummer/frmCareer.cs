@@ -6166,7 +6166,7 @@ namespace Chummer
 
         private void cmdAddVehicleLocation_Click(object sender, EventArgs e)
         {
-            TaggedObservableCollection<Location> destCollection;
+            ICollection<Location> destCollection;
             // Make sure a Vehicle is selected.
             if (treVehicles.SelectedNode?.Tag is Vehicle objVehicle)
             {

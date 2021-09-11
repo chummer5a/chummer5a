@@ -42,12 +42,6 @@ namespace Chummer
         {
         }
 
-        public override string ToString()
-        {
-            using (new EnterReadLock(_rwlThis))
-                return base.ToString();
-        }
-
         public new int Capacity
         {
             get
