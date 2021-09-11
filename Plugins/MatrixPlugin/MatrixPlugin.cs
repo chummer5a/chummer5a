@@ -16,11 +16,11 @@ namespace MatrixPlugin
     {
         
         private static readonly Logger Log = LogManager.GetCurrentClassLogger();
-        List<MatrixAction> Actions;
+        private List<MatrixAction> Actions;
         
         public override string ToString()
         {
-            return "Matrix Actions Plugin";
+            return "Matrix Helper";
         }
 
         public void CustomInitialize(frmChummerMain mainControl)
@@ -63,7 +63,7 @@ namespace MatrixPlugin
 
         public IEnumerable<System.Windows.Forms.ToolStripMenuItem> GetMenuItems(System.Windows.Forms.ToolStripMenuItem menu)
         {
-            return null;
+            yield break;
         }
 
         public System.Windows.Forms.UserControl GetOptionsControl()
@@ -95,12 +95,12 @@ namespace MatrixPlugin
         {
             MatrixLogic logic = new MatrixLogic(input.CharacterObject,Actions);
             MatrixForm FormFrom = new MatrixForm(logic);
-            return new System.Windows.Forms.TabPage[] { FormFrom.MatrixTabPage };
+            yield return FormFrom.MatrixTabPage;
         }
 
         public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(frmCreate input)
         {
-            return null;
+            yield break;
         }
 
         public void LoadFileElement(Character input, string fileElement)
