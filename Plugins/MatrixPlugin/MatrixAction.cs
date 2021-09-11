@@ -1,14 +1,30 @@
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 using System.Xml;
+using Chummer;
+using Chummer.Backend.Attributes;
 
 namespace MatrixPlugin
 {
     public class MatrixAction : INotifyPropertyChanged
     {
+        private class Action
+        {
+            public string Skill { get; set; }
+            public string Attribute { get; set; }
+            public int Modifier { get; set; }
+            public string Limit { get; set; }
+            public int LimitModifier { get; set; }
+
+            public Action()
+            {
+            }
+        }
+
+
         private static readonly string[] Attributes = { "LOG", "WIL", "INT", "CHA" };
         private static readonly string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare", "Firewall", "Data Processing", "Attack", "Sleaze" };
-
+        
         private readonly Action action;
         private readonly Action defenceAction;
 
@@ -20,11 +36,11 @@ namespace MatrixPlugin
 
         public MatrixAction(XmlNode xmlAction)
         {
+            action = new Action();
+            defenceAction = new Action();
             Name = xmlAction.SelectSingleNode("name").FirstChild.Value;
             Description = "";
             Type = "";
-            action = new Action();
-            defenceAction = new Action();
             ActionModifier = 0;
 
             if (xmlAction.SelectSingleNode("test/bonusstring") != null)

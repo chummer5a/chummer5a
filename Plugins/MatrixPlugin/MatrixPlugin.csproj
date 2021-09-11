@@ -80,7 +80,6 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
     <Compile Include="MatrixAction.cs" />
     <Compile Include="MatrixForm.cs">
       <SubType>Form</SubType>
