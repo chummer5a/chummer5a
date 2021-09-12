@@ -77,7 +77,7 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
 
-            _lstGear.CollectionChanged += GearOnCollectionChanged;
+            _lstGear.AddTaggedCollectionChanged(this, GearOnCollectionChanged);
         }
 
         private void GearOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

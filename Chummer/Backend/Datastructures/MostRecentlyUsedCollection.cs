@@ -18,6 +18,7 @@
  */
 
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace Chummer
 {
@@ -35,13 +36,28 @@ namespace Chummer
         {
         }
 
-        public override void Add(T item)
+        private bool _blnSkipCollectionChanged;
+
+        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            int intExistingIndex = IndexOf(item);
-            if (intExistingIndex == -1)
-                base.Add(item);
-            else
-                MoveItem(intExistingIndex, Count);
+            if (_blnSkipCollectionChanged)
+                return;
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                _blnSkipCollectionChanged = true;
+                // Remove all duplicate entries
+                for (int intLastIndex = Count - 1; intLastIndex >= 0; --intLastIndex)
+                {
+                    T objItem = this[intLastIndex];
+                    for (int intIndex = IndexOf(objItem); intIndex != intLastIndex; intIndex = IndexOf(objItem))
+                    {
+                        RemoveAt(intIndex);
+                        --intLastIndex;
+                    }
+                }
+                _blnSkipCollectionChanged = false;
+            }
+            base.OnCollectionChanged(e);
         }
 
         protected override void InsertItem(int index, T item)

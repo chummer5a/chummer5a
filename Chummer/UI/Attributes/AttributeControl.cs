@@ -54,8 +54,6 @@ namespace Chummer.UI.Attributes
             _objCharacter = attribute.CharacterObject;
 
             InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
 
             SuspendLayout();
             _dataSource = _objCharacter.AttributeSection.GetAttributeBindingByName(AttributeName);
@@ -82,8 +80,6 @@ namespace Chummer.UI.Attributes
                 cmdImproveATT.Click += cmdImproveATT_Click;
                 cmdImproveATT.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
                 cmdImproveATT.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
-                cmdImproveATT.UpdateLightDarkMode();
-                cmdImproveATT.TranslateWinForm();
                 flpRight.Controls.Add(cmdImproveATT);
                 if (AttributeName == "EDG")
                 {
@@ -101,8 +97,6 @@ namespace Chummer.UI.Attributes
                         UseVisualStyleBackColor = true
                     };
                     cmdBurnEdge.Click += cmdBurnEdge_Click;
-                    cmdBurnEdge.UpdateLightDarkMode();
-                    cmdBurnEdge.TranslateWinForm();
                     flpRight.Controls.Add(cmdBurnEdge);
                 }
             }
@@ -149,16 +143,14 @@ namespace Chummer.UI.Attributes
                 nudKarma.DoDataBinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
                 nudKarma.InterceptMouseWheel = GlobalOptions.InterceptMode;
 
-                nudBase.UpdateLightDarkMode();
-                nudBase.TranslateWinForm();
-                nudKarma.UpdateLightDarkMode();
-                nudKarma.TranslateWinForm();
-
                 flpRight.Controls.Add(nudKarma);
                 flpRight.Controls.Add(nudBase);
             }
 
             ResumeLayout();
+
+            this.UpdateLightDarkMode();
+            this.TranslateWinForm();
         }
 
         private void AttributePropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -343,7 +335,7 @@ namespace Chummer.UI.Attributes
         private void cmdBurnEdge_Click(object sender, EventArgs e)
         {
             // Edge cannot go below 1.
-            if (_objAttribute.Value == 0)
+            if (_objAttribute.Value <= 0)
             {
                 Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotBurnEdge"), LanguageManager.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 return;
@@ -401,29 +393,25 @@ namespace Chummer.UI.Attributes
             get => _activeButton;
             set
             {
-                if (value == ActiveButton) return;
+                if (value == ActiveButton)
+                    return;
                 ActiveButton?.ToolTipObject.Hide(this);
                 _activeButton = value;
-                if (_activeButton?.Visible == true)
+                if (ActiveButton?.Visible == true)
                 {
-                    ActiveButton?.ToolTipObject.Show(ActiveButton?.ToolTipText, this);
+                    ActiveButton.ToolTipObject.Show(ActiveButton.ToolTipText, this);
                 }
             }
         }
 
-        protected Control FindToolTipControl(Point pt)
+        private ButtonWithToolTip FindToolTipControl(Point pt)
         {
-            foreach (Control c in Controls)
-            {
-                if (!(c is ButtonWithToolTip)) continue;
-                if (c.Bounds.Contains(pt)) return c;
-            }
-            return null;
+            return Controls.OfType<ButtonWithToolTip>().FirstOrDefault(c => c.Bounds.Contains(pt));
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-            ActiveButton = FindToolTipControl(e.Location) as ButtonWithToolTip;
+            ActiveButton = FindToolTipControl(e.Location);
         }
 
         private void OnMouseLeave(object sender, EventArgs e)

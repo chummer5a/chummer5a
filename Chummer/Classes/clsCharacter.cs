@@ -210,14 +210,13 @@ namespace Chummer
 
         private readonly ObservableCollection<Armor> _lstArmor = new ObservableCollection<Armor>();
 
-        private readonly TaggedObservableCollection<Cyberware> _lstCyberware =
-            new TaggedObservableCollection<Cyberware>();
+        private readonly ObservableCollection<Cyberware> _lstCyberware = new ObservableCollection<Cyberware>();
 
-        private readonly TaggedObservableCollection<Weapon> _lstWeapons = new TaggedObservableCollection<Weapon>();
+        private readonly ObservableCollection<Weapon> _lstWeapons = new ObservableCollection<Weapon>();
         private readonly ObservableCollection<Quality> _lstQualities = new ObservableCollection<Quality>();
         private readonly ObservableCollection<Lifestyle> _lstLifestyles = new ObservableCollection<Lifestyle>();
         private readonly ObservableCollection<Gear> _lstGear = new ObservableCollection<Gear>();
-        private readonly TaggedObservableCollection<Vehicle> _lstVehicles = new TaggedObservableCollection<Vehicle>();
+        private readonly ObservableCollection<Vehicle> _lstVehicles = new ObservableCollection<Vehicle>();
         private readonly ObservableCollection<Metamagic> _lstMetamagics = new ObservableCollection<Metamagic>();
         private readonly ObservableCollection<Art> _lstArts = new ObservableCollection<Art>();
         private readonly ObservableCollection<Enhancement> _lstEnhancements = new ObservableCollection<Enhancement>();
@@ -234,13 +233,13 @@ namespace Chummer
         private readonly ObservableCollection<Location> _lstGearLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<Location> _lstArmorLocations = new ObservableCollection<Location>();
 
-        private readonly TaggedObservableCollection<Location> _lstVehicleLocations = new TaggedObservableCollection<Location>();
+        private readonly ObservableCollection<Location> _lstVehicleLocations = new ObservableCollection<Location>();
 
         private readonly ObservableCollection<Location> _lstWeaponLocations = new ObservableCollection<Location>();
         private readonly ObservableCollection<string> _lstImprovementGroups = new ObservableCollection<string>();
         private readonly BindingList<CalendarWeek> _lstCalendar = new BindingList<CalendarWeek>();
 
-        private readonly TaggedObservableCollection<Drug> _lstDrugs = new TaggedObservableCollection<Drug>();
+        private readonly ObservableCollection<Drug> _lstDrugs = new ObservableCollection<Drug>();
 
         //private List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
         private readonly List<string> _lstInternalIdsNeedingReapplyImprovements = new List<string>(1);
@@ -1193,7 +1192,7 @@ namespace Chummer
             MetatypeGuid = new Guid(strMetatypeId);
             Metatype = objXmlMetatype["name"]?.InnerText ?? "Human";
             MetatypeCategory = strSelectedMetatypeCategory;
-            MetavariantGuid = new Guid(strMetavariantId);
+            MetavariantGuid = strMetavariantId == string.Empty ? Guid.Empty : new Guid(strMetavariantId);
             Metavariant = MetavariantGuid != Guid.Empty ? objXmlMetavariant?["name"]?.InnerText ?? "None" : "None";
             // We only reverted to the base metatype to get the attributes.
             if (strSelectedMetatypeCategory == "Shapeshifter")
@@ -11277,13 +11276,13 @@ namespace Chummer
         /// Cyberware and Bioware.
         /// </summary>
         [HubTag(true)]
-        public TaggedObservableCollection<Cyberware> Cyberware => _lstCyberware;
+        public ObservableCollection<Cyberware> Cyberware => _lstCyberware;
 
         /// <summary>
         /// Weapons.
         /// </summary>
         [HubTag(true)]
-        public TaggedObservableCollection<Weapon> Weapons => _lstWeapons;
+        public ObservableCollection<Weapon> Weapons => _lstWeapons;
 
         /// <summary>
         /// Lifestyles.
@@ -11300,7 +11299,7 @@ namespace Chummer
         /// Vehicles.
         /// </summary>
         [HubTag(true)]
-        public TaggedObservableCollection<Vehicle> Vehicles => _lstVehicles;
+        public ObservableCollection<Vehicle> Vehicles => _lstVehicles;
 
         /// <summary>
         /// Metamagics and Echoes.
@@ -11363,7 +11362,7 @@ namespace Chummer
         /// <summary>
         /// Vehicle Locations.
         /// </summary>
-        public TaggedObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
+        public ObservableCollection<Location> VehicleLocations => _lstVehicleLocations;
 
         /// <summary>
         /// Weapon Locations.
@@ -12637,7 +12636,7 @@ namespace Chummer
         /// <summary>
         /// Custom Drugs created by the character.
         /// </summary>
-        public TaggedObservableCollection<Drug> Drugs => _lstDrugs;
+        public ObservableCollection<Drug> Drugs => _lstDrugs;
 
         #region Condition Monitors
 

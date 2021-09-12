@@ -8711,7 +8711,7 @@
         </string>
         <string>
             <key>About_Description_Text</key>
-            <text>Charaktergenerator für Shadowrun 5. Edition\n\r\n\rDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteckt hat. Ohne ihn wäre das alles nicht möglich.\n\r\n\rHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großes Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
+            <text>Charaktergenerator für Shadowrun 5. Edition\n\nDanke an Keith für die wundervolle Arbeit, die er in die Erstellung und Pflege von Chummer für die 4. Edition gesteckt hat. Ohne ihn wäre das alles nicht möglich.\n\nHerzlichen Dank an alle der 'Dumpshock community', dass sie dieses Projekt mit all ihren wertvollen Rückmeldungen, tollen Ideen, Verbesserungsvorschlägen und Hinweise auf enthaltene Fehler unterstützt haben. Ein großes Dankeschön auch an alle, die sich freiwillig gemeldet haben um Chummer in andere Sprachen zu übersetzen!</text>
         </string>
         <string>
             <key>String_WorkingForTheMan</key>
@@ -8739,11 +8739,11 @@
         </string>
         <string>
             <key>About_Copyright_Text</key>
-            <text>Copyright © Keith Rudolph 2013</text>
+            <text>Copyright © Keith Rudolph 2013, lizenziert GNU GPLv3</text>
         </string>
         <string>
             <key>About_Company_Text</key>
-            <text>Original Chummer für die 4. Edition von Keith Rudolph.\n\r\rChummer5 Update von Adam Schmidt: srchummer5@gmail.com\n\rChummer5a Update von Anonymous fa/tg/uy: chummer5isalive@gmail.com\n\r\r Zusätzliche 5a Updates von Johannes Elgaard: joha4270@gmail.com</text>
+            <text>Original Chummer für die 4. Edition von Keith Rudolph.\nChummer5 Update von Adam Schmidt: srchummer5@gmail.com\nChummer5a Update von Anonymous fa/tg/uy: chummer5isalive@gmail.com\nZusätzliche 5a Updates von Johannes Elgaard: joha4270@gmail.comnZusätzliche 5a Updates von Delnar_Ersike: delnar.ersike@gmail.com</text>
         </string>
         <string>
             <key>About_Label_Contributors</key>
@@ -8755,7 +8755,7 @@
         </string>
         <string>
             <key>About_Label_Disclaimer_Text</key>
-            <text>Chummer ist völlig unabhängig und wird in keiner Weise von 'The Topps Company, Inc.' oder 'Catalyst Game Labs' unterstützt. The Topps Company, Inc. ist alleiniger Eigentümer der Namen, Logos, Kunstwerke, Marken, Fotos, Sounds, Audio, Video und/oder aller proprietären Materialien, die in Verbindung mit dem Spiel Shadowrun verwendet werden.\n\r\n\rOhne schriftliche Zustimmung stellt der Ersteller (und jeder Mitwirkende seine Beiträge) zur Verfügung "WIE ES IST" OHNE GEWÄHRLEISTUNGEN ODER BEDINGUNGEN JEGLICHER ART, weder ausdrücklich noch stillschweigend, einschließlich, aber nicht beschränkt auf Garantien oder Bedingungen von TITEL, NICHTVERLETZUNG, MARKTFÄHIGKEIT oder Eignung für einen bestimmten Zweck.\n\r\n\rDurch die Verwendung von Chummer erklären Sie sich damit einverstanden, dass Sie rechtlich Eigentümer einer Kopie der Shadowrun-Regeln und jedes Quellbuchs sind, dessen Informationen Sie zur Verwendung auswählen. Sie sind allein für die Feststellung der Angemessenheit der Nutzung oder Weiterverbreitung der von Ihnen erstellten Inhalte verantwortlich und übernehmen alle Risiken, die mit Ihrer Ausübung von Berechtigungen unter dieser Lizenz verbunden sind.\n\r\n\rChummer verwendet Icons aus dem 'FatCow Icon Set', welches unter https://www.fatcow.com/free-icons verfügbar ist.</text>
+            <text>Chummer ist völlig unabhängig und wird in keiner Weise von 'The Topps Company, Inc.' oder 'Catalyst Game Labs' unterstützt. The Topps Company, Inc. ist alleiniger Eigentümer der Namen, Logos, Kunstwerke, Marken, Fotos, Sounds, Audio, Video und/oder aller proprietären Materialien, die in Verbindung mit dem Spiel Shadowrun verwendet werden.\n\nOhne schriftliche Zustimmung stellt der Ersteller (und jeder Mitwirkende seine Beiträge) zur Verfügung "WIE ES IST" OHNE GEWÄHRLEISTUNGEN ODER BEDINGUNGEN JEGLICHER ART, weder ausdrücklich noch stillschweigend, einschließlich, aber nicht beschränkt auf Garantien oder Bedingungen von TITEL, NICHTVERLETZUNG, MARKTFÄHIGKEIT oder Eignung für einen bestimmten Zweck.\n\nDurch die Verwendung von Chummer erklären Sie sich damit einverstanden, dass Sie rechtlich Eigentümer einer Kopie der Shadowrun-Regeln und jedes Quellbuchs sind, dessen Informationen Sie zur Verwendung auswählen. Sie sind allein für die Feststellung der Angemessenheit der Nutzung oder Weiterverbreitung der von Ihnen erstellten Inhalte verantwortlich und übernehmen alle Risiken, die mit Ihrer Ausübung von Berechtigungen unter dieser Lizenz verbunden sind.\n\nChummer verwendet Icons aus dem 'FatCow Icon Set', welches unter https://www.fatcow.com/free-icons verfügbar ist.</text>
         </string>
         <string>
             <key>String_Nightly</key>

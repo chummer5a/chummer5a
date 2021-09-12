@@ -76,11 +76,12 @@ namespace Chummer
                     }
                 }
             }
-            ThreadSafeList<CursorWait> lstNew = new ThreadSafeList<CursorWait>();
+            ThreadSafeList<CursorWait> lstNew = new ThreadSafeList<CursorWait>(1);
             while (_objControl != null && !s_DicWaitingControls.TryAdd(_objControl, lstNew))
             {
                 if (!s_DicWaitingControls.TryGetValue(_objControl, out ThreadSafeList<CursorWait> lstExisting))
                     continue;
+                lstNew.Dispose();
                 CursorWait objLastCursorWait = null;
                 // Need this pattern because the size of lstExisting might change in between fetching lstExisting.Count and lstExisting[]
                 do
@@ -208,8 +209,10 @@ namespace Chummer
                 } while (true);
                 SetControlCursor(objPreviousCursorWait?.CursorToUse);
             }
-            if (lstCursorWaits.Count == 0)
-                s_DicWaitingControls.TryRemove(_objControl, out ThreadSafeList<CursorWait> _);
+            if (lstCursorWaits.Count != 0)
+                return;
+            s_DicWaitingControls.TryRemove(_objControl, out ThreadSafeList<CursorWait> _);
+            lstCursorWaits.Dispose();
         }
     }
 }
