@@ -28,15 +28,16 @@ namespace MatrixPlugin
             try
             {
                 Actions = new List<MatrixAction>();
-                XmlDocument xmlComplexFormDocument = XmlManager.Load("actions.xml", null, "", false);
+                XmlDocument xmlComplexFormDocument = XmlManager.Load("actions.xml");
                 foreach (XmlNode xmlAction in xmlComplexFormDocument.SelectNodes("/chummer/actions/action"))
-                if (xmlAction.SelectSingleNode("test/limit") != null)
                 {
-                    MatrixAction newAction = new MatrixAction(xmlAction);
-                    if (newAction.ActionAttribute != "" && newAction.ActionSkill != "")
-                        Actions.Add(newAction);
+                    if (xmlAction.SelectSingleNode("test/limit") != null)
+                    {
+                        MatrixAction newAction = new MatrixAction(xmlAction);
+                        if (newAction.ActionAttribute != "" && newAction.ActionSkill != "")
+                            Actions.Add(newAction);
+                    }
                 }
-                int a = Actions.Count;
             }
             catch (Exception e)
             {

@@ -6,8 +6,17 @@ using Chummer.Backend.Attributes;
 
 namespace MatrixPlugin
 {
+    /// <summary>
+    /// Class with a representation of matrix actions
+    /// it contains both skillcheck (action skillcheck and defence check)
+    /// </summary>
     public class MatrixAction : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Inner class with a representation of skillcheck
+        /// as a Skill + Attribute [Limit]
+        /// it also has a modifiers for dicepool of skillcheck and limit
+        /// </summary>
         private class Action
         {
             public string Skill { get; set; }
@@ -21,9 +30,7 @@ namespace MatrixPlugin
             }
         }
 
-
-        private static readonly string[] Attributes = { "LOG", "WIL", "INT", "CHA" };
-        private static readonly string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare", "Firewall", "Data Processing", "Attack", "Sleaze" };
+        private static readonly string[] Skills = { "Computer", "Software", "Cybercombat", "Hacking", "Electronic Warfare" };
         
         private readonly Action action;
         private readonly Action defenceAction;
@@ -43,40 +50,56 @@ namespace MatrixPlugin
             Type = "";
             ActionModifier = 0;
 
+            if (xmlAction.SelectSingleNode("type") != null)
+                Type = xmlAction.SelectSingleNode("type").FirstChild.Value;
+
             if (xmlAction.SelectSingleNode("test/bonusstring") != null)
                 Description = xmlAction.SelectSingleNode("test/bonusstring").FirstChild.Value;
 
             string limit = xmlAction.SelectSingleNode("test/limit").FirstChild.Value;
-            if (xmlAction.SelectSingleNode("type") != null)
-                Type = xmlAction.SelectSingleNode("type").FirstChild.Value;
 
-            string[] Dice = xmlAction.SelectSingleNode("test/dice").FirstChild.Value.Split('.');
-            foreach (string attr in MatrixAction.Attributes)
-            {
-                if (Dice[0].Contains(attr))
-                    ActionAttribute = attr;
-                if (Dice.Length > 1 && Dice[1].Contains(attr))
-                    DefenceAttribute = attr;
-            }
+            //Parsing SkillCheck as
+            //Skill + Attribute|MatrixAttribute + Modifier vs. Skill + MatrixAttribute + Modifier
+            string[] SkillCheck = xmlAction.SelectSingleNode("test/dice").FirstChild.Value.Split('.');
+            string actionCheck = SkillCheck[0];
+            string defenceCheck = SkillCheck.Length > 1 ? SkillCheck[0] : "";
+            //Parse Skills
             foreach (string skill in MatrixAction.Skills)
             {
-                if (Dice[0].Contains(skill))
+                if (actionCheck.Contains(skill))
                     ActionSkill = skill;
-                if (Dice.Length > 1 && Dice[1].Contains(skill))
+                if (defenceCheck.Contains(skill))
+                    DefenceSkill = skill;
+            }
+            //Parse MatrixAttributes
+            foreach (string skill in MatrixAttributes.MatrixAttributeStrings)
+            {
+                if (actionCheck.Contains(skill))
+                    ActionSkill = skill;
+                if (defenceCheck.Contains(skill))
                     DefenceSkill = skill;
                 if (limit.Contains(skill))
                     Limit = skill;
             }
-
-            if (Regex.IsMatch(Dice[0], "([-]{0,1})[ ]([\\d]+)"))
+            //Parse MentalAttributes
+            foreach (string attr in AttributeSection.MentalAttributes)
             {
-                Match match = Regex.Match(Dice[0], "([-]{0,1})[ ]([\\d]+)");
+                if (actionCheck.Contains(attr))
+                    ActionAttribute = attr;
+                if (defenceCheck.Contains(attr))
+                    DefenceAttribute = attr;
+            }
+            //Parse Modifiers
+            // as [-] Digits
+            if (Regex.IsMatch(actionCheck, "([-]{0,1})[ ]([\\d]+)"))
+            {
+                Match match = Regex.Match(SkillCheck[0], "([-]{0,1})[ ]([\\d]+)");
                 string result = match.Groups[1].Value + match.Groups[2].Value;
                 ActionModifier = int.Parse(result);
             }
-            if (Dice.Length > 1 && Regex.IsMatch(Dice[1], "([-]{0,1})[ ]([\\d]+)"))
+            if (Regex.IsMatch(defenceCheck, "([-]{0,1})[ ]([\\d]+)"))
             {
-                Match match = Regex.Match(Dice[1], "([-]{0,1})[ ]([\\d]+)");
+                Match match = Regex.Match(SkillCheck[1], "([-]{0,1})[ ]([\\d]+)");
                 string result = match.Groups[1].Value + match.Groups[2].Value;
                 DefenceModifier = int.Parse(result);
             }
