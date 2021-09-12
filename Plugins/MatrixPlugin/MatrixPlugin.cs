@@ -34,7 +34,7 @@ namespace MatrixPlugin
                     if (xmlAction.SelectSingleNode("test/limit") != null)
                     {
                         MatrixAction newAction = new MatrixAction(xmlAction);
-                        if (newAction.ActionAttribute != "" && newAction.ActionSkill != "")
+                        if (!string.IsNullOrEmpty(newAction.ActionAttribute) && !string.IsNullOrEmpty(newAction.ActionSkill))
                             Actions.Add(newAction);
                     }
                 }

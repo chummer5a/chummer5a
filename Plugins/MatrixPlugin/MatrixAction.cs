@@ -45,18 +45,11 @@ namespace MatrixPlugin
         {
             action = new Action();
             defenceAction = new Action();
-            Name = xmlAction.SelectSingleNode("name").FirstChild.Value;
-            Description = "";
-            Type = "";
-            ActionModifier = 0;
+            Name = extractStringFromXmlNode(xmlAction, "name");
+            Type = extractStringFromXmlNode(xmlAction,"type");
+            Description = extractStringFromXmlNode(xmlAction,"test/bonusstring");
 
-            if (xmlAction.SelectSingleNode("type") != null)
-                Type = xmlAction.SelectSingleNode("type").FirstChild.Value;
-
-            if (xmlAction.SelectSingleNode("test/bonusstring") != null)
-                Description = xmlAction.SelectSingleNode("test/bonusstring").FirstChild.Value;
-
-            string limit = xmlAction.SelectSingleNode("test/limit").FirstChild.Value;
+            string limit = extractStringFromXmlNode(xmlAction, "test/limit");
 
             //Parsing SkillCheck as
             //Skill + Attribute|MatrixAttribute + Modifier vs. Skill + MatrixAttribute + Modifier
@@ -103,6 +96,14 @@ namespace MatrixPlugin
                 string result = match.Groups[1].Value + match.Groups[2].Value;
                 DefenceModifier = int.Parse(result);
             }
+        }
+
+        private string extractStringFromXmlNode(XmlNode xmlAction,string path)
+        {
+            var xmlType = xmlAction.SelectSingleNode(path);
+            if (xmlType != null)
+                return xmlType.FirstChild.Value;
+            return "";
         }
 
         #region Properties
