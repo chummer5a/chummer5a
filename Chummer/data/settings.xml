@@ -3229,7 +3229,7 @@
       <prioritytable>Standard</prioritytable>
       <sumtoten>10</sumtoten>
       <availability>15</availability>
-      <nuyenmaxbp>25</nuyenmaxbp>
+      <nuyenmaxbp>275</nuyenmaxbp>
       <bannedwaregrades>
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
