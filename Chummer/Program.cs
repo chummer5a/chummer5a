@@ -261,7 +261,7 @@ namespace Chummer
                     {
                         TelemetryConfiguration.Active.InstrumentationKey = "012fd080-80dc-4c10-97df-4f2cf8c805d5";
                         LogManager.ThrowExceptions = true;
-                        if (!IsMono)
+                        if (IsMono)
                         {
                             //Mono Crashes because of Application Insights. Set Logging to local, when Mono Runtime is detected
                             GlobalOptions.UseLoggingApplicationInsights = UseAILogging.OnlyLocal;
