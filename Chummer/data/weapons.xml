@@ -12428,6 +12428,7 @@
       <cost>0</cost>
       <source>SL</source>
       <page>23</page>
+	  <hide />
     </weapon>
     <weapon>
       <id>884d8ed3-3e21-4bf6-b0e5-2197b3d8bc5f</id>
