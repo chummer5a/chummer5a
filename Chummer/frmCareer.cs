@@ -9151,7 +9151,7 @@ namespace Chummer
                     XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + "]");
                     Cyberware objCyberware = new Cyberware(CharacterObject);
                     if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, objVehicle, objMod.Cyberware, CharacterObject.Vehicles, objMod.Weapons,
-                        frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount, true, "String_ExpensePurchaseVehicleCyberware"))
+                        frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount, true, "String_ExpensePurchaseVehicleCyberware",objCyberwareParent))
                     {
                         IsCharacterUpdateRequested = true;
                         IsDirty = true;
@@ -13969,7 +13969,7 @@ namespace Chummer
                         gpbWeaponsMatrix.Visible = false;
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon;
+                        cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon && string.IsNullOrEmpty(objSelectedAccessory.ParentID);
 
                         // gpbWeaponsCommon
                         lblWeaponName.Text = objSelectedAccessory.CurrentDisplayNameShort;
@@ -15005,9 +15005,9 @@ namespace Chummer
                     ? CharacterObject.LoadData("bioware.xml").SelectSingleNode("/chummer/biowares/bioware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + "]")
                     : CharacterObject.LoadData("cyberware.xml").SelectSingleNode("/chummer/cyberwares/cyberware[id = " + frmPickCyberware.SelectedCyberware.CleanXPath() + "]");
 
-                Cyberware objCyberware = new Cyberware(CharacterObject) { ESSDiscount = frmPickCyberware.SelectedESSDiscount };
+                Cyberware objCyberware = new Cyberware(CharacterObject) { ESSDiscount = frmPickCyberware.SelectedESSDiscount, Parent = objSelectedCyberware};
                 if (objCyberware.Purchase(objXmlCyberware, objSource, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, null, objSelectedCyberware?.Children ?? CharacterObject.Cyberware, CharacterObject.Vehicles,
-                    CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount))
+                    CharacterObject.Weapons, frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount,objParent:objSelectedCyberware))
                 {
                     IsCharacterUpdateRequested = true;
                     IsDirty = true;

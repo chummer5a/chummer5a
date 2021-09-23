@@ -31,6 +31,8 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using NLog;
+using RtfPipe.Tokens;
+using Version = System.Version;
 
 namespace Chummer.Backend.Equipment
 {
@@ -70,6 +72,7 @@ namespace Chummer.Backend.Equipment
         private string _strLocation = string.Empty;
         private string _strExtra = string.Empty;
         private Guid _guiWeaponID = Guid.Empty;
+        private Guid _guiWeaponAccessoryID = Guid.Empty;
         private Guid _guiVehicleID = Guid.Empty;
         private Grade _objGrade;
 
@@ -714,6 +717,40 @@ namespace Chummer.Backend.Equipment
 
                     if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponID))
                         lstWeapons.Add(objGearWeapon);
+                }
+            }
+
+            if (Parent?.WeaponID != null)
+            {
+                Weapon objWeapon = ParentVehicle != null
+                    ? ParentVehicle.Weapons.FindById(Parent.WeaponID)
+                    : _objCharacter.Weapons.FindById(Parent?.WeaponID);
+                
+                foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
+                {
+                    string strLoopID = objXml.InnerText;
+                    XmlNode objXmlAccessory = strLoopID.IsGuid()
+                        ? objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + "]")
+                        : objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + "]");
+
+                    if (objXmlAccessory == null) continue;
+                    WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
+                    int intAddWeaponRating = 0;
+                    string strLoopRating = objXml.Attributes["rating"]?.InnerText;
+                    if (!string.IsNullOrEmpty(strLoopRating))
+                    {
+                        strLoopRating = strLoopRating.CheapReplace("{Rating}",
+                            () => Rating.ToString(GlobalOptions.InvariantCultureInfo));
+                        int.TryParse(strLoopRating, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out intAddWeaponRating);
+                    }
+
+                    objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>("", ""), intAddWeaponRating, true);
+                    objGearWeapon.Cost = "0";
+                    objGearWeapon.ParentID = InternalId;
+                    objGearWeapon.Parent = objWeapon;
+
+                    if (Guid.TryParse(objGearWeapon.InternalId, out _guiWeaponAccessoryID))
+                        objWeapon.WeaponAccessories.Add(objGearWeapon);
                 }
             }
 
@@ -1716,6 +1753,18 @@ namespace Chummer.Backend.Equipment
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
                     _guiWeaponID = guiTemp;
+            }
+        }
+        /// <summary>
+        /// Guid of a Cyberware Weapon Accessory.
+        /// </summary>
+        public string WeaponAccessoryID
+        {
+            get => _guiWeaponAccessoryID.ToString("D", GlobalOptions.InvariantCultureInfo);
+            set
+            {
+                if (Guid.TryParse(value, out Guid guiTemp))
+                    _guiWeaponAccessoryID = guiTemp;
             }
         }
 
@@ -4406,6 +4455,19 @@ namespace Chummer.Backend.Equipment
                         _objCharacter.Weapons.Remove(objWeapon);
                 }
             }
+            if (!WeaponAccessoryID.IsEmptyGuid())
+            {
+                // Locate the Weapon Accessory that was added.
+                WeaponAccessory objWeaponAccessory = _objCharacter.Vehicles.FindVehicleWeaponAccessory(WeaponAccessoryID) ??
+                                                     _objCharacter.Weapons.FindWeaponAccessory(WeaponAccessoryID);
+                if (objWeaponAccessory != null)
+                {
+                    objWeaponAccessory.DeleteWeaponAccessory();
+
+                    // Remove the Weapon Accessory.
+                    objWeaponAccessory.Parent.WeaponAccessories.Remove(objWeaponAccessory);
+                }
+            }
 
             // Remove any Vehicle that the Cyberware created.
             if (!VehicleID.IsEmptyGuid())
@@ -5100,18 +5162,19 @@ namespace Chummer.Backend.Equipment
         /// <param name="blnBlackMarket"></param>
         /// <param name="blnForVehicle"></param>
         /// <param name="strExpenseString"></param>
+        /// <param name="objParent">Cyberware parent that this Cyberware will attach to, if any.</param>
         /// <returns></returns>
         public bool Purchase(XmlNode objNode, Improvement.ImprovementSource objImprovementSource, Grade objGrade,
             int intRating, Vehicle objVehicle, ICollection<Cyberware> lstCyberwareCollection,
             ICollection<Vehicle> lstVehicleCollection, ICollection<Weapon> lstWeaponCollection,
             decimal decMarkup = 0, bool blnFree = false, bool blnBlackMarket = false, bool blnForVehicle = false,
-            string strExpenseString = "String_ExpensePurchaseCyberware")
+            string strExpenseString = "String_ExpensePurchaseCyberware",Cyberware objParent = null)
         {
             // Create the Cyberware object.
             List<Weapon> lstWeapons = new List<Weapon>(1);
             List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Create(objNode, objGrade, objImprovementSource, intRating, lstWeapons, lstVehicles, true, true,
-                string.Empty, null, objVehicle);
+                string.Empty, objParent, objVehicle);
             if (InternalId.IsEmptyGuid())
             {
                 return false;

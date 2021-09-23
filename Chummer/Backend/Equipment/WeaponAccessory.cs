@@ -93,6 +93,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnWirelessOn = true;
         private XmlNode _nodWirelessBonus;
         private bool _blnStolen;
+        private string _strParentID;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -402,6 +403,7 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalOptions.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("parentid", _strParentID);
             objWriter.WriteEndElement();
 
             if (!IncludedInWeapon)
@@ -520,6 +522,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (blnCopy)
             {
                 if (!Equipped)
@@ -579,6 +582,15 @@ namespace Chummer.Backend.Equipment
         /// Internal identifier which will be used to identify this Weapon.
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+
+        /// <summary>
+        /// ID of the object that added this weapon (if any).
+        /// </summary>
+        public string ParentID
+        {
+            get => _strParentID;
+            set => _strParentID = value;
+        }
 
         /// <summary>
         /// Identifier of the object within data files.
@@ -1512,7 +1524,7 @@ namespace Chummer.Backend.Equipment
                         ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
                         : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
-                return IncludedInWeapon
+                return IncludedInWeapon || string.IsNullOrEmpty(ParentID)
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }

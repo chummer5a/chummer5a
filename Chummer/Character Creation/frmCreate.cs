@@ -5648,7 +5648,7 @@ namespace Chummer
                         Cyberware objCyberware = new Cyberware(CharacterObject);
                         if (objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware, frmPickCyberware.SelectedGrade, frmPickCyberware.SelectedRating, objVehicle, objMod.Cyberware, CharacterObject.Vehicles,
                             objMod.Weapons,
-                            frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount, true, "String_ExpensePurchaseVehicleCyberware"))
+                            frmPickCyberware.Markup, frmPickCyberware.FreeCost, frmPickCyberware.BlackMarketDiscount, true, "String_ExpensePurchaseVehicleCyberware", objCyberwareParent))
                         {
                             IsCharacterUpdateRequested = true;
                             IsDirty = true;
@@ -10188,7 +10188,8 @@ namespace Chummer
                         gpbWeaponsMatrix.Visible = false;
 
                         // Buttons
-                        cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon;
+                        cmdDeleteWeapon.Enabled = !objSelectedAccessory.IncludedInWeapon &&
+                                                  string.IsNullOrEmpty(objSelectedAccessory.ParentID);
 
                         // gpbWeaponsCommon
                         lblWeaponName.Text = objSelectedAccessory.CurrentDisplayName;
