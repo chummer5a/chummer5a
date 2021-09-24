@@ -87,6 +87,8 @@ namespace Chummer
         private int _intCachedRedlinerBonus = int.MinValue;
         private int _intCurrentCounterspellingDice;
         private int _intEdgeUsed;
+        private int _intBoundSpiritLimit = int.MinValue;
+        private int _intRegisteredSpriteLimit;
 
         // General character info.
         private string _strName = string.Empty;
@@ -9153,10 +9155,56 @@ namespace Chummer
                 ? (Created ? 2 : 1) * (Options.SpiritForceBasedOnTotalMAG ? MAG.TotalValue : MAG.Value)
                 : 0;
 
+        public int BoundSpiritLimit
+        {
+            get
+            {
+                if (_intBoundSpiritLimit == int.MinValue)
+                {
+                    string strExpression = Options.BoundSpiritExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        _intBoundSpiritLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    }
+                    else
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intBoundSpiritLimit);
+                }
+                return _intBoundSpiritLimit;
+            }
+        }
+
         /// <summary>
         /// Maximum level of sprites compilable/registrable by the character. Limited to RES at creation.
         /// </summary>
         public int MaxSpriteLevel => RES.TotalValue > 0 ? (Created ? 2 : 1) * RES.TotalValue : 0;
+
+        public int RegisteredSpriteLimit
+        {
+            get
+            {
+                if (_intRegisteredSpriteLimit == int.MinValue)
+                {
+                    string strExpression = Options.RegisteredSpriteExpression;
+                    if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
+                    {
+                        StringBuilder objValue = new StringBuilder(strExpression);
+                        AttributeSection.ProcessAttributesInXPath(objValue, strExpression);
+
+                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(objValue.ToString(), out bool blnIsSuccess);
+                        _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                    }
+                    else
+                        int.TryParse(strExpression, NumberStyles.Any, GlobalOptions.InvariantCultureInfo, out _intRegisteredSpriteLimit);
+                }
+                return _intRegisteredSpriteLimit;
+            }
+        }
 
         /// <summary>
         /// Amount of Power Points for Mystic Adepts.
@@ -15900,7 +15948,11 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{BOD}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{BOD}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{BOD}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -15918,6 +15970,10 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{BODUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{BODUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{BODUnaug}"))
+                        {_intRegisteredSpriteLimit = int.MinValue;}
 
                     break;
                 }
@@ -15950,7 +16006,11 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{AGI}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{AGI}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{AGI}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -15968,8 +16028,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{AGIUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{AGIUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{AGIUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
 
-                    break;
+                        break;
                 }
             }
         }
@@ -15998,7 +16062,11 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{REA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{REA}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{REA}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16016,8 +16084,11 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{REAUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
-
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{REAUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{REAUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
             }
         }
@@ -16047,7 +16118,11 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{STR}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{STR}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{STR}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16065,8 +16140,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{STRUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{STRUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{STRUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
 
-                    break;
+                        break;
                 }
             }
         }
@@ -16095,7 +16174,11 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{CHA}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{CHA}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{CHA}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16113,8 +16196,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{CHAUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{CHAUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{CHAUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
 
-                    break;
+                        break;
                 }
             }
         }
@@ -16149,7 +16236,11 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{INT}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{INT}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{INT}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16167,8 +16258,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{INTUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{INTUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{INTUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
 
-                    break;
+                        break;
                 }
             }
         }
@@ -16201,7 +16296,13 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{LOG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+
+                    if (Options.BoundSpiritExpression.Contains("{INT}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{INT}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16219,8 +16320,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{LOGUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{INTUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{INTUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
 
-                    break;
+                        break;
                 }
             }
         }
@@ -16270,7 +16375,13 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{WIL}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+
+                    if (Options.BoundSpiritExpression.Contains("{WIL}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{WIL}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16288,8 +16399,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{WILUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{WILUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{WILUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
 
-                    break;
+                        break;
                 }
             }
         }
@@ -16315,7 +16430,13 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{EDG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+
+                    if (Options.BoundSpiritExpression.Contains("{EDG}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{EDG}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16333,8 +16454,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{EDGUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
+                    if (Options.BoundSpiritExpression.Contains("{EDGUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{EDGUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
 
-                    break;
+                        break;
                 }
             }
         }
@@ -16371,7 +16496,13 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{MAG}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+
+                    if (Options.BoundSpiritExpression.Contains("{MAG}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{MAG}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16388,7 +16519,12 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{MAGUnaug}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+
+                    if (Options.BoundSpiritExpression.Contains("{MAGUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{MAGUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
             }
         }
@@ -16415,7 +16551,12 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{MAGAdept}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+
+                    if (Options.BoundSpiritExpression.Contains("{MAGAdept}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{MAGAdept}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16435,7 +16576,12 @@ namespace Chummer
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
 
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{MAGAdeptUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{MAGAdeptUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
             }
         }
@@ -16460,7 +16606,11 @@ namespace Chummer
                     OnMultiplePropertyChanged(lstProperties.ToArray());
                     if (!Created && Options.KnowledgePointsExpression.Contains("{RES}"))
                         SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{RES}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{RES}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16479,7 +16629,12 @@ namespace Chummer
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
 
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{RESUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{RESUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
             }
         }
@@ -16507,7 +16662,12 @@ namespace Chummer
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
 
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{DEP}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{DEP}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16526,7 +16686,12 @@ namespace Chummer
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
 
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{DEPUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{DEPUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
             }
         }
@@ -16556,7 +16721,12 @@ namespace Chummer
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
 
-                    break;
+                    if (Options.BoundSpiritExpression.Contains("{ESS}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{ESS}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+
+                        break;
                 }
                 case nameof(CharacterAttrib.Value):
                 {
@@ -16574,7 +16744,12 @@ namespace Chummer
                         if (Options.KnowledgePointsExpression.Contains("{ESSUnaug}"))
                             SkillsSection.OnPropertyChanged(nameof(SkillsSection.KnowledgeSkillPoints));
                     }
-                    break;
+
+                    if (Options.BoundSpiritExpression.Contains("{ESSUnaug}"))
+                        _intBoundSpiritLimit = int.MinValue;
+                    if (Options.RegisteredSpriteExpression.Contains("{ESSUnaug}"))
+                        _intRegisteredSpriteLimit = int.MinValue;
+                        break;
                 }
             }
         }

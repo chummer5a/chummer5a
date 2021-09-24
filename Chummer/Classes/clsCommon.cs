@@ -221,6 +221,30 @@ namespace Chummer
             return objReturn;
         }
 
+        /// <summary>
+        /// Parse an XPath for whether it is valid XPath. 
+        /// </summary>
+        /// <param name="strXPathExpression" >XPath Expression to evaluate</param>
+        /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsCharacterAttributeXPathValidOrNull(string strXPathExpression, bool blnIsNullSuccess = true)
+        {
+            if (string.IsNullOrEmpty(strXPathExpression))
+                return blnIsNullSuccess;
+            foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
+            {
+                if (!string.IsNullOrEmpty(strXPathExpression))
+                    strXPathExpression = strXPathExpression
+                        .Replace('{' + strCharAttributeName + '}', "0")
+                        .Replace('{' + strCharAttributeName + "Unaug}", "0")
+                        .Replace('{' + strCharAttributeName + "Base}", "0");
+            }
+
+            if (string.IsNullOrEmpty(strXPathExpression)) return true;
+            CommonFunctions.EvaluateInvariantXPath(strXPathExpression, out bool blnSuccess);
+            return blnSuccess;
+        }
+
         #endregion XPath Evaluators
 
         #region Find Functions

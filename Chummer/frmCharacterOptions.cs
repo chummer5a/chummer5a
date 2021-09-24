@@ -659,68 +659,30 @@ namespace Chummer
 
         private void txtContactPoints_TextChanged(object sender, EventArgs e)
         {
-            string strExpression = txtContactPoints.Text;
-            if (!string.IsNullOrEmpty(strExpression))
-            {
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    strExpression = strExpression
-                        .Replace('{' + strCharAttributeName + '}', "0")
-                        .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                        .Replace('{' + strCharAttributeName + "Base}", "0");
-                }
-                CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
-                if (!blnSuccess)
-                {
-                    txtContactPoints.ForeColor = ColorManager.ErrorColor;
-                    return;
-                }
-            }
-            txtContactPoints.ForeColor = ColorManager.WindowText;
+            txtContactPoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtContactPoints.Text) ?
+                ColorManager.WindowText : ColorManager.ErrorColor;
         }
 
         private void txtKnowledgePoints_TextChanged(object sender, EventArgs e)
         {
-            string strExpression = txtKnowledgePoints.Text;
-            if (!string.IsNullOrEmpty(strExpression))
-            {
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    strExpression = strExpression
-                        .Replace('{' + strCharAttributeName + '}', "0")
-                        .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                        .Replace('{' + strCharAttributeName + "Base}", "0");
-                }
-                CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
-                if (!blnSuccess)
-                {
-                    txtKnowledgePoints.ForeColor = ColorManager.ErrorColor;
-                    return;
-                }
-            }
-            txtKnowledgePoints.ForeColor = ColorManager.WindowText;
+            txtKnowledgePoints.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtKnowledgePoints.Text) ?
+                ColorManager.WindowText : ColorManager.ErrorColor;
         }
 
         private void txtNuyenExpression_TextChanged(object sender, EventArgs e)
         {
-            string strExpression = txtNuyenExpression.Text.Replace("{Karma}", "0");
-            if (!string.IsNullOrEmpty(strExpression))
-            {
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    strExpression = strExpression
-                        .Replace('{' + strCharAttributeName + '}', "0")
-                        .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                        .Replace('{' + strCharAttributeName + "Base}", "0");
-                }
-                CommonFunctions.EvaluateInvariantXPath(strExpression, out bool blnSuccess);
-                if (!blnSuccess)
-                {
-                    txtNuyenExpression.ForeColor = ColorManager.ErrorColor;
-                    return;
-                }
-            }
-            txtNuyenExpression.ForeColor = ColorManager.WindowText;
+            txtNuyenExpression.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtNuyenExpression.Text) ?
+                ColorManager.WindowText : ColorManager.ErrorColor;
+        }
+        private void txtBoundSpiritLimit_TextChanged(object sender, EventArgs e)
+        {
+            txtBoundSpiritLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtBoundSpiritLimit.Text) ?
+                ColorManager.WindowText : ColorManager.ErrorColor;
+        }
+        private void txtRegisteredSpriteLimit_TextChanged(object sender, EventArgs e)
+        {
+            txtRegisteredSpriteLimit.ForeColor = CommonFunctions.IsCharacterAttributeXPathValidOrNull(txtRegisteredSpriteLimit.Text) ?
+                ColorManager.WindowText : ColorManager.ErrorColor;
         }
 
         private void chkGrade_CheckedChanged(object sender, EventArgs e)
@@ -1131,6 +1093,8 @@ namespace Chummer
             txtContactPoints.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.ContactPointsExpression));
             txtKnowledgePoints.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.KnowledgePointsExpression));
             txtNuyenExpression.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.ChargenKarmaToNuyenExpression));
+            txtRegisteredSpriteLimit.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.RegisteredSpriteLimit));
+            txtBoundSpiritLimit.DoDataBinding("Text", _objCharacterOptions, nameof(CharacterOptions.BoundSpiritLimit));
 
             chkEnforceCapacity.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.EnforceCapacity));
             chkLicenseEachRestrictedItem.DoDataBinding("Checked", _objCharacterOptions, nameof(CharacterOptions.LicenseRestricted));
@@ -1315,50 +1279,13 @@ namespace Chummer
                 if (_objCharacterOptions.BuildMethod == CharacterBuildMethod.Priority && _objCharacterOptions.PriorityArray.Length != 5)
                     return false;
 
-                string strContactPointsExpression = _objCharacterOptions.ContactPointsExpression;
-                string strKnowledgePointsExpression = _objCharacterOptions.KnowledgePointsExpression;
-                string strNuyenExpression = _objCharacterOptions.ChargenKarmaToNuyenExpression.Replace("{Karma}", "0").Replace("{PriorityNuyen}", "0");
-                if (string.IsNullOrEmpty(strContactPointsExpression) && string.IsNullOrEmpty(strKnowledgePointsExpression) && string.IsNullOrEmpty(strNuyenExpression))
-                    return true;
-                foreach (string strCharAttributeName in AttributeSection.AttributeStrings)
-                {
-                    if (!string.IsNullOrEmpty(strContactPointsExpression))
-                        strContactPointsExpression = strContactPointsExpression
-                            .Replace('{' + strCharAttributeName + '}', "0")
-                            .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                            .Replace('{' + strCharAttributeName + "Base}", "0");
-                    if (!string.IsNullOrEmpty(strKnowledgePointsExpression))
-                        strKnowledgePointsExpression = strKnowledgePointsExpression
-                            .Replace('{' + strCharAttributeName + '}', "0")
-                            .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                            .Replace('{' + strCharAttributeName + "Base}", "0");
-                    if (!string.IsNullOrEmpty(strNuyenExpression))
-                        strNuyenExpression = strNuyenExpression
-                            .Replace('{' + strCharAttributeName + '}', "0")
-                            .Replace('{' + strCharAttributeName + "Unaug}", "0")
-                            .Replace('{' + strCharAttributeName + "Base}", "0");
-                }
-
-                if (!string.IsNullOrEmpty(strContactPointsExpression))
-                {
-                    CommonFunctions.EvaluateInvariantXPath(strContactPointsExpression, out bool blnSuccess);
-                    if (!blnSuccess)
-                        return false;
-                }
-                if (!string.IsNullOrEmpty(strKnowledgePointsExpression))
-                {
-                    CommonFunctions.EvaluateInvariantXPath(strKnowledgePointsExpression, out bool blnSuccess);
-                    if (!blnSuccess)
-                        return false;
-                }
-                if (!string.IsNullOrEmpty(strNuyenExpression))
-                {
-                    CommonFunctions.EvaluateInvariantXPath(strNuyenExpression, out bool blnSuccess);
-                    if (!blnSuccess)
-                        return false;
-                }
-
-                return true;
+                return CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterOptions.ContactPointsExpression, true) &&
+                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterOptions.KnowledgePointsExpression, true) &&
+                       CommonFunctions.IsCharacterAttributeXPathValidOrNull(
+                           _objCharacterOptions.ChargenKarmaToNuyenExpression.Replace("{Karma}", "0")
+                               .Replace("{PriorityNuyen}", "0"), true);
             }
         }
 

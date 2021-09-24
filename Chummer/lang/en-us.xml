@@ -2340,7 +2340,7 @@
     </string>
     <string>
       <key>Message_BoundSpiritLimit</key>
-      <text>Your number of bound Spirits cannot exceed your CHA score.</text>
+      <text>Your number of bound Spirits cannot exceed {0} ({1}).</text>
     </string>
     <string>
       <key>MessageTitle_BoundSpiritLimit</key>
@@ -2356,11 +2356,19 @@
     </string>
     <string>
       <key>Message_RegisteredSpriteLimit</key>
-      <text>Your number of registered Sprites cannot exceed your LOG score.</text>
+      <text>Your number of registered Sprites cannot exceed {0} ({1}).</text>
     </string>
     <string>
       <key>MessageTitle_RegisteredSpriteLimit</key>
       <text>Registered Sprite Limit</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_BoundSpiritLimit</key>
+      <text>Bound Spirit Limit:</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_RegisteredSpriteLimit</key>
+      <text>Registered Sprite Limit:</text>
     </string>
     <string>
       <key>Message_CannotRemoveCyberware</key>

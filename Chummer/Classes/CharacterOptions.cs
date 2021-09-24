@@ -103,9 +103,11 @@ namespace Chummer
         private bool _blnUnrestrictedNuyen;
         private bool _blnUseCalculatedPublicAwareness;
         private bool _blnUsePointsOnBrokenGroups;
-        private string _strContactPointsExpression = "{CHAUnaug} * 3";
-        private string _strKnowledgePointsExpression = "({INTUnaug} + {LOGUnaug}) * 2";
+        private string _strContactPointsExpression       = "{CHAUnaug} * 3";
+        private string _strKnowledgePointsExpression     = "({INTUnaug} + {LOGUnaug}) * 2";
         private string _strChargenKarmaToNuyenExpression = "{Karma} * 2000 + {PriorityNuyen}";
+        private string _strBoundSpiritExpression         = "{CHA}";
+        private string _strRegisteredSpriteExpression      = "{LOG}";
         private bool _blnDoNotRoundEssenceInternally;
         private bool _blnEnemyKarmaQualityLimit = true;
         private string _strEssenceFormat = "#,0.00";
@@ -487,6 +489,10 @@ namespace Chummer
                     objWriter.WriteElementString("knowledgepointsexpression", _strKnowledgePointsExpression);
                     // <chargenkarmatonuyenexpression />
                     objWriter.WriteElementString("chargenkarmatonuyenexpression", _strChargenKarmaToNuyenExpression);
+                    // <boundspiritexpression />
+                    objWriter.WriteElementString("boundspiritexpression", _strBoundSpiritExpression);
+                    // <compiledspriteexpression />
+                    objWriter.WriteElementString("compiledspriteexpression", _strRegisteredSpriteExpression);
                     // <dronearmormultiplierenabled />
                     objWriter.WriteElementString("dronearmormultiplierenabled", _blnDroneArmorMultiplierEnabled.ToString(GlobalOptions.InvariantCultureInfo));
                     // <dronearmorflatnumber />
@@ -899,6 +905,8 @@ namespace Chummer
             {
                 _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
             }
+            objXmlNode.TryGetStringFieldQuickly("compiledspriteexpression", ref _strRegisteredSpriteExpression);
+            objXmlNode.TryGetStringFieldQuickly("boundspiritexpression", ref _strBoundSpiritExpression);
             // Drone Armor Multiplier Enabled
             objXmlNode.TryGetBoolFieldQuickly("dronearmormultiplierenabled", ref _blnDroneArmorMultiplierEnabled);
             // Drone Armor Multiplier Value
@@ -2165,6 +2173,40 @@ namespace Chummer
                     {
                         _strChargenKarmaToNuyenExpression = "(" + _strChargenKarmaToNuyenExpression + ") + {PriorityNuyen}";
                     }
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many spirits a character can bind 
+        /// </summary>
+        public string BoundSpiritExpression
+        {
+            get => _strBoundSpiritExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strBoundSpiritExpression != strNewValue)
+                {
+                    _strBoundSpiritExpression = strNewValue;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// The XPath expression to use to determine how many sprites a character can bind
+        /// </summary>
+        public string RegisteredSpriteExpression
+        {
+            get => _strRegisteredSpriteExpression;
+            set
+            {
+                string strNewValue = value.CleanXPath().Trim('\"');
+                if (_strRegisteredSpriteExpression != strNewValue)
+                {
+                    _strRegisteredSpriteExpression = strNewValue;
                     OnPropertyChanged();
                 }
             }
@@ -3950,6 +3992,8 @@ namespace Chummer
         /// The value by which Specializations add to dicepool.
         /// </summary>
         public int SpecializationBonus { get; } = 2;
+        public static object RegisteredSpriteLimit { get; internal set; }
+        public static object BoundSpiritLimit { get; internal set; }
 
         #endregion Constant Values
     }
