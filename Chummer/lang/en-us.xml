@@ -1228,7 +1228,7 @@
     </string>
     <string>
       <key>Message_NoLinkedPDF</key>
-      <text>No linked PDF file for {0} was found. Do you wish to open Global Options to link a PDF file?</text>
+      <text>No linked PDF file for {0} was found. Do you wish to open Global Settings to link a PDF file?</text>
     </string>
     <string>
       <key>MessageTitle_NoLinkedPDF</key>
@@ -1236,7 +1236,7 @@
     </string>
     <string>
       <key>Message_NoPDFProgramSet</key>
-      <text>No program for reading PDFs has been set up in Chummer's Global Options. Do you wish to open Global Options to link a program?</text>
+      <text>No program for reading PDFs has been set up in Chummer's Global Settings. Do you wish to open Global Settings to link a program?</text>
     </string>
     <string>
       <key>MessageTitle_NoPDFProgramSet</key>
@@ -1444,11 +1444,11 @@
     </string>
     <string>
       <key>Menu_Main_Options</key>
-      <text>&amp;Global Options</text>
+      <text>&amp;Global Settings</text>
     </string>
     <string>
       <key>Menu_Main_Character_Options</key>
-      <text>&amp;Character Options</text>
+      <text>&amp;Character Settings</text>
     </string>
     <string>
       <key>Menu_Main_Update</key>
@@ -1668,7 +1668,7 @@
     </string>
     <string>
       <key>Menu_SpecialChangeOptions</key>
-      <text>Change &amp;Options File</text>
+      <text>Change &amp;Settings File</text>
     </string>
     <string>
       <key>Menu_SpecialConvertToMutantCritter</key>
@@ -7004,7 +7004,7 @@
     <!-- Region Options Window -->
     <string>
       <key>Title_Options</key>
-      <text>Global Options</text>
+      <text>Global Settings</text>
     </string>
     <string>
       <key>Label_Options_SettingsFile</key>
@@ -7048,11 +7048,11 @@
     </string>
     <string>
       <key>Tab_Options_Global</key>
-      <text>Global Options</text>
+      <text>Global Settings</text>
     </string>
     <string>
       <key>Tab_Options_Character</key>
-      <text>Character Options</text>
+      <text>Character Settings</text>
     </string>
     <string>
       <key>Tab_Options_GitHubIssues</key>
@@ -7780,7 +7780,7 @@
     </string>
     <string>
       <key>Message_Options_CloseForms</key>
-      <text>Options are only enumerated on startup, so changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
+      <text>Settings are only enumerated on startup, so changes will only be applied the next time the program is started. Should Chummer be restarted?</text>
     </string>
     <string>
       <key>Message_Options_SaveForms</key>
@@ -8223,6 +8223,10 @@
     <string>
       <key>Title_SelectBP</key>
       <text>Select Build Method</text>
+    </string>
+    <string>
+      <key>Label_SelectBP_UseSetting</key>
+      <text>Use Setting:</text>
     </string>
     <string>
       <key>Label_SelectBP_BuildMethod</key>

@@ -94,8 +94,8 @@ namespace Chummer
         private void UpdateText()
         {
             Text = BubbleDie
-                ? LanguageManager.GetString("String_BubbleDie") + LanguageManager.GetString("String_Space") + '(' + Result.ToString(GlobalOptions.CultureInfo) + ')'
-                : Result.ToString(GlobalOptions.CultureInfo);
+                ? LanguageManager.GetString("String_BubbleDie") + LanguageManager.GetString("String_Space") + '(' + Result.ToString(GlobalSettings.CultureInfo) + ')'
+                : Result.ToString(GlobalSettings.CultureInfo);
         }
 
         private void UpdateColor()

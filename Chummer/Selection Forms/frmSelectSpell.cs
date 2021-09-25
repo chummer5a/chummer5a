@@ -80,7 +80,7 @@ namespace Chummer
                 limit.Add(improvement.ImprovedName);
             }
 
-            string strFilterPrefix = "spells/spell[(" + _objCharacter.Options.BookXPath() + ") and category = ";
+            string strFilterPrefix = "spells/spell[(" + _objCharacter.Settings.BookXPath() + ") and category = ";
             foreach (XPathNavigator objXmlCategory in _xmlBaseSpellDataNode.Select("categories/category"))
             {
                 string strCategory = objXmlCategory.Value;
@@ -128,7 +128,7 @@ namespace Chummer
             cboCategory.EndUpdate();
 
             // Don't show the Extended Spell checkbox if the option to Extend any Detection Spell is disabled.
-            chkExtended.Visible = _objCharacter.Options.ExtendAnyDetectionSpell;
+            chkExtended.Visible = _objCharacter.Settings.ExtendAnyDetectionSpell;
             _blnLoading = false;
             BuildSpellList();
         }
@@ -277,8 +277,8 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strCategory = cboCategory.SelectedValue?.ToString();
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0))
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
+            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
                 sbdFilter.Append(" and category = " + strCategory.CleanXPath());
             else
             {
@@ -294,7 +294,7 @@ namespace Chummer
                     sbdFilter.Append(" and (" + sbdCategoryFilter + ')');
                 }
             }
-            if (_objCharacter.Options.ExtendAnyDetectionSpell)
+            if (_objCharacter.Settings.ExtendAnyDetectionSpell)
                 sbdFilter.Append(" and ((not(contains(name, \", Extended\"))))");
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 sbdFilter.Append(" and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text));
@@ -386,7 +386,7 @@ namespace Chummer
                 string strDisplayName = objXmlSpell.SelectSingleNode("translate")?.Value ??
                                         objXmlSpell.SelectSingleNode("name")?.Value ??
                                         LanguageManager.GetString("String_Unknown");
-                if (!GlobalOptions.SearchInCategoryOnly && txtSearch.TextLength != 0 && !string.IsNullOrEmpty(strSpellCategory))
+                if (!GlobalSettings.SearchInCategoryOnly && txtSearch.TextLength != 0 && !string.IsNullOrEmpty(strSpellCategory))
                 {
                     ListItem objFoundItem = _lstCategory.Find(objFind => objFind.Value.ToString() == strSpellCategory);
                     if (!string.IsNullOrEmpty(objFoundItem.Name))
@@ -460,7 +460,7 @@ namespace Chummer
             }
 
             _strSelectedSpell = strSelectedItem;
-            _strSelectCategory = (GlobalOptions.SearchInCategoryOnly || txtSearch.TextLength == 0)
+            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
                 ? cboCategory.SelectedValue?.ToString()
                 : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + _strSelectedSpell.CleanXPath() + "]/category")?.Value ?? string.Empty;
             FreeBonus = chkFreeBonus.Checked;
@@ -610,7 +610,7 @@ namespace Chummer
                 chkExtended.Checked = true;
                 chkExtended.Enabled = false;
             }
-            else if (_objCharacter.Options.ExtendAnyDetectionSpell && xmlSpell.SelectSingleNode("category")?.Value == "Detection")
+            else if (_objCharacter.Settings.ExtendAnyDetectionSpell && xmlSpell.SelectSingleNode("category")?.Value == "Detection")
             {
                 chkExtended.Visible = true;
                 if (!chkExtended.Enabled) // Resets this checkbox if we just selected an Extended Area spell
@@ -624,7 +624,7 @@ namespace Chummer
             }
 
             string strRange = xmlSpell.SelectSingleNode("range")?.Value ?? string.Empty;
-            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strRange = strRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf"))
                     .CheapReplace("LOS", () => LanguageManager.GetString("String_SpellRangeLineOfSight"))
@@ -656,7 +656,7 @@ namespace Chummer
             }
 
             string strDV = xmlSpell.SelectSingleNode("dv")?.Value.Replace('/', '÷') ?? string.Empty;
-            if (!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strDV = strDV.CheapReplace("F", () => LanguageManager.GetString("String_SpellForce"))
                     .CheapReplace("Overflow damage", () => LanguageManager.GetString("String_SpellOverflowDamage"))
@@ -703,7 +703,7 @@ namespace Chummer
             {
                 if (force)
                 {
-                    strDV = string.Format(GlobalOptions.CultureInfo, "F{0:+0;-0;}", xprResult);
+                    strDV = string.Format(GlobalSettings.CultureInfo, "F{0:+0;-0;}", xprResult);
                 }
                 else if (xprResult.ToString() != "0")
                 {
@@ -729,8 +729,8 @@ namespace Chummer
 
             string strSource = xmlSpell.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
             string strPage = xmlSpell.SelectSingleNode("altpage")?.Value ?? xmlSpell.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                GlobalOptions.CultureInfo, _objCharacter);
+            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                GlobalSettings.CultureInfo, _objCharacter);
             lblSource.Text = objSource.ToString();
             lblSource.SetToolTip(objSource.LanguageBookTooltip);
             lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);

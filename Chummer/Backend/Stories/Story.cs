@@ -107,7 +107,7 @@ namespace Chummer
                     }
                 }
 
-                int intRandomResult = GlobalOptions.RandomGenerator.NextModuloBiasRemoved(intTotalWeight);
+                int intRandomResult = GlobalSettings.RandomGenerator.NextModuloBiasRemoved(intTotalWeight);
                 string strSelectedId = string.Empty;
                 foreach (KeyValuePair<string, int> objStoryId in dicStoriesListWithWeights)
                 {

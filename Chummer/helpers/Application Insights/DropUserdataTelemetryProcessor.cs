@@ -43,7 +43,7 @@ namespace Chummer
         public void Process(ITelemetry item)
         {
             ModifyItem(item);
-            if (GlobalOptions.UseLoggingApplicationInsights == UseAILogging.Trace)
+            if (GlobalSettings.UseLoggingApplicationInsights == UseAILogging.Trace)
             {
                 Next.Process(item);
                 return;
@@ -53,18 +53,18 @@ namespace Chummer
             {
                 return;
             }
-            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes && item is ExceptionTelemetry exceptionTelemetry && (exceptionTelemetry.Exception.Data.Contains("IsCrash")
+            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes && item is ExceptionTelemetry exceptionTelemetry && (exceptionTelemetry.Exception.Data.Contains("IsCrash")
                 || exceptionTelemetry.Properties.ContainsKey("IsCrash")))
             {
                 Next.Process(item);
                 return;
             }
-            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric && item is MetricTelemetry)
+            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.OnlyMetric && item is MetricTelemetry)
             {
                 Next.Process(item);
                 return;
             }
-            if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Info && item is TraceTelemetry traceTelemetry && traceTelemetry.SeverityLevel >= SeverityLevel.Information)
+            if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Info && item is TraceTelemetry traceTelemetry && traceTelemetry.SeverityLevel >= SeverityLevel.Information)
             {
                 Next.Process(item);
             }

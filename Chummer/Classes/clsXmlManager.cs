@@ -68,7 +68,7 @@ namespace Chummer
                             {
                                 value.Save(memStream);
                                 memStream.Position = 0;
-                                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.SafeXmlReaderSettings))
+                                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalSettings.SafeXmlReaderSettings))
                                     XPathContent = new XPathDocument(objXmlReader);
                             }
                         }
@@ -97,7 +97,7 @@ namespace Chummer
         private static readonly object s_SetDataDirectoriesLock = new object();
         private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Path
             .Combine(Utils.GetStartupPath, "data").Yield()
-            .Concat(GlobalOptions.CustomDataDirectoryInfos.Select(x => x.DirectoryPath)));
+            .Concat(GlobalSettings.CustomDataDirectoryInfos.Select(x => x.DirectoryPath)));
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
 
         #region Methods
@@ -185,7 +185,7 @@ namespace Chummer
                 return null;
             }
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
+                strLanguage = GlobalSettings.Language;
             
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
@@ -196,7 +196,7 @@ namespace Chummer
             // Look to see if this XmlDocument is already loaded.
             XmlDocument xmlDocumentOfReturn = null;
             if (blnLoadFile
-                || (GlobalOptions.LiveCustomData && strFileName != "improvements.xml")
+                || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml")
                 || !s_DicXmlDocuments.TryGetValue(objDataKey, out XmlReference xmlReferenceOfReturn))
             {
                 // The file was not found in the reference list, so it must be loaded.
@@ -223,13 +223,13 @@ namespace Chummer
                 }
             }
             // Live custom data will cause the reference's document to not be the same as the actual one we need, so we'll need to remake the document returned by the Load
-            if (GlobalOptions.LiveCustomData && strFileName != "improvements.xml" && xmlDocumentOfReturn != null)
+            if (GlobalSettings.LiveCustomData && strFileName != "improvements.xml" && xmlDocumentOfReturn != null)
             {
                 using (MemoryStream memStream = new MemoryStream())
                 {
                     xmlDocumentOfReturn.Save(memStream);
                     memStream.Position = 0;
-                    using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalOptions.SafeXmlReaderSettings))
+                    using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalSettings.SafeXmlReaderSettings))
                         return new XPathDocument(objXmlReader).CreateNavigator();
                 }
             }
@@ -309,7 +309,7 @@ namespace Chummer
                 return new XmlDocument { XmlResolver = null };
             }
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
+                strLanguage = GlobalSettings.Language;
 
             List<string> lstRelevantCustomDataPaths =
                 CompileRelevantCustomDataPaths(strFileName, lstEnabledCustomDataPaths);
@@ -360,13 +360,13 @@ namespace Chummer
                         : await LoadAsync(strFileName, null, strLanguage).ConfigureAwait(false);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
-                else if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                else if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     // When loading in non-English data, just clone the English stuff instead of recreating it to hopefully save on time
                     XmlDocument xmlBaseDocument = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? Load(strFileName, null, GlobalOptions.DefaultLanguage)
-                        : await LoadAsync(strFileName, null, GlobalOptions.DefaultLanguage).ConfigureAwait(false);
+                        ? Load(strFileName, null, GlobalSettings.DefaultLanguage)
+                        : await LoadAsync(strFileName, null, GlobalSettings.DefaultLanguage).ConfigureAwait(false);
                     xmlReturn = xmlBaseDocument.Clone() as XmlDocument;
                 }
                 if (xmlReturn == null) // Not an else in case something goes wrong in safe cast in the line above
@@ -417,7 +417,7 @@ namespace Chummer
                 }
 
                 // Load the translation file for the current base data file if the selected language is not en-us.
-                if (!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     // Everything is stored in the selected language file to make translations easier, keep all of the language-specific information together, and not require users to download 27 individual files.
                     // The structure is similar to the base data file, but the root node is instead a child /chummer node with a file attribute to indicate the XML file it translates.
@@ -435,7 +435,7 @@ namespace Chummer
                 // Cache the merged document and its relevant information (also sets IsLoaded to true).
                 xmlReferenceOfReturn.XmlContent = xmlReturn;
                 // Make sure we do not override the cached document with our live data
-                if (GlobalOptions.LiveCustomData && blnHasCustomData)
+                if (GlobalSettings.LiveCustomData && blnHasCustomData)
                     xmlReturn = xmlReferenceOfReturn.XmlContent.Clone() as XmlDocument;
             }
             else
@@ -448,7 +448,7 @@ namespace Chummer
                         await Utils.SafeSleepAsync();
                 }
                 // Make sure we do not override the cached document with our live data
-                if (GlobalOptions.LiveCustomData && blnHasCustomData)
+                if (GlobalSettings.LiveCustomData && blnHasCustomData)
                     xmlReturn = xmlReferenceOfReturn.XmlContent.Clone() as XmlDocument;
                 else
                     xmlReturn = xmlReferenceOfReturn.XmlContent;
@@ -460,7 +460,7 @@ namespace Chummer
 
             // Load any custom data files the user might have. Do not attempt this if we're loading the Improvements file.
             bool blnHasLiveCustomData = false;
-            if (GlobalOptions.LiveCustomData)
+            if (GlobalSettings.LiveCustomData)
             {
                 strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
                 if (Directory.Exists(strPath))
@@ -511,7 +511,7 @@ namespace Chummer
                         sbdDuplicatesNames.AppendLine();
                     sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                 }
-                Program.MainForm?.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
+                Program.MainForm?.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
                     , LanguageManager.GetString("Message_DuplicateGuidWarning")
                     , setDuplicateIDs.Count
                     , strFileName
@@ -520,7 +520,7 @@ namespace Chummer
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                Program.MainForm?.ShowMessageBox(string.Format(GlobalOptions.CultureInfo
+                Program.MainForm?.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
                     , LanguageManager.GetString("Message_NonGuidIdWarning")
                     , lstItemsWithMalformedIDs.Count
                     , strFileName
@@ -1362,7 +1362,7 @@ namespace Chummer
                         string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                         if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                         {
-                            lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                            lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                                     ? Path.Combine(strLanguage, strSheetFileName)
                                     : strSheetFileName,
                                 xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
@@ -1379,7 +1379,7 @@ namespace Chummer
                     string strSheetFileName = xmlSheet.SelectSingleNode("filename")?.Value;
                     if (!string.IsNullOrEmpty(strSheetFileName) && lstSheets.All(x => x.Value.ToString() != strSheetFileName))
                     {
-                        lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        lstSheets.Add(new ListItem(!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                                 ? Path.Combine(strLanguage, strSheetFileName)
                                 : strSheetFileName,
                             xmlSheet.SelectSingleNode("name")?.Value ?? LanguageManager.GetString("String_Unknown")));
@@ -1399,7 +1399,7 @@ namespace Chummer
         /// <param name="lstBooks">List of books.</param>
         public static void Verify(string strLanguage, ICollection<string> lstBooks)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return;
             XPathDocument objLanguageDoc;
             string languageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
@@ -1408,7 +1408,7 @@ namespace Chummer
             try
             {
                 using (StreamReader objStreamReader = new StreamReader(strFilePath, Encoding.UTF8, true))
-                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalOptions.SafeXmlReaderSettings))
+                    using (XmlReader objXmlReader = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
                         objLanguageDoc = new XPathDocument(objXmlReader);
             }
             catch (IOException ex)
@@ -1594,7 +1594,7 @@ namespace Chummer
                                                 {
                                                     string strMetavariantName = objMetavariant.SelectSingleNode("name").Value;
                                                     XPathNavigator objTranslate =
-                                                        objLanguageRoot.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                                                        objLanguageRoot.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
                                                             "metatypes/metatype[name = {0}]/metavariants/metavariant[name = {1}]",
                                                             strChildNameElement.CleanXPath(), strMetavariantName.CleanXPath()));
                                                     if (objTranslate != null)
@@ -1759,7 +1759,7 @@ namespace Chummer
                                 if (!string.IsNullOrEmpty(strChildNameElement))
                                 {
                                     string strChildName = objChild.Name;
-                                    XPathNavigator objNode = objEnglishRoot.SelectSingleNode(string.Format(GlobalOptions.InvariantCultureInfo,
+                                    XPathNavigator objNode = objEnglishRoot.SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
                                         "/chummer/{0}/{1}[name = {2}]",
                                         objType.Name, strChildName, strChildNameElement.CleanXPath()));
                                     if (objNode == null)

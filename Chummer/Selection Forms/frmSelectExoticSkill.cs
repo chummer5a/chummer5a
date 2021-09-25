@@ -121,10 +121,10 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
             XPathNodeIterator xmlWeaponList = _objCharacter.LoadDataXPath("weapons.xml")
-                .Select(string.Format(GlobalOptions.InvariantCultureInfo,
+                .Select(string.Format(GlobalSettings.InvariantCultureInfo,
                     "/chummer/weapons/weapon[(category = {0} or useskill = {1}) and ({2})]",
                     (strSelectedCategory + 's').CleanXPath(), strSelectedCategory.CleanXPath(),
-                    _objCharacter.Options.BookXPath(false)));
+                    _objCharacter.Settings.BookXPath(false)));
             List<ListItem> lstSkillSpecializations = new List<ListItem>(xmlWeaponList.Count);
             if (xmlWeaponList.Count > 0)
             {
@@ -139,7 +139,7 @@ namespace Chummer
             }
 
             foreach (XPathNavigator xmlSpec in _objCharacter.LoadDataXPath("skills.xml")
-                .Select("/chummer/skills/skill[name = " + strSelectedCategory.CleanXPath() + " and (" + _objCharacter.Options.BookXPath() + ")]/specs/spec"))
+                .Select("/chummer/skills/skill[name = " + strSelectedCategory.CleanXPath() + " and (" + _objCharacter.Settings.BookXPath() + ")]/specs/spec"))
             {
                 string strName = xmlSpec.Value;
                 if (!string.IsNullOrEmpty(strName))

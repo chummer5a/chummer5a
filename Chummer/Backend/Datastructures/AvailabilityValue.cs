@@ -63,7 +63,7 @@ namespace Chummer
                 AddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
                 if (Suffix == 'F' || Suffix == 'R')
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                 Value = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
             else
@@ -80,7 +80,7 @@ namespace Chummer
 
         public override string ToString()
         {
-            return ToString(GlobalOptions.CultureInfo, GlobalOptions.Language);
+            return ToString(GlobalSettings.CultureInfo, GlobalSettings.Language);
         }
 
         public string ToString(CultureInfo objCulture, string strLanguage)

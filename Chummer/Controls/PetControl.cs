@@ -145,7 +145,7 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), _objContact.FileName), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -239,7 +239,7 @@ namespace Chummer
                     {
                         string strMetavariantName = objXmlMetavariantNode.SelectSingleNode("name")?.Value ?? string.Empty;
                         if (lstMetatypes.All(x => strMetavariantName.Equals(x.Value.ToString(), StringComparison.OrdinalIgnoreCase)))
-                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalOptions.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNode("translate")?.Value ?? strMetavariantName)));
+                            lstMetatypes.Add(new ListItem(strMetavariantName, string.Format(GlobalSettings.CultureInfo, strMetavariantFormat, objXmlMetavariantNode.SelectSingleNode("translate")?.Value ?? strMetavariantName)));
                     }
                 }
             }

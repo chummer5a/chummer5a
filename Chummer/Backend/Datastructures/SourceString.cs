@@ -31,8 +31,8 @@ namespace Chummer
 
         public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
-            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
+            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
             string strCode = strSourceString ?? string.Empty;
             Page = 0;
             int intWhitespaceIndex = strCode.IndexOf(' ');
@@ -41,7 +41,7 @@ namespace Chummer
                 strCode = strCode.Substring(0, intWhitespaceIndex);
                 if (intWhitespaceIndex + 1 < strCode.Length)
                 {
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intPage);
+                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
                     Page = intPage;
                 }
             }
@@ -58,9 +58,9 @@ namespace Chummer
 
         public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
-            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
-            int.TryParse(strPage, NumberStyles.Integer, GlobalOptions.InvariantCultureInfo, out int intPage);
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
+            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
+            int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
             Page = intPage;
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
@@ -75,8 +75,8 @@ namespace Chummer
 
         public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalOptions.Language;
-            CultureInfo = objCultureInfo ?? GlobalOptions.CultureInfo;
+            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
+            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
             Page = intPage;
 
             Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
@@ -126,10 +126,10 @@ namespace Chummer
 
         public int CompareTo(SourceString other)
         {
-            int intCompareResult = string.Compare(Language, other.Language, false, GlobalOptions.CultureInfo);
+            int intCompareResult = string.Compare(Language, other.Language, false, GlobalSettings.CultureInfo);
             if (intCompareResult == 0)
             {
-                intCompareResult = string.Compare(Code, other.Code, false, GlobalOptions.CultureInfo);
+                intCompareResult = string.Compare(Code, other.Code, false, GlobalSettings.CultureInfo);
                 if (intCompareResult == 0)
                 {
                     intCompareResult = Page.CompareTo(other.Page);

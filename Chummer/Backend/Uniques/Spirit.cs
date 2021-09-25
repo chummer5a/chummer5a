@@ -108,13 +108,13 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("spirit");
-            objWriter.WriteElementString("guid", _guiId.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiId.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("crittername", _strCritterName);
-            objWriter.WriteElementString("services", _intServicesOwed.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("force", _intForce.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("bound", _blnBound.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("fettered", _blnFettered.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("services", _intServicesOwed.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("force", _intForce.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("bound", _blnBound.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("fettered", _blnFettered.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("type", _eEntityType.ToString());
             objWriter.WriteElementString("file", _strFileName);
             objWriter.WriteElementString("relative", _strRelativeName);
@@ -180,7 +180,7 @@ namespace Chummer
             // Translate the Critter name if applicable.
             string strName = Name;
             XmlNode objXmlCritterNode = GetNode(strLanguageToPrint);
-            if (!strLanguageToPrint.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
             }
@@ -190,8 +190,8 @@ namespace Chummer
             objWriter.WriteElementString("name", strName);
             objWriter.WriteElementString("name_english", Name);
             objWriter.WriteElementString("crittername", CritterName);
-            objWriter.WriteElementString("fettered", Fettered.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("bound", Bound.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("fettered", Fettered.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("services", ServicesOwed.ToString(objCulture));
             objWriter.WriteElementString("force", Force.ToString(objCulture));
             objWriter.WriteElementString("ratinglabel", LanguageManager.GetString(RatingLabel, strLanguageToPrint));
@@ -207,7 +207,7 @@ namespace Chummer
                     string strInner = string.Empty;
                     if (objXmlCritterNode.TryGetStringFieldQuickly(strAttribute, ref strInner))
                     {
-                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalOptions.InvariantCultureInfo)), out bool blnIsSuccess);
+                        object objProcess = CommonFunctions.EvaluateInvariantXPath(strInner.Replace("F", _intForce.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
                         int intValue = Math.Max(blnIsSuccess ? ((double)objProcess).StandardRound() : _intForce, 1);
                         objWriter.WriteElementString(strAttribute, intValue.ToString(objCulture));
 
@@ -292,10 +292,10 @@ namespace Chummer
                     objWriter.WriteElementString("page", strPage);
             }
 
-            objWriter.WriteElementString("bound", Bound.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("bound", Bound.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("type", EntityType.ToString());
 
-            if (GlobalOptions.PrintNotes)
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             PrintMugshots(objWriter);
             objWriter.WriteEndElement();
@@ -395,7 +395,7 @@ namespace Chummer
                         break;
                 }
 
-                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && !strLanguageToPrint.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                if (objXmlPowerNode.TryGetStringFieldQuickly("range", ref strDisplayRange) && !strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
                     strDisplayRange = strDisplayRange.CheapReplace("Self", () => LanguageManager.GetString("String_SpellRangeSelf", strLanguageToPrint))
                         .CheapReplace("Special", () => LanguageManager.GetString("String_SpellDurationSpecial", strLanguageToPrint))
@@ -718,10 +718,10 @@ namespace Chummer
                     if (CharacterObject.Created)
                     {
                         // Sprites only cost Force in Karma to become Fettered. Spirits cost Force * 3.
-                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * CharacterObject.Options.KarmaSpiritFettering : Force;
-                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
+                        int fetteringCost = EntityType == SpiritType.Spirit ? Force * CharacterObject.Settings.KarmaSpiritFettering : Force;
+                        if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpenseSpend")
                             , Name
-                            , fetteringCost.ToString(GlobalOptions.CultureInfo))))
+                            , fetteringCost.ToString(GlobalSettings.CultureInfo))))
                         {
                             return;
                         }
@@ -788,7 +788,7 @@ namespace Chummer
             }
         }
 
-        public string InternalId => _guiId.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiId.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -844,12 +844,12 @@ namespace Chummer
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Language);
+            return GetNode(GlobalSettings.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = CharacterObject
                     .LoadData(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage)
@@ -883,7 +883,7 @@ namespace Chummer
 
                 if (blnError && blnShowError)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
+                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_FileNotFound"), FileName),
                         LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -1026,12 +1026,12 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteElementString("mainmugshotindex",
-                MainMugshotIndex.ToString(GlobalOptions.InvariantCultureInfo));
+                MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
             // <mugshot>
             objWriter.WriteStartElement("mugshots");
             foreach (Image imgMugshot in Mugshots)
             {
-                objWriter.WriteElementString("mugshot", GlobalOptions.ImageToBase64StringForStorage(imgMugshot));
+                objWriter.WriteElementString("mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
             }
             // </mugshot>
             objWriter.WriteEndElement();
@@ -1091,7 +1091,7 @@ namespace Chummer
                 if (imgMainMugshot != null)
                 {
                     string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                        guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) + ".jpg");
+                        guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) + ".jpg");
                     imgMainMugshot.Save(imgMugshotPath);
                     // <mainmugshotpath />
                     objWriter.WriteElementString("mainmugshotpath",
@@ -1101,7 +1101,7 @@ namespace Chummer
                 }
                 // <othermugshots>
                 objWriter.WriteElementString("hasothermugshots",
-                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalOptions.InvariantCultureInfo));
+                    (imgMainMugshot == null || Mugshots.Count > 1).ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteStartElement("othermugshots");
                 for (int i = 0; i < Mugshots.Count; ++i)
                 {
@@ -1113,8 +1113,8 @@ namespace Chummer
                     objWriter.WriteElementString("stringbase64", imgMugshot.ToBase64StringAsJpeg());
 
                     string imgMugshotPath = Path.Combine(strMugshotsDirectoryPath,
-                        guiImage.ToString("N", GlobalOptions.InvariantCultureInfo) +
-                        i.ToString(GlobalOptions.InvariantCultureInfo) + ".jpg");
+                        guiImage.ToString("N", GlobalSettings.InvariantCultureInfo) +
+                        i.ToString(GlobalSettings.InvariantCultureInfo) + ".jpg");
                     imgMugshot.Save(imgMugshotPath);
                     objWriter.WriteElementString("temppath",
                         "file://" + imgMugshotPath.Replace(Path.DirectorySeparatorChar, '/'));

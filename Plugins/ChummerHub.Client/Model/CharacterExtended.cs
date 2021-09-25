@@ -27,7 +27,7 @@ namespace ChummerHub.Client.Sinners
             MyCharacterCache = myCharacterCache ?? new CharacterCache(MyCharacter.FileName);
             MySINnerFile = new SINner
             {
-                Language = GlobalOptions.Language,
+                Language = GlobalSettings.Language,
                 SiNnerMetaData = new SINnerMetaData
                 {
                     Id = Guid.NewGuid(),

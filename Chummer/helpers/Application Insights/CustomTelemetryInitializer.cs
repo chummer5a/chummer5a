@@ -40,10 +40,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(telemetry));
             if (!telemetry.Context.GlobalProperties.ContainsKey("Milestone"))
             {
-                telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString(GlobalOptions.InvariantCultureInfo));
+                telemetry.Context.GlobalProperties.Add("Milestone", IsMilestone.ToString(GlobalSettings.InvariantCultureInfo));
             }
             else
-                telemetry.Context.GlobalProperties["Milestone"] = IsMilestone.ToString(GlobalOptions.InvariantCultureInfo);
+                telemetry.Context.GlobalProperties["Milestone"] = IsMilestone.ToString(GlobalSettings.InvariantCultureInfo);
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
             if (Properties.Settings.Default.UploadClientId != Guid.Empty)
             {

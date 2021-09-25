@@ -125,10 +125,10 @@ namespace Chummer
                             MasterIndexEntry objEntry = new MasterIndexEntry(
                                 strDisplayName,
                                 strFileName,
-                                new SourceString(strSource, strPage, GlobalOptions.DefaultLanguage,
-                                    GlobalOptions.InvariantCultureInfo),
-                                new SourceString(strSource, strDisplayPage, GlobalOptions.Language,
-                                    GlobalOptions.CultureInfo),
+                                new SourceString(strSource, strPage, GlobalSettings.DefaultLanguage,
+                                    GlobalSettings.InvariantCultureInfo),
+                                new SourceString(strSource, strDisplayPage, GlobalSettings.Language,
+                                    GlobalSettings.CultureInfo),
                                 strEnglishNameOnPage,
                                 strTranslatedNameOnPage);
                             lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));
@@ -168,7 +168,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    ListItem objItemToAdd = new ListItem(objItem.Value, string.Format(GlobalOptions.CultureInfo,
+                                    ListItem objItemToAdd = new ListItem(objItem.Value, string.Format(GlobalSettings.CultureInfo,
                                         strFormat, objItem.Name, string.Join(',' + strSpace, objEntry.FileNames)));
                                     _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                     lstExistingItems.Add(objItemToAdd);
@@ -179,7 +179,7 @@ namespace Chummer
                                         lstExistingItems.Remove(objToRename);
 
                                         MasterIndexEntry objExistingEntry = (MasterIndexEntry)objToRename.Value;
-                                        objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalOptions.CultureInfo,
+                                        objItemToAdd = new ListItem(objToRename.Value, string.Format(GlobalSettings.CultureInfo,
                                             strFormat, objExistingEntry.DisplayName, string.Join(',' + strSpace, objExistingEntry.FileNames)));
                                         _lstItems.Add(objItemToAdd); // Not using AddRange because of potential memory issues
                                         lstExistingItems.Add(objItemToAdd);
@@ -303,7 +303,7 @@ namespace Chummer
                         strNotes = CommonFunctions.GetTextFromPdf(objEntry.Source.ToString(), objEntry.EnglishNameOnPage);
 
                         if (string.IsNullOrEmpty(strNotes)
-                            && !GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                            && !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                             && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
                                 || objEntry.Source.Page != objEntry.DisplaySource.Page))
                         {
@@ -348,6 +348,32 @@ namespace Chummer
             internal SourceString DisplaySource { get; }
             internal string EnglishNameOnPage { get; }
             internal string TranslatedNameOnPage { get; }
+        }
+
+        private void cmdEditCharacterSetting_Click(object sender, EventArgs e)
+        {
+            using (new CursorWait(this))
+            {
+                using (frmCharacterSettings frmOptions =
+                    new frmCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
+                    frmOptions.ShowDialog(this);
+
+                SuspendLayout();
+                // Populate the Gameplay Settings list.
+                object objOldSelected = cboCharacterSetting.SelectedValue;
+                List<ListItem> lstGameplayOptions = SettingsManager.LoadedCharacterSettings.Values.Select(objLoopOptions => new ListItem(objLoopOptions, objLoopOptions.DisplayName)).ToList();
+                lstGameplayOptions.Sort(CompareListItems.CompareNames);
+                cboCharacterSetting.BeginUpdate();
+                cboCharacterSetting.PopulateWithListItems(lstGameplayOptions);
+                cboCharacterSetting.SelectedValue = objOldSelected;
+                if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                    cboCharacterSetting.SelectedValue =
+                        SettingsManager.LoadedCharacterSettings[GlobalSettings.DefaultMasterIndexSetting];
+                if (cboCharacterSetting.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                    cboCharacterSetting.SelectedIndex = 0;
+                cboCharacterSetting.EndUpdate();
+                ResumeLayout();
+            }
         }
     }
 }

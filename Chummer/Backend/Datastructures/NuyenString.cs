@@ -42,7 +42,7 @@ namespace Chummer
         public string ToString(string format)
         {
             if (UseDecimal)
-                return Value.ToString(format, GlobalOptions.InvariantCultureInfo) + '¥';
+                return Value.ToString(format, GlobalSettings.InvariantCultureInfo) + '¥';
             return BaseString + '¥';
         }
 
@@ -87,7 +87,7 @@ namespace Chummer
             if (!UseDecimal)
                 return other.UseDecimal
                     ? 1
-                    : string.Compare(BaseString, other.BaseString, false, GlobalOptions.CultureInfo);
+                    : string.Compare(BaseString, other.BaseString, false, GlobalSettings.CultureInfo);
             if (other.UseDecimal)
                 return Value.CompareTo(other.Value);
             return -1;

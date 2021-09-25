@@ -58,9 +58,9 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            CurrentVersion = string.Format(GlobalOptions.InvariantCultureInfo, "{0}.{1}.{2}",
+            CurrentVersion = string.Format(GlobalSettings.InvariantCultureInfo, "{0}.{1}.{2}",
                 _objCurrentVersion.Major, _objCurrentVersion.Minor, _objCurrentVersion.Build);
-            _blnPreferNightly = GlobalOptions.PreferNightlyBuilds;
+            _blnPreferNightly = GlobalSettings.PreferNightlyBuilds;
             _strTempUpdatePath = Path.Combine(Path.GetTempPath(), "changelog.txt");
 
             _clientChangelogDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
@@ -84,7 +84,7 @@ namespace Chummer
                 Utils.BreakIfDebug();
                 blnHasDuplicate = true;
             }
-            Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString(GlobalOptions.InvariantCultureInfo));
+            Log.Info("blnHasDuplicate = " + blnHasDuplicate.ToString(GlobalSettings.InvariantCultureInfo));
             // If there is more than 1 instance running, do not let the application be updated.
             if (blnHasDuplicate)
             {
@@ -268,7 +268,7 @@ namespace Chummer
                     Program.MainForm.ShowMessageBox(this,
                     string.IsNullOrEmpty(_strExceptionString)
                         ? LanguageManager.GetString("Warning_Update_CouldNotConnect")
-                        : string.Format(GlobalOptions.CultureInfo,
+                        : string.Format(GlobalSettings.CultureInfo,
                             LanguageManager.GetString("Warning_Update_CouldNotConnectException"), _strExceptionString),
                     Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -302,7 +302,7 @@ namespace Chummer
                 _strExceptionString = strException;
                 if (!SilentMode)
                     Program.MainForm.ShowMessageBox(this,
-                        string.Format(GlobalOptions.CultureInfo,
+                        string.Format(GlobalSettings.CultureInfo,
                             LanguageManager.GetString("Warning_Update_CouldNotConnectException"), strException),
                         Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -318,7 +318,7 @@ namespace Chummer
                 _strExceptionString = strException;
                 if (!SilentMode)
                     Program.MainForm.ShowMessageBox(this,
-                        string.Format(GlobalOptions.CultureInfo,
+                        string.Format(GlobalSettings.CultureInfo,
                             LanguageManager.GetString("Warning_Update_CouldNotConnectException"), strException),
                         Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -370,7 +370,7 @@ namespace Chummer
             {
                 lblUpdaterStatus.Text = string.IsNullOrEmpty(_strExceptionString)
                     ? LanguageManager.GetString("Warning_Update_CouldNotConnect")
-                    : string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Warning_Update_CouldNotConnectException").NormalizeWhiteSpace(), _strExceptionString);
+                    : string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Warning_Update_CouldNotConnectException").NormalizeWhiteSpace(), _strExceptionString);
                 cmdUpdate.Text = LanguageManager.GetString("Button_Reconnect");
                 cmdRestart.Enabled = false;
                 cmdCleanReinstall.Enabled = false;
@@ -384,16 +384,16 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space");
             if (intResult > 0)
             {
-                lblUpdaterStatus.Text = string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Update_Available"), strLatestVersion) + strSpace +
-                                        string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"), CurrentVersion);
+                lblUpdaterStatus.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Update_Available"), strLatestVersion) + strSpace +
+                                        string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Currently_Installed_Version"), CurrentVersion);
                 cmdUpdate.Text = LanguageManager.GetString("Button_Download");
             }
             else
             {
                 lblUpdaterStatus.Text = LanguageManager.GetString("String_Up_To_Date") + strSpace +
-                                        string.Format(GlobalOptions.CultureInfo,
+                                        string.Format(GlobalSettings.CultureInfo,
                                             LanguageManager.GetString("String_Currently_Installed_Version"),
-                                            CurrentVersion) + strSpace + string.Format(GlobalOptions.CultureInfo,
+                                            CurrentVersion) + strSpace + string.Format(GlobalSettings.CultureInfo,
                                             LanguageManager.GetString("String_Latest_Version"),
                                             LanguageManager.GetString(_blnPreferNightly
                                                 ? "String_Nightly"
@@ -722,7 +722,7 @@ namespace Chummer
                     strException = strException.Substring(0, intNewLineLocation);
                 // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
                 if (!SilentMode)
-                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("Warning_Update_CouldNotConnectException"), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Warning_Update_CouldNotConnectException"), strException), Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 await cmdUpdate.DoThreadSafeAsync(() => cmdUpdate.Enabled = true);
             }
         }
@@ -734,7 +734,7 @@ namespace Chummer
         /// </summary>
         private void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalOptions.InvariantCultureInfo), out int intTmp))
+            if (int.TryParse((e.BytesReceived * 100 / e.TotalBytesToReceive).ToString(GlobalSettings.InvariantCultureInfo), out int intTmp))
                 pgbOverallProgress.Value = intTmp;
         }
 

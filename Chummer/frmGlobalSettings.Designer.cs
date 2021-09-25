@@ -1,6 +1,6 @@
 namespace Chummer
 {
-    partial class frmOptions
+    partial class frmGlobalSettings
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace Chummer
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmOptions));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmGlobalSettings));
             this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabGlobal = new System.Windows.Forms.TabPage();
@@ -75,7 +75,7 @@ namespace Chummer
             this.imgLanguageFlag = new System.Windows.Forms.PictureBox();
             this.tlpLoggingOptions = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cboUseLoggingApplicationInsights = new System.Windows.Forms.ComboBox();
-            this.cmdUseLoggingHelp = new Chummer.ButtonWithToolTip();
+            this.cmdUseLoggingHelp = new Chummer.ButtonWithToolTip(this.components);
             this.tlpCharacterRosterPath = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCharacterRoster = new System.Windows.Forms.Button();
             this.txtCharacterRosterPath = new System.Windows.Forms.TextBox();
@@ -93,8 +93,8 @@ namespace Chummer
             this.tlpColorMode = new Chummer.BufferedTableLayoutPanel(this.components);
             this.lblColorMode = new System.Windows.Forms.Label();
             this.cboColorMode = new System.Windows.Forms.ComboBox();
-            this.lblDefaultCharacterOption = new System.Windows.Forms.Label();
-            this.cboDefaultCharacterOption = new System.Windows.Forms.ComboBox();
+            this.lblDefaultCharacterSetting = new System.Windows.Forms.Label();
+            this.cboDefaultCharacterSetting = new System.Windows.Forms.ComboBox();
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
             this.lblMugshotCompression = new System.Windows.Forms.Label();
             this.flpBrowserVersion = new System.Windows.Forms.FlowLayoutPanel();
@@ -161,6 +161,8 @@ namespace Chummer
             this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
+            this.lblDefaultMasterIndexSetting = new System.Windows.Forms.Label();
+            this.cboDefaultMasterIndexSetting = new System.Windows.Forms.ComboBox();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabGlobal.SuspendLayout();
@@ -408,9 +410,9 @@ namespace Chummer
             // 
             // cmdRemovePDFLocation
             // 
+            this.cmdRemovePDFLocation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdRemovePDFLocation.AutoSize = true;
             this.cmdRemovePDFLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRemovePDFLocation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRemovePDFLocation.Enabled = false;
             this.cmdRemovePDFLocation.Image = global::Chummer.Properties.Resources.delete;
             this.cmdRemovePDFLocation.ImageDpi120 = null;
@@ -437,28 +439,20 @@ namespace Chummer
             this.tlpGlobalOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 30F));
             this.tlpGlobalOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpGlobalOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpGlobalOptions.Controls.Add(this.cboDefaultMasterIndexSetting, 3, 7);
+            this.tlpGlobalOptions.Controls.Add(this.lblDefaultMasterIndexSetting, 2, 7);
             this.tlpGlobalOptions.Controls.Add(this.tlpDpiScalingMode, 0, 1);
             this.tlpGlobalOptions.Controls.Add(this.chkUseLogging, 0, 3);
             this.tlpGlobalOptions.Controls.Add(this.chkAutomaticUpdate, 0, 4);
             this.tlpGlobalOptions.Controls.Add(this.chkConfirmKarmaExpense, 2, 3);
             this.tlpGlobalOptions.Controls.Add(this.chkConfirmDelete, 2, 2);
             this.tlpGlobalOptions.Controls.Add(this.chkHideItemsOverAvail, 2, 4);
-            this.tlpGlobalOptions.Controls.Add(this.chkAllowSkillDiceRolling, 2, 7);
             this.tlpGlobalOptions.Controls.Add(this.tlpGlobalOptionsTop, 0, 0);
             this.tlpGlobalOptions.Controls.Add(this.tlpLoggingOptions, 1, 3);
-            this.tlpGlobalOptions.Controls.Add(this.tlpCharacterRosterPath, 3, 10);
-            this.tlpGlobalOptions.Controls.Add(this.lblPDFParametersLabel, 2, 14);
-            this.tlpGlobalOptions.Controls.Add(this.cboPDFParameters, 3, 14);
-            this.tlpGlobalOptions.Controls.Add(this.tlpPDFAppPath, 3, 13);
-            this.tlpGlobalOptions.Controls.Add(this.tlpMugshotCompression, 3, 11);
+            this.tlpGlobalOptions.Controls.Add(this.tlpCharacterRosterPath, 3, 11);
+            this.tlpGlobalOptions.Controls.Add(this.tlpPDFAppPath, 3, 14);
+            this.tlpGlobalOptions.Controls.Add(this.tlpMugshotCompression, 3, 12);
             this.tlpGlobalOptions.Controls.Add(this.tlpColorMode, 0, 2);
-            this.tlpGlobalOptions.Controls.Add(this.lblDefaultCharacterOption, 2, 9);
-            this.tlpGlobalOptions.Controls.Add(this.cboDefaultCharacterOption, 3, 9);
-            this.tlpGlobalOptions.Controls.Add(this.lblCharacterRosterLabel, 2, 10);
-            this.tlpGlobalOptions.Controls.Add(this.lblMugshotCompression, 2, 11);
-            this.tlpGlobalOptions.Controls.Add(this.flpBrowserVersion, 2, 12);
-            this.tlpGlobalOptions.Controls.Add(this.lblPDFAppPath, 2, 13);
-            this.tlpGlobalOptions.Controls.Add(this.chkLifeModule, 2, 15);
             this.tlpGlobalOptions.Controls.Add(this.chkLiveUpdateCleanCharacterFiles, 0, 11);
             this.tlpGlobalOptions.Controls.Add(this.chkCreateBackupOnCareer, 0, 12);
             this.tlpGlobalOptions.Controls.Add(this.chkLiveCustomData, 0, 15);
@@ -474,9 +468,19 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkAllowHoverIncrement, 0, 13);
             this.tlpGlobalOptions.Controls.Add(this.chkHideMasterIndex, 2, 6);
             this.tlpGlobalOptions.Controls.Add(this.chkSearchInCategoryOnly, 2, 1);
-            this.tlpGlobalOptions.Controls.Add(this.chkStartupFullscreen, 2, 8);
             this.tlpGlobalOptions.Controls.Add(this.chkPrintToFileFirst, 0, 14);
-            this.tlpGlobalOptions.Controls.Add(this.flpEnablePlugins, 2, 16);
+            this.tlpGlobalOptions.Controls.Add(this.flpEnablePlugins, 2, 17);
+            this.tlpGlobalOptions.Controls.Add(this.chkLifeModule, 2, 16);
+            this.tlpGlobalOptions.Controls.Add(this.lblPDFParametersLabel, 2, 15);
+            this.tlpGlobalOptions.Controls.Add(this.cboPDFParameters, 3, 15);
+            this.tlpGlobalOptions.Controls.Add(this.lblPDFAppPath, 2, 14);
+            this.tlpGlobalOptions.Controls.Add(this.flpBrowserVersion, 2, 13);
+            this.tlpGlobalOptions.Controls.Add(this.lblMugshotCompression, 2, 12);
+            this.tlpGlobalOptions.Controls.Add(this.lblCharacterRosterLabel, 2, 11);
+            this.tlpGlobalOptions.Controls.Add(this.lblDefaultCharacterSetting, 2, 10);
+            this.tlpGlobalOptions.Controls.Add(this.cboDefaultCharacterSetting, 3, 10);
+            this.tlpGlobalOptions.Controls.Add(this.chkStartupFullscreen, 2, 9);
+            this.tlpGlobalOptions.Controls.Add(this.chkAllowSkillDiceRolling, 2, 8);
             this.tlpGlobalOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpGlobalOptions.Location = new System.Drawing.Point(303, 0);
             this.tlpGlobalOptions.Margin = new System.Windows.Forms.Padding(0);
@@ -501,6 +505,7 @@ namespace Chummer
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpGlobalOptions.Size = new System.Drawing.Size(911, 500);
             this.tlpGlobalOptions.TabIndex = 67;
             // 
@@ -539,6 +544,7 @@ namespace Chummer
             this.lblDpiScalingMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDpiScalingMode.AutoSize = true;
             this.lblDpiScalingMode.Location = new System.Drawing.Point(3, 7);
+            this.lblDpiScalingMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDpiScalingMode.Name = "lblDpiScalingMode";
             this.lblDpiScalingMode.Size = new System.Drawing.Size(112, 13);
             this.lblDpiScalingMode.TabIndex = 0;
@@ -551,6 +557,7 @@ namespace Chummer
             this.chkUseLogging.AutoSize = true;
             this.chkUseLogging.DefaultColorScheme = true;
             this.chkUseLogging.Location = new System.Drawing.Point(3, 191);
+            this.chkUseLogging.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUseLogging.Name = "chkUseLogging";
             this.chkUseLogging.Size = new System.Drawing.Size(86, 17);
             this.chkUseLogging.TabIndex = 4;
@@ -565,7 +572,8 @@ namespace Chummer
             this.chkAutomaticUpdate.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAutomaticUpdate, 2);
             this.chkAutomaticUpdate.DefaultColorScheme = true;
-            this.chkAutomaticUpdate.Location = new System.Drawing.Point(3, 217);
+            this.chkAutomaticUpdate.Location = new System.Drawing.Point(3, 218);
+            this.chkAutomaticUpdate.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAutomaticUpdate.Name = "chkAutomaticUpdate";
             this.chkAutomaticUpdate.Size = new System.Drawing.Size(116, 17);
             this.chkAutomaticUpdate.TabIndex = 5;
@@ -581,6 +589,7 @@ namespace Chummer
             this.tlpGlobalOptions.SetColumnSpan(this.chkConfirmKarmaExpense, 2);
             this.chkConfirmKarmaExpense.DefaultColorScheme = true;
             this.chkConfirmKarmaExpense.Location = new System.Drawing.Point(444, 191);
+            this.chkConfirmKarmaExpense.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkConfirmKarmaExpense.Name = "chkConfirmKarmaExpense";
             this.chkConfirmKarmaExpense.Size = new System.Drawing.Size(215, 17);
             this.chkConfirmKarmaExpense.TabIndex = 39;
@@ -596,6 +605,7 @@ namespace Chummer
             this.tlpGlobalOptions.SetColumnSpan(this.chkConfirmDelete, 2);
             this.chkConfirmDelete.DefaultColorScheme = true;
             this.chkConfirmDelete.Location = new System.Drawing.Point(444, 163);
+            this.chkConfirmDelete.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkConfirmDelete.Name = "chkConfirmDelete";
             this.chkConfirmDelete.Size = new System.Drawing.Size(215, 17);
             this.chkConfirmDelete.TabIndex = 38;
@@ -613,7 +623,8 @@ namespace Chummer
             this.chkHideItemsOverAvail.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkHideItemsOverAvail, 2);
             this.chkHideItemsOverAvail.DefaultColorScheme = true;
-            this.chkHideItemsOverAvail.Location = new System.Drawing.Point(444, 217);
+            this.chkHideItemsOverAvail.Location = new System.Drawing.Point(444, 218);
+            this.chkHideItemsOverAvail.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideItemsOverAvail.Name = "chkHideItemsOverAvail";
             this.chkHideItemsOverAvail.Size = new System.Drawing.Size(353, 17);
             this.chkHideItemsOverAvail.TabIndex = 40;
@@ -627,7 +638,8 @@ namespace Chummer
             this.chkAllowSkillDiceRolling.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowSkillDiceRolling, 2);
             this.chkAllowSkillDiceRolling.DefaultColorScheme = true;
-            this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(444, 286);
+            this.chkAllowSkillDiceRolling.Location = new System.Drawing.Point(444, 320);
+            this.chkAllowSkillDiceRolling.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowSkillDiceRolling.Name = "chkAllowSkillDiceRolling";
             this.chkAllowSkillDiceRolling.Size = new System.Drawing.Size(170, 17);
             this.chkAllowSkillDiceRolling.TabIndex = 69;
@@ -780,6 +792,7 @@ namespace Chummer
             this.tlpGlobalOptionsTop.SetColumnSpan(this.chkCustomDateTimeFormats, 2);
             this.chkCustomDateTimeFormats.DefaultColorScheme = true;
             this.chkCustomDateTimeFormats.Location = new System.Drawing.Point(3, 87);
+            this.chkCustomDateTimeFormats.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCustomDateTimeFormats.Name = "chkCustomDateTimeFormats";
             this.chkCustomDateTimeFormats.Size = new System.Drawing.Size(122, 17);
             this.chkCustomDateTimeFormats.TabIndex = 60;
@@ -932,6 +945,13 @@ namespace Chummer
             this.cmdUseLoggingHelp.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdUseLoggingHelp.AutoSize = true;
             this.cmdUseLoggingHelp.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdUseLoggingHelp.Image = null;
+            this.cmdUseLoggingHelp.ImageDpi120 = null;
+            this.cmdUseLoggingHelp.ImageDpi144 = null;
+            this.cmdUseLoggingHelp.ImageDpi192 = null;
+            this.cmdUseLoggingHelp.ImageDpi288 = null;
+            this.cmdUseLoggingHelp.ImageDpi384 = null;
+            this.cmdUseLoggingHelp.ImageDpi96 = null;
             this.cmdUseLoggingHelp.Location = new System.Drawing.Point(239, 3);
             this.cmdUseLoggingHelp.MinimumSize = new System.Drawing.Size(23, 23);
             this.cmdUseLoggingHelp.Name = "cmdUseLoggingHelp";
@@ -954,12 +974,12 @@ namespace Chummer
             this.tlpCharacterRosterPath.Controls.Add(this.txtCharacterRosterPath, 0, 0);
             this.tlpCharacterRosterPath.Controls.Add(this.cmdRemoveCharacterRoster, 2, 0);
             this.tlpCharacterRosterPath.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpCharacterRosterPath.Location = new System.Drawing.Point(662, 356);
+            this.tlpCharacterRosterPath.Location = new System.Drawing.Point(662, 393);
             this.tlpCharacterRosterPath.Margin = new System.Windows.Forms.Padding(0);
             this.tlpCharacterRosterPath.Name = "tlpCharacterRosterPath";
             this.tlpCharacterRosterPath.RowCount = 1;
             this.tlpCharacterRosterPath.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpCharacterRosterPath.Size = new System.Drawing.Size(222, 30);
+            this.tlpCharacterRosterPath.Size = new System.Drawing.Size(222, 38);
             this.tlpCharacterRosterPath.TabIndex = 71;
             // 
             // cmdCharacterRoster
@@ -967,7 +987,7 @@ namespace Chummer
             this.cmdCharacterRoster.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdCharacterRoster.AutoSize = true;
             this.cmdCharacterRoster.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCharacterRoster.Location = new System.Drawing.Point(163, 3);
+            this.cmdCharacterRoster.Location = new System.Drawing.Point(163, 7);
             this.cmdCharacterRoster.Name = "cmdCharacterRoster";
             this.cmdCharacterRoster.Size = new System.Drawing.Size(26, 23);
             this.cmdCharacterRoster.TabIndex = 47;
@@ -978,7 +998,7 @@ namespace Chummer
             // txtCharacterRosterPath
             // 
             this.txtCharacterRosterPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtCharacterRosterPath.Location = new System.Drawing.Point(3, 5);
+            this.txtCharacterRosterPath.Location = new System.Drawing.Point(3, 9);
             this.txtCharacterRosterPath.Name = "txtCharacterRosterPath";
             this.txtCharacterRosterPath.ReadOnly = true;
             this.txtCharacterRosterPath.Size = new System.Drawing.Size(154, 20);
@@ -987,9 +1007,9 @@ namespace Chummer
             // 
             // cmdRemoveCharacterRoster
             // 
+            this.cmdRemoveCharacterRoster.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdRemoveCharacterRoster.AutoSize = true;
             this.cmdRemoveCharacterRoster.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRemoveCharacterRoster.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRemoveCharacterRoster.Enabled = false;
             this.cmdRemoveCharacterRoster.Image = global::Chummer.Properties.Resources.delete;
             this.cmdRemoveCharacterRoster.ImageDpi120 = null;
@@ -998,7 +1018,7 @@ namespace Chummer
             this.cmdRemoveCharacterRoster.ImageDpi288 = null;
             this.cmdRemoveCharacterRoster.ImageDpi384 = null;
             this.cmdRemoveCharacterRoster.ImageDpi96 = global::Chummer.Properties.Resources.delete;
-            this.cmdRemoveCharacterRoster.Location = new System.Drawing.Point(195, 3);
+            this.cmdRemoveCharacterRoster.Location = new System.Drawing.Point(195, 7);
             this.cmdRemoveCharacterRoster.Name = "cmdRemoveCharacterRoster";
             this.cmdRemoveCharacterRoster.Padding = new System.Windows.Forms.Padding(1);
             this.cmdRemoveCharacterRoster.Size = new System.Drawing.Size(24, 24);
@@ -1010,7 +1030,7 @@ namespace Chummer
             // 
             this.lblPDFParametersLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPDFParametersLabel.AutoSize = true;
-            this.lblPDFParametersLabel.Location = new System.Drawing.Point(572, 485);
+            this.lblPDFParametersLabel.Location = new System.Drawing.Point(572, 521);
             this.lblPDFParametersLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
             this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
@@ -1024,7 +1044,7 @@ namespace Chummer
             this.cboPDFParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPDFParameters.FormattingEnabled = true;
-            this.cboPDFParameters.Location = new System.Drawing.Point(665, 481);
+            this.cboPDFParameters.Location = new System.Drawing.Point(665, 517);
             this.cboPDFParameters.Name = "cboPDFParameters";
             this.cboPDFParameters.Size = new System.Drawing.Size(216, 21);
             this.cboPDFParameters.TabIndex = 26;
@@ -1043,7 +1063,7 @@ namespace Chummer
             this.tlpPDFAppPath.Controls.Add(this.cmdPDFAppPath, 1, 0);
             this.tlpPDFAppPath.Controls.Add(this.cmdRemovePDFAppPath, 2, 0);
             this.tlpPDFAppPath.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpPDFAppPath.Location = new System.Drawing.Point(662, 448);
+            this.tlpPDFAppPath.Location = new System.Drawing.Point(662, 484);
             this.tlpPDFAppPath.Margin = new System.Windows.Forms.Padding(0);
             this.tlpPDFAppPath.Name = "tlpPDFAppPath";
             this.tlpPDFAppPath.RowCount = 1;
@@ -1076,9 +1096,9 @@ namespace Chummer
             // 
             // cmdRemovePDFAppPath
             // 
+            this.cmdRemovePDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdRemovePDFAppPath.AutoSize = true;
             this.cmdRemovePDFAppPath.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRemovePDFAppPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRemovePDFAppPath.Enabled = false;
             this.cmdRemovePDFAppPath.Image = global::Chummer.Properties.Resources.delete;
             this.cmdRemovePDFAppPath.ImageDpi120 = null;
@@ -1108,19 +1128,19 @@ namespace Chummer
             this.tlpMugshotCompression.Controls.Add(this.nudMugshotCompressionQuality, 2, 0);
             this.tlpMugshotCompression.Controls.Add(this.cboMugshotCompression, 0, 0);
             this.tlpMugshotCompression.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMugshotCompression.Location = new System.Drawing.Point(662, 386);
+            this.tlpMugshotCompression.Location = new System.Drawing.Point(662, 431);
             this.tlpMugshotCompression.Margin = new System.Windows.Forms.Padding(0);
             this.tlpMugshotCompression.Name = "tlpMugshotCompression";
             this.tlpMugshotCompression.RowCount = 1;
             this.tlpMugshotCompression.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMugshotCompression.Size = new System.Drawing.Size(222, 36);
+            this.tlpMugshotCompression.Size = new System.Drawing.Size(222, 27);
             this.tlpMugshotCompression.TabIndex = 72;
             // 
             // lblMugshotCompressionQuality
             // 
             this.lblMugshotCompressionQuality.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMugshotCompressionQuality.AutoSize = true;
-            this.lblMugshotCompressionQuality.Location = new System.Drawing.Point(98, 11);
+            this.lblMugshotCompressionQuality.Location = new System.Drawing.Point(98, 7);
             this.lblMugshotCompressionQuality.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMugshotCompressionQuality.Name = "lblMugshotCompressionQuality";
             this.lblMugshotCompressionQuality.Size = new System.Drawing.Size(74, 13);
@@ -1132,7 +1152,7 @@ namespace Chummer
             // 
             this.nudMugshotCompressionQuality.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudMugshotCompressionQuality.AutoSize = true;
-            this.nudMugshotCompressionQuality.Location = new System.Drawing.Point(178, 8);
+            this.nudMugshotCompressionQuality.Location = new System.Drawing.Point(178, 3);
             this.nudMugshotCompressionQuality.Maximum = new decimal(new int[] {
             100,
             0,
@@ -1158,7 +1178,7 @@ namespace Chummer
             this.cboMugshotCompression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboMugshotCompression.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboMugshotCompression.FormattingEnabled = true;
-            this.cboMugshotCompression.Location = new System.Drawing.Point(3, 7);
+            this.cboMugshotCompression.Location = new System.Drawing.Point(3, 3);
             this.cboMugshotCompression.Name = "cboMugshotCompression";
             this.cboMugshotCompression.Size = new System.Drawing.Size(89, 21);
             this.cboMugshotCompression.TabIndex = 66;
@@ -1189,6 +1209,7 @@ namespace Chummer
             this.lblColorMode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblColorMode.AutoSize = true;
             this.lblColorMode.Location = new System.Drawing.Point(3, 7);
+            this.lblColorMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblColorMode.Name = "lblColorMode";
             this.lblColorMode.Size = new System.Drawing.Size(64, 13);
             this.lblColorMode.TabIndex = 0;
@@ -1205,35 +1226,35 @@ namespace Chummer
             this.cboColorMode.TabIndex = 1;
             this.cboColorMode.SelectedIndexChanged += new System.EventHandler(this.cboColorMode_SelectedIndexChanged);
             // 
-            // lblDefaultCharacterOption
+            // lblDefaultCharacterSetting
             // 
-            this.lblDefaultCharacterOption.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblDefaultCharacterOption.AutoSize = true;
-            this.lblDefaultCharacterOption.Location = new System.Drawing.Point(485, 336);
-            this.lblDefaultCharacterOption.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDefaultCharacterOption.Name = "lblDefaultCharacterOption";
-            this.lblDefaultCharacterOption.Size = new System.Drawing.Size(174, 13);
-            this.lblDefaultCharacterOption.TabIndex = 70;
-            this.lblDefaultCharacterOption.Tag = "Label_Options_DefaultCharacterOption";
-            this.lblDefaultCharacterOption.Text = "Default Setting for New Characters:";
-            this.lblDefaultCharacterOption.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblDefaultCharacterSetting.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDefaultCharacterSetting.AutoSize = true;
+            this.lblDefaultCharacterSetting.Location = new System.Drawing.Point(485, 373);
+            this.lblDefaultCharacterSetting.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDefaultCharacterSetting.Name = "lblDefaultCharacterSetting";
+            this.lblDefaultCharacterSetting.Size = new System.Drawing.Size(174, 13);
+            this.lblDefaultCharacterSetting.TabIndex = 70;
+            this.lblDefaultCharacterSetting.Tag = "Label_Options_DefaultCharacterOption";
+            this.lblDefaultCharacterSetting.Text = "Default Setting for New Characters:";
+            this.lblDefaultCharacterSetting.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // cboDefaultCharacterOption
+            // cboDefaultCharacterSetting
             // 
-            this.cboDefaultCharacterOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboDefaultCharacterOption.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboDefaultCharacterOption.FormattingEnabled = true;
-            this.cboDefaultCharacterOption.Location = new System.Drawing.Point(665, 332);
-            this.cboDefaultCharacterOption.Name = "cboDefaultCharacterOption";
-            this.cboDefaultCharacterOption.Size = new System.Drawing.Size(216, 21);
-            this.cboDefaultCharacterOption.TabIndex = 7;
-            this.cboDefaultCharacterOption.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            this.cboDefaultCharacterSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboDefaultCharacterSetting.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDefaultCharacterSetting.FormattingEnabled = true;
+            this.cboDefaultCharacterSetting.Location = new System.Drawing.Point(665, 369);
+            this.cboDefaultCharacterSetting.Name = "cboDefaultCharacterSetting";
+            this.cboDefaultCharacterSetting.Size = new System.Drawing.Size(216, 21);
+            this.cboDefaultCharacterSetting.TabIndex = 7;
+            this.cboDefaultCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // lblCharacterRosterLabel
             // 
             this.lblCharacterRosterLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCharacterRosterLabel.AutoSize = true;
-            this.lblCharacterRosterLabel.Location = new System.Drawing.Point(502, 364);
+            this.lblCharacterRosterLabel.Location = new System.Drawing.Point(502, 405);
             this.lblCharacterRosterLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCharacterRosterLabel.Name = "lblCharacterRosterLabel";
             this.lblCharacterRosterLabel.Size = new System.Drawing.Size(157, 13);
@@ -1246,7 +1267,7 @@ namespace Chummer
             // 
             this.lblMugshotCompression.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMugshotCompression.AutoSize = true;
-            this.lblMugshotCompression.Location = new System.Drawing.Point(533, 397);
+            this.lblMugshotCompression.Location = new System.Drawing.Point(533, 438);
             this.lblMugshotCompression.Name = "lblMugshotCompression";
             this.lblMugshotCompression.Size = new System.Drawing.Size(126, 13);
             this.lblMugshotCompression.TabIndex = 65;
@@ -1261,7 +1282,7 @@ namespace Chummer
             this.tlpGlobalOptions.SetColumnSpan(this.flpBrowserVersion, 2);
             this.flpBrowserVersion.Controls.Add(this.lblBrowserVersion);
             this.flpBrowserVersion.Controls.Add(this.nudBrowserVersion);
-            this.flpBrowserVersion.Location = new System.Drawing.Point(441, 422);
+            this.flpBrowserVersion.Location = new System.Drawing.Point(441, 458);
             this.flpBrowserVersion.Margin = new System.Windows.Forms.Padding(0);
             this.flpBrowserVersion.Name = "flpBrowserVersion";
             this.flpBrowserVersion.Size = new System.Drawing.Size(237, 26);
@@ -1308,7 +1329,7 @@ namespace Chummer
             // 
             this.lblPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPDFAppPath.AutoSize = true;
-            this.lblPDFAppPath.Location = new System.Drawing.Point(518, 456);
+            this.lblPDFAppPath.Location = new System.Drawing.Point(518, 492);
             this.lblPDFAppPath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPDFAppPath.Name = "lblPDFAppPath";
             this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
@@ -1323,7 +1344,8 @@ namespace Chummer
             this.chkLifeModule.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkLifeModule, 2);
             this.chkLifeModule.DefaultColorScheme = true;
-            this.chkLifeModule.Location = new System.Drawing.Point(444, 508);
+            this.chkLifeModule.Location = new System.Drawing.Point(444, 545);
+            this.chkLifeModule.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLifeModule.Name = "chkLifeModule";
             this.chkLifeModule.Size = new System.Drawing.Size(117, 17);
             this.chkLifeModule.TabIndex = 22;
@@ -1338,7 +1360,8 @@ namespace Chummer
             this.chkLiveUpdateCleanCharacterFiles.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkLiveUpdateCleanCharacterFiles, 2);
             this.chkLiveUpdateCleanCharacterFiles.DefaultColorScheme = true;
-            this.chkLiveUpdateCleanCharacterFiles.Location = new System.Drawing.Point(3, 389);
+            this.chkLiveUpdateCleanCharacterFiles.Location = new System.Drawing.Point(3, 397);
+            this.chkLiveUpdateCleanCharacterFiles.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLiveUpdateCleanCharacterFiles.Name = "chkLiveUpdateCleanCharacterFiles";
             this.chkLiveUpdateCleanCharacterFiles.Size = new System.Drawing.Size(286, 30);
             this.chkLiveUpdateCleanCharacterFiles.TabIndex = 33;
@@ -1355,7 +1378,8 @@ namespace Chummer
             this.chkCreateBackupOnCareer.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpGlobalOptions.SetColumnSpan(this.chkCreateBackupOnCareer, 2);
             this.chkCreateBackupOnCareer.DefaultColorScheme = true;
-            this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(3, 426);
+            this.chkCreateBackupOnCareer.Location = new System.Drawing.Point(3, 436);
+            this.chkCreateBackupOnCareer.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkCreateBackupOnCareer.Name = "chkCreateBackupOnCareer";
             this.chkCreateBackupOnCareer.Size = new System.Drawing.Size(333, 17);
             this.chkCreateBackupOnCareer.TabIndex = 24;
@@ -1371,7 +1395,8 @@ namespace Chummer
             this.chkLiveCustomData.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkLiveCustomData, 2);
             this.chkLiveCustomData.DefaultColorScheme = true;
-            this.chkLiveCustomData.Location = new System.Drawing.Point(3, 508);
+            this.chkLiveCustomData.Location = new System.Drawing.Point(3, 519);
+            this.chkLiveCustomData.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkLiveCustomData.Name = "chkLiveCustomData";
             this.chkLiveCustomData.Size = new System.Drawing.Size(307, 17);
             this.chkLiveCustomData.TabIndex = 28;
@@ -1386,7 +1411,8 @@ namespace Chummer
             this.chkSingleDiceRoller.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkSingleDiceRoller, 2);
             this.chkSingleDiceRoller.DefaultColorScheme = true;
-            this.chkSingleDiceRoller.Location = new System.Drawing.Point(3, 560);
+            this.chkSingleDiceRoller.Location = new System.Drawing.Point(3, 590);
+            this.chkSingleDiceRoller.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkSingleDiceRoller.Name = "chkSingleDiceRoller";
             this.chkSingleDiceRoller.Size = new System.Drawing.Size(251, 17);
             this.chkSingleDiceRoller.TabIndex = 8;
@@ -1400,8 +1426,8 @@ namespace Chummer
             this.chkPreferNightlyBuilds.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPreferNightlyBuilds.AutoSize = true;
             this.chkPreferNightlyBuilds.DefaultColorScheme = true;
-            this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(23, 240);
-            this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
+            this.chkPreferNightlyBuilds.Location = new System.Drawing.Point(23, 243);
+            this.chkPreferNightlyBuilds.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
             this.chkPreferNightlyBuilds.Name = "chkPreferNightlyBuilds";
             this.chkPreferNightlyBuilds.Size = new System.Drawing.Size(120, 17);
             this.chkPreferNightlyBuilds.TabIndex = 25;
@@ -1416,7 +1442,8 @@ namespace Chummer
             this.chkPrintSkillsWithZeroRating.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintSkillsWithZeroRating, 2);
             this.chkPrintSkillsWithZeroRating.DefaultColorScheme = true;
-            this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(3, 263);
+            this.chkPrintSkillsWithZeroRating.Location = new System.Drawing.Point(3, 268);
+            this.chkPrintSkillsWithZeroRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintSkillsWithZeroRating.Name = "chkPrintSkillsWithZeroRating";
             this.chkPrintSkillsWithZeroRating.Size = new System.Drawing.Size(229, 17);
             this.chkPrintSkillsWithZeroRating.TabIndex = 79;
@@ -1431,7 +1458,8 @@ namespace Chummer
             this.chkPrintExpenses.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintExpenses, 2);
             this.chkPrintExpenses.DefaultColorScheme = true;
-            this.chkPrintExpenses.Location = new System.Drawing.Point(3, 286);
+            this.chkPrintExpenses.Location = new System.Drawing.Point(3, 294);
+            this.chkPrintExpenses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintExpenses.Name = "chkPrintExpenses";
             this.chkPrintExpenses.Size = new System.Drawing.Size(184, 17);
             this.chkPrintExpenses.TabIndex = 80;
@@ -1446,8 +1474,8 @@ namespace Chummer
             this.chkPrintFreeExpenses.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintFreeExpenses, 2);
             this.chkPrintFreeExpenses.DefaultColorScheme = true;
-            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(23, 309);
-            this.chkPrintFreeExpenses.Margin = new System.Windows.Forms.Padding(23, 3, 3, 3);
+            this.chkPrintFreeExpenses.Location = new System.Drawing.Point(23, 320);
+            this.chkPrintFreeExpenses.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
             this.chkPrintFreeExpenses.Name = "chkPrintFreeExpenses";
             this.chkPrintFreeExpenses.Size = new System.Drawing.Size(208, 17);
             this.chkPrintFreeExpenses.TabIndex = 81;
@@ -1462,7 +1490,8 @@ namespace Chummer
             this.chkDatesIncludeTime.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkDatesIncludeTime, 2);
             this.chkDatesIncludeTime.DefaultColorScheme = true;
-            this.chkDatesIncludeTime.Location = new System.Drawing.Point(3, 362);
+            this.chkDatesIncludeTime.Location = new System.Drawing.Point(3, 371);
+            this.chkDatesIncludeTime.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDatesIncludeTime.Name = "chkDatesIncludeTime";
             this.chkDatesIncludeTime.Size = new System.Drawing.Size(189, 17);
             this.chkDatesIncludeTime.TabIndex = 9;
@@ -1478,7 +1507,8 @@ namespace Chummer
             this.chkPrintNotes.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
             this.tlpGlobalOptions.SetColumnSpan(this.chkPrintNotes, 2);
             this.chkPrintNotes.DefaultColorScheme = true;
-            this.chkPrintNotes.Location = new System.Drawing.Point(3, 334);
+            this.chkPrintNotes.Location = new System.Drawing.Point(3, 345);
+            this.chkPrintNotes.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintNotes.Name = "chkPrintNotes";
             this.chkPrintNotes.Size = new System.Drawing.Size(78, 17);
             this.chkPrintNotes.TabIndex = 82;
@@ -1493,7 +1523,8 @@ namespace Chummer
             this.chkAllowEasterEggs.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowEasterEggs, 2);
             this.chkAllowEasterEggs.DefaultColorScheme = true;
-            this.chkAllowEasterEggs.Location = new System.Drawing.Point(3, 534);
+            this.chkAllowEasterEggs.Location = new System.Drawing.Point(3, 545);
+            this.chkAllowEasterEggs.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowEasterEggs.Name = "chkAllowEasterEggs";
             this.chkAllowEasterEggs.Size = new System.Drawing.Size(111, 17);
             this.chkAllowEasterEggs.TabIndex = 52;
@@ -1507,7 +1538,8 @@ namespace Chummer
             this.chkHideCharacterRoster.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideCharacterRoster.AutoSize = true;
             this.chkHideCharacterRoster.DefaultColorScheme = true;
-            this.chkHideCharacterRoster.Location = new System.Drawing.Point(444, 240);
+            this.chkHideCharacterRoster.Location = new System.Drawing.Point(444, 243);
+            this.chkHideCharacterRoster.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideCharacterRoster.Name = "chkHideCharacterRoster";
             this.chkHideCharacterRoster.Size = new System.Drawing.Size(149, 17);
             this.chkHideCharacterRoster.TabIndex = 35;
@@ -1525,7 +1557,8 @@ namespace Chummer
             this.chkAllowHoverIncrement.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowHoverIncrement, 2);
             this.chkAllowHoverIncrement.DefaultColorScheme = true;
-            this.chkAllowHoverIncrement.Location = new System.Drawing.Point(3, 454);
+            this.chkAllowHoverIncrement.Location = new System.Drawing.Point(3, 462);
+            this.chkAllowHoverIncrement.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowHoverIncrement.Name = "chkAllowHoverIncrement";
             this.chkAllowHoverIncrement.Size = new System.Drawing.Size(410, 17);
             this.chkAllowHoverIncrement.TabIndex = 41;
@@ -1539,7 +1572,8 @@ namespace Chummer
             this.chkHideMasterIndex.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideMasterIndex.AutoSize = true;
             this.chkHideMasterIndex.DefaultColorScheme = true;
-            this.chkHideMasterIndex.Location = new System.Drawing.Point(444, 263);
+            this.chkHideMasterIndex.Location = new System.Drawing.Point(444, 268);
+            this.chkHideMasterIndex.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideMasterIndex.Name = "chkHideMasterIndex";
             this.chkHideMasterIndex.Size = new System.Drawing.Size(130, 17);
             this.chkHideMasterIndex.TabIndex = 69;
@@ -1557,6 +1591,7 @@ namespace Chummer
             this.tlpGlobalOptions.SetColumnSpan(this.chkSearchInCategoryOnly, 2);
             this.chkSearchInCategoryOnly.DefaultColorScheme = true;
             this.chkSearchInCategoryOnly.Location = new System.Drawing.Point(444, 136);
+            this.chkSearchInCategoryOnly.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkSearchInCategoryOnly.Name = "chkSearchInCategoryOnly";
             this.chkSearchInCategoryOnly.Size = new System.Drawing.Size(325, 17);
             this.chkSearchInCategoryOnly.TabIndex = 21;
@@ -1571,7 +1606,8 @@ namespace Chummer
             this.chkStartupFullscreen.AutoSize = true;
             this.tlpGlobalOptions.SetColumnSpan(this.chkStartupFullscreen, 2);
             this.chkStartupFullscreen.DefaultColorScheme = true;
-            this.chkStartupFullscreen.Location = new System.Drawing.Point(444, 309);
+            this.chkStartupFullscreen.Location = new System.Drawing.Point(444, 345);
+            this.chkStartupFullscreen.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkStartupFullscreen.Name = "chkStartupFullscreen";
             this.chkStartupFullscreen.Size = new System.Drawing.Size(154, 17);
             this.chkStartupFullscreen.TabIndex = 7;
@@ -1585,7 +1621,8 @@ namespace Chummer
             this.chkPrintToFileFirst.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintToFileFirst.AutoSize = true;
             this.chkPrintToFileFirst.DefaultColorScheme = true;
-            this.chkPrintToFileFirst.Location = new System.Drawing.Point(3, 483);
+            this.chkPrintToFileFirst.Location = new System.Drawing.Point(3, 490);
+            this.chkPrintToFileFirst.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
             this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
             this.chkPrintToFileFirst.TabIndex = 43;
@@ -1602,7 +1639,7 @@ namespace Chummer
             this.tlpGlobalOptions.SetColumnSpan(this.flpEnablePlugins, 2);
             this.flpEnablePlugins.Controls.Add(this.chkEnablePlugins);
             this.flpEnablePlugins.Controls.Add(this.cmdPluginsHelp);
-            this.flpEnablePlugins.Location = new System.Drawing.Point(441, 528);
+            this.flpEnablePlugins.Location = new System.Drawing.Point(441, 584);
             this.flpEnablePlugins.Margin = new System.Windows.Forms.Padding(0);
             this.flpEnablePlugins.Name = "flpEnablePlugins";
             this.flpEnablePlugins.Size = new System.Drawing.Size(199, 29);
@@ -2180,6 +2217,30 @@ namespace Chummer
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
+            // lblDefaultMasterIndexSetting
+            // 
+            this.lblDefaultMasterIndexSetting.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblDefaultMasterIndexSetting.AutoSize = true;
+            this.lblDefaultMasterIndexSetting.Location = new System.Drawing.Point(500, 296);
+            this.lblDefaultMasterIndexSetting.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDefaultMasterIndexSetting.Name = "lblDefaultMasterIndexSetting";
+            this.lblDefaultMasterIndexSetting.Size = new System.Drawing.Size(159, 13);
+            this.lblDefaultMasterIndexSetting.TabIndex = 84;
+            this.lblDefaultMasterIndexSetting.Tag = "Label_Options_DefaultCharacterOption";
+            this.lblDefaultMasterIndexSetting.Text = "Default Setting for Master Index:";
+            this.lblDefaultMasterIndexSetting.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cboDefaultMasterIndexSetting
+            // 
+            this.cboDefaultMasterIndexSetting.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboDefaultMasterIndexSetting.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboDefaultMasterIndexSetting.FormattingEnabled = true;
+            this.cboDefaultMasterIndexSetting.Location = new System.Drawing.Point(665, 292);
+            this.cboDefaultMasterIndexSetting.Name = "cboDefaultMasterIndexSetting";
+            this.cboDefaultMasterIndexSetting.Size = new System.Drawing.Size(216, 21);
+            this.cboDefaultMasterIndexSetting.TabIndex = 85;
+            this.cboDefaultMasterIndexSetting.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            // 
             // frmOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -2306,7 +2367,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtTimeFormatView;
         private ColorableCheckBox chkSearchInCategoryOnly;
         private ColorableCheckBox chkAllowEasterEggs;
-        private System.Windows.Forms.ComboBox cboDefaultCharacterOption;
+        private System.Windows.Forms.ComboBox cboDefaultCharacterSetting;
         private NumericUpDownEx nudBrowserVersion;
         private ColorableCheckBox chkPreferNightlyBuilds;
         private System.Windows.Forms.Label lblBrowserVersion;
@@ -2371,7 +2432,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblPDFAppPath;
         private BufferedTableLayoutPanel tlpGlobalOptionsTop;
         private BufferedTableLayoutPanel tlpLoggingOptions;
-        private System.Windows.Forms.Label lblDefaultCharacterOption;
+        private System.Windows.Forms.Label lblDefaultCharacterSetting;
         private System.Windows.Forms.Label lblCharacterRosterLabel;
         private System.Windows.Forms.Label lblMugshotCompression;
         private ElasticComboBox cboPDFParameters;
@@ -2414,5 +2475,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblDirectoryAuthors;
         private System.Windows.Forms.Label lblDirectoryPath;
         private System.Windows.Forms.Label lblDirectoryPathLabel;
+        private System.Windows.Forms.Label lblDefaultMasterIndexSetting;
+        private System.Windows.Forms.ComboBox cboDefaultMasterIndexSetting;
     }
 }

@@ -71,7 +71,7 @@ namespace Chummer
             //KC 90: a Cyberadept who has Submerged may restore Resonance that has been lost to cyberware (and only cyberware) by an amount equal to half their Submersion Grade(rounded up).
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
-            if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Options.SpecialKarmaCostBasedOnShownValue
+            if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
                 && _objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.CyberadeptDaemon && x.Enabled))
             {
                 decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
@@ -80,12 +80,12 @@ namespace Chummer
                         ? Math.Ceiling(_objCharacter.CyberwareEssence)
                         : Math.Floor(_objCharacter.CyberwareEssence)));
                 // Cannot increase RES to be more than what it would be without any Essence loss.
-                intResonanceRecovered = _objCharacter.Options.ESSLossReducesMaximumOnly
+                intResonanceRecovered = _objCharacter.Settings.ESSLossReducesMaximumOnly
                     ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
                     // +1 compared to normal because this Grade's effect has not been processed yet.
                     : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
                 ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
-                    _guiID.ToString("D", GlobalOptions.InvariantCultureInfo),
+                    _guiID.ToString("D", GlobalSettings.InvariantCultureInfo),
                     Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
                 ImprovementManager.Commit(_objCharacter);
             }
@@ -100,12 +100,12 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("initiationgrade");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("res", _blnTechnomancer.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("group", _blnGroup.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("res", _blnTechnomancer.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("grade", _intGrade.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("group", _blnGroup.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
@@ -145,11 +145,11 @@ namespace Chummer
             objWriter.WriteStartElement("initiationgrade");
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("grade", Grade.ToString(objCulture));
-            objWriter.WriteElementString("group", Group.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("schooling", Schooling.ToString(GlobalOptions.InvariantCultureInfo));
-            objWriter.WriteElementString("technomancer", Technomancer.ToString(GlobalOptions.InvariantCultureInfo));
-            if (GlobalOptions.PrintNotes)
+            objWriter.WriteElementString("group", Group.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo));
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
@@ -161,7 +161,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Initiation Grade in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Initiate Grade.
@@ -219,27 +219,27 @@ namespace Chummer
         {
             get
             {
-                CharacterOptions objOptions = _objCharacter.Options;
-                decimal decCost = objOptions.KarmaInitiationFlat + (Grade * objOptions.KarmaInitiation);
+                CharacterSettings objSettings = _objCharacter.Settings;
+                decimal decCost = objSettings.KarmaInitiationFlat + (Grade * objSettings.KarmaInitiation);
                 decimal decMultiplier = 1.0m;
 
                 // Discount for Group.
                 if (Group)
                     decMultiplier -= Technomancer
-                        ? objOptions.KarmaRESInitiationGroupPercent
-                        : objOptions.KarmaMAGInitiationGroupPercent;
+                        ? objSettings.KarmaRESInitiationGroupPercent
+                        : objSettings.KarmaMAGInitiationGroupPercent;
 
                 // Discount for Ordeal.
                 if (Ordeal)
                     decMultiplier -= Technomancer
-                        ? objOptions.KarmaRESInitiationOrdealPercent
-                        : objOptions.KarmaMAGInitiationOrdealPercent;
+                        ? objSettings.KarmaRESInitiationOrdealPercent
+                        : objSettings.KarmaMAGInitiationOrdealPercent;
 
                 // Discount for Schooling.
                 if (Schooling)
                     decMultiplier -= Technomancer
-                        ? objOptions.KarmaRESInitiationSchoolingPercent
-                        : objOptions.KarmaMAGInitiationSchoolingPercent;
+                        ? objSettings.KarmaRESInitiationSchoolingPercent
+                        : objSettings.KarmaMAGInitiationSchoolingPercent;
 
                 return (decCost * decMultiplier).StandardRound();
             }
@@ -253,7 +253,7 @@ namespace Chummer
             string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             StringBuilder strReturn = new StringBuilder(LanguageManager.GetString("String_Grade", strLanguage));
             strReturn.Append(strSpace);
-            strReturn.Append(Grade.ToString(GlobalOptions.CultureInfo));
+            strReturn.Append(Grade.ToString(GlobalSettings.CultureInfo));
             if (Group || Ordeal)
             {
                 strReturn.Append(strSpace + '(');
@@ -312,7 +312,7 @@ namespace Chummer
             {
                 ContextMenuStrip = cmsInitiationGrade,
                 Name = InternalId,
-                Text = Text(GlobalOptions.Language),
+                Text = Text(GlobalSettings.Language),
                 Tag = this,
                 ForeColor = PreferredColor,
                 ToolTipText = Notes.WordWrap()
@@ -366,7 +366,7 @@ namespace Chummer
                 if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteSubmersionGrade")))
                     return false;
 
-                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             }
             else
                 return false;

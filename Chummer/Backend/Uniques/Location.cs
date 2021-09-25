@@ -62,11 +62,11 @@ namespace Chummer
             if (objWriter == null)
                 return;
             objWriter.WriteStartElement("location");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -111,7 +111,7 @@ namespace Chummer
             objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
             objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
             objWriter.WriteElementString("name_english", Name);
-            if (GlobalOptions.PrintNotes)
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
             objWriter.WriteEndElement();
         }
@@ -123,7 +123,7 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Metamagic name.
@@ -140,10 +140,10 @@ namespace Chummer
         public string DisplayNameShort(string strLanguage = "")
         {
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
-            return strLanguage != GlobalOptions.Language
-                ? LanguageManager.TranslateExtra(!GlobalOptions.Language.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                    ? LanguageManager.ReverseTranslateExtra(Name, GlobalOptions.Language, _objCharacter)
+                strLanguage = GlobalSettings.Language;
+            return strLanguage != GlobalSettings.Language
+                ? LanguageManager.TranslateExtra(!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                    ? LanguageManager.ReverseTranslateExtra(Name, GlobalSettings.Language, _objCharacter)
                     : Name, strLanguage, _objCharacter)
                 : Name;
         }
@@ -154,7 +154,7 @@ namespace Chummer
         public string DisplayName(string strLanguage = "")
         {
             if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalOptions.Language;
+                strLanguage = GlobalSettings.Language;
             return DisplayNameShort(strLanguage);
         }
 
@@ -195,7 +195,7 @@ namespace Chummer
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
-            string strText = DisplayName(GlobalOptions.Language);
+            string strText = DisplayName(GlobalSettings.Language);
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,

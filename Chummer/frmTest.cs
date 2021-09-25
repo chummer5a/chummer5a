@@ -174,7 +174,7 @@ namespace Chummer
 
                         try
                         {
-                            string _ = objTemp.TotalAvail(GlobalOptions.CultureInfo, GlobalOptions.DefaultLanguage);
+                            string _ = objTemp.TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage);
                         }
                         catch (Exception e)
                         {

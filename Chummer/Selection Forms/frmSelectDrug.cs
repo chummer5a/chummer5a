@@ -69,7 +69,7 @@ namespace Chummer
             this.TranslateWinForm();
 
             _lstGrades = _objCharacter.GetGradeList(Improvement.ImprovementSource.Drug);
-            _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
+            _strNoneGradeId = _lstGrades.FirstOrDefault(x => x.Name == "None")?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
             _setBlackMarketMaps = _objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode);
         }
 
@@ -90,8 +90,8 @@ namespace Chummer
                 nudMarkup.Visible = false;
                 lblMarkupPercentLabel.Visible = false;
                 chkHideBannedGrades.Visible = !_objCharacter.IgnoreRules;
-                chkHideOverAvailLimit.Text = string.Format(GlobalOptions.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Options.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalOptions.HideItemsOverAvailLimit;
+                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
+                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
             }
 
             if (!string.IsNullOrEmpty(DefaultSearchText))
@@ -103,7 +103,7 @@ namespace Chummer
             chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
 
             // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
-            PopulateGrades(false, true, _objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) ?? string.Empty);
+            PopulateGrades(false, true, _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? string.Empty);
 
             if (_objForcedGrade != null)
                 cboGrade.SelectedValue = _objForcedGrade.SourceId.ToString();
@@ -133,7 +133,7 @@ namespace Chummer
             // Update the Cost multipliers based on the Grade that has been selected.
             if (xmlGrade != null)
             {
-                _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalOptions.InvariantCultureInfo);
+                _decCostMultiplier = Convert.ToDecimal(xmlGrade.SelectSingleNode("cost")?.Value, GlobalSettings.InvariantCultureInfo);
                 _intAvailModifier = xmlGrade.SelectSingleNode("avail")?.ValueAsInt ?? 0;
 
                 _blnLoading = false;
@@ -184,10 +184,10 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMinRating) && !int.TryParse(strMinRating, out intMinRating))
                     {
-                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
+                        strMinRating = strMinRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMinRating, out bool blnIsSuccess);
                         intMinRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
@@ -199,10 +199,10 @@ namespace Chummer
                     // Not a simple integer, so we need to start mucking around with strings
                     if (!string.IsNullOrEmpty(strMaxRating) && !int.TryParse(strMaxRating, out intMaxRating))
                     {
-                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalOptions.InvariantCultureInfo));
+                        strMaxRating = strMaxRating.CheapReplace("MaximumSTR", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.TotalBody * 2) : _objCharacter.STR.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("MaximumAGI", () => (ParentVehicle != null ? Math.Max(1, ParentVehicle.Pilot * 2) : _objCharacter.AGI.TotalMaximum).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("MinimumSTR", () => (ParentVehicle?.TotalBody ?? 3).ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("MinimumAGI", () => (ParentVehicle?.Pilot ?? 3).ToString(GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strMaxRating, out bool blnIsSuccess);
                         intMaxRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
@@ -244,8 +244,8 @@ namespace Chummer
 
                 string strSource = xmlDrug.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                 string strPage = xmlDrug.SelectSingleNode("altpage")?.Value ?? xmlDrug.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSource = new SourceString(strSource, strPage, GlobalOptions.Language,
-                    GlobalOptions.CultureInfo, _objCharacter);
+                SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
+                    GlobalSettings.CultureInfo, _objCharacter);
                 lblSource.Text = objSource.ToString();
                 lblSource.SetToolTip(objSource.LanguageBookTooltip);
                 lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
@@ -257,15 +257,15 @@ namespace Chummer
                     if (cboGrade.Enabled)
                         cboGrade.Enabled = false;
                     objForcedGrade = _lstGrades.FirstOrDefault(x => x.Name == strForceGrade);
-                    strForceGrade = objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
+                    strForceGrade = objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
                 }
                 else
                 {
                     cboGrade.Enabled = !_blnLockGrade;
                     if (_blnLockGrade)
                     {
-                        strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
-                        objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strForceGrade);
+                        strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
+                        objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
                     }
                 }
 
@@ -273,7 +273,7 @@ namespace Chummer
                 chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
                 if (!chkBlackMarketDiscount.Checked)
                 {
-                    chkBlackMarketDiscount.Checked = GlobalOptions.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                    chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
                 }
                 else if (!blnCanBlackMarketDiscount)
                 {
@@ -306,8 +306,8 @@ namespace Chummer
                 Grade objForcedGrade = null;
                 if (_blnLockGrade)
                 {
-                    strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
-                    objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strForceGrade);
+                    strForceGrade = _objForcedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) ?? cboGrade.SelectedValue?.ToString();
+                    objForcedGrade = _objForcedGrade ?? _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strForceGrade);
                 }
                 PopulateGrades(_blnLockGrade && objForcedGrade?.SecondHand != true, false, strForceGrade);
                 chkBlackMarketDiscount.Checked = false;
@@ -549,12 +549,12 @@ namespace Chummer
                 char chrPrefix = strAvailExpr[0];
                 if (chrPrefix == '+' || chrPrefix == '-')
                 {
-                    strPrefix = chrPrefix.ToString(GlobalOptions.InvariantCultureInfo);
+                    strPrefix = chrPrefix.ToString(GlobalSettings.InvariantCultureInfo);
                     strAvailExpr = strAvailExpr.Substring(1, strAvailExpr.Length - 1);
                 }
 
-                strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo))
-                    .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                strAvailExpr = strAvailExpr.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo))
+                    .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
 
                 object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr, out bool blnIsSuccess);
                 if (blnIsSuccess)
@@ -563,7 +563,7 @@ namespace Chummer
                     // Avail cannot go below 0.
                     if (intAvail < 0)
                         intAvail = 0;
-                    lblAvail.Text = strPrefix + intAvail.ToString(GlobalOptions.CultureInfo) + strSuffix;
+                    lblAvail.Text = strPrefix + intAvail.ToString(GlobalSettings.CultureInfo) + strSuffix;
                 }
                 else
                 {
@@ -572,7 +572,7 @@ namespace Chummer
             }
             else
             {
-                lblAvail.Text = 0.ToString(GlobalOptions.CultureInfo);
+                lblAvail.Text = 0.ToString(GlobalSettings.CultureInfo);
             }
 
             lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
@@ -581,7 +581,7 @@ namespace Chummer
             decimal decItemCost = 0;
             if (chkFree.Checked)
             {
-                lblCost.Text = 0.0m.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                lblCost.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             }
             else
             {
@@ -602,27 +602,27 @@ namespace Chummer
                         if (strCost.Contains('-'))
                         {
                             string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalOptions.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalOptions.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
                         }
                         else
-                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalOptions.InvariantCultureInfo);
+                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
 
                         lblCost.Text = decMax == decimal.MaxValue ?
-                            decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + "¥+" :
-                            decMin.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + " - " + decMax.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                            decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+" :
+                            decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
 
                         decItemCost = decMin;
                     }
                     else
                     {
-                        strCost = strCost.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalOptions.InvariantCultureInfo))
-                            .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalOptions.InvariantCultureInfo));
+                        strCost = strCost.CheapReplace("MinRating", () => nudRating.Minimum.ToString(GlobalSettings.InvariantCultureInfo))
+                            .CheapReplace("Rating", () => nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
 
                         object objProcess = CommonFunctions.EvaluateInvariantXPath(strCost, out bool blnIsSuccess);
                         if (blnIsSuccess)
                         {
-                            decItemCost = Convert.ToDecimal(objProcess, GlobalOptions.InvariantCultureInfo) * _decCostMultiplier;
+                            decItemCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decCostMultiplier;
                             decItemCost *= 1 + nudMarkup.Value / 100.0m;
 
                             if (chkBlackMarketDiscount.Checked)
@@ -630,7 +630,7 @@ namespace Chummer
                                 decItemCost *= 0.9m;
                             }
 
-                            lblCost.Text = decItemCost.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                            lblCost.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
                         }
                         else
                         {
@@ -639,7 +639,7 @@ namespace Chummer
                     }
                 }
                 else
-                    lblCost.Text = 0.0m.ToString(_objCharacter.Options.NuyenFormat, GlobalOptions.CultureInfo) + '¥';
+                    lblCost.Text = 0.0m.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
             }
 
             lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
@@ -656,9 +656,9 @@ namespace Chummer
         {
             if ((_blnLoading || _blnSkipListRefresh) && blnDoUIUpdate)
                 return new List<ListItem>();
-            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Options.BookXPath() + ')');
+            StringBuilder sbdFilter = new StringBuilder('(' + _objCharacter.Settings.BookXPath() + ')');
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
+            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
             if (objCurrentGrade != null)
             {
                 sbdFilter.Append(" and (not(forcegrade) or forcegrade = \"None\" or forcegrade = " + objCurrentGrade.Name.CleanXPath() + ")");
@@ -679,7 +679,7 @@ namespace Chummer
             List<ListItem> lstDrugs = new List<ListItem>();
             int intOverLimit = 0;
             string strCurrentGradeId = cboGrade.SelectedValue?.ToString();
-            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == strCurrentGradeId);
+            Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId) ? null : _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == strCurrentGradeId);
             foreach (XPathNavigator xmlDrug in objXmlDrugList)
             {
                 bool blnIsForceGrade = xmlDrug.SelectSingleNode("forcegrade") == null;
@@ -735,7 +735,7 @@ namespace Chummer
             {
                 // Add after sort so that it's always at the end
                 lstDrugs.Add(new ListItem(string.Empty,
-                    string.Format(GlobalOptions.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
+                    string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_RestrictedItemsHidden"),
                         intOverLimit)));
             }
             string strOldSelected = lstDrug.SelectedValue?.ToString();
@@ -794,12 +794,12 @@ namespace Chummer
             {
                 strForceGrade = cboGrade.SelectedValue?.ToString();
                 if (!string.IsNullOrEmpty(strForceGrade))
-                    SelectedGrade = _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == cboGrade.SelectedValue?.ToString());
+                    SelectedGrade = _lstGrades.FirstOrDefault(x => x.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == cboGrade.SelectedValue?.ToString());
                 else
                     return;
             }
 
-            _sStrSelectGrade = SelectedGrade?.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo);
+            _sStrSelectGrade = SelectedGrade?.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo);
             SelectedDrug = strSelectedId;
             SelectedRating = nudRating.ValueAsInt;
             BlackMarketDiscount = chkBlackMarketDiscount.Checked;
@@ -828,7 +828,7 @@ namespace Chummer
                 List<ListItem> lstGrade = new List<ListItem>(5);
                 foreach (Grade objWareGrade in _lstGrades)
                 {
-                    if (objWareGrade.SourceId.ToString("D", GlobalOptions.InvariantCultureInfo) == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
+                    if (objWareGrade.SourceId.ToString("D", GlobalSettings.InvariantCultureInfo) == _strNoneGradeId && (string.IsNullOrEmpty(strForceGrade) || strForceGrade != _strNoneGradeId))
                         continue;
                     //if (_objCharacter.Improvements.Any(x => x.ImproveType == Improvement.ImprovementType.DisableDrugGrade && objWareGrade.Name.Contains(x.ImprovedName) && x.Enabled))
                     //    continue;

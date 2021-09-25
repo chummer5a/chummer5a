@@ -26,7 +26,7 @@ using NLog;
 namespace Chummer
 {
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    [DebuggerDisplay("{DisplayNameShort(GlobalOptions.DefaultLanguage)}")]
+    [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
     public class MentorSpirit : IHasInternalId, IHasName, IHasXmlNode, IHasSource
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
@@ -102,7 +102,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), _nodBonus, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, 1, DisplayNameShort(GlobalSettings.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -121,7 +121,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 //ImprovementManager.ForcedValue = strForceValueChoice1;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), _nodChoice1, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodChoice1, 1, DisplayNameShort(GlobalSettings.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -143,7 +143,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 //ImprovementManager.ForcedValue = strForceValueChoice2;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalOptions.InvariantCultureInfo), _nodChoice2, 1, DisplayNameShort(GlobalOptions.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodChoice2, 1, DisplayNameShort(GlobalSettings.Language)))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -166,7 +166,7 @@ namespace Chummer
                 _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalOptions.Language), CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                 }
             }
             */
@@ -180,7 +180,7 @@ namespace Chummer
             {
                 if (_objCachedSourceDetail == default)
                     _objCachedSourceDetail = new SourceString(Source,
-                        DisplayPage(GlobalOptions.Language), GlobalOptions.Language, GlobalOptions.CultureInfo,
+                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter);
                 return _objCachedSourceDetail;
             }
@@ -204,7 +204,7 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("advantage", _strAdvantage);
             objWriter.WriteElementString("disadvantage", _strDisadvantage);
-            objWriter.WriteElementString("mentormask", _blnMentorMask.ToString(GlobalOptions.InvariantCultureInfo));
+            objWriter.WriteElementString("mentormask", _blnMentorMask.ToString(GlobalSettings.InvariantCultureInfo));
             if (_nodBonus != null)
                 objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
             else
@@ -243,7 +243,7 @@ namespace Chummer
             }
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XmlNode node = GetNode(GlobalOptions.Language);
+                XmlNode node = GetNode(GlobalSettings.Language);
                 if (node?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
                     _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + "]")?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -288,8 +288,8 @@ namespace Chummer
             objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
             objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("mentormask", MentorMask.ToString(GlobalOptions.InvariantCultureInfo));
-            if (GlobalOptions.PrintNotes)
+            objWriter.WriteElementString("mentormask", MentorMask.ToString(GlobalSettings.InvariantCultureInfo));
+            if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
             objWriter.WriteEndElement();
         }
@@ -306,7 +306,7 @@ namespace Chummer
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         /// <summary>
         /// Name of the Mentor Spirit or Paragon.
@@ -414,7 +414,7 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             return GetNode(strLanguage)?["translate"]?.InnerText ?? Name;
@@ -446,7 +446,7 @@ namespace Chummer
         /// <returns></returns>
         public string DisplayPage(string strLanguage)
         {
-            if (strLanguage.Equals(GlobalOptions.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             string s = GetNode(strLanguage)?["altpage"]?.InnerText ?? Page;
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
@@ -457,17 +457,17 @@ namespace Chummer
 
         public XmlNode GetNode()
         {
-            return GetNode(GlobalOptions.Language);
+            return GetNode(GlobalSettings.Language);
         }
 
         public XmlNode GetNode(string strLanguage)
         {
-            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalOptions.LiveCustomData)
+            if (_objCachedMyXmlNode == null || strLanguage != _strCachedXmlNodeLanguage || GlobalSettings.LiveCustomData)
             {
                 _objCachedMyXmlNode = _objCharacter.LoadData(_eMentorType == Improvement.ImprovementType.MentorSpirit ? "mentors.xml" : "paragons.xml", strLanguage)
                     .SelectSingleNode(SourceID == Guid.Empty
                         ? "/chummer/mentors/mentor[name = " + Name.CleanXPath() + ']'
-                        : string.Format(GlobalOptions.InvariantCultureInfo,
+                        : string.Format(GlobalSettings.InvariantCultureInfo,
                             "/chummer/mentors/mentor[id = {0} or id = {1}]",
                             SourceIDString.CleanXPath(), SourceIDString.ToUpperInvariant().CleanXPath()));
                 _strCachedXmlNodeLanguage = strLanguage;
@@ -475,13 +475,13 @@ namespace Chummer
             return _objCachedMyXmlNode;
         }
 
-        public string InternalId => _guiID.ToString("D", GlobalOptions.InvariantCultureInfo);
+        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
         #endregion Properties
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail.Language != GlobalOptions.Language)
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
         }

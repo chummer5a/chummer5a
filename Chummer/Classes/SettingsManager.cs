@@ -26,34 +26,34 @@ using System.Xml.XPath;
 
 namespace Chummer
 {
-    public static class OptionsManager
+    public static class SettingsManager
     {
-        private static int _intDicLoadedCharacterOptionsLoadedStatus = -1;
-        private static readonly ConcurrentDictionary<string, CharacterOptions> s_DicLoadedCharacterOptions = new ConcurrentDictionary<string, CharacterOptions>();
+        private static int _intDicLoadedCharacterSettingsLoadedStatus = -1;
+        private static readonly ConcurrentDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new ConcurrentDictionary<string, CharacterSettings>();
 
-        public static IDictionary<string, CharacterOptions> LoadedCharacterOptions
+        public static IDictionary<string, CharacterSettings> LoadedCharacterSettings
         {
             get
             {
-                if (_intDicLoadedCharacterOptionsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                    LoadCharacterOptions();
-                while (_intDicLoadedCharacterOptionsLoadedStatus <= 0)
+                if (_intDicLoadedCharacterSettingsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
+                    LoadCharacterSettings();
+                while (_intDicLoadedCharacterSettingsLoadedStatus <= 0)
                 {
                     Utils.SafeSleep();
                 }
-                return s_DicLoadedCharacterOptions;
+                return s_DicLoadedCharacterSettings;
             }
         }
 
-        private static void LoadCharacterOptions()
+        private static void LoadCharacterSettings()
         {
-            _intDicLoadedCharacterOptionsLoadedStatus = 0;
+            _intDicLoadedCharacterSettingsLoadedStatus = 0;
             try
             {
-                s_DicLoadedCharacterOptions.Clear();
+                s_DicLoadedCharacterSettings.Clear();
                 if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 {
-                    s_DicLoadedCharacterOptions.TryAdd(GlobalOptions.DefaultCharacterOption, new CharacterOptions());
+                    s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting, new CharacterSettings());
                     return;
                 }
 
@@ -61,11 +61,11 @@ namespace Chummer
                     .Select("/chummer/settings/setting").Cast<XPathNavigator>();
                 Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                 {
-                    CharacterOptions objNewCharacterOptions = new CharacterOptions();
-                    if (objNewCharacterOptions.Load(xmlBuiltInSetting) &&
-                        (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                        s_DicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
-                            objNewCharacterOptions);
+                    CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                    if (objNewCharacterSettings.Load(xmlBuiltInSetting) &&
+                        (!objNewCharacterSettings.BuildMethodIsLifeModule || GlobalSettings.LifeModuleEnabled))
+                        s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                            objNewCharacterSettings);
                 });
                 string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
                 if (Directory.Exists(strSettingsPath))
@@ -73,17 +73,17 @@ namespace Chummer
                     Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
                     {
                         string strSettingName = Path.GetFileName(strSettingsFilePath);
-                        CharacterOptions objNewCharacterOptions = new CharacterOptions();
-                        if (objNewCharacterOptions.Load(strSettingName, false) &&
-                            (!objNewCharacterOptions.BuildMethodIsLifeModule || GlobalOptions.LifeModuleEnabled))
-                            s_DicLoadedCharacterOptions.TryAdd(objNewCharacterOptions.DictionaryKey,
-                                objNewCharacterOptions);
+                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                        if (objNewCharacterSettings.Load(strSettingName, false) &&
+                            (!objNewCharacterSettings.BuildMethodIsLifeModule || GlobalSettings.LifeModuleEnabled))
+                            s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                objNewCharacterSettings);
                     });
                 }
             }
             finally
             {
-                _intDicLoadedCharacterOptionsLoadedStatus = 1;
+                _intDicLoadedCharacterSettingsLoadedStatus = 1;
             }
         }
     }

@@ -72,7 +72,7 @@ namespace Chummer
                 final = s_Time.Elapsed - objStartTimeSpan;
 
 #if DEBUG
-                string strLogEntry = string.Format(GlobalOptions.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
+                string strLogEntry = string.Format(GlobalSettings.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
                     taskname, final);
                 //Log.Trace(strLogEntry);
 
@@ -101,7 +101,7 @@ namespace Chummer
 
             foreach (KeyValuePair<string, Tuple<TimeSpan, int>> keyValuePair in s_DictionaryStatistics)
             {
-                sbdLog.AppendFormat(GlobalOptions.InvariantCultureInfo, "\t{0}({1}) = {2}{3}",
+                sbdLog.AppendFormat(GlobalSettings.InvariantCultureInfo, "\t{0}({1}) = {2}{3}",
                     keyValuePair.Key, keyValuePair.Value.Item2, keyValuePair.Value.Item1, Environment.NewLine);
             }
 

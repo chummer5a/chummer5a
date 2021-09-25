@@ -52,9 +52,9 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
 
-            if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
+            if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
-                _watcherCharacterRosterFolder = new FileSystemWatcher(GlobalOptions.CharacterRosterPath, "*.chum5");
+                _watcherCharacterRosterFolder = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5");
             }
         }
 
@@ -62,7 +62,7 @@ namespace Chummer
         {
             if (!deleteThem)
             {
-                GlobalOptions.MruChanged += RefreshMruLists;
+                GlobalSettings.MruChanged += RefreshMruLists;
                 treCharacterList.ItemDrag += treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter += treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop += treCharacterList_OnDefaultDragDrop;
@@ -79,7 +79,7 @@ namespace Chummer
             }
             else
             {
-                GlobalOptions.MruChanged -= RefreshMruLists;
+                GlobalSettings.MruChanged -= RefreshMruLists;
                 treCharacterList.ItemDrag -= treCharacterList_OnDefaultItemDrag;
                 treCharacterList.DragEnter -= treCharacterList_OnDefaultDragEnter;
                 treCharacterList.DragDrop -= treCharacterList_OnDefaultDragDrop;
@@ -202,7 +202,7 @@ namespace Chummer
             if (_objMostRecentlyUsedsRefreshCancellationTokenSource.IsCancellationRequested)
                 return;
 
-            List<string> lstFavorites = blnRefreshFavorites ? GlobalOptions.FavoritedCharacters.ToList() : new List<string>();
+            List<string> lstFavorites = blnRefreshFavorites ? GlobalSettings.FavoritedCharacters.ToList() : new List<string>();
             bool blnAddFavoriteNode = false;
             TreeNode objFavoriteNode = treCharacterList.FindNode("Favorite", false);
             if (objFavoriteNode == null && blnRefreshFavorites)
@@ -217,7 +217,7 @@ namespace Chummer
                 return;
 
             bool blnAddRecentNode = false;
-            List<string> lstRecents = new List<string>(GlobalOptions.MostRecentlyUsedCharacters);
+            List<string> lstRecents = new List<string>(GlobalSettings.MostRecentlyUsedCharacters);
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
             foreach (CharacterShared objCharacterForm in Program.MainForm.OpenCharacterForms)
             {
@@ -376,21 +376,21 @@ namespace Chummer
                 return;
 
             Dictionary<string, string> dicWatch = new Dictionary<string, string>();
-            if (!string.IsNullOrEmpty(GlobalOptions.CharacterRosterPath) && Directory.Exists(GlobalOptions.CharacterRosterPath))
+            if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
-                foreach (string strFile in Directory.GetFiles(GlobalOptions.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
+                foreach (string strFile in Directory.GetFiles(GlobalSettings.CharacterRosterPath, "*.chum5", SearchOption.AllDirectories))
                 {
                     if (_objWatchFolderRefreshCancellationTokenSource.IsCancellationRequested)
                         return;
 
                     FileInfo objInfo = new FileInfo(strFile);
-                    if (objInfo.Directory == null || objInfo.Directory.FullName == GlobalOptions.CharacterRosterPath)
+                    if (objInfo.Directory == null || objInfo.Directory.FullName == GlobalSettings.CharacterRosterPath)
                     {
                         dicWatch.Add(strFile, "Watch");
                         continue;
                     }
 
-                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalOptions.CharacterRosterPath + "\\", string.Empty);
+                    string strNewParent = objInfo.Directory.FullName.Replace(GlobalSettings.CharacterRosterPath + "\\", string.Empty);
                     dicWatch.Add(strFile, strNewParent);
                 }
             }
@@ -621,7 +621,7 @@ namespace Chummer
                 txtGameNotes.Text = objCache.GameNotes.RtfToPlainText();
                 txtCharacterConcept.Text = objCache.Concept.RtfToPlainText();
                 lblCareerKarma.Text = objCache.Karma;
-                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalOptions.CultureInfo))
+                if (string.IsNullOrEmpty(lblCareerKarma.Text) || lblCareerKarma.Text == 0.ToString(GlobalSettings.CultureInfo))
                     lblCareerKarma.Text = strNone;
                 lblPlayerName.Text = objCache.PlayerName;
                 if (string.IsNullOrEmpty(lblPlayerName.Text))
@@ -814,12 +814,12 @@ namespace Chummer
                         switch (strDestinationNode)
                         {
                             case "Recent":
-                                GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
-                                GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                                GlobalSettings.FavoritedCharacters.Remove(objCache.FilePath);
+                                GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                                 break;
 
                             case "Favorite":
-                                GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
+                                GlobalSettings.FavoritedCharacters.Add(objCache.FilePath);
                                 break;
                         }
                     }
@@ -883,11 +883,11 @@ namespace Chummer
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.MostRecentlyUsedCharacters.Sort();
+                        GlobalSettings.MostRecentlyUsedCharacters.Sort();
                         break;
 
                     case "Favorite":
-                        GlobalOptions.FavoritedCharacters.Sort();
+                        GlobalSettings.FavoritedCharacters.Sort();
                         break;
                 }
             }
@@ -896,11 +896,11 @@ namespace Chummer
                 switch (t.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalOptions.MostRecentlyUsedCharacters.Sort();
+                        GlobalSettings.MostRecentlyUsedCharacters.Sort();
                         break;
 
                     case "Favorite":
-                        GlobalOptions.FavoritedCharacters.Sort();
+                        GlobalSettings.FavoritedCharacters.Sort();
                         break;
                 }
             }
@@ -916,12 +916,12 @@ namespace Chummer
                 switch (t.Parent.Tag.ToString())
                 {
                     case "Favorite":
-                        GlobalOptions.FavoritedCharacters.Remove(objCache.FilePath);
-                        GlobalOptions.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
+                        GlobalSettings.FavoritedCharacters.Remove(objCache.FilePath);
+                        GlobalSettings.MostRecentlyUsedCharacters.Insert(0, objCache.FilePath);
                         break;
 
                     default:
-                        GlobalOptions.FavoritedCharacters.Add(objCache.FilePath);
+                        GlobalSettings.FavoritedCharacters.Add(objCache.FilePath);
                         break;
                 }
                 treCharacterList.SelectedNode = t;

@@ -47,7 +47,7 @@ namespace Chummer.Backend
 
                 _dicAttributes = new Dictionary<string, string>
                 {
-                    {"visible-crash-id", Guid.NewGuid().ToString("D", GlobalOptions.InvariantCultureInfo)},
+                    {"visible-crash-id", Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo)},
 #if DEBUG
                     {"visible-build-type", "DEBUG"},
 #else
@@ -62,12 +62,12 @@ namespace Chummer.Backend
                     {"visible-error-friendly", ex?.Message ?? "No description available"},
                     {"visible-stacktrace", ex?.StackTrace ?? "No stack trace available"},
                     {"installation-id", Properties.Settings.Default.UploadClientId.ToString() },
-                    {"option-upload-logs-set", GlobalOptions.UseLoggingApplicationInsights.ToString() }
+                    {"option-upload-logs-set", GlobalSettings.UseLoggingApplicationInsights.ToString() }
                 };
 
                 try
                 {
-                    _dicAttributes.Add("chummer-ui-language", GlobalOptions.Language);
+                    _dicAttributes.Add("chummer-ui-language", GlobalSettings.Language);
                 }
                 catch (Exception e)
                 {
@@ -75,7 +75,7 @@ namespace Chummer.Backend
                 }
                 try
                 {
-                    _dicAttributes.Add("chummer-cultureinfo", GlobalOptions.CultureInfo.ToString());
+                    _dicAttributes.Add("chummer-cultureinfo", GlobalSettings.CultureInfo.ToString());
                 }
                 catch (Exception e)
                 {
@@ -83,7 +83,7 @@ namespace Chummer.Backend
                 }
                 try
                 {
-                    _dicAttributes.Add("system-cultureinfo", GlobalOptions.SystemCultureInfo.ToString());
+                    _dicAttributes.Add("system-cultureinfo", GlobalSettings.SystemCultureInfo.ToString());
                 }
                 catch (Exception e)
                 {
@@ -191,7 +191,7 @@ namespace Chummer.Backend
         {
             try
             {
-                if (GlobalOptions.UseLoggingApplicationInsights >= UseAILogging.Crashes && Program.ChummerTelemetryClient != null)
+                if (GlobalSettings.UseLoggingApplicationInsights >= UseAILogging.Crashes && Program.ChummerTelemetryClient != null)
                 {
                     ex.Data.Add("IsCrash", bool.TrueString);
                     ExceptionTelemetry et = new ExceptionTelemetry(ex)

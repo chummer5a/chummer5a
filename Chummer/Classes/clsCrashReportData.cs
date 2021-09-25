@@ -88,7 +88,7 @@ namespace Chummer
 
         public string Subject
         {
-            get => _subject ?? Id.ToString("D", GlobalOptions.InvariantCultureInfo);
+            get => _subject ?? Id.ToString("D", GlobalSettings.InvariantCultureInfo);
             set => _subject = value;
         }
 

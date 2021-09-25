@@ -277,7 +277,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalSettings.InvariantCultureInfo;
                 if (int.TryParse(objField.Value, NumberStyles.Any, objCulture, out int intTmp))
                 {
                     read = intTmp;
@@ -312,7 +312,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalSettings.InvariantCultureInfo;
                 if (decimal.TryParse(objField.Value, NumberStyles.Any, objCulture, out decimal decTmp))
                 {
                     read = decTmp;
@@ -332,7 +332,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalSettings.InvariantCultureInfo;
                 if (double.TryParse(objField.Value, NumberStyles.Any, objCulture, out double dblTmp))
                 {
                     read = dblTmp;
@@ -352,7 +352,7 @@ namespace Chummer
             if (objField != null)
             {
                 if (objCulture == null)
-                    objCulture = GlobalOptions.InvariantCultureInfo;
+                    objCulture = GlobalSettings.InvariantCultureInfo;
                 if (float.TryParse(objField.Value, NumberStyles.Any, objCulture, out float fltTmp))
                 {
                     read = fltTmp;

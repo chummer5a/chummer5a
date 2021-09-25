@@ -66,7 +66,7 @@ namespace Chummer
                 else if (_objMartialArt.Techniques.Count == 0)
                 {
                     //TODO: Support for allowing all techniques  > 0.
-                    string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+                    string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
                     XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");
 
                     foreach (XPathNavigator xmlTechnique in objTechniquesList)
@@ -115,7 +115,7 @@ namespace Chummer
                 {
                     string strSource = xmlTechnique.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
                     string strPage = xmlTechnique.SelectSingleNode("altpage")?.Value ?? xmlTechnique.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalOptions.Language, GlobalOptions.CultureInfo, _objCharacter);
+                    SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
                     objSourceString.SetControl(lblSource);
                     lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
                     tlpRight.Visible = true;
@@ -172,7 +172,7 @@ namespace Chummer
         /// </summary>
         private void RefreshTechniquesList()
         {
-            string strFilter = '(' + _objCharacter.Options.BookXPath() + ')';
+            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
             if (!string.IsNullOrEmpty(txtSearch.Text))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
             XPathNodeIterator objTechniquesList = _xmlBaseChummerNode.Select("techniques/technique[" + strFilter + "]");

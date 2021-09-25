@@ -146,9 +146,9 @@ namespace Chummer
     }
 
     /// <summary>
-    /// Global Options. A single instance class since Options are common for all characters, reduces execution time and memory usage.
+    /// Global Settings. A single instance class since Settings are common for all characters, reduces execution time and memory usage.
     /// </summary>
-    public static class GlobalOptions
+    public static class GlobalSettings
     {
         private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
         private static CultureInfo _objLanguageCultureInfo = CultureInfo.GetCultureInfo(DefaultLanguage);
@@ -166,7 +166,8 @@ namespace Chummer
         private static readonly RegistryKey s_ObjBaseChummerKey;
         public const string DefaultLanguage = "en-us";
         public const string DefaultCharacterSheetDefaultValue = "Shadowrun 5 (Skills grouped by Rating greater 0)";
-        public const string DefaultCharacterOptionDefaultValue = "223a11ff-80e0-428b-89a9-6ef1c243b8b6"; // GUID for built-in Standard option
+        public const string DefaultCharacterSettingDefaultValue = "223a11ff-80e0-428b-89a9-6ef1c243b8b6"; // GUID for built-in Standard option
+        public const string DefaultMasterIndexSettingDefaultValue = "67e25032-2a4e-42ca-97fa-69f7f608236c"; // GUID for built-in Full House option
         public const DpiScalingMethod DefaultDpiScalingMethod = DpiScalingMethod.Zoom;
 
         private static DpiScalingMethod _eDpiScalingMethod = DefaultDpiScalingMethod;
@@ -191,7 +192,8 @@ namespace Chummer
         private static bool _blnCustomDateTimeFormats;
         private static string _strCustomDateFormat;
         private static string _strCustomTimeFormat;
-        private static string _strDefaultCharacterOption = DefaultCharacterOptionDefaultValue;
+        private static string _strDefaultCharacterSetting = DefaultCharacterSettingDefaultValue;
+        private static string _strDefaultMasterIndexSetting = DefaultMasterIndexSettingDefaultValue;
         private static int _intSavedImageQuality = int.MaxValue;
         private static ColorMode _eColorMode;
         private static bool _blnConfirmDelete = true;
@@ -344,7 +346,7 @@ namespace Chummer
             return false;
         }
 
-        static GlobalOptions()
+        static GlobalSettings()
         {
             if (Utils.IsDesignerMode)
                 return;
@@ -482,7 +484,9 @@ namespace Chummer
             if (_strDefaultCharacterSheet == "Shadowrun (Rating greater 0)")
                 _strDefaultCharacterSheet = DefaultCharacterSheetDefaultValue;
 
-            LoadStringFromRegistry(ref _strDefaultCharacterOption, "defaultcharacteroption"); // Deliberate name change to force users to re-check
+            LoadStringFromRegistry(ref _strDefaultCharacterSetting, "defaultcharacteroption"); // Deliberate name change to force users to re-check
+
+            LoadStringFromRegistry(ref _strDefaultMasterIndexSetting, "defaultmasterindexsetting");
 
             LoadBoolFromRegistry(ref _blnAllowEasterEggs, "alloweastereggs");
             // Confirm delete.
@@ -797,7 +801,8 @@ namespace Chummer
                     objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
                     objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
-                    objRegistry.SetValue("defaultcharacteroption", DefaultCharacterOption);
+                    objRegistry.SetValue("defaultcharacteroption", DefaultCharacterSetting);
+                    objRegistry.SetValue("defaultmasterindexsetting", DefaultMasterIndexSetting);
                     objRegistry.SetValue("usecustomdatetime", CustomDateTimeFormats.ToString(InvariantCultureInfo));
                     if (CustomDateFormat != null)
                         objRegistry.SetValue("customdateformat", CustomDateFormat);
@@ -1269,12 +1274,21 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Default character option to select when creating a new character
+        /// Default setting to select when creating a new character
         /// </summary>
-        public static string DefaultCharacterOption
+        public static string DefaultCharacterSetting
         {
-            get => _strDefaultCharacterOption;
-            set => _strDefaultCharacterOption = value;
+            get => _strDefaultCharacterSetting;
+            set => _strDefaultCharacterSetting = value;
+        }
+
+        /// <summary>
+        /// Default setting to select when opening the Master Index for the first time
+        /// </summary>
+        public static string DefaultMasterIndexSetting
+        {
+            get => _strDefaultMasterIndexSetting;
+            set => _strDefaultMasterIndexSetting = value;
         }
 
         public static RegistryKey ChummerRegistryKey => s_ObjBaseChummerKey;
