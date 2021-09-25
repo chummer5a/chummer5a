@@ -31,7 +31,23 @@ namespace Chummer
         private static int _intDicLoadedCharacterSettingsLoadedStatus = -1;
         private static readonly ConcurrentDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new ConcurrentDictionary<string, CharacterSettings>();
 
-        public static IDictionary<string, CharacterSettings> LoadedCharacterSettings
+        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
+        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
+        {
+            get
+            {
+                if (_intDicLoadedCharacterSettingsLoadedStatus < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
+                    LoadCharacterSettings();
+                while (_intDicLoadedCharacterSettingsLoadedStatus <= 0)
+                {
+                    Utils.SafeSleep();
+                }
+                return s_DicLoadedCharacterSettings;
+            }
+        }
+
+        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
+        public static IDictionary<string, CharacterSettings> LoadedCharacterSettingsAsModifiable
         {
             get
             {

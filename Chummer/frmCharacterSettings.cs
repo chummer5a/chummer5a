@@ -26,7 +26,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
-using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer
@@ -47,6 +46,7 @@ namespace Chummer
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
         private bool _blnIsLayoutSuspended = true;
+        private bool _blnForceMasterIndexRepopulateOnClose;
 
         // Used to revert to old selected setting if user cancels out of selecting a different one
         private int _intOldSelectedSettingIndex = -1;
@@ -164,7 +164,9 @@ namespace Chummer
 
             using (new CursorWait(this))
             {
-                SettingsManager.LoadedCharacterSettings.Remove(_objReferenceCharacterSettings.DictionaryKey);
+                SettingsManager.LoadedCharacterSettingsAsModifiable.Remove(_objReferenceCharacterSettings.DictionaryKey);
+                // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
+                _blnForceMasterIndexRepopulateOnClose = true;
                 KeyValuePair<string, CharacterSettings> kvpReplacementOption =
                     SettingsManager.LoadedCharacterSettings.First(x => x.Value.BuiltInOption
                                                                      && x.Value.BuildMethod ==
@@ -278,9 +280,11 @@ namespace Chummer
 
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
                 objNewCharacterSettings.CopyValues(_objCharacterSettings);
-                SettingsManager.LoadedCharacterSettings.Add(
+                SettingsManager.LoadedCharacterSettingsAsModifiable.Add(
                     objNewCharacterSettings.DictionaryKey,
                     objNewCharacterSettings);
+                // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
+                _blnForceMasterIndexRepopulateOnClose = true;
                 _objReferenceCharacterSettings = objNewCharacterSettings;
                 IsDirty = false;
                 PopulateSettingsList();
@@ -493,6 +497,11 @@ namespace Chummer
                 LanguageManager.GetString("MessageTitle_CharacterOptions_UnsavedDirty"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 e.Cancel = true;
+            }
+
+            if (_blnForceMasterIndexRepopulateOnClose)
+            {
+                Program.MainForm.MasterIndex?.ForceRepopulateCharacterSettings();
             }
         }
 
@@ -1280,12 +1289,12 @@ namespace Chummer
                     return false;
 
                 return CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.ContactPointsExpression, true) &&
+                           _objCharacterSettings.ContactPointsExpression) &&
                        CommonFunctions.IsCharacterAttributeXPathValidOrNull(
-                           _objCharacterSettings.KnowledgePointsExpression, true) &&
+                           _objCharacterSettings.KnowledgePointsExpression) &&
                        CommonFunctions.IsCharacterAttributeXPathValidOrNull(
                            _objCharacterSettings.ChargenKarmaToNuyenExpression.Replace("{Karma}", "0")
-                               .Replace("{PriorityNuyen}", "0"), true);
+                               .Replace("{PriorityNuyen}", "0"));
             }
         }
 

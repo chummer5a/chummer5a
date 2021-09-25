@@ -432,9 +432,15 @@ namespace Chummer
             {
                 using (frmCharacterSettings frmOptions = new frmCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings))
                     frmOptions.ShowDialog(this);
+                // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
+            }
+        }
 
+        public void ForceRepopulateCharacterSettings()
+        {
+            using (new CursorWait(this))
+            {
                 SuspendLayout();
-                // Populate the Gameplay Settings list.
                 PopulateCharacterSettings();
                 ResumeLayout();
             }
